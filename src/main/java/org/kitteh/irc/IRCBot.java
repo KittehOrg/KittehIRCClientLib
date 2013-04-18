@@ -37,10 +37,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 import org.kitteh.irc.util.StringUtil;
 
 public final class IRCBot extends Thread {
@@ -123,8 +119,6 @@ public final class IRCBot extends Thread {
 
     private class OutputHandler extends Thread {
         private final BufferedWriter bufferedWriter;
-        @Setter(AccessLevel.PRIVATE)
-        @Getter(AccessLevel.PRIVATE)
         private int delay = 1200; // Delay disabled while in development :3
         private String quitReason;
         private boolean running = true;
@@ -195,19 +189,13 @@ public final class IRCBot extends Thread {
         return bot;
     }
 
-    @Getter
     private final String server;
-    @Getter
     private final int port;
-    @Getter
     private final String botName;
-    @Getter
     private String nick = "Kitteh";
     private String currentNick = "Kitteh";
     private InputHandler inputHandler;
-    @Getter
     private final String ircUser = "kitteh";
-    @Getter
     private final String ircName = "Meow meow meow";
     private OutputHandler outputHandler;
     private String onNormal;
