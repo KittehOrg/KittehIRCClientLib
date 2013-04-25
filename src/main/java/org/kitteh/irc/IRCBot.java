@@ -183,12 +183,6 @@ public final class IRCBot extends Thread {
 
     }
 
-    public static IRCBot freshBot(String botName, String server, int port, String nick) {
-        final IRCBot bot = new IRCBot(botName, server, port);
-        bot.setNick(nick);
-        return bot;
-    }
-
     private final String server;
     private final int port;
     private final String botName;
@@ -209,11 +203,13 @@ public final class IRCBot extends Thread {
     private final List<String> lowPriorityQueue = Collections.synchronizedList(new ArrayList<String>());
     private final List<String> channels = new ArrayList<>();
     private boolean connected;
+    private String locale = "en";
 
-    private IRCBot(String botName, String server, int port) {
+    public IRCBot(String botName, String server, int port, String nick) {
         this.server = server;
         this.port = port;
         this.botName = botName;
+        this.nick = nick;
         this.setName("Kitteh IRCBot Main (" + botName + ")");
     }
 
