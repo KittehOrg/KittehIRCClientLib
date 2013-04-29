@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.kitteh.irc.localization.Localization;
 import org.kitteh.irc.util.StringUtil;
 
 public final class IRCBot extends Thread {
@@ -203,7 +204,7 @@ public final class IRCBot extends Thread {
     private final List<String> lowPriorityQueue = Collections.synchronizedList(new ArrayList<String>());
     private final List<String> channels = new ArrayList<>();
     private boolean connected;
-    private String locale = "en";
+    private String locale = "en"; // TODO - set locale, call load method etc
 
     public IRCBot(String botName, String server, int port, String nick) {
         this.server = server;
@@ -237,7 +238,7 @@ public final class IRCBot extends Thread {
             if ((System.currentTimeMillis() - this.lastCheck) > 5000) {
                 this.lastCheck = System.currentTimeMillis();
                 if (this.inputHandler.timeSinceInput() > 250000) {
-                    this.outputHandler.shutdown("Ping timeout! Reconnecting...");
+                    this.outputHandler.shutdown(Localization.BOT_PINGTIMEOUT.locale(this.locale).get());
                     this.inputHandler.shutdown();
                     try {
                         Thread.sleep(10000);
@@ -390,18 +391,18 @@ public final class IRCBot extends Thread {
                 final String ctcp = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
                 String reply = null;
                 if (ctcp.equals("VERSION")) {
-                    reply = "VERSION I am Kitteh";
+                    reply = "VERSION "+Localization.CTCP_VERSION.locale(this.locale).format("Kitteh");
                 } else if (ctcp.equals("TIME")) {
-                    reply = "TIME The time is apurrximately " + new Date().toString();
+                    reply = "TIME " +Localization.CTCP_TIME.locale(this.locale).format(new Date().toString());
                 } else if (ctcp.equals("FINGER")) {
-                    reply = "FINGER I playfully bite that finger";
+                    reply = "FINGER "+Localization.CTCP_FINGER.locale(this.locale).get();
                 } else if (ctcp.startsWith("PING ")) {
                     reply = ctcp;
                 } else if (ctcp.startsWith("ACTION ")) {
                     System.out.println("<" + split[2] + "> * " + this.getNickFromActor(actor) + " " + ctcp.substring(7));
-                    // Begin temporary - Pet
+                    // Begin temporary - TODO - Pet
                     if (ctcp.endsWith("pets " + this.currentNick) && this.channels.contains(split[2]) && (this.getNickFromActor(actor).equalsIgnoreCase("mbaxter") || (this.random.nextDouble() < 0.1))) {
-                        this.sendRawLine("PRIVMSG " + split[2] + " :\u0001ACTION purrs and cuddles\u0001", false);
+                        this.sendRawLine("PRIVMSG " + split[2] + " :\u0001ACTION " + Localization.TEMP_PURR.locale(this.locale).get() + "\u0001", false);
                     }
                     // End temporary
                 }
@@ -415,12 +416,12 @@ public final class IRCBot extends Thread {
                 case "PRIVMSG":
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
                     System.out.println((split[1].equals("NOTICE") ? "N" : "") + "<" + this.getNickFromActor(actor) + "->" + split[2] + "> " + message);
-                    // Begin temporary - Numberwang
+                    // Begin temporary - TODO - Numberwang
                     if (this.channels.contains(split[2])) {
                         try {
                             Double.parseDouble(message);
                             if (this.random.nextDouble() < 0.10) {
-                                this.sendRawLine("PRIVMSG " + split[2] + " :That's Numberwang!", false);
+                                this.sendRawLine("PRIVMSG " + split[2] + " :" + Localization.TEMP_NUMBERWANG.locale(this.locale).get(), false);
                             }
                         } catch (final NumberFormatException e) {
                         }
@@ -435,7 +436,7 @@ public final class IRCBot extends Thread {
                 case "QUIT":
                     break;
                 case "KICK":
-                    System.out.println(this.getNickFromActor(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4)));
+                    System.out.println(split[2] + ": " + Localization.CHANNEL_KICK.locale(this.locale).format(this.getNickFromActor(actor), split[3]) + ": " + this.handleColon(StringUtil.combineSplit(split, 4)));
                     break;
                 case "NICK":
                     break;
