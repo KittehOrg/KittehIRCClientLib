@@ -28,6 +28,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public final class IRCBot extends Thread {
 
     private class OutputHandler extends Thread {
         private final BufferedWriter bufferedWriter;
-        private int delay = 1200; // Delay disabled while in development :3
+        // private int delay = 1200; // Delay disabled while in development :3
         private String quitReason;
         private boolean running = true;
         private boolean handleLowPriority = false;
@@ -184,6 +185,7 @@ public final class IRCBot extends Thread {
 
     }
 
+    private final InetSocketAddress bind;
     private final String server;
     private final int port;
     private final String botName;
@@ -199,14 +201,35 @@ public final class IRCBot extends Thread {
     private String serverinfo;
     private AuthType authType;
     private long lastCheck;
-    private final Random random = new Random();
     private final List<String> highPriorityQueue = Collections.synchronizedList(new ArrayList<String>());
     private final List<String> lowPriorityQueue = Collections.synchronizedList(new ArrayList<String>());
     private final List<String> channels = new ArrayList<>();
     private boolean connected;
     private String locale = "en"; // TODO - set locale, call load method etc
+    // TODO HACK
+    private java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>());
+
+    public void addHack(HackyTemp temp) {
+        hacks.add(temp);
+    }
+
+    // TODO HACK
 
     public IRCBot(String botName, String server, int port, String nick) {
+        this(botName, null, server, port, nick);
+    }
+
+    public IRCBot(String botName, String bind, String server, int port, String nick) {
+        if (bind == null) {
+            this.bind = null;
+        } else {
+            InetSocketAddress inetSocketAddress = null;
+            try {
+                inetSocketAddress = new InetSocketAddress(InetAddress.getByName(bind), 0);
+            } catch (Exception e) {
+            }
+            this.bind = inetSocketAddress;
+        }
         this.server = server;
         this.port = port;
         this.botName = botName;
@@ -286,6 +309,13 @@ public final class IRCBot extends Thread {
     private void connect() throws IOException {
         this.connected = false;
         final Socket socket = new Socket();
+        if (this.bind != null) {
+            try {
+                socket.bind(this.bind);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         socket.connect(new InetSocketAddress(this.server, this.port));
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -391,20 +421,24 @@ public final class IRCBot extends Thread {
                 final String ctcp = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
                 String reply = null;
                 if (ctcp.equals("VERSION")) {
-                    reply = "VERSION "+Localization.CTCP_VERSION.locale(this.locale).format("Kitteh");
+                    reply = "VERSION " + Localization.CTCP_VERSION.locale(this.locale).format("Kitteh");
                 } else if (ctcp.equals("TIME")) {
-                    reply = "TIME " +Localization.CTCP_TIME.locale(this.locale).format(new Date().toString());
+                    reply = "TIME " + Localization.CTCP_TIME.locale(this.locale).format(new Date().toString());
                 } else if (ctcp.equals("FINGER")) {
-                    reply = "FINGER "+Localization.CTCP_FINGER.locale(this.locale).get();
+                    reply = "FINGER " + Localization.CTCP_FINGER.locale(this.locale).get();
                 } else if (ctcp.startsWith("PING ")) {
                     reply = ctcp;
                 } else if (ctcp.startsWith("ACTION ")) {
                     System.out.println("<" + split[2] + "> * " + this.getNickFromActor(actor) + " " + ctcp.substring(7));
-                    // Begin temporary - TODO - Pet
-                    if (ctcp.endsWith("pets " + this.currentNick) && this.channels.contains(split[2]) && (this.getNickFromActor(actor).equalsIgnoreCase("mbaxter") || (this.random.nextDouble() < 0.1))) {
-                        this.sendRawLine("PRIVMSG " + split[2] + " :\u0001ACTION " + Localization.TEMP_PURR.locale(this.locale).get() + "\u0001", false);
+                    // TODO HACK
+                    String channel = split[2];
+                    String nick = this.getNickFromActor(actor);
+                    if (this.channels.contains(channel)) {
+                        for (HackyTemp temp : this.hacks) {
+                            temp.action(channel, nick, ctcp.substring(7));
+                        }
                     }
-                    // End temporary
+                    // TODO HACK
                 }
                 if (reply != null) {
                     this.sendRawLine("NOTICE " + this.getNickFromActor(actor) + " :\u0001" + reply + "\u0001", false);
@@ -416,17 +450,15 @@ public final class IRCBot extends Thread {
                 case "PRIVMSG":
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
                     System.out.println((split[1].equals("NOTICE") ? "N" : "") + "<" + this.getNickFromActor(actor) + "->" + split[2] + "> " + message);
-                    // Begin temporary - TODO - Numberwang
-                    if (this.channels.contains(split[2])) {
-                        try {
-                            Double.parseDouble(message);
-                            if (this.random.nextDouble() < 0.10) {
-                                this.sendRawLine("PRIVMSG " + split[2] + " :" + Localization.TEMP_NUMBERWANG.locale(this.locale).get(), false);
-                            }
-                        } catch (final NumberFormatException e) {
+                    // TODO HACK
+                    String channel = split[2];
+                    String nick = this.getNickFromActor(actor);
+                    if (this.channels.contains(channel)) {
+                        for (HackyTemp temp : this.hacks) {
+                            temp.message(channel, nick, message);
                         }
                     }
-                    // End temporary
+                    // TODO HACK
                     break;
                 case "MODE":
                     System.out.println(split[2] + ": " + this.getNickFromActor(actor) + " " + split[1] + " " + StringUtil.combineSplit(split, 3));
@@ -466,5 +498,13 @@ public final class IRCBot extends Thread {
     private void sendNickChange(String newnick) {
         this.sendRawLine("NICK " + newnick, true);
         this.currentNick = newnick;
+    }
+
+    public String getCurrentNick() {
+        return this.currentNick;
+    }
+
+    public String getBotName() {
+        return this.botName;
     }
 }

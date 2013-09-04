@@ -40,10 +40,7 @@ public enum Localization {
 
     CTCP_FINGER("I playfully bite that finger"),
     CTCP_TIME("The time is apurrximately %s"),
-    CTCP_VERSION("I am %s"),
-
-    TEMP_NUMBERWANG("That's numberwang!"),
-    TEMP_PURR("purrs and cuddles");
+    CTCP_VERSION("I am %s");
 
     public class LocaleItem {
         private final String locale;
