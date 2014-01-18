@@ -57,7 +57,7 @@ public final class IRCBot extends Thread {
 
         /**
          * Are nicks owned on this network?
-         * 
+         *
          * @return
          */
         public boolean isNickOwned() {
