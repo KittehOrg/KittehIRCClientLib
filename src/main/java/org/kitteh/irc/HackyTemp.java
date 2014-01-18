@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2014 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,8 +23,10 @@
  */
 package org.kitteh.irc;
 
+/**
+ * Until I bother to write an event system
+ */
 public interface HackyTemp {
-
     void action(String channel, String nick, String ctcp);
 
     void message(String channel, String nick, String message);

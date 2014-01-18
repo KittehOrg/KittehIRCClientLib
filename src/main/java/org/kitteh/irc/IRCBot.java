@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2014 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -36,7 +36,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import org.kitteh.irc.localization.Localization;
 import org.kitteh.irc.util.StringUtil;
@@ -205,15 +204,14 @@ public final class IRCBot extends Thread {
     private final List<String> lowPriorityQueue = Collections.synchronizedList(new ArrayList<String>());
     private final List<String> channels = new ArrayList<>();
     private boolean connected;
-    private String locale = "en"; // TODO - set locale, call load method etc
+    private final String locale = "en"; // TODO - set locale, call load method etc
+
     // TODO HACK
-    private java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>());
+    private final java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>());
 
     public void addHack(HackyTemp temp) {
-        hacks.add(temp);
-    }
-
-    // TODO HACK
+        this.hacks.add(temp);
+    } // TODO HACK
 
     public IRCBot(String botName, String server, int port, String nick) {
         this(botName, null, server, port, nick);
@@ -226,7 +224,7 @@ public final class IRCBot extends Thread {
             InetSocketAddress inetSocketAddress = null;
             try {
                 inetSocketAddress = new InetSocketAddress(InetAddress.getByName(bind), 0);
-            } catch (Exception e) {
+            } catch (final Exception e) {
             }
             this.bind = inetSocketAddress;
         }
@@ -247,7 +245,7 @@ public final class IRCBot extends Thread {
             this.connect();
         } catch (final IOException e) {
             e.printStackTrace();
-            if (this.inputHandler.isAlive() && !this.inputHandler.isInterrupted()) {
+            if ((this.inputHandler != null) && this.inputHandler.isAlive() && !this.inputHandler.isInterrupted()) {
                 this.inputHandler.interrupt();
             }
             return;
@@ -312,11 +310,14 @@ public final class IRCBot extends Thread {
         if (this.bind != null) {
             try {
                 socket.bind(this.bind);
-            } catch (Exception e) {
+                System.out.println("Bound to " + socket.getLocalAddress() + " " + socket.getLocalPort());
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
         }
-        socket.connect(new InetSocketAddress(this.server, this.port));
+        final InetSocketAddress target = new InetSocketAddress(this.server, this.port);
+        System.out.println("Connecting to " + target.toString());
+        socket.connect(target);
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         this.outputHandler = new OutputHandler(this, bufferedWriter);
@@ -431,10 +432,10 @@ public final class IRCBot extends Thread {
                 } else if (ctcp.startsWith("ACTION ")) {
                     System.out.println("<" + split[2] + "> * " + this.getNickFromActor(actor) + " " + ctcp.substring(7));
                     // TODO HACK
-                    String channel = split[2];
-                    String nick = this.getNickFromActor(actor);
+                    final String channel = split[2];
+                    final String nick = this.getNickFromActor(actor);
                     if (this.channels.contains(channel)) {
-                        for (HackyTemp temp : this.hacks) {
+                        for (final HackyTemp temp : this.hacks) {
                             temp.action(channel, nick, ctcp.substring(7));
                         }
                     }
@@ -451,10 +452,10 @@ public final class IRCBot extends Thread {
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
                     System.out.println((split[1].equals("NOTICE") ? "N" : "") + "<" + this.getNickFromActor(actor) + "->" + split[2] + "> " + message);
                     // TODO HACK
-                    String channel = split[2];
-                    String nick = this.getNickFromActor(actor);
+                    final String channel = split[2];
+                    final String nick = this.getNickFromActor(actor);
                     if (this.channels.contains(channel)) {
-                        for (HackyTemp temp : this.hacks) {
+                        for (final HackyTemp temp : this.hacks) {
                             temp.message(channel, nick, message);
                         }
                     }
