@@ -41,30 +41,6 @@ import org.kitteh.irc.localization.Localization;
 import org.kitteh.irc.util.StringUtil;
 
 public final class IRCBot extends Thread {
-    public enum AuthType {
-        NICKSERV,
-        GAMESURGE(false);
-
-        private final boolean nicksOwned;
-
-        private AuthType() {
-            this.nicksOwned = true;
-        }
-
-        private AuthType(boolean nickOwned) {
-            this.nicksOwned = nickOwned;
-        }
-
-        /**
-         * Are nicks owned on this network?
-         *
-         * @return
-         */
-        public boolean isNickOwned() {
-            return this.nicksOwned;
-        }
-    }
-
     private class InputHandler extends Thread {
         private final IRCBot bot;
         private final Socket socket;
@@ -206,12 +182,7 @@ public final class IRCBot extends Thread {
     private boolean connected;
     private final String locale = "en"; // TODO - set locale, call load method etc
 
-    // TODO HACK
-    private final java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>());
-
-    public void addHack(HackyTemp temp) {
-        this.hacks.add(temp);
-    } // TODO HACK
+    private final java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>()); // TODO HACK
 
     public IRCBot(String botName, String server, int port, String nick) {
         this(botName, null, server, port, nick);
@@ -237,6 +208,19 @@ public final class IRCBot extends Thread {
 
     public void addChannel(String... channel) {
         this.channels.addAll(Arrays.asList(channel));
+    }
+
+    @Deprecated
+    public void addHack(HackyTemp temp) {
+        this.hacks.add(temp);
+    }
+
+    public String getBotName() {
+        return this.botName;
+    }
+
+    public String getCurrentNick() {
+        return this.currentNick;
     }
 
     @Override
@@ -499,13 +483,5 @@ public final class IRCBot extends Thread {
     private void sendNickChange(String newnick) {
         this.sendRawLine("NICK " + newnick, true);
         this.currentNick = newnick;
-    }
-
-    public String getCurrentNick() {
-        return this.currentNick;
-    }
-
-    public String getBotName() {
-        return this.botName;
     }
 }
