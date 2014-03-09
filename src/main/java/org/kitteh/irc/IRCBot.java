@@ -36,6 +36,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.kitteh.irc.localization.Localization;
 import org.kitteh.irc.util.StringUtil;
@@ -59,7 +61,7 @@ public final class IRCBot extends Thread {
         public void run() {
             while (this.running) {
                 try {
-                    String line = null;
+                    String line;
                     while (this.running && ((line = this.bufferedReader.readLine()) != null)) {
                         this.lastInputTime = System.currentTimeMillis();
                         try {
@@ -96,7 +98,7 @@ public final class IRCBot extends Thread {
 
     private class OutputHandler extends Thread {
         private final BufferedWriter bufferedWriter;
-        // private int delay = 1200; // Delay disabled while in development :3
+        private int delay = 1200;
         private String quitReason;
         private boolean running = true;
         private boolean handleLowPriority = false;
@@ -119,24 +121,24 @@ public final class IRCBot extends Thread {
                         break;
                     }
                 }
-                String message = IRCBot.this.highPriorityQueue.size() > 0 ? IRCBot.this.highPriorityQueue.remove(0) : null;
-                if ((message == null) && this.handleLowPriority && (IRCBot.this.lowPriorityQueue.size() > 0)) {
-                    message = IRCBot.this.lowPriorityQueue.remove(0);
+                String message = IRCBot.this.highPriorityQueue.poll();
+                if (message == null) {
+                    message = IRCBot.this.lowPriorityQueue.poll();
                 }
-                if (message != null) { // You know, just in case
+                if (message != null) {
                     try {
                         this.bufferedWriter.write(message + "\r\n");
                         this.bufferedWriter.flush();
                     } catch (final IOException e) {
                     }
                 }
-                /*if (this.running) { // Delay!
+                if (this.running) { // Delay!
                     try {
                         Thread.sleep(this.delay);
                     } catch (final InterruptedException e) {
                         break;
                     }
-                }*/
+                }
             }
             try {
                 this.bufferedWriter.write("QUIT :" + this.quitReason + "\r\n");
@@ -176,8 +178,8 @@ public final class IRCBot extends Thread {
     private String serverinfo;
     private AuthType authType;
     private long lastCheck;
-    private final List<String> highPriorityQueue = Collections.synchronizedList(new ArrayList<String>());
-    private final List<String> lowPriorityQueue = Collections.synchronizedList(new ArrayList<String>());
+    private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
     private final List<String> channels = new ArrayList<>();
     private boolean connected;
     private final String locale = "en"; // TODO - set locale, call load method etc
@@ -308,7 +310,7 @@ public final class IRCBot extends Thread {
         this.outputHandler.start();
         this.sendRawLine("USER " + this.ircUser + " 8 * :" + this.ircName, true);
         this.sendNickChange(this.nick);
-        String line = null;
+        String line;
         while ((line = bufferedReader.readLine()) != null) { // TODO hacky
             this.handleLine(line);
             final String[] split = line.split(" ");
@@ -351,7 +353,7 @@ public final class IRCBot extends Thread {
             return;
         }
         if (line.startsWith("PING ")) {
-            this.queueInstant("PONG " + line.substring(5));
+            this.queue("PONG " + line.substring(5), true);
             return;
         }
         final String[] split = line.split(" ");
@@ -394,11 +396,12 @@ public final class IRCBot extends Thread {
                     break;
                 case "433":
                     if (!this.connected) {
-                        this.sendNickChange(this.currentNick + '`'); // TODO This is bad. Handle nicer.
+                        this.currentNick = this.currentNick + '`';
+                        this.sendNickChange(this.currentNick); // TODO This is bad. Handle nicer.
                     }
                     break;
                 default:
-                    System.out.println("Unknown: " + line);
+                    System.out.println("Unknown: " + line); // TODO this is debug
             }
         } else {
             // CTCP
@@ -474,10 +477,6 @@ public final class IRCBot extends Thread {
         } else {
             this.lowPriorityQueue.add(msg);
         }
-    }
-
-    private void queueInstant(String msg) {
-        this.highPriorityQueue.add(0, msg);
     }
 
     private void sendNickChange(String newnick) {

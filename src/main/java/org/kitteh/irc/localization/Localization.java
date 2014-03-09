@@ -83,11 +83,11 @@ public enum Localization {
     /**
      * I can be run to generate the default file! :3
      * 
-     * @param args
+     * @param args arguments, yo
      */
     public static void main(String[] args) {
-        final Map<String, Object> map = new LinkedHashMap<String, Object>();
-        final Map<String, Object> inner = new LinkedHashMap<String, Object>();
+        final Map<String, Object> map = new LinkedHashMap<>();
+        final Map<String, Object> inner = new LinkedHashMap<>();
         map.put("en", inner);
         for (final Localization local : Localization.values()) {
             Localization.set(inner, local.key, local.englishDefault);
@@ -118,7 +118,7 @@ public enum Localization {
             if (o instanceof Map) {
                 m = Localization.totallySafeCheckedMapCast((Map<?, ?>) o);
             } else {
-                m = new LinkedHashMap<String, Object>();
+                m = new LinkedHashMap<>();
                 map.put(current, m);
             }
             Localization.set(m, path.substring(indexOf + 1), value);
@@ -132,8 +132,8 @@ public enum Localization {
         return (Map<String, Object>) definitelyChecked;
     }
 
-    private final Map<String, String> map = new HashMap<String, String>();
-    private final Map<String, LocaleItem> localeItemMap = new HashMap<String, LocaleItem>();
+    private final Map<String, String> map = new HashMap<>();
+    private final Map<String, LocaleItem> localeItemMap = new HashMap<>();
     private final String englishDefault;
     private final String key;
 
