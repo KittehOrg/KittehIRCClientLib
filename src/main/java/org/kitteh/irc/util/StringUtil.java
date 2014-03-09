@@ -23,8 +23,6 @@
  */
 package org.kitteh.irc.util;
 
-import org.kitteh.irc.util.StringUtil;
-
 public final class StringUtil {
     public static String combineSplit(String[] split, int start, int length, String delimiter) {
         final StringBuilder builder = new StringBuilder();

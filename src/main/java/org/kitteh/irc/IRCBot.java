@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.util.StringUtil;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -38,9 +40,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.kitteh.irc.localization.Localization;
-import org.kitteh.irc.util.StringUtil;
 
 public final class IRCBot extends Thread {
     private class InputHandler extends Thread {
@@ -245,7 +244,7 @@ public final class IRCBot extends Thread {
             if ((System.currentTimeMillis() - this.lastCheck) > 5000) {
                 this.lastCheck = System.currentTimeMillis();
                 if (this.inputHandler.timeSinceInput() > 250000) {
-                    this.outputHandler.shutdown(Localization.BOT_PINGTIMEOUT.locale(this.locale).get());
+                    this.outputHandler.shutdown("Ping timeout! Reconnecting..."); // TODO event
                     this.inputHandler.shutdown();
                     try {
                         Thread.sleep(10000);
@@ -408,15 +407,18 @@ public final class IRCBot extends Thread {
             if (split[1].equals("PRIVMSG") && (line.indexOf(":\u0001") > 0) && line.endsWith("\u0001")) { // TODO inaccurate
                 final String ctcp = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
                 String reply = null;
-                if (ctcp.equals("VERSION")) {
-                    reply = "VERSION " + Localization.CTCP_VERSION.locale(this.locale).format("Kitteh");
-                } else if (ctcp.equals("TIME")) {
-                    reply = "TIME " + Localization.CTCP_TIME.locale(this.locale).format(new Date().toString());
-                } else if (ctcp.equals("FINGER")) {
-                    reply = "FINGER " + Localization.CTCP_FINGER.locale(this.locale).get();
-                } else if (ctcp.startsWith("PING ")) {
-                    reply = ctcp;
-                } else if (ctcp.startsWith("ACTION ")) {
+                if (split[2].equalsIgnoreCase(this.nick)) {
+                    if (ctcp.equals("VERSION")) {
+                        reply = "VERSION I am Kitteh!"; // TODO event
+                    } else if (ctcp.equals("TIME")) {
+                        reply = "TIME " + new Date().toString(); // TODO event
+                    } else if (ctcp.equals("FINGER")) {
+                        reply = "FINGER om nom nom tasty finger"; // TODO event
+                    } else if (ctcp.startsWith("PING ")) {
+                        reply = ctcp;
+                    }
+                }
+                if (ctcp.startsWith("ACTION ")) {
                     System.out.println("<" + split[2] + "> * " + this.getNickFromActor(actor) + " " + ctcp.substring(7));
                     // TODO HACK
                     final String channel = split[2];
@@ -456,7 +458,7 @@ public final class IRCBot extends Thread {
                 case "QUIT":
                     break;
                 case "KICK":
-                    System.out.println(split[2] + ": " + Localization.CHANNEL_KICK.locale(this.locale).format(this.getNickFromActor(actor), split[3]) + ": " + this.handleColon(StringUtil.combineSplit(split, 4)));
+                    System.out.println(split[2] + ": " + this.getNickFromActor(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4)));
                     break;
                 case "NICK":
                     break;
