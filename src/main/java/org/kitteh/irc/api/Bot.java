@@ -50,7 +50,7 @@ public interface Bot {
      * Gets the bot name. This name is just an internal name for reference
      * and is not visible from IRC.
      *
-     * @return
+     * @return the bot name
      */
     String getName();
 

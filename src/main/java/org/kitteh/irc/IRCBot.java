@@ -107,7 +107,7 @@ public final class IRCBot implements Bot {
 
     private class OutputHandler extends Thread {
         private final BufferedWriter bufferedWriter;
-        private int delay = 1200;
+        private int delay = 1200; // TODO customizable
         private String quitReason;
         private boolean running = true;
         private boolean handleLowPriority = false;
@@ -179,8 +179,8 @@ public final class IRCBot implements Bot {
     private String nick = "Kitteh";
     private String currentNick = "Kitteh";
     private InputHandler inputHandler;
-    private final String ircUser = "kitteh";
-    private final String ircName = "Meow meow meow";
+    private String ircUser = "kitteh";
+    private String ircName = "Meow meow meow";
     private OutputHandler outputHandler;
     private String onNormal;
     private String onFail;
@@ -195,12 +195,14 @@ public final class IRCBot implements Bot {
 
     private final java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>()); // TODO HACK
 
-    IRCBot(String botName, InetSocketAddress bind, String server, int port, String nick) {
+    IRCBot(String botName, InetSocketAddress bind, String server, int port, String nick, String ircUser, String ircName) {
         this.botName = botName;
         this.bind = bind;
         this.server = server;
         this.port = port;
         this.nick = nick;
+        this.ircUser = ircUser;
+        this.ircName = ircName;
         this.manager = new BotManager();
     }
 

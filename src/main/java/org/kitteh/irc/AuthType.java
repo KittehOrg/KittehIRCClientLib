@@ -40,7 +40,7 @@ public enum AuthType {
     /**
      * Are nicks owned on this network?
      *
-     * @return
+     * @return true if nicks are owned
      */
     public boolean isNickOwned() {
         return this.nicksOwned;
