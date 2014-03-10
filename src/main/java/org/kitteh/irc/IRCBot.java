@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.api.Bot;
 import org.kitteh.irc.util.StringUtil;
 
 import java.io.BufferedReader;
@@ -30,7 +31,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -41,19 +41,29 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public final class IRCBot extends Thread {
+public final class IRCBot implements Bot {
+    private class BotManager extends Thread {
+        private BotManager() {
+            this.setName("Kitteh IRCBot Main (" + IRCBot.this.getName() + ")");
+            this.start();
+        }
+
+        @Override
+        public void run() {
+            IRCBot.this.run();
+        }
+    }
+
     private class InputHandler extends Thread {
-        private final IRCBot bot;
         private final Socket socket;
         private final BufferedReader bufferedReader;
         private boolean running = true;
         private long lastInputTime;
 
-        private InputHandler(IRCBot bot, Socket socket, BufferedReader bufferedReader) {
-            this.bot = bot;
+        private InputHandler(Socket socket, BufferedReader bufferedReader) {
             this.socket = socket;
             this.bufferedReader = bufferedReader;
-            this.setName("Kitteh IRCBot Input (" + bot.getName() + ")");
+            this.setName("Kitteh IRCBot Input (" + IRCBot.this.getName() + ")");
         }
 
         @Override
@@ -64,14 +74,14 @@ public final class IRCBot extends Thread {
                     while (this.running && ((line = this.bufferedReader.readLine()) != null)) {
                         this.lastInputTime = System.currentTimeMillis();
                         try {
-                            this.bot.handleLine(line);
+                            IRCBot.this.handleLine(line);
                         } catch (final Exception e) {
                             e.printStackTrace();
                         }
                     }
                 } catch (final IOException e) {
                     if (this.running) {
-                        this.bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000), true);
+                        IRCBot.this.sendRawLine("PING " + (System.currentTimeMillis() / 1000), true);
                     }
                 }
             }
@@ -102,8 +112,8 @@ public final class IRCBot extends Thread {
         private boolean running = true;
         private boolean handleLowPriority = false;
 
-        private OutputHandler(IRCBot bot, BufferedWriter bufferedWriter) {
-            this.setName("Kitteh IRCBot Output (" + bot.getName() + ")");
+        private OutputHandler(BufferedWriter bufferedWriter) {
+            this.setName("Kitteh IRCBot Output (" + IRCBot.this.getName() + ")");
             this.bufferedWriter = bufferedWriter;
         }
 
@@ -161,6 +171,7 @@ public final class IRCBot extends Thread {
 
     }
 
+    private final BotManager manager;
     private final InetSocketAddress bind;
     private final String server;
     private final int port;
@@ -184,30 +195,21 @@ public final class IRCBot extends Thread {
 
     private final java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>()); // TODO HACK
 
-    public IRCBot(String botName, String server, int port, String nick) {
-        this(botName, null, server, port, nick);
-    }
-
-    public IRCBot(String botName, String bind, String server, int port, String nick) {
-        if (bind == null) {
-            this.bind = null;
-        } else {
-            InetSocketAddress inetSocketAddress = null;
-            try {
-                inetSocketAddress = new InetSocketAddress(InetAddress.getByName(bind), 0);
-            } catch (final Exception e) {
-            }
-            this.bind = inetSocketAddress;
-        }
+    IRCBot(String botName, InetSocketAddress bind, String server, int port, String nick) {
+        this.botName = botName;
+        this.bind = bind;
         this.server = server;
         this.port = port;
-        this.botName = botName;
         this.nick = nick;
-        this.setName("Kitteh IRCBot Main (" + botName + ")");
+        this.manager = new BotManager();
     }
 
+    @Override
     public void addChannel(String... channel) {
         this.channels.addAll(Arrays.asList(channel));
+        if (this.connected) {
+            this.sendRawLine("JOIN :" + channel, true);
+        }
     }
 
     @Deprecated
@@ -215,16 +217,64 @@ public final class IRCBot extends Thread {
         this.hacks.add(temp);
     }
 
-    public String getBotName() {
+    @Override
+    public String getIntendedNick() {
+        return this.nick;
+    }
+
+    @Override
+    public String getName() {
         return this.botName;
     }
 
-    public String getCurrentNick() {
+    @Override
+    public String getNick() {
         return this.currentNick;
     }
 
     @Override
-    public void run() {
+    public void sendRawLine(String message) {
+        this.sendRawLine(message, false);
+    }
+
+    @Override
+    public void sendRawLine(String message, boolean priority) {
+        if (priority) {
+            this.highPriorityQueue.add(message);
+        } else {
+            this.lowPriorityQueue.add(message);
+        }
+    }
+
+    @Override
+    public void setAuth(AuthType type, String nick, String pass) {
+        this.authType = type;
+        switch (type) {
+            case GAMESURGE:
+                this.onNormal = "PRIVMSG AuthServ@services.gamesurge.net :auth " + nick + " " + pass;
+                this.onFail = "";
+                break;
+            case NICKSERV:
+            default:
+                this.onNormal = "PRIVMSG NickServ :identify " + pass;
+                this.onFail = "PRIVMSG NickServ :ghost " + nick + " " + pass;
+        }
+    }
+
+    @Override
+    public void setNick(String nick) {
+        this.nick = nick.trim();
+        this.sendNickChange(this.nick);
+        this.currentNick = this.nick;
+    }
+
+    @Override
+    public void shutdown(String reason) {
+        this.shutdownReason = reason;
+        this.manager.interrupt();
+    }
+
+    private void run() {
         try {
             this.connect();
         } catch (final IOException e) {
@@ -234,7 +284,7 @@ public final class IRCBot extends Thread {
             }
             return;
         }
-        while (!Thread.interrupted()) {
+        while (!this.manager.isInterrupted()) {
             try {
                 Thread.sleep(1000);
             } catch (final InterruptedException e) {
@@ -262,35 +312,6 @@ public final class IRCBot extends Thread {
         this.inputHandler.shutdown();
     }
 
-    public void sendRawLine(String msg, boolean priority) {
-        this.queue(msg, priority);
-    }
-
-    public void setAuth(AuthType type, String nick, String pass) {
-        this.authType = type;
-        switch (type) {
-            case GAMESURGE:
-                this.onNormal = "PRIVMSG AuthServ@services.gamesurge.net :auth " + nick + " " + pass;
-                this.onFail = "";
-                break;
-            case NICKSERV:
-            default:
-                this.onNormal = "PRIVMSG NickServ :identify " + pass;
-                this.onFail = "PRIVMSG NickServ :ghost " + nick + " " + pass;
-        }
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick.trim();
-        this.sendNickChange(this.nick);
-        this.currentNick = this.nick;
-    }
-
-    public void shutdown(String shutdownReason) {
-        this.shutdownReason = shutdownReason;
-        this.interrupt();
-    }
-
     private void connect() throws IOException {
         this.connected = false;
         final Socket socket = new Socket();
@@ -307,7 +328,7 @@ public final class IRCBot extends Thread {
         socket.connect(target);
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        this.outputHandler = new OutputHandler(this, bufferedWriter);
+        this.outputHandler = new OutputHandler(bufferedWriter);
         this.outputHandler.start();
         this.sendRawLine("USER " + this.ircUser + " 8 * :" + this.ircName, true);
         this.sendNickChange(this.nick);
@@ -334,7 +355,7 @@ public final class IRCBot extends Thread {
             this.sendRawLine("JOIN :" + channel, true);
         }
         this.outputHandler.readyForLowPriority();
-        this.inputHandler = new InputHandler(this, socket, bufferedReader);
+        this.inputHandler = new InputHandler(socket, bufferedReader);
         this.inputHandler.start();
         this.connected = true;
     }
@@ -348,7 +369,7 @@ public final class IRCBot extends Thread {
             return;
         }
         if (line.startsWith("PING ")) {
-            this.queue("PONG " + line.substring(5), true);
+            this.sendRawLine("PONG " + line.substring(5), true);
             return;
         }
         final String[] split = line.split(" ");
@@ -466,14 +487,6 @@ public final class IRCBot extends Thread {
                 default:
                     System.out.println("Unknown action: " + line);
             }
-        }
-    }
-
-    private void queue(String msg, boolean priority) {
-        if (priority) {
-            this.highPriorityQueue.add(msg);
-        } else {
-            this.lowPriorityQueue.add(msg);
         }
     }
 
