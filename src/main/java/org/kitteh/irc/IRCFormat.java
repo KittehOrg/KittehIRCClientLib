@@ -24,31 +24,38 @@
 package org.kitteh.irc;
 
 public enum IRCFormat {
-    BLACK("\u000301"),
-    BLUE("\u000312"),
-    BOLD("\u0002"),
-    BROWN("\u000305"),
-    CYAN("\u000311"),
-    DARK_BLUE("\u000302"),
-    DARK_GRAY("\u000314"),
-    DARK_GREEN("\u000303"),
-    GREEN("\u000309"),
-    LIGHT_GRAY("\u000315"),
-    MAGENTA("\u000313"),
-    RESET("\u000f"),
-    OLIVE("\u000307"),
-    PURPLE("\u000306"),
-    RED("\u000304"),
-    REVERSE("\u0016"),
-    TEAL("\u000310"),
-    UNDERLINE("\u001f"),
-    WHITE("\u000300"),
-    YELLOW("\u000308");
+    BLACK(1),
+    BLUE(12),
+    BOLD('\u0002'),
+    BROWN(5),
+    CYAN(11),
+    DARK_BLUE(2),
+    DARK_GRAY(14),
+    DARK_GREEN(3),
+    GREEN(9),
+    LIGHT_GRAY(15),
+    MAGENTA(13),
+    RESET('\u000f'),
+    OLIVE(7),
+    PURPLE(6),
+    RED(4),
+    REVERSE('\u0016'),
+    TEAL(10),
+    UNDERLINE('\u001f'),
+    WHITE(0),
+    YELLOW(8);
 
     private String string;
 
-    private IRCFormat(String string) {
-        this.string = string;
+    private IRCFormat(char ch) {
+        this.string = String.valueOf(ch);
+    }
+
+    private IRCFormat(int color) {
+        if (color > 15 || color < 0) {
+            throw new AssertionError("Impossible color id: " + color);
+        }
+        this.string = "\u0003" + ((color < 10) ? ("0" + color) : color);
     }
 
     @Override
