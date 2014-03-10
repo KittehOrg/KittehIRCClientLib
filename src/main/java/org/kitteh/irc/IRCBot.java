@@ -181,7 +181,6 @@ public final class IRCBot extends Thread {
     private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
     private final List<String> channels = new ArrayList<>();
     private boolean connected;
-    private final String locale = "en"; // TODO - set locale, call load method etc
 
     private final java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>()); // TODO HACK
 
@@ -254,6 +253,7 @@ public final class IRCBot extends Thread {
                     try {
                         this.connect();
                     } catch (final IOException e) {
+                        System.out.println("Unable to reconnect!");
                     }
                 }
             }
@@ -273,6 +273,7 @@ public final class IRCBot extends Thread {
                 this.onNormal = "PRIVMSG AuthServ@services.gamesurge.net :auth " + nick + " " + pass;
                 this.onFail = "";
                 break;
+            case NICKSERV:
             default:
                 this.onNormal = "PRIVMSG NickServ :identify " + pass;
                 this.onFail = "PRIVMSG NickServ :ghost " + nick + " " + pass;
@@ -282,6 +283,7 @@ public final class IRCBot extends Thread {
     public void setNick(String nick) {
         this.nick = nick.trim();
         this.sendNickChange(this.nick);
+        this.currentNick = this.nick;
     }
 
     public void shutdown(String shutdownReason) {
@@ -317,7 +319,6 @@ public final class IRCBot extends Thread {
                 final String code = split[1];
                 if (code.equals("004")) {
                     break;
-                } else if (code.equals("433") || code.equals("422")) { // TODO ugly handling of valid errors we work around
                 } else if (code.startsWith("5") || code.startsWith("4")) {
                     socket.close();
                     throw new RuntimeException("Could not log into the IRC server: " + line);
@@ -336,11 +337,6 @@ public final class IRCBot extends Thread {
         this.inputHandler = new InputHandler(this, socket, bufferedReader);
         this.inputHandler.start();
         this.connected = true;
-    }
-
-    private String getNickFromActor(String actor) {
-        final int i = actor.indexOf("!");
-        return actor.substring(0, i > 0 ? i : actor.length());
     }
 
     private String handleColon(String string) {
@@ -419,10 +415,10 @@ public final class IRCBot extends Thread {
                     }
                 }
                 if (ctcp.startsWith("ACTION ")) {
-                    System.out.println("<" + split[2] + "> * " + this.getNickFromActor(actor) + " " + ctcp.substring(7));
+                    System.out.println("<" + split[2] + "> * " + StringUtil.getNick(actor) + " " + ctcp.substring(7));
                     // TODO HACK
                     final String channel = split[2];
-                    final String nick = this.getNickFromActor(actor);
+                    final String nick = StringUtil.getNick(actor);
                     if (this.channels.contains(channel)) {
                         for (final HackyTemp temp : this.hacks) {
                             temp.action(channel, nick, ctcp.substring(7));
@@ -431,7 +427,7 @@ public final class IRCBot extends Thread {
                     // TODO HACK
                 }
                 if (reply != null) {
-                    this.sendRawLine("NOTICE " + this.getNickFromActor(actor) + " :\u0001" + reply + "\u0001", false);
+                    this.sendRawLine("NOTICE " + StringUtil.getNick(actor) + " :\u0001" + reply + "\u0001", false);
                 }
                 return;
             }
@@ -439,10 +435,10 @@ public final class IRCBot extends Thread {
                 case "NOTICE":
                 case "PRIVMSG":
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
-                    System.out.println((split[1].equals("NOTICE") ? "N" : "") + "<" + this.getNickFromActor(actor) + "->" + split[2] + "> " + message);
+                    System.out.println((split[1].equals("NOTICE") ? "N" : "") + "<" + StringUtil.getNick(actor) + "->" + split[2] + "> " + message);
                     // TODO HACK
                     final String channel = split[2];
-                    final String nick = this.getNickFromActor(actor);
+                    final String nick = StringUtil.getNick(actor);
                     if (this.channels.contains(channel)) {
                         for (final HackyTemp temp : this.hacks) {
                             temp.message(channel, nick, message);
@@ -451,14 +447,14 @@ public final class IRCBot extends Thread {
                     // TODO HACK
                     break;
                 case "MODE":
-                    System.out.println(split[2] + ": " + this.getNickFromActor(actor) + " " + split[1] + " " + StringUtil.combineSplit(split, 3));
+                    System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " " + split[1] + " " + StringUtil.combineSplit(split, 3));
                     break;
                 case "JOIN":
                 case "PART":
                 case "QUIT":
                     break;
                 case "KICK":
-                    System.out.println(split[2] + ": " + this.getNickFromActor(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4)));
+                    System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4)));
                     break;
                 case "NICK":
                     break;

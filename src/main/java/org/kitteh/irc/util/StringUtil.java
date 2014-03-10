@@ -38,4 +38,9 @@ public final class StringUtil {
     public static String combineSplit(String[] split, int start) {
         return StringUtil.combineSplit(split, start, split.length - start, " ");
     }
+
+    public static String getNick(String fullname) {
+        final int i = fullname.indexOf("!");
+        return fullname.substring(0, i > 0 ? i : fullname.length());
+    }
 }
