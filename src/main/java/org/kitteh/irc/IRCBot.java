@@ -33,13 +33,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 final class IRCBot implements Bot {
     private class BotManager extends Thread {
@@ -182,7 +181,7 @@ final class IRCBot implements Bot {
     private String nick;
     private String currentNick;
 
-    private final List<String> channels = new ArrayList<>();
+    private final List<String> channels = new CopyOnWriteArrayList<>();
 
     private AuthType authType;
     private String auth;
@@ -218,11 +217,9 @@ final class IRCBot implements Bot {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (String channel : channels) {
-            Sanity.nullCheck(channel, "Channels cannot contain a null element");
-        }
-        this.channels.addAll(Arrays.asList(channels));
-        if (this.connected) {
-            for (String channel : channels) {
+            this.channels.add(channel);
+            if (this.connected) {
+
                 this.sendRawLine("JOIN :" + channel, true);
             }
         }
