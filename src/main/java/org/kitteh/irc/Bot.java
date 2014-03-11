@@ -57,7 +57,7 @@ public interface Bot {
      *
      * @return the current nick
      */
-    public String getNick();
+    String getNick();
 
     /**
      * Sets the authentication method, user and password.

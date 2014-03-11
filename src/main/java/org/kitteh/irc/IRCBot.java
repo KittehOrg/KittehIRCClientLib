@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public final class IRCBot implements Bot {
+final class IRCBot implements Bot {
     private class BotManager extends Thread {
         private BotManager() {
             this.setName("Kitteh IRCBot Main (" + IRCBot.this.getName() + ")");
@@ -170,38 +170,45 @@ public final class IRCBot implements Bot {
 
     }
 
+    private final String botName;
     private final BotManager manager;
+
     private final InetSocketAddress bind;
     private final String server;
     private final int port;
-    private final String botName;
-    private String nick = "Kitteh";
-    private String currentNick = "Kitteh";
+    private final String user;
+    private final String realName;
+    private String nick;
+    private String currentNick;
+
+    private final List<String> channels = new ArrayList<>();
+
+    private AuthType authType;
+    private String auth;
+    private String authReclaim;
+
     private InputHandler inputHandler;
-    private String ircUser = "kitteh";
-    private String ircName = "Meow meow meow";
     private OutputHandler outputHandler;
-    private String onNormal;
-    private String onFail;
+
     private String shutdownReason;
     private String serverinfo;
-    private AuthType authType;
+
+    private boolean connected;
     private long lastCheck;
+
     private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
     private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
-    private final List<String> channels = new ArrayList<>();
-    private boolean connected;
 
     private final java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>()); // TODO HACK
 
-    IRCBot(String botName, InetSocketAddress bind, String server, int port, String nick, String ircUser, String ircName) {
+    IRCBot(String botName, InetSocketAddress bind, String server, int port, String nick, String user, String realName) {
         this.botName = botName;
         this.bind = bind;
         this.server = server;
         this.port = port;
-        this.nick = nick;
-        this.ircUser = ircUser;
-        this.ircName = ircName;
+        this.currentNick = this.nick = nick;
+        this.user = user;
+        this.realName = realName;
         this.manager = new BotManager();
     }
 
@@ -252,13 +259,13 @@ public final class IRCBot implements Bot {
         this.authType = type;
         switch (type) {
             case GAMESURGE:
-                this.onNormal = "PRIVMSG AuthServ@services.gamesurge.net :auth " + nick + " " + pass;
-                this.onFail = "";
+                this.auth = "PRIVMSG AuthServ@services.gamesurge.net :auth " + nick + " " + pass;
+                this.authReclaim = "";
                 break;
             case NICKSERV:
             default:
-                this.onNormal = "PRIVMSG NickServ :identify " + pass;
-                this.onFail = "PRIVMSG NickServ :ghost " + nick + " " + pass;
+                this.auth = "PRIVMSG NickServ :identify " + pass;
+                this.authReclaim = "PRIVMSG NickServ :ghost " + nick + " " + pass;
         }
     }
 
@@ -331,7 +338,7 @@ public final class IRCBot implements Bot {
         final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         this.outputHandler = new OutputHandler(bufferedWriter);
         this.outputHandler.start();
-        this.sendRawLine("USER " + this.ircUser + " 8 * :" + this.ircName, true);
+        this.sendRawLine("USER " + this.user + " 8 * :" + this.realName, true);
         this.sendNickChange(this.nick);
         String line;
         while ((line = bufferedReader.readLine()) != null) { // TODO hacky
@@ -348,10 +355,10 @@ public final class IRCBot implements Bot {
             }
         }
         if (!this.currentNick.equals(this.nick) && this.authType.isNickOwned()) {
-            this.sendRawLine(this.onFail, true);
+            this.sendRawLine(this.authReclaim, true);
             this.sendNickChange(this.nick);
         }
-        this.sendRawLine(this.onNormal, true);
+        this.sendRawLine(this.auth, true);
         for (final String channel : this.channels) {
             this.sendRawLine("JOIN :" + channel, true);
         }
