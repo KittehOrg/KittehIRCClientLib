@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.util.Sanity;
+
 import java.net.InetSocketAddress;
 
 /**
@@ -42,8 +44,10 @@ public final class BotBuilder {
      * Creates a BotBuilder!
      *
      * @param name a name to label the bot internally
+     * @throws java.lang.IllegalArgumentException for null name
      */
     public BotBuilder(String name) {
+        Sanity.nullCheck(name, "Name cannot be null");
         this.botName = name;
     }
 
@@ -52,7 +56,7 @@ public final class BotBuilder {
      * <p/>
      * By default, the host is null for wildcard binding.
      *
-     * @param host host to bind to
+     * @param host host to bind to or null for wildcard
      * @return this builder
      */
     public BotBuilder bind(String host) {
@@ -80,8 +84,10 @@ public final class BotBuilder {
      *
      * @param nick nick for the bot to use
      * @return this builder
+     * @throws java.lang.IllegalArgumentException for null nick
      */
     public BotBuilder nick(String nick) {
+        Sanity.nullCheck(nick, "Nick cannot be null");
         this.nick = nick;
         return this;
     }
@@ -93,8 +99,10 @@ public final class BotBuilder {
      *
      * @param name realname to use
      * @return this builder
+     * @throws java.lang.IllegalArgumentException for null realname
      */
     public BotBuilder realName(String name) {
+        Sanity.nullCheck(name, "Real name cannot be null");
         this.realName = name;
         return this;
     }
@@ -119,8 +127,10 @@ public final class BotBuilder {
      *
      * @param host IRC server host
      * @return this builder
+     * @throws java.lang.IllegalArgumentException for null host
      */
     public BotBuilder server(String host) {
+        Sanity.nullCheck(host, "Host cannot be null");
         this.serverHost = host;
         return this;
     }
@@ -132,8 +142,10 @@ public final class BotBuilder {
      *
      * @param user user to connect as
      * @return this builder
+     * @throws java.lang.IllegalArgumentException for null user
      */
     public BotBuilder user(String user) {
+        Sanity.nullCheck(user, "User cannot be null");
         this.user = user;
         return this;
     }

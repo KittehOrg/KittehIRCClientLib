@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.util.Sanity;
 import org.kitteh.irc.util.StringUtil;
 
 import java.io.BufferedReader;
@@ -213,10 +214,17 @@ final class IRCBot implements Bot {
     }
 
     @Override
-    public void addChannel(String... channel) {
-        this.channels.addAll(Arrays.asList(channel));
+    public void addChannel(String... channels) {
+        Sanity.nullCheck(channels, "Channels cannot be null");
+        Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
+        for (String channel : channels) {
+            Sanity.nullCheck(channel, "Channels cannot contain a null element");
+        }
+        this.channels.addAll(Arrays.asList(channels));
         if (this.connected) {
-            this.sendRawLine("JOIN :" + channel, true);
+            for (String channel : channels) {
+                this.sendRawLine("JOIN :" + channel, true);
+            }
         }
     }
 
@@ -247,6 +255,7 @@ final class IRCBot implements Bot {
 
     @Override
     public void sendRawLine(String message, boolean priority) {
+        Sanity.nullCheck(message, "Message cannot be null");
         if (priority) {
             this.highPriorityQueue.add(message);
         } else {
@@ -256,6 +265,7 @@ final class IRCBot implements Bot {
 
     @Override
     public void setAuth(AuthType type, String nick, String pass) {
+        Sanity.nullCheck(type, "Auth type cannot be null");
         this.authType = type;
         switch (type) {
             case GAMESURGE:
@@ -271,6 +281,7 @@ final class IRCBot implements Bot {
 
     @Override
     public void setNick(String nick) {
+        Sanity.nullCheck(nick, "Nick cannot be null");
         this.nick = nick.trim();
         this.sendNickChange(this.nick);
         this.currentNick = this.nick;
@@ -278,6 +289,9 @@ final class IRCBot implements Bot {
 
     @Override
     public void shutdown(String reason) {
+        if (reason == null) {
+            reason = "";
+        }
         this.shutdownReason = reason;
         this.manager.interrupt();
     }
