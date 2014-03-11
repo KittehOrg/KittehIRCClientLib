@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc;
 
-import org.kitteh.irc.api.Bot;
 import org.kitteh.irc.util.StringUtil;
 
 import java.io.BufferedReader;

@@ -21,9 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.api;
-
-import org.kitteh.irc.AuthType;
+package org.kitteh.irc;
 
 public interface Bot {
     /**
