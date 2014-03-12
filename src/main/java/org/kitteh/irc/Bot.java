@@ -60,22 +60,6 @@ public interface Bot {
     String getNick();
 
     /**
-     * Sets the authentication method, user and password.
-     *
-     * @param type authentication type
-     * @param nick nickname
-     * @param pass password
-     */
-    void setAuth(AuthType type, String nick, String pass);
-
-    /**
-     * Sets the nick the bot wishes to use.
-     *
-     * @param nick new nickname
-     */
-    void setNick(String nick);
-
-    /**
      * Sends a raw IRC message at low priority.
      * <p/>
      * If you feel you must, use {@link #sendRawLine(String, boolean)}.
@@ -92,6 +76,22 @@ public interface Bot {
      * @param priority if true, use high priority
      */
     void sendRawLine(String message, boolean priority);
+
+    /**
+     * Sets the authentication method, user and password.
+     *
+     * @param type authentication type
+     * @param nick nickname
+     * @param pass password
+     */
+    void setAuth(AuthType type, String nick, String pass);
+
+    /**
+     * Sets the nick the bot wishes to use.
+     *
+     * @param nick new nickname
+     */
+    void setNick(String nick);
 
     /**
      * Shuts down the bot.
