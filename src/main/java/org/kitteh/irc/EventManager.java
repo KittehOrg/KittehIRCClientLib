@@ -1,4 +1,4 @@
-package org.kitteh.irc.event;
+package org.kitteh.irc;
 
 import org.kitteh.irc.util.Pair;
 
@@ -17,7 +17,7 @@ public final class EventManager {
 
     /**
      * Registers any non-static methods annotated with
-     * {@link org.kitteh.irc.event.EventHandler}, provided they have a single
+     * {@link EventHandler}, provided they have a single
      * parameter. This parameter is the event.
      * <p/>
      * The class listened to must be the same class called in
