@@ -219,7 +219,6 @@ final class IRCBot implements Bot {
         for (String channel : channels) {
             this.channels.add(channel);
             if (this.connected) {
-
                 this.sendRawLine("JOIN :" + channel, true);
             }
         }
@@ -243,6 +242,14 @@ final class IRCBot implements Bot {
     @Override
     public String getNick() {
         return this.currentNick;
+    }
+
+    @Override
+    public void sendMessage(String target, String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
+        this.sendRawLine("PRIVMSG " + target + " :" + message);
     }
 
     @Override

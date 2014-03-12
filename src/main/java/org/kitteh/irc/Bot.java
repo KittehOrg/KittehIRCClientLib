@@ -60,6 +60,14 @@ public interface Bot {
     String getNick();
 
     /**
+     * Sends a message to a target user or channel.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     */
+    void sendMessage(String target, String message);
+
+    /**
      * Sends a raw IRC message at low priority.
      * <p/>
      * If you feel you must, use {@link #sendRawLine(String, boolean)}.
@@ -96,7 +104,7 @@ public interface Bot {
     /**
      * Shuts down the bot.
      *
-     * @param reason quit message to send
+     * @param reason quit message to send, null for blank message
      */
     void shutdown(String reason);
 }
