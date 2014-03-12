@@ -477,6 +477,9 @@ final class IRCBot implements Bot {
             }
             switch (split[1]) {
                 case "NOTICE":
+                    final String notice = this.handleColon(StringUtil.combineSplit(split, 3));
+                    // TODO event
+                    break;
                 case "PRIVMSG":
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
                     System.out.println((split[1].equals("NOTICE") ? "N" : "") + "<" + StringUtil.getNick(actor) + "->" + split[2] + "> " + message);
