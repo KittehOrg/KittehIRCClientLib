@@ -33,7 +33,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Queue;
@@ -199,7 +198,7 @@ final class IRCBot implements Bot {
     private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
     private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
 
-    private final java.util.Set<HackyTemp> hacks = Collections.synchronizedSet(new java.util.HashSet<HackyTemp>()); // TODO HACK
+    private final EventManager eventManager = new EventManager();
 
     IRCBot(String botName, InetSocketAddress bind, String server, int port, String nick, String user, String realName) {
         this.botName = botName;
@@ -224,9 +223,9 @@ final class IRCBot implements Bot {
         }
     }
 
-    @Deprecated
-    public void addHack(HackyTemp temp) {
-        this.hacks.add(temp);
+    @Override
+    public EventManager getEventManager() {
+        return this.eventManager;
     }
 
     @Override
@@ -467,9 +466,7 @@ final class IRCBot implements Bot {
                     final String channel = split[2];
                     final String nick = StringUtil.getNick(actor);
                     if (this.channels.contains(channel)) {
-                        for (final HackyTemp temp : this.hacks) {
-                            temp.action(channel, nick, ctcp.substring(7));
-                        }
+                        // EVENT
                     }
                     // TODO HACK
                 }
@@ -487,9 +484,7 @@ final class IRCBot implements Bot {
                     final String channel = split[2];
                     final String nick = StringUtil.getNick(actor);
                     if (this.channels.contains(channel)) {
-                        for (final HackyTemp temp : this.hacks) {
-                            temp.message(channel, nick, message);
-                        }
+                        // EVENT
                     }
                     // TODO HACK
                     break;

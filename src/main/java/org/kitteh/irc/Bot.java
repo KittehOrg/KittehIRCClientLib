@@ -34,6 +34,13 @@ public interface Bot {
     void addChannel(String... channel);
 
     /**
+     * Gets the bot's event manager.
+     *
+     * @return the event manager for this bot
+     */
+    EventManager getEventManager();
+
+    /**
      * Gets the nickname the bot intends to possess. May not reflect the
      * current nickname if it's taken. The bot will automatically attempt to
      * take back this nickname.
