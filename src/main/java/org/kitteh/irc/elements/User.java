@@ -34,7 +34,10 @@ import java.util.regex.Pattern;
 public class User implements MessageSender {
     // Valid nick chars: \w\[]^`{}|-_
     // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
-    private static final Pattern PATTERN = Pattern.compile("([\\w\\\\\\[\\]\\^`\\{\\}\\|\\-_]+)!([~\\w]+)@([\\w\\.\\-:]+)");
+    // You know what? Screw it.
+    // Let's just do it assuming no IRCD can handle following the rules.
+    // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
+    private static final Pattern PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
 
     private String fullMask;
     private String host;

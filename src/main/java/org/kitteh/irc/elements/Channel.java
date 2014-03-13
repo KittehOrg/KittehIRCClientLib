@@ -29,7 +29,9 @@ import java.util.regex.Pattern;
 
 public class Channel implements MessageSender {
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
-    private static final Pattern PATTERN = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]{1,49})");
+    // Screw it, let's assume IRCDs disregard length policy
+    // New pattern: ([#!&\+][^ ,\07\r\n]+)
+    private static final Pattern PATTERN = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
     private String channel;
 
