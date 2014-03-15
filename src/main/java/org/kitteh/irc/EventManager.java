@@ -93,7 +93,7 @@ public final class EventManager {
 
     private synchronized Set<Pair<Object, Method>> getSet(Class<?> type) {
         Set<Pair<Object, Method>> set = this.registeredEvents.get(type);
-        if (set != null) {
+        if (set == null) {
             set = Collections.newSetFromMap(new ConcurrentHashMap<Pair<Object, Method>, Boolean>());
             this.registeredEvents.put(type, set);
         }
