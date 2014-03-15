@@ -23,41 +23,55 @@
  */
 package org.kitteh.irc.event;
 
-import org.kitteh.irc.elements.MessageSender;
+import org.kitteh.irc.elements.User;
 
 /**
- * Fires when a message is sent to the bot.
+ * The bot has received a CTCP message!
  */
-public class MessageEvent {
+public class PrivateCTCPEvent {
     private String message;
-    private MessageSender source;
+    private String reply;
+    private User sender;
 
-    /**
-     * Creates a MessageEvent
-     *
-     * @param message message sent
-     * @param source who sent it
-     */
-    public MessageEvent(String message, MessageSender source) {
+    public PrivateCTCPEvent(User sender, String message, String reply) {
         this.message = message;
-        this.source = source;
+        this.reply = reply;
+        this.sender = sender;
     }
 
     /**
-     * Gets the message sent
+     * Gets the CTCP message sent.
      *
-     * @return message sent
+     * @return the CTCP message
      */
     public String getMessage() {
         return this.message;
     }
 
     /**
-     * Gets the source of the message. User or channel.
+     * Gets the reply to be sent to the CTCP sender.
      *
-     * @return message source
+     * @return the reply, or null if no reply will be sent
      */
-    public MessageSender getSource() {
-        return this.source;
+    public String getReply() {
+        return this.reply;
+    }
+
+    /**
+     * Gets the sender of the CTCP message.
+     *
+     * @return the sender
+     */
+    public User getSender() {
+        return this.sender;
+    }
+
+    /**
+     * Sets the reply to send to the CTCP sender. Null for no reply.
+     *
+     * @param reply message to send back
+     */
+    public void setReply(String reply) {
+        this.reply = reply;
     }
 }

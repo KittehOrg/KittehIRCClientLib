@@ -27,11 +27,15 @@ import org.kitteh.irc.util.Sanity;
 
 import java.util.regex.Pattern;
 
-public class Channel implements MessageSender {
+public class Channel extends MessageSender {
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private static final Pattern PATTERN = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
+
+    public static boolean isChannel(String name) {
+        return name != null && PATTERN.matcher(name).matches();
+    }
 
     private String channel;
 

@@ -21,15 +21,43 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.elements;
+package org.kitteh.irc.event;
 
-public abstract class MessageSender {
-    public static MessageSender getSender(String name) {
-        if (User.isUser(name)) {
-            return new User(name);
-        } else if (Channel.isChannel(name)) {
-            return new Channel(name);
-        }
-        return new UnknownSender(name);
+import org.kitteh.irc.elements.User;
+
+/**
+ * Fires when a message is sent to the bot.
+ */
+public class PrivateMessageEvent {
+    private String message;
+    private User sender;
+
+    /**
+     * Creates a PrivateMessageEvent
+     *
+     * @param message message sent
+     * @param sender who sent it
+     */
+    public PrivateMessageEvent(String message, User sender) {
+        this.message = message;
+        this.sender = sender;
+    }
+
+    /**
+     * Gets the message sent
+     *
+     * @return message sent
+     */
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
+     * Gets the sender of the message.
+     *
+     * @return message sender
+     */
+    public User getSender() {
+        return this.sender;
     }
 }

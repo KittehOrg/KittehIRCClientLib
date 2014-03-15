@@ -21,13 +21,56 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc;
+package org.kitteh.irc.event;
+
+import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.elements.MessageSender;
 
 /**
- * Until I bother to write an event system
+ * Fires when a message is sent to a channel.
  */
-public interface HackyTemp {
-    void action(String channel, String nick, String ctcp);
+public class ChannelMessageEvent {
+    private Channel channel;
+    private String message;
+    private MessageSender sender;
 
-    void message(String channel, String nick, String message);
+    /**
+     * Creates a PrivateMessageEvent
+     *
+     * @param sender who sent it
+     * @param channel channel receiving
+     * @param message message sent
+     */
+    public ChannelMessageEvent(MessageSender sender, Channel channel, String message) {
+        this.channel = channel;
+        this.message = message;
+        this.sender = sender;
+    }
+
+    /**
+     * Gets the channel receiving the message.
+     *
+     * @return channel receiving message
+     */
+    public Channel getChannel() {
+        return this.channel;
+    }
+
+    /**
+     * Gets the message sent
+     *
+     * @return message sent
+     */
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
+     * Gets the sender of the message.
+     *
+     * @return message sender
+     */
+    public MessageSender getSender() {
+        return this.sender;
+    }
 }

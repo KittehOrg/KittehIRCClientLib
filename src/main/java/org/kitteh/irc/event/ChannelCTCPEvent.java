@@ -21,15 +21,49 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.elements;
+package org.kitteh.irc.event;
 
-public abstract class MessageSender {
-    public static MessageSender getSender(String name) {
-        if (User.isUser(name)) {
-            return new User(name);
-        } else if (Channel.isChannel(name)) {
-            return new Channel(name);
-        }
-        return new UnknownSender(name);
+import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.elements.User;
+
+/**
+ * The bot has received a CTCP message!
+ */
+public class ChannelCTCPEvent {
+    private Channel channel;
+    private String message;
+    private User sender;
+
+    public ChannelCTCPEvent(User sender, Channel channel, String message) {
+        this.channel = channel;
+        this.message = message;
+        this.sender = sender;
+    }
+
+    /**
+     * Gets the channel to which the message was sent.
+     *
+     * @return target channel
+     */
+    public Channel getChannel() {
+        return this.channel;
+    }
+
+    /**
+     * Gets the CTCP message sent.
+     *
+     * @return the CTCP message
+     */
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
+     * Gets the sender of the CTCP message.
+     *
+     * @return the sender
+     */
+    public User getSender() {
+        return this.sender;
     }
 }

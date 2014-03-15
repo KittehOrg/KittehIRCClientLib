@@ -31,13 +31,17 @@ import java.util.regex.Pattern;
 /**
  * User on an IRC network.
  */
-public class User implements MessageSender {
+public class User extends MessageSender {
     // Valid nick chars: \w\[]^`{}|-_
     // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
     // You know what? Screw it.
     // Let's just do it assuming no IRCD can handle following the rules.
     // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
     private static final Pattern PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+
+    public static boolean isUser(String name) {
+        return name != null && PATTERN.matcher(name).matches();
+    }
 
     private String fullMask;
     private String host;

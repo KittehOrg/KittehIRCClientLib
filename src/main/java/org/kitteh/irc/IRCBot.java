@@ -23,6 +23,13 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.elements.User;
+import org.kitteh.irc.event.ChannelCTCPEvent;
+import org.kitteh.irc.event.ChannelMessageEvent;
+import org.kitteh.irc.event.PrivateCTCPEvent;
+import org.kitteh.irc.event.PrivateMessageEvent;
+import org.kitteh.irc.util.LCSet;
 import org.kitteh.irc.util.Sanity;
 import org.kitteh.irc.util.StringUtil;
 
@@ -34,10 +41,8 @@ import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Date;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 final class IRCBot implements Bot {
     private class BotManager extends Thread {
@@ -73,8 +78,8 @@ final class IRCBot implements Bot {
                         this.lastInputTime = System.currentTimeMillis();
                         try {
                             IRCBot.this.handleLine(line);
-                        } catch (final Exception e) {
-                            e.printStackTrace();
+                        } catch (final Throwable thrown) {
+                            // NOOP
                         }
                     }
                 } catch (final IOException e) {
@@ -180,7 +185,7 @@ final class IRCBot implements Bot {
     private String nick;
     private String currentNick;
 
-    private final List<String> channels = new CopyOnWriteArrayList<>();
+    private final LCSet channels = new LCSet();
 
     private AuthType authType;
     private String auth;
@@ -216,6 +221,9 @@ final class IRCBot implements Bot {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (String channel : channels) {
+            if (!Channel.isChannel(channel)) {
+                continue;
+            }
             this.channels.add(channel);
             if (this.connected) {
                 this.sendRawLine("JOIN :" + channel, true);
@@ -359,7 +367,11 @@ final class IRCBot implements Bot {
         this.sendNickChange(this.nick);
         String line;
         while ((line = bufferedReader.readLine()) != null) { // TODO hacky
-            this.handleLine(line);
+            try {
+                this.handleLine(line);
+            } catch (Throwable thrown) {
+                // NOOP
+            }
             final String[] split = line.split(" ");
             if (split.length > 3) {
                 final String code = split[1];
@@ -389,7 +401,7 @@ final class IRCBot implements Bot {
         return string.startsWith(":") ? string.substring(1) : string;
     }
 
-    private void handleLine(String line) {
+    private void handleLine(String line) throws Throwable {
         if ((line == null) || (line.length() == 0)) {
             return;
         }
@@ -398,7 +410,7 @@ final class IRCBot implements Bot {
             return;
         }
         final String[] split = line.split(" ");
-        if ((split.length == 1) || !split[0].startsWith(":")) {
+        if ((split.length <= 1) || !split[0].startsWith(":")) {
             return; // Invalid!
         }
         final String actor = split[0].substring(1);
@@ -451,24 +463,20 @@ final class IRCBot implements Bot {
                 String reply = null;
                 if (split[2].equalsIgnoreCase(this.nick)) {
                     if (ctcp.equals("VERSION")) {
-                        reply = "VERSION I am Kitteh!"; // TODO event
+                        reply = "VERSION I am Kitteh!";
                     } else if (ctcp.equals("TIME")) {
-                        reply = "TIME " + new Date().toString(); // TODO event
+                        reply = "TIME " + new Date().toString();
                     } else if (ctcp.equals("FINGER")) {
-                        reply = "FINGER om nom nom tasty finger"; // TODO event
+                        reply = "FINGER om nom nom tasty finger";
                     } else if (ctcp.startsWith("PING ")) {
                         reply = ctcp;
                     }
-                }
-                if (ctcp.startsWith("ACTION ")) {
-                    System.out.println("<" + split[2] + "> * " + StringUtil.getNick(actor) + " " + ctcp.substring(7));
-                    // TODO HACK
-                    final String channel = split[2];
-                    final String nick = StringUtil.getNick(actor);
-                    if (this.channels.contains(channel)) {
-                        // EVENT
-                    }
-                    // TODO HACK
+                    PrivateCTCPEvent event = new PrivateCTCPEvent(new User(actor), ctcp, reply);
+                    this.eventManager.callEvent(event);
+                    reply = event.getReply();
+
+                } else if (this.channels.contains(split[2])) {
+                    this.eventManager.callEvent(new ChannelCTCPEvent(new User(actor), new Channel(split[2]), ctcp));
                 }
                 if (reply != null) {
                     this.sendRawLine("NOTICE " + StringUtil.getNick(actor) + " :\u0001" + reply + "\u0001", false);
@@ -482,14 +490,11 @@ final class IRCBot implements Bot {
                     break;
                 case "PRIVMSG":
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
-                    System.out.println((split[1].equals("NOTICE") ? "N" : "") + "<" + StringUtil.getNick(actor) + "->" + split[2] + "> " + message);
-                    // TODO HACK
-                    final String channel = split[2];
-                    final String nick = StringUtil.getNick(actor);
-                    if (this.channels.contains(channel)) {
-                        // EVENT
+                    if (split[2].equalsIgnoreCase(this.currentNick)) {
+                        this.eventManager.callEvent(new PrivateMessageEvent(message, new User(actor)));
+                    } else if (this.channels.contains(split[2])) {
+                        this.eventManager.callEvent(new ChannelMessageEvent(new User(actor), new Channel(split[2]), message));
                     }
-                    // TODO HACK
                     break;
                 case "MODE":
                     System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " " + split[1] + " " + StringUtil.combineSplit(split, 3));

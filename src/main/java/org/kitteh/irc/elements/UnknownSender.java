@@ -23,13 +23,17 @@
  */
 package org.kitteh.irc.elements;
 
-public abstract class MessageSender {
-    public static MessageSender getSender(String name) {
-        if (User.isUser(name)) {
-            return new User(name);
-        } else if (Channel.isChannel(name)) {
-            return new Channel(name);
-        }
-        return new UnknownSender(name);
+/**
+ * This sender makes no sense. Temporary while I ensure my patterns work.
+ */
+public class UnknownSender extends MessageSender {
+    private String name;
+
+    public UnknownSender(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }
