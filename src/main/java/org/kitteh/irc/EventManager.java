@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Manages them events.
+ * Manages events. EventManagers exist per bot instance.
  */
 public final class EventManager {
     private final Map<Class<?>, Set<Pair<Object, Method>>> registeredEvents = new ConcurrentHashMap<>();
@@ -43,9 +43,8 @@ public final class EventManager {
     }
 
     /**
-     * Registers any non-static methods annotated with
-     * {@link EventHandler}, provided they have a single
-     * parameter. This parameter is the event.
+     * Registers any non-static methods annotated with {@link EventHandler},
+     * provided they have a single parameter. This parameter is the event.
      * <p/>
      * The class listened to must be the same class called in
      * {@link #callEvent(Object)}, not a super or subclass.
@@ -74,7 +73,7 @@ public final class EventManager {
     }
 
     /**
-     * Calls an event.
+     * Calls an event, triggering any registered methods for the event class.
      *
      * @param event event to call
      */

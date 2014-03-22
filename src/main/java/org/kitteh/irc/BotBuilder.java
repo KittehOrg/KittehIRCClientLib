@@ -28,7 +28,7 @@ import org.kitteh.irc.util.Sanity;
 import java.net.InetSocketAddress;
 
 /**
- * Build ALL the bots!
+ * Builds ALL the bots!
  */
 public final class BotBuilder {
     private String botName = "Kitteh";
@@ -42,6 +42,8 @@ public final class BotBuilder {
 
     /**
      * Creates a BotBuilder!
+     * <p/>
+     * The name is mandatory (thus in the constructor) and cannot be null.
      *
      * @param name a name to label the bot internally
      * @throws java.lang.IllegalArgumentException for null name

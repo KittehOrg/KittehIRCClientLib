@@ -24,7 +24,7 @@
 package org.kitteh.irc.util;
 
 /**
- * .
+ * Do you know the definition of sanity?
  */
 public final class Sanity {
     public static void nullCheck(Object o, String failMessage) {

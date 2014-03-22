@@ -23,6 +23,11 @@
  */
 package org.kitteh.irc;
 
+/**
+ * Represents various formatting available in IRC.
+ * <p />
+ * The {@link #toString} method provides the String you need.
+ */
 public enum IRCFormat {
     BLACK(1),
     BLUE(12),
@@ -45,21 +50,21 @@ public enum IRCFormat {
     WHITE(0),
     YELLOW(8);
 
-    private String string;
+    private String toString;
 
     private IRCFormat(char ch) {
-        this.string = String.valueOf(ch);
+        this.toString = String.valueOf(ch);
     }
 
     private IRCFormat(int color) {
         if (color > 15 || color < 0) {
             throw new AssertionError("Impossible color id: " + color);
         }
-        this.string = "\u0003" + ((color < 10) ? ("0" + color) : color);
+        this.toString = "\u0003" + ((color < 10) ? ("0" + color) : color);
     }
 
     @Override
     public String toString() {
-        return this.string;
+        return this.toString;
     }
 }
