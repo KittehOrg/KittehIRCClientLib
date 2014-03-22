@@ -336,7 +336,8 @@ final class IRCBot implements Bot {
                     try {
                         this.connect();
                     } catch (final IOException e) {
-                        System.out.println("Unable to reconnect!");
+                        // System.out.println("Unable to reconnect!");
+                        // TODO log
                     }
                 }
             }
@@ -351,13 +352,11 @@ final class IRCBot implements Bot {
         if (this.bind != null) {
             try {
                 socket.bind(this.bind);
-                System.out.println("Bound to " + socket.getLocalAddress() + " " + socket.getLocalPort());
             } catch (final Exception e) {
                 e.printStackTrace();
             }
         }
         final InetSocketAddress target = new InetSocketAddress(this.server, this.port);
-        System.out.println("Connecting to " + target.toString());
         socket.connect(target);
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -419,7 +418,6 @@ final class IRCBot implements Bot {
                 case "NOTICE": // NOTICE from server itself
                 case "001": // Welcome
                 case "002": // Your host is...
-                    System.out.println(this.handleColon(StringUtil.combineSplit(split, 3)));
                     break;
                 // More stuff sent on startup
                 case "003": // server created
@@ -453,8 +451,6 @@ final class IRCBot implements Bot {
                         this.sendNickChange(this.currentNick); // TODO This is bad. Handle nicer.
                     }
                     break;
-                default:
-                    System.out.println("Unknown: " + line); // TODO this is debug
             }
         } else {
             // CTCP
@@ -497,14 +493,14 @@ final class IRCBot implements Bot {
                     }
                     break;
                 case "MODE":
-                    System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " " + split[1] + " " + StringUtil.combineSplit(split, 3));
+                    // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " " + split[1] + " " + StringUtil.combineSplit(split, 3)); TODO EVENT
                     break;
                 case "JOIN":
                 case "PART":
                 case "QUIT":
                     break;
                 case "KICK":
-                    System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4)));
+                    // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4))); TODO EVENT
                     break;
                 case "NICK":
                     break;
@@ -513,8 +509,6 @@ final class IRCBot implements Bot {
                         this.sendRawLine("JOIN " + split[3], false);
                     }
                     break;
-                default:
-                    System.out.println("Unknown action: " + line);
             }
         }
     }
