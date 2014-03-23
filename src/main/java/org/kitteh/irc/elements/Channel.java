@@ -23,11 +23,9 @@
  */
 package org.kitteh.irc.elements;
 
-import org.kitteh.irc.util.Sanity;
-
 import java.util.regex.Pattern;
 
-public class Channel extends MessageSender {
+public class Channel extends Actor {
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
@@ -37,15 +35,7 @@ public class Channel extends MessageSender {
         return name != null && PATTERN.matcher(name).matches();
     }
 
-    private String channel;
-
-    public Channel(String channel) {
-        Sanity.nullCheck(channel, "Channel cannot be null");
-        Sanity.truthiness(PATTERN.matcher(channel).matches(), "Invalid channel name");
-        this.channel = channel;
-    }
-
-    public String getChannel() {
-        return this.channel;
+    Channel(String channel) {
+        super(channel);
     }
 }

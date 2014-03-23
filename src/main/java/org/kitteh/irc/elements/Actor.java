@@ -23,13 +23,23 @@
  */
 package org.kitteh.irc.elements;
 
-public abstract class MessageSender {
-    public static MessageSender getSender(String name) {
+public class Actor {
+    public static Actor getActor(String name) {
         if (User.isUser(name)) {
             return new User(name);
         } else if (Channel.isChannel(name)) {
             return new Channel(name);
         }
-        return new UnknownSender(name);
+        return new Actor(name);
+    }
+
+    private String name;
+
+    Actor(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

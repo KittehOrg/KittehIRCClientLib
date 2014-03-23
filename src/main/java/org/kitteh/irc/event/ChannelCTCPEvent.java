@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.event;
 
+import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
-import org.kitteh.irc.elements.User;
 
 /**
  * The bot has received a CTCP message!
@@ -32,9 +32,9 @@ import org.kitteh.irc.elements.User;
 public class ChannelCTCPEvent {
     private Channel channel;
     private String message;
-    private User sender;
+    private Actor sender;
 
-    public ChannelCTCPEvent(User sender, Channel channel, String message) {
+    public ChannelCTCPEvent(Actor sender, Channel channel, String message) {
         this.channel = channel;
         this.message = message;
         this.sender = sender;
@@ -63,7 +63,7 @@ public class ChannelCTCPEvent {
      *
      * @return the sender
      */
-    public User getSender() {
+    public Actor getSender() {
         return this.sender;
     }
 }

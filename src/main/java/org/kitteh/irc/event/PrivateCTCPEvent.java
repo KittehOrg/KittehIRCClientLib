@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.event;
 
-import org.kitteh.irc.elements.User;
+import org.kitteh.irc.elements.Actor;
 
 /**
  * The bot has received a CTCP message!
@@ -31,9 +31,9 @@ import org.kitteh.irc.elements.User;
 public class PrivateCTCPEvent {
     private String message;
     private String reply;
-    private User sender;
+    private Actor sender;
 
-    public PrivateCTCPEvent(User sender, String message, String reply) {
+    public PrivateCTCPEvent(Actor sender, String message, String reply) {
         this.message = message;
         this.reply = reply;
         this.sender = sender;
@@ -62,7 +62,7 @@ public class PrivateCTCPEvent {
      *
      * @return the sender
      */
-    public User getSender() {
+    public Actor getSender() {
         return this.sender;
     }
 

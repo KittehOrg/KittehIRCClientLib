@@ -23,14 +23,14 @@
  */
 package org.kitteh.irc.event;
 
-import org.kitteh.irc.elements.User;
+import org.kitteh.irc.elements.Actor;
 
 /**
  * Fires when a message is sent to the bot.
  */
 public class PrivateMessageEvent {
     private String message;
-    private User sender;
+    private Actor sender;
 
     /**
      * Creates a PrivateMessageEvent
@@ -38,7 +38,7 @@ public class PrivateMessageEvent {
      * @param message message sent
      * @param sender who sent it
      */
-    public PrivateMessageEvent(String message, User sender) {
+    public PrivateMessageEvent(Actor sender, String message) {
         this.message = message;
         this.sender = sender;
     }
@@ -57,7 +57,7 @@ public class PrivateMessageEvent {
      *
      * @return message sender
      */
-    public User getSender() {
+    public Actor getSender() {
         return this.sender;
     }
 }

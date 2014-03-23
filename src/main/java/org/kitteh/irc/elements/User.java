@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 /**
  * User on an IRC network.
  */
-public class User extends MessageSender {
+public class User extends Actor {
     // Valid nick chars: \w\[]^`{}|-_
     // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
     // You know what? Screw it.
@@ -43,24 +43,17 @@ public class User extends MessageSender {
         return name != null && PATTERN.matcher(name).matches();
     }
 
-    private String fullMask;
     private String host;
     private String nick;
     private String user;
 
-    public User(String mask) {
-        Sanity.nullCheck(mask, "Mask cannot be null");
+    User(String mask) {
+        super(mask);
         Matcher matcher = PATTERN.matcher(mask);
-        Sanity.truthiness(matcher.matches(), "Invalid mask");
         matcher.find();
-        this.fullMask = mask;
         this.nick = matcher.group(1);
         this.user = matcher.group(2);
         this.host = matcher.group(3);
-    }
-
-    public String getFullMask() {
-        return this.fullMask;
     }
 
     public String getHost() {

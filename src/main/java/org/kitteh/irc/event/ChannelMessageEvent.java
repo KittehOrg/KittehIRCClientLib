@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.event;
 
+import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
-import org.kitteh.irc.elements.MessageSender;
 
 /**
  * Fires when a message is sent to a channel.
@@ -32,7 +32,7 @@ import org.kitteh.irc.elements.MessageSender;
 public class ChannelMessageEvent {
     private Channel channel;
     private String message;
-    private MessageSender sender;
+    private Actor sender;
 
     /**
      * Creates a PrivateMessageEvent
@@ -41,7 +41,7 @@ public class ChannelMessageEvent {
      * @param channel channel receiving
      * @param message message sent
      */
-    public ChannelMessageEvent(MessageSender sender, Channel channel, String message) {
+    public ChannelMessageEvent(Actor sender, Channel channel, String message) {
         this.channel = channel;
         this.message = message;
         this.sender = sender;
@@ -70,7 +70,7 @@ public class ChannelMessageEvent {
      *
      * @return message sender
      */
-    public MessageSender getSender() {
+    public Actor getSender() {
         return this.sender;
     }
 }

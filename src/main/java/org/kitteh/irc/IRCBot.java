@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 import org.kitteh.irc.elements.User;
 import org.kitteh.irc.event.ChannelCTCPEvent;
@@ -467,12 +468,12 @@ final class IRCBot implements Bot {
                     } else if (ctcp.startsWith("PING ")) {
                         reply = ctcp;
                     }
-                    PrivateCTCPEvent event = new PrivateCTCPEvent(new User(actor), ctcp, reply);
+                    PrivateCTCPEvent event = new PrivateCTCPEvent(Actor.getActor(actor), ctcp, reply);
                     this.eventManager.callEvent(event);
                     reply = event.getReply();
 
                 } else if (this.channels.contains(split[2])) {
-                    this.eventManager.callEvent(new ChannelCTCPEvent(new User(actor), new Channel(split[2]), ctcp));
+                    this.eventManager.callEvent(new ChannelCTCPEvent(Actor.getActor(actor), (Channel) Actor.getActor(split[2]), ctcp));
                 }
                 if (reply != null) {
                     this.sendRawLine("NOTICE " + StringUtil.getNick(actor) + " :\u0001" + reply + "\u0001", false);
@@ -487,9 +488,9 @@ final class IRCBot implements Bot {
                 case "PRIVMSG":
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
                     if (split[2].equalsIgnoreCase(this.currentNick)) {
-                        this.eventManager.callEvent(new PrivateMessageEvent(message, new User(actor)));
+                        this.eventManager.callEvent(new PrivateMessageEvent(Actor.getActor(actor), message));
                     } else if (this.channels.contains(split[2])) {
-                        this.eventManager.callEvent(new ChannelMessageEvent(new User(actor), new Channel(split[2]), message));
+                        this.eventManager.callEvent(new ChannelMessageEvent(Actor.getActor(actor), (Channel) Actor.getActor(split[2]), message));
                     }
                     break;
                 case "MODE":
