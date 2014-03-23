@@ -25,7 +25,6 @@ package org.kitteh.irc;
 
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
-import org.kitteh.irc.elements.User;
 import org.kitteh.irc.event.ChannelCTCPEvent;
 import org.kitteh.irc.event.ChannelMessageEvent;
 import org.kitteh.irc.event.PrivateCTCPEvent;
@@ -183,6 +182,7 @@ final class IRCBot implements Bot {
     private final int port;
     private final String user;
     private final String realName;
+    // TODO nick tracking needs major improvement
     private String nick;
     private String currentNick;
 
@@ -196,7 +196,6 @@ final class IRCBot implements Bot {
     private OutputHandler outputHandler;
 
     private String shutdownReason;
-    private String serverinfo;
 
     private boolean connected;
     private long lastCheck;
@@ -414,42 +413,45 @@ final class IRCBot implements Bot {
             return; // Invalid!
         }
         final String actor = split[0].substring(1);
-        if ((this.serverinfo == null) || actor.equals(this.serverinfo)) {
-            switch (split[1]) {
-                case "NOTICE": // NOTICE from server itself
-                case "001": // Welcome
-                case "002": // Your host is...
+        int numeric = -1;
+        try {
+            numeric = Integer.parseInt(split[1]);
+        } catch (NumberFormatException ignored) {
+        }
+        if (numeric > -1) {
+            switch (numeric) {
+                case 1: // Welcome
+                case 2: // Your host is...
                     break;
                 // More stuff sent on startup
-                case "003": // server created
+                case 3: // server created
                     break;
-                case "004": // version / modes
-                    this.serverinfo = split[0].substring(1);
+                case 4: // version / modes
                     break;
-                case "005": // Should be map, sometimes used to spew supported info
-                case "250": // Highest connection count
-                case "251": // There are X users
-                case "252": // X IRC OPs
-                case "253": // X unknown connections
-                case "254": // X channels formed
-                case "255": // X clients, X servers
-                case "265": // Local users, max
-                case "266": // global users, max
-                case "372": // info, such as continued motd
-                case "375": // motd start
-                case "376": // motd end
+                case 5: // Should be map, sometimes used to spew supported info
+                case 250: // Highest connection count
+                case 251: // There are X users
+                case 252: // X IRC OPs
+                case 253: // X unknown connections
+                case 254: // X channels formed
+                case 255: // X clients, X servers
+                case 265: // Local users, max
+                case 266: // global users, max
+                case 372: // info, such as continued motd
+                case 375: // motd start
+                case 376: // motd end
                     break;
                 // Channel info
-                case "332": // Channel topic
-                case "333": // Topic set by
-                case "353": // Channel users list (/names). format is 353 nick = #channel :names
-                case "366": // End of /names
-                case "422": // MOTD missing
+                case 332: // Channel topic
+                case 333: // Topic set by
+                case 353: // Channel users list (/names). format is 353 nick = #channel :names
+                case 366: // End of /names
+                case 422: // MOTD missing
                     break;
-                case "433":
+                case 433: // TODO better nick management
                     if (!this.connected) {
                         this.currentNick = this.currentNick + '`';
-                        this.sendNickChange(this.currentNick); // TODO This is bad. Handle nicer.
+                        this.sendNickChange(this.currentNick);
                     }
                     break;
             }

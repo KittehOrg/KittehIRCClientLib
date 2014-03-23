@@ -23,8 +23,6 @@
  */
 package org.kitteh.irc.elements;
 
-import org.kitteh.irc.util.Sanity;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
