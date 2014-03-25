@@ -27,6 +27,7 @@ import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 import org.kitteh.irc.event.ChannelCTCPEvent;
 import org.kitteh.irc.event.ChannelMessageEvent;
+import org.kitteh.irc.event.ChannelModeEvent;
 import org.kitteh.irc.event.PrivateCTCPEvent;
 import org.kitteh.irc.event.PrivateMessageEvent;
 import org.kitteh.irc.util.LCSet;
@@ -41,8 +42,13 @@ import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Date;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 final class IRCBot implements Bot {
     private class BotManager extends Thread {
@@ -186,7 +192,7 @@ final class IRCBot implements Bot {
     private String nick;
     private String currentNick;
 
-    private final LCSet channels = new LCSet();
+    private final Set<String> channels = new LCSet();
 
     private AuthType authType;
     private String auth;
@@ -204,6 +210,28 @@ final class IRCBot implements Bot {
     private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
 
     private final EventManager eventManager = new EventManager();
+
+    private Map<Character, Character> prefixes = new ConcurrentHashMap<Character, Character>() {
+        {
+            put('o', '@');
+            put('v', '+');
+        }
+    };
+    private static final Pattern PREFIX_PATTERN = Pattern.compile("PREFIX=\\(([a-zA-Z]+)\\)([^ ]+)");
+    private Map<Character, ChannelModeType> modes = new ConcurrentHashMap<Character, ChannelModeType>() {
+        {
+            put('b', ChannelModeType.A);
+            put('k', ChannelModeType.B);
+            put('l', ChannelModeType.C);
+            put('i', ChannelModeType.D);
+            put('m', ChannelModeType.D);
+            put('n', ChannelModeType.D);
+            put('p', ChannelModeType.D);
+            put('s', ChannelModeType.D);
+            put('t', ChannelModeType.D);
+        }
+    };
+    private static final Pattern CHANMODES_PATTERN = Pattern.compile("CHANMODES=(([,A-Za-z]+)(,([,A-Za-z]+)){0,3})");
 
     IRCBot(String botName, InetSocketAddress bind, String server, int port, String nick, String user, String realName) {
         this.botName = botName;
@@ -412,7 +440,7 @@ final class IRCBot implements Bot {
         if ((split.length <= 1) || !split[0].startsWith(":")) {
             return; // Invalid!
         }
-        final String actor = split[0].substring(1);
+        final Actor actor = Actor.getActor(split[0].substring(1));
         int numeric = -1;
         try {
             numeric = Integer.parseInt(split[1]);
@@ -428,7 +456,48 @@ final class IRCBot implements Bot {
                     break;
                 case 4: // version / modes
                     break;
-                case 5: // Should be map, sometimes used to spew supported info
+                case 5:
+                    for (int i = 2; i < split.length; i++) {
+                        Matcher prefixMatcher = PREFIX_PATTERN.matcher(split[i]);
+                        if (prefixMatcher.find()) {
+                            String modes = prefixMatcher.group(1);
+                            String display = prefixMatcher.group(2);
+                            if (modes.length() == display.length()) {
+                                Map<Character, Character> map = new ConcurrentHashMap<>();
+                                for (int x = 0; x < modes.length(); x++) {
+                                    map.put(modes.charAt(x), display.charAt(x));
+                                }
+                                this.prefixes = map;
+                            }
+                            continue;
+                        }
+                        Matcher modeMatcher = CHANMODES_PATTERN.matcher(split[i]);
+                        if (modeMatcher.find()) {
+                            String[] modes = modeMatcher.group(1).split(",");
+                            Map<Character, ChannelModeType> map = new ConcurrentHashMap<>();
+                            for (int typeId = 0; typeId < modes.length; typeId++) {
+                                for (char c : modes[typeId].toCharArray()) {
+                                    ChannelModeType type = null;
+                                    switch (typeId) {
+                                        case 0:
+                                            type = ChannelModeType.A;
+                                            break;
+                                        case 1:
+                                            type = ChannelModeType.B;
+                                            break;
+                                        case 2:
+                                            type = ChannelModeType.C;
+                                            break;
+                                        case 3:
+                                            type = ChannelModeType.D;
+                                    }
+                                    map.put(c, type);
+                                }
+                            }
+                            this.modes = map;
+                        }
+                    }
+                    break;
                 case 250: // Highest connection count
                 case 251: // There are X users
                 case 252: // X IRC OPs
@@ -470,15 +539,15 @@ final class IRCBot implements Bot {
                     } else if (ctcp.startsWith("PING ")) {
                         reply = ctcp;
                     }
-                    PrivateCTCPEvent event = new PrivateCTCPEvent(Actor.getActor(actor), ctcp, reply);
+                    PrivateCTCPEvent event = new PrivateCTCPEvent(actor, ctcp, reply);
                     this.eventManager.callEvent(event);
                     reply = event.getReply();
 
                 } else if (this.channels.contains(split[2])) {
-                    this.eventManager.callEvent(new ChannelCTCPEvent(Actor.getActor(actor), (Channel) Actor.getActor(split[2]), ctcp));
+                    this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcp));
                 }
                 if (reply != null) {
-                    this.sendRawLine("NOTICE " + StringUtil.getNick(actor) + " :\u0001" + reply + "\u0001", false);
+                    this.sendRawLine("NOTICE " + actor.getName() + " :\u0001" + reply + "\u0001", false); // TODO is this correct?
                 }
                 return;
             }
@@ -490,12 +559,53 @@ final class IRCBot implements Bot {
                 case "PRIVMSG":
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
                     if (split[2].equalsIgnoreCase(this.currentNick)) {
-                        this.eventManager.callEvent(new PrivateMessageEvent(Actor.getActor(actor), message));
+                        this.eventManager.callEvent(new PrivateMessageEvent(actor, message));
                     } else if (this.channels.contains(split[2])) {
-                        this.eventManager.callEvent(new ChannelMessageEvent(Actor.getActor(actor), (Channel) Actor.getActor(split[2]), message));
+                        this.eventManager.callEvent(new ChannelMessageEvent(actor, (Channel) Actor.getActor(split[2]), message));
                     }
                     break;
                 case "MODE":
+                    if (this.channels.contains(split[2])) {
+                        Channel channel = (Channel) Actor.getActor(split[2]);
+                        String modechanges = split[3];
+                        int currentArg = 4;
+                        boolean add;
+                        switch (modechanges.charAt(0)) {
+                            case '+':
+                                add = true;
+                                break;
+                            case '-':
+                                add = false;
+                                break;
+                            default:
+                                return;
+                        }
+                        for (int i = 1; i < modechanges.length() && currentArg < split.length; i++) {
+                            char next = modechanges.charAt(i);
+                            if (next == '+') {
+                                add = true;
+                            } else if (next == '-') {
+                                add = false;
+                            } else {
+                                boolean hasArg = false;
+                                if (this.prefixes.containsKey(next)) {
+                                    hasArg = true;
+                                } else {
+                                    ChannelModeType type = this.modes.get(next);
+                                    if (type == null) {
+                                        // TODO WHINE LOUDLY
+                                        return;
+                                    }
+                                    hasArg = (add && type.isParameterOnSetting()) || (!add && type.isParameterOnRemoval());
+                                }
+                                String arg = null;
+                                if (hasArg) {
+                                    arg = split[currentArg++];
+                                }
+                                this.eventManager.callEvent(new ChannelModeEvent(actor, channel, add, next, arg));
+                            }
+                        }
+                    }
                     // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " " + split[1] + " " + StringUtil.combineSplit(split, 3)); TODO EVENT
                     break;
                 case "JOIN":
