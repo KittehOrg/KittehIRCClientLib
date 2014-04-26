@@ -7,11 +7,11 @@ import org.kitteh.irc.elements.Channel;
  * Channel a la mode.
  */
 public class ChannelModeEvent {
-    private Actor actor;
-    private Channel channel;
-    private boolean setting;
-    private char mode;
-    private String arg;
+    private final Actor actor;
+    private final Channel channel;
+    private final boolean setting;
+    private final char mode;
+    private final String arg;
 
     public ChannelModeEvent(Actor actor, Channel channel, boolean setting, char mode, String arg) {
         this.actor = actor;

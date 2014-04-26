@@ -29,9 +29,9 @@ import org.kitteh.irc.elements.Actor;
  * The bot has received a CTCP message!
  */
 public class PrivateCTCPEvent {
-    private String message;
+    private final String message;
     private String reply;
-    private Actor sender;
+    private final Actor sender;
 
     public PrivateCTCPEvent(Actor sender, String message, String reply) {
         this.message = message;

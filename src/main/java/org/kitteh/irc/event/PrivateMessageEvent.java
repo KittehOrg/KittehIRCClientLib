@@ -29,8 +29,8 @@ import org.kitteh.irc.elements.Actor;
  * Fires when a message is sent to the bot.
  */
 public class PrivateMessageEvent {
-    private String message;
-    private Actor sender;
+    private final String message;
+    private final Actor sender;
 
     /**
      * Creates a PrivateMessageEvent

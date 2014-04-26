@@ -41,9 +41,9 @@ public class User extends Actor {
         return name != null && PATTERN.matcher(name).matches();
     }
 
-    private String host;
-    private String nick;
-    private String user;
+    private final String host;
+    private final String nick;
+    private final String user;
 
     User(String mask) {
         super(mask);

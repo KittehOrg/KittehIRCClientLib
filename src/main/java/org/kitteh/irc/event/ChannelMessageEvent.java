@@ -30,9 +30,9 @@ import org.kitteh.irc.elements.Channel;
  * Fires when a message is sent to a channel.
  */
 public class ChannelMessageEvent {
-    private Channel channel;
-    private String message;
-    private Actor sender;
+    private final Channel channel;
+    private final String message;
+    private final Actor sender;
 
     /**
      * Creates a PrivateMessageEvent

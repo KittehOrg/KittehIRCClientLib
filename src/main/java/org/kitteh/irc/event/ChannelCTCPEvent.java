@@ -30,9 +30,9 @@ import org.kitteh.irc.elements.Channel;
  * The bot has received a CTCP message!
  */
 public class ChannelCTCPEvent {
-    private Channel channel;
-    private String message;
-    private Actor sender;
+    private final Channel channel;
+    private final String message;
+    private final Actor sender;
 
     public ChannelCTCPEvent(Actor sender, Channel channel, String message) {
         this.channel = channel;

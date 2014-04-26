@@ -21,8 +21,8 @@ public enum ChannelModeType {
      */
     D(false, false);
 
-    private boolean parameterOnRemoval;
-    private boolean parameterOnSetting;
+    private final boolean parameterOnRemoval;
+    private final boolean parameterOnSetting;
 
     private ChannelModeType(boolean parameterOnSetting, boolean parameterOnRemoval) {
         this.parameterOnRemoval = parameterOnRemoval;

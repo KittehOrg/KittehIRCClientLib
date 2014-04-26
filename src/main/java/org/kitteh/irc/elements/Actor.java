@@ -33,7 +33,7 @@ public class Actor {
         return new Actor(name);
     }
 
-    private String name;
+    private final String name;
 
     Actor(String name) {
         this.name = name;

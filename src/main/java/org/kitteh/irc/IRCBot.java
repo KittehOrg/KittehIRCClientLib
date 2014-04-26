@@ -587,7 +587,7 @@ final class IRCBot implements Bot {
                             } else if (next == '-') {
                                 add = false;
                             } else {
-                                boolean hasArg = false;
+                                boolean hasArg;
                                 if (this.prefixes.containsKey(next)) {
                                     hasArg = true;
                                 } else {
