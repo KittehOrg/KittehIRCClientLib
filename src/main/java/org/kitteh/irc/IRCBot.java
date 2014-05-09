@@ -63,6 +63,38 @@ final class IRCBot implements Bot {
         }
     }
 
+    private class BotProcessor extends Thread {
+        private Queue<String> queue = new ConcurrentLinkedQueue<>();
+
+        private BotProcessor() {
+            this.setName("Kitteh IRCBot Input Processor (" + IRCBot.this.getName() + ")");
+            this.start();
+        }
+
+        @Override
+        public void run() {
+            while (!this.isInterrupted()) {
+                if (this.queue.isEmpty()) {
+                    try {
+                        this.queue.wait();
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+                try {
+                    IRCBot.this.handleLine(this.queue.poll());
+                } catch (final Throwable thrown) {
+                    // NOOP
+                }
+            }
+        }
+
+        private void queue(String message) {
+            this.queue.add(message);
+            this.queue.notify();
+        }
+    }
+
     private class InputHandler extends Thread {
         private final Socket socket;
         private final BufferedReader bufferedReader;
@@ -82,11 +114,7 @@ final class IRCBot implements Bot {
                     String line;
                     while (this.running && ((line = this.bufferedReader.readLine()) != null)) {
                         this.lastInputTime = System.currentTimeMillis();
-                        try {
-                            IRCBot.this.handleLine(line);
-                        } catch (final Throwable thrown) {
-                            // NOOP
-                        }
+                        IRCBot.this.processor.queue(line);
                     }
                 } catch (final IOException e) {
                     if (this.running) {
@@ -182,6 +210,7 @@ final class IRCBot implements Bot {
 
     private final String botName;
     private final BotManager manager;
+    private final BotProcessor processor;
 
     private final InetSocketAddress bind;
     private final String server;
@@ -242,6 +271,7 @@ final class IRCBot implements Bot {
         this.user = user;
         this.realName = realName;
         this.manager = new BotManager();
+        this.processor = new BotProcessor();
     }
 
     @Override
