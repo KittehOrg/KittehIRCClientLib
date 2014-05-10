@@ -114,6 +114,10 @@ final class IRCBot implements Bot {
                     String line;
                     while (this.running && ((line = this.bufferedReader.readLine()) != null)) {
                         this.lastInputTime = System.currentTimeMillis();
+                        if (line.startsWith("PING ")) {
+                            IRCBot.this.sendRawLine("PONG " + line.substring(5), true);
+                            continue;
+                        }
                         IRCBot.this.processor.queue(line);
                     }
                 } catch (final IOException e) {
@@ -146,8 +150,9 @@ final class IRCBot implements Bot {
         private final BufferedWriter bufferedWriter;
         private int delay = 1200; // TODO customizable
         private String quitReason;
-        private boolean running = true;
         private boolean handleLowPriority = false;
+        private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
+        private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
 
         private OutputHandler(BufferedWriter bufferedWriter) {
             this.setName("Kitteh IRCBot Output (" + IRCBot.this.getName() + ")");
@@ -156,20 +161,17 @@ final class IRCBot implements Bot {
 
         @Override
         public void run() {
-            while (this.running) {
-                while ((!this.handleLowPriority || IRCBot.this.lowPriorityQueue.isEmpty()) && IRCBot.this.highPriorityQueue.isEmpty()) {
-                    if (!this.running) {
-                        break;
-                    }
+            while (!this.isInterrupted()) {
+                if ((!this.handleLowPriority || this.lowPriorityQueue.isEmpty()) && this.highPriorityQueue.isEmpty()) {
                     try {
-                        Thread.sleep(200);
-                    } catch (final InterruptedException e) {
+                        this.bufferedWriter.wait();
+                    } catch (InterruptedException e) {
                         break;
                     }
                 }
-                String message = IRCBot.this.highPriorityQueue.poll();
+                String message = this.highPriorityQueue.poll();
                 if (message == null) {
-                    message = IRCBot.this.lowPriorityQueue.poll();
+                    message = this.lowPriorityQueue.poll();
                 }
                 if (message != null) {
                     try {
@@ -178,12 +180,10 @@ final class IRCBot implements Bot {
                     } catch (final IOException e) {
                     }
                 }
-                if (this.running) { // Delay!
-                    try {
-                        Thread.sleep(this.delay);
-                    } catch (final InterruptedException e) {
-                        break;
-                    }
+                try {
+                    Thread.sleep(this.delay);
+                } catch (final InterruptedException e) {
+                    break;
                 }
             }
             try {
@@ -195,15 +195,20 @@ final class IRCBot implements Bot {
             }
         }
 
+        private void queueMessage(String message, boolean highPriority) {
+            (highPriority ? this.highPriorityQueue : this.lowPriorityQueue).add(message);
+            if (highPriority || this.handleLowPriority) {
+                this.bufferedWriter.notify();
+            }
+        }
+
         private void readyForLowPriority() {
             this.handleLowPriority = true;
         }
 
         private void shutdown(String message) {
             this.quitReason = message;
-            IRCBot.this.highPriorityQueue.clear();
-            IRCBot.this.lowPriorityQueue.clear();
-            this.running = false;
+            this.interrupt();
         }
 
     }
@@ -234,9 +239,6 @@ final class IRCBot implements Bot {
 
     private boolean connected;
     private long lastCheck;
-
-    private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
-    private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
 
     private final EventManager eventManager = new EventManager();
 
@@ -325,11 +327,7 @@ final class IRCBot implements Bot {
     @Override
     public void sendRawLine(String message, boolean priority) {
         Sanity.nullCheck(message, "Message cannot be null");
-        if (priority) {
-            this.highPriorityQueue.add(message);
-        } else {
-            this.lowPriorityQueue.add(message);
-        }
+        this.outputHandler.queueMessage(message, priority);
     }
 
     @Override
@@ -460,10 +458,6 @@ final class IRCBot implements Bot {
 
     private void handleLine(String line) throws Throwable {
         if ((line == null) || (line.length() == 0)) {
-            return;
-        }
-        if (line.startsWith("PING ")) {
-            this.sendRawLine("PONG " + line.substring(5), true);
             return;
         }
         final String[] split = line.split(" ");
