@@ -95,124 +95,6 @@ final class IRCBot implements Bot {
         }
     }
 
-    private class InputHandler extends Thread {
-        private final Socket socket;
-        private final BufferedReader bufferedReader;
-        private boolean running = true;
-        private long lastInputTime;
-
-        private InputHandler(Socket socket, BufferedReader bufferedReader) {
-            this.socket = socket;
-            this.bufferedReader = bufferedReader;
-            this.setName("Kitteh IRCBot Input (" + IRCBot.this.getName() + ")");
-        }
-
-        @Override
-        public void run() {
-            while (this.running) {
-                try {
-                    String line;
-                    while (this.running && ((line = this.bufferedReader.readLine()) != null)) {
-                        this.lastInputTime = System.currentTimeMillis();
-                        if (line.startsWith("PING ")) {
-                            IRCBot.this.sendRawLine("PONG " + line.substring(5), true);
-                            continue;
-                        }
-                        IRCBot.this.processor.queue(line);
-                    }
-                } catch (final IOException e) {
-                    if (this.running) {
-                        IRCBot.this.sendRawLine("PING " + (System.currentTimeMillis() / 1000), true);
-                    }
-                }
-            }
-            try {
-                this.socket.close();
-            } catch (final Exception e) {
-            }
-        }
-
-        private void shutdown() {
-            this.running = false;
-            try {
-                this.bufferedReader.close();
-                this.socket.close();
-            } catch (final IOException e) {
-            }
-        }
-
-        private long timeSinceInput() {
-            return System.currentTimeMillis() - this.lastInputTime;
-        }
-    }
-
-    private class OutputHandler extends Thread {
-        private final BufferedWriter bufferedWriter;
-        private int delay = 1200; // TODO customizable
-        private String quitReason;
-        private boolean handleLowPriority = false;
-        private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
-        private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
-
-        private OutputHandler(BufferedWriter bufferedWriter) {
-            this.setName("Kitteh IRCBot Output (" + IRCBot.this.getName() + ")");
-            this.bufferedWriter = bufferedWriter;
-        }
-
-        @Override
-        public void run() {
-            while (!this.isInterrupted()) {
-                if ((!this.handleLowPriority || this.lowPriorityQueue.isEmpty()) && this.highPriorityQueue.isEmpty()) {
-                    try {
-                        this.bufferedWriter.wait();
-                    } catch (InterruptedException e) {
-                        break;
-                    }
-                }
-                String message = this.highPriorityQueue.poll();
-                if (message == null) {
-                    message = this.lowPriorityQueue.poll();
-                }
-                if (message != null) {
-                    try {
-                        this.bufferedWriter.write(message + "\r\n");
-                        this.bufferedWriter.flush();
-                    } catch (final IOException e) {
-                    }
-                }
-                try {
-                    Thread.sleep(this.delay);
-                } catch (final InterruptedException e) {
-                    break;
-                }
-            }
-            try {
-                this.bufferedWriter.write("QUIT :" + this.quitReason + "\r\n");
-                this.bufferedWriter.flush();
-                this.bufferedWriter.close();
-            } catch (final IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void queueMessage(String message, boolean highPriority) {
-            (highPriority ? this.highPriorityQueue : this.lowPriorityQueue).add(message);
-            if (highPriority || this.handleLowPriority) {
-                this.bufferedWriter.notify();
-            }
-        }
-
-        private void readyForLowPriority() {
-            this.handleLowPriority = true;
-        }
-
-        private void shutdown(String message) {
-            this.quitReason = message;
-            this.interrupt();
-        }
-
-    }
-
     private final String botName;
     private final BotManager manager;
     private final BotProcessor processor;
@@ -232,8 +114,8 @@ final class IRCBot implements Bot {
     private String auth;
     private String authReclaim;
 
-    private InputHandler inputHandler;
-    private OutputHandler outputHandler;
+    private IRCBotInput inputHandler;
+    private IRCBotOutput outputHandler;
 
     private String shutdownReason;
 
@@ -363,6 +245,15 @@ final class IRCBot implements Bot {
         this.manager.interrupt();
     }
 
+    /**
+     * Queue up a line for processing.
+     *
+     * @param line line to be processed
+     */
+    void processLine(String line) {
+        this.processor.queue(line);
+    }
+
     private void run() {
         try {
             this.connect();
@@ -416,7 +307,7 @@ final class IRCBot implements Bot {
         socket.connect(target);
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        this.outputHandler = new OutputHandler(bufferedWriter);
+        this.outputHandler = new IRCBotOutput(bufferedWriter, this.getName());
         this.outputHandler.start();
         this.sendRawLine("USER " + this.user + " 8 * :" + this.realName, true);
         this.sendNickChange(this.nick);
@@ -447,7 +338,7 @@ final class IRCBot implements Bot {
             this.sendRawLine("JOIN :" + channel, true);
         }
         this.outputHandler.readyForLowPriority();
-        this.inputHandler = new InputHandler(socket, bufferedReader);
+        this.inputHandler = new IRCBotInput(socket, bufferedReader, this);
         this.inputHandler.start();
         this.connected = true;
     }
