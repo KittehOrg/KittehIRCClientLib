@@ -317,6 +317,10 @@ final class IRCBot implements Bot {
         this.sendNickChange(this.nick);
         String line;
         while ((line = bufferedReader.readLine()) != null) { // TODO hacky
+            if (line.startsWith("PING ")) { // TODO duplicated here and in Input
+                this.sendRawLine("PONG " + line.substring(5), true);
+                continue;
+            }
             try {
                 this.handleLine(line);
             } catch (Throwable thrown) {
@@ -333,11 +337,13 @@ final class IRCBot implements Bot {
                 }
             }
         }
-        if (!this.currentNick.equals(this.nick) && this.authType.isNickOwned()) {
+        if (this.authReclaim != null && !this.currentNick.equals(this.nick) && this.authType.isNickOwned()) {
             this.sendRawLine(this.authReclaim, true);
             this.sendNickChange(this.nick);
         }
-        this.sendRawLine(this.auth, true);
+        if (this.auth != null) {
+            this.sendRawLine(this.auth, true);
+        }
         for (final String channel : this.channels) {
             this.sendRawLine("JOIN :" + channel, true);
         }
