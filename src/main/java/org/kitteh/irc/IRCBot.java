@@ -64,7 +64,7 @@ final class IRCBot implements Bot {
     }
 
     private class BotProcessor extends Thread {
-        private Queue<String> queue = new ConcurrentLinkedQueue<>();
+        private final Queue<String> queue = new ConcurrentLinkedQueue<>();
 
         private BotProcessor() {
             this.setName("Kitteh IRCBot Input Processor (" + IRCBot.this.getName() + ")");
@@ -75,10 +75,12 @@ final class IRCBot implements Bot {
         public void run() {
             while (!this.isInterrupted()) {
                 if (this.queue.isEmpty()) {
-                    try {
-                        this.queue.wait();
-                    } catch (InterruptedException e) {
-                        break;
+                    synchronized (this.queue) {
+                        try {
+                            this.queue.wait();
+                        } catch (InterruptedException e) {
+                            break;
+                        }
                     }
                 }
                 try {
@@ -90,8 +92,10 @@ final class IRCBot implements Bot {
         }
 
         private void queue(String message) {
-            this.queue.add(message);
-            this.queue.notify();
+            synchronized (this.queue) {
+                this.queue.add(message);
+                this.queue.notify();
+            }
         }
     }
 

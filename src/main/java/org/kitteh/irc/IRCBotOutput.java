@@ -29,6 +29,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 final class IRCBotOutput extends Thread {
+    private final Object wait = new Object();
     private final BufferedWriter bufferedWriter;
     private int delay = 1200; // TODO customizable
     private String quitReason;
@@ -45,10 +46,12 @@ final class IRCBotOutput extends Thread {
     public void run() {
         while (!this.isInterrupted()) {
             if ((!this.handleLowPriority || this.lowPriorityQueue.isEmpty()) && this.highPriorityQueue.isEmpty()) {
-                try {
-                    this.bufferedWriter.wait();
-                } catch (InterruptedException e) {
-                    break;
+                synchronized (this.wait) {
+                    try {
+                        this.wait.wait();
+                    } catch (InterruptedException e) {
+                        break;
+                    }
                 }
             }
             String message = this.highPriorityQueue.poll();
@@ -80,7 +83,9 @@ final class IRCBotOutput extends Thread {
     void queueMessage(String message, boolean highPriority) {
         (highPriority ? this.highPriorityQueue : this.lowPriorityQueue).add(message);
         if (highPriority || this.handleLowPriority) {
-            this.bufferedWriter.notify();
+            synchronized (this.wait) {
+                this.wait.notify();
+            }
         }
     }
 
