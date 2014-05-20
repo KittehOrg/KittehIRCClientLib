@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 final class IRCBotInput extends Thread {
-    private IRCBot bot;
+    private final IRCBot bot;
     private final Socket socket;
     private final BufferedReader bufferedReader;
     private boolean running = true;

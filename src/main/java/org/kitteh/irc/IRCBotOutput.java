@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 final class IRCBotOutput extends Thread {
     private final Object wait = new Object();
     private final BufferedWriter bufferedWriter;
-    private int delay = 1200; // TODO customizable
+    private final int delay = 1200; // TODO customizable
     private String quitReason;
     private boolean handleLowPriority = false;
     private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
