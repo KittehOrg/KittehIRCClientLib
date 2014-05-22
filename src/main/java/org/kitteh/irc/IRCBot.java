@@ -247,6 +247,7 @@ final class IRCBot implements Bot {
         }
         this.shutdownReason = reason;
         this.manager.interrupt();
+        this.processor.interrupt();
     }
 
     /**
