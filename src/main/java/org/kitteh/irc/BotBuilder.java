@@ -36,6 +36,7 @@ public final class BotBuilder {
     private int bindPort = 0;
     private String serverHost = "localhost";
     private int serverPort = 6667;
+    private String serverPassword = null;
     private String nick = "Kitteh";
     private String user = "Kitteh";
     private String realName = "Kitteh";
@@ -91,6 +92,21 @@ public final class BotBuilder {
     public BotBuilder nick(String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
         this.nick = nick;
+        return this;
+    }
+
+    /**
+     * Sets the server password.
+     * <p/>
+     * If not set, no password is sent
+     *
+     * @param password server password
+     * @return this builder
+     * @throws java.lang.IllegalArgumentException for null password
+     */
+    public BotBuilder serverPassword(String password) {
+        Sanity.nullCheck(password, "Server password cannot be null");
+        this.serverPassword = password;
         return this;
     }
 
@@ -168,7 +184,7 @@ public final class BotBuilder {
         } else {
             bind = new InetSocketAddress(this.bindHost, this.bindPort);
         }
-        return new IRCBot(this.botName, bind, this.serverHost, this.serverPort, this.nick, this.user, this.realName);
+        return new IRCBot(this.botName, bind, this.serverHost, this.serverPort, this.serverPassword, this.nick, this.user, this.realName);
     }
 
     /**

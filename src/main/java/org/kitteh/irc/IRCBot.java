@@ -106,6 +106,7 @@ final class IRCBot implements Bot {
     private final InetSocketAddress bind;
     private final String server;
     private final int port;
+    private final String serverPassword;
     private final String user;
     private final String realName;
     // TODO nick tracking needs major improvement
@@ -150,11 +151,12 @@ final class IRCBot implements Bot {
     };
     private static final Pattern CHANMODES_PATTERN = Pattern.compile("CHANMODES=(([,A-Za-z]+)(,([,A-Za-z]+)){0,3})");
 
-    IRCBot(String botName, InetSocketAddress bind, String server, int port, String nick, String user, String realName) {
+    IRCBot(String botName, InetSocketAddress bind, String server, int port, String serverPassword, String nick, String user, String realName) {
         this.botName = botName;
         this.bind = bind;
         this.server = server;
         this.port = port;
+        this.serverPassword = serverPassword;
         this.currentNick = this.nick = nick;
         this.user = user;
         this.realName = realName;
@@ -314,6 +316,9 @@ final class IRCBot implements Bot {
         final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         this.outputHandler = new IRCBotOutput(bufferedWriter, this.getName());
         this.outputHandler.start();
+        if (this.serverPassword != null) {
+            this.sendRawLine("PASS " + this.serverPassword, true);
+        }
         this.sendRawLine("USER " + this.user + " 8 * :" + this.realName, true);
         this.sendNickChange(this.nick);
         String line;
