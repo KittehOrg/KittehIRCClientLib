@@ -99,6 +99,12 @@ final class IRCBot implements Bot {
         }
     }
 
+    private enum MessageTarget {
+        CHANNEL,
+        PRIVATE,
+        UNKNOWN;
+    }
+
     private final String botName;
     private final BotManager manager;
     private final BotProcessor processor;
@@ -457,25 +463,28 @@ final class IRCBot implements Bot {
             }
         } else {
             // CTCP
+            MessageTarget messageTarget = this.getTypeByTarget(split[2]);
             if (split[1].equals("PRIVMSG") && (line.indexOf(":\u0001") > 0) && line.endsWith("\u0001")) { // TODO inaccurate
                 final String ctcp = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
                 String reply = null;
-                if (split[2].equalsIgnoreCase(this.nick)) {
-                    if (ctcp.equals("VERSION")) {
-                        reply = "VERSION I am Kitteh!";
-                    } else if (ctcp.equals("TIME")) {
-                        reply = "TIME " + new Date().toString();
-                    } else if (ctcp.equals("FINGER")) {
-                        reply = "FINGER om nom nom tasty finger";
-                    } else if (ctcp.startsWith("PING ")) {
-                        reply = ctcp;
-                    }
-                    PrivateCTCPEvent event = new PrivateCTCPEvent(actor, ctcp, reply);
-                    this.eventManager.callEvent(event);
-                    reply = event.getReply();
-
-                } else if (this.channels.contains(split[2])) {
-                    this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcp));
+                switch (messageTarget) {
+                    case PRIVATE:
+                        if (ctcp.equals("VERSION")) {
+                            reply = "VERSION I am Kitteh!";
+                        } else if (ctcp.equals("TIME")) {
+                            reply = "TIME " + new Date().toString();
+                        } else if (ctcp.equals("FINGER")) {
+                            reply = "FINGER om nom nom tasty finger";
+                        } else if (ctcp.startsWith("PING ")) {
+                            reply = ctcp;
+                        }
+                        PrivateCTCPEvent event = new PrivateCTCPEvent(actor, ctcp, reply);
+                        this.eventManager.callEvent(event);
+                        reply = event.getReply();
+                        break;
+                    case CHANNEL:
+                        this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcp));
+                        break;
                 }
                 if (reply != null) {
                     this.sendRawLine("NOTICE " + actor.getName() + " :\u0001" + reply + "\u0001", false); // TODO is this correct?
@@ -489,14 +498,17 @@ final class IRCBot implements Bot {
                     break;
                 case "PRIVMSG":
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
-                    if (split[2].equalsIgnoreCase(this.currentNick)) {
-                        this.eventManager.callEvent(new PrivateMessageEvent(actor, message));
-                    } else if (this.channels.contains(split[2])) {
-                        this.eventManager.callEvent(new ChannelMessageEvent(actor, (Channel) Actor.getActor(split[2]), message));
+                    switch (messageTarget) {
+                        case CHANNEL:
+                            this.eventManager.callEvent(new ChannelMessageEvent(actor, (Channel) Actor.getActor(split[2]), message));
+                            break;
+                        case PRIVATE:
+                            this.eventManager.callEvent(new PrivateMessageEvent(actor, message));
+                            break;
                     }
                     break;
                 case "MODE":
-                    if (this.channels.contains(split[2])) {
+                    if (messageTarget == MessageTarget.CHANNEL) {
                         Channel channel = (Channel) Actor.getActor(split[2]);
                         String modechanges = split[3];
                         int currentArg = 4;
@@ -537,7 +549,6 @@ final class IRCBot implements Bot {
                             }
                         }
                     }
-                    // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " " + split[1] + " " + StringUtil.combineSplit(split, 3)); TODO EVENT
                     break;
                 case "JOIN":
                 case "PART":
@@ -549,12 +560,22 @@ final class IRCBot implements Bot {
                 case "NICK":
                     break;
                 case "INVITE":
-                    if (split[2].equals(this.nick) && this.channels.contains(split[3])) {
+                    if (messageTarget == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
                         this.sendRawLine("JOIN " + split[3], false);
                     }
                     break;
             }
         }
+    }
+
+    private MessageTarget getTypeByTarget(String target) {
+        if (this.currentNick.equalsIgnoreCase(target)) {
+            return MessageTarget.PRIVATE;
+        }
+        if (this.channels.contains(target)) {
+            return MessageTarget.CHANNEL;
+        }
+        return MessageTarget.UNKNOWN;
     }
 
     private void sendNickChange(String newnick) {
