@@ -38,4 +38,14 @@ public class Channel extends Actor {
     Channel(String channel) {
         super(channel);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Channel && ((Channel) o).getName().toLowerCase().equals(this.getName().toLowerCase());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getName().toLowerCase().hashCode() * 2;
+    }
 }
