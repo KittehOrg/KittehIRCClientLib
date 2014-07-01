@@ -137,15 +137,15 @@ final class IRCBot implements Bot {
     private static final Pattern PREFIX_PATTERN = Pattern.compile("PREFIX=\\(([a-zA-Z]+)\\)([^ ]+)");
     private Map<Character, ChannelModeType> modes = new ConcurrentHashMap<Character, ChannelModeType>() {
         {
-            put('b', ChannelModeType.A);
-            put('k', ChannelModeType.B);
-            put('l', ChannelModeType.C);
-            put('i', ChannelModeType.D);
-            put('m', ChannelModeType.D);
-            put('n', ChannelModeType.D);
-            put('p', ChannelModeType.D);
-            put('s', ChannelModeType.D);
-            put('t', ChannelModeType.D);
+            put('b', ChannelModeType.A_MASK);
+            put('k', ChannelModeType.B_PARAMETER_ALWAYS);
+            put('l', ChannelModeType.C_PARAMETER_ON_SET);
+            put('i', ChannelModeType.D_PARAMETER_NEVER);
+            put('m', ChannelModeType.D_PARAMETER_NEVER);
+            put('n', ChannelModeType.D_PARAMETER_NEVER);
+            put('p', ChannelModeType.D_PARAMETER_NEVER);
+            put('s', ChannelModeType.D_PARAMETER_NEVER);
+            put('t', ChannelModeType.D_PARAMETER_NEVER);
         }
     };
     private static final Pattern CHANMODES_PATTERN = Pattern.compile("CHANMODES=(([,A-Za-z]+)(,([,A-Za-z]+)){0,3})");
@@ -403,16 +403,16 @@ final class IRCBot implements Bot {
                                     ChannelModeType type = null;
                                     switch (typeId) {
                                         case 0:
-                                            type = ChannelModeType.A;
+                                            type = ChannelModeType.A_MASK;
                                             break;
                                         case 1:
-                                            type = ChannelModeType.B;
+                                            type = ChannelModeType.B_PARAMETER_ALWAYS;
                                             break;
                                         case 2:
-                                            type = ChannelModeType.C;
+                                            type = ChannelModeType.C_PARAMETER_ON_SET;
                                             break;
                                         case 3:
-                                            type = ChannelModeType.D;
+                                            type = ChannelModeType.D_PARAMETER_NEVER;
                                     }
                                     map.put(c, type);
                                 }

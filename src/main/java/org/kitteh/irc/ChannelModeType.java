@@ -30,19 +30,19 @@ public enum ChannelModeType {
     /**
      * Always has parameter, which is a mask.
      */
-    A(true, true),
+    A_MASK(true, true),
     /**
      * Always has parameter.
      */
-    B(true, true),
+    B_PARAMETER_ALWAYS(true, true),
     /**
      * Has parameter when setting.
      */
-    C(true, false),
+    C_PARAMETER_ON_SET(true, false),
     /**
      * Never has parameters.
      */
-    D(false, false);
+    D_PARAMETER_NEVER(false, false);
 
     private final boolean parameterOnRemoval;
     private final boolean parameterOnSetting;
