@@ -28,6 +28,7 @@ import org.kitteh.irc.util.Pair;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,6 +54,7 @@ public final class EventManager {
      */
     public void registerEventListener(Object listener) {
         Method[] methods = listener.getClass().getDeclaredMethods();
+        Set<Pair<Class<?>, Pair<Object, Method>>> pairs = new HashSet<>();
         for (Method method : methods) {
             if (Modifier.isStatic(method.getModifiers()) || method.getAnnotation(EventHandler.class) == null) {
                 continue;
@@ -62,7 +64,10 @@ public final class EventManager {
                 continue;
             }
             method.setAccessible(true);
-            this.getSet(types[0]).add(new Pair<>(listener, method));
+            pairs.add(new Pair<Class<?>, Pair<Object, Method>>(types[0], new Pair<>(listener, method)));
+        }
+        for (Pair<Class<?>, Pair<Object, Method>> pair : pairs) {
+            this.getSet(pair.getA()).add(pair.getB());
         }
     }
 
