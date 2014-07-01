@@ -31,15 +31,11 @@ import java.net.InetSocketAddress;
  * Builds ALL the bots!
  */
 public final class BotBuilder {
-    private String botName = "Kitteh";
-    private String bindHost = null;
-    private int bindPort = 0;
-    private String serverHost = "localhost";
-    private int serverPort = 6667;
-    private String serverPassword = null;
-    private String nick = "Kitteh";
-    private String user = "Kitteh";
-    private String realName = "Kitteh";
+    private final Config config = new Config();
+    private String bindHost;
+    private int bindPort;
+    private String serverHost;
+    private int serverPort;
 
     /**
      * Creates a BotBuilder!
@@ -51,7 +47,7 @@ public final class BotBuilder {
      */
     public BotBuilder(String name) {
         Sanity.nullCheck(name, "Name cannot be null");
-        this.botName = name;
+        this.config.set(Config.BOT_NAME, name);
     }
 
     /**
@@ -91,7 +87,7 @@ public final class BotBuilder {
      */
     public BotBuilder nick(String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
-        this.nick = nick;
+        this.config.set(Config.NICK, nick);
         return this;
     }
 
@@ -106,7 +102,7 @@ public final class BotBuilder {
      */
     public BotBuilder serverPassword(String password) {
         Sanity.nullCheck(password, "Server password cannot be null");
-        this.serverPassword = password;
+        this.config.set(Config.SERVER_PASSWORD, password);
         return this;
     }
 
@@ -121,7 +117,7 @@ public final class BotBuilder {
      */
     public BotBuilder realName(String name) {
         Sanity.nullCheck(name, "Real name cannot be null");
-        this.realName = name;
+        this.config.set(Config.REAL_NAME, name);
         return this;
     }
 
@@ -164,7 +160,7 @@ public final class BotBuilder {
      */
     public BotBuilder user(String user) {
         Sanity.nullCheck(user, "User cannot be null");
-        this.user = user;
+        this.config.set(Config.USER, user);
         return this;
     }
 
@@ -174,17 +170,17 @@ public final class BotBuilder {
      * @return a bot designed to your liking
      */
     public Bot build() {
-        InetSocketAddress bind;
-        if (this.bindHost == null) {
-            if (this.bindPort == 0) {
-                bind = null;
-            } else {
-                bind = new InetSocketAddress(this.bindPort);
-            }
-        } else {
-            bind = new InetSocketAddress(this.bindHost, this.bindPort);
+        this.inetSet(Config.BIND_ADDRESS, this.bindHost, this.bindPort);
+        this.inetSet(Config.SERVER_ADDRESS, this.serverHost, this.serverPort);
+        return new IRCBot(this.config);
+    }
+
+    private void inetSet(Config.Entry entry, String host, int port) {
+        if (host != null) {
+            this.config.set(entry, new InetSocketAddress(host, port));
+        } else if (port > 0) {
+            this.config.set(entry, new InetSocketAddress(port));
         }
-        return new IRCBot(this.botName, bind, this.serverHost, this.serverPort, this.serverPassword, this.nick, this.user, this.realName);
     }
 
     /**

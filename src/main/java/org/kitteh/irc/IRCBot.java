@@ -39,7 +39,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Date;
 import java.util.Map;
@@ -105,16 +104,10 @@ final class IRCBot implements Bot {
         UNKNOWN
     }
 
-    private final String botName;
+    private final Config config;
     private final BotManager manager;
     private final BotProcessor processor;
 
-    private final InetSocketAddress bind;
-    private final String server;
-    private final int port;
-    private final String serverPassword;
-    private final String user;
-    private final String realName;
     // TODO nick tracking needs major improvement
     private String nick;
     private String currentNick;
@@ -157,15 +150,9 @@ final class IRCBot implements Bot {
     };
     private static final Pattern CHANMODES_PATTERN = Pattern.compile("CHANMODES=(([,A-Za-z]+)(,([,A-Za-z]+)){0,3})");
 
-    IRCBot(String botName, InetSocketAddress bind, String server, int port, String serverPassword, String nick, String user, String realName) {
-        this.botName = botName;
-        this.bind = bind;
-        this.server = server;
-        this.port = port;
-        this.serverPassword = serverPassword;
-        this.currentNick = this.nick = nick;
-        this.user = user;
-        this.realName = realName;
+    IRCBot(Config config) {
+        this.config = config;
+        this.currentNick = this.nick = this.config.get(Config.NICK);
         this.manager = new BotManager();
         this.processor = new BotProcessor();
     }
@@ -197,7 +184,7 @@ final class IRCBot implements Bot {
 
     @Override
     public String getName() {
-        return this.botName;
+        return this.config.get(Config.BOT_NAME);
     }
 
     @Override
@@ -309,23 +296,22 @@ final class IRCBot implements Bot {
     private void connect() throws IOException {
         this.connected = false;
         final Socket socket = new Socket();
-        if (this.bind != null) {
+        if (this.config.get(Config.BIND_ADDRESS) != null) {
             try {
-                socket.bind(this.bind);
+                socket.bind(this.config.get(Config.BIND_ADDRESS));
             } catch (final Exception e) {
                 e.printStackTrace();
             }
         }
-        final InetSocketAddress target = new InetSocketAddress(this.server, this.port);
-        socket.connect(target);
+        socket.connect(this.config.get(Config.SERVER_ADDRESS));
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         this.outputHandler = new IRCBotOutput(bufferedWriter, this.getName());
         this.outputHandler.start();
-        if (this.serverPassword != null) {
-            this.sendRawLine("PASS " + this.serverPassword, true);
+        if (this.config.get(Config.SERVER_PASSWORD) != null) {
+            this.sendRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD), true);
         }
-        this.sendRawLine("USER " + this.user + " 8 * :" + this.realName, true);
+        this.sendRawLine("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME), true);
         this.sendNickChange(this.nick);
         String line;
         while ((line = bufferedReader.readLine()) != null) { // TODO hacky
