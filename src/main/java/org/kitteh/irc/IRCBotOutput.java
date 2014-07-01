@@ -64,7 +64,7 @@ final class IRCBotOutput extends Thread {
             try {
                 this.bufferedWriter.write(message + "\r\n");
                 this.bufferedWriter.flush();
-            } catch (final IOException e) {
+            } catch (final IOException ignored) {
             }
 
             try {

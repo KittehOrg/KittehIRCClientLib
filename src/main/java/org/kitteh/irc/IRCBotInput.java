@@ -62,7 +62,7 @@ final class IRCBotInput extends Thread {
         }
         try {
             this.socket.close();
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
     }
 
@@ -71,7 +71,7 @@ final class IRCBotInput extends Thread {
         try {
             this.bufferedReader.close();
             this.socket.close();
-        } catch (final IOException e) {
+        } catch (final IOException ignored) {
         }
     }
 
