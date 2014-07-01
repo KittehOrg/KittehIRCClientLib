@@ -121,7 +121,7 @@ final class IRCBot implements Bot {
     private IRCBotInput inputHandler;
     private IRCBotOutput outputHandler;
 
-    private String shutdownReason;
+    private String shutdownReason = "KITTEH AWAY!";
 
     private boolean connected;
     private long lastCheck;
@@ -237,10 +237,7 @@ final class IRCBot implements Bot {
 
     @Override
     public void shutdown(String reason) {
-        if (reason == null) {
-            reason = "";
-        }
-        this.shutdownReason = reason;
+        this.shutdownReason = reason != null ? reason : "";
         this.manager.interrupt();
         this.processor.interrupt();
     }
