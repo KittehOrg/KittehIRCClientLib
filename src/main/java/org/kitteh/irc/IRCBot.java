@@ -251,10 +251,9 @@ final class IRCBot implements Bot {
      * @param line line to be processed
      */
     void processLine(String line) {
-        if (this.pingCheck(line)) {
-            return;
+        if (!this.pingCheck(line)) {
+            this.processor.queue(line);
         }
-        this.processor.queue(line);
     }
 
     private boolean pingCheck(String line) {
