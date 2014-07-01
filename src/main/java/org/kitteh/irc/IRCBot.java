@@ -25,11 +25,8 @@ package org.kitteh.irc;
 
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
-import org.kitteh.irc.event.ChannelCTCPEvent;
-import org.kitteh.irc.event.ChannelMessageEvent;
-import org.kitteh.irc.event.ChannelModeEvent;
-import org.kitteh.irc.event.PrivateCTCPEvent;
-import org.kitteh.irc.event.PrivateMessageEvent;
+import org.kitteh.irc.event.*;
+import org.kitteh.irc.event.PrivateCTCPQueryEvent;
 import org.kitteh.irc.util.LCSet;
 import org.kitteh.irc.util.Sanity;
 import org.kitteh.irc.util.StringUtil;
@@ -457,30 +454,39 @@ final class IRCBot implements Bot {
         } else {
             // CTCP
             MessageTarget messageTarget = this.getTypeByTarget(split[2]);
-            if (split[1].equals("PRIVMSG") && (line.indexOf(":\u0001") > 0) && line.endsWith("\u0001")) { // TODO inaccurate
+            if ((split[1].equals("NOTICE") || split[1].equals("PRIVMSG")) && (line.indexOf(":\u0001") > 0) && line.endsWith("\u0001")) { // TODO inaccurate
                 final String ctcp = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
-                String reply = null;
-                switch (messageTarget) {
-                    case PRIVATE:
-                        if (ctcp.equals("VERSION")) {
-                            reply = "VERSION I am Kitteh!";
-                        } else if (ctcp.equals("TIME")) {
-                            reply = "TIME " + new Date().toString();
-                        } else if (ctcp.equals("FINGER")) {
-                            reply = "FINGER om nom nom tasty finger";
-                        } else if (ctcp.startsWith("PING ")) {
-                            reply = ctcp;
+                switch (split[1]) {
+                    case "NOTICE":
+                        if (messageTarget == MessageTarget.PRIVATE) {
+                            this.eventManager.callEvent(new PrivateCTCPReplyEvent(actor, ctcp));
                         }
-                        PrivateCTCPEvent event = new PrivateCTCPEvent(actor, ctcp, reply);
-                        this.eventManager.callEvent(event);
-                        reply = event.getReply();
                         break;
-                    case CHANNEL:
-                        this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcp));
+                    case "PRIVMSG":
+                        String reply = null;
+                        switch (messageTarget) {
+                            case PRIVATE:
+                                if (ctcp.equals("VERSION")) {
+                                    reply = "VERSION I am Kitteh!";
+                                } else if (ctcp.equals("TIME")) {
+                                    reply = "TIME " + new Date().toString();
+                                } else if (ctcp.equals("FINGER")) {
+                                    reply = "FINGER om nom nom tasty finger";
+                                } else if (ctcp.startsWith("PING ")) {
+                                    reply = ctcp;
+                                }
+                                PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(actor, ctcp, reply);
+                                this.eventManager.callEvent(event);
+                                reply = event.getReply();
+                                break;
+                            case CHANNEL:
+                                this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcp));
+                                break;
+                        }
+                        if (reply != null) {
+                            this.sendRawLine("NOTICE " + actor.getName() + " :\u0001" + reply + "\u0001", false); // TODO is this correct?
+                        }
                         break;
-                }
-                if (reply != null) {
-                    this.sendRawLine("NOTICE " + actor.getName() + " :\u0001" + reply + "\u0001", false); // TODO is this correct?
                 }
                 return;
             }
