@@ -60,17 +60,12 @@ public final class EventManager {
                 }
                 Class<?>[] types = method.getParameterTypes();
                 if (types.length != 1) {
-                    // System.out.println("Event handlers must only have one parameter. Invalid method " + method.getName() + " in class " + listener.getClass().getSimpleName());
-                    // TODO log
                     continue;
                 }
                 method.setAccessible(true);
                 this.getSet(types[0]).add(new Pair<>(listener, method));
             }
-        } catch (Exception e) {
-            // System.out.println("Exception registering " + listener.getClass().getSimpleName() + ":");
-            // e.printStackTrace();
-            // TODO log
+        } catch (Exception ignored) {
         }
     }
 
@@ -85,9 +80,7 @@ public final class EventManager {
             for (Pair<Object, Method> pair : set) {
                 try {
                     pair.getB().invoke(pair.getA(), event);
-                } catch (Throwable thrown) {
-                    // System.out.println("Exception calling event " + event.getClass().getSimpleName() + " in " + pair.getA().getClass().getSimpleName());
-                    // TODO log
+                } catch (Throwable ignored) {
                 }
             }
         }
