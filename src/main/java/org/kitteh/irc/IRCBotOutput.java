@@ -58,13 +58,15 @@ final class IRCBotOutput extends Thread {
             if (message == null) {
                 message = this.lowPriorityQueue.poll();
             }
-            if (message != null) {
-                try {
-                    this.bufferedWriter.write(message + "\r\n");
-                    this.bufferedWriter.flush();
-                } catch (final IOException e) {
-                }
+            if (message == null) {
+                continue;
             }
+            try {
+                this.bufferedWriter.write(message + "\r\n");
+                this.bufferedWriter.flush();
+            } catch (final IOException e) {
+            }
+
             try {
                 Thread.sleep(this.delay);
             } catch (final InterruptedException e) {
