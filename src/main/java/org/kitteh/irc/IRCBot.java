@@ -102,7 +102,7 @@ final class IRCBot implements Bot {
     private enum MessageTarget {
         CHANNEL,
         PRIVATE,
-        UNKNOWN;
+        UNKNOWN
     }
 
     private final String botName;
