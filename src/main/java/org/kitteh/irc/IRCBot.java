@@ -251,7 +251,18 @@ final class IRCBot implements Bot {
      * @param line line to be processed
      */
     void processLine(String line) {
+        if (this.pingCheck(line)) {
+            return;
+        }
         this.processor.queue(line);
+    }
+
+    private boolean pingCheck(String line) {
+        if (line.startsWith("PING ")) {
+            this.sendRawLine("PONG " + line.substring(5), true);
+            return true;
+        }
+        return false;
     }
 
     private void run() {
@@ -315,8 +326,7 @@ final class IRCBot implements Bot {
         this.sendNickChange(this.nick);
         String line;
         while ((line = bufferedReader.readLine()) != null) { // TODO hacky
-            if (line.startsWith("PING ")) { // TODO duplicated here and in Input
-                this.sendRawLine("PONG " + line.substring(5), true);
+            if (this.pingCheck(line)) {
                 continue;
             }
             try {
@@ -359,6 +369,7 @@ final class IRCBot implements Bot {
         if ((line == null) || (line.length() == 0)) {
             return;
         }
+
         final String[] split = line.split(" ");
         if ((split.length <= 1) || !split[0].startsWith(":")) {
             return; // Invalid!

@@ -48,10 +48,6 @@ final class IRCBotInput extends Thread {
                 String line;
                 while (this.running && ((line = this.bufferedReader.readLine()) != null)) {
                     this.lastInputTime = System.currentTimeMillis();
-                    if (line.startsWith("PING ")) { // TODO duplicated here and in connect()
-                        this.bot.sendRawLine("PONG " + line.substring(5), true);
-                        continue;
-                    }
                     this.bot.processLine(line);
                 }
             } catch (final IOException e) {
