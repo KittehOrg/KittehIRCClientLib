@@ -52,20 +52,17 @@ public final class EventManager {
      * @param listener listener in which to register events
      */
     public void registerEventListener(Object listener) {
-        try {
-            Method[] methods = listener.getClass().getDeclaredMethods();
-            for (Method method : methods) {
-                if (Modifier.isStatic(method.getModifiers()) || method.getAnnotation(EventHandler.class) == null) {
-                    continue;
-                }
-                Class<?>[] types = method.getParameterTypes();
-                if (types.length != 1) {
-                    continue;
-                }
-                method.setAccessible(true);
-                this.getSet(types[0]).add(new Pair<>(listener, method));
+        Method[] methods = listener.getClass().getDeclaredMethods();
+        for (Method method : methods) {
+            if (Modifier.isStatic(method.getModifiers()) || method.getAnnotation(EventHandler.class) == null) {
+                continue;
             }
-        } catch (Exception ignored) {
+            Class<?>[] types = method.getParameterTypes();
+            if (types.length != 1) {
+                continue;
+            }
+            method.setAccessible(true);
+            this.getSet(types[0]).add(new Pair<>(listener, method));
         }
     }
 
