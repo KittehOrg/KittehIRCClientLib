@@ -59,7 +59,7 @@ final class Config {
 
     private static final Object NULL = new Object();
 
-    private final Map<Entry, Object> map = new ConcurrentHashMap<>();
+    private final Map<Entry<?>, Object> map = new ConcurrentHashMap<>();
 
     <Type> Type get(Entry<Type> entry) {
         if (this.map.containsKey(entry)) {

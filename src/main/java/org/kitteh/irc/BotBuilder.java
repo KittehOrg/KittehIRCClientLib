@@ -175,7 +175,7 @@ public final class BotBuilder {
         return new IRCBot(this.config);
     }
 
-    private void inetSet(Config.Entry entry, String host, int port) {
+    private void inetSet(Config.Entry<InetSocketAddress> entry, String host, int port) {
         if (host != null) {
             this.config.set(entry, new InetSocketAddress(host, port));
         } else if (port > 0) {
