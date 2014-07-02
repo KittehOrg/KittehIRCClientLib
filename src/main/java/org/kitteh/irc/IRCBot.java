@@ -26,7 +26,6 @@ package org.kitteh.irc;
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 import org.kitteh.irc.event.*;
-import org.kitteh.irc.event.PrivateCTCPQueryEvent;
 import org.kitteh.irc.util.LCSet;
 import org.kitteh.irc.util.Sanity;
 import org.kitteh.irc.util.StringUtil;
