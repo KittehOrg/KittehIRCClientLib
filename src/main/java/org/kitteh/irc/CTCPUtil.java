@@ -53,12 +53,12 @@ import java.util.regex.Pattern;
  */
 class CTCPUtil {
     private static final char CTCP_DELIMITER = '\u0001';
-    public static final Pattern CTCP = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
+    static final Pattern CTCP = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
     private static final char CTCP_MQUOTE = '\u0016';
     private static final Pattern CTCP_ESCAPABLE = Pattern.compile("[\n\r\u0000" + CTCP_DELIMITER + CTCP_MQUOTE + "\\\\]");
     private static final Pattern CTCP_ESCAPED = Pattern.compile("(["+CTCP_MQUOTE+"\\\\])(.)");
 
-    public static String fromCTCP(String message) {
+    static String fromCTCP(String message) {
         message = message.substring(1); // Strip the starting delimiter
         message = message.substring(0, message.indexOf(CTCP_DELIMITER) - 1); // Strip the second delimiter
         StringBuilder builder = new StringBuilder();
@@ -101,7 +101,7 @@ class CTCPUtil {
         return builder.toString();
     }
 
-    public static String toCTCP(String message) {
+    static String toCTCP(String message) {
         StringBuilder builder = new StringBuilder();
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;
