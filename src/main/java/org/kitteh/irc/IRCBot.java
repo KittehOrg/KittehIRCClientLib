@@ -25,6 +25,7 @@ package org.kitteh.irc;
 
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.elements.User;
 import org.kitteh.irc.event.*;
 import org.kitteh.irc.util.LCSet;
 import org.kitteh.irc.util.Sanity;
@@ -104,9 +105,9 @@ final class IRCBot implements Bot {
     private final BotManager manager;
     private final BotProcessor processor;
 
-    // TODO nick tracking needs major improvement
-    private String nick;
+    private String goalNick;
     private String currentNick;
+    private String requestedNick;
 
     private final Set<String> channels = new LCSet();
 
@@ -148,7 +149,7 @@ final class IRCBot implements Bot {
 
     IRCBot(Config config) {
         this.config = config;
-        this.currentNick = this.nick = this.config.get(Config.NICK);
+        this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
         this.manager = new BotManager();
         this.processor = new BotProcessor();
     }
@@ -175,7 +176,7 @@ final class IRCBot implements Bot {
 
     @Override
     public String getIntendedNick() {
-        return this.nick;
+        return this.goalNick;
     }
 
     @Override
@@ -234,9 +235,8 @@ final class IRCBot implements Bot {
     @Override
     public void setNick(String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
-        this.nick = nick.trim();
-        this.sendNickChange(this.nick);
-        this.currentNick = this.nick;
+        this.goalNick = nick.trim();
+        this.sendNickChange(this.goalNick);
     }
 
     @Override
@@ -323,7 +323,7 @@ final class IRCBot implements Bot {
             this.sendRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD), true);
         }
         this.sendRawLine("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME), true);
-        this.sendNickChange(this.nick);
+        this.sendNickChange(this.goalNick);
         String line;
         while ((line = bufferedReader.readLine()) != null) { // TODO hacky
             if (this.pingCheck(line)) {
@@ -345,9 +345,9 @@ final class IRCBot implements Bot {
                 }
             }
         }
-        if (this.authReclaim != null && !this.currentNick.equals(this.nick) && this.authType.isNickOwned()) {
+        if (this.authReclaim != null && !this.currentNick.equals(this.goalNick) && this.authType.isNickOwned()) {
             this.sendRawLine(this.authReclaim, true);
-            this.sendNickChange(this.nick);
+            this.sendNickChange(this.goalNick);
         }
         if (this.auth != null) {
             this.sendRawLine(this.auth, true);
@@ -451,10 +451,11 @@ final class IRCBot implements Bot {
                 case 366: // End of /names
                 case 422: // MOTD missing
                     break;
-                case 433: // TODO better nick management
+                case 431: // No nick given
+                case 432: // Erroneous nickname
+                case 433: // Nick in use
                     if (!this.connected) {
-                        this.currentNick = this.currentNick + '`';
-                        this.sendNickChange(this.currentNick);
+                        this.sendNickChange(this.requestedNick + '`');
                     }
                     break;
             }
@@ -564,6 +565,13 @@ final class IRCBot implements Bot {
                     // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4))); TODO EVENT
                     break;
                 case "NICK":
+                    if (actor instanceof User) {
+                        User user = (User) actor;
+                        if (user.getNick().equals(this.currentNick)) {
+                            this.currentNick = split[2];
+                        }
+                        // TODO NickChangeEvent
+                    }
                     break;
                 case "INVITE":
                     if (messageTarget == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
@@ -585,7 +593,7 @@ final class IRCBot implements Bot {
     }
 
     private void sendNickChange(String newnick) {
+        this.requestedNick = newnick;
         this.sendRawLine("NICK " + newnick, true);
-        this.currentNick = newnick;
     }
 }
