@@ -67,6 +67,19 @@ public interface Bot {
     String getNick();
 
     /**
+     * Sends a CTCP message to a target user or channel. Automagically adds
+     * the CTCP delimiter around the message and escapes the characters that
+     * need escaping when sending a CTCP message.
+     * <p />
+     * <i>Note: CTCP replies should not be sent this way. Catch the message
+     * with the {@link org.kitteh.irc.event.PrivateCTCPQueryEvent}</i>
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     */
+    void sendCTCPMessage(String target, String message);
+
+    /**
      * Sends a message to a target user or channel.
      *
      * @param target the destination of the message

@@ -190,6 +190,14 @@ final class IRCBot implements Bot {
     }
 
     @Override
+    public void sendCTCPMessage(String target, String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
+        this.sendRawLine("PRIVMSG " + target + " :" + CTCPUtil.toCTCP(message));
+    }
+
+    @Override
     public void sendMessage(String target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.nullCheck(message, "Message cannot be null");
@@ -452,10 +460,10 @@ final class IRCBot implements Bot {
                     break;
             }
         } else {
-            // CTCP
             MessageTarget messageTarget = this.getTypeByTarget(split[2]);
-            if ((split[1].equals("NOTICE") || split[1].equals("PRIVMSG")) && (line.indexOf(":\u0001") > 0) && line.endsWith("\u0001")) { // TODO inaccurate
-                final String ctcp = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
+            // CTCP
+            if ((split[1].equals("NOTICE") || split[1].equals("PRIVMSG")) && CTCPUtil.CTCP.matcher(line).matches()) {
+                final String ctcp = CTCPUtil.fromCTCP(line);
                 switch (split[1]) {
                     case "NOTICE":
                         if (messageTarget == MessageTarget.PRIVATE) {
@@ -484,7 +492,7 @@ final class IRCBot implements Bot {
                                 break;
                         }
                         if (reply != null) {
-                            this.sendRawLine("NOTICE " + actor.getName() + " :\u0001" + reply + "\u0001", false); // TODO is this correct?
+                            this.sendRawLine("NOTICE " + actor.getName() + " :" + CTCPUtil.toCTCP(reply), false);
                         }
                         break;
                 }
