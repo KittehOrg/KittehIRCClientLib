@@ -30,9 +30,11 @@ import org.kitteh.irc.elements.User;
 import org.kitteh.irc.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.event.channel.ChannelModeEvent;
+import org.kitteh.irc.event.channel.ChannelNoticeEvent;
 import org.kitteh.irc.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.event.user.PrivateMessageEvent;
+import org.kitteh.irc.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.util.LCSet;
 import org.kitteh.irc.util.Sanity;
 import org.kitteh.irc.util.StringUtil;
@@ -507,7 +509,15 @@ final class IRCBot implements Bot {
             }
             switch (command) {
                 case NOTICE:
-                    final String notice = this.handleColon(StringUtil.combineSplit(split, 3));
+                    final String noticeMessage = this.handleColon(StringUtil.combineSplit(split, 3));
+                    switch (messageTarget) {
+                        case CHANNEL:
+                            this.eventManager.callEvent(new ChannelNoticeEvent(actor, (Channel) Actor.getActor(split[2]), noticeMessage));
+                            break;
+                        case PRIVATE:
+                            this.eventManager.callEvent(new PrivateNoticeEvent(actor, noticeMessage));
+                            break;
+                    }
                     // TODO event
                     break;
                 case PRIVMSG:
