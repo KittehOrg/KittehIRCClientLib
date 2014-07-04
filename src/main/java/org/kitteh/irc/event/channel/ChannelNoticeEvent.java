@@ -25,15 +25,16 @@ package org.kitteh.irc.event.channel;
 
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.event.ActorChannelMessageEvent;
 
 /**
  * Fires when a notice is sent to a channel.
  */
-public class ChannelNoticeEvent extends ChannelMessageEvent {
+public class ChannelNoticeEvent extends ActorChannelMessageEvent {
     /**
      * Creates the event.
      *
-     * @param sender who sent it
+     * @param sender  who sent it
      * @param channel channel receiving
      * @param message message sent
      */

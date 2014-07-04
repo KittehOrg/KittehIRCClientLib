@@ -1,15 +1,16 @@
 package org.kitteh.irc.event;
 
 import org.kitteh.irc.elements.Actor;
+import org.kitteh.irc.elements.Channel;
 
 /**
- * An event with a message sent by an actor.
+ * When an actor performs an action with a message in a channel.
  */
-public abstract class ActorSendMessageEvent extends ActorEvent {
+public abstract class ActorChannelMessageEvent extends ActorChannelEvent {
     private final String message;
 
-    protected ActorSendMessageEvent(Actor actor, String message) {
-        super(actor);
+    protected ActorChannelMessageEvent(Actor actor, Channel channel, String message) {
+        super(actor, channel);
         this.message = message;
     }
 

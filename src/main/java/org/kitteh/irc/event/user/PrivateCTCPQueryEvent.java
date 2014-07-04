@@ -24,17 +24,17 @@
 package org.kitteh.irc.event.user;
 
 import org.kitteh.irc.elements.Actor;
-import org.kitteh.irc.event.ActorSendMessageEvent;
+import org.kitteh.irc.event.ActorMessageEvent;
 
 /**
  * The bot has received a CTCP message! There are a few (FINGER, PING, TIME,
  * VERSION) queries which have a default reply message. Others are simply
  * ignored by default. The method {@link #getMessage()} returns the message
  * with the delimiter character (1) removed.
- * <p />
+ * <p/>
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
-public class PrivateCTCPQueryEvent extends ActorSendMessageEvent {
+public class PrivateCTCPQueryEvent extends ActorMessageEvent {
     private String reply;
 
     public PrivateCTCPQueryEvent(Actor sender, String message, String reply) {

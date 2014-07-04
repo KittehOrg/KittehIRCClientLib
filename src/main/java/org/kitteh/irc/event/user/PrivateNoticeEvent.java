@@ -33,7 +33,7 @@ public class PrivateNoticeEvent extends PrivateMessageEvent {
      * Creates the event.
      *
      * @param message message sent
-     * @param sender who sent it
+     * @param sender  who sent it
      */
     public PrivateNoticeEvent(Actor sender, String message) {
         super(sender, message);

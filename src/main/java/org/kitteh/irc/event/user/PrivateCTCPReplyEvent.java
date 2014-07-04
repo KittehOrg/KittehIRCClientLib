@@ -24,13 +24,13 @@
 package org.kitteh.irc.event.user;
 
 import org.kitteh.irc.elements.Actor;
-import org.kitteh.irc.event.ActorSendMessageEvent;
+import org.kitteh.irc.event.ActorMessageEvent;
 
 /**
  * The bot has received a reply to a CTCP query! The method
  * {@link #getMessage()} returns the message with the delimiter (1) removed.
  */
-public class PrivateCTCPReplyEvent extends ActorSendMessageEvent {
+public class PrivateCTCPReplyEvent extends ActorMessageEvent {
     public PrivateCTCPReplyEvent(Actor sender, String message) {
         super(sender, message);
     }

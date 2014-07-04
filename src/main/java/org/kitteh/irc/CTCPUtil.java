@@ -56,7 +56,7 @@ class CTCPUtil {
     static final Pattern CTCP = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
     private static final char CTCP_MQUOTE = '\u0016';
     private static final Pattern CTCP_ESCAPABLE = Pattern.compile("[\n\r\u0000" + CTCP_DELIMITER + CTCP_MQUOTE + "\\\\]");
-    private static final Pattern CTCP_ESCAPED = Pattern.compile("(["+CTCP_MQUOTE+"\\\\])(.)");
+    private static final Pattern CTCP_ESCAPED = Pattern.compile("([" + CTCP_MQUOTE + "\\\\])(.)");
 
     static String fromCTCP(String message) {
         message = message.substring(1); // Strip the starting delimiter
@@ -68,9 +68,9 @@ class CTCPUtil {
             if (matcher.start() > currentIndex) {
                 builder.append(message.substring(currentIndex, matcher.start()));
             }
-            switch(matcher.group(1)) {
-                case CTCP_MQUOTE+"":
-                    switch(matcher.group(2)){
+            switch (matcher.group(1)) {
+                case CTCP_MQUOTE + "":
+                    switch (matcher.group(2)) {
                         case "n":
                             builder.append('\n');
                             break;
@@ -85,7 +85,7 @@ class CTCPUtil {
                     }
                     break;
                 case "\\":
-                    switch(matcher.group(2)) {
+                    switch (matcher.group(2)) {
                         case "a":
                             builder.append(CTCP_DELIMITER);
                             break;

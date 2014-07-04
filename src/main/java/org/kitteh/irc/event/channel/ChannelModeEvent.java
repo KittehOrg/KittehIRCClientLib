@@ -25,20 +25,19 @@ package org.kitteh.irc.event.channel;
 
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
-import org.kitteh.irc.event.ActorEvent;
+import org.kitteh.irc.event.ActorChannelEvent;
 
 /**
  * Channel a la mode.
  */
-public class ChannelModeEvent extends ActorEvent {
-    private final Channel channel;
+public class ChannelModeEvent extends ActorChannelEvent {
     private final boolean setting;
     private final char mode;
     private final String arg;
 
     public ChannelModeEvent(Actor actor, Channel channel, boolean setting, char mode, String arg) {
-        super(actor);
-        this.channel = channel;
+        super(actor, channel);
+        ;
         this.setting = setting;
         this.mode = mode;
         this.arg = arg;
@@ -46,10 +45,6 @@ public class ChannelModeEvent extends ActorEvent {
 
     public String getArgument() {
         return this.arg;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
     }
 
     public char getMode() {
