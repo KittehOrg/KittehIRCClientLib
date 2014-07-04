@@ -460,20 +460,21 @@ final class IRCBot implements Bot {
                     break;
             }
         } else {
-            MessageTarget messageTarget = this.getTypeByTarget(split[2]);
+            final MessageTarget messageTarget = this.getTypeByTarget(split[2]);
+            final String command = split[1];
             // CTCP
-            if ((split[1].equals("NOTICE") || split[1].equals("PRIVMSG")) && CTCPUtil.CTCP.matcher(line).matches()) {
+            if ((command.equals("NOTICE") || command.equals("PRIVMSG")) && CTCPUtil.CTCP.matcher(line).matches()) {
                 final String ctcp = CTCPUtil.fromCTCP(line);
-                switch (split[1]) {
+                switch (command) {
                     case "NOTICE":
                         if (messageTarget == MessageTarget.PRIVATE) {
                             this.eventManager.callEvent(new PrivateCTCPReplyEvent(actor, ctcp));
                         }
                         break;
                     case "PRIVMSG":
-                        String reply = null;
                         switch (messageTarget) {
                             case PRIVATE:
+                                String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
                                 if (ctcp.equals("VERSION")) {
                                     reply = "VERSION I am Kitteh!";
                                 } else if (ctcp.equals("TIME")) {
@@ -486,19 +487,19 @@ final class IRCBot implements Bot {
                                 PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(actor, ctcp, reply);
                                 this.eventManager.callEvent(event);
                                 reply = event.getReply();
+                                if (reply != null) {
+                                    this.sendRawLine("NOTICE " + actor.getName() + " :" + CTCPUtil.toCTCP(reply), false);
+                                }
                                 break;
                             case CHANNEL:
                                 this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcp));
                                 break;
                         }
-                        if (reply != null) {
-                            this.sendRawLine("NOTICE " + actor.getName() + " :" + CTCPUtil.toCTCP(reply), false);
-                        }
                         break;
                 }
-                return;
+                return; // If handled as CTCP we don't care about further handling.
             }
-            switch (split[1]) {
+            switch (command) {
                 case "NOTICE":
                     final String notice = this.handleColon(StringUtil.combineSplit(split, 3));
                     // TODO event
