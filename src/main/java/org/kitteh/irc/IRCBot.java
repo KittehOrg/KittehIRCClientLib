@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.components.Command;
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 import org.kitteh.irc.elements.User;
@@ -461,17 +462,17 @@ final class IRCBot implements Bot {
             }
         } else {
             final MessageTarget messageTarget = this.getTypeByTarget(split[2]);
-            final String command = split[1];
+            final Command command = Command.getByName(split[1]);
             // CTCP
-            if ((command.equals("NOTICE") || command.equals("PRIVMSG")) && CTCPUtil.CTCP.matcher(line).matches()) {
+            if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.CTCP.matcher(line).matches()) {
                 final String ctcp = CTCPUtil.fromCTCP(line);
                 switch (command) {
-                    case "NOTICE":
+                    case NOTICE:
                         if (messageTarget == MessageTarget.PRIVATE) {
                             this.eventManager.callEvent(new PrivateCTCPReplyEvent(actor, ctcp));
                         }
                         break;
-                    case "PRIVMSG":
+                    case PRIVMSG:
                         switch (messageTarget) {
                             case PRIVATE:
                                 String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
@@ -500,11 +501,11 @@ final class IRCBot implements Bot {
                 return; // If handled as CTCP we don't care about further handling.
             }
             switch (command) {
-                case "NOTICE":
+                case NOTICE:
                     final String notice = this.handleColon(StringUtil.combineSplit(split, 3));
                     // TODO event
                     break;
-                case "PRIVMSG":
+                case PRIVMSG:
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
                     switch (messageTarget) {
                         case CHANNEL:
@@ -515,7 +516,7 @@ final class IRCBot implements Bot {
                             break;
                     }
                     break;
-                case "MODE":
+                case MODE:
                     if (messageTarget == MessageTarget.CHANNEL) {
                         Channel channel = (Channel) Actor.getActor(split[2]);
                         String modechanges = split[3];
@@ -558,14 +559,14 @@ final class IRCBot implements Bot {
                         }
                     }
                     break;
-                case "JOIN":
-                case "PART":
-                case "QUIT":
+                case JOIN:
+                case PART:
+                case QUIT:
                     break;
-                case "KICK":
+                case KICK:
                     // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4))); TODO EVENT
                     break;
-                case "NICK":
+                case NICK:
                     if (actor instanceof User) {
                         User user = (User) actor;
                         if (user.getNick().equals(this.currentNick)) {
@@ -574,7 +575,7 @@ final class IRCBot implements Bot {
                         // TODO NickChangeEvent
                     }
                     break;
-                case "INVITE":
+                case INVITE:
                     if (messageTarget == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
                         this.sendRawLine("JOIN " + split[3], false);
                     }
