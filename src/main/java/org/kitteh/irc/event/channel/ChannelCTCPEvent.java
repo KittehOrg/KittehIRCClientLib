@@ -25,19 +25,18 @@ package org.kitteh.irc.event.channel;
 
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.event.ActorSendMessageEvent;
 
 /**
- * The bot has received a CTCP message!
+ * The bot has received a CTCP message! The method {@link #getMessage()}
+ * returns the message with the delimiter character (1) removed.
  */
-public class ChannelCTCPEvent {
+public class ChannelCTCPEvent extends ActorSendMessageEvent {
     private final Channel channel;
-    private final String message;
-    private final Actor sender;
 
     public ChannelCTCPEvent(Actor sender, Channel channel, String message) {
+        super(sender, message);
         this.channel = channel;
-        this.message = message;
-        this.sender = sender;
     }
 
     /**
@@ -47,23 +46,5 @@ public class ChannelCTCPEvent {
      */
     public Channel getChannel() {
         return this.channel;
-    }
-
-    /**
-     * Gets the CTCP message sent.
-     *
-     * @return the CTCP message
-     */
-    public String getMessage() {
-        return this.message;
-    }
-
-    /**
-     * Gets the sender of the CTCP message.
-     *
-     * @return the sender
-     */
-    public Actor getSender() {
-        return this.sender;
     }
 }
