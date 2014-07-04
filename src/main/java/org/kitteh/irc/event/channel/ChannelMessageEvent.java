@@ -21,35 +21,54 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.event;
+package org.kitteh.irc.event.channel;
 
 import org.kitteh.irc.elements.Actor;
+import org.kitteh.irc.elements.Channel;
 
 /**
- * The bot has received a reply to a CTCP query!
+ * Fires when a message is sent to a channel.
  */
-public class PrivateCTCPReplyEvent {
+public class ChannelMessageEvent {
+    private final Channel channel;
     private final String message;
     private final Actor sender;
 
-    public PrivateCTCPReplyEvent(Actor sender, String message) {
+    /**
+     * Creates a PrivateMessageEvent
+     *
+     * @param sender who sent it
+     * @param channel channel receiving
+     * @param message message sent
+     */
+    public ChannelMessageEvent(Actor sender, Channel channel, String message) {
+        this.channel = channel;
         this.message = message;
         this.sender = sender;
     }
 
     /**
-     * Gets the CTCP message sent.
+     * Gets the channel receiving the message.
      *
-     * @return the CTCP message
+     * @return channel receiving message
+     */
+    public Channel getChannel() {
+        return this.channel;
+    }
+
+    /**
+     * Gets the message sent
+     *
+     * @return message sent
      */
     public String getMessage() {
         return this.message;
     }
 
     /**
-     * Gets the sender of the CTCP message.
+     * Gets the sender of the message.
      *
-     * @return the sender
+     * @return message sender
      */
     public Actor getSender() {
         return this.sender;

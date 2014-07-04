@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.event;
+package org.kitteh.irc.event.channel;
 
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;

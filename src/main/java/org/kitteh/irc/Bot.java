@@ -72,7 +72,7 @@ public interface Bot {
      * need escaping when sending a CTCP message.
      * <p />
      * <i>Note: CTCP replies should not be sent this way. Catch the message
-     * with the {@link org.kitteh.irc.event.PrivateCTCPQueryEvent}</i>
+     * with the {@link org.kitteh.irc.event.user.PrivateCTCPQueryEvent}</i>
      *
      * @param target the destination of the message
      * @param message the message to send

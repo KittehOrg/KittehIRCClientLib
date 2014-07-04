@@ -21,46 +21,37 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.event;
+package org.kitteh.irc.event.user;
 
 import org.kitteh.irc.elements.Actor;
-import org.kitteh.irc.elements.Channel;
 
 /**
- * Channel a la mode.
+ * The bot has received a reply to a CTCP query!
  */
-public class ChannelModeEvent {
-    private final Actor actor;
-    private final Channel channel;
-    private final boolean setting;
-    private final char mode;
-    private final String arg;
+public class PrivateCTCPReplyEvent {
+    private final String message;
+    private final Actor sender;
 
-    public ChannelModeEvent(Actor actor, Channel channel, boolean setting, char mode, String arg) {
-        this.actor = actor;
-        this.channel = channel;
-        this.setting = setting;
-        this.mode = mode;
-        this.arg = arg;
+    public PrivateCTCPReplyEvent(Actor sender, String message) {
+        this.message = message;
+        this.sender = sender;
     }
 
-    public Actor getActor() {
-        return this.actor;
+    /**
+     * Gets the CTCP message sent.
+     *
+     * @return the CTCP message
+     */
+    public String getMessage() {
+        return this.message;
     }
 
-    public String getArgument() {
-        return this.arg;
-    }
-
-    public Channel getChannel() {
-        return this.channel;
-    }
-
-    public char getMode() {
-        return this.mode;
-    }
-
-    public boolean isSetting() {
-        return this.setting;
+    /**
+     * Gets the sender of the CTCP message.
+     *
+     * @return the sender
+     */
+    public Actor getSender() {
+        return this.sender;
     }
 }

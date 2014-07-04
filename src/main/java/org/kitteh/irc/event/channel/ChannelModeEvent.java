@@ -21,56 +21,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.event;
+package org.kitteh.irc.event.channel;
 
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 
 /**
- * Fires when a message is sent to a channel.
+ * Channel a la mode.
  */
-public class ChannelMessageEvent {
+public class ChannelModeEvent {
+    private final Actor actor;
     private final Channel channel;
-    private final String message;
-    private final Actor sender;
+    private final boolean setting;
+    private final char mode;
+    private final String arg;
 
-    /**
-     * Creates a PrivateMessageEvent
-     *
-     * @param sender who sent it
-     * @param channel channel receiving
-     * @param message message sent
-     */
-    public ChannelMessageEvent(Actor sender, Channel channel, String message) {
+    public ChannelModeEvent(Actor actor, Channel channel, boolean setting, char mode, String arg) {
+        this.actor = actor;
         this.channel = channel;
-        this.message = message;
-        this.sender = sender;
+        this.setting = setting;
+        this.mode = mode;
+        this.arg = arg;
     }
 
-    /**
-     * Gets the channel receiving the message.
-     *
-     * @return channel receiving message
-     */
+    public Actor getActor() {
+        return this.actor;
+    }
+
+    public String getArgument() {
+        return this.arg;
+    }
+
     public Channel getChannel() {
         return this.channel;
     }
 
-    /**
-     * Gets the message sent
-     *
-     * @return message sent
-     */
-    public String getMessage() {
-        return this.message;
+    public char getMode() {
+        return this.mode;
     }
 
-    /**
-     * Gets the sender of the message.
-     *
-     * @return message sender
-     */
-    public Actor getSender() {
-        return this.sender;
+    public boolean isSetting() {
+        return this.setting;
     }
 }
