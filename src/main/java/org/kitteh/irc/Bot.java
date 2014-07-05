@@ -23,6 +23,9 @@
  */
 package org.kitteh.irc;
 
+/**
+ * An IRC bot.
+ */
 public interface Bot {
     /**
      * Adds channels to the bot!

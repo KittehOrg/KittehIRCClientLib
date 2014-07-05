@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Commands used in client/server communication
+ * Commands used in client/server communication.
  */
 public enum Command {
     INVITE,
@@ -48,6 +48,12 @@ public enum Command {
         }
     }
 
+    /**
+     * Gets a Command by name. Case insensitive.
+     *
+     * @param name the name of the Command to get
+     * @return the matching Command or null if no match
+     */
     public static Command getByName(String name) {
         return nameMap.get(name.toUpperCase());
     }

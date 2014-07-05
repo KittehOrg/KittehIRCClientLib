@@ -31,21 +31,36 @@ import java.util.concurrent.ConcurrentHashMap;
  * Stores an IRCBot's configured data from the {@link BotBuilder}.
  */
 final class Config {
+    /**
+     * Represents a configuration entry.
+     *
+     * @param <Type>
+     */
     static final class Entry<Type> {
-        private final Class<Type> clazz;
         private final Type defaultValue;
+        private final Class<Type> type;
 
-        private Entry(Type defaultValue, Class<Type> clazz) {
-            this.clazz = clazz;
+        private Entry(Type defaultValue, Class<Type> type) {
             this.defaultValue = defaultValue;
+            this.type = type;
         }
 
-        private Class<Type> getClazz() {
-            return this.clazz;
-        }
-
+        /**
+         * Gets the entry's default value.
+         *
+         * @return the default value
+         */
         private Type getDefault() {
             return this.defaultValue;
+        }
+
+        /**
+         * Gets the type of the entry.
+         *
+         * @return the entry type
+         */
+        private Class<Type> getType() {
+            return this.type;
         }
     }
 
@@ -61,10 +76,17 @@ final class Config {
 
     private final Map<Entry<?>, Object> map = new ConcurrentHashMap<>();
 
+    /**
+     * Gets a stored configuration entry.
+     *
+     * @param entry entry to acquire
+     * @param <Type> entry type
+     * @return the stored entry, or the default value if not set
+     */
     <Type> Type get(Entry<Type> entry) {
         if (this.map.containsKey(entry)) {
             Object value = this.map.get(entry);
-            if (!value.equals(NULL) && entry.getClazz().isAssignableFrom(value.getClass())) {
+            if (!value.equals(NULL) && entry.getType().isAssignableFrom(value.getClass())) {
                 @SuppressWarnings("unchecked")
                 Type tValue = (Type) this.map.get(entry);
                 return tValue;
@@ -74,6 +96,13 @@ final class Config {
         return entry.getDefault();
     }
 
+    /**
+     * Sets a configuration entry.
+     *
+     * @param entry entry to set
+     * @param value value to set for the given entry
+     * @param <Type> entry type
+     */
     <Type> void set(Entry<Type> entry, Type value) {
         this.map.put(entry, value != null ? value : NULL);
     }

@@ -51,6 +51,14 @@ import java.util.regex.Pattern;
  *   \      -> \\
  * When converting, anything else escaped with a backslash should just strip the backslash
  */
+
+/**
+ * A utility class for CTCP handling.
+ * <p />
+ * Stored in this package so it can be package private to avoid confusion.
+ * This stuff is all handled internally by the bot; no bot user needs to
+ * know how to do this.
+ */
 class CTCPUtil {
     private static final char CTCP_DELIMITER = '\u0001';
     static final Pattern CTCP = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
@@ -58,6 +66,12 @@ class CTCPUtil {
     private static final Pattern CTCP_ESCAPABLE = Pattern.compile("[\n\r\u0000" + CTCP_DELIMITER + CTCP_MQUOTE + "\\\\]");
     private static final Pattern CTCP_ESCAPED = Pattern.compile("([" + CTCP_MQUOTE + "\\\\])(.)");
 
+    /**
+     * Converts a given message from CTCP escaping.
+     *
+     * @param message message to convert
+     * @return converted message
+     */
     static String fromCTCP(String message) {
         message = message.substring(1); // Strip the starting delimiter
         message = message.substring(0, message.indexOf(CTCP_DELIMITER) - 1); // Strip the second delimiter
@@ -101,6 +115,12 @@ class CTCPUtil {
         return builder.toString();
     }
 
+    /**
+     * Converts a given message to CTCP formatting.
+     *
+     * @param message message to convert
+     * @return converted message
+     */
     static String toCTCP(String message) {
         StringBuilder builder = new StringBuilder();
         builder.append(CTCP_DELIMITER);

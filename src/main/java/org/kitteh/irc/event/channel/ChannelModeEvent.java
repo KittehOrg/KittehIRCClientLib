@@ -35,22 +35,45 @@ public class ChannelModeEvent extends ActorChannelEvent {
     private final char mode;
     private final String arg;
 
+    /**
+     * Creates the event.
+     *
+     * @param actor the mode setter
+     * @param channel the channel in which the mode is being set
+     * @param setting if the mode is being set or unset
+     * @param mode the mode being set or unset
+     * @param arg the argument presented for the mode
+     */
     public ChannelModeEvent(Actor actor, Channel channel, boolean setting, char mode, String arg) {
         super(actor, channel);
-        ;
         this.setting = setting;
         this.mode = mode;
         this.arg = arg;
     }
 
+    /**
+     * Gets the argument for the mode.
+     *
+     * @return the mode argument, or null if no argument
+     */
     public String getArgument() {
         return this.arg;
     }
 
+    /**
+     * Gets the mode.
+     *
+     * @return the mode
+     */
     public char getMode() {
         return this.mode;
     }
 
+    /**
+     * Gets if the mode is being set or unset.
+     *
+     * @return true if set, false if unset
+     */
     public boolean isSetting() {
         return this.setting;
     }

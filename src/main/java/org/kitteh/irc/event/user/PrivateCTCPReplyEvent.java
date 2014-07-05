@@ -31,6 +31,12 @@ import org.kitteh.irc.event.ActorMessageEvent;
  * {@link #getMessage()} returns the message with the delimiter (1) removed.
  */
 public class PrivateCTCPReplyEvent extends ActorMessageEvent {
+    /**
+     * Creates the event.
+     *
+     * @param sender sender of the reply
+     * @param message message sent
+     */
     public PrivateCTCPReplyEvent(Actor sender, String message) {
         super(sender, message);
     }

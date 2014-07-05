@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * User on an IRC network.
+ * Represents an IRC user.
  */
 public class User extends Actor {
     // Valid nick chars: \w\[]^`{}|-_
@@ -37,6 +37,12 @@ public class User extends Actor {
     // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
     private static final Pattern PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
 
+    /**
+     * Gets if a given String is a valid user string (nick!ident@host).
+     *
+     * @param name string to test
+     * @return true if not null and a valid user string
+     */
     public static boolean isUser(String name) {
         return name != null && PATTERN.matcher(name).matches();
     }
@@ -54,14 +60,29 @@ public class User extends Actor {
         this.host = matcher.group(3);
     }
 
+    /**
+     * Gets the user's host.
+     *
+     * @return user host
+     */
     public String getHost() {
         return this.host;
     }
 
+    /**
+     * Gets the user's nick.
+     *
+     * @return user nick
+     */
     public String getNick() {
         return this.nick;
     }
 
+    /**
+     * Gets the user's user string.
+     *
+     * @return user
+     */
     public String getUser() {
         return this.user;
     }

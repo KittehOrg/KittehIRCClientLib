@@ -37,6 +37,13 @@ import org.kitteh.irc.event.ActorMessageEvent;
 public class PrivateCTCPQueryEvent extends ActorMessageEvent {
     private String reply;
 
+    /**
+     * Creates the event
+     *
+     * @param sender sender of the query
+     * @param message message sent
+     * @param reply reply to be sent, if any
+     */
     public PrivateCTCPQueryEvent(Actor sender, String message, String reply) {
         super(sender, message);
         this.reply = reply;

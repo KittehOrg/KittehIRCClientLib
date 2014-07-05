@@ -27,12 +27,26 @@ package org.kitteh.irc.util;
  * Do you know the definition of sanity?
  */
 public final class Sanity {
+    /**
+     * Checks if an object is null.
+     *
+     * @param o object to check
+     * @param failMessage message to throw
+     * @throws IllegalArgumentException if the object is null
+     */
     public static void nullCheck(Object o, String failMessage) {
         if (o == null) {
             throw new IllegalArgumentException(failMessage);
         }
     }
 
+    /**
+     * Checks if an array is null or contains null elements.
+     *
+     * @param o array to check
+     * @param failMessage message to throw
+     * @throws IllegalArgumentException if null or contains null elements
+     */
     public static void nullCheck(Object[] o, String failMessage) {
         Sanity.nullCheck((Object) o, failMessage);
         for (Object element : o) {
@@ -40,6 +54,13 @@ public final class Sanity {
         }
     }
 
+    /**
+     * Checks if a boolean is true.
+     *
+     * @param bool value to test
+     * @param failMessage message to throw
+     * @throws IllegalArgumentException if false
+     */
     public static void truthiness(boolean bool, String failMessage) {
         if (!bool) {
             throw new IllegalArgumentException(failMessage);

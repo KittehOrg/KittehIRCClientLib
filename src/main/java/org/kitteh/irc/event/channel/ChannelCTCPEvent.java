@@ -33,6 +33,13 @@ import org.kitteh.irc.event.ActorMessageEvent;
  * returns the message with the delimiter character (1) removed.
  */
 public class ChannelCTCPEvent extends ActorChannelMessageEvent {
+    /**
+     * Creates the event.
+     *
+     * @param sender sender of the message
+     * @param channel channel in which it was sent
+     * @param message message sent
+     */
     public ChannelCTCPEvent(Actor sender, Channel channel, String message) {
         super(sender, channel, message);
     }

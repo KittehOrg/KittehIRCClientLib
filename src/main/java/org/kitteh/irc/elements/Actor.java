@@ -23,7 +23,18 @@
  */
 package org.kitteh.irc.elements;
 
+/**
+ * An entity on an IRC server.
+ */
 public class Actor {
+    /**
+     * Gets an Actor for the given name. Acquires the proper subclass based
+     * on the provided name. If no subclass can be found, an Actor object
+     * will be provided.
+     *
+     * @param name the Actor's name
+     * @return an Actor object for the given name
+     */
     public static Actor getActor(String name) {
         if (User.isUser(name)) {
             return new User(name);
@@ -35,10 +46,15 @@ public class Actor {
 
     private final String name;
 
-    Actor(String name) {
+    protected Actor(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the Actor's name.
+     *
+     * @return the Actor's name
+     */
     public String getName() {
         return this.name;
     }

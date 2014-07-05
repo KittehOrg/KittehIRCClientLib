@@ -23,7 +23,19 @@
  */
 package org.kitteh.irc.util;
 
+/**
+ * String tools!
+ */
 public final class StringUtil {
+    /**
+     * Combines an array into a super string!
+     *
+     * @param split the split array
+     * @param start index at which to start
+     * @param length how many elements to include
+     * @param delimiter delimiter
+     * @return the combined string
+     */
     public static String combineSplit(String[] split, int start, int length, String delimiter) {
         final StringBuilder builder = new StringBuilder();
         for (int x = start; (x < split.length) && (x < (start + length)); x++) {
@@ -35,12 +47,14 @@ public final class StringUtil {
         return builder.toString();
     }
 
+    /**
+     * Combines an array into a space-delimited string from a starting index.
+     *
+     * @param split the split array
+     * @param start index at which to start
+     * @return
+     */
     public static String combineSplit(String[] split, int start) {
         return StringUtil.combineSplit(split, start, split.length - start, " ");
-    }
-
-    public static String getNick(String fullname) {
-        final int i = fullname.indexOf("!");
-        return fullname.substring(0, i > 0 ? i : fullname.length());
     }
 }

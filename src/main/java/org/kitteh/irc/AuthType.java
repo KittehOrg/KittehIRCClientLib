@@ -23,6 +23,9 @@
  */
 package org.kitteh.irc;
 
+/**
+ * Authentication types supported by the bot.
+ */
 public enum AuthType {
     NICKSERV,
     GAMESURGE(false);

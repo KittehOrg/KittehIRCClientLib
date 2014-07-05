@@ -25,12 +25,21 @@ package org.kitteh.irc.elements;
 
 import java.util.regex.Pattern;
 
+/**
+ * Represents an IRC channel.
+ */
 public class Channel extends Actor {
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private static final Pattern PATTERN = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
+    /**
+     * Gets if a given String is a valid channel name.
+     *
+     * @param name name to test
+     * @return true if not null and a valid channel name
+     */
     public static boolean isChannel(String name) {
         return name != null && PATTERN.matcher(name).matches();
     }
