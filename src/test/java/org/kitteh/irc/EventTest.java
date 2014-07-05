@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Confirm an event listener can be registered and an event fired.
+ */
 public class EventTest {
     private class Event {
         private boolean success = false;

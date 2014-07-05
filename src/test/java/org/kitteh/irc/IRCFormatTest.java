@@ -3,6 +3,9 @@ package org.kitteh.irc;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Make sure nothing has gone horribly wrong at the format factory.
+ */
 public class IRCFormatTest {
     @Test
     public void format() {
