@@ -38,6 +38,7 @@ public enum Command {
     NOTICE,
     PART,
     PRIVMSG,
+    TOPIC,
     QUIT;
 
     private static final Map<String, Command> nameMap = new HashMap<>();

@@ -579,9 +579,10 @@ final class IRCBot implements Bot {
                         this.eventManager.callEvent(new ChannelPartEvent((Channel) Actor.getActor(split[2]), (User) actor, split.length > 2 ? this.handleColon(StringUtil.combineSplit(split, 3)) : ""));
                     }
                 case QUIT:
+                    // TODO UserQuitEvent
                     break;
                 case KICK:
-                    // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4))); TODO EVENT
+                    // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4))); TODO ChannelKickEvent
                     break;
                 case NICK:
                     if (actor instanceof User) {
@@ -589,14 +590,17 @@ final class IRCBot implements Bot {
                         if (user.getNick().equals(this.currentNick)) {
                             this.currentNick = split[2];
                         }
-                        // TODO NickChangeEvent
+                        // TODO UserNickChangeEvent
                     }
                     break;
                 case INVITE:
                     if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
                         this.sendRawLine("JOIN " + split[3], false);
                     }
+                    // TODO ChannelInviteEvent
                     break;
+                case TOPIC:
+                    // TODO ChannelTopicChangeEvent
             }
         }
     }
