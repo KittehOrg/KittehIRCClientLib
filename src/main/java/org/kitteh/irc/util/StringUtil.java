@@ -52,7 +52,7 @@ public final class StringUtil {
      *
      * @param split the split array
      * @param start index at which to start
-     * @return
+     * @return the combined string
      */
     public static String combineSplit(String[] split, int start) {
         return StringUtil.combineSplit(split, start, split.length - start, " ");
