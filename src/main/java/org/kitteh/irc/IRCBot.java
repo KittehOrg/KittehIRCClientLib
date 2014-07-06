@@ -465,19 +465,18 @@ final class IRCBot implements Bot {
                     break;
             }
         } else {
-            final MessageTarget messageTarget = this.getTypeByTarget(split[2]); // Only applicable if the command has a target, as many do
             final Command command = Command.getByName(split[1]);
             // CTCP
             if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.CTCP.matcher(line).matches()) {
                 final String ctcp = CTCPUtil.fromCTCP(line);
                 switch (command) {
                     case NOTICE:
-                        if (messageTarget == MessageTarget.PRIVATE) {
+                        if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE) {
                             this.eventManager.callEvent(new PrivateCTCPReplyEvent(actor, ctcp));
                         }
                         break;
                     case PRIVMSG:
-                        switch (messageTarget) {
+                        switch (this.getTypeByTarget(split[2])) {
                             case PRIVATE:
                                 String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
                                 if (ctcp.equals("VERSION")) {
@@ -507,7 +506,7 @@ final class IRCBot implements Bot {
             switch (command) {
                 case NOTICE:
                     final String noticeMessage = this.handleColon(StringUtil.combineSplit(split, 3));
-                    switch (messageTarget) {
+                    switch (this.getTypeByTarget(split[2])) {
                         case CHANNEL:
                             this.eventManager.callEvent(new ChannelNoticeEvent(actor, (Channel) Actor.getActor(split[2]), noticeMessage));
                             break;
@@ -519,7 +518,7 @@ final class IRCBot implements Bot {
                     break;
                 case PRIVMSG:
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
-                    switch (messageTarget) {
+                    switch (this.getTypeByTarget(split[2])) {
                         case CHANNEL:
                             this.eventManager.callEvent(new ChannelMessageEvent(actor, (Channel) Actor.getActor(split[2]), message));
                             break;
@@ -529,7 +528,7 @@ final class IRCBot implements Bot {
                     }
                     break;
                 case MODE:
-                    if (messageTarget == MessageTarget.CHANNEL) {
+                    if (this.getTypeByTarget(split[2]) == MessageTarget.CHANNEL) {
                         Channel channel = (Channel) Actor.getActor(split[2]);
                         String modechanges = split[3];
                         int currentArg = 4;
@@ -594,7 +593,7 @@ final class IRCBot implements Bot {
                     }
                     break;
                 case INVITE:
-                    if (messageTarget == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
+                    if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
                         this.sendRawLine("JOIN " + split[3], false);
                     }
                     break;
