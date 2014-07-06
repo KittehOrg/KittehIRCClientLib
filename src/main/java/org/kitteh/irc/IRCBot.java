@@ -572,10 +572,13 @@ final class IRCBot implements Bot {
                     }
                     break;
                 case JOIN:
-                    if (actor instanceof User) {
+                    if (actor instanceof User) { // Just in case
                         this.eventManager.callEvent(new ChannelJoinEvent((Channel) Actor.getActor(split[2]), (User) actor));
                     }
                 case PART:
+                    if (actor instanceof User) { // Just in case
+                        this.eventManager.callEvent(new ChannelPartEvent((Channel) Actor.getActor(split[2]), (User) actor, split.length > 2 ? this.handleColon(StringUtil.combineSplit(split, 3)) : ""));
+                    }
                 case QUIT:
                     break;
                 case KICK:
