@@ -27,10 +27,7 @@ import org.kitteh.irc.components.Command;
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 import org.kitteh.irc.elements.User;
-import org.kitteh.irc.event.channel.ChannelCTCPEvent;
-import org.kitteh.irc.event.channel.ChannelMessageEvent;
-import org.kitteh.irc.event.channel.ChannelModeEvent;
-import org.kitteh.irc.event.channel.ChannelNoticeEvent;
+import org.kitteh.irc.event.channel.*;
 import org.kitteh.irc.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.event.user.PrivateMessageEvent;
@@ -468,7 +465,7 @@ final class IRCBot implements Bot {
                     break;
             }
         } else {
-            final MessageTarget messageTarget = this.getTypeByTarget(split[2]);
+            final MessageTarget messageTarget = this.getTypeByTarget(split[2]); // Only applicable if the command has a target, as many do
             final Command command = Command.getByName(split[1]);
             // CTCP
             if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.CTCP.matcher(line).matches()) {
@@ -575,6 +572,9 @@ final class IRCBot implements Bot {
                     }
                     break;
                 case JOIN:
+                    if (actor instanceof User) {
+                        this.eventManager.callEvent(new ChannelJoinEvent((Channel) Actor.getActor(split[2]), (User) actor));
+                    }
                 case PART:
                 case QUIT:
                     break;
