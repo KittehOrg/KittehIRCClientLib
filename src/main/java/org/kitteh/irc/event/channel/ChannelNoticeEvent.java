@@ -30,7 +30,7 @@ import org.kitteh.irc.event.ActorChannelMessageEvent;
 /**
  * Fires when a notice is sent to a channel.
  */
-public class ChannelNoticeEvent extends ActorChannelMessageEvent {
+public class ChannelNoticeEvent extends ActorChannelMessageEvent<Actor> {
     /**
      * Creates the event.
      *

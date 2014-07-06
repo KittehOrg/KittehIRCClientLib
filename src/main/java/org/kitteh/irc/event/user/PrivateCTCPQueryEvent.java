@@ -34,7 +34,7 @@ import org.kitteh.irc.event.ActorMessageEvent;
  * <p/>
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
-public class PrivateCTCPQueryEvent extends ActorMessageEvent {
+public class PrivateCTCPQueryEvent extends ActorMessageEvent<Actor> {
     private String reply;
 
     /**

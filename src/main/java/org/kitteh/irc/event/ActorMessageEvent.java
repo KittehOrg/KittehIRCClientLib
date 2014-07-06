@@ -5,10 +5,10 @@ import org.kitteh.irc.elements.Actor;
 /**
  * An event with a message sent by an actor.
  */
-public abstract class ActorMessageEvent extends ActorEvent {
+public abstract class ActorMessageEvent<A extends Actor> extends ActorEvent<A> {
     private final String message;
 
-    protected ActorMessageEvent(Actor actor, String message) {
+    protected ActorMessageEvent(A actor, String message) {
         super(actor);
         this.message = message;
     }

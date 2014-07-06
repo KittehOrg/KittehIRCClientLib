@@ -30,7 +30,7 @@ import org.kitteh.irc.event.ActorChannelEvent;
 /**
  * Channel a la mode.
  */
-public class ChannelModeEvent extends ActorChannelEvent {
+public class ChannelModeEvent extends ActorChannelEvent<Actor> {
     private final boolean setting;
     private final char mode;
     private final String arg;

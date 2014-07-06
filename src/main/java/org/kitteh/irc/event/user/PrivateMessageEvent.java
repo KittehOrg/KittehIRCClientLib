@@ -29,7 +29,7 @@ import org.kitteh.irc.event.ActorMessageEvent;
 /**
  * Fires when a message is sent to the bot.
  */
-public class PrivateMessageEvent extends ActorMessageEvent {
+public class PrivateMessageEvent extends ActorMessageEvent<Actor> {
     /**
      * Creates the event.
      *

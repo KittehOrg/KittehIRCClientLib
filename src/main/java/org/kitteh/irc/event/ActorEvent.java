@@ -5,10 +5,10 @@ import org.kitteh.irc.elements.Actor;
 /**
  * An event with an actor.
  */
-public abstract class ActorEvent {
-    private final Actor actor;
+public abstract class ActorEvent<A extends Actor> {
+    private final A actor;
 
-    protected ActorEvent(Actor actor) {
+    protected ActorEvent(A actor) {
         this.actor = actor;
     }
 
@@ -17,7 +17,7 @@ public abstract class ActorEvent {
      *
      * @return the actor
      */
-    public Actor getActor() {
+    public A getActor() {
         return this.actor;
     }
 }

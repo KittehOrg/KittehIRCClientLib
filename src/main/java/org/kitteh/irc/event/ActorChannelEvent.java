@@ -6,10 +6,10 @@ import org.kitteh.irc.elements.Channel;
 /**
  * When an actor does something in a channel.
  */
-public abstract class ActorChannelEvent extends ActorEvent {
+public abstract class ActorChannelEvent<A extends Actor> extends ActorEvent<A> {
     private final Channel channel;
 
-    protected ActorChannelEvent(Actor actor, Channel channel) {
+    protected ActorChannelEvent(A actor, Channel channel) {
         super(actor);
         this.channel = channel;
     }

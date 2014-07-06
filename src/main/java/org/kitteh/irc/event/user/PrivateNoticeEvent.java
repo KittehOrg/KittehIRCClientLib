@@ -24,11 +24,12 @@
 package org.kitteh.irc.event.user;
 
 import org.kitteh.irc.elements.Actor;
+import org.kitteh.irc.event.ActorMessageEvent;
 
 /**
  * Fires when a notice is sent to the bot.
  */
-public class PrivateNoticeEvent extends PrivateMessageEvent {
+public class PrivateNoticeEvent extends ActorMessageEvent<Actor> {
     /**
      * Creates the event.
      *

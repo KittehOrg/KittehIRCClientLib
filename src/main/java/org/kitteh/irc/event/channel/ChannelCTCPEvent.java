@@ -32,7 +32,7 @@ import org.kitteh.irc.event.ActorMessageEvent;
  * The bot has received a CTCP message! The method {@link #getMessage()}
  * returns the message with the delimiter character (1) removed.
  */
-public class ChannelCTCPEvent extends ActorChannelMessageEvent {
+public class ChannelCTCPEvent extends ActorChannelMessageEvent<Actor> {
     /**
      * Creates the event.
      *

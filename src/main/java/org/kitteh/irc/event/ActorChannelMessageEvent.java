@@ -6,10 +6,10 @@ import org.kitteh.irc.elements.Channel;
 /**
  * When an actor performs an action with a message in a channel.
  */
-public abstract class ActorChannelMessageEvent extends ActorChannelEvent {
+public abstract class ActorChannelMessageEvent<A extends Actor> extends ActorChannelEvent<A> {
     private final String message;
 
-    protected ActorChannelMessageEvent(Actor actor, Channel channel, String message) {
+    protected ActorChannelMessageEvent(A actor, Channel channel, String message) {
         super(actor, channel);
         this.message = message;
     }
