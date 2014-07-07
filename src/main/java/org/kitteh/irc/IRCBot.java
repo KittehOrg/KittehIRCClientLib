@@ -559,7 +559,7 @@ final class IRCBot implements Bot {
                                         // TODO WHINE LOUDLY
                                         return;
                                     }
-                                    hasArg = (add && type.isParameterOnSetting()) || (!add && type.isParameterOnRemoval());
+                                    hasArg = (add && type.isParameterRequiredOnSetting()) || (!add && type.isParameterRequiredOnRemoval());
                                 }
                                 String arg = null;
                                 if (hasArg) {

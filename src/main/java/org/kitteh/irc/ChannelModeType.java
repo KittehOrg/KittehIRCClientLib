@@ -44,12 +44,12 @@ public enum ChannelModeType {
      */
     D_PARAMETER_NEVER(false, false);
 
-    private final boolean parameterOnRemoval;
-    private final boolean parameterOnSetting;
+    private final boolean parameterRequiredOnRemoval;
+    private final boolean parameterRequiredOnSetting;
 
-    private ChannelModeType(boolean parameterOnSetting, boolean parameterOnRemoval) {
-        this.parameterOnRemoval = parameterOnRemoval;
-        this.parameterOnSetting = parameterOnSetting;
+    private ChannelModeType(boolean parameterRequiredOnSetting, boolean parameterRequiredOnRemoval) {
+        this.parameterRequiredOnRemoval = parameterRequiredOnRemoval;
+        this.parameterRequiredOnSetting = parameterRequiredOnSetting;
     }
 
     /**
@@ -57,8 +57,8 @@ public enum ChannelModeType {
      *
      * @return true if required on removal
      */
-    public boolean isParameterOnRemoval() {
-        return this.parameterOnRemoval;
+    public boolean isParameterRequiredOnRemoval() {
+        return this.parameterRequiredOnRemoval;
     }
 
     /**
@@ -66,7 +66,7 @@ public enum ChannelModeType {
      *
      * @return true if required on addition
      */
-    public boolean isParameterOnSetting() {
-        return this.parameterOnSetting;
+    public boolean isParameterRequiredOnSetting() {
+        return this.parameterRequiredOnSetting;
     }
 }

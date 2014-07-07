@@ -67,7 +67,7 @@ public final class EventManager {
             pairs.add(new Pair<Class<?>, Pair<Object, Method>>(types[0], new Pair<>(listener, method)));
         }
         for (Pair<Class<?>, Pair<Object, Method>> pair : pairs) {
-            this.getSet(pair.getA()).add(pair.getB());
+            this.getSet(pair.getLeft()).add(pair.getRight());
         }
     }
 
@@ -81,7 +81,7 @@ public final class EventManager {
         if (set != null) {
             for (Pair<Object, Method> pair : set) {
                 try {
-                    pair.getB().invoke(pair.getA(), event);
+                    pair.getRight().invoke(pair.getLeft(), event);
                 } catch (Throwable ignored) {
                 }
             }

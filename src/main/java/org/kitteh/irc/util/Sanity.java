@@ -30,12 +30,12 @@ public final class Sanity {
     /**
      * Checks if an object is null.
      *
-     * @param o object to check
+     * @param object object to check
      * @param failMessage message to throw
      * @throws IllegalArgumentException if the object is null
      */
-    public static void nullCheck(Object o, String failMessage) {
-        if (o == null) {
+    public static void nullCheck(Object object, String failMessage) {
+        if (object == null) {
             throw new IllegalArgumentException(failMessage);
         }
     }
@@ -43,13 +43,13 @@ public final class Sanity {
     /**
      * Checks if an array is null or contains null elements.
      *
-     * @param o array to check
+     * @param array array to check
      * @param failMessage message to throw
      * @throws IllegalArgumentException if null or contains null elements
      */
-    public static void nullCheck(Object[] o, String failMessage) {
-        Sanity.nullCheck((Object) o, failMessage);
-        for (Object element : o) {
+    public static void nullCheck(Object[] array, String failMessage) {
+        Sanity.nullCheck((Object) array, failMessage);
+        for (Object element : array) {
             Sanity.nullCheck(element, failMessage);
         }
     }

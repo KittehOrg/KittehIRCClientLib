@@ -26,22 +26,22 @@ package org.kitteh.irc.util;
 /**
  * A pair of objects!
  *
- * @param <A> Type of the first object
- * @param <B> Type of the second object
+ * @param <Left> Type of the first object
+ * @param <Right> Type of the second object
  */
-public final class Pair<A, B> {
-    private final A a;
-    private final B b;
+public final class Pair<Left, Right> {
+    private final Left left;
+    private final Right right;
 
     /**
      * Constructs a pair of objects
      *
-     * @param a first object
-     * @param b second object
+     * @param left first object
+     * @param right second object
      */
-    public Pair(A a, B b) {
-        this.a = a;
-        this.b = b;
+    public Pair(Left left, Right right) {
+        this.left = left;
+        this.right = right;
     }
 
     /**
@@ -49,8 +49,8 @@ public final class Pair<A, B> {
      *
      * @return first object
      */
-    public A getA() {
-        return this.a;
+    public Left getLeft() {
+        return this.left;
     }
 
     /**
@@ -58,7 +58,7 @@ public final class Pair<A, B> {
      *
      * @return second object
      */
-    public B getB() {
-        return this.b;
+    public Right getRight() {
+        return this.right;
     }
 }
