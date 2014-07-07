@@ -1,8 +1,7 @@
 package org.kitteh.irc;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Confirm an event listener can be registered and an event fired.
@@ -18,7 +17,7 @@ public class EventTest {
         manager.registerEventListener(this);
         Event event = new Event();
         manager.callEvent(event);
-        assertTrue("Failed to register and fire an event", event.success);
+        Assert.assertTrue("Failed to register and fire an event", event.success);
     }
 
     @EventHandler
