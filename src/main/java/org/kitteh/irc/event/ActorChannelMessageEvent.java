@@ -42,7 +42,7 @@ public abstract class ActorChannelMessageEvent<A extends Actor> extends ActorCha
      *
      * @return the sent message
      */
-    public String getMessage() {
+    public final String getMessage() {
         return this.message;
     }
 }

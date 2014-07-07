@@ -40,7 +40,7 @@ public abstract class ActorEvent<A extends Actor> {
      *
      * @return the actor
      */
-    public A getActor() {
+    public final A getActor() {
         return this.actor;
     }
 }

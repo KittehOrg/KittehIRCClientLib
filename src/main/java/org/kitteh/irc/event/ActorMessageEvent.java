@@ -41,7 +41,7 @@ public abstract class ActorMessageEvent<A extends Actor> extends ActorEvent<A> {
      *
      * @return the sent message
      */
-    public String getMessage() {
+    public final String getMessage() {
         return this.message;
     }
 }

@@ -42,7 +42,7 @@ public abstract class ActorChannelEvent<A extends Actor> extends ActorEvent<A> {
      *
      * @return the channel
      */
-    public Channel getChannel() {
+    public final Channel getChannel() {
         return this.channel;
     }
 }
