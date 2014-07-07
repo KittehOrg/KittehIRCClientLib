@@ -50,7 +50,7 @@ public final class LCSet extends CopyOnWriteArraySet<String> {
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {
-            if (!this.contains(o)) {
+            if (!this.contains(o)) { // Lowercased
                 return false;
             }
         }
@@ -61,7 +61,7 @@ public final class LCSet extends CopyOnWriteArraySet<String> {
     public boolean addAll(Collection<? extends String> c) {
         boolean modified = false;
         for (String s : c) {
-            if (this.add(s)) {
+            if (this.add(s)) { // Lowercased
                 modified = true;
             }
         }
