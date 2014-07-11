@@ -74,7 +74,7 @@ class CTCPUtil {
      */
     static String fromCTCP(String message) {
         message = message.substring(1); // Strip the starting delimiter
-        message = message.substring(0, message.indexOf(CTCP_DELIMITER) - 1); // Strip the second delimiter
+        message = message.substring(0, message.indexOf(CTCP_DELIMITER)); // Strip the second delimiter
         StringBuilder builder = new StringBuilder();
         int currentIndex = 0;
         Matcher matcher = CTCP_ESCAPED.matcher(message);
