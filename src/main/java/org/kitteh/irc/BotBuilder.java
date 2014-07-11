@@ -35,7 +35,7 @@ public final class BotBuilder {
     private String bindHost;
     private int bindPort;
     private String serverHost;
-    private int serverPort;
+    private int serverPort = 6667;
 
     /**
      * Creates a BotBuilder!
