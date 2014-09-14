@@ -310,8 +310,11 @@ final class IRCBot implements Bot {
     }
 
     private void connect() throws IOException {
+        // I AM NOT CONNECTED
         this.connected = false;
         final Socket socket = new Socket();
+
+        // Bind, if set
         if (this.config.get(Config.BIND_ADDRESS) != null) {
             try {
                 socket.bind(this.config.get(Config.BIND_ADDRESS));
@@ -319,21 +322,34 @@ final class IRCBot implements Bot {
                 e.printStackTrace();
             }
         }
+
+        // Make connection and get ready to handle input and output
         socket.connect(this.config.get(Config.SERVER_ADDRESS));
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        final BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        this.outputHandler = new IRCBotOutput(bufferedWriter, this.getName());
+        final BufferedReader inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        final BufferedWriter outputWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+        // Need to start processing output immediately as we don't do this separately
+        this.outputHandler = new IRCBotOutput(outputWriter, this.getName());
         this.outputHandler.start();
+
+        // If the server has a password, send that along first
         if (this.config.get(Config.SERVER_PASSWORD) != null) {
             this.sendRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD), true);
         }
+
+        // Initial USER and NICK messages. Let's just assume we want +iw (send 8)
         this.sendRawLine("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME), true);
         this.sendNickChange(this.goalNick);
+
+        // Handle initial connection
         String line;
-        while ((line = bufferedReader.readLine()) != null) { // TODO hacky
+        while ((line = inputReader.readLine()) != null) { // TODO hacky
             if (this.pingCheck(line)) {
                 continue;
             }
+            // Still process lines, just with added handling of errors or connection success
+            // WARNING: processes in this thread at this stage
+            // TODO determine if this is acceptable or not
             try {
                 this.handleLine(line);
             } catch (Throwable thrown) {
@@ -350,6 +366,8 @@ final class IRCBot implements Bot {
                 }
             }
         }
+
+        // Figure out auth
         if (this.authReclaim != null && !this.currentNick.equals(this.goalNick) && this.authType.isNickOwned()) {
             this.sendRawLine(this.authReclaim, true);
             this.sendNickChange(this.goalNick);
@@ -357,12 +375,20 @@ final class IRCBot implements Bot {
         if (this.auth != null) {
             this.sendRawLine(this.auth, true);
         }
+
+        // Join all channels
         for (final String channel : this.channels) {
             this.sendRawLine("JOIN :" + channel, true);
         }
+
+        // Send those queued messages
         this.outputHandler.readyForLowPriority();
-        this.inputHandler = new IRCBotInput(socket, bufferedReader, this);
+
+        // Only after we're done handling the initial connection should we process normally
+        this.inputHandler = new IRCBotInput(socket, inputReader, this);
         this.inputHandler.start();
+
+        // If we haven't blown up by now, we're good
         this.connected = true;
     }
 
@@ -402,20 +428,20 @@ final class IRCBot implements Bot {
                             String modes = prefixMatcher.group(1);
                             String display = prefixMatcher.group(2);
                             if (modes.length() == display.length()) {
-                                Map<Character, Character> map = new ConcurrentHashMap<>();
-                                for (int x = 0; x < modes.length(); x++) {
-                                    map.put(modes.charAt(x), display.charAt(x));
+                                Map<Character, Character> prefixMap = new ConcurrentHashMap<>();
+                                for (int index = 0; index < modes.length(); index++) {
+                                    prefixMap.put(modes.charAt(index), display.charAt(index));
                                 }
-                                this.prefixes = map;
+                                this.prefixes = prefixMap;
                             }
                             continue;
                         }
                         Matcher modeMatcher = CHANMODES_PATTERN.matcher(split[i]);
                         if (modeMatcher.find()) {
                             String[] modes = modeMatcher.group(1).split(",");
-                            Map<Character, ChannelModeType> map = new ConcurrentHashMap<>();
+                            Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
                             for (int typeId = 0; typeId < modes.length; typeId++) {
-                                for (char c : modes[typeId].toCharArray()) {
+                                for (char mode : modes[typeId].toCharArray()) {
                                     ChannelModeType type = null;
                                     switch (typeId) {
                                         case 0:
@@ -430,10 +456,10 @@ final class IRCBot implements Bot {
                                         case 3:
                                             type = ChannelModeType.D_PARAMETER_NEVER;
                                     }
-                                    map.put(c, type);
+                                    modesMap.put(mode, type);
                                 }
                             }
-                            this.modes = map;
+                            this.modes = modesMap;
                         }
                     }
                     break;
@@ -472,27 +498,27 @@ final class IRCBot implements Bot {
             }
             // CTCP
             if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(this.handleColon(StringUtil.combineSplit(split, 3)))) {
-                final String ctcp = CTCPUtil.fromCTCP(this.handleColon(StringUtil.combineSplit(split, 3)));
+                final String ctcpMessage = CTCPUtil.fromCTCP(this.handleColon(StringUtil.combineSplit(split, 3)));
                 switch (command) {
                     case NOTICE:
                         if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE) {
-                            this.eventManager.callEvent(new PrivateCTCPReplyEvent(actor, ctcp));
+                            this.eventManager.callEvent(new PrivateCTCPReplyEvent(actor, ctcpMessage));
                         }
                         break;
                     case PRIVMSG:
                         switch (this.getTypeByTarget(split[2])) {
                             case PRIVATE:
                                 String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
-                                if (ctcp.equals("VERSION")) {
+                                if (ctcpMessage.equals("VERSION")) {
                                     reply = "VERSION I am Kitteh!";
-                                } else if (ctcp.equals("TIME")) {
+                                } else if (ctcpMessage.equals("TIME")) {
                                     reply = "TIME " + new Date().toString();
-                                } else if (ctcp.equals("FINGER")) {
+                                } else if (ctcpMessage.equals("FINGER")) {
                                     reply = "FINGER om nom nom tasty finger";
-                                } else if (ctcp.startsWith("PING ")) {
-                                    reply = ctcp;
+                                } else if (ctcpMessage.startsWith("PING ")) {
+                                    reply = ctcpMessage;
                                 }
-                                PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(actor, ctcp, reply);
+                                PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(actor, ctcpMessage, reply);
                                 this.eventManager.callEvent(event);
                                 reply = event.getReply();
                                 if (reply != null) {
@@ -500,7 +526,7 @@ final class IRCBot implements Bot {
                                 }
                                 break;
                             case CHANNEL:
-                                this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcp));
+                                this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcpMessage));
                                 break;
                         }
                         break;
