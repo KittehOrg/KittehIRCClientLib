@@ -51,10 +51,12 @@ public class User extends Actor {
     private final String nick;
     private final String user;
 
-    User(String mask) {
+    User(String mask) throws Throwable {
         super(mask);
         Matcher matcher = PATTERN.matcher(mask);
-        matcher.find();
+        if (!matcher.find()) {
+            throw new Throwable();
+        }
         this.nick = matcher.group(1);
         this.user = matcher.group(2);
         this.host = matcher.group(3);

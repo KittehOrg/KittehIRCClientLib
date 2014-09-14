@@ -36,10 +36,14 @@ public class Actor {
      * @return an Actor object for the given name
      */
     public static Actor getActor(String name) {
-        if (User.isUser(name)) {
-            return new User(name);
-        } else if (Channel.isChannel(name)) {
-            return new Channel(name);
+        try {
+            if (User.isUser(name)) {
+                return new User(name);
+            } else if (Channel.isChannel(name)) {
+                return new Channel(name);
+            }
+        } catch (Throwable ignored) {
+            // NOOP
         }
         return new Actor(name);
     }
