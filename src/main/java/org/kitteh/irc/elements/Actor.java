@@ -50,7 +50,7 @@ public class Actor {
 
     private final String name;
 
-    protected Actor(String name) {
+    Actor(String name) {
         this.name = name;
     }
 
