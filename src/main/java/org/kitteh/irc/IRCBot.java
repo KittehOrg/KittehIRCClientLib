@@ -467,7 +467,7 @@ final class IRCBot implements Bot {
         } else {
             final Command command = Command.getByName(split[1]);
             // CTCP
-            if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.CTCP.matcher(this.handleColon(StringUtil.combineSplit(split, 3))).matches()) {
+            if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(this.handleColon(StringUtil.combineSplit(split, 3)))) {
                 final String ctcp = CTCPUtil.fromCTCP(this.handleColon(StringUtil.combineSplit(split, 3)));
                 switch (command) {
                     case NOTICE:

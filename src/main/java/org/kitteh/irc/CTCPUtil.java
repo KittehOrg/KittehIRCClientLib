@@ -54,17 +54,18 @@ import java.util.regex.Pattern;
 
 /**
  * A utility class for CTCP handling.
- * <p />
+ * <p/>
  * Stored in this package so it can be package private to avoid confusion.
  * This stuff is all handled internally by the bot; no bot user needs to
  * know how to do this.
  */
 class CTCPUtil {
     private static final char CTCP_DELIMITER = '\u0001';
-    static final Pattern CTCP = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
     private static final char CTCP_MQUOTE = '\u0016';
-    private static final Pattern CTCP_ESCAPABLE = Pattern.compile("[\n\r\u0000" + CTCP_DELIMITER + CTCP_MQUOTE + "\\\\]");
-    private static final Pattern CTCP_ESCAPED = Pattern.compile("([" + CTCP_MQUOTE + "\\\\])(.)");
+
+    private static final Pattern CTCP_ESCAPABLE_CHAR = Pattern.compile("[\n\r\u0000" + CTCP_DELIMITER + CTCP_MQUOTE + "\\\\]");
+    private static final Pattern CTCP_ESCAPED_CHAR = Pattern.compile("([" + CTCP_MQUOTE + "\\\\])(.)");
+    private static final Pattern CTCP_MESSAGE = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
 
     /**
      * Converts a given message from CTCP escaping.
@@ -77,7 +78,7 @@ class CTCPUtil {
         message = message.substring(0, message.indexOf(CTCP_DELIMITER)); // Strip the second delimiter
         StringBuilder builder = new StringBuilder();
         int currentIndex = 0;
-        Matcher matcher = CTCP_ESCAPED.matcher(message);
+        Matcher matcher = CTCP_ESCAPED_CHAR.matcher(message);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
                 builder.append(message.substring(currentIndex, matcher.start()));
@@ -116,6 +117,16 @@ class CTCPUtil {
     }
 
     /**
+     * Gets if a given message is a CTCP message.
+     *
+     * @param message message to test
+     * @return true if the message is a CTCP message
+     */
+    static boolean isCTCP(String message) {
+        return CTCP_MESSAGE.matcher(message).matches();
+    }
+
+    /**
      * Converts a given message to CTCP formatting.
      *
      * @param message message to convert
@@ -125,7 +136,7 @@ class CTCPUtil {
         StringBuilder builder = new StringBuilder();
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;
-        Matcher matcher = CTCP_ESCAPABLE.matcher(message);
+        Matcher matcher = CTCP_ESCAPABLE_CHAR.matcher(message);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
                 builder.append(message.substring(currentIndex, matcher.start()));
