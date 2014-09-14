@@ -456,6 +456,7 @@ final class IRCBot implements Bot {
                 case 366: // End of /names
                 case 422: // MOTD missing
                     break;
+                // Nick errors, try for new nick below
                 case 431: // No nick given
                 case 432: // Erroneous nickname
                 case 433: // Nick in use
