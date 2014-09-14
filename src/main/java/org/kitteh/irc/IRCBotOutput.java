@@ -55,7 +55,7 @@ final class IRCBotOutput extends Thread {
                 }
             }
             String message = this.highPriorityQueue.poll();
-            if (message == null) {
+            if (message == null && this.handleLowPriority) {
                 message = this.lowPriorityQueue.poll();
             }
             if (message == null) {
