@@ -31,7 +31,7 @@ import java.net.InetSocketAddress;
  * Builds ALL the bots!
  */
 public final class BotBuilder {
-    private final Config config = new Config();
+    private final Config config;
     private String bindHost;
     private int bindPort;
     private String serverHost;
@@ -39,15 +39,13 @@ public final class BotBuilder {
 
     /**
      * Creates a BotBuilder!
-     * <p/>
-     * The name is mandatory (thus in the constructor) and cannot be null.
-     *
-     * @param name a name to label the bot internally
-     * @throws java.lang.IllegalArgumentException for null name
      */
-    public BotBuilder(String name) {
-        Sanity.nullCheck(name, "Name cannot be null");
-        this.config.set(Config.BOT_NAME, name);
+    public BotBuilder() {
+        this.config = new Config();
+    }
+
+    private BotBuilder(Config config) {
+        this.config = config.clone();
     }
 
     /**
@@ -73,6 +71,18 @@ public final class BotBuilder {
      */
     public BotBuilder bind(int port) {
         this.bindPort = this.validPort(port);
+        return this;
+    }
+
+    /**
+     * Names the bot, for internal labeling.
+     *
+     * @param name a name to label the bot internally
+     * @return this builder
+     */
+    public BotBuilder name(String name) {
+        Sanity.nullCheck(name, "Name cannot be null");
+        this.config.set(Config.BOT_NAME, name);
         return this;
     }
 
@@ -173,6 +183,20 @@ public final class BotBuilder {
         this.inetSet(Config.BIND_ADDRESS, this.bindHost, this.bindPort);
         this.inetSet(Config.SERVER_ADDRESS, this.serverHost, this.serverPort);
         return new IRCBot(this.config);
+    }
+
+    /**
+     * Clones this builder.
+     *
+     * @return a clone of this builder
+     */
+    public BotBuilder clone() {
+        BotBuilder botBuilder = new BotBuilder(this.config);
+        botBuilder.bindHost = this.bindHost;
+        botBuilder.bindPort = this.bindPort;
+        botBuilder.serverHost = this.serverHost;
+        botBuilder.serverPort = this.serverPort;
+        return botBuilder;
     }
 
     private void inetSet(Config.Entry<InetSocketAddress> entry, String host, int port) {

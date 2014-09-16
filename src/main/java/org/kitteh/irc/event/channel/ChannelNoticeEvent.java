@@ -34,7 +34,7 @@ public class ChannelNoticeEvent extends ActorChannelMessageEvent<Actor> {
     /**
      * Creates the event.
      *
-     * @param sender  who sent it
+     * @param sender who sent it
      * @param channel channel receiving
      * @param message message sent
      */

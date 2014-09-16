@@ -77,7 +77,7 @@ public interface Bot {
      * <i>Note: CTCP replies should not be sent this way. Catch the message
      * with the {@link org.kitteh.irc.event.user.PrivateCTCPQueryEvent}</i>
      *
-     * @param target  the destination of the message
+     * @param target the destination of the message
      * @param message the message to send
      */
     void sendCTCPMessage(String target, String message);
@@ -85,7 +85,7 @@ public interface Bot {
     /**
      * Sends a message to a target user or channel.
      *
-     * @param target  the destination of the message
+     * @param target the destination of the message
      * @param message the message to send
      */
     void sendMessage(String target, String message);
@@ -103,7 +103,7 @@ public interface Bot {
      * Sends a raw IRC message at specified priority. High priority takes
      * precedence over any currently queued low priority messages.
      *
-     * @param message  message to send
+     * @param message message to send
      * @param priority if true, use high priority
      */
     void sendRawLine(String message, boolean priority);

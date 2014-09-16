@@ -34,7 +34,7 @@ public class PrivateMessageEvent extends ActorMessageEvent<Actor> {
      * Creates the event.
      *
      * @param message message sent
-     * @param sender  who sent it
+     * @param sender who sent it
      */
     public PrivateMessageEvent(Actor sender, String message) {
         super(sender, message);

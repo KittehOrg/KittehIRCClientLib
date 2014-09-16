@@ -64,7 +64,7 @@ final class Config {
         }
     }
 
-    static final Entry<String> BOT_NAME = new Entry<>("Kitteh", String.class);
+    static final Entry<String> BOT_NAME = new Entry<>("Unnamed", String.class);
     static final Entry<InetSocketAddress> BIND_ADDRESS = new Entry<>(null, InetSocketAddress.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);
@@ -75,6 +75,13 @@ final class Config {
     private static final Object NULL = new Object();
 
     private final Map<Entry<?>, Object> map = new ConcurrentHashMap<>();
+
+    @Override
+    protected Config clone() {
+        Config config = new Config();
+        config.map.putAll(this.map);
+        return config;
+    }
 
     /**
      * Gets a stored configuration entry.
