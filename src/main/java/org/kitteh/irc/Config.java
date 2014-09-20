@@ -66,6 +66,7 @@ final class Config {
 
     static final Entry<String> BOT_NAME = new Entry<>("Unnamed", String.class);
     static final Entry<InetSocketAddress> BIND_ADDRESS = new Entry<>(null, InetSocketAddress.class);
+    static final Entry<Integer> MESSAGE_DELAY = new Entry<>(1200, Integer.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);
     static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6667), InetSocketAddress.class);

@@ -238,6 +238,15 @@ final class IRCBot implements Bot {
     }
 
     @Override
+    public void setMessageDelay(int delay) {
+        Sanity.truthiness(delay > -1, "Delay must be a positive value");
+        this.config.set(Config.MESSAGE_DELAY, delay);
+        if (this.outputHandler != null) {
+            this.outputHandler.setMessageDelay(delay);
+        }
+    }
+
+    @Override
     public void setNick(String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
         this.goalNick = nick.trim();
@@ -329,7 +338,7 @@ final class IRCBot implements Bot {
         final BufferedWriter outputWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
         // Need to start processing output immediately as we don't do this separately
-        this.outputHandler = new IRCBotOutput(outputWriter, this.getName());
+        this.outputHandler = new IRCBotOutput(outputWriter, this.getName(), this.config.get(Config.MESSAGE_DELAY));
         this.outputHandler.start();
 
         // If the server has a password, send that along first

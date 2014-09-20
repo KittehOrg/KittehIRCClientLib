@@ -31,15 +31,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 final class IRCBotOutput extends Thread {
     private final Object wait = new Object();
     private final BufferedWriter bufferedWriter;
-    private final int delay = 1200; // TODO customizable
+    private int delay;
     private String quitReason;
     private boolean handleLowPriority = false;
     private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
     private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
 
-    IRCBotOutput(BufferedWriter bufferedWriter, String botName) {
+    IRCBotOutput(BufferedWriter bufferedWriter, String botName, int messageDelay) {
         this.setName("Kitteh IRCBot Output (" + botName + ")");
         this.bufferedWriter = bufferedWriter;
+        this.delay = messageDelay;
     }
 
     @Override
@@ -93,6 +94,10 @@ final class IRCBotOutput extends Thread {
 
     void readyForLowPriority() {
         this.handleLowPriority = true;
+    }
+
+    void setMessageDelay(int delay) {
+        this.delay = delay;
     }
 
     void shutdown(String message) {

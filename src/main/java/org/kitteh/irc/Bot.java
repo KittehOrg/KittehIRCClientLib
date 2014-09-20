@@ -118,6 +118,15 @@ public interface Bot {
     void setAuth(AuthType type, String nick, String pass);
 
     /**
+     * Sets the delay between messages sent to the server.
+     * <p/>
+     * Default is 1200ms.
+     *
+     * @param delay milliseconds between sent messages
+     */
+    void setMessageDelay(int delay);
+
+    /**
      * Sets the nick the bot wishes to use.
      *
      * @param nick new nickname
