@@ -56,11 +56,8 @@ public final class EventManager {
         Method[] methods = listener.getClass().getDeclaredMethods();
         Set<Pair<Class<?>, Pair<Object, Method>>> pairs = new HashSet<>();
         for (Method method : methods) {
-            if (Modifier.isStatic(method.getModifiers()) || method.getAnnotation(EventHandler.class) == null) {
-                continue;
-            }
-            Class<?>[] types = method.getParameterTypes();
-            if (types.length != 1) {
+            Class<?>[] types;
+            if (Modifier.isStatic(method.getModifiers()) || method.getAnnotation(EventHandler.class) == null || (types = method.getParameterTypes()).length != 1) {
                 continue;
             }
             method.setAccessible(true);
