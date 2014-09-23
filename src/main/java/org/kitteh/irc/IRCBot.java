@@ -137,19 +137,7 @@ final class IRCBot implements Bot {
         }
     };
     private static final Pattern PREFIX_PATTERN = Pattern.compile("PREFIX=\\(([a-zA-Z]+)\\)([^ ]+)");
-    private Map<Character, ChannelModeType> modes = new ConcurrentHashMap<Character, ChannelModeType>() {
-        {
-            put('b', ChannelModeType.A_MASK);
-            put('k', ChannelModeType.B_PARAMETER_ALWAYS);
-            put('l', ChannelModeType.C_PARAMETER_ON_SET);
-            put('i', ChannelModeType.D_PARAMETER_NEVER);
-            put('m', ChannelModeType.D_PARAMETER_NEVER);
-            put('n', ChannelModeType.D_PARAMETER_NEVER);
-            put('p', ChannelModeType.D_PARAMETER_NEVER);
-            put('s', ChannelModeType.D_PARAMETER_NEVER);
-            put('t', ChannelModeType.D_PARAMETER_NEVER);
-        }
-    };
+    private Map<Character, ChannelModeType> modes = ChannelModeType.getDefaultModes();
     private static final Pattern CHANMODES_PATTERN = Pattern.compile("CHANMODES=(([,A-Za-z]+)(,([,A-Za-z]+)){0,3})");
 
     IRCBot(Config config) {

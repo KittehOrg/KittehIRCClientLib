@@ -23,6 +23,10 @@
  */
 package org.kitteh.irc;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Channel mode types.
  */
@@ -43,6 +47,29 @@ public enum ChannelModeType {
      * Never has parameters.
      */
     D_PARAMETER_NEVER(false, false);
+
+    private final static Map<Character, ChannelModeType> DEFAULT_MODES = new HashMap<Character, ChannelModeType>() {
+        {
+            put('b', ChannelModeType.A_MASK);
+            put('k', ChannelModeType.B_PARAMETER_ALWAYS);
+            put('l', ChannelModeType.C_PARAMETER_ON_SET);
+            put('i', ChannelModeType.D_PARAMETER_NEVER);
+            put('m', ChannelModeType.D_PARAMETER_NEVER);
+            put('n', ChannelModeType.D_PARAMETER_NEVER);
+            put('p', ChannelModeType.D_PARAMETER_NEVER);
+            put('s', ChannelModeType.D_PARAMETER_NEVER);
+            put('t', ChannelModeType.D_PARAMETER_NEVER);
+        }
+    };
+
+    /**
+     * Gets the default modes expected by the bot if not sent by the server.
+     *
+     * @return default expected nodes
+     */
+    static Map<Character, ChannelModeType> getDefaultModes() {
+        return new ConcurrentHashMap<>(DEFAULT_MODES);
+    }
 
     private final boolean parameterRequiredOnRemoval;
     private final boolean parameterRequiredOnSetting;
