@@ -55,7 +55,7 @@ public enum ChannelModeType {
     /**
      * Gets if a parameter is required when removing the mode.
      *
-     * @return true if required on removal
+     * @return true if a parameter is required on removal
      */
     public boolean isParameterRequiredOnRemoval() {
         return this.parameterRequiredOnRemoval;
@@ -64,7 +64,7 @@ public enum ChannelModeType {
     /**
      * Gets if a parameter is required when adding the mode.
      *
-     * @return true if required on addition
+     * @return true if a parameter is required on addition
      */
     public boolean isParameterRequiredOnSetting() {
         return this.parameterRequiredOnSetting;
