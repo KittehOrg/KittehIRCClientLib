@@ -114,6 +114,7 @@ final class IRCBot implements Bot {
     private String currentNick;
     private String requestedNick;
 
+    // RFC 2812 section 1.3 'Channel names are case insensitive.'
     private final Set<String> channels = new LCSet();
 
     private AuthType authType;

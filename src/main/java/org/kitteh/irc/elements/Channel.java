@@ -50,11 +50,13 @@ public class Channel extends Actor {
 
     @Override
     public boolean equals(Object o) {
+        // RFC 2812 section 1.3 'Channel names are case insensitive.'
         return o instanceof Channel && ((Channel) o).getName().toLowerCase().equals(this.getName().toLowerCase());
     }
 
     @Override
     public int hashCode() {
+        // RFC 2812 section 1.3 'Channel names are case insensitive.'
         return this.getName().toLowerCase().hashCode() * 2;
     }
 }
