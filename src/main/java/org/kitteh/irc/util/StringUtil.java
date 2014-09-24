@@ -29,14 +29,23 @@ package org.kitteh.irc.util;
 public final class StringUtil {
     /**
      * Combines an array into a super string!
+     * <p/>
+     * Invalid index or length, or a length too long for the array, will be
+     * ignored.
      *
      * @param split the split array
      * @param start index at which to start
      * @param length how many elements to include
      * @param delimiter delimiter
      * @return the combined string
+     * @throws IllegalArgumentException for a null array, a length less than
+     * 1 or an index less than 0
      */
     public static String combineSplit(String[] split, int start, int length, String delimiter) {
+        Sanity.nullCheck((Object) split, "Cannot combine a null array");
+        Sanity.truthiness(start >= 0, "Negative array indexes are not valid");
+        Sanity.truthiness(length > 0, "Cannot combine less than one element of an array");
+
         final StringBuilder builder = new StringBuilder();
         for (int x = start; (x < split.length) && (x < (start + length)); x++) {
             builder.append(split[x]).append(delimiter);
@@ -49,12 +58,16 @@ public final class StringUtil {
 
     /**
      * Combines an array into a space-delimited string from a starting index.
+     * <p/>
+     * Invalid starting index will result
      *
      * @param split the split array
      * @param start index at which to start
      * @return the combined string
+     * @throws IllegalArgumentException for null array or index less than 0
      */
     public static String combineSplit(String[] split, int start) {
+        Sanity.nullCheck((Object) split, "Cannot combine a null array");
         return StringUtil.combineSplit(split, start, split.length - start, " ");
     }
 }
