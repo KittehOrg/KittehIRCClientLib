@@ -73,6 +73,10 @@ final class Config {
     static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class);
     static final Entry<String> USER = new Entry<>("Kitteh", String.class);
 
+    /**
+     * Magical null value for {@link java.util.concurrent.ConcurrentHashMap}.
+     * Must be static because this value is shared across cloned Configs.
+     */
     private static final Object NULL = new Object();
 
     private final Map<Entry<?>, Object> map = new ConcurrentHashMap<>();
@@ -93,11 +97,11 @@ final class Config {
      */
     <Type> Type get(Entry<Type> entry) {
         if (this.map.containsKey(entry)) {
-            Object value = this.map.get(entry);
-            if (!value.equals(NULL) && entry.getType().isAssignableFrom(value.getClass())) {
+            Object uncastValue = this.map.get(entry);
+            if (uncastValue != NULL && entry.getType().isAssignableFrom(uncastValue.getClass())) {
                 @SuppressWarnings("unchecked")
-                Type tValue = (Type) this.map.get(entry);
-                return tValue;
+                Type castValue = (Type) uncastValue;
+                return castValue;
             }
             return null;
         }
