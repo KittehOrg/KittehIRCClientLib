@@ -75,8 +75,8 @@ final class IRCBot implements Bot {
         @Override
         public void run() {
             while (!this.isInterrupted()) {
-                if (this.queue.isEmpty()) {
-                    synchronized (this.queue) {
+                synchronized (this.queue) {
+                    if (this.queue.isEmpty()) {
                         try {
                             this.queue.wait();
                         } catch (InterruptedException e) {
