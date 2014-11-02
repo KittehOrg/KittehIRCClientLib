@@ -589,11 +589,7 @@ final class IRCBot implements Bot {
                                     }
                                     hasArg = (add && type.isParameterRequiredOnSetting()) || (!add && type.isParameterRequiredOnRemoval());
                                 }
-                                String arg = null;
-                                if (hasArg) {
-                                    arg = split[currentArg++];
-                                }
-                                this.eventManager.callEvent(new ChannelModeEvent(actor, channel, add, next, arg));
+                                this.eventManager.callEvent(new ChannelModeEvent(actor, channel, add, next, hasArg ? split[currentArg++] : null));
                             }
                         }
                     }
