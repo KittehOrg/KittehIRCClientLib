@@ -380,7 +380,7 @@ final class IRCBot implements Bot {
         }
 
         // Send those queued messages
-        this.outputHandler.readyForLowPriority();
+        this.outputHandler.setLowPriorityEnabled();
 
         // Only after we're done handling the initial connection should we process normally
         this.inputHandler = new IRCBotInput(socket, inputReader, this);

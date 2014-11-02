@@ -92,7 +92,11 @@ final class IRCBotOutput extends Thread {
         }
     }
 
-    void readyForLowPriority() {
+    /**
+     * Enables low priority sending. Until this is set, low priority messages
+     * are not sent. Called after successful connection.
+     */
+    void setLowPriorityEnabled() {
         this.handleLowPriority = true;
     }
 
