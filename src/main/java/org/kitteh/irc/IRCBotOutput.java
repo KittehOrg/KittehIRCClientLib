@@ -31,9 +31,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 final class IRCBotOutput extends Thread {
     private final Object wait = new Object();
     private final BufferedWriter bufferedWriter;
-    private int delay;
-    private String quitReason;
-    private boolean handleLowPriority = false;
+    private volatile int delay;
+    private volatile String quitReason;
+    private volatile boolean handleLowPriority = false;
     private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
     private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
 
@@ -46,8 +46,8 @@ final class IRCBotOutput extends Thread {
     @Override
     public void run() {
         while (!this.isInterrupted()) {
-            if ((!this.handleLowPriority || this.lowPriorityQueue.isEmpty()) && this.highPriorityQueue.isEmpty()) {
-                synchronized (this.wait) {
+            synchronized (this.wait) {
+                if ((!this.handleLowPriority || this.lowPriorityQueue.isEmpty()) && this.highPriorityQueue.isEmpty()) {
                     try {
                         this.wait.wait();
                     } catch (InterruptedException e) {
