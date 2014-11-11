@@ -32,6 +32,7 @@ import org.kitteh.irc.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.event.user.PrivateMessageEvent;
 import org.kitteh.irc.event.user.PrivateNoticeEvent;
+import org.kitteh.irc.event.user.UserQuitEvent;
 import org.kitteh.irc.util.LCSet;
 import org.kitteh.irc.util.Sanity;
 import org.kitteh.irc.util.StringUtil;
@@ -605,7 +606,9 @@ final class IRCBot implements Bot {
                     }
                     break;
                 case QUIT:
-                    // TODO UserQuitEvent
+                    if (actor instanceof User) { // Just in case
+                        this.eventManager.callEvent(new UserQuitEvent((User) actor, split.length > 1 ? this.handleColon(StringUtil.combineSplit(split, 2)) : ""));
+                    }
                     break;
                 case KICK:
                     // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4))); TODO ChannelKickEvent
