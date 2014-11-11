@@ -612,7 +612,7 @@ final class IRCBot implements Bot {
                     }
                     break;
                 case KICK:
-                    // System.out.println(split[2] + ": " + StringUtil.getNick(actor) + " kicked " + split[3] + ": " + this.handleColon(StringUtil.combineSplit(split, 4))); TODO ChannelKickEvent
+                    this.eventManager.callEvent(new ChannelKickEvent((Channel) Actor.getActor(split[2]), actor, split[3], this.handleColon(StringUtil.combineSplit(split, 4))));
                     break;
                 case NICK:
                     if (actor instanceof User) {
