@@ -32,6 +32,7 @@ import org.kitteh.irc.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.event.user.PrivateMessageEvent;
 import org.kitteh.irc.event.user.PrivateNoticeEvent;
+import org.kitteh.irc.event.user.UserNickChangeEvent;
 import org.kitteh.irc.event.user.UserQuitEvent;
 import org.kitteh.irc.util.LCSet;
 import org.kitteh.irc.util.Sanity;
@@ -619,7 +620,7 @@ final class IRCBot implements Bot {
                         if (user.getNick().equals(this.currentNick)) {
                             this.currentNick = split[2];
                         }
-                        // TODO UserNickChangeEvent
+                        this.eventManager.callEvent(new UserNickChangeEvent(user, split[2]));
                     }
                     break;
                 case INVITE:
