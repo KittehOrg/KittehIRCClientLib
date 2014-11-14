@@ -627,7 +627,7 @@ final class IRCBot implements Bot {
                     if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
                         this.sendRawLine("JOIN " + split[3], false);
                     }
-                    // TODO ChannelInviteEvent
+                    this.eventManager.callEvent(new ChannelInviteEvent((Channel) Actor.getActor(split[3]), actor, split[2]));
                     break;
                 case TOPIC:
                     // TODO ChannelTopicChangeEvent
