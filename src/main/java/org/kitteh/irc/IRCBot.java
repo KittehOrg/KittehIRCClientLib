@@ -631,6 +631,10 @@ final class IRCBot implements Bot {
                     break;
                 case TOPIC:
                     // TODO ChannelTopicChangeEvent
+                    break;
+                default:
+                    // TODO: Unknown event?
+                    break;
             }
         }
     }
