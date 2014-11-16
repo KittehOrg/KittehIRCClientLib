@@ -2,7 +2,6 @@ package org.kitteh.irc.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kitteh.irc.util.StringUtil;
 
 /**
  * Tests the StringUtil class.

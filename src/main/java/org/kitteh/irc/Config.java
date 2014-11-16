@@ -29,6 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Stores an IRCBot's configured data from the {@link BotBuilder}.
+ * <p/>
+ * This class is for internal use only.
  */
 final class Config {
     /**
