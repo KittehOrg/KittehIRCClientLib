@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * Thread handling outgoing messages from the bot.
+ */
 final class IRCBotOutput extends Thread {
     private final Object wait = new Object();
     private final BufferedWriter bufferedWriter;
@@ -89,6 +92,14 @@ final class IRCBotOutput extends Thread {
         }
     }
 
+    /**
+     * Queues up a message to be output. If high priority, or {@link
+     * #setLowPriorityEnabled()} has been called, the message will be sent as
+     * soon as possible.
+     *
+     * @param message message to send
+     * @param highPriority true if the message must be sent ASAP out of order
+     */
     void queueMessage(String message, boolean highPriority) {
         (highPriority ? this.highPriorityQueue : this.lowPriorityQueue).add(message);
         if (highPriority || this.handleLowPriority) {
@@ -106,10 +117,21 @@ final class IRCBotOutput extends Thread {
         this.handleLowPriority = true;
     }
 
+    /**
+     * Sets the delay between messages.
+     *
+     * @param delay number of milliseconds to wait between messages
+     */
     void setMessageDelay(int delay) {
         this.delay = delay;
     }
 
+    /**
+     * Interrupts the thread and sets a quit message to be used (assuming the
+     * bot is still connected).
+     *
+     * @param message quit message to be sent prior to disconnection
+     */
     void shutdown(String message) {
         this.quitReason = message;
         this.interrupt();
