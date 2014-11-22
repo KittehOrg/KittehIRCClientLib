@@ -60,7 +60,13 @@ public enum IRCFormat {
         if ((color & 15) != color) {
             throw new AssertionError("Impossible color id: " + color);
         }
-        this.toString = COLOR_CHAR + "" + ((color < 10) ? ("0" + color) : color);
+        final StringBuilder builder = new StringBuilder();
+        builder.append(COLOR_CHAR);
+        if (color < 10) {
+            builder.append('0');
+        }
+        builder.append(color);
+        this.toString = builder.toString();
     }
 
     public static final char COLOR_CHAR = '\u0003';
