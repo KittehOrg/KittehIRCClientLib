@@ -75,7 +75,13 @@ final class IRCBotOutput extends Thread {
             }
         }
         try {
-            this.bufferedWriter.write("QUIT :" + this.quitReason + "\r\n");
+            StringBuilder quitBuilder = new StringBuilder();
+            quitBuilder.append("QUIT");
+            if (this.quitReason != null) {
+                quitBuilder.append(" :").append(this.quitReason);
+            }
+            quitBuilder.append("\r\n");
+            this.bufferedWriter.write(quitBuilder.toString());
             this.bufferedWriter.flush();
             this.bufferedWriter.close();
         } catch (final IOException e) {
