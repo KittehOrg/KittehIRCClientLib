@@ -274,7 +274,7 @@ final class IRCBot implements Bot {
         try {
             this.connect();
         } catch (final IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // TODO clean up error handling
             if ((this.inputHandler != null) && this.inputHandler.isAlive() && !this.inputHandler.isInterrupted()) {
                 this.inputHandler.interrupt();
             }
@@ -319,7 +319,7 @@ final class IRCBot implements Bot {
             try {
                 socket.bind(this.config.get(Config.BIND_ADDRESS));
             } catch (final Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(); // TODO clean up error handling
             }
         }
 

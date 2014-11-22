@@ -79,7 +79,7 @@ final class IRCBotOutput extends Thread {
             this.bufferedWriter.flush();
             this.bufferedWriter.close();
         } catch (final IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // TODO clean up error handling
         }
     }
 
