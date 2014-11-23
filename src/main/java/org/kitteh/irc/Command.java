@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.components;
+package org.kitteh.irc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Commands used in client/server communication.
  */
-public enum Command {
+enum Command {
     INVITE,
     JOIN,
     KICK,

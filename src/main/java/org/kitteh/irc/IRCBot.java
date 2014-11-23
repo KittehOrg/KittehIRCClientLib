@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc;
 
-import org.kitteh.irc.components.Command;
 import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 import org.kitteh.irc.elements.User;
