@@ -29,7 +29,7 @@ package org.kitteh.irc.util;
 public final class StringUtil {
     /**
      * Combines an array into a super string!
-     * <p/>
+     * <p>
      * Invalid index or length, or a length too long for the array, will be
      * ignored.
      *
@@ -58,7 +58,7 @@ public final class StringUtil {
 
     /**
      * Combines an array into a space-delimited string from a starting index.
-     * <p/>
+     * <p>
      * Invalid starting index will result
      *
      * @param split the split array

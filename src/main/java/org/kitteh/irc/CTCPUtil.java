@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
 
 /**
  * A utility class for CTCP handling.
- * <p/>
+ * <p>
  * Stored in this package so it can be package private to avoid confusion.
  * This stuff is all handled internally by the bot; no bot user needs to
  * know how to do this.

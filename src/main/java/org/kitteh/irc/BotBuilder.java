@@ -50,7 +50,7 @@ public final class BotBuilder {
 
     /**
      * Binds the bot to a host or IP locally. Null for wildcard binding.
-     * <p/>
+     * <p>
      * By default, the host is null for wildcard binding.
      *
      * @param host host to bind to or null for wildcard
@@ -63,7 +63,7 @@ public final class BotBuilder {
 
     /**
      * Binds the bot to the specified port. Invalid ports are set to 0.
-     * <p/>
+     * <p>
      * By default, the port is 0.
      *
      * @param port port to bind to
@@ -88,7 +88,7 @@ public final class BotBuilder {
 
     /**
      * Sets the bot's nick.
-     * <p/>
+     * <p>
      * By default, the nick is Kitteh.
      *
      * @param nick nick for the bot to use
@@ -103,7 +103,7 @@ public final class BotBuilder {
 
     /**
      * Sets the server password.
-     * <p/>
+     * <p>
      * If not set, no password is sent
      *
      * @param password server password
@@ -118,7 +118,7 @@ public final class BotBuilder {
 
     /**
      * Sets the realname the bot uses.
-     * <p/>
+     * <p>
      * By default, the realname is Kitteh.
      *
      * @param name realname to use
@@ -133,7 +133,7 @@ public final class BotBuilder {
 
     /**
      * Sets the server IP to which the bot will connect.
-     * <p/>
+     * <p>
      * By default, the port is 6667.
      *
      * @param port IRC server port
@@ -146,7 +146,7 @@ public final class BotBuilder {
 
     /**
      * Sets the server host to which the bot will connect.
-     * <p/>
+     * <p>
      * By default, the host is localhost.
      *
      * @param host IRC server host
@@ -161,7 +161,7 @@ public final class BotBuilder {
 
     /**
      * Sets the user the bot connects as.
-     * <p/>
+     * <p>
      * By default, the user is Kitteh.
      *
      * @param user user to connect as
@@ -209,7 +209,7 @@ public final class BotBuilder {
 
     /**
      * Gets a valid port number from a potentially invalid port number.
-     * <p/>
+     * <p>
      * Returns the valid port, or 0 if invalid.
      *
      * @param port port provided

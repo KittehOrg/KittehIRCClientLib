@@ -29,7 +29,7 @@ package org.kitteh.irc;
 public interface Bot {
     /**
      * Adds channels to the bot!
-     * <p/>
+     * <p>
      * Joins the channel if already connected.
      *
      * @param channel channel(s) to add
@@ -47,7 +47,7 @@ public interface Bot {
      * Gets the nickname the bot intends to possess. May not reflect the
      * current nickname if it's taken. The bot will automatically attempt to
      * take back this nickname.
-     * <p/>
+     * <p>
      * Use {@link #getNick()} for the current nick.
      *
      * @return the nickname the bot tries to maintain
@@ -73,7 +73,7 @@ public interface Bot {
      * Sends a CTCP message to a target user or channel. Automagically adds
      * the CTCP delimiter around the message and escapes the characters that
      * need escaping when sending a CTCP message.
-     * <p/>
+     * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
      * with the {@link org.kitteh.irc.event.user.PrivateCTCPQueryEvent}</i>
      *
@@ -92,7 +92,7 @@ public interface Bot {
 
     /**
      * Sends a raw IRC message at low priority.
-     * <p/>
+     * <p>
      * If you feel you must, use {@link #sendRawLine(String, boolean)}.
      *
      * @param message message to send
@@ -119,7 +119,7 @@ public interface Bot {
 
     /**
      * Sets the delay between messages sent to the server.
-     * <p/>
+     * <p>
      * Default is 1200ms.
      *
      * @param delay milliseconds between sent messages

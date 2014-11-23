@@ -46,7 +46,7 @@ public final class EventManager {
     /**
      * Registers any non-static methods annotated with {@link EventHandler},
      * provided they have a single parameter. This parameter is the event.
-     * <p/>
+     * <p>
      * The class listened to must be the same class called in
      * {@link #callEvent(Object)}, not a super or subclass.
      *

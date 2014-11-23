@@ -31,7 +31,7 @@ import org.kitteh.irc.event.ActorMessageEvent;
  * VERSION) queries which have a default reply message. Others are simply
  * ignored by default. The method {@link #getMessage()} returns the message
  * with the delimiter character (1) removed.
- * <p/>
+ * <p>
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
 public class PrivateCTCPQueryEvent extends ActorMessageEvent<Actor> {

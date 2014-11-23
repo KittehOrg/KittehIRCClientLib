@@ -25,7 +25,7 @@ package org.kitteh.irc;
 
 /**
  * Represents various formatting available in IRC.
- * <p/>
+ * <p>
  * The {@link #toString} method provides the String you need.
  */
 public enum IRCFormat {
