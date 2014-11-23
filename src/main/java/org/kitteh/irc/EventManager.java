@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Manages events. EventManagers exist per bot instance.
+ * Processes and registers events for a single {@link Bot} instance.
  */
 public final class EventManager {
     private final Map<Class<?>, Set<Pair<Object, Method>>> registeredEvents = new ConcurrentHashMap<>();

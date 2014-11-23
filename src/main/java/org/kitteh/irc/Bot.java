@@ -24,7 +24,7 @@
 package org.kitteh.irc;
 
 /**
- * An IRC bot.
+ * An individual IRC bot, see {@link BotBuilder} to create one.
  */
 public interface Bot {
     /**

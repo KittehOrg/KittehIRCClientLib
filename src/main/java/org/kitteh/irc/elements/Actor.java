@@ -24,7 +24,7 @@
 package org.kitteh.irc.elements;
 
 /**
- * An entity on an IRC server.
+ * Represents an entity on an IRC server which can perform actions.
  */
 public class Actor {
     /**

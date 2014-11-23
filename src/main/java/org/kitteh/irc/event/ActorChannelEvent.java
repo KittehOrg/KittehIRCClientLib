@@ -27,7 +27,8 @@ import org.kitteh.irc.elements.Actor;
 import org.kitteh.irc.elements.Channel;
 
 /**
- * When an actor does something in a channel.
+ * Abstract event describing an {@link Actor} performing an action in a
+ * {@link Channel}.
  */
 public abstract class ActorChannelEvent<A extends Actor> extends ActorEvent<A> {
     private final Channel channel;

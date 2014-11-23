@@ -29,7 +29,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * I'm an event handler! I mark a method as a receiver of events!
+ * Marks a method as a receiver of events.
+ *
+ * <p>Register objects via {@link
+ * EventManager#registerEventListener(Object)}.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -26,7 +26,7 @@ package org.kitteh.irc.event;
 import org.kitteh.irc.elements.Actor;
 
 /**
- * An event with an actor.
+ * Abstract event describing an {@link Actor} performing an action.
  */
 public abstract class ActorEvent<A extends Actor> {
     private final A actor;

@@ -28,7 +28,7 @@ import org.kitteh.irc.util.Sanity;
 import java.net.InetSocketAddress;
 
 /**
- * Builds ALL the bots!
+ * Builds {@link Bot}s.
  */
 public final class BotBuilder {
     private final Config config;
