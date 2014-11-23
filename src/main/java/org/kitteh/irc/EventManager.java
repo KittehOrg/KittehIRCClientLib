@@ -57,7 +57,13 @@ public final class EventManager {
         Set<Pair<Class<?>, Pair<Object, Method>>> pairs = new HashSet<>();
         for (Method method : methods) {
             Class<?>[] types;
-            if (Modifier.isStatic(method.getModifiers()) || method.getAnnotation(EventHandler.class) == null || (types = method.getParameterTypes()).length != 1) {
+            /*
+            Disregard the following situations:
+            1. Static method. We're registering objects here not classes.
+            2. Methods with 0 or 2+ parameters. We only want methods with one parameter.
+            3. Parameters which are abstract classes or interfaces. We don't send subclasses, making those useless to register.
+             */
+            if (Modifier.isStatic(method.getModifiers()) || method.getAnnotation(EventHandler.class) == null || (types = method.getParameterTypes()).length != 1 || (types[0].getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) != 0) {
                 continue;
             }
             method.setAccessible(true);
