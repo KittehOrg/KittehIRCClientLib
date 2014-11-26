@@ -30,8 +30,8 @@ import java.net.InetSocketAddress;
 /**
  * Builds {@link Bot}s.
  */
-public final class BotBuilder {
-    private final Config config;
+public final class BotBuilder implements Cloneable {
+    private Config config;
     private String bindHost;
     private int bindPort;
     private String serverHost;
@@ -42,10 +42,6 @@ public final class BotBuilder {
      */
     public BotBuilder() {
         this.config = new Config();
-    }
-
-    private BotBuilder(Config config) {
-        this.config = config.clone();
     }
 
     /**
@@ -190,13 +186,16 @@ public final class BotBuilder {
      *
      * @return a clone of this builder
      */
+    @Override
     public BotBuilder clone() {
-        BotBuilder botBuilder = new BotBuilder(this.config);
-        botBuilder.bindHost = this.bindHost;
-        botBuilder.bindPort = this.bindPort;
-        botBuilder.serverHost = this.serverHost;
-        botBuilder.serverPort = this.serverPort;
+        BotBuilder botBuilder = null;
+        try {
+            botBuilder = (BotBuilder) super.clone();
+            botBuilder.config = this.config.clone();
+        } catch (CloneNotSupportedException ignored) {
+        }
         return botBuilder;
+
     }
 
     private void inetSet(Config.Entry<InetSocketAddress> entry, String host, int port) {
