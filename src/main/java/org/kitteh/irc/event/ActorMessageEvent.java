@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.event;
 
-import org.kitteh.irc.elements.Actor;
+import org.kitteh.irc.element.Actor;
 
 /**
  * Abstract event describing an {@link Actor} performing an action with a

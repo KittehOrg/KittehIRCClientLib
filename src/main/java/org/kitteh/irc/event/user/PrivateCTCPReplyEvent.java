@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.event.user;
 
-import org.kitteh.irc.elements.Actor;
+import org.kitteh.irc.element.Actor;
 import org.kitteh.irc.event.ActorMessageEvent;
 
 /**

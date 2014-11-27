@@ -21,42 +21,45 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.elements;
-
-import java.util.regex.Pattern;
+package org.kitteh.irc.element;
 
 /**
- * Represents an IRC channel.
+ * Represents an entity on an IRC server which can perform actions.
  */
-public class Channel extends Actor {
-    // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
-    // Screw it, let's assume IRCDs disregard length policy
-    // New pattern: ([#!&\+][^ ,\07\r\n]+)
-    private static final Pattern PATTERN = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)"); // TODO separate to separate per-bot class
+public class Actor {
+    /**
+     * Gets an Actor for the given name. Acquires the proper subclass based
+     * on the provided name. If no subclass can be found, an Actor object
+     * will be provided.
+     *
+     * @param name the Actor's name
+     * @return an Actor object for the given name
+     */
+    public static Actor getActor(String name) {
+        try {
+            if (User.isUser(name)) {
+                return new User(name);
+            } else if (Channel.isChannel(name)) {
+                return new Channel(name);
+            }
+        } catch (Throwable ignored) {
+            // NOOP
+        }
+        return new Actor(name);
+    }
+
+    private final String name;
+
+    Actor(String name) {
+        this.name = name;
+    }
 
     /**
-     * Gets if a given String is a valid channel name.
+     * Gets the Actor's name.
      *
-     * @param name name to test
-     * @return true if not null and a valid channel name
+     * @return the Actor's name
      */
-    public static boolean isChannel(String name) {
-        return name != null && PATTERN.matcher(name).matches();
-    }
-
-    Channel(String channel) {
-        super(channel);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        // RFC 2812 section 1.3 'Channel names are case insensitive.'
-        return o instanceof Channel && ((Channel) o).getName().toLowerCase().equals(this.getName().toLowerCase());
-    }
-
-    @Override
-    public int hashCode() {
-        // RFC 2812 section 1.3 'Channel names are case insensitive.'
-        return this.getName().toLowerCase().hashCode() * 2;
+    public String getName() {
+        return this.name;
     }
 }

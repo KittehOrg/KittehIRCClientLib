@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.elements;
+package org.kitteh.irc.element;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

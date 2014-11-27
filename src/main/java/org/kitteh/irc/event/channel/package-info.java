@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Events involving a {@link org.kitteh.irc.elements.Channel}.
+ * Events involving a {@link org.kitteh.irc.element.Channel}.
  */
 package org.kitteh.irc.event.channel;

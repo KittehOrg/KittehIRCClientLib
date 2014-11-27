@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.event.channel;
 
-import org.kitteh.irc.elements.Actor;
-import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.element.Actor;
+import org.kitteh.irc.element.Channel;
 import org.kitteh.irc.event.ActorChannelMessageEvent;
 
 /**
- * An {@link org.kitteh.irc.elements.Actor} has kicked a user!
+ * An {@link org.kitteh.irc.element.Actor} has kicked a user!
  */
 public class ChannelKickEvent extends ActorChannelMessageEvent<Actor> {
     private final String target;

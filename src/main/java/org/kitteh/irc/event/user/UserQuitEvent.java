@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.event.user;
 
-import org.kitteh.irc.elements.User;
+import org.kitteh.irc.element.User;
 import org.kitteh.irc.event.ActorMessageEvent;
 
 /**
- * A {@link org.kitteh.irc.elements.User} has quit the server!
+ * A {@link org.kitteh.irc.element.User} has quit the server!
  */
 public class UserQuitEvent extends ActorMessageEvent<User> {
     /**

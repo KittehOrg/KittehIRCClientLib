@@ -24,4 +24,4 @@
 /**
  * Classes describing actors on an IRC network.
  */
-package org.kitteh.irc.elements;
+package org.kitteh.irc.element;

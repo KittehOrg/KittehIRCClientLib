@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.event.channel;
 
-import org.kitteh.irc.elements.Channel;
-import org.kitteh.irc.elements.User;
+import org.kitteh.irc.element.Channel;
+import org.kitteh.irc.element.User;
 import org.kitteh.irc.event.ActorChannelEvent;
 
 /**

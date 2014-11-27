@@ -23,9 +23,9 @@
  */
 package org.kitteh.irc;
 
-import org.kitteh.irc.elements.Actor;
-import org.kitteh.irc.elements.Channel;
-import org.kitteh.irc.elements.User;
+import org.kitteh.irc.element.Actor;
+import org.kitteh.irc.element.Channel;
+import org.kitteh.irc.element.User;
 import org.kitteh.irc.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.event.channel.ChannelJoinEvent;

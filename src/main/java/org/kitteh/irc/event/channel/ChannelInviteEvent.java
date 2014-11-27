@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.event.channel;
 
-import org.kitteh.irc.elements.Actor;
-import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.element.Actor;
+import org.kitteh.irc.element.Channel;
 import org.kitteh.irc.event.ActorChannelEvent;
 
 /**
- * A {@link org.kitteh.irc.elements.User} has invited somebody to a
- * {@link org.kitteh.irc.elements.Channel}!
+ * A {@link org.kitteh.irc.element.User} has invited somebody to a
+ * {@link org.kitteh.irc.element.Channel}!
  */
 public class ChannelInviteEvent extends ActorChannelEvent<Actor> {
     private final String target;
