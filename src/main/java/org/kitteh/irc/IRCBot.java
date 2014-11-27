@@ -34,6 +34,7 @@ import org.kitteh.irc.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.event.channel.ChannelModeEvent;
 import org.kitteh.irc.event.channel.ChannelNoticeEvent;
 import org.kitteh.irc.event.channel.ChannelPartEvent;
+import org.kitteh.irc.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.event.user.PrivateMessageEvent;
@@ -550,7 +551,6 @@ final class IRCBot implements Bot {
                             this.eventManager.callEvent(new PrivateNoticeEvent(actor, noticeMessage));
                             break;
                     }
-                    // TODO event
                     break;
                 case PRIVMSG:
                     final String message = this.handleColon(StringUtil.combineSplit(split, 3));
@@ -592,7 +592,7 @@ final class IRCBot implements Bot {
                                 } else {
                                     ChannelModeType type = this.modes.get(next);
                                     if (type == null) {
-                                        // TODO WHINE LOUDLY
+                                        // TODO clean up error handling
                                         return;
                                     }
                                     hasArg = (add && type.isParameterRequiredOnSetting()) || (!add && type.isParameterRequiredOnRemoval());
@@ -636,7 +636,7 @@ final class IRCBot implements Bot {
                     this.eventManager.callEvent(new ChannelInviteEvent((Channel) Actor.getActor(split[3]), actor, split[2]));
                     break;
                 case TOPIC:
-                    // TODO ChannelTopicChangeEvent
+                    this.eventManager.callEvent(new ChannelTopicEvent(actor, (Channel) Actor.getActor(split[2]), this.handleColon(StringUtil.combineSplit(split, 3))));
                     break;
                 default:
                     // TODO: Unknown event?

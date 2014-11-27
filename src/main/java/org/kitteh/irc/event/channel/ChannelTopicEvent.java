@@ -21,7 +21,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.kitteh.irc.event.channel;
+
+import org.kitteh.irc.elements.Actor;
+import org.kitteh.irc.elements.Channel;
+import org.kitteh.irc.event.ActorChannelMessageEvent;
+
 /**
- * Only abstract classes exist at this level.
+ * The server has informed us of a channel's topic.
+ * <p>
+ * Either the topic has changed or we requested to know what the topic was.
  */
-package org.kitteh.irc.event;
+public class ChannelTopicEvent extends ActorChannelMessageEvent<Actor> {
+    /**
+     * Creates the event.
+     *
+     * @param sender who set the topic
+     * @param channel channel the topic is about
+     * @param message topic that has been set
+     */
+    public ChannelTopicEvent(Actor sender, Channel channel, String message) {
+        super(sender, channel, message);
+    }
+}
