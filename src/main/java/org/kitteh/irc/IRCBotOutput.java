@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.exception.KittehOutputException;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Queue;
@@ -32,6 +34,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Thread handling outgoing messages from the bot.
  */
 final class IRCBotOutput extends Thread {
+    private final IRCBot bot;
     private final Object wait = new Object();
     private final BufferedWriter bufferedWriter;
     private volatile int delay;
@@ -40,8 +43,9 @@ final class IRCBotOutput extends Thread {
     private final Queue<String> highPriorityQueue = new ConcurrentLinkedQueue<>();
     private final Queue<String> lowPriorityQueue = new ConcurrentLinkedQueue<>();
 
-    IRCBotOutput(BufferedWriter bufferedWriter, String botName, int messageDelay) {
-        this.setName("Kitteh IRCBot Output (" + botName + ")");
+    IRCBotOutput(IRCBot bot, BufferedWriter bufferedWriter, int messageDelay) {
+        this.bot = bot;
+        this.setName("Kitteh IRCBot Output (" + bot.getName() + ")");
         this.bufferedWriter = bufferedWriter;
         this.delay = messageDelay;
     }
@@ -68,8 +72,10 @@ final class IRCBotOutput extends Thread {
             try {
                 this.bufferedWriter.write(message + "\r\n");
                 this.bufferedWriter.flush();
-            } catch (final IOException ignored) {
+            } catch (final IOException e) {
+                this.bot.getExceptionListener().queue(new KittehOutputException("Exception sending queued message", e, message));
             }
+            this.bot.getOutputListener().queue(message);
 
             try {
                 Thread.sleep(this.delay);
@@ -77,18 +83,19 @@ final class IRCBotOutput extends Thread {
                 break;
             }
         }
+        final StringBuilder quitBuilder = new StringBuilder();
+        quitBuilder.append("QUIT");
+        if (this.quitReason != null) {
+            quitBuilder.append(" :").append(this.quitReason);
+        }
+        final String quitMessage = quitBuilder.toString();
         try {
-            StringBuilder quitBuilder = new StringBuilder();
-            quitBuilder.append("QUIT");
-            if (this.quitReason != null) {
-                quitBuilder.append(" :").append(this.quitReason);
-            }
             quitBuilder.append("\r\n");
-            this.bufferedWriter.write(quitBuilder.toString());
+            this.bufferedWriter.write(quitMessage);
             this.bufferedWriter.flush();
             this.bufferedWriter.close();
         } catch (final IOException e) {
-            e.printStackTrace(); // TODO clean up error handling
+            this.bot.getExceptionListener().queue(new KittehOutputException("Exception sending queued message", e, quitMessage));
         }
     }
 

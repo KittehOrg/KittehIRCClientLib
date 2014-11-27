@@ -21,37 +21,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.event.channel;
-
-import org.kitteh.irc.element.Actor;
-import org.kitteh.irc.element.Channel;
-import org.kitteh.irc.event.ActorChannelEvent;
+package org.kitteh.irc.exception;
 
 /**
- * A {@link org.kitteh.irc.element.User} has invited somebody to a
- * {@link org.kitteh.irc.element.Channel}!
+ * Thrown in reaction to exceptions in sending messages to the server.
  */
-public class ChannelInviteEvent extends ActorChannelEvent<Actor> {
-    private final String target;
+public class KittehOutputException extends Exception {
+    private String attemptedMessage;
 
-    /**
-     * Creates the event.
-     *
-     * @param channel the channel
-     * @param actor the actor inviting another
-     * @param target the nick invited
-     */
-    public ChannelInviteEvent(Channel channel, Actor actor, String target) {
-        super(actor, channel);
-        this.target = target;
+    public KittehOutputException(String message, Throwable cause, String attemptedMessage) {
+        super(message, cause);
+        this.attemptedMessage = attemptedMessage;
     }
 
     /**
-     * Gets the invited nick.
+     * Gets the message that was being sent at the time.
      *
-     * @return the nickname of the invited user
+     * @return the message sent at the time
      */
-    public String getTarget() {
-        return this.target;
+    public String getAttemptedMessage() {
+        return this.attemptedMessage;
     }
 }

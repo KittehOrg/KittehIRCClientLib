@@ -13,7 +13,7 @@ public class EventTest {
 
     @Test
     public void testEventRegistration() {
-        EventManager manager = new EventManager();
+        EventManager manager = new EventManager(null);
         manager.registerEventListener(this);
         Event event = new Event();
         manager.callEvent(event);

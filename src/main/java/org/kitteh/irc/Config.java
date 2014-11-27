@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.util.Consumer;
+
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,8 +68,35 @@ final class Config {
         }
     }
 
+    static abstract class Wrapper<Type> {
+        private final Consumer<Type> consumer;
+
+        Wrapper(Consumer<Type> consumer) {
+            this.consumer = consumer;
+        }
+
+        Consumer<Type> getConsumer() {
+            return this.consumer;
+        }
+    }
+
+    static final class ExceptionConsumerWrapper extends Wrapper<Exception> {
+        ExceptionConsumerWrapper(Consumer<Exception> consumer) {
+            super(consumer);
+        }
+    }
+
+    static final class StringConsumerWrapper extends Wrapper<String> {
+        StringConsumerWrapper(Consumer<String> consumer) {
+            super(consumer);
+        }
+    }
+
     static final Entry<String> BOT_NAME = new Entry<>("Unnamed", String.class);
     static final Entry<InetSocketAddress> BIND_ADDRESS = new Entry<>(null, InetSocketAddress.class);
+    static final Entry<ExceptionConsumerWrapper> LISTENER_EXCEPTION = new Entry<>(null, ExceptionConsumerWrapper.class);
+    static final Entry<StringConsumerWrapper> LISTENER_INPUT = new Entry<>(null, StringConsumerWrapper.class);
+    static final Entry<StringConsumerWrapper> LISTENER_OUTPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<Integer> MESSAGE_DELAY = new Entry<>(1200, Integer.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);

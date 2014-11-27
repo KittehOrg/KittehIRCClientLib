@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.exception.KittehInputException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
@@ -51,6 +53,7 @@ final class IRCBotInput extends Thread {
                     this.bot.processLine(line);
                 }
             } catch (final IOException e) {
+                this.bot.getExceptionListener().queue(new KittehInputException(e));
                 if (this.running) {
                     this.bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000), true);
                 }

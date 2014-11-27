@@ -41,6 +41,7 @@ import org.kitteh.irc.event.user.PrivateMessageEvent;
 import org.kitteh.irc.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.event.user.UserNickChangeEvent;
 import org.kitteh.irc.event.user.UserQuitEvent;
+import org.kitteh.irc.exception.KittehConnectionException;
 import org.kitteh.irc.util.LCSet;
 import org.kitteh.irc.util.Sanity;
 import org.kitteh.irc.util.StringUtil;
@@ -138,7 +139,11 @@ final class IRCBot implements Bot {
     private boolean connected;
     private long lastCheck;
 
-    private final EventManager eventManager = new EventManager();
+    private final EventManager eventManager = new EventManager(this);
+
+    private final Listener<Exception> exceptionListener;
+    private final Listener<String> inputListener;
+    private final Listener<String> outputListener;
 
     private Map<Character, Character> prefixes = new ConcurrentHashMap<Character, Character>() {
         {
@@ -153,6 +158,14 @@ final class IRCBot implements Bot {
     IRCBot(Config config) {
         this.config = config;
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
+
+        Config.ExceptionConsumerWrapper exceptionListenerWrapper = this.config.get(Config.LISTENER_EXCEPTION);
+        this.exceptionListener = new Listener<>(exceptionListenerWrapper == null ? null : exceptionListenerWrapper.getConsumer());
+        Config.StringConsumerWrapper inputListenerWrapper = this.config.get(Config.LISTENER_INPUT);
+        this.inputListener = new Listener<>(inputListenerWrapper == null ? null : inputListenerWrapper.getConsumer());
+        Config.StringConsumerWrapper outputListenerWrapper = this.config.get(Config.LISTENER_OUTPUT);
+        this.outputListener = new Listener<>(outputListenerWrapper == null ? null : outputListenerWrapper.getConsumer());
+
         this.manager = new BotManager();
         this.processor = new BotProcessor();
     }
@@ -269,6 +282,14 @@ final class IRCBot implements Bot {
         }
     }
 
+    Listener<Exception> getExceptionListener() {
+        return this.exceptionListener;
+    }
+
+    Listener<String> getOutputListener() {
+        return this.outputListener;
+    }
+
     private boolean pingCheck(String line) {
         if (line.startsWith("PING ")) {
             this.sendRawLine("PONG " + line.substring(5), true);
@@ -281,7 +302,7 @@ final class IRCBot implements Bot {
         try {
             this.connect();
         } catch (final IOException e) {
-            e.printStackTrace(); // TODO clean up error handling
+            this.exceptionListener.queue(new KittehConnectionException(e, true));
             if ((this.inputHandler != null) && this.inputHandler.isAlive() && !this.inputHandler.isInterrupted()) {
                 this.inputHandler.interrupt();
             }
@@ -306,14 +327,18 @@ final class IRCBot implements Bot {
                     try {
                         this.connect();
                     } catch (final IOException e) {
-                        // System.out.println("Unable to reconnect!");
-                        // TODO log
+                        this.exceptionListener.queue(new KittehConnectionException(e, true));
                     }
                 }
             }
         }
         this.outputHandler.shutdown(this.shutdownReason);
         this.inputHandler.shutdown();
+
+        // Shut these down last, so they get any last firings
+        this.exceptionListener.shutdown();
+        this.inputListener.shutdown();
+        this.outputListener.shutdown();
     }
 
     private void connect() throws IOException {
@@ -326,7 +351,7 @@ final class IRCBot implements Bot {
             try {
                 socket.bind(this.config.get(Config.BIND_ADDRESS));
             } catch (final Exception e) {
-                e.printStackTrace(); // TODO clean up error handling
+                this.exceptionListener.queue(new KittehConnectionException(e, false));
             }
         }
 
@@ -336,7 +361,7 @@ final class IRCBot implements Bot {
         final BufferedWriter outputWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
         // Need to start processing output immediately as we don't do this separately
-        this.outputHandler = new IRCBotOutput(outputWriter, this.getName(), this.config.get(Config.MESSAGE_DELAY));
+        this.outputHandler = new IRCBotOutput(this, outputWriter, this.config.get(Config.MESSAGE_DELAY));
         this.outputHandler.start();
 
         // If the server has a password, send that along first
@@ -408,6 +433,7 @@ final class IRCBot implements Bot {
             return;
         }
 
+        this.inputListener.queue(line);
         final String[] split = line.split(" ");
         if ((split.length <= 1) || !split[0].startsWith(":")) {
             return; // Invalid!

@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.exception.KittehEventException;
 import org.kitteh.irc.util.Pair;
 
 import java.lang.reflect.Method;
@@ -37,10 +38,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * Processes and registers events for a single {@link Bot} instance.
  */
 public final class EventManager {
+    private final IRCBot bot;
     private final Map<Class<?>, Set<Pair<Object, Method>>> registeredEvents = new ConcurrentHashMap<>();
 
-    EventManager() {
-        // NOOP
+    EventManager(IRCBot bot) {
+        this.bot = bot;
     }
 
     /**
@@ -85,7 +87,8 @@ public final class EventManager {
             for (Pair<Object, Method> pair : set) {
                 try {
                     pair.getRight().invoke(pair.getLeft(), event);
-                } catch (Throwable ignored) {
+                } catch (Throwable thrown) {
+                    this.bot.getExceptionListener().queue(new KittehEventException(thrown));
                 }
             }
         }

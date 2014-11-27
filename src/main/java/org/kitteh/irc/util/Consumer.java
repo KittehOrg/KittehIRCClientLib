@@ -21,37 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.event.channel;
-
-import org.kitteh.irc.element.Actor;
-import org.kitteh.irc.element.Channel;
-import org.kitteh.irc.event.ActorChannelEvent;
+package org.kitteh.irc.util;
 
 /**
- * A {@link org.kitteh.irc.element.User} has invited somebody to a
- * {@link org.kitteh.irc.element.Channel}!
+ * Consumes.
+ *
+ * @param <Type> any type you like
  */
-public class ChannelInviteEvent extends ActorChannelEvent<Actor> {
-    private final String target;
-
+public interface Consumer<Type> {
     /**
-     * Creates the event.
+     * Accepts an object.
      *
-     * @param channel the channel
-     * @param actor the actor inviting another
-     * @param target the nick invited
+     * @param object object to accept
      */
-    public ChannelInviteEvent(Channel channel, Actor actor, String target) {
-        super(actor, channel);
-        this.target = target;
-    }
-
-    /**
-     * Gets the invited nick.
-     *
-     * @return the nickname of the invited user
-     */
-    public String getTarget() {
-        return this.target;
-    }
+    void accept(Type object);
 }

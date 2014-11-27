@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc;
 
+import org.kitteh.irc.util.Consumer;
 import org.kitteh.irc.util.Sanity;
 
 import java.net.InetSocketAddress;
@@ -67,6 +68,45 @@ public final class BotBuilder implements Cloneable {
      */
     public BotBuilder bind(int port) {
         this.bindPort = this.validPort(port);
+        return this;
+    }
+
+    /**
+     * Sets a listener for all thrown exceptions on this bot.
+     * <p>
+     * All exceptions are passed from a single, separate thread.
+     *
+     * @param listener catcher of throwables
+     * @return this builder
+     */
+    public BotBuilder listenException(Consumer<Exception> listener) {
+        this.config.set(Config.LISTENER_EXCEPTION, new Config.ExceptionConsumerWrapper(listener));
+        return this;
+    }
+
+    /**
+     * Sets a listener for all incoming messages from the server.
+     * <p>
+     * All messages are passed from a single, separate thread.
+     *
+     * @param listener input listener
+     * @return this builder
+     */
+    public BotBuilder listenInput(Consumer<String> listener) {
+        this.config.set(Config.LISTENER_INPUT, new Config.StringConsumerWrapper(listener));
+        return this;
+    }
+
+    /**
+     * Sets a listener for all outgoing messages to the server.
+     * <p>
+     * All messages are passed from a single, separate thread.
+     *
+     * @param listener output listener
+     * @return this builder
+     */
+    public BotBuilder listenOutput(Consumer<String> listener) {
+        this.config.set(Config.LISTENER_OUTPUT, new Config.StringConsumerWrapper(listener));
         return this;
     }
 
