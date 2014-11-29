@@ -198,7 +198,7 @@ final class IRCClient implements Client {
     @Override
     public void sendRawLine(String message) {
         Sanity.nullCheck(message, "Message cannot be null");
-        this.sendRawLine(message, false);
+        this.connection.sendMessage(message, false);
     }
 
     @Override
@@ -252,7 +252,7 @@ final class IRCClient implements Client {
      */
     void processLine(String line) {
         if (line.startsWith("PING ")) {
-            this.sendRawLine("PONG " + line.substring(5), true);
+            this.sendPriorityRawLine("PONG " + line.substring(5));
         } else {
             this.processor.queue(line);
         }
@@ -279,20 +279,20 @@ final class IRCClient implements Client {
 
         // If the server has a password, send that along first
         if (this.config.get(Config.SERVER_PASSWORD) != null) {
-            this.sendRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD), true);
+            this.sendPriorityRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD));
         }
 
         // Initial USER and NICK messages. Let's just assume we want +iw (send 8)
-        this.sendRawLine("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME), true);
+        this.sendPriorityRawLine("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME));
         this.sendNickChange(this.goalNick);
 
         // Figure out auth
         if (this.authReclaim != null && !this.currentNick.equals(this.goalNick) && this.authType.isNickOwned()) {
-            this.sendRawLine(this.authReclaim, true);
+            this.sendPriorityRawLine(this.authReclaim);
             this.sendNickChange(this.goalNick);
         }
         if (this.auth != null) {
-            this.sendRawLine(this.auth, true);
+            this.sendPriorityRawLine(this.auth);
         }
     }
 
@@ -426,7 +426,7 @@ final class IRCClient implements Client {
                                 this.eventManager.callEvent(event);
                                 reply = event.getReply();
                                 if (reply != null) {
-                                    this.sendRawLine("NOTICE " + actor.getName() + " :" + CTCPUtil.toCTCP(reply), false);
+                                    this.sendRawLine("NOTICE " + actor.getName() + " :" + CTCPUtil.toCTCP(reply));
                                 }
                                 break;
                             case CHANNEL:
@@ -528,7 +528,7 @@ final class IRCClient implements Client {
                     break;
                 case INVITE:
                     if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
-                        this.sendRawLine("JOIN " + split[3], false);
+                        this.sendRawLine("JOIN " + split[3]);
                     }
                     this.eventManager.callEvent(new ChannelInviteEvent((Channel) Actor.getActor(split[3]), actor, split[2]));
                     break;
@@ -554,10 +554,10 @@ final class IRCClient implements Client {
 
     private void sendNickChange(String newnick) {
         this.requestedNick = newnick;
-        this.sendRawLine("NICK " + newnick, true);
+        this.sendPriorityRawLine("NICK " + newnick);
     }
 
-    private void sendRawLine(String message, boolean priority) {
-        this.connection.sendMessage(message, priority);
+    private void sendPriorityRawLine(String message) {
+        this.connection.sendMessage(message, true);
     }
 }
