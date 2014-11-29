@@ -110,6 +110,7 @@ final class NettyManager {
             this.channel.pipeline().addLast("[INPUT] Send to client", new SimpleChannelInboundHandler<String>() {
                 @Override
                 protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+                    ClientConnection.this.client.getInputListener().queue(msg);
                     ClientConnection.this.client.processLine(msg);
                 }
             });

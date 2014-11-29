@@ -65,6 +65,7 @@ final class IRCClient implements Client {
 
         @Override
         public void run() {
+            IRCClient.this.connect();
             while (!this.isInterrupted()) {
                 synchronized (this.queue) {
                     if (this.queue.isEmpty()) {
@@ -143,7 +144,6 @@ final class IRCClient implements Client {
         this.outputListener = new Listener<>(outputListenerWrapper == null ? null : outputListenerWrapper.getConsumer());
 
         this.processor = new InputProcessor();
-        this.connect();
     }
 
     @Override
@@ -155,7 +155,7 @@ final class IRCClient implements Client {
                 continue;
             }
             this.channels.add(channel);
-            this.sendRawLine("JOIN :" + channel, false);
+            this.sendRawLine("JOIN :" + channel);
         }
     }
 
@@ -251,7 +251,9 @@ final class IRCClient implements Client {
      * @param line line to be processed
      */
     void processLine(String line) {
-        if (!this.pingCheck(line)) {
+        if (line.startsWith("PING ")) {
+            this.sendRawLine("PONG " + line.substring(5), true);
+        } else {
             this.processor.queue(line);
         }
     }
@@ -264,16 +266,12 @@ final class IRCClient implements Client {
         return this.exceptionListener;
     }
 
-    Listener<String> getOutputListener() {
-        return this.outputListener;
+    Listener<String> getInputListener() {
+        return this.inputListener;
     }
 
-    private boolean pingCheck(String line) {
-        if (line.startsWith("PING ")) {
-            this.sendRawLine("PONG " + line.substring(5), true);
-            return true;
-        }
-        return false;
+    Listener<String> getOutputListener() {
+        return this.outputListener;
     }
 
     void connect() {
@@ -307,7 +305,6 @@ final class IRCClient implements Client {
             return;
         }
 
-        this.inputListener.queue(line);
         final String[] split = line.split(" ");
         if ((split.length <= 1) || !split[0].startsWith(":")) {
             return; // Invalid!
