@@ -74,9 +74,25 @@ final class NettyManager {
                 return;
             }
 
+            // Outbound - Processed in pipeline back to front.
+            this.channel.pipeline().addFirst("[OUTPUT] Output listener", new MessageToMessageEncoder<String>() {
+                @Override
+                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+                    ClientConnection.this.client.getOutputListener().queue(msg);
+                    out.add(msg);
+                }
+            });
+            this.channel.pipeline().addFirst("[OUTPUT] Add line breaks", new MessageToMessageEncoder<String>() {
+                @Override
+                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+                    out.add(msg + "\r\n");
+                }
+            });
+            this.channel.pipeline().addFirst("[OUTPUT] String encoder", new StringEncoder(CharsetUtil.UTF_8));
+
             // Handle timeout
-            this.channel.pipeline().addFirst("idle", new IdleStateHandler(250, 0, 0));
-            this.channel.pipeline().addAfter("idle", "toCatchAnIdler", new ChannelDuplexHandler() {
+            this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 0));
+            this.channel.pipeline().addLast("[INPUT] Catch idle", new ChannelDuplexHandler() {
                 @Override
                 public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                     if (evt instanceof IdleStateEvent) {
@@ -88,20 +104,13 @@ final class NettyManager {
                 }
             });
 
-            // Read incoming
-            this.channel.pipeline().addLast(new SimpleChannelInboundHandler<String>() {
+            // Inbound
+            this.channel.pipeline().addLast("[INPUT] Line splitter", new DelimiterBasedFrameDecoder(512, Unpooled.wrappedBuffer(new byte[]{'\r', '\n'})));
+            this.channel.pipeline().addLast("[INPUT] String decoder", new StringDecoder(CharsetUtil.UTF_8));
+            this.channel.pipeline().addLast("[INPUT] Send to client", new SimpleChannelInboundHandler<String>() {
                 @Override
                 protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-                    client.processLine(msg);
-                }
-            });
-
-            // Read outgoing for listener
-            this.channel.pipeline().addLast(new MessageToMessageEncoder<String>() {
-                @Override
-                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
-                    ClientConnection.this.client.getOutputListener().queue(msg);
-                    out.add(msg);
+                    ClientConnection.this.client.processLine(msg);
                 }
             });
 
@@ -171,19 +180,7 @@ final class NettyManager {
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel channel) throws Exception {
-                // Inbound
-                channel.pipeline().addLast(new DelimiterBasedFrameDecoder(512, Unpooled.wrappedBuffer(new byte[]{'\r', '\n'})));
-                channel.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
-                // Reader is added by ClientConnection
-
-                // Outbound
-                channel.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
-                channel.pipeline().addLast(new MessageToMessageEncoder<String>() {
-                    @Override
-                    protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
-                        out.add(msg + "\r\n");
-                    }
-                });
+                // NOOP
             }
         });
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
