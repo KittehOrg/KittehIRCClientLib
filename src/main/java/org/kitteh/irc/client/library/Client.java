@@ -91,22 +91,11 @@ public interface Client {
     void sendMessage(String target, String message);
 
     /**
-     * Sends a raw IRC message at low priority.
-     * <p>
-     * If you feel you must, use {@link #sendRawLine(String, boolean)}.
+     * Sends a raw IRC message.
      *
      * @param message message to send
      */
     void sendRawLine(String message);
-
-    /**
-     * Sends a raw IRC message at specified priority. High priority takes
-     * precedence over any currently queued low priority messages.
-     *
-     * @param message message to send
-     * @param priority if true, use high priority
-     */
-    void sendRawLine(String message, boolean priority);
 
     /**
      * Sets the authentication method, user and password.

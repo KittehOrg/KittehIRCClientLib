@@ -197,13 +197,8 @@ final class IRCClient implements Client {
 
     @Override
     public void sendRawLine(String message) {
-        this.sendRawLine(message, false);
-    }
-
-    @Override
-    public void sendRawLine(String message, boolean priority) {
         Sanity.nullCheck(message, "Message cannot be null");
-        this.connection.sendMessage(message, priority);
+        this.sendRawLine(message, false);
     }
 
     @Override
@@ -563,5 +558,9 @@ final class IRCClient implements Client {
     private void sendNickChange(String newnick) {
         this.requestedNick = newnick;
         this.sendRawLine("NICK " + newnick, true);
+    }
+
+    private void sendRawLine(String message, boolean priority) {
+        this.connection.sendMessage(message, priority);
     }
 }
