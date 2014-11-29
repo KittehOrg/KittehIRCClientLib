@@ -129,7 +129,7 @@ public final class ClientBuilder implements Cloneable {
      *
      * @param nick nick for the client to use
      * @return this builder
-     * @throws java.lang.IllegalArgumentException for null nick
+     * @throws IllegalArgumentException for null nick
      */
     public ClientBuilder nick(String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
@@ -145,7 +145,7 @@ public final class ClientBuilder implements Cloneable {
      *
      * @param password server password
      * @return this builder
-     * @throws java.lang.IllegalArgumentException for null password
+     * @throws IllegalArgumentException for null password
      */
     public ClientBuilder serverPassword(String password) {
         Sanity.nullCheck(password, "Server password cannot be null");
@@ -160,7 +160,7 @@ public final class ClientBuilder implements Cloneable {
      *
      * @param name realname to use
      * @return this builder
-     * @throws java.lang.IllegalArgumentException for null realname
+     * @throws IllegalArgumentException for null realname
      */
     public ClientBuilder realName(String name) {
         Sanity.nullCheck(name, "Real name cannot be null");
@@ -188,7 +188,7 @@ public final class ClientBuilder implements Cloneable {
      *
      * @param host IRC server host
      * @return this builder
-     * @throws java.lang.IllegalArgumentException for null host
+     * @throws IllegalArgumentException for null host
      */
     public ClientBuilder server(String host) {
         Sanity.nullCheck(host, "Host cannot be null");
@@ -203,7 +203,7 @@ public final class ClientBuilder implements Cloneable {
      *
      * @param user user to connect as
      * @return this builder
-     * @throws java.lang.IllegalArgumentException for null user
+     * @throws IllegalArgumentException for null user
      */
     public ClientBuilder user(String user) {
         Sanity.nullCheck(user, "User cannot be null");
