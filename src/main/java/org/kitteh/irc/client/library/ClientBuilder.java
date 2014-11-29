@@ -133,6 +133,7 @@ public final class ClientBuilder implements Cloneable {
      */
     public ClientBuilder nick(String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
+        Sanity.truthiness(nick.contains(" "), "Nick cannot contain spaces");
         this.config.set(Config.NICK, nick);
         return this;
     }
@@ -206,6 +207,7 @@ public final class ClientBuilder implements Cloneable {
      */
     public ClientBuilder user(String user) {
         Sanity.nullCheck(user, "User cannot be null");
+        Sanity.truthiness(user.contains(" "), "User cannot contain spaces");
         this.config.set(Config.USER, user);
         return this;
     }
