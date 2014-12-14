@@ -46,6 +46,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
+import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 
 import java.net.SocketAddress;
 import java.util.HashSet;
@@ -127,6 +128,7 @@ final class NettyManager {
                             }
                         }, 5, TimeUnit.SECONDS);
                     }
+                    ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.reconnect));
                     removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
                 }
             });
