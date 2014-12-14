@@ -143,7 +143,7 @@ final class NettyManager {
                 public void run() {
                     String message = ClientConnection.this.queue.poll();
                     if (message != null) {
-                        ClientConnection.this.channel.write(message);
+                        ClientConnection.this.channel.writeAndFlush(message);
                     }
                 }
             }, delay, period, TimeUnit.MILLISECONDS);
