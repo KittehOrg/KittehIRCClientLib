@@ -186,6 +186,17 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public void removeChannel(String channelName) {
+        if (Channel.isChannel(channelName)) {
+            Channel channel = (Channel) Actor.getActor(channelName);
+            this.channelsIntended.remove(channel);
+            if (this.channels.contains(channel)) {
+                this.sendRawLine("PART " + channelName);
+            }
+        }
+    }
+
+    @Override
     public void sendCTCPMessage(String target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.nullCheck(message, "Message cannot be null");

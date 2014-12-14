@@ -81,6 +81,13 @@ public interface Client {
     String getNick();
 
     /**
+     * Removes a channel from the client, leaving as necessary.
+     *
+     * @param channel channel to leave
+     */
+    void removeChannel(String channel);
+
+    /**
      * Sends a CTCP message to a target user or channel. Automagically adds
      * the CTCP delimiter around the message and escapes the characters that
      * need escaping when sending a CTCP message.
