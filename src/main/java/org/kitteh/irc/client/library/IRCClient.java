@@ -380,8 +380,8 @@ final class IRCClient implements Client {
                 this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
                 break;
             case 5:
-                for (int i = 0; i < args.length; i++) {
-                    Matcher prefixMatcher = PREFIX_PATTERN.matcher(args[i]);
+                for (String arg : args) {
+                    Matcher prefixMatcher = PREFIX_PATTERN.matcher(arg);
                     if (prefixMatcher.find()) {
                         String modes = prefixMatcher.group(1);
                         String display = prefixMatcher.group(2);
@@ -394,7 +394,7 @@ final class IRCClient implements Client {
                         }
                         continue;
                     }
-                    Matcher modeMatcher = CHANMODES_PATTERN.matcher(args[i]);
+                    Matcher modeMatcher = CHANMODES_PATTERN.matcher(arg);
                     if (modeMatcher.find()) {
                         String[] modes = modeMatcher.group(1).split(",");
                         Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
