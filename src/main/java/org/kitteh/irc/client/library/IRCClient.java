@@ -331,7 +331,7 @@ final class IRCClient implements Client {
         return argsList.toArray(new String[argsList.size()]);
     }
 
-    private void handleLine(String line) throws Throwable {
+    private void handleLine(String line) {
         if ((line == null) || (line.length() == 0)) {
             return;
         }
@@ -366,7 +366,7 @@ final class IRCClient implements Client {
         }
     }
 
-    private void handleLineNumeric(Actor actor, int command, String[] args) throws Throwable {
+    private void handleLineNumeric(Actor actor, int command, String[] args) {
         switch (command) {
             case 1: // Welcome
                 break;
@@ -449,7 +449,7 @@ final class IRCClient implements Client {
         }
     }
 
-    private void handleLineCommand(Actor actor, Command command, String[] args) throws Throwable {
+    private void handleLineCommand(Actor actor, Command command, String[] args) {
         // CTCP
         if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(args[1])) {
             final String ctcpMessage = CTCPUtil.fromCTCP(args[1]);
