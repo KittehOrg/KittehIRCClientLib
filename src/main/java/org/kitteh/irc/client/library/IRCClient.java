@@ -45,7 +45,9 @@ import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.util.StringUtil;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -156,6 +158,11 @@ final class IRCClient implements Client {
             this.channelsIntended.add((Channel) Actor.getActor(channel));
             this.sendRawLine("JOIN :" + channel);
         }
+    }
+
+    @Override
+    public Set<Channel> getChannels() {
+        return Collections.unmodifiableSet(new HashSet<>(this.channels));
     }
 
     @Override

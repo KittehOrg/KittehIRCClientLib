@@ -23,6 +23,10 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.element.Channel;
+
+import java.util.Set;
+
 /**
  * An individual IRC connection, see {@link ClientBuilder} to create one.
  */
@@ -35,6 +39,13 @@ public interface Client {
      * @param channel channel(s) to add
      */
     void addChannel(String... channel);
+
+    /**
+     * Gets the channels in which the client is currently present.
+     *
+     * @return an immutable set snapshotting the client's current channels
+     */
+    Set<Channel> getChannels();
 
     /**
      * Gets the client's event manager.
