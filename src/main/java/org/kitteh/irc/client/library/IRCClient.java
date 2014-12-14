@@ -559,7 +559,7 @@ final class IRCClient implements Client {
                     }
                     break;
                 case INVITE:
-                    Channel invitedChannel = (Channel) Actor.getActor(split[3]);
+                    Channel invitedChannel = (Channel) Actor.getActor(this.handleColon(split[3]));
                     if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE && this.channelsIntended.contains(invitedChannel)) {
                         this.sendRawLine("JOIN " + split[3]);
                     }
