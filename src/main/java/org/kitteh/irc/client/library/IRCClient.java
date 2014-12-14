@@ -65,7 +65,6 @@ final class IRCClient implements Client {
 
         @Override
         public void run() {
-            IRCClient.this.connect();
             while (!this.isInterrupted()) {
                 synchronized (this.queue) {
                     if (this.queue.isEmpty()) {
@@ -144,6 +143,7 @@ final class IRCClient implements Client {
         this.outputListener = new Listener<>(outputListenerWrapper == null ? null : outputListenerWrapper.getConsumer());
 
         this.processor = new InputProcessor();
+        this.connect();
     }
 
     @Override
