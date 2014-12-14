@@ -35,7 +35,6 @@ import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
-import org.kitteh.irc.client.library.util.LCSet;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
@@ -52,6 +51,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -105,8 +105,8 @@ final class IRCClient implements Client {
     private String currentNick;
     private String requestedNick;
 
-    // RFC 2812 section 1.3 'Channel names are case insensitive.'
-    private final Set<String> channels = new LCSet();
+    private final Set<Channel> channels = new CopyOnWriteArraySet<>();
+    private final Set<Channel> channelsIntended = new CopyOnWriteArraySet<>();
 
     private AuthType authType;
     private String auth;
@@ -153,7 +153,7 @@ final class IRCClient implements Client {
             if (!Channel.isChannel(channel)) {
                 continue;
             }
-            this.channels.add(channel);
+            this.channelsIntended.add((Channel) Actor.getActor(channel));
             this.sendRawLine("JOIN :" + channel);
         }
     }
@@ -501,12 +501,22 @@ final class IRCClient implements Client {
                     break;
                 case JOIN:
                     if (actor instanceof User) { // Just in case
-                        this.eventManager.callEvent(new ChannelJoinEvent((Channel) Actor.getActor(split[2]), (User) actor));
+                        Channel channel = (Channel) Actor.getActor(split[2]);
+                        User user = (User) actor;
+                        if (user.getNick().equals(this.currentNick)) {
+                            this.channels.add(channel);
+                        }
+                        this.eventManager.callEvent(new ChannelJoinEvent(channel, user));
                     }
                     break;
                 case PART:
                     if (actor instanceof User) { // Just in case
-                        this.eventManager.callEvent(new ChannelPartEvent((Channel) Actor.getActor(split[2]), (User) actor, split.length > 2 ? this.handleColon(StringUtil.combineSplit(split, 3)) : ""));
+                        Channel channel = (Channel) Actor.getActor(split[2]);
+                        User user = (User) actor;
+                        if (user.getNick().equals(this.currentNick)) {
+                            this.channels.remove(channel);
+                        }
+                        this.eventManager.callEvent(new ChannelPartEvent(channel, user, split.length > 2 ? this.handleColon(StringUtil.combineSplit(split, 3)) : ""));
                     }
                     break;
                 case QUIT:
@@ -515,7 +525,11 @@ final class IRCClient implements Client {
                     }
                     break;
                 case KICK:
-                    this.eventManager.callEvent(new ChannelKickEvent((Channel) Actor.getActor(split[2]), actor, split[3], this.handleColon(StringUtil.combineSplit(split, 4))));
+                    Channel kickedChannel = (Channel) Actor.getActor(split[2]);
+                    if (split[3].equals(this.currentNick)) {
+                        this.channels.remove(kickedChannel);
+                    }
+                    this.eventManager.callEvent(new ChannelKickEvent(kickedChannel, actor, split[3], this.handleColon(StringUtil.combineSplit(split, 4))));
                     break;
                 case NICK:
                     if (actor instanceof User) {
@@ -527,10 +541,11 @@ final class IRCClient implements Client {
                     }
                     break;
                 case INVITE:
-                    if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE && this.channels.contains(split[3])) {
+                    Channel invitedChannel = (Channel) Actor.getActor(split[3]);
+                    if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE && this.channelsIntended.contains(invitedChannel)) {
                         this.sendRawLine("JOIN " + split[3]);
                     }
-                    this.eventManager.callEvent(new ChannelInviteEvent((Channel) Actor.getActor(split[3]), actor, split[2]));
+                    this.eventManager.callEvent(new ChannelInviteEvent(invitedChannel, actor, split[2]));
                     break;
                 case TOPIC:
                     this.eventManager.callEvent(new ChannelTopicEvent(actor, (Channel) Actor.getActor(split[2]), this.handleColon(StringUtil.combineSplit(split, 3))));
@@ -546,7 +561,7 @@ final class IRCClient implements Client {
         if (this.currentNick.equalsIgnoreCase(target)) {
             return MessageTarget.PRIVATE;
         }
-        if (this.channels.contains(target)) {
+        if (Channel.isChannel(target)) {
             return MessageTarget.CHANNEL;
         }
         return MessageTarget.UNKNOWN;
