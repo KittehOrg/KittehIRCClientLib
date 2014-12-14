@@ -113,8 +113,6 @@ final class IRCClient implements Client {
 
     private NettyManager.ClientConnection connection;
 
-    private long lastCheck;
-
     private final EventManager eventManager = new EventManager(this);
 
     private final Listener<Exception> exceptionListener;

@@ -60,8 +60,8 @@ final class NettyManager {
         private final IRCClient client;
         private final Channel channel;
         private final Queue<String> queue = new ConcurrentLinkedQueue<>();
+        private boolean reconnect = true;
         private ScheduledFuture<?> scheduledSending;
-        private boolean shutdown = false;
 
         private ClientConnection(final IRCClient client, ChannelFuture future) {
             this.client = client;
@@ -98,7 +98,7 @@ final class NettyManager {
                     if (evt instanceof IdleStateEvent) {
                         IdleStateEvent e = (IdleStateEvent) evt;
                         if (e.state() == IdleState.READER_IDLE) {
-                            ClientConnection.this.shutdown("Reconnecting..."); // TODO event
+                            ClientConnection.this.shutdown("Reconnecting...", true);
                         }
                     }
                 }
@@ -119,7 +119,7 @@ final class NettyManager {
             this.channel.closeFuture().addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
-                    if (!ClientConnection.this.shutdown) {
+                    if (ClientConnection.this.reconnect) {
                         ClientConnection.this.channel.eventLoop().schedule(new Runnable() {
                             @Override
                             public void run() {
@@ -127,7 +127,7 @@ final class NettyManager {
                             }
                         }, 5, TimeUnit.SECONDS);
                     }
-                    removeClientConnection(ClientConnection.this);
+                    removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
                 }
             });
         }
@@ -158,7 +158,11 @@ final class NettyManager {
         }
 
         void shutdown(String message) {
-            this.shutdown = true;
+            this.shutdown(message, false);
+        }
+
+        private void shutdown(String message, boolean reconnect) {
+            this.reconnect = reconnect;
 
             final StringBuilder quitBuilder = new StringBuilder();
             quitBuilder.append("QUIT");
@@ -187,9 +191,9 @@ final class NettyManager {
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
     }
 
-    private static synchronized void removeClientConnection(ClientConnection connection) {
+    private static synchronized void removeClientConnection(ClientConnection connection, boolean reconnecting) {
         connections.remove(connection);
-        if (connections.isEmpty()) {
+        if (!reconnecting && connections.isEmpty()) {
             eventLoopGroup.shutdownGracefully();
             eventLoopGroup = null;
         }
