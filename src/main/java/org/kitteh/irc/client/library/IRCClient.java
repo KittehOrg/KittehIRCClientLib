@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
+import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
@@ -323,6 +324,7 @@ final class IRCClient implements Client {
                     break;
                 case 4: // version / modes
                     // We're in! Start sending all messages.
+                    this.eventManager.callEvent(new ClientConnectedEvent(actor));
                     this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
                     break;
                 case 5:
