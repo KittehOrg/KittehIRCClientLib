@@ -48,6 +48,8 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -313,8 +315,20 @@ final class IRCClient implements Client {
         }
     }
 
-    private String handleColon(String string) {
-        return string.startsWith(":") ? string.substring(1) : string;
+    private String[] handleArgs(String[] split, int start) {
+        final List<String> argsList = new LinkedList<>();
+
+        int index = start;
+        for (; index < split.length; index++) {
+            if (split[index].startsWith(":")) {
+                split[index] = split[index].substring(1);
+                argsList.add(StringUtil.combineSplit(split, index));
+                break;
+            }
+            argsList.add(split[index]);
+        }
+
+        return argsList.toArray(new String[argsList.size()]);
     }
 
     private void handleLine(String line) throws Throwable {
@@ -323,255 +337,270 @@ final class IRCClient implements Client {
         }
 
         final String[] split = line.split(" ");
-        if ((split.length <= 1) || !split[0].startsWith(":")) {
-            return; // Invalid!
+
+        int argsIndex = 1;
+        final Actor actor;
+        if (split[0].startsWith(":")) {
+            argsIndex++;
+            actor = Actor.getActor(split[0].substring(1));
+        } else {
+            actor = null; // TODO provide a default actor for when it's the server
         }
-        final Actor actor = Actor.getActor(split[0].substring(1));
+
+        final String commandString = split[argsIndex - 1];
+
+        final String[] args = this.handleArgs(split, argsIndex);
+
         int numeric = -1;
         try {
-            numeric = Integer.parseInt(split[1]);
+            numeric = Integer.parseInt(commandString);
         } catch (NumberFormatException ignored) {
         }
         if (numeric > -1) {
-            switch (numeric) {
-                case 1: // Welcome
-                    break;
-                case 2: // Your host is...
-                    break;
-                case 3: // server created
-                    break;
-                case 4: // version / modes
-                    // We're in! Start sending all messages.
-                    this.eventManager.callEvent(new ClientConnectedEvent(actor));
-                    this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
-                    break;
-                case 5:
-                    for (int i = 2; i < split.length; i++) {
-                        Matcher prefixMatcher = PREFIX_PATTERN.matcher(split[i]);
-                        if (prefixMatcher.find()) {
-                            String modes = prefixMatcher.group(1);
-                            String display = prefixMatcher.group(2);
-                            if (modes.length() == display.length()) {
-                                Map<Character, Character> prefixMap = new ConcurrentHashMap<>();
-                                for (int index = 0; index < modes.length(); index++) {
-                                    prefixMap.put(modes.charAt(index), display.charAt(index));
-                                }
-                                this.prefixes = prefixMap;
-                            }
-                            continue;
-                        }
-                        Matcher modeMatcher = CHANMODES_PATTERN.matcher(split[i]);
-                        if (modeMatcher.find()) {
-                            String[] modes = modeMatcher.group(1).split(",");
-                            Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
-                            for (int typeId = 0; typeId < modes.length; typeId++) {
-                                for (char mode : modes[typeId].toCharArray()) {
-                                    ChannelModeType type = null;
-                                    switch (typeId) {
-                                        case 0:
-                                            type = ChannelModeType.A_MASK;
-                                            break;
-                                        case 1:
-                                            type = ChannelModeType.B_PARAMETER_ALWAYS;
-                                            break;
-                                        case 2:
-                                            type = ChannelModeType.C_PARAMETER_ON_SET;
-                                            break;
-                                        case 3:
-                                            type = ChannelModeType.D_PARAMETER_NEVER;
-                                    }
-                                    modesMap.put(mode, type);
-                                }
-                            }
-                            this.modes = modesMap;
-                        }
-                    }
-                    break;
-                case 250: // Highest connection count
-                case 251: // There are X users
-                case 252: // X IRC OPs
-                case 253: // X unknown connections
-                case 254: // X channels formed
-                case 255: // X clients, X servers
-                case 265: // Local users, max
-                case 266: // global users, max
-                case 372: // info, such as continued motd
-                case 375: // motd start
-                case 376: // motd end
-                    break;
-                // Channel info
-                case 332: // Channel topic
-                case 333: // Topic set by
-                case 353: // Channel users list (/names). format is 353 nick = #channel :names
-                case 366: // End of /names
-                case 422: // MOTD missing
-                    break;
-                // Nick errors, try for new nick below
-                case 431: // No nick given
-                case 432: // Erroneous nickname
-                case 433: // Nick in use
-                    this.sendNickChange(this.requestedNick + '`');
-                    break;
-            }
+            this.handleLineNumeric(actor, numeric, args);
         } else {
-            final Command command = Command.getByName(split[1]);
-            if (command == null) {
-                return; // Unknown command
+            Command command = Command.getByName(commandString);
+            if (command != null) {
+                this.handleLineCommand(actor, command, args);
             }
-            // CTCP
-            if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(this.handleColon(StringUtil.combineSplit(split, 3)))) {
-                final String ctcpMessage = CTCPUtil.fromCTCP(this.handleColon(StringUtil.combineSplit(split, 3)));
-                switch (command) {
-                    case NOTICE:
-                        if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE) {
-                            this.eventManager.callEvent(new PrivateCTCPReplyEvent(actor, ctcpMessage));
+        }
+    }
+
+    private void handleLineNumeric(Actor actor, int command, String[] args) throws Throwable {
+        switch (command) {
+            case 1: // Welcome
+                break;
+            case 2: // Your host is...
+                break;
+            case 3: // server created
+                break;
+            case 4: // version / modes
+                // We're in! Start sending all messages.
+                this.eventManager.callEvent(new ClientConnectedEvent(actor));
+                this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
+                break;
+            case 5:
+                for (int i = 0; i < args.length; i++) {
+                    Matcher prefixMatcher = PREFIX_PATTERN.matcher(args[i]);
+                    if (prefixMatcher.find()) {
+                        String modes = prefixMatcher.group(1);
+                        String display = prefixMatcher.group(2);
+                        if (modes.length() == display.length()) {
+                            Map<Character, Character> prefixMap = new ConcurrentHashMap<>();
+                            for (int index = 0; index < modes.length(); index++) {
+                                prefixMap.put(modes.charAt(index), display.charAt(index));
+                            }
+                            this.prefixes = prefixMap;
                         }
-                        break;
-                    case PRIVMSG:
-                        switch (this.getTypeByTarget(split[2])) {
-                            case PRIVATE:
-                                String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
-                                if (ctcpMessage.equals("VERSION")) {
-                                    reply = "VERSION I am Kitteh!";
-                                } else if (ctcpMessage.equals("TIME")) {
-                                    reply = "TIME " + new Date().toString();
-                                } else if (ctcpMessage.equals("FINGER")) {
-                                    reply = "FINGER om nom nom tasty finger";
-                                } else if (ctcpMessage.startsWith("PING ")) {
-                                    reply = ctcpMessage;
+                        continue;
+                    }
+                    Matcher modeMatcher = CHANMODES_PATTERN.matcher(args[i]);
+                    if (modeMatcher.find()) {
+                        String[] modes = modeMatcher.group(1).split(",");
+                        Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
+                        for (int typeId = 0; typeId < modes.length; typeId++) {
+                            for (char mode : modes[typeId].toCharArray()) {
+                                ChannelModeType type = null;
+                                switch (typeId) {
+                                    case 0:
+                                        type = ChannelModeType.A_MASK;
+                                        break;
+                                    case 1:
+                                        type = ChannelModeType.B_PARAMETER_ALWAYS;
+                                        break;
+                                    case 2:
+                                        type = ChannelModeType.C_PARAMETER_ON_SET;
+                                        break;
+                                    case 3:
+                                        type = ChannelModeType.D_PARAMETER_NEVER;
                                 }
-                                PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(actor, ctcpMessage, reply);
-                                this.eventManager.callEvent(event);
-                                reply = event.getReply();
-                                if (reply != null) {
-                                    this.sendRawLine("NOTICE " + actor.getName() + " :" + CTCPUtil.toCTCP(reply));
-                                }
-                                break;
-                            case CHANNEL:
-                                this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(split[2]), ctcpMessage));
-                                break;
+                                modesMap.put(mode, type);
+                            }
                         }
-                        break;
+                        this.modes = modesMap;
+                    }
                 }
-                return; // If handled as CTCP we don't care about further handling.
-            }
+                break;
+            case 250: // Highest connection count
+            case 251: // There are X users
+            case 252: // X IRC OPs
+            case 253: // X unknown connections
+            case 254: // X channels formed
+            case 255: // X clients, X servers
+            case 265: // Local users, max
+            case 266: // global users, max
+            case 372: // info, such as continued motd
+            case 375: // motd start
+            case 376: // motd end
+                break;
+            // Channel info
+            case 332: // Channel topic
+            case 333: // Topic set by
+            case 353: // Channel users list (/names). format is 353 nick = #channel :names
+            case 366: // End of /names
+            case 422: // MOTD missing
+                break;
+            // Nick errors, try for new nick below
+            case 431: // No nick given
+            case 432: // Erroneous nickname
+            case 433: // Nick in use
+                this.sendNickChange(this.requestedNick + '`');
+                break;
+        }
+    }
+
+    private void handleLineCommand(Actor actor, Command command, String[] args) throws Throwable {
+        // CTCP
+        if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(args[1])) {
+            final String ctcpMessage = CTCPUtil.fromCTCP(args[1]);
+            final MessageTarget messageTarget = this.getTypeByTarget(args[0]);
             switch (command) {
                 case NOTICE:
-                    final String noticeMessage = this.handleColon(StringUtil.combineSplit(split, 3));
-                    switch (this.getTypeByTarget(split[2])) {
-                        case CHANNEL:
-                            this.eventManager.callEvent(new ChannelNoticeEvent(actor, (Channel) Actor.getActor(split[2]), noticeMessage));
-                            break;
-                        case PRIVATE:
-                            this.eventManager.callEvent(new PrivateNoticeEvent(actor, noticeMessage));
-                            break;
+                    if (messageTarget == MessageTarget.PRIVATE) {
+                        this.eventManager.callEvent(new PrivateCTCPReplyEvent(actor, ctcpMessage));
                     }
                     break;
                 case PRIVMSG:
-                    final String message = this.handleColon(StringUtil.combineSplit(split, 3));
-                    switch (this.getTypeByTarget(split[2])) {
-                        case CHANNEL:
-                            this.eventManager.callEvent(new ChannelMessageEvent(actor, (Channel) Actor.getActor(split[2]), message));
-                            break;
+                    switch (messageTarget) {
                         case PRIVATE:
-                            this.eventManager.callEvent(new PrivateMessageEvent(actor, message));
+                            String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
+                            if (ctcpMessage.equals("VERSION")) {
+                                reply = "VERSION I am Kitteh!";
+                            } else if (ctcpMessage.equals("TIME")) {
+                                reply = "TIME " + new Date().toString();
+                            } else if (ctcpMessage.equals("FINGER")) {
+                                reply = "FINGER om nom nom tasty finger";
+                            } else if (ctcpMessage.startsWith("PING ")) {
+                                reply = ctcpMessage;
+                            }
+                            PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(actor, ctcpMessage, reply);
+                            this.eventManager.callEvent(event);
+                            reply = event.getReply();
+                            if (reply != null) {
+                                this.sendRawLine("NOTICE " + actor.getName() + " :" + CTCPUtil.toCTCP(reply));
+                            }
+                            break;
+                        case CHANNEL:
+                            this.eventManager.callEvent(new ChannelCTCPEvent(actor, (Channel) Actor.getActor(args[0]), ctcpMessage));
                             break;
                     }
-                    break;
-                case MODE:
-                    if (this.getTypeByTarget(split[2]) == MessageTarget.CHANNEL) {
-                        Channel channel = (Channel) Actor.getActor(split[2]);
-                        String modechanges = split[3];
-                        int currentArg = 4;
-                        boolean add;
-                        switch (modechanges.charAt(0)) {
-                            case '+':
-                                add = true;
-                                break;
-                            case '-':
-                                add = false;
-                                break;
-                            default:
-                                return;
-                        }
-                        for (int i = 1; i < modechanges.length() && currentArg < split.length; i++) {
-                            char next = modechanges.charAt(i);
-                            if (next == '+') {
-                                add = true;
-                            } else if (next == '-') {
-                                add = false;
-                            } else {
-                                boolean hasArg;
-                                if (this.prefixes.containsKey(next)) {
-                                    hasArg = true;
-                                } else {
-                                    ChannelModeType type = this.modes.get(next);
-                                    if (type == null) {
-                                        // TODO clean up error handling
-                                        return;
-                                    }
-                                    hasArg = (add && type.isParameterRequiredOnSetting()) || (!add && type.isParameterRequiredOnRemoval());
-                                }
-                                this.eventManager.callEvent(new ChannelModeEvent(actor, channel, add, next, hasArg ? split[currentArg++] : null));
-                            }
-                        }
-                    }
-                    break;
-                case JOIN:
-                    if (actor instanceof User) { // Just in case
-                        Channel channel = (Channel) Actor.getActor(split[2]);
-                        User user = (User) actor;
-                        if (user.getNick().equals(this.currentNick)) {
-                            this.channels.add(channel);
-                        }
-                        this.eventManager.callEvent(new ChannelJoinEvent(channel, user));
-                    }
-                    break;
-                case PART:
-                    if (actor instanceof User) { // Just in case
-                        Channel channel = (Channel) Actor.getActor(split[2]);
-                        User user = (User) actor;
-                        if (user.getNick().equals(this.currentNick)) {
-                            this.channels.remove(channel);
-                        }
-                        this.eventManager.callEvent(new ChannelPartEvent(channel, user, split.length > 2 ? this.handleColon(StringUtil.combineSplit(split, 3)) : ""));
-                    }
-                    break;
-                case QUIT:
-                    if (actor instanceof User) { // Just in case
-                        this.eventManager.callEvent(new UserQuitEvent((User) actor, split.length > 1 ? this.handleColon(StringUtil.combineSplit(split, 2)) : ""));
-                    }
-                    break;
-                case KICK:
-                    Channel kickedChannel = (Channel) Actor.getActor(split[2]);
-                    if (split[3].equals(this.currentNick)) {
-                        this.channels.remove(kickedChannel);
-                    }
-                    this.eventManager.callEvent(new ChannelKickEvent(kickedChannel, actor, split[3], this.handleColon(StringUtil.combineSplit(split, 4))));
-                    break;
-                case NICK:
-                    if (actor instanceof User) {
-                        User user = (User) actor;
-                        if (user.getNick().equals(this.currentNick)) {
-                            this.currentNick = split[2];
-                        }
-                        this.eventManager.callEvent(new UserNickChangeEvent(user, split[2]));
-                    }
-                    break;
-                case INVITE:
-                    Channel invitedChannel = (Channel) Actor.getActor(this.handleColon(split[3]));
-                    if (this.getTypeByTarget(split[2]) == MessageTarget.PRIVATE && this.channelsIntended.contains(invitedChannel)) {
-                        this.sendRawLine("JOIN " + split[3]);
-                    }
-                    this.eventManager.callEvent(new ChannelInviteEvent(invitedChannel, actor, split[2]));
-                    break;
-                case TOPIC:
-                    this.eventManager.callEvent(new ChannelTopicEvent(actor, (Channel) Actor.getActor(split[2]), this.handleColon(StringUtil.combineSplit(split, 3))));
-                    break;
-                default:
-                    // TODO: Unknown event?
                     break;
             }
+            return; // If handled as CTCP we don't care about further handling.
+        }
+        switch (command) {
+            case NOTICE:
+                switch (this.getTypeByTarget(args[0])) {
+                    case CHANNEL:
+                        this.eventManager.callEvent(new ChannelNoticeEvent(actor, (Channel) Actor.getActor(args[0]), args[1]));
+                        break;
+                    case PRIVATE:
+                        this.eventManager.callEvent(new PrivateNoticeEvent(actor, args[1]));
+                        break;
+                }
+                break;
+            case PRIVMSG:
+                switch (this.getTypeByTarget(args[0])) {
+                    case CHANNEL:
+                        this.eventManager.callEvent(new ChannelMessageEvent(actor, (Channel) Actor.getActor(args[0]), args[1]));
+                        break;
+                    case PRIVATE:
+                        this.eventManager.callEvent(new PrivateMessageEvent(actor, args[1]));
+                        break;
+                }
+                break;
+            case MODE:
+                if (this.getTypeByTarget(args[0]) == MessageTarget.CHANNEL) {
+                    Channel channel = (Channel) Actor.getActor(args[0]);
+                    String modechanges = args[1];
+                    int currentArg = 2;
+                    boolean add;
+                    switch (modechanges.charAt(0)) {
+                        case '+':
+                            add = true;
+                            break;
+                        case '-':
+                            add = false;
+                            break;
+                        default:
+                            return;
+                    }
+                    for (int i = 1; i < modechanges.length() && currentArg < args.length; i++) {
+                        char next = modechanges.charAt(i);
+                        if (next == '+') {
+                            add = true;
+                        } else if (next == '-') {
+                            add = false;
+                        } else {
+                            boolean hasArg;
+                            if (this.prefixes.containsKey(next)) {
+                                hasArg = true;
+                            } else {
+                                ChannelModeType type = this.modes.get(next);
+                                if (type == null) {
+                                    // TODO clean up error handling
+                                    return;
+                                }
+                                hasArg = (add && type.isParameterRequiredOnSetting()) || (!add && type.isParameterRequiredOnRemoval());
+                            }
+                            this.eventManager.callEvent(new ChannelModeEvent(actor, channel, add, next, hasArg ? args[currentArg++] : null));
+                        }
+                    }
+                }
+                break;
+            case JOIN:
+                if (actor instanceof User) { // Just in case
+                    Channel channel = (Channel) Actor.getActor(args[0]);
+                    User user = (User) actor;
+                    if (user.getNick().equals(this.currentNick)) {
+                        this.channels.add(channel);
+                    }
+                    this.eventManager.callEvent(new ChannelJoinEvent(channel, user));
+                }
+                break;
+            case PART:
+                if (actor instanceof User) { // Just in case
+                    Channel channel = (Channel) Actor.getActor(args[0]);
+                    User user = (User) actor;
+                    if (user.getNick().equals(this.currentNick)) {
+                        this.channels.remove(channel);
+                    }
+                    this.eventManager.callEvent(new ChannelPartEvent(channel, user, args.length > 1 ? args[1] : ""));
+                }
+                break;
+            case QUIT:
+                if (actor instanceof User) { // Just in case
+                    this.eventManager.callEvent(new UserQuitEvent((User) actor, args.length > 0 ? args[0] : ""));
+                }
+                break;
+            case KICK:
+                Channel kickedChannel = (Channel) Actor.getActor(args[0]);
+                if (args[1].equals(this.currentNick)) {
+                    this.channels.remove(kickedChannel);
+                }
+                this.eventManager.callEvent(new ChannelKickEvent(kickedChannel, actor, args[1], args.length > 2 ? args[2] : ""));
+                break;
+            case NICK:
+                if (actor instanceof User) {
+                    User user = (User) actor;
+                    if (user.getNick().equals(this.currentNick)) {
+                        this.currentNick = args[0];
+                    }
+                    this.eventManager.callEvent(new UserNickChangeEvent(user, args[0]));
+                }
+                break;
+            case INVITE:
+                Channel invitedChannel = (Channel) Actor.getActor(args[1]);
+                if (this.getTypeByTarget(args[0]) == MessageTarget.PRIVATE && this.channelsIntended.contains(invitedChannel)) {
+                    this.sendRawLine("JOIN " + invitedChannel.getName());
+                }
+                this.eventManager.callEvent(new ChannelInviteEvent(invitedChannel, actor, args[0]));
+                break;
+            case TOPIC:
+                this.eventManager.callEvent(new ChannelTopicEvent(actor, (Channel) Actor.getActor(args[0]), args[1]));
+                break;
+            default:
+                break;
         }
     }
 
