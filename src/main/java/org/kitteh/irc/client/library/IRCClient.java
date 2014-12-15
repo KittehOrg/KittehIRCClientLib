@@ -509,7 +509,7 @@ final class IRCClient implements Client {
                         break;
                 }
                 break;
-            case MODE:
+            case MODE: // TODO handle this format: "+mode param +mode param"
                 if (this.getTypeByTarget(args[0]) == MessageTarget.CHANNEL) {
                     Channel channel = (Channel) Actor.getActor(args[0]);
                     String modechanges = args[1];
