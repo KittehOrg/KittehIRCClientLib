@@ -1,0 +1,8 @@
+org.kitteh.irc.client.library
+org.kitteh.irc.client.library.element
+org.kitteh.irc.client.library.event
+org.kitteh.irc.client.library.event.channel
+org.kitteh.irc.client.library.event.client
+org.kitteh.irc.client.library.event.user
+org.kitteh.irc.client.library.exception
+org.kitteh.irc.client.library.util
