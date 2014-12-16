@@ -35,6 +35,7 @@ import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
+import org.kitteh.irc.client.library.exception.KittehISupportProcessingFailureException;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
@@ -96,6 +97,84 @@ final class IRCClient implements Client {
         }
     }
 
+    private enum ISupport {
+        CHANMODES {
+            @Override
+            boolean process(String value, IRCClient client) {
+                String[] modes = value.split(",");
+                Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
+                for (int typeId = 0; typeId < modes.length; typeId++) {
+                    for (char mode : modes[typeId].toCharArray()) {
+                        ChannelModeType type = null;
+                        switch (typeId) {
+                            case 0:
+                                type = ChannelModeType.A_MASK;
+                                break;
+                            case 1:
+                                type = ChannelModeType.B_PARAMETER_ALWAYS;
+                                break;
+                            case 2:
+                                type = ChannelModeType.C_PARAMETER_ON_SET;
+                                break;
+                            case 3:
+                                type = ChannelModeType.D_PARAMETER_NEVER;
+                        }
+                        modesMap.put(mode, type);
+                    }
+                }
+                client.modes = modesMap;
+                return true;
+            }
+        },
+        PREFIX {
+            Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
+
+            @Override
+            boolean process(String value, IRCClient client) {
+                Matcher matcher = PATTERN.matcher(value);
+                if (!matcher.find()) {
+                    return false;
+                }
+                String modes = matcher.group(1);
+                String display = matcher.group(2);
+                if (modes.length() == display.length()) {
+                    Map<Character, Character> prefixMap = new ConcurrentHashMap<>();
+                    for (int index = 0; index < modes.length(); index++) {
+                        prefixMap.put(modes.charAt(index), display.charAt(index));
+                    }
+                    client.prefixes = prefixMap;
+                }
+                return true;
+            }
+        };
+
+        private static final Map<String, ISupport> MAP;
+        private static final Pattern PATTERN = Pattern.compile("([A-Z0-9]+)=(.*)");
+
+        static {
+            MAP = new ConcurrentHashMap<>();
+            for (ISupport iSupport : ISupport.values()) {
+                MAP.put(iSupport.name(), iSupport);
+            }
+        }
+
+        private static void handle(String arg, IRCClient client) {
+            Matcher matcher = PATTERN.matcher(arg);
+            if (!matcher.find()) {
+                return;
+            }
+            ISupport iSupport = MAP.get(matcher.group(1));
+            if (iSupport != null) {
+                boolean success = iSupport.process(matcher.group(2), client);
+                if (!success) {
+                    client.exceptionListener.queue(new KittehISupportProcessingFailureException(arg));
+                }
+            }
+        }
+
+        abstract boolean process(String value, IRCClient client);
+    }
+
     private enum MessageTarget {
         CHANNEL,
         PRIVATE,
@@ -130,9 +209,7 @@ final class IRCClient implements Client {
             put('v', '+');
         }
     };
-    private static final Pattern PREFIX_PATTERN = Pattern.compile("PREFIX=\\(([a-zA-Z]+)\\)([^ ]+)");
     private Map<Character, ChannelModeType> modes = ChannelModeType.getDefaultModes();
-    private static final Pattern CHANMODES_PATTERN = Pattern.compile("CHANMODES=(([,A-Za-z]+)(,([,A-Za-z]+)){0,3})");
 
     IRCClient(Config config) {
         this.config = config;
@@ -379,46 +456,9 @@ final class IRCClient implements Client {
                 this.eventManager.callEvent(new ClientConnectedEvent(actor));
                 this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
                 break;
-            case 5:
+            case 5: // ISUPPORT
                 for (String arg : args) {
-                    Matcher prefixMatcher = PREFIX_PATTERN.matcher(arg);
-                    if (prefixMatcher.find()) {
-                        String modes = prefixMatcher.group(1);
-                        String display = prefixMatcher.group(2);
-                        if (modes.length() == display.length()) {
-                            Map<Character, Character> prefixMap = new ConcurrentHashMap<>();
-                            for (int index = 0; index < modes.length(); index++) {
-                                prefixMap.put(modes.charAt(index), display.charAt(index));
-                            }
-                            this.prefixes = prefixMap;
-                        }
-                        continue;
-                    }
-                    Matcher modeMatcher = CHANMODES_PATTERN.matcher(arg);
-                    if (modeMatcher.find()) {
-                        String[] modes = modeMatcher.group(1).split(",");
-                        Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
-                        for (int typeId = 0; typeId < modes.length; typeId++) {
-                            for (char mode : modes[typeId].toCharArray()) {
-                                ChannelModeType type = null;
-                                switch (typeId) {
-                                    case 0:
-                                        type = ChannelModeType.A_MASK;
-                                        break;
-                                    case 1:
-                                        type = ChannelModeType.B_PARAMETER_ALWAYS;
-                                        break;
-                                    case 2:
-                                        type = ChannelModeType.C_PARAMETER_ON_SET;
-                                        break;
-                                    case 3:
-                                        type = ChannelModeType.D_PARAMETER_NEVER;
-                                }
-                                modesMap.put(mode, type);
-                            }
-                        }
-                        this.modes = modesMap;
-                    }
+                    ISupport.handle(arg, this);
                 }
                 break;
             case 250: // Highest connection count
