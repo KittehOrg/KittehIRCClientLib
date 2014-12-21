@@ -26,40 +26,11 @@ package org.kitteh.irc.client.library.element;
 /**
  * Represents an entity on an IRC server which can perform actions.
  */
-public class Actor {
-    /**
-     * Gets an Actor for the given name. Acquires the proper subclass based
-     * on the provided name. If no subclass can be found, an Actor object
-     * will be provided.
-     *
-     * @param name the Actor's name
-     * @return an Actor object for the given name
-     */
-    public static Actor getActor(String name) {
-        try {
-            if (User.isUser(name)) {
-                return new User(name);
-            } else if (Channel.isChannel(name)) {
-                return new Channel(name);
-            }
-        } catch (Throwable ignored) {
-            // NOOP
-        }
-        return new Actor(name);
-    }
-
-    private final String name;
-
-    Actor(String name) {
-        this.name = name;
-    }
-
-    /**
+public interface Actor {
+     /**
      * Gets the Actor's name.
      *
      * @return the Actor's name
      */
-    public String getName() {
-        return this.name;
-    }
+    public String getName();
 }

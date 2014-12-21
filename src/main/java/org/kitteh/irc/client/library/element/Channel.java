@@ -23,40 +23,8 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import java.util.regex.Pattern;
-
 /**
  * Represents an IRC channel.
  */
-public class Channel extends Actor {
-    // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
-    // Screw it, let's assume IRCDs disregard length policy
-    // New pattern: ([#!&\+][^ ,\07\r\n]+)
-    private static final Pattern PATTERN = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)"); // TODO separate to separate per-client class
-
-    /**
-     * Gets if a given String is a valid channel name.
-     *
-     * @param name name to test
-     * @return true if not null and a valid channel name
-     */
-    public static boolean isChannel(String name) {
-        return name != null && PATTERN.matcher(name).matches();
-    }
-
-    Channel(String channel) {
-        super(channel);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        // RFC 2812 section 1.3 'Channel names are case insensitive.'
-        return o instanceof Channel && ((Channel) o).getName().toLowerCase().equals(this.getName().toLowerCase());
-    }
-
-    @Override
-    public int hashCode() {
-        // RFC 2812 section 1.3 'Channel names are case insensitive.'
-        return this.getName().toLowerCase().hashCode() * 2;
-    }
+public interface Channel extends Actor {
 }

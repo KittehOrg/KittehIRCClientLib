@@ -23,69 +23,28 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Represents an IRC user.
  */
-public class User extends Actor {
-    // Valid nick chars: \w\[]^`{}|-_
-    // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
-    // You know what? Screw it.
-    // Let's just do it assuming no IRCD can handle following the rules.
-    // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
-    private static final Pattern PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
-
-    /**
-     * Gets if a given String is a valid user string (nick!ident@host).
-     *
-     * @param name string to test
-     * @return true if not null and a valid user string
-     */
-    public static boolean isUser(String name) {
-        return name != null && PATTERN.matcher(name).matches();
-    }
-
-    private final String host;
-    private final String nick;
-    private final String user;
-
-    User(String mask) throws Throwable {
-        super(mask);
-        Matcher matcher = PATTERN.matcher(mask);
-        if (!matcher.find()) {
-            throw new Throwable();
-        }
-        this.nick = matcher.group(1);
-        this.user = matcher.group(2);
-        this.host = matcher.group(3);
-    }
-
+public interface User extends Actor {
     /**
      * Gets the user's host.
      *
      * @return user host
      */
-    public String getHost() {
-        return this.host;
-    }
+    public String getHost();
 
     /**
      * Gets the user's nick.
      *
      * @return user nick
      */
-    public String getNick() {
-        return this.nick;
-    }
+    public String getNick();
 
     /**
      * Gets the user's user string.
      *
      * @return user
      */
-    public String getUser() {
-        return this.user;
-    }
+    public String getUser();
 }
