@@ -27,7 +27,7 @@ package org.kitteh.irc.client.library.element;
  * Represents an entity on an IRC server which can perform actions.
  */
 public interface Actor {
-     /**
+    /**
      * Gets the Actor's name.
      *
      * @return the Actor's name
