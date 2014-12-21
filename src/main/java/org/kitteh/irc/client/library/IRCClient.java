@@ -98,6 +98,18 @@ final class IRCClient implements Client {
     }
 
     private enum ISupport {
+        CHANNELLEN {
+            @Override
+            boolean process(String value, IRCClient client) {
+                try {
+                    int length = Integer.parseInt(value);
+                    client.actorProvider.setChannelLength(length);
+                    return true;
+                } catch (NumberFormatException ignored) {
+                    return false;
+                }
+            }
+        },
         CHANMODES {
             @Override
             boolean process(String value, IRCClient client) {
@@ -124,6 +136,28 @@ final class IRCClient implements Client {
                 }
                 client.modes = modesMap;
                 return true;
+            }
+        },
+        CHANTYPES {
+            @Override
+            boolean process(String value, IRCClient client) {
+                if (value.isEmpty()) {
+                    return false;
+                }
+                client.actorProvider.setChannelPrefixes(value.toCharArray());
+                return true;
+            }
+        },
+        NICKLEN {
+            @Override
+            boolean process(String value, IRCClient client) {
+                try {
+                    int length = Integer.parseInt(value);
+                    client.actorProvider.setNickLength(length);
+                    return true;
+                } catch (NumberFormatException ignored) {
+                    return false;
+                }
             }
         },
         PREFIX {
