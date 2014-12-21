@@ -32,19 +32,19 @@ public interface User extends Actor {
      *
      * @return user host
      */
-    public String getHost();
+    String getHost();
 
     /**
      * Gets the user's nick.
      *
      * @return user nick
      */
-    public String getNick();
+    String getNick();
 
     /**
      * Gets the user's user string.
      *
      * @return user
      */
-    public String getUser();
+    String getUser();
 }

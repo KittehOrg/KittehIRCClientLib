@@ -32,5 +32,5 @@ public interface Actor {
      *
      * @return the Actor's name
      */
-    public String getName();
+    String getName();
 }
