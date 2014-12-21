@@ -119,7 +119,7 @@ class ActorProvider {
     }
 
     Actor getActor(String name) {
-        if (this.nickPattern.matcher(name).matches() && (this.nickLength < 0 || name.length() <= this.nickLength)) {
+        if (this.nickPattern.matcher(name).matches()) {
             return new IRCUser(name, this.client);
         } else if (this.isValidChannel(name)) {
             return new IRCChannel(name, this.client);
