@@ -23,17 +23,21 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import java.util.Map;
-import java.util.Set;
-
 /**
- * Represents an IRC channel.
+ * Describes a channel mode that a user can have, such as op.
  */
-public interface Channel extends Actor {
+public interface ChannelUserMode {
     /**
-     * Gets the users currently in the channel.
+     * Gets the mode character.
      *
-     * @return users and their modes
+     * @return mode character
      */
-    Map<User, Set<ChannelUserMode>> getUsers();
+    char getMode();
+
+    /**
+     * Gets the nickname prefix character.
+     *
+     * @return the character displayed in front of a nickname
+     */
+    char getPrefix();
 }

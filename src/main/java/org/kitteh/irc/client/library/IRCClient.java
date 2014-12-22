@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
@@ -31,11 +32,13 @@ import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.exception.KittehISupportProcessingFailureException;
+import org.kitteh.irc.client.library.util.LCSet;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
@@ -46,6 +49,7 @@ import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -172,11 +176,11 @@ final class IRCClient implements Client {
                 String modes = matcher.group(1);
                 String display = matcher.group(2);
                 if (modes.length() == display.length()) {
-                    Map<Character, Character> prefixMap = new ConcurrentHashMap<>();
+                    List<ChannelUserMode> prefixList = new ArrayList<>();
                     for (int index = 0; index < modes.length(); index++) {
-                        prefixMap.put(modes.charAt(index), display.charAt(index));
+                        prefixList.add(new ActorProvider.IRCChannelUserMode(modes.charAt(index), display.charAt(index)));
                     }
-                    client.prefixes = prefixMap;
+                    client.prefixes = prefixList;
                 }
                 return true;
             }
@@ -223,7 +227,7 @@ final class IRCClient implements Client {
     private String requestedNick;
 
     private final Set<Channel> channels = new CopyOnWriteArraySet<>();
-    private final Set<Channel> channelsIntended = new CopyOnWriteArraySet<>();
+    private final Set<String> channelsIntended = new LCSet(); // TODO use lowercasing dependent on ISUPPORT
 
     private AuthType authType;
     private String auth;
@@ -239,10 +243,10 @@ final class IRCClient implements Client {
 
     private final ActorProvider actorProvider = new ActorProvider(this);
 
-    private Map<Character, Character> prefixes = new ConcurrentHashMap<Character, Character>() {
+    private List<ChannelUserMode> prefixes = new ArrayList<ChannelUserMode>() {
         {
-            put('o', '@');
-            put('v', '+');
+            this.add(new ActorProvider.IRCChannelUserMode('o', '@'));
+            this.add(new ActorProvider.IRCChannelUserMode('v', '+'));
         }
     };
     private Map<Character, ChannelModeType> modes = ChannelModeType.getDefaultModes();
@@ -266,12 +270,11 @@ final class IRCClient implements Client {
     public void addChannel(String... channels) {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
-        Channel channel;
         for (String channelName : channels) {
-            if ((channel = this.actorProvider.getChannel(channelName)) == null) {
+            if (!this.actorProvider.isValidChannel(channelName)) {
                 continue;
             }
-            this.channelsIntended.add(channel);
+            this.channelsIntended.add(channelName);
             this.sendRawLine("JOIN :" + channelName);
         }
     }
@@ -305,7 +308,7 @@ final class IRCClient implements Client {
     public void removeChannel(String channelName) {
         Channel channel = this.actorProvider.getChannel(channelName);
         if (channel != null) {
-            this.channelsIntended.remove(channel);
+            this.channelsIntended.remove(channelName);
             if (this.channels.contains(channel)) {
                 this.sendRawLine("PART " + channelName);
             }
@@ -506,15 +509,46 @@ final class IRCClient implements Client {
             case 255: // X clients, X servers
             case 265: // Local users, max
             case 266: // global users, max
-            case 372: // info, such as continued motd
-            case 375: // motd start
-            case 376: // motd end
+                break;
+            case 315:
+                // Self is arg 0
+                if (this.actorProvider.isValidChannel(args[1])) { // target
+                    this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this.actorProvider.getChannel(args[1])));
+                }
                 break;
             // Channel info
             case 332: // Channel topic
             case 333: // Topic set by
+                break;
+            case 352: // WHO list
+                // Self is arg 0
+                if (this.actorProvider.isValidChannel(args[1])) {
+                    final String channelName = args[1];
+                    final String ident = args[2];
+                    final String host = args[3];
+                    // server is arg 4
+                    final String nick = args[5];
+                    final String status = args[6];
+                    // The rest I don't care about
+                    final User user = (User) this.actorProvider.getActor(nick + "!" + ident + "@" + host);
+                    final ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
+                    final Set<ChannelUserMode> modes = new HashSet<>();
+                    for (char prefix : status.substring(1).toCharArray()) {
+                        for (ChannelUserMode mode : this.prefixes) {
+                            if (mode.getPrefix() == prefix) {
+                                modes.add(mode);
+                                break;
+                            }
+                        }
+                    }
+                    channel.trackUser(user, modes);
+                }
+                break;
             case 353: // Channel users list (/names). format is 353 nick = #channel :names
             case 366: // End of /names
+            case 372: // info, such as continued motd
+            case 375: // motd start
+            case 376: // motd end
             case 422: // MOTD missing
                 break;
             // Nick errors, try for new nick below
@@ -588,7 +622,7 @@ final class IRCClient implements Client {
                 break;
             case MODE: // TODO handle this format: "+mode param +mode param"
                 if (this.getTypeByTarget(args[0]) == MessageTarget.CHANNEL) {
-                    Channel channel = this.actorProvider.getChannel(args[0]);
+                    ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
                     String modechanges = args[1];
                     int currentArg = 2;
                     boolean add;
@@ -610,7 +644,14 @@ final class IRCClient implements Client {
                             add = false;
                         } else {
                             boolean hasArg;
-                            if (this.prefixes.containsKey(next)) {
+                            boolean isPrefix = false;
+                            for (ChannelUserMode prefix : this.prefixes) {
+                                if (prefix.getMode() == next) {
+                                    isPrefix = true;
+                                    break;
+                                }
+                            }
+                            if (isPrefix) {
                                 hasArg = true;
                             } else {
                                 ChannelModeType type = this.modes.get(next);
@@ -620,25 +661,36 @@ final class IRCClient implements Client {
                                 }
                                 hasArg = (add && type.isParameterRequiredOnSetting()) || (!add && type.isParameterRequiredOnRemoval());
                             }
-                            this.eventManager.callEvent(new ChannelModeEvent(actor, channel, add, next, hasArg ? args[currentArg++] : null));
+                            final String nick = hasArg ? args[currentArg++] : null;
+                            if (isPrefix) {
+                                if (add) {
+                                    channel.trackUserModeAdd(nick, this.prefixes.get(next));
+                                } else {
+                                    channel.trackUserModeRemove(nick, this.prefixes.get(next));
+                                }
+                            }
+                            this.eventManager.callEvent(new ChannelModeEvent(actor, channel, add, next, nick));
                         }
                     }
                 }
                 break;
             case JOIN:
                 if (actor instanceof User) { // Just in case
-                    Channel channel = this.actorProvider.getChannel(args[0]);
+                    ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
                     User user = (User) actor;
+                    channel.trackUserJoin(user);
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.add(channel);
+                        this.sendRawLine("WHO " + channel.getName());
                     }
                     this.eventManager.callEvent(new ChannelJoinEvent(channel, user));
                 }
                 break;
             case PART:
                 if (actor instanceof User) { // Just in case
-                    Channel channel = this.actorProvider.getChannel(args[0]);
+                    ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
                     User user = (User) actor;
+                    channel.trackUserPart(user);
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.remove(channel);
                     }
@@ -647,6 +699,7 @@ final class IRCClient implements Client {
                 break;
             case QUIT:
                 if (actor instanceof User) { // Just in case
+                    this.actorProvider.trackUserQuit((User) actor);
                     this.eventManager.callEvent(new UserQuitEvent((User) actor, args.length > 0 ? args[0] : ""));
                 }
                 break;
@@ -668,7 +721,7 @@ final class IRCClient implements Client {
                 break;
             case INVITE:
                 Channel invitedChannel = this.actorProvider.getChannel(args[1]);
-                if (this.getTypeByTarget(args[0]) == MessageTarget.PRIVATE && this.channelsIntended.contains(invitedChannel)) {
+                if (this.getTypeByTarget(args[0]) == MessageTarget.PRIVATE && this.channelsIntended.contains(invitedChannel.getName())) {
                     this.sendRawLine("JOIN " + invitedChannel.getName());
                 }
                 this.eventManager.callEvent(new ChannelInviteEvent(invitedChannel, actor, args[0]));

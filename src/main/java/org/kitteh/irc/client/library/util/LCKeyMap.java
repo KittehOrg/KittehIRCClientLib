@@ -21,19 +21,43 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.util;
 
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Represents an IRC channel.
+ * A threadsafe hash map with lowercased keys.
  */
-public interface Channel extends Actor {
-    /**
-     * Gets the users currently in the channel.
-     *
-     * @return users and their modes
-     */
-    Map<User, Set<ChannelUserMode>> getUsers();
+public class LCKeyMap<Value> extends ConcurrentHashMap<String, Value> {
+    @Override
+    public boolean containsKey(Object key) {
+        return key instanceof String && super.containsKey(this.toLowerCase((String) key));
+    }
+
+    @Override
+    public Value get(Object key) {
+        return key instanceof String ? super.get(this.toLowerCase((String) key)) : null;
+    }
+
+    @Override
+    public Value put(String key, Value value) {
+        return super.put(this.toLowerCase(key), value);
+    }
+
+    @Override
+    public Value remove(Object key) {
+        return key instanceof String ? super.remove(this.toLowerCase((String) key)) : null;
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Value> m) {
+        for (Map.Entry<? extends String, ? extends Value> entry : m.entrySet()) {
+            this.put(entry.getKey(), entry.getValue()); // Lowercased
+        }
+    }
+
+    protected String toLowerCase(String input) {
+        return input.toLowerCase();
+    }
 }

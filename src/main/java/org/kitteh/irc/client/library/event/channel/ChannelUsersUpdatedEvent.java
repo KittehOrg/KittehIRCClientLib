@@ -21,19 +21,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.event.channel;
 
-import java.util.Map;
-import java.util.Set;
+import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.event.ChannelEvent;
 
 /**
- * Represents an IRC channel.
+ * Called after completion of a WHO command.
  */
-public interface Channel extends Actor {
+public class ChannelUsersUpdatedEvent extends ChannelEvent {
     /**
-     * Gets the users currently in the channel.
+     * Constructs the event.
      *
-     * @return users and their modes
+     * @param channel channel with the updated users list
      */
-    Map<User, Set<ChannelUserMode>> getUsers();
+    public ChannelUsersUpdatedEvent(Channel channel) {
+        super(channel);
+    }
 }

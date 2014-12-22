@@ -31,20 +31,20 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * A threadsafe, automagically lowercased Set.
  */
-public final class LCSet extends CopyOnWriteArraySet<String> {
+public class LCSet extends CopyOnWriteArraySet<String> {
     @Override
     public boolean contains(Object o) {
-        return o instanceof String && super.contains(((String) o).toLowerCase());
+        return o instanceof String && super.contains(this.toLowerCase(((String) o)));
     }
 
     @Override
     public boolean add(String s) {
-        return super.add(s.toLowerCase());
+        return super.add(this.toLowerCase(s));
     }
 
     @Override
     public boolean remove(Object o) {
-        return o instanceof String && super.remove(((String) o).toLowerCase());
+        return o instanceof String && super.remove(this.toLowerCase(((String) o)));
     }
 
     @Override
@@ -82,9 +82,13 @@ public final class LCSet extends CopyOnWriteArraySet<String> {
         Set<String> set = new HashSet<>();
         for (Object o : c) {
             if (o instanceof String) {
-                set.add(((String) o).toLowerCase());
+                set.add(this.toLowerCase(((String) o)));
             }
         }
         return set;
+    }
+
+    protected String toLowerCase(String input) {
+        return input.toLowerCase();
     }
 }

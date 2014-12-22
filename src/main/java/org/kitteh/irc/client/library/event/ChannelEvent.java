@@ -21,19 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.event;
 
-import java.util.Map;
-import java.util.Set;
+import org.kitteh.irc.client.library.element.Channel;
 
 /**
- * Represents an IRC channel.
+ * Abstract event describing things in a {@link
+ * org.kitteh.irc.client.library.element.Channel}.
  */
-public interface Channel extends Actor {
+public abstract class ChannelEvent {
+    private final Channel channel;
+
+    protected ChannelEvent(Channel channel) {
+        this.channel = channel;
+    }
+
     /**
-     * Gets the users currently in the channel.
+     * Gets the channel involved in this event.
      *
-     * @return users and their modes
+     * @return the channel
      */
-    Map<User, Set<ChannelUserMode>> getUsers();
+    public Channel getChannel() {
+        return this.channel;
+    }
 }
