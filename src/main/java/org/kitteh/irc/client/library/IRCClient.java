@@ -49,7 +49,6 @@ import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.util.StringUtil;
 
-import javax.net.ssl.SSLSocketFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;

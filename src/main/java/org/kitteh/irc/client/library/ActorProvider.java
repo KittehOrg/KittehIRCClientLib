@@ -145,13 +145,11 @@ class ActorProvider {
         private final String nick;
         private final String user;
 
-        IRCUser(String mask, IRCClient client) {
+        IRCUser(String mask, String nick, String user, String host, IRCClient client) {
             super(mask, client);
-            Matcher matcher = nickPattern.matcher(mask);
-            matcher.find();
-            this.nick = matcher.group(1);
-            this.user = matcher.group(2);
-            this.host = matcher.group(3);
+            this.nick = nick;
+            this.user = user;
+            this.host = host;
         }
 
         @Override
@@ -200,13 +198,15 @@ class ActorProvider {
     }
 
     Actor getActor(String name) {
-        if (this.nickPattern.matcher(name).matches()) {
-            return new IRCUser(name, this.client);
-        } else if (this.isValidChannel(name)) {
-            return this.getChannel(name);
-        } else {
-            return new IRCActor(name, this.client);
+        Matcher nickMatcher = this.nickPattern.matcher(name);
+        if (nickMatcher.matches()) {
+            return new IRCUser(name, nickMatcher.group(1), nickMatcher.group(2), nickMatcher.group(3), this.client);
         }
+        Channel channel = this.getChannel(name);
+        if (channel != null) {
+            return channel;
+        }
+        return new IRCActor(name, this.client);
     }
 
     IRCChannel getChannel(String name) {
