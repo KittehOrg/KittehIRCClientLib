@@ -102,6 +102,7 @@ final class Config {
     static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);
     static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6667), InetSocketAddress.class);
     static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class);
+    static final Entry<Boolean> SSL = new Entry<>(false, Boolean.class);
     static final Entry<String> USER = new Entry<>("Kitteh", String.class);
 
     /**

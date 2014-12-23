@@ -169,6 +169,17 @@ public final class ClientBuilder implements Cloneable {
     }
 
     /**
+     * Sets whether the client connects via SSL.
+     *
+     * @param ssl true for ssl
+     * @return this builder
+     */
+    public ClientBuilder secure(boolean ssl) {
+        this.config.set(Config.SSL, ssl);
+        return this;
+    }
+
+    /**
      * Sets the server IP to which the client will connect.
      * <p>
      * By default, the port is 6667.

@@ -41,13 +41,17 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
+import org.kitteh.irc.client.library.exception.KittehConnectionException;
 
+import javax.net.ssl.SSLException;
 import java.net.SocketAddress;
 import java.util.HashSet;
 import java.util.List;
@@ -115,6 +119,16 @@ final class NettyManager {
                     ClientConnection.this.client.processLine(msg);
                 }
             });
+
+            // SSL
+            if (this.client.getConfig().get(Config.SSL)) {
+                try {
+                    this.channel.pipeline().addFirst(SslContext.newClientContext(new NettyTrustManagerFactory(this.client)).newHandler(this.channel.alloc()));
+                } catch (SSLException e) {
+                    this.client.getExceptionListener().queue(new KittehConnectionException(e, true));
+                    return;
+                }
+            }
 
             // Clean up on disconnect
             this.channel.closeFuture().addListener(new ChannelFutureListener() {
