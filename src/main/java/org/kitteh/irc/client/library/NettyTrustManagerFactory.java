@@ -46,7 +46,7 @@ final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
             SSLCertificateAcceptEvent event = new SSLCertificateAcceptEvent(authType, chain);
             NettyTrustManagerFactory.this.client.getEventManager().callEvent(event);
             if (event.isDenied()) {
-                throw new CertificateException();
+                throw new CertificateException("Certificate denied via SSLCertificateAcceptEvent");
             }
         }
 
