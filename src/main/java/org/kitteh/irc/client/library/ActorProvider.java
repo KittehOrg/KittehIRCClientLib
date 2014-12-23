@@ -57,8 +57,8 @@ class ActorProvider {
     }
 
     class IRCChannel extends IRCActor implements Channel {
-        private Map<User, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
-        private Map<String, User> nickMap = new LCKeyMap<User>() {
+        private final Map<User, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
+        private final Map<String, User> nickMap = new LCKeyMap<User>() {
             @Override
             protected String toLowerCase(String input) {
                 return ActorProvider.this.toLowerCase(input);

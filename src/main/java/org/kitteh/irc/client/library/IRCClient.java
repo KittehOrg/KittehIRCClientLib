@@ -165,7 +165,7 @@ final class IRCClient implements Client {
             }
         },
         PREFIX {
-            Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
+            final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
             @Override
             boolean process(String value, IRCClient client) {
@@ -448,7 +448,7 @@ final class IRCClient implements Client {
         return argsList.toArray(new String[argsList.size()]);
     }
 
-    private void handleLine(String line) {
+    private void handleLine(final String line) {
         if ((line == null) || (line.length() == 0)) {
             return;
         }
@@ -483,7 +483,7 @@ final class IRCClient implements Client {
         }
     }
 
-    private void handleLineNumeric(Actor actor, int command, String[] args) {
+    private void handleLineNumeric(final Actor actor, final int command, final String[] args) {
         switch (command) {
             case 1: // Welcome
                 break;
@@ -560,7 +560,7 @@ final class IRCClient implements Client {
         }
     }
 
-    private void handleLineCommand(Actor actor, Command command, String[] args) {
+    private void handleLineCommand(final Actor actor, final Command command, final String[] args) {
         // CTCP
         if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(args[1])) {
             final String ctcpMessage = CTCPUtil.fromCTCP(args[1]);
