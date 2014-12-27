@@ -52,6 +52,7 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,6 +66,37 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 final class IRCClient implements Client {
+    private class ConnectedServerInfo implements ServerInfo {
+        @Override
+        public int getChannelLengthLimit() {
+            return IRCClient.this.actorProvider.getChannelLength();
+        }
+
+        @Override
+        public Map<Character, ChannelModeType> getChannelModes() {
+            return new HashMap<>(IRCClient.this.modes);
+        }
+
+        @Override
+        public List<Character> getChannelPrefixes() {
+            List<Character> list = new ArrayList<>();
+            for (char prefix : IRCClient.this.actorProvider.getChannelPrefixes()) {
+                list.add(prefix);
+            }
+            return list;
+        }
+
+        @Override
+        public List<ChannelUserMode> getChannelUserModes() {
+            return new ArrayList<>(IRCClient.this.prefixes);
+        }
+
+        @Override
+        public int getNickLengthLimit() {
+            return IRCClient.this.actorProvider.getNickLength();
+        }
+    }
+
     private class InputProcessor extends Thread {
         private final Queue<String> queue = new ConcurrentLinkedQueue<>();
 

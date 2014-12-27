@@ -68,7 +68,7 @@ public enum ChannelModeType {
      *
      * @return default expected nodes
      */
-    static Map<Character, ChannelModeType> getDefaultModes() {
+    public static Map<Character, ChannelModeType> getDefaultModes() {
         return new ConcurrentHashMap<>(DEFAULT_MODES);
     }
 

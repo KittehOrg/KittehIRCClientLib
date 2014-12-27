@@ -217,6 +217,18 @@ class ActorProvider {
         return channel;
     }
 
+    int getChannelLength() {
+        return this.channelLength;
+    }
+
+    char[] getChannelPrefixes() {
+        return this.channelPrefixes;
+    }
+
+    int getNickLength() {
+        return this.nickLength;
+    }
+
     boolean isValidChannel(String name) {
         if (this.channelPattern.matcher(name).matches() && name.length() > 1 && (channelLength < 0 || name.length() <= channelLength)) {
             for (char c : this.channelPrefixes) {
