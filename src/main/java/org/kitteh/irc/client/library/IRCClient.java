@@ -432,20 +432,7 @@ final class IRCClient implements Client {
         return this.outputListener;
     }
 
-    void connect() {
-        this.connection = NettyManager.connect(this);
-
-        // If the server has a password, send that along first
-        if (this.config.get(Config.SERVER_PASSWORD) != null) {
-            this.sendPriorityRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD));
-        }
-
-        // Initial USER and NICK messages. Let's just assume we want +iw (send 8)
-        this.sendPriorityRawLine("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME));
-        this.sendNickChange(this.goalNick);
-
-        // Figure out auth
-        // TODO delay until successful connection
+    void authenticate() {
         AuthType authType = this.config.get(Config.AUTH_TYPE);
         if (authType != null) {
             String auth;
@@ -468,6 +455,19 @@ final class IRCClient implements Client {
             }
             this.sendPriorityRawLine(auth);
         }
+    }
+
+    void connect() {
+        this.connection = NettyManager.connect(this);
+
+        // If the server has a password, send that along first
+        if (this.config.get(Config.SERVER_PASSWORD) != null) {
+            this.sendPriorityRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD));
+        }
+
+        // Initial USER and NICK messages. Let's just assume we want +iw (send 8)
+        this.sendPriorityRawLine("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME));
+        this.sendNickChange(this.goalNick);
     }
 
     private String[] handleArgs(String[] split, int start) {
@@ -531,6 +531,7 @@ final class IRCClient implements Client {
                 break;
             case 4: // version / modes
                 // We're in! Start sending all messages.
+                this.authenticate();
                 this.eventManager.callEvent(new ClientConnectedEvent(actor));
                 this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
                 break;
