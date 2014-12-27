@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.kitteh.irc.client.library.ServerInfo;
 import org.kitteh.irc.client.library.element.Actor;
 
 /**
@@ -32,14 +33,16 @@ import org.kitteh.irc.client.library.element.Actor;
  */
 public class ClientConnectedEvent {
     private final Actor server;
+    private final ServerInfo serverInfo;
 
     /**
      * Creates the event.
      *
      * @param server the server to which the client is connected
      */
-    public ClientConnectedEvent(Actor server) {
+    public ClientConnectedEvent(Actor server, ServerInfo serverInfo) {
         this.server = server;
+        this.serverInfo = serverInfo;
     }
 
     /**
@@ -49,5 +52,18 @@ public class ClientConnectedEvent {
      */
     public Actor getServer() {
         return this.server;
+    }
+
+    /**
+     * Gets information about the server to which the client is currently
+     * connected. As long as the client remains connected the information
+     * returned by this object will update according to information received
+     * from the server. Note that at the time of this event the server may not
+     * yet have sent any information.
+     *
+     * @return the server information object
+     */
+    public ServerInfo getServerInfo() {
+        return this.serverInfo;
     }
 }

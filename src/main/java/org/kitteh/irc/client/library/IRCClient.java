@@ -368,6 +368,11 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public ServerInfo getServerInfo() {
+        return this.serverInfo;
+    }
+
+    @Override
     public void removeChannel(String channelName) {
         Channel channel = this.actorProvider.getChannel(channelName);
         if (channel != null) {
@@ -567,7 +572,8 @@ final class IRCClient implements Client {
             case 4: // version / modes
                 // We're in! Start sending all messages.
                 this.authenticate();
-                this.eventManager.callEvent(new ClientConnectedEvent(actor));
+                this.serverInfo = new ConnectedServerInfo();
+                this.eventManager.callEvent(new ClientConnectedEvent(actor, this.serverInfo));
                 this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
                 break;
             case 5: // ISUPPORT

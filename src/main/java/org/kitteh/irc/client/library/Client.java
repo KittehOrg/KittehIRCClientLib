@@ -81,6 +81,17 @@ public interface Client {
     String getNick();
 
     /**
+     * Gets information about the server to which the client is currently
+     * connected. As long as the client remains connected the information
+     * returned by this object will update according to information received
+     * from the server. A new one can be acquired from {@link
+     * org.kitteh.irc.client.library.event.client.ClientConnectedEvent}
+     *
+     * @return the server information object
+     */
+    ServerInfo getServerInfo();
+
+    /**
      * Removes a channel from the client, leaving as necessary.
      *
      * @param channel channel to leave
