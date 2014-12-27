@@ -93,6 +93,9 @@ final class Config {
     }
 
     static final Entry<String> NAME = new Entry<>("Unnamed", String.class);
+    static final Entry<String> AUTH_NAME = new Entry<>(null, String.class);
+    static final Entry<String> AUTH_PASS = new Entry<>(null, String.class);
+    static final Entry<AuthType> AUTH_TYPE = new Entry<>(null, AuthType.class);
     static final Entry<InetSocketAddress> BIND_ADDRESS = new Entry<>(null, InetSocketAddress.class);
     static final Entry<ExceptionConsumerWrapper> LISTENER_EXCEPTION = new Entry<>(null, ExceptionConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_INPUT = new Entry<>(null, StringConsumerWrapper.class);

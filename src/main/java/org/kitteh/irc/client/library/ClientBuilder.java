@@ -46,6 +46,24 @@ public final class ClientBuilder implements Cloneable {
     }
 
     /**
+     * Sets values for authentication with services on the server.
+     *
+     * @param authType type of authentication (See {@link AuthType})
+     * @param name username
+     * @param pass password
+     * @return this builder
+     */
+    public ClientBuilder auth(AuthType authType, String name, String pass) {
+        Sanity.nullCheck(authType, "Auth type cannot be null!");
+        Sanity.nullCheck(name, "Name cannot be null!");
+        Sanity.nullCheck(pass, "Password cannot be null!");
+        this.config.set(Config.AUTH_TYPE, authType);
+        this.config.set(Config.AUTH_NAME, name);
+        this.config.set(Config.AUTH_PASS, pass);
+        return this;
+    }
+
+    /**
      * Binds the client to a host or IP locally. Null for wildcard binding.
      * <p>
      * By default, the host is null for wildcard binding.

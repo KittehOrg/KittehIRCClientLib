@@ -261,10 +261,6 @@ final class IRCClient implements Client {
     private final Set<Channel> channels = new CopyOnWriteArraySet<>();
     private final Set<String> channelsIntended = new LCSet(); // TODO use lowercasing dependent on ISUPPORT
 
-    private AuthType authType;
-    private String auth;
-    private String authReclaim;
-
     private NettyManager.ClientConnection connection;
 
     private final EventManager eventManager = new EventManager(this);
@@ -370,19 +366,13 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void setAuth(AuthType type, String nick, String pass) {
-        Sanity.nullCheck(type, "Auth type cannot be null");
-        this.authType = type;
-        switch (type) {
-            case GAMESURGE:
-                this.auth = "PRIVMSG AuthServ@services.gamesurge.net :auth " + nick + " " + pass;
-                this.authReclaim = "";
-                break;
-            case NICKSERV:
-            default:
-                this.auth = "PRIVMSG NickServ :identify " + pass;
-                this.authReclaim = "PRIVMSG NickServ :ghost " + nick + " " + pass;
-        }
+    public void setAuth(AuthType authType, String name, String pass) {
+        Sanity.nullCheck(authType, "Auth type cannot be null!");
+        Sanity.nullCheck(name, "Name cannot be null!");
+        Sanity.nullCheck(pass, "Password cannot be null!");
+        this.config.set(Config.AUTH_TYPE, authType);
+        this.config.set(Config.AUTH_NAME, name);
+        this.config.set(Config.AUTH_PASS, pass);
     }
 
     @Override
@@ -455,12 +445,28 @@ final class IRCClient implements Client {
         this.sendNickChange(this.goalNick);
 
         // Figure out auth
-        if (this.authReclaim != null && !this.currentNick.equals(this.goalNick) && this.authType.isNickOwned()) {
-            this.sendPriorityRawLine(this.authReclaim);
-            this.sendNickChange(this.goalNick);
-        }
-        if (this.auth != null) {
-            this.sendPriorityRawLine(this.auth);
+        // TODO delay until successful connection
+        AuthType authType = this.config.get(Config.AUTH_TYPE);
+        if (authType != null) {
+            String auth;
+            String authReclaim;
+            String name = this.config.get(Config.AUTH_NAME);
+            String pass = this.config.get(Config.AUTH_PASS);
+            switch (authType) {
+                case GAMESURGE:
+                    auth = "PRIVMSG AuthServ@services.gamesurge.net :auth " + name + " " + pass;
+                    authReclaim = "";
+                    break;
+                case NICKSERV:
+                default:
+                    auth = "PRIVMSG NickServ :identify " + name + " " + pass;
+                    authReclaim = "PRIVMSG NickServ :ghost " + name + " " + pass;
+            }
+            if (!this.currentNick.equals(this.goalNick) && authType.isNickOwned()) {
+                this.sendPriorityRawLine(authReclaim);
+                this.sendNickChange(this.goalNick);
+            }
+            this.sendPriorityRawLine(auth);
         }
     }
 

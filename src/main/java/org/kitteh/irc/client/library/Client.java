@@ -116,13 +116,14 @@ public interface Client {
     void sendRawLine(String message);
 
     /**
-     * Sets the authentication method, user and password.
+     * Sets values for authentication with services on the server. The
+     * client will not attempt to utilize them until a future reconnect.
      *
-     * @param type authentication type
-     * @param nick nickname
+     * @param authType type of authentication (See {@link AuthType})
+     * @param name username
      * @param pass password
      */
-    void setAuth(AuthType type, String nick, String pass);
+    void setAuth(AuthType authType, String name, String pass);
 
     /**
      * Sets the delay between messages sent to the server.
