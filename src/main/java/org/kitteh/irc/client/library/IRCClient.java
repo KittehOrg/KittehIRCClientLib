@@ -67,9 +67,16 @@ import java.util.regex.Pattern;
 
 final class IRCClient implements Client {
     private class ConnectedServerInfo implements ServerInfo {
+        private Map<Character, Integer> channelLimits = new HashMap<>();
+
         @Override
         public int getChannelLengthLimit() {
             return IRCClient.this.actorProvider.getChannelLength();
+        }
+
+        @Override
+        public Map<Character, Integer> getChannelLimits() {
+            return new HashMap<>(this.channelLimits);
         }
 
         @Override
@@ -144,6 +151,33 @@ final class IRCClient implements Client {
                 } catch (NumberFormatException ignored) {
                     return false;
                 }
+            }
+        },
+        CHANLIMIT {
+            @Override
+            boolean process(String value, IRCClient client) {
+                String[] pairs = value.split(",");
+                Map<Character, Integer> limits = new HashMap<>();
+                for (String p : pairs) {
+                    String[] pair = p.split(":");
+                    if (pair.length!=2) {
+                        return false;
+                    }
+                    int limit;
+                    try {
+                        limit = Integer.parseInt(pair[1]);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                    for (char prefix : pair[0].toCharArray()) {
+                        limits.put(prefix, limit);
+                    }
+                }
+                if (limits.isEmpty()) {
+                    return false;
+                }
+                client.serverInfo.channelLimits = limits;
+                return true;
             }
         },
         CHANMODES {
@@ -253,6 +287,7 @@ final class IRCClient implements Client {
 
     private final Config config;
     private final InputProcessor processor;
+    private ConnectedServerInfo serverInfo = new ConnectedServerInfo();
 
     private String goalNick;
     private String currentNick;

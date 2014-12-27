@@ -41,6 +41,13 @@ public interface ServerInfo {
     int getChannelLengthLimit();
 
     /**
+     * Gets the channel join limits.
+     *
+     * @return a map of channel prefixes to limits
+     */
+    Map<Character, Integer> getChannelLimits();
+
+    /**
      * Gets the channel modes available. If the server has not provided
      * information on channel modes, the default specified by {@link
      * ChannelModeType@getDefaultModes()} is used and returned here.
