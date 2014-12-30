@@ -116,7 +116,7 @@ final class IRCClient implements Client {
         public void run() {
             while (!this.isInterrupted()) {
                 synchronized (this.queue) {
-                    if (this.queue.isEmpty()) {
+                    while (this.queue.isEmpty()) {
                         try {
                             this.queue.wait();
                         } catch (InterruptedException e) {
