@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
@@ -392,11 +393,23 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public void sendCTCPMessage(MessageReceiver target, String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendCTCPMessage(target.getName(), message);
+    }
+
+    @Override
     public void sendMessage(String target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("PRIVMSG " + target + " :" + message);
+    }
+
+    @Override
+    public void sendMessage(MessageReceiver target, String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendMessage(target.getName(), message);
     }
 
     @Override

@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.MessageReceiver;
 
 import java.util.Set;
 
@@ -112,12 +113,33 @@ public interface Client {
     void sendCTCPMessage(String target, String message);
 
     /**
+     * Sends a CTCP message to a target user or channel. Automagically adds
+     * the CTCP delimiter around the message and escapes the characters that
+     * need escaping when sending a CTCP message.
+     * <p>
+     * <i>Note: CTCP replies should not be sent this way. Catch the message
+     * with the {@link org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent}</i>
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     */
+    void sendCTCPMessage(MessageReceiver target, String message);
+
+    /**
      * Sends a message to a target user or channel.
      *
      * @param target the destination of the message
      * @param message the message to send
      */
     void sendMessage(String target, String message);
+
+    /**
+     * Sends a message to a target user or channel.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     */
+    void sendMessage(MessageReceiver target, String message);
 
     /**
      * Sends a raw IRC message.

@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.element;
 /**
  * Represents an IRC user.
  */
-public interface User extends Actor {
+public interface User extends MessageReceiver {
     /**
      * Gets the user's host.
      *

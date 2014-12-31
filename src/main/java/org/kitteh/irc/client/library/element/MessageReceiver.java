@@ -23,17 +23,25 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import java.util.Map;
-import java.util.Set;
+import org.kitteh.irc.client.library.Client;
 
 /**
- * Represents an IRC channel.
+ * Represents an {@link Actor} capable of recieving messages.
  */
-public interface Channel extends MessageReceiver {
+public interface MessageReceiver extends Actor {
     /**
-     * Gets the users currently in the channel.
+     * Sends this actor a message.
      *
-     * @return users and their modes
+     * @param message the message to send
+     * @see Client#sendMessage(MessageReceiver, String)
      */
-    Map<User, Set<ChannelUserMode>> getUsers();
+    void sendMessage(String message);
+
+    /**
+     * Sends this actor a CTCP message.
+     *
+     * @param message the message to send
+     * @see Client#sendCTCPMessage(MessageReceiver, String)
+     */
+    void sendCTCPMessage(String message);
 }

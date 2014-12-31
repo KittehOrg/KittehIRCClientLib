@@ -27,6 +27,7 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.LCKeyMap;
 
@@ -61,7 +62,7 @@ class ActorProvider {
         }
     }
 
-    class IRCChannel extends IRCActor implements Channel {
+    class IRCChannel extends IRCMessageReceiver implements Channel {
         private final Map<User, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
         private final Map<String, User> nickMap = new LCKeyMap<User>() {
             @Override
@@ -145,7 +146,23 @@ class ActorProvider {
         }
     }
 
-    class IRCUser extends IRCActor implements User {
+    private abstract class IRCMessageReceiver extends IRCActor implements MessageReceiver {
+        protected IRCMessageReceiver(String name, IRCClient client) {
+            super(name, client);
+        }
+
+        @Override
+        public void sendMessage(String message) {
+            this.client.sendMessage(this, message);
+        }
+
+        @Override
+        public void sendCTCPMessage(String message) {
+            this.client.sendCTCPMessage(this, message);
+        }
+    }
+
+    class IRCUser extends IRCMessageReceiver implements User {
         private final String host;
         private final String nick;
         private final String user;
