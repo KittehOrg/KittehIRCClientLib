@@ -50,7 +50,7 @@ public interface ServerInfo {
     /**
      * Gets the channel modes available. If the server has not provided
      * information on channel modes, the default specified by {@link
-     * ChannelModeType@getDefaultModes()} is used and returned here.
+     * ChannelModeType#getDefaultModes()} is used and returned here.
      *
      * @return a mapping of mode characters to their type
      */
@@ -58,8 +58,8 @@ public interface ServerInfo {
 
     /**
      * Gets the list of accepted channel prefixes. If the server has not
-     * provided this informtaion all four listed in the IRC spec are
-     * returned (#&!+).
+     * provided this information all four listed in the IRC spec are
+     * returned (#{@literal &}!+).
      *
      * @return available channel prefixes
      */

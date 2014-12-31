@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
+import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 
 import java.util.Set;
 
@@ -86,7 +88,7 @@ public interface Client {
      * connected. As long as the client remains connected the information
      * returned by this object will update according to information received
      * from the server. A new one can be acquired from {@link
-     * org.kitteh.irc.client.library.event.client.ClientConnectedEvent}
+     * ClientConnectedEvent}
      *
      * @return the server information object
      */
@@ -105,7 +107,7 @@ public interface Client {
      * need escaping when sending a CTCP message.
      * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
-     * with the {@link org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent}</i>
+     * with the {@link PrivateCTCPQueryEvent}</i>
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -118,7 +120,7 @@ public interface Client {
      * need escaping when sending a CTCP message.
      * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
-     * with the {@link org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent}</i>
+     * with the {@link PrivateCTCPQueryEvent}</i>
      *
      * @param target the destination of the message
      * @param message the message to send

@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorEvent;
 
 /**
- * A {@link org.kitteh.irc.client.library.element.User} has changed nickname!
+ * A {@link User} has changed nickname!
  */
 public class UserNickChangeEvent extends ActorEvent<User> {
     private final String newNick;

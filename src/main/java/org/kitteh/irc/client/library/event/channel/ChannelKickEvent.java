@@ -29,7 +29,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
 
 /**
- * An {@link org.kitteh.irc.client.library.element.Actor} has kicked a user!
+ * An {@link Actor} has kicked a user!
  */
 public class ChannelKickEvent extends ActorChannelMessageEvent<Actor> {
     private final String target;

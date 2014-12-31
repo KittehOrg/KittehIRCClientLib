@@ -29,7 +29,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ActorChannelEvent;
 
 /**
- * A {@link org.kitteh.irc.client.library.element.User} has joined a {@link Channel}!
+ * A {@link User} has joined a {@link Channel}!
  */
 public class ChannelJoinEvent extends ActorChannelEvent<User> {
     /**

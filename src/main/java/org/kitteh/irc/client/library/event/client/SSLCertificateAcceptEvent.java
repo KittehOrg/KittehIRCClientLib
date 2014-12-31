@@ -27,12 +27,13 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.ClientEvent;
 
 import java.security.cert.X509Certificate;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Fires when connecting to a server via SSL. By default approves any certs.
  * Basically we're just letting you decide on {@link
- * javax.net.ssl.X509TrustManager#checkServerTrusted}. Instead of throwing an
- * exception, just use {@link #setDenied} and one will be thrown for you.
+ * X509TrustManager#checkServerTrusted}. Instead of throwing an exception,
+ * just use {@link #setDenied} and one will be thrown for you.
  */
 public class SSLCertificateAcceptEvent extends ClientEvent {
     private final String authType;

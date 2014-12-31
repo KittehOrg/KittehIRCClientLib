@@ -28,9 +28,8 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 
 /**
- * Abstract event describing an {@link
- * org.kitteh.irc.client.library.element.Actor} performing an action in a
- * {@link org.kitteh.irc.client.library.element.Channel}.
+ * Abstract event describing an {@link Actor} performing an action in a
+ * {@link Channel}.
  */
 public abstract class ActorChannelEvent<A extends Actor> extends ActorEvent<A> {
     private final Channel channel;

@@ -27,8 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.ClientEvent;
 
 /**
- * The {@link org.kitteh.irc.client.library.Client} has disconnected from
- * the server.
+ * The {@link Client} has disconnected from the server.
  */
 public class ClientConnectionClosedEvent extends ClientEvent {
     private final boolean reconnecting;

@@ -29,7 +29,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
 
 /**
- * A {@link org.kitteh.irc.client.library.element.User} has left a {@link Channel}!
+ * A {@link User} has left a {@link Channel}!
  */
 public class ChannelPartEvent extends ActorChannelMessageEvent<User> {
     /**

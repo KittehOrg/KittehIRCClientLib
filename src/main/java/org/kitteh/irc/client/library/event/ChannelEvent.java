@@ -27,8 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 
 /**
- * Abstract event describing things in a {@link
- * org.kitteh.irc.client.library.element.Channel}.
+ * Abstract event describing things in a {@link Channel}.
  */
 public abstract class ChannelEvent extends ClientEvent {
     private final Channel channel;

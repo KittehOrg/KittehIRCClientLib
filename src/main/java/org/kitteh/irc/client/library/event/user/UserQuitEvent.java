@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorMessageEvent;
 
 /**
- * A {@link org.kitteh.irc.client.library.element.User} has quit the server!
+ * A {@link User} has quit the server!
  */
 public class UserQuitEvent extends ActorMessageEvent<User> {
     /**

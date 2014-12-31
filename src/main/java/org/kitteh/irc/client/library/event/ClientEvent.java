@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.event;
 import org.kitteh.irc.client.library.Client;
 
 /**
- * Abstract event describing an event about a Client.
+ * Abstract event describing an event about a {@link Client}.
  */
 public abstract class ClientEvent {
     private final Client client;

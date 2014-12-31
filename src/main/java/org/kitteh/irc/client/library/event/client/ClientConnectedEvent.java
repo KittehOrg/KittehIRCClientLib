@@ -29,9 +29,9 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.event.ClientEvent;
 
 /**
- * The {@link org.kitteh.irc.client.library.Client} has successfully
- * connected to the server. At this time the client will begin to send
- * queued messages which were not essential to establishing the connection.
+ * The {@link Client} has successfully connected to the server. At this time
+ * the client will begin to send queued messages which were not essential to
+ * establishing the connection.
  */
 public class ClientConnectedEvent extends ClientEvent {
     private final Actor server;

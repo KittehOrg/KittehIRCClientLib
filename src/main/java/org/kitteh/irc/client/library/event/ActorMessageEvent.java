@@ -27,7 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 
 /**
- * Abstract event describing an {@link org.kitteh.irc.client.library.element.Actor} performing an action with a
+ * Abstract event describing an {@link Actor} performing an action with a
  * message.
  */
 public abstract class ActorMessageEvent<A extends Actor> extends ActorEvent<A> {
