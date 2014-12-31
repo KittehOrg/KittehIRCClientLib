@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.event.ActorMessageEvent;
 
@@ -34,10 +35,11 @@ public class PrivateCTCPReplyEvent extends ActorMessageEvent<Actor> {
     /**
      * Creates the event.
      *
+     * @param client client for which this is occurring
      * @param sender sender of the reply
      * @param message message sent
      */
-    public PrivateCTCPReplyEvent(Actor sender, String message) {
-        super(sender, message);
+    public PrivateCTCPReplyEvent(Client client, Actor sender, String message) {
+        super(client, sender, message);
     }
 }

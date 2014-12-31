@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorMessageEvent;
 
@@ -33,10 +34,11 @@ public class UserQuitEvent extends ActorMessageEvent<User> {
     /**
      * Creates the event.
      *
+     * @param client client for which this is occurring
      * @param user user quitting
      * @param message message the user left
      */
-    public UserQuitEvent(User user, String message) {
-        super(user, message);
+    public UserQuitEvent(Client client, User user, String message) {
+        super(client, user, message);
     }
 }

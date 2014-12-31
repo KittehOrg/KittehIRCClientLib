@@ -51,6 +51,11 @@ class ActorProvider {
         }
 
         @Override
+        public Client getClient() {
+            return this.client;
+        }
+
+        @Override
         public String getName() {
             return this.name;
         }

@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ActorChannelEvent;
@@ -34,10 +35,11 @@ public class ChannelJoinEvent extends ActorChannelEvent<User> {
     /**
      * Creates the event.
      *
+     * @param client client for which this is occurring
      * @param channel the channel joined
      * @param user the user joining
      */
-    public ChannelJoinEvent(Channel channel, User user) {
-        super(user, channel);
+    public ChannelJoinEvent(Client client, Channel channel, User user) {
+        super(client, user, channel);
     }
 }

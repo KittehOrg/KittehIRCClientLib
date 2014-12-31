@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 
 /**
@@ -32,8 +33,8 @@ import org.kitteh.irc.client.library.element.Actor;
 public abstract class ActorMessageEvent<A extends Actor> extends ActorEvent<A> {
     private final String message;
 
-    protected ActorMessageEvent(A actor, String message) {
-        super(actor);
+    protected ActorMessageEvent(Client client, A actor, String message) {
+        super(client, actor);
         this.message = message;
     }
 

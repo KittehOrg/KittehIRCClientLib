@@ -21,24 +21,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.user;
+package org.kitteh.irc.client.library.event;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
-import org.kitteh.irc.client.library.event.ActorMessageEvent;
 
 /**
- * Fires when a message is sent to the client.
+ * Abstract event describing an event about a Client.
  */
-public class PrivateMessageEvent extends ActorMessageEvent<Actor> {
-    /**
-     * Creates the event.
-     *
-     * @param client client for which this is occurring
-     * @param message message sent
-     * @param sender who sent it
-     */
-    public PrivateMessageEvent(Client client, Actor sender, String message) {
-        super(client, sender, message);
+public abstract class ClientEvent {
+    private final Client client;
+
+    protected ClientEvent(Client client) {
+        this.client = client;
+    }
+
+    public Client getClient() {
+        return this.client;
     }
 }

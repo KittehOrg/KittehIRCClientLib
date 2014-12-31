@@ -23,19 +23,24 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.event.ClientEvent;
+
 /**
  * The {@link org.kitteh.irc.client.library.Client} has disconnected from
  * the server.
  */
-public class ClientConnectionClosedEvent {
+public class ClientConnectionClosedEvent extends ClientEvent {
     private final boolean reconnecting;
 
     /**
      * Constructs the event.
      *
+     * @param client client for which this is occurring
      * @param reconnecting true if the client plans to reconnect
      */
-    public ClientConnectionClosedEvent(boolean reconnecting) {
+    public ClientConnectionClosedEvent(Client client, boolean reconnecting) {
+        super(client);
         this.reconnecting = reconnecting;
     }
 

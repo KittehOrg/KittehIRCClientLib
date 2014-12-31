@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ActorChannelEvent;
@@ -37,12 +38,13 @@ public class ChannelInviteEvent extends ActorChannelEvent<Actor> {
     /**
      * Creates the event.
      *
+     * @param client client for which this is occurring
      * @param channel the channel
      * @param actor the actor inviting another
      * @param target the nick invited
      */
-    public ChannelInviteEvent(Channel channel, Actor actor, String target) {
-        super(actor, channel);
+    public ChannelInviteEvent(Client client, Channel channel, Actor actor, String target) {
+        super(client, actor, channel);
         this.target = target;
     }
 

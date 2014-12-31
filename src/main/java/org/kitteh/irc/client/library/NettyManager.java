@@ -141,7 +141,7 @@ final class NettyManager {
                             }
                         }, 5, TimeUnit.SECONDS);
                     }
-                    ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.reconnect));
+                    ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
                     removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
                 }
             });

@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
@@ -34,11 +35,12 @@ public class ChannelPartEvent extends ActorChannelMessageEvent<User> {
     /**
      * Creates the event.
      *
+     * @param client client for which this is occurring
      * @param channel channel being left
      * @param user user leaving
      * @param message message the user left
      */
-    public ChannelPartEvent(Channel channel, User user, String message) {
-        super(user, channel, message);
+    public ChannelPartEvent(Client client, Channel channel, User user, String message) {
+        super(client, user, channel, message);
     }
 }

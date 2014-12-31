@@ -23,24 +23,29 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ServerInfo;
 import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.event.ClientEvent;
 
 /**
  * The {@link org.kitteh.irc.client.library.Client} has successfully
  * connected to the server. At this time the client will begin to send
  * queued messages which were not essential to establishing the connection.
  */
-public class ClientConnectedEvent {
+public class ClientConnectedEvent extends ClientEvent {
     private final Actor server;
     private final ServerInfo serverInfo;
 
     /**
      * Creates the event.
      *
+     * @param client client for which this is occurring
      * @param server the server to which the client is connected
+     * @param serverInfo information about the server
      */
-    public ClientConnectedEvent(Actor server, ServerInfo serverInfo) {
+    public ClientConnectedEvent(Client client, Actor server, ServerInfo serverInfo) {
+        super(client);
         this.server = server;
         this.serverInfo = serverInfo;
     }

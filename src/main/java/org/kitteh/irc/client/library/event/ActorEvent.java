@@ -23,15 +23,18 @@
  */
 package org.kitteh.irc.client.library.event;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 
 /**
- * Abstract event describing an {@link org.kitteh.irc.client.library.element.Actor} performing an action.
+ * Abstract event describing an {@link
+ * org.kitteh.irc.client.library.element.Actor} performing an action.
  */
-public abstract class ActorEvent<A extends Actor> {
+public abstract class ActorEvent<A extends Actor> extends ClientEvent {
     private final A actor;
 
-    protected ActorEvent(A actor) {
+    protected ActorEvent(Client client, A actor) {
+        super(client);
         this.actor = actor;
     }
 

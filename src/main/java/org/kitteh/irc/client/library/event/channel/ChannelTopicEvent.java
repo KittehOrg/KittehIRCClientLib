@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
 import org.kitteh.irc.client.library.element.Channel;
@@ -36,11 +37,12 @@ public class ChannelTopicEvent extends ActorChannelMessageEvent<Actor> {
     /**
      * Creates the event.
      *
+     * @param client client for which this is occurring
      * @param sender who set the topic
      * @param channel channel the topic is about
      * @param message topic that has been set
      */
-    public ChannelTopicEvent(Actor sender, Channel channel, String message) {
-        super(sender, channel, message);
+    public ChannelTopicEvent(Client client, Actor sender, Channel channel, String message) {
+        super(client, sender, channel, message);
     }
 }

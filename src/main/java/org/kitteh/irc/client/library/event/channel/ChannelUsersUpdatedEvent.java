@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ChannelEvent;
 
@@ -33,9 +34,10 @@ public class ChannelUsersUpdatedEvent extends ChannelEvent {
     /**
      * Constructs the event.
      *
+     * @param client client for which this is occurring
      * @param channel channel with the updated users list
      */
-    public ChannelUsersUpdatedEvent(Channel channel) {
-        super(channel);
+    public ChannelUsersUpdatedEvent(Client client, Channel channel) {
+        super(client, channel);
     }
 }

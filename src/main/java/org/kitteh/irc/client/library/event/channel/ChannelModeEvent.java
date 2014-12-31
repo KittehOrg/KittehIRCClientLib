@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ActorChannelEvent;
@@ -38,14 +39,15 @@ public class ChannelModeEvent extends ActorChannelEvent<Actor> {
     /**
      * Creates the event.
      *
+     * @param client client for which this is occurring
      * @param actor the mode setter
      * @param channel the channel in which the mode is being set
      * @param setting if the mode is being set or unset
      * @param mode the mode being set or unset
      * @param arg the argument presented for the mode
      */
-    public ChannelModeEvent(Actor actor, Channel channel, boolean setting, char mode, String arg) {
-        super(actor, channel);
+    public ChannelModeEvent(Client client, Actor actor, Channel channel, boolean setting, char mode, String arg) {
+        super(client, actor, channel);
         this.setting = setting;
         this.mode = mode;
         this.arg = arg;

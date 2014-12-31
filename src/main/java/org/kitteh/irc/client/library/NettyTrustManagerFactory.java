@@ -43,7 +43,7 @@ final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
 
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            SSLCertificateAcceptEvent event = new SSLCertificateAcceptEvent(authType, chain);
+            SSLCertificateAcceptEvent event = new SSLCertificateAcceptEvent(NettyTrustManagerFactory.this.client, authType, chain);
             NettyTrustManagerFactory.this.client.getEventManager().callEvent(event);
             if (event.isDenied()) {
                 throw new CertificateException("Certificate denied via SSLCertificateAcceptEvent");

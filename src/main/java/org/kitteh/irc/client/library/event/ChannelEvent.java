@@ -23,16 +23,18 @@
  */
 package org.kitteh.irc.client.library.event;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 
 /**
  * Abstract event describing things in a {@link
  * org.kitteh.irc.client.library.element.Channel}.
  */
-public abstract class ChannelEvent {
+public abstract class ChannelEvent extends ClientEvent {
     private final Channel channel;
 
-    protected ChannelEvent(Channel channel) {
+    protected ChannelEvent(Client client, Channel channel) {
+        super(client);
         this.channel = channel;
     }
 
