@@ -84,6 +84,13 @@ public interface ServerInfo {
     List<ChannelUserMode> getChannelUserModes();
 
     /**
+     * Gets the name of this network.
+     *
+     * @return network name or null if unknown
+     */
+    String getNetworkName();
+
+    /**
      * Gets the maximum length of nicknames.
      *
      * @return nickname length limit or -1 if unknown

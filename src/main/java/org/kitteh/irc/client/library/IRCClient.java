@@ -70,6 +70,7 @@ final class IRCClient implements Client {
     private class ConnectedServerInfo implements ServerInfo {
         private CaseMapping caseMapping = CaseMapping.RFC1459;
         private Map<Character, Integer> channelLimits = new HashMap<>();
+        private String networkName;
 
         @Override
         public CaseMapping getCaseMapping() {
@@ -103,6 +104,11 @@ final class IRCClient implements Client {
         @Override
         public List<ChannelUserMode> getChannelUserModes() {
             return new ArrayList<>(IRCClient.this.prefixes);
+        }
+
+        @Override
+        public String getNetworkName() {
+            return this.networkName;
         }
 
         @Override
@@ -233,6 +239,13 @@ final class IRCClient implements Client {
                     return false;
                 }
                 client.actorProvider.setChannelPrefixes(value.toCharArray());
+                return true;
+            }
+        },
+        NETWORK {
+            @Override
+            boolean process(String value, IRCClient client) {
+                client.serverInfo.networkName = value;
                 return true;
             }
         },
