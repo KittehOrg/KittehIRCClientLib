@@ -68,7 +68,13 @@ import java.util.regex.Pattern;
 
 final class IRCClient implements Client {
     private class ConnectedServerInfo implements ServerInfo {
+        private CaseMapping caseMapping = CaseMapping.RFC1459;
         private Map<Character, Integer> channelLimits = new HashMap<>();
+
+        @Override
+        public CaseMapping getCaseMapping() {
+            return this.caseMapping;
+        }
 
         @Override
         public int getChannelLengthLimit() {
@@ -142,6 +148,17 @@ final class IRCClient implements Client {
     }
 
     private enum ISupport {
+        CASEMAPPING {
+            @Override
+            boolean process(String value, IRCClient client) {
+                CaseMapping caseMapping = CaseMapping.getByName(value);
+                if (caseMapping != null) {
+                    client.serverInfo.caseMapping = caseMapping;
+                    return true;
+                }
+                return false;
+            }
+        },
         CHANNELLEN {
             @Override
             boolean process(String value, IRCClient client) {
@@ -295,7 +312,7 @@ final class IRCClient implements Client {
     private String requestedNick;
 
     private final Set<Channel> channels = new CopyOnWriteArraySet<>();
-    private final Set<String> channelsIntended = new LCSet(); // TODO use lowercasing dependent on ISUPPORT
+    private final Set<String> channelsIntended = new LCSet(this); // TODO use lowercasing dependent on ISUPPORT
 
     private NettyManager.ClientConnection connection;
 

@@ -23,6 +23,10 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.kitteh.irc.client.library.CaseMapping;
+import org.kitteh.irc.client.library.Client;
+
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,6 +34,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * A threadsafe hash map with lowercased keys.
  */
 public class LCKeyMap<Value> extends ConcurrentHashMap<String, Value> {
+    private final Client client;
+    private CaseMapping lastCaseMapping;
+
+    public LCKeyMap(Client client) {
+        this.client = client;
+    }
+
     @Override
     public boolean containsKey(Object key) {
         return key instanceof String && super.containsKey(this.toLowerCase((String) key));
@@ -52,12 +63,28 @@ public class LCKeyMap<Value> extends ConcurrentHashMap<String, Value> {
 
     @Override
     public void putAll(Map<? extends String, ? extends Value> m) {
-        for (Map.Entry<? extends String, ? extends Value> entry : m.entrySet()) {
+        for (Entry<? extends String, ? extends Value> entry : m.entrySet()) {
             this.put(entry.getKey(), entry.getValue()); // Lowercased
         }
     }
 
-    protected String toLowerCase(String input) {
-        return input.toLowerCase();
+    protected final synchronized String toLowerCase(String input) {
+        CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
+        if (caseMapping != this.lastCaseMapping) {
+            this.lastCaseMapping = caseMapping;
+            Iterator<Entry<String, Value>> i = super.entrySet().iterator();
+            Entry<String, Value> entry;
+            while (i.hasNext()) {
+                entry = i.next();
+                final String lowerKey = caseMapping.toLowerCase(entry.getKey());
+                if (!lowerKey.equals(entry.getKey())) {
+                    if (!super.containsKey(lowerKey)) {
+                        super.put(lowerKey, entry.getValue());
+                    }
+                    i.remove();
+                }
+            }
+        }
+        return caseMapping.toLowerCase(input);
     }
 }

@@ -60,26 +60,26 @@ class ActorProvider {
         public String getName() {
             return this.name;
         }
+
+        protected String toLowerCase(String input) { // Shortcut
+            return this.client.getServerInfo().getCaseMapping().toLowerCase(input);
+        }
     }
 
     class IRCChannel extends IRCMessageReceiver implements Channel {
         private final Map<User, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
-        private final Map<String, User> nickMap = new LCKeyMap<User>() {
-            @Override
-            protected String toLowerCase(String input) {
-                return ActorProvider.this.toLowerCase(input);
-            }
-        };
+        private final Map<String, User> nickMap;
 
         IRCChannel(String channel, IRCClient client) {
             super(channel, client);
+            this.nickMap = new LCKeyMap<>(this.getClient());
             ActorProvider.this.trackedChannels.put(channel, this);
         }
 
         @Override
         public boolean equals(Object o) {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
-            return o instanceof IRCChannel && ((IRCChannel) o).client == this.client && ActorProvider.this.toLowerCase(((Channel) o).getName()).equals(ActorProvider.this.toLowerCase((this.getName())));
+            return o instanceof IRCChannel && ((IRCChannel) o).client == this.client && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
         @Override
@@ -94,7 +94,7 @@ class ActorProvider {
         @Override
         public int hashCode() {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
-            return ActorProvider.this.toLowerCase(this.getName()).hashCode() * 2 + this.client.hashCode();
+            return this.toLowerCase(this.getName()).hashCode() * 2 + this.client.hashCode();
         }
 
         void trackUser(User user, Set<ChannelUserMode> modes) {
@@ -208,15 +208,11 @@ class ActorProvider {
     // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
     private final Pattern nickPattern = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
 
-    private final Map<String, IRCChannel> trackedChannels = new LCKeyMap<IRCChannel>() {
-        @Override
-        protected String toLowerCase(String input) {
-            return ActorProvider.this.toLowerCase(input);
-        }
-    }; // TODO stop tracking at some point
+    private final Map<String, IRCChannel> trackedChannels; // TODO stop tracking at some point
 
     ActorProvider(IRCClient client) {
         this.client = client;
+        this.trackedChannels = new LCKeyMap<IRCChannel>(this.client);
     }
 
     Actor getActor(String name) {
@@ -278,9 +274,5 @@ class ActorProvider {
         for (IRCChannel channel : this.trackedChannels.values()) {
             channel.trackUserPart(user);
         }
-    }
-
-    private String toLowerCase(String input) {
-        return input.toLowerCase(); // TODO
     }
 }

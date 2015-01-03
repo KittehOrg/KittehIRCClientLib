@@ -23,8 +23,12 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.kitteh.irc.client.library.CaseMapping;
+import org.kitteh.irc.client.library.Client;
+
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -32,6 +36,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * A threadsafe, automagically lowercased Set.
  */
 public class LCSet extends CopyOnWriteArraySet<String> {
+    private final Client client;
+    private CaseMapping lastCaseMapping;
+
+    public LCSet(Client client) {
+        this.client = client;
+    }
+
     @Override
     public boolean contains(Object o) {
         return o instanceof String && super.contains(this.toLowerCase(((String) o)));
@@ -88,7 +99,21 @@ public class LCSet extends CopyOnWriteArraySet<String> {
         return set;
     }
 
-    protected String toLowerCase(String input) {
-        return input.toLowerCase();
+    protected final synchronized String toLowerCase(String input) {
+        CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
+        if (caseMapping != this.lastCaseMapping) {
+            this.lastCaseMapping = caseMapping;
+            Iterator<String> i = super.iterator();
+            String key;
+            while (i.hasNext()) {
+                key = i.next();
+                final String lowerKey = caseMapping.toLowerCase(key);
+                if (!lowerKey.equals(key)) {
+                    super.add(lowerKey);
+                    i.remove();
+                }
+            }
+        }
+        return caseMapping.toLowerCase(input);
     }
 }

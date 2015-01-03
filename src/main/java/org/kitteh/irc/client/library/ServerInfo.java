@@ -34,6 +34,14 @@ import java.util.Map;
  */
 public interface ServerInfo {
     /**
+     * Gets the casemapping for the server. By default {@link
+     * CaseMapping#RFC1459}
+     *
+     * @return the casemapping
+     */
+    CaseMapping getCaseMapping();
+
+    /**
      * Gets the maximum length of channel names.
      *
      * @return channel length limit or -1 if unknown
