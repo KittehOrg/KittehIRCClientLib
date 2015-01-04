@@ -577,13 +577,15 @@ final class IRCClient implements Client {
         final String[] split = line.split(" ");
 
         int argsIndex = 1;
-        final Actor actor;
+
+        final String actorName;
         if (split[0].startsWith(":")) {
             argsIndex++;
-            actor = this.actorProvider.getActor(split[0].substring(1));
+            actorName = split[0].substring(1);
         } else {
-            actor = null; // TODO provide a default actor for when it's the server
+            actorName = "";
         }
+        final Actor actor = this.actorProvider.getActor(actorName);
 
         final String commandString = split[argsIndex - 1];
 
