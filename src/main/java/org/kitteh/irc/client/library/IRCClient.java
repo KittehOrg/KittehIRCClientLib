@@ -575,6 +575,10 @@ final class IRCClient implements Client {
         this.sendNickChange(this.goalNick);
     }
 
+    void ping() {
+        this.sendRawLine("PING :MEOW");
+    }
+
     private String[] handleArgs(String[] split, int start) {
         final List<String> argsList = new LinkedList<>();
 

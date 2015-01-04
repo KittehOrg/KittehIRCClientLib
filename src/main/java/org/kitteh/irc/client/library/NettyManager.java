@@ -47,6 +47,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
+import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 
@@ -95,14 +96,16 @@ final class NettyManager {
             this.channel.pipeline().addFirst("[OUTPUT] String encoder", new StringEncoder(CharsetUtil.UTF_8));
 
             // Handle timeout
-            this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 0));
+            this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 60));
             this.channel.pipeline().addLast("[INPUT] Catch idle", new ChannelDuplexHandler() {
                 @Override
                 public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                     if (evt instanceof IdleStateEvent) {
                         IdleStateEvent e = (IdleStateEvent) evt;
-                        if (e.state() == IdleState.READER_IDLE) {
+                        if (e.state() == IdleState.READER_IDLE && e.isFirst()) {
                             ClientConnection.this.shutdown("Reconnecting...", true);
+                        } else if (e.state() == IdleState.ALL_IDLE && e.isFirst()) {
+                            ClientConnection.this.client.ping();
                         }
                     }
                 }
