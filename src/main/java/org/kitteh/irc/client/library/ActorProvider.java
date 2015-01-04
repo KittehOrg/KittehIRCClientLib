@@ -190,6 +190,11 @@ class ActorProvider {
         }
 
         @Override
+        public boolean equals(Object o) {
+            return o instanceof IRCUser && ((IRCUser) o).client == this.client && this.toLowerCase(((IRCUser) o).getName()).equals(this.toLowerCase((this.getName())));
+        }
+
+        @Override
         public String getHost() {
             return this.host;
         }
@@ -207,6 +212,11 @@ class ActorProvider {
         @Override
         public String getUser() {
             return this.user;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.toLowerCase(this.getName()).hashCode() * 2 + this.client.hashCode();
         }
     }
 
