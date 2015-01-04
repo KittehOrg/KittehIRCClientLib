@@ -97,6 +97,11 @@ class ActorProvider {
             return this.toLowerCase(this.getName()).hashCode() * 2 + this.client.hashCode();
         }
 
+        @Override
+        public void part(String reason) {
+            this.client.removeChannel(this, reason);
+        }
+
         void trackUser(User user, Set<ChannelUserMode> modes) {
             this.nickMap.put(user.getNick(), user);
             this.users.put(user, modes == null ? new CopyOnWriteArraySet<ChannelUserMode>() : new CopyOnWriteArraySet<>(modes));

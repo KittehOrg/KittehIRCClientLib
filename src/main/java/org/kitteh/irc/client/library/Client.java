@@ -98,8 +98,17 @@ public interface Client {
      * Removes a channel from the client, leaving as necessary.
      *
      * @param channel channel to leave
+     * @param reason part reason
      */
-    void removeChannel(String channel);
+    void removeChannel(String channel, String reason);
+
+    /**
+     * Removes a channel from the client, leaving as necessary.
+     *
+     * @param channel channel to leave
+     * @param reason part reason
+     */
+    void removeChannel(Channel channel, String reason);
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds

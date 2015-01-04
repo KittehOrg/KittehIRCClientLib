@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.kitteh.irc.client.library.Client;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -36,4 +38,12 @@ public interface Channel extends MessageReceiver {
      * @return users and their modes
      */
     Map<User, Set<ChannelUserMode>> getUsers();
+
+    /**
+     * Parts the channel.
+     *
+     * @param reason leaving reason
+     * @see Client#removeChannel(Channel, String)
+     */
+    void part(String reason);
 }
