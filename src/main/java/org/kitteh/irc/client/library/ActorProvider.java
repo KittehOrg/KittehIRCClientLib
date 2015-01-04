@@ -152,13 +152,18 @@ class ActorProvider {
         }
 
         @Override
+        public void sendCTCPMessage(String message) {
+            this.client.sendCTCPMessage(this, message);
+        }
+
+        @Override
         public void sendMessage(String message) {
             this.client.sendMessage(this, message);
         }
 
         @Override
-        public void sendCTCPMessage(String message) {
-            this.client.sendCTCPMessage(this, message);
+        public void sendNotice(String message) {
+            this.client.sendNotice(this, message);
         }
     }
 

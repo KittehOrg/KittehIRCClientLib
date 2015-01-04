@@ -144,6 +144,22 @@ public interface Client {
     void sendMessage(MessageReceiver target, String message);
 
     /**
+     * Sends a notice to a target user or channel.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     */
+    void sendNotice(String target, String message);
+
+    /**
+     * Sends a notice to a target user or channel.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     */
+    void sendNotice(MessageReceiver target, String message);
+
+    /**
      * Sends a raw IRC message.
      *
      * @param message message to send

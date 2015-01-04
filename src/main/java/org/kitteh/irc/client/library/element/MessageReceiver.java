@@ -30,6 +30,14 @@ import org.kitteh.irc.client.library.Client;
  */
 public interface MessageReceiver extends Actor {
     /**
+     * Sends this actor a CTCP message.
+     *
+     * @param message the message to send
+     * @see Client#sendCTCPMessage(MessageReceiver, String)
+     */
+    void sendCTCPMessage(String message);
+
+    /**
      * Sends this actor a message.
      *
      * @param message the message to send
@@ -38,10 +46,10 @@ public interface MessageReceiver extends Actor {
     void sendMessage(String message);
 
     /**
-     * Sends this actor a CTCP message.
+     * Sends this actor a message
      *
      * @param message the message to send
-     * @see Client#sendCTCPMessage(MessageReceiver, String)
+     * @see Client#sendNotice(MessageReceiver, String)
      */
-    void sendCTCPMessage(String message);
+    void sendNotice(String message);
 }

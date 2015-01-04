@@ -443,6 +443,20 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public void sendNotice(String target, String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
+        this.sendRawLine("NOTICE " + target + " :" + message);
+    }
+
+    @Override
+    public void sendNotice(MessageReceiver target, String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendNotice(target.getName(), message);
+    }
+
+    @Override
     public void sendRawLine(String message) {
         Sanity.nullCheck(message, "Message cannot be null");
         this.connection.sendMessage(message, false);
