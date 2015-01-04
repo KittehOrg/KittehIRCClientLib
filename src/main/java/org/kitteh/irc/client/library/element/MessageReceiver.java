@@ -30,6 +30,13 @@ import org.kitteh.irc.client.library.Client;
  */
 public interface MessageReceiver extends Actor {
     /**
+     * Gets the name used when sending messages.
+     *
+     * @return the name by which you can message this receiver
+     */
+    String getMessagingName();
+
+    /**
      * Sends this actor a CTCP message.
      *
      * @param message the message to send

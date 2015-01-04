@@ -83,6 +83,11 @@ class ActorProvider {
         }
 
         @Override
+        public String getMessagingName() {
+            return this.getName();
+        }
+
+        @Override
         public Map<User, Set<ChannelUserMode>> getUsers() {
             Map<User, Set<ChannelUserMode>> map = new HashMap<>();
             for (Map.Entry<User, Set<ChannelUserMode>> entry : this.users.entrySet()) {
@@ -187,6 +192,11 @@ class ActorProvider {
         @Override
         public String getHost() {
             return this.host;
+        }
+
+        @Override
+        public String getMessagingName() {
+            return this.getNick();
         }
 
         @Override

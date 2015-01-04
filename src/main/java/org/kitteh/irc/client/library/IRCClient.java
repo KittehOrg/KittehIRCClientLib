@@ -433,7 +433,7 @@ final class IRCClient implements Client {
     @Override
     public void sendCTCPMessage(MessageReceiver target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
-        this.sendCTCPMessage(target.getName(), message);
+        this.sendCTCPMessage(target.getMessagingName(), message);
     }
 
     @Override
@@ -447,7 +447,7 @@ final class IRCClient implements Client {
     @Override
     public void sendMessage(MessageReceiver target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
-        this.sendMessage(target.getName(), message);
+        this.sendMessage(target.getMessagingName(), message);
     }
 
     @Override
@@ -461,7 +461,7 @@ final class IRCClient implements Client {
     @Override
     public void sendNotice(MessageReceiver target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
-        this.sendNotice(target.getName(), message);
+        this.sendNotice(target.getMessagingName(), message);
     }
 
     @Override
