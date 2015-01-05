@@ -47,7 +47,7 @@ public enum CaseMapping {
 
     static {
         for (CaseMapping caseMapping : values()) {
-            nameMap.put(caseMapping.name().replace('_','-'), caseMapping);
+            nameMap.put(caseMapping.name().replace('_', '-'), caseMapping);
         }
     }
 
