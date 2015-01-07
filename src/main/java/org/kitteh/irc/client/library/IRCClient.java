@@ -316,6 +316,9 @@ final class IRCClient implements Client {
         UNKNOWN
     }
 
+    private final String[] pingPurr = new String[]{"MEOW", "MEOW!", "PURR", "PURRRRRRR"};
+    private int pingPurrCount;
+
     private final Config config;
     private final InputProcessor processor;
     private ConnectedServerInfo serverInfo = new ConnectedServerInfo();
@@ -576,7 +579,7 @@ final class IRCClient implements Client {
     }
 
     void ping() {
-        this.sendRawLine("PING :MEOW");
+        this.sendRawLine("PING :" + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
     }
 
     private String[] handleArgs(String[] split, int start) {
