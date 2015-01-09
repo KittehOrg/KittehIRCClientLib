@@ -719,10 +719,11 @@ final class IRCClient implements Client {
         if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(args[1])) {
             final String ctcpMessage = CTCPUtil.fromCTCP(args[1]);
             final MessageTarget messageTarget = this.getTypeByTarget(args[0]);
+            User user = (User) actor;
             switch (command) {
                 case NOTICE:
                     if (messageTarget == MessageTarget.PRIVATE) {
-                        this.eventManager.callEvent(new PrivateCTCPReplyEvent(this, actor, ctcpMessage));
+                        this.eventManager.callEvent(new PrivateCTCPReplyEvent(this, user, ctcpMessage));
                     }
                     break;
                 case PRIVMSG:
@@ -738,7 +739,7 @@ final class IRCClient implements Client {
                             } else if (ctcpMessage.startsWith("PING ")) {
                                 reply = ctcpMessage;
                             }
-                            PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(this, actor, ctcpMessage, reply);
+                            PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(this, user, ctcpMessage, reply);
                             this.eventManager.callEvent(event);
                             reply = event.getReply();
                             if (reply != null) {
@@ -746,7 +747,7 @@ final class IRCClient implements Client {
                             }
                             break;
                         case CHANNEL:
-                            this.eventManager.callEvent(new ChannelCTCPEvent(this, actor, this.actorProvider.getChannel(args[0]), ctcpMessage));
+                            this.eventManager.callEvent(new ChannelCTCPEvent(this, user, this.actorProvider.getChannel(args[0]), ctcpMessage));
                             break;
                     }
                     break;
@@ -757,20 +758,20 @@ final class IRCClient implements Client {
             case NOTICE:
                 switch (this.getTypeByTarget(args[0])) {
                     case CHANNEL:
-                        this.eventManager.callEvent(new ChannelNoticeEvent(this, actor, this.actorProvider.getChannel(args[0]), args[1]));
+                        this.eventManager.callEvent(new ChannelNoticeEvent(this, (User) actor, this.actorProvider.getChannel(args[0]), args[1]));
                         break;
                     case PRIVATE:
-                        this.eventManager.callEvent(new PrivateNoticeEvent(this, actor, args[1]));
+                        this.eventManager.callEvent(new PrivateNoticeEvent(this, (User) actor, args[1]));
                         break;
                 }
                 break;
             case PRIVMSG:
                 switch (this.getTypeByTarget(args[0])) {
                     case CHANNEL:
-                        this.eventManager.callEvent(new ChannelMessageEvent(this, actor, this.actorProvider.getChannel(args[0]), args[1]));
+                        this.eventManager.callEvent(new ChannelMessageEvent(this, (User) actor, this.actorProvider.getChannel(args[0]), args[1]));
                         break;
                     case PRIVATE:
-                        this.eventManager.callEvent(new PrivateMessageEvent(this, actor, args[1]));
+                        this.eventManager.callEvent(new PrivateMessageEvent(this, (User) actor, args[1]));
                         break;
                 }
                 break;

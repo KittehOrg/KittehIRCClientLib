@@ -24,14 +24,14 @@
 package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorMessageEvent;
 
 /**
  * The client has received a reply to a CTCP query! The method
  * {@link #getMessage()} returns the message with the delimiter (1) removed.
  */
-public class PrivateCTCPReplyEvent extends ActorMessageEvent<Actor> {
+public class PrivateCTCPReplyEvent extends ActorMessageEvent<User> {
     /**
      * Creates the event.
      *
@@ -39,7 +39,7 @@ public class PrivateCTCPReplyEvent extends ActorMessageEvent<Actor> {
      * @param sender sender of the reply
      * @param message message sent
      */
-    public PrivateCTCPReplyEvent(Client client, Actor sender, String message) {
+    public PrivateCTCPReplyEvent(Client client, User sender, String message) {
         super(client, sender, message);
     }
 }

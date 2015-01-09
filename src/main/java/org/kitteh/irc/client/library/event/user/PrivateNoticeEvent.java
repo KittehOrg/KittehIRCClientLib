@@ -24,13 +24,13 @@
 package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorMessageEvent;
 
 /**
  * Fires when a notice is sent to the client.
  */
-public class PrivateNoticeEvent extends ActorMessageEvent<Actor> {
+public class PrivateNoticeEvent extends ActorMessageEvent<User> {
     /**
      * Creates the event.
      *
@@ -38,7 +38,7 @@ public class PrivateNoticeEvent extends ActorMessageEvent<Actor> {
      * @param message message sent
      * @param sender who sent it
      */
-    public PrivateNoticeEvent(Client client, Actor sender, String message) {
+    public PrivateNoticeEvent(Client client, User sender, String message) {
         super(client, sender, message);
     }
 }

@@ -24,7 +24,7 @@
 package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorMessageEvent;
 
 /**
@@ -35,7 +35,7 @@ import org.kitteh.irc.client.library.event.ActorMessageEvent;
  * <p>
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
-public class PrivateCTCPQueryEvent extends ActorMessageEvent<Actor> {
+public class PrivateCTCPQueryEvent extends ActorMessageEvent<User> {
     private String reply;
 
     /**
@@ -46,7 +46,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEvent<Actor> {
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCTCPQueryEvent(Client client, Actor sender, String message, String reply) {
+    public PrivateCTCPQueryEvent(Client client, User sender, String message, String reply) {
         super(client, sender, message);
         this.reply = reply;
     }

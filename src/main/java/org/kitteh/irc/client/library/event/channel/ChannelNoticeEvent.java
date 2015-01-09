@@ -24,14 +24,14 @@
 package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
 
 /**
  * Fires when a notice is sent to a channel.
  */
-public class ChannelNoticeEvent extends ActorChannelMessageEvent<Actor> {
+public class ChannelNoticeEvent extends ActorChannelMessageEvent<User> {
     /**
      * Creates the event.
      *
@@ -40,7 +40,7 @@ public class ChannelNoticeEvent extends ActorChannelMessageEvent<Actor> {
      * @param channel channel receiving
      * @param message message sent
      */
-    public ChannelNoticeEvent(Client client, Actor sender, Channel channel, String message) {
+    public ChannelNoticeEvent(Client client, User sender, Channel channel, String message) {
         super(client, sender, channel, message);
     }
 }
