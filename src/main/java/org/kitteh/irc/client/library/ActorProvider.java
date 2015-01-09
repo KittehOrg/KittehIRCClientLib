@@ -107,6 +107,10 @@ class ActorProvider {
             this.client.removeChannel(this, reason);
         }
 
+        User getUser(String nick) {
+            return this.nickMap.get(nick);
+        }
+
         void trackUser(User user, Set<ChannelUserMode> modes) {
             this.nickMap.put(user.getNick(), user);
             this.users.put(user, modes == null ? new CopyOnWriteArraySet<ChannelUserMode>() : new CopyOnWriteArraySet<>(modes));

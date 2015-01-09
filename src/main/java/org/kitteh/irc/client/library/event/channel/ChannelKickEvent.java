@@ -26,13 +26,14 @@ package org.kitteh.irc.client.library.event.channel;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
 
 /**
  * An {@link Actor} has kicked a user!
  */
 public class ChannelKickEvent extends ActorChannelMessageEvent<Actor> {
-    private final String target;
+    private final User target;
 
     /**
      * Creates the event.
@@ -40,20 +41,20 @@ public class ChannelKickEvent extends ActorChannelMessageEvent<Actor> {
      * @param client client for which this is occurring
      * @param channel channel being left
      * @param actor actor kicking the targeted user
-     * @param target targeted nick
+     * @param target targeted user
      * @param message message the user left
      */
-    public ChannelKickEvent(Client client, Channel channel, Actor actor, String target, String message) {
+    public ChannelKickEvent(Client client, Channel channel, Actor actor, User target, String message) {
         super(client, actor, channel, message);
         this.target = target;
     }
 
     /**
-     * Gets the kicked nick.
+     * Gets the kicked user.
      *
      * @return the nickname of the kicked user
      */
-    public String getTarget() {
+    public User getTarget() {
         return this.target;
     }
 }
