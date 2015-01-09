@@ -68,7 +68,7 @@ class ActorProvider {
 
     class IRCChannel extends IRCMessageReceiver implements Channel {
         private final Map<User, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
-        private final Map<String, User> nickMap;
+        private final LCKeyMap<User> nickMap;
 
         IRCChannel(String channel, IRCClient client) {
             super(channel, client);
