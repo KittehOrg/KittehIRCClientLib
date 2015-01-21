@@ -40,6 +40,7 @@ import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.exception.KittehISupportProcessingFailureException;
 import org.kitteh.irc.client.library.util.LCSet;
+import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
@@ -117,38 +118,18 @@ final class IRCClient implements Client {
         }
     }
 
-    private class InputProcessor extends Thread {
-        private final Queue<String> queue = new ConcurrentLinkedQueue<>();
-
+    private class InputProcessor extends QueueProcessingThread<String> {
         private InputProcessor() {
-            this.setName("Kitteh IRC Client Input Processor (" + IRCClient.this.getName() + ")");
+            super("Kitteh IRC Client Input Processor (" + IRCClient.this.getName() + ")");
             this.start();
         }
 
         @Override
-        public void run() {
-            while (!this.isInterrupted()) {
-                synchronized (this.queue) {
-                    while (this.queue.isEmpty()) {
-                        try {
-                            this.queue.wait();
-                        } catch (InterruptedException e) {
-                            break;
-                        }
-                    }
-                }
-                try {
-                    IRCClient.this.handleLine(this.queue.poll());
-                } catch (final Throwable thrown) {
-                    // NOOP
-                }
-            }
-        }
-
-        private void queue(String message) {
-            synchronized (this.queue) {
-                this.queue.add(message);
-                this.queue.notify();
+        protected void processElement(String element) {
+            try {
+                IRCClient.this.handleLine(element);
+            } catch (final Throwable thrown) {
+                // NOOP
             }
         }
     }
@@ -352,12 +333,14 @@ final class IRCClient implements Client {
         this.config = config;
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
+        final String name = this.config.get(Config.NAME);
+
         Config.ExceptionConsumerWrapper exceptionListenerWrapper = this.config.get(Config.LISTENER_EXCEPTION);
-        this.exceptionListener = new Listener<>(exceptionListenerWrapper == null ? null : exceptionListenerWrapper.getConsumer());
+        this.exceptionListener = new Listener<>(name, exceptionListenerWrapper == null ? null : exceptionListenerWrapper.getConsumer());
         Config.StringConsumerWrapper inputListenerWrapper = this.config.get(Config.LISTENER_INPUT);
-        this.inputListener = new Listener<>(inputListenerWrapper == null ? null : inputListenerWrapper.getConsumer());
+        this.inputListener = new Listener<>(name, inputListenerWrapper == null ? null : inputListenerWrapper.getConsumer());
         Config.StringConsumerWrapper outputListenerWrapper = this.config.get(Config.LISTENER_OUTPUT);
-        this.outputListener = new Listener<>(outputListenerWrapper == null ? null : outputListenerWrapper.getConsumer());
+        this.outputListener = new Listener<>(name, outputListenerWrapper == null ? null : outputListenerWrapper.getConsumer());
 
         this.processor = new InputProcessor();
         this.connect();

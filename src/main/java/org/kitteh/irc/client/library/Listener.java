@@ -24,59 +24,44 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.util.Consumer;
+import org.kitteh.irc.client.library.util.QueueProcessingThread;
 
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 final class Listener<Type> {
-    private class ListenerThread extends Thread {
+    private class ListenerThread extends QueueProcessingThread<Type> {
         private final Consumer<Type> consumer;
-        private final Queue<Type> queue = new ConcurrentLinkedQueue<>();
 
-        private ListenerThread(Consumer<Type> consumer) {
+        private ListenerThread(String clientName, Consumer<Type> consumer) {
+            super("Kitteh IRC Client Listener (" + clientName + ")");
             this.consumer = consumer;
-            this.start();
         }
 
         @Override
-        public void run() {
-            while (!this.isInterrupted()) {
-                synchronized (this.queue) {
-                    while (this.queue.isEmpty()) {
-                        try {
-                            this.queue.wait();
-                        } catch (InterruptedException e) {
-                            break;
-                        }
-                    }
-                }
-                try {
-                    this.consumer.accept(this.queue.poll());
-                } catch (final Throwable thrown) {
-                    // NOOP
-                }
-            }
-            while (!this.queue.isEmpty()) {
-                try {
-                    this.consumer.accept(this.queue.poll());
-                } catch (final Throwable thrown) {
-                    // NOOP
-                }
+        protected void processElement(Type element) {
+            try {
+                this.consumer.accept(element);
+            } catch (final Throwable thrown) {
+                // NOOP
             }
         }
 
-        private void queue(Type item) {
-            synchronized (this.queue) {
-                this.queue.add(item);
-                this.queue.notify();
+        @Override
+        protected void cleanup(Queue<Type> remainingQueue) {
+            while (!remainingQueue.isEmpty()) {
+                try {
+                    this.consumer.accept(remainingQueue.poll());
+                } catch (final Throwable thrown) {
+                    // NOOP
+                }
             }
         }
     }
 
     private final ListenerThread thread;
 
-    Listener(Consumer<Type> consumer) {
-        this.thread = consumer == null ? null : new ListenerThread(consumer);
+    Listener(String clientName, Consumer<Type> consumer) {
+        this.thread = consumer == null ? null : new ListenerThread(clientName, consumer);
     }
 
     void queue(Type item) {
