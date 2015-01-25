@@ -246,7 +246,7 @@ class ActorProvider {
 
     ActorProvider(IRCClient client) {
         this.client = client;
-        this.trackedChannels = new LCKeyMap<IRCChannel>(this.client);
+        this.trackedChannels = new LCKeyMap<>(this.client);
     }
 
     Actor getActor(String name) {
