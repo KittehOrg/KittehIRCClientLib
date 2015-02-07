@@ -723,7 +723,7 @@ final class IRCClient implements Client {
                             this.eventManager.callEvent(event);
                             reply = event.getReply();
                             if (reply != null) {
-                                this.sendRawLine("NOTICE " + actor.getName() + " :" + CTCPUtil.toCTCP(reply));
+                                this.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(reply));
                             }
                             break;
                         case CHANNEL:
