@@ -28,7 +28,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -132,20 +131,12 @@ final class NettyManager {
             }
 
             // Clean up on disconnect
-            this.channel.closeFuture().addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    if (ClientConnection.this.reconnect) {
-                        ClientConnection.this.channel.eventLoop().schedule(new Runnable() {
-                            @Override
-                            public void run() {
-                                ClientConnection.this.client.connect();
-                            }
-                        }, 5, TimeUnit.SECONDS);
-                    }
-                    ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
-                    removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
+            this.channel.closeFuture().addListener(futureListener -> {
+                if (ClientConnection.this.reconnect) {
+                    ClientConnection.this.channel.eventLoop().schedule(ClientConnection.this.client::connect, 5, TimeUnit.SECONDS);
                 }
+                ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
+                removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
             });
         }
 
@@ -155,13 +146,10 @@ final class NettyManager {
                 delay = this.scheduledSending.getDelay(TimeUnit.MILLISECONDS); // Negligible added delay processing this
                 this.scheduledSending.cancel(false);
             }
-            this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    String message = ClientConnection.this.queue.poll();
-                    if (message != null) {
-                        ClientConnection.this.channel.writeAndFlush(message);
-                    }
+            this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(() -> {
+                String message = ClientConnection.this.queue.poll();
+                if (message != null) {
+                    ClientConnection.this.channel.writeAndFlush(message);
                 }
             }, delay, period, TimeUnit.MILLISECONDS);
         }

@@ -27,10 +27,10 @@ import org.kitteh.irc.client.library.CaseMapping;
 import org.kitteh.irc.client.library.Client;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 /**
  * A threadsafe, automagically lowercased Set.
@@ -90,13 +90,7 @@ public class LCSet extends CopyOnWriteArraySet<String> {
     }
 
     private Set<String> toLC(Collection<?> c) {
-        Set<String> set = new HashSet<>();
-        for (Object o : c) {
-            if (o instanceof String) {
-                set.add(this.toLowerCase(((String) o)));
-            }
-        }
-        return set;
+        return c.stream().filter(o -> o instanceof String).map(o -> this.toLowerCase(((String) o))).collect(Collectors.toSet());
     }
 
     protected final synchronized String toLowerCase(String input) {

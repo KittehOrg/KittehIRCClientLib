@@ -69,7 +69,7 @@ public final class EventManager {
                 continue;
             }
             method.setAccessible(true);
-            pairs.add(new Pair<Class<?>, Pair<Object, Method>>(types[0], new Pair<>(listener, method)));
+            pairs.add(new Pair<>(types[0], new Pair<>(listener, method)));
         }
         for (Pair<Class<?>, Pair<Object, Method>> pair : pairs) {
             this.getSet(pair.getLeft()).add(pair.getRight());
@@ -97,7 +97,7 @@ public final class EventManager {
     private synchronized Set<Pair<Object, Method>> getSet(Class<?> type) {
         Set<Pair<Object, Method>> set = this.registeredEvents.get(type);
         if (set == null) {
-            set = Collections.newSetFromMap(new ConcurrentHashMap<Pair<Object, Method>, Boolean>());
+            set = Collections.newSetFromMap(new ConcurrentHashMap<>());
             this.registeredEvents.put(type, set);
         }
         return set;

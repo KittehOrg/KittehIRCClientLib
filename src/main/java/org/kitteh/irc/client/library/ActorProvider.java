@@ -113,7 +113,7 @@ class ActorProvider {
 
         void trackUser(User user, Set<ChannelUserMode> modes) {
             this.nickMap.put(user.getNick(), user);
-            this.users.put(user, modes == null ? new CopyOnWriteArraySet<ChannelUserMode>() : new CopyOnWriteArraySet<>(modes));
+            this.users.put(user, modes == null ? new CopyOnWriteArraySet<>() : new CopyOnWriteArraySet<>(modes));
         }
 
         void trackUserJoin(User user) {
