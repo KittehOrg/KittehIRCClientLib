@@ -119,7 +119,6 @@ final class IRCClient implements Client {
     private class InputProcessor extends QueueProcessingThread<String> {
         private InputProcessor() {
             super("Kitteh IRC Client Input Processor (" + IRCClient.this.getName() + ")");
-            this.start();
         }
 
         @Override
