@@ -44,13 +44,14 @@ public abstract class QueueProcessingThread<Type> extends Thread {
 
     @Override
     public void run() {
+        dance:
         while (!this.isInterrupted()) {
             synchronized (this.queue) {
                 while (this.queue.isEmpty()) {
                     try {
                         this.queue.wait();
                     } catch (InterruptedException e) {
-                        break;
+                        break dance;
                     }
                 }
             }
