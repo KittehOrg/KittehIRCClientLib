@@ -305,8 +305,6 @@ class ActorProvider {
     }
 
     void trackUserQuit(User user) {
-        for (IRCChannel channel : this.trackedChannels.values()) {
-            channel.trackUserPart(user);
-        }
+        this.trackedChannels.values().forEach(channel -> channel.trackUserPart(user));
     }
 }

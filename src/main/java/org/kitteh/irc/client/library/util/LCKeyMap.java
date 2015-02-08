@@ -63,9 +63,7 @@ public class LCKeyMap<Value> extends ConcurrentHashMap<String, Value> {
 
     @Override
     public void putAll(Map<? extends String, ? extends Value> m) {
-        for (Entry<? extends String, ? extends Value> entry : m.entrySet()) {
-            this.put(entry.getKey(), entry.getValue()); // Lowercased
-        }
+        m.entrySet().forEach(entry -> this.put(entry.getKey(), entry.getValue())); // Lowercased via put
     }
 
     protected final synchronized String toLowerCase(String input) {
