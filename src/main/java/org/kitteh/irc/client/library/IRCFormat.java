@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.util.Sanity;
+
 /**
  * Represents various formatting available in IRC.
  * <p>
@@ -50,6 +52,8 @@ public enum IRCFormat {
     WHITE(0),
     YELLOW(8);
 
+    private int color;
+    private boolean isColor = false;
     private String toString;
 
     private IRCFormat(char ch) {
@@ -66,13 +70,37 @@ public enum IRCFormat {
             builder.append('0');
         }
         builder.append(color);
+        this.color = color;
+        this.isColor = true;
         this.toString = builder.toString();
     }
 
     public static final char COLOR_CHAR = '\u0003';
 
+    /**
+     * Gets if the format is a color.
+     *
+     * @return true if a color
+     */
+    public boolean isColor() {
+        return this.isColor;
+    }
+
     @Override
     public String toString() {
         return this.toString;
+    }
+
+    /**
+     * Gets a String for displaying this color with a given background color.
+     *
+     * @param background background color
+     * @return the color string
+     * @throws IllegalArgumentException if using or providing a non-color
+     */
+    public String withBackground(IRCFormat background) {
+        Sanity.truthiness(this.isColor, "Cannot use non-color foreground.");
+        Sanity.truthiness(background.isColor, "Cannot use non-color background");
+        return this.toString() + "," + background.color;
     }
 }
