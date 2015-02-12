@@ -28,11 +28,12 @@ import org.kitteh.irc.client.library.exception.KittehEventException;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * Processes and registers events for a single {@link Client} instance.
@@ -55,25 +56,14 @@ public final class EventManager {
      * @param listener listener in which to register events
      */
     public void registerEventListener(Object listener) {
-        Method[] methods = listener.getClass().getDeclaredMethods();
-        Set<Pair<Class<?>, Pair<Object, Method>>> pairs = new HashSet<>();
-        for (Method method : methods) {
-            Class<?>[] types;
-            /*
-            Disregard the following situations:
-            1. Static method. We're registering objects here not classes.
-            2. Methods with 0 or 2+ parameters. We only want methods with one parameter.
-            3. Parameters which are abstract classes or interfaces. We don't send subclasses, making those useless to register.
-             */
-            if (Modifier.isStatic(method.getModifiers()) || method.getAnnotation(EventHandler.class) == null || (types = method.getParameterTypes()).length != 1 || (types[0].getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) != 0) {
-                continue;
-            }
-            method.setAccessible(true);
-            pairs.add(new Pair<>(types[0], new Pair<>(listener, method)));
-        }
-        for (Pair<Class<?>, Pair<Object, Method>> pair : pairs) {
-            this.getSet(pair.getLeft()).add(pair.getRight());
-        }
+        Stream<Method> methods = Arrays.stream(listener.getClass().getDeclaredMethods())
+                // Disregard the following situations:
+                .filter(method -> !Modifier.isStatic(method.getModifiers())) // 1. Static method. We're registering objects here not classes.
+                .filter(method -> method.getAnnotation(EventHandler.class) != null) // 2. No EventHandler annotation
+                .filter(method -> method.getParameterTypes().length == 1) // 3. Methods with 0 or 2+ parameters. We only want methods with one parameter.
+                .filter(method -> (method.getParameterTypes()[0].getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) == 0); // 4. Parameters which are abstract classes or interfaces. We don't send subclasses, making those useless to register.
+        methods.forEach(method -> method.setAccessible(true));
+        methods.forEach(method -> this.getSet(method.getParameterTypes()[0]).add(new Pair<>(listener, method)));
     }
 
     /**
