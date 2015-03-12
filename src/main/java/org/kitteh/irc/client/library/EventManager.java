@@ -56,14 +56,16 @@ public final class EventManager {
      * @param listener listener in which to register events
      */
     public void registerEventListener(Object listener) {
-        Stream<Method> methods = Arrays.stream(listener.getClass().getDeclaredMethods())
+        Arrays.stream(listener.getClass().getDeclaredMethods())
                 // Disregard the following situations:
                 .filter(method -> !Modifier.isStatic(method.getModifiers())) // 1. Static method. We're registering objects here not classes.
                 .filter(method -> method.getAnnotation(EventHandler.class) != null) // 2. No EventHandler annotation
                 .filter(method -> method.getParameterTypes().length == 1) // 3. Methods with 0 or 2+ parameters. We only want methods with one parameter.
-                .filter(method -> (method.getParameterTypes()[0].getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) == 0); // 4. Parameters which are abstract classes or interfaces. We don't send subclasses, making those useless to register.
-        methods.forEach(method -> method.setAccessible(true));
-        methods.forEach(method -> this.getSet(method.getParameterTypes()[0]).add(new Pair<>(listener, method)));
+                .filter(method -> (method.getParameterTypes()[0].getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) == 0) // 4. Parameters which are abstract classes or interfaces. We don't send subclasses, making those useless to register.
+                .forEach(method -> {
+                    method.setAccessible(true);
+                    this.getSet(method.getParameterTypes()[0]).add(new Pair<>(listener, method));
+                });
     }
 
     /**
