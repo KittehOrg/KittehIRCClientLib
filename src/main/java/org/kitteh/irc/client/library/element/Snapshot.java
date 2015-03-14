@@ -23,27 +23,14 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import org.kitteh.irc.client.library.Client;
-
-import java.util.Map;
-import java.util.Set;
-
 /**
- * Represents an IRC channel.
+ * Represents a snapshot of an element.
  */
-public interface Channel extends MessageReceiver {
+public interface Snapshot {
     /**
-     * Gets the users in the channel.
+     * Gets the time this snapshot was created.
      *
-     * @return users and their modes
+     * @return creation time via {@link System#currentTimeMillis()}
      */
-    Map<User, Set<ChannelUserMode>> getUsers();
-
-    /**
-     * Parts the channel.
-     *
-     * @param reason leaving reason
-     * @see Client#removeChannel(Channel, String)
-     */
-    void part(String reason);
+    long getCreationTime();
 }

@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.Client;
 /**
  * Represents an entity on an IRC server which can perform actions.
  */
-public interface Actor {
+public interface Actor extends Snapshot {
     /**
      * Gets the Client to which this Actor belongs.
      *

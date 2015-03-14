@@ -33,20 +33,43 @@ import org.kitteh.irc.client.library.util.LCKeyMap;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 class ActorProvider {
-    class IRCActor implements Actor {
+    class IRCActor {
         private final String name;
-        protected final Client client;
+        private final IRCClient client;
 
-        IRCActor(String name, IRCClient client) {
+        private IRCActor(String name, IRCClient client) {
+            this.client = client;
+            this.name = name;
+        }
+
+        protected IRCClient getClient() {
+            return this.client;
+        }
+
+        protected String getName() {
+            return this.name;
+        }
+
+        IRCActorSnapshot snapshot() {
+            return new IRCActorSnapshot(this.name, this.client);
+        }
+    }
+
+    class IRCActorSnapshot implements Actor {
+        private final Client client;
+        private final long creationTime = System.currentTimeMillis();
+        private final String name;
+
+        private IRCActorSnapshot(String name, IRCClient client) {
             this.client = client;
             this.name = name;
         }
@@ -54,6 +77,11 @@ class ActorProvider {
         @Override
         public Client getClient() {
             return this.client;
+        }
+
+        @Override
+        public long getCreationTime() {
+            return this.creationTime;
         }
 
         @Override
@@ -66,20 +94,74 @@ class ActorProvider {
         }
     }
 
-    class IRCChannel extends IRCMessageReceiver implements Channel {
-        private final Map<User, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
-        private final LCKeyMap<User> nickMap;
+    class IRCChannel extends IRCActor {
+        private final Map<IRCUser, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
+        private final Map<String, IRCUser> nickMap;
 
-        IRCChannel(String channel, IRCClient client) {
+        private IRCChannel(String channel, IRCClient client) {
             super(channel, client);
             this.nickMap = new LCKeyMap<>(this.getClient());
             ActorProvider.this.trackedChannels.put(channel, this);
         }
 
+        IRCUser getUser(String nick) {
+            return this.nickMap.get(nick);
+        }
+
+        IRCChannelSnapshot snapshot() {
+            return new IRCChannelSnapshot(this.getName(), this.users, this.getClient());
+        }
+
+        void trackUser(IRCUser user, Set<ChannelUserMode> modes) {
+            this.nickMap.put(user.getNick(), user);
+            this.users.put(user, modes == null ? new CopyOnWriteArraySet<>() : new CopyOnWriteArraySet<>(modes));
+        }
+
+        void trackUserJoin(IRCUser user) {
+            this.trackUser(user, null);
+        }
+
+        void trackUserModeAdd(String name, ChannelUserMode mode) {
+            IRCUser user = this.nickMap.get(name);
+            if (user != null) {
+                this.users.get(user).add(mode);
+            }
+        }
+
+        void trackUserModeRemove(String name, ChannelUserMode mode) {
+            IRCUser user = this.nickMap.get(name);
+            if (user != null) {
+                this.users.get(user).remove(mode);
+            }
+        }
+
+        void trackUserPart(IRCUser user) {
+            this.users.remove(user);
+            this.nickMap.remove(user.getNick());
+        }
+    }
+
+    class IRCChannelSnapshot extends IRCMessageReceiverSnapshot implements Channel {
+        private final Map<String, User> nickMap;
+        private final Map<User, Set<ChannelUserMode>> users;
+
+        private IRCChannelSnapshot(String channel, Map<IRCUser, Set<ChannelUserMode>> userMap, IRCClient client) {
+            super(channel, client);
+            Map<String, User> nicks = new LCKeyMap<>(client);
+            Map<User, Set<ChannelUserMode>> users = new HashMap<>();
+            userMap.forEach((ircuser, set) -> {
+                User user = ircuser.snapshot();
+                nicks.put(user.getNick(), user);
+                users.put(user, set);
+            });
+            this.nickMap = Collections.unmodifiableMap(nicks);
+            this.users = Collections.unmodifiableMap(users);
+        }
+
         @Override
         public boolean equals(Object o) {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
-            return o instanceof IRCChannel && ((IRCChannel) o).client == this.client && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
+            return o instanceof IRCChannel && ((IRCChannel) o).getClient() == this.getClient() && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
         @Override
@@ -89,54 +171,22 @@ class ActorProvider {
 
         @Override
         public Map<User, Set<ChannelUserMode>> getUsers() {
-            Map<User, Set<ChannelUserMode>> map = new HashMap<>();
-            for (Map.Entry<User, Set<ChannelUserMode>> entry : this.users.entrySet()) {
-                map.put(entry.getKey(), new HashSet<>(entry.getValue()));
-            }
-            return Collections.unmodifiableMap(map);
+            return this.users;
         }
 
         @Override
         public int hashCode() {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
-            return this.toLowerCase(this.getName()).hashCode() * 2 + this.client.hashCode();
+            return this.toLowerCase(this.getName()).hashCode() * 2 + this.getClient().hashCode();
         }
 
         @Override
         public void part(String reason) {
-            this.client.removeChannel(this, reason);
+            this.getClient().removeChannel(this, reason);
         }
 
         User getUser(String nick) {
             return this.nickMap.get(nick);
-        }
-
-        void trackUser(User user, Set<ChannelUserMode> modes) {
-            this.nickMap.put(user.getNick(), user);
-            this.users.put(user, modes == null ? new CopyOnWriteArraySet<>() : new CopyOnWriteArraySet<>(modes));
-        }
-
-        void trackUserJoin(User user) {
-            this.trackUser(user, null);
-        }
-
-        void trackUserModeAdd(String name, ChannelUserMode mode) {
-            User user = this.nickMap.get(name);
-            if (user != null) {
-                this.users.get(user).add(mode);
-            }
-        }
-
-        void trackUserModeRemove(String name, ChannelUserMode mode) {
-            User user = this.nickMap.get(name);
-            if (user != null) {
-                this.users.get(user).remove(mode);
-            }
-        }
-
-        void trackUserPart(User user) {
-            this.users.remove(user);
-            this.nickMap.remove(user.getNick());
         }
     }
 
@@ -160,42 +210,65 @@ class ActorProvider {
         }
     }
 
-    private abstract class IRCMessageReceiver extends IRCActor implements MessageReceiver {
-        protected IRCMessageReceiver(String name, IRCClient client) {
+    abstract class IRCMessageReceiverSnapshot extends IRCActorSnapshot implements MessageReceiver {
+        protected IRCMessageReceiverSnapshot(String name, IRCClient client) {
             super(name, client);
         }
 
         @Override
         public void sendCTCPMessage(String message) {
-            this.client.sendCTCPMessage(this, message);
+            this.getClient().sendCTCPMessage(this, message);
         }
 
         @Override
         public void sendMessage(String message) {
-            this.client.sendMessage(this, message);
+            this.getClient().sendMessage(this, message);
         }
 
         @Override
         public void sendNotice(String message) {
-            this.client.sendNotice(this, message);
+            this.getClient().sendNotice(this, message);
         }
     }
 
-    class IRCUser extends IRCMessageReceiver implements User {
+    class IRCUser extends IRCActor {
         private final String host;
         private final String nick;
         private final String user;
 
-        IRCUser(String mask, String nick, String user, String host, IRCClient client) {
+        private IRCUser(String mask, String nick, String user, String host, IRCClient client) {
             super(mask, client);
             this.nick = nick;
             this.user = user;
             this.host = host;
         }
 
+        String getNick() {
+            return this.nick;
+        }
+
+        IRCUserSnapshot snapshot() {
+            return new IRCUserSnapshot(this.getName(), this.nick, this.user, this.host, this.getClient());
+        }
+    }
+
+    class IRCUserSnapshot extends IRCMessageReceiverSnapshot implements User {
+        private final Set<Channel> channels;
+        private final String host;
+        private final String nick;
+        private final String user;
+
+        private IRCUserSnapshot(String mask, String nick, String user, String host, IRCClient client) {
+            super(mask, client);
+            this.nick = nick;
+            this.user = user;
+            this.host = host;
+            this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(nick) != null).map(IRCChannel::snapshot).collect(Collectors.toSet()));
+        }
+
         @Override
         public boolean equals(Object o) {
-            return o instanceof IRCUser && ((IRCUser) o).client == this.client && this.toLowerCase(((IRCUser) o).getName()).equals(this.toLowerCase((this.getName())));
+            return o instanceof IRCUserSnapshot && ((IRCUserSnapshot) o).getClient() == this.getClient() && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
         @Override
@@ -220,7 +293,7 @@ class ActorProvider {
 
         @Override
         public int hashCode() {
-            return this.toLowerCase(this.getName()).hashCode() * 2 + this.client.hashCode();
+            return this.toLowerCase(this.getName()).hashCode() * 2 + this.getClient().hashCode();
         }
     }
 
@@ -249,12 +322,20 @@ class ActorProvider {
         this.trackedChannels = new LCKeyMap<>(this.client);
     }
 
-    Actor getActor(String name) {
+    void channelTrack(IRCChannel channel) {
+        this.trackedChannels.put(channel.getName(), channel);
+    }
+
+    void channelUntrack(IRCChannel channel) {
+        this.trackedChannels.remove(channel.getName());
+    }
+
+    IRCActor getActor(String name) {
         Matcher nickMatcher = this.nickPattern.matcher(name);
         if (nickMatcher.matches()) {
             return new IRCUser(name, nickMatcher.group(1), nickMatcher.group(2), nickMatcher.group(3), this.client);
         }
-        Channel channel = this.getChannel(name);
+        IRCChannel channel = this.getChannel(name);
         if (channel != null) {
             return channel;
         }
@@ -304,7 +385,11 @@ class ActorProvider {
         this.nickLength = length;
     }
 
-    void trackUserQuit(User user) {
+    void trackUserNick(IRCUser user, String oldNick) {
+        // TODO
+    }
+
+    void trackUserQuit(IRCUser user) {
         this.trackedChannels.values().forEach(channel -> channel.trackUserPart(user));
     }
 }

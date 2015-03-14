@@ -46,7 +46,7 @@ public interface Client {
     /**
      * Gets the channels in which the client is currently present.
      *
-     * @return an immutable set snapshotting the client's current channels
+     * @return the client's current channels
      */
     Set<Channel> getChannels();
 
