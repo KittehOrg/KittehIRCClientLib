@@ -253,7 +253,7 @@ class ActorProvider {
     }
 
     class IRCUserSnapshot extends IRCMessageReceiverSnapshot implements User {
-        private final Set<Channel> channels;
+        private final Set<String> channels;
         private final String host;
         private final String nick;
         private final String user;
@@ -263,12 +263,17 @@ class ActorProvider {
             this.nick = nick;
             this.user = user;
             this.host = host;
-            this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(nick) != null).map(IRCChannel::snapshot).collect(Collectors.toSet()));
+            this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(nick) != null).map(IRCChannel::getName).collect(Collectors.toSet()));
         }
 
         @Override
         public boolean equals(Object o) {
             return o instanceof IRCUserSnapshot && ((IRCUserSnapshot) o).getClient() == this.getClient() && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
+        }
+
+        @Override
+        public Set<String> getChannels() {
+            return this.channels;
         }
 
         @Override

@@ -23,10 +23,19 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import java.util.Set;
+
 /**
  * Represents an IRC user.
  */
 public interface User extends MessageReceiver {
+    /**
+     * Gets the user'c channels.
+     *
+     * @return channel names the user is in
+     */
+    Set<String> getChannels();
+
     /**
      * Gets the user's host.
      *
