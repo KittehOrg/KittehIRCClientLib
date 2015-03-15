@@ -314,6 +314,11 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public int getMessageDelay() {
+        return this.config.get(Config.MESSAGE_DELAY);
+    }
+
+    @Override
     public String getName() {
         return this.config.get(Config.NAME);
     }

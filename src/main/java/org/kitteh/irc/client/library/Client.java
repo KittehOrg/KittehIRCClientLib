@@ -69,6 +69,15 @@ public interface Client {
     String getIntendedNick();
 
     /**
+     * Gets the delay between messages sent to the server.
+     * <p>
+     * Default is 1200ms.
+     *
+     * @return milliseconds between sent messages
+     */
+    int getMessageDelay();
+
+    /**
      * Gets the client name. This name is just an internal name for reference
      * and is not visible from IRC.
      *
