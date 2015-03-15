@@ -290,7 +290,7 @@ final class IRCClient implements Client {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (String channelName : channels) {
-            if (!this.actorProvider.isValidChannel(channelName)) {
+            if (!this.serverInfo.isValidChannel(channelName)) {
                 continue;
             }
             this.channelsIntended.add(channelName);
@@ -586,9 +586,9 @@ final class IRCClient implements Client {
             case 265: // Local users, max
             case 266: // global users, max
                 break;
-            case 315:
+            case 315: // WHO completed
                 // Self is arg 0
-                if (this.actorProvider.isValidChannel(args[1])) { // target
+                if (this.serverInfo.isValidChannel(args[1])) { // target
                     this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this, this.actorProvider.getChannel(args[1]).snapshot()));
                 }
                 break;
@@ -598,7 +598,7 @@ final class IRCClient implements Client {
                 break;
             case 352: // WHO list
                 // Self is arg 0
-                if (this.actorProvider.isValidChannel(args[1])) {
+                if (this.serverInfo.isValidChannel(args[1])) {
                     final String channelName = args[1];
                     final String ident = args[2];
                     final String host = args[3];
@@ -829,7 +829,7 @@ final class IRCClient implements Client {
         if (this.currentNick.equalsIgnoreCase(target)) {
             return MessageTarget.PRIVATE;
         }
-        if (this.actorProvider.isValidChannel(target)) {
+        if (this.serverInfo.isValidChannel(target)) {
             return MessageTarget.CHANNEL;
         }
         return MessageTarget.UNKNOWN;

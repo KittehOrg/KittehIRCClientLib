@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 final class IRCServerInfo implements ServerInfo {
     private CaseMapping caseMapping = CaseMapping.RFC1459;
@@ -45,6 +46,12 @@ final class IRCServerInfo implements ServerInfo {
     };
     private String networkName;
     private int nickLengthLimit = -1;
+
+    // TODO adapt for changes
+    // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
+    // Screw it, let's assume IRCDs disregard length policy
+    // New pattern: ([#!&\+][^ ,\07\r\n]+)
+    private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
     @Override
     public CaseMapping getCaseMapping() {
@@ -116,5 +123,9 @@ final class IRCServerInfo implements ServerInfo {
 
     void setNickLengthLimit(int nickLengthLimit) {
         this.nickLengthLimit = nickLengthLimit;
+    }
+
+    boolean isValidChannel(String name) {
+        return name.length() > 1 && this.channelLengthLimit < 0 || name.length() <= this.channelLengthLimit && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
     }
 }

@@ -302,11 +302,6 @@ class ActorProvider {
 
     private final IRCClient client;
 
-    // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
-    // Screw it, let's assume IRCDs disregard length policy
-    // New pattern: ([#!&\+][^ ,\07\r\n]+)
-    private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
-
     // Valid nick chars: \w\[]^`{}|-_
     // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
     // You know what? Screw it.
@@ -343,22 +338,10 @@ class ActorProvider {
 
     IRCChannel getChannel(String name) {
         IRCChannel channel = this.trackedChannels.get(name);
-        if (channel == null && this.isValidChannel(name)) {
+        if (channel == null && this.client.getServerInfo().isValidChannel(name)) {
             channel = new IRCChannel(name, this.client);
         }
         return channel;
-    }
-
-    boolean isValidChannel(String name) {
-        int channelLength = this.client.getServerInfo().getChannelLengthLimit();
-        if (this.channelPattern.matcher(name).matches() && name.length() > 1 && (channelLength < 0 || name.length() <= channelLength)) {
-            for (char c : this.client.getServerInfo().getChannelPrefixes()) {
-                if (name.charAt(0) == c) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     void trackUserNick(IRCUser user, String oldNick) {
