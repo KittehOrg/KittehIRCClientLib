@@ -813,6 +813,7 @@ final class IRCClient implements Client {
                     channel.trackUserJoin(user);
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.add(args[0]);
+                        this.actorProvider.channelTrack(channel);
                         this.sendRawLine("WHO " + channel.getName());
                     }
                     this.eventManager.callEvent(new ChannelJoinEvent(this, channel.snapshot(), user.snapshot()));
