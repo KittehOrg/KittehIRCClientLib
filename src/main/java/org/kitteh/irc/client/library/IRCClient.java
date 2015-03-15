@@ -51,6 +51,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,8 +67,18 @@ import java.util.stream.Collectors;
 final class IRCClient implements Client {
     private class ConnectedServerInfo implements ServerInfo {
         private CaseMapping caseMapping = CaseMapping.RFC1459;
+        private int channelLength = -1;
         private Map<Character, Integer> channelLimits = new HashMap<>();
+        private Map<Character, ChannelModeType> channelModes = ChannelModeType.getDefaultModes();
+        private List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
+        private List<ChannelUserMode> channelUserModes = new ArrayList<ChannelUserMode>() {
+            {
+                this.add(new ActorProvider.IRCChannelUserMode('o', '@'));
+                this.add(new ActorProvider.IRCChannelUserMode('v', '+'));
+            }
+        };
         private String networkName;
+        private int nickLength = -1;
 
         @Override
         public CaseMapping getCaseMapping() {
@@ -76,7 +87,7 @@ final class IRCClient implements Client {
 
         @Override
         public int getChannelLengthLimit() {
-            return IRCClient.this.actorProvider.getChannelLength();
+            return this.channelLength;
         }
 
         @Override
@@ -86,21 +97,17 @@ final class IRCClient implements Client {
 
         @Override
         public Map<Character, ChannelModeType> getChannelModes() {
-            return new HashMap<>(IRCClient.this.modes);
+            return new HashMap<>(this.channelModes);
         }
 
         @Override
         public List<Character> getChannelPrefixes() {
-            List<Character> list = new ArrayList<>();
-            for (char prefix : IRCClient.this.actorProvider.getChannelPrefixes()) {
-                list.add(prefix);
-            }
-            return list;
+            return new ArrayList<>(this.channelPrefixes);
         }
 
         @Override
         public List<ChannelUserMode> getChannelUserModes() {
-            return new ArrayList<>(IRCClient.this.prefixes);
+            return new ArrayList<>(this.channelUserModes);
         }
 
         @Override
@@ -110,7 +117,7 @@ final class IRCClient implements Client {
 
         @Override
         public int getNickLengthLimit() {
-            return IRCClient.this.actorProvider.getNickLength();
+            return this.nickLength;
         }
     }
 
@@ -145,8 +152,7 @@ final class IRCClient implements Client {
             @Override
             boolean process(String value, IRCClient client) {
                 try {
-                    int length = Integer.parseInt(value);
-                    client.actorProvider.setChannelLength(length);
+                    client.serverInfo.channelLength = Integer.parseInt(value);
                     return true;
                 } catch (NumberFormatException ignored) {
                     return false;
@@ -204,7 +210,7 @@ final class IRCClient implements Client {
                         modesMap.put(mode, type);
                     }
                 }
-                client.modes = modesMap;
+                client.serverInfo.channelModes = modesMap;
                 return true;
             }
         },
@@ -214,7 +220,11 @@ final class IRCClient implements Client {
                 if (value.isEmpty()) {
                     return false;
                 }
-                client.actorProvider.setChannelPrefixes(value.toCharArray());
+                List<Character> prefixes = new ArrayList<>();
+                for (char c : value.toCharArray()) {
+                    prefixes.add(c);
+                }
+                client.serverInfo.channelPrefixes = prefixes;
                 return true;
             }
         },
@@ -229,8 +239,7 @@ final class IRCClient implements Client {
             @Override
             boolean process(String value, IRCClient client) {
                 try {
-                    int length = Integer.parseInt(value);
-                    client.actorProvider.setNickLength(length);
+                    client.serverInfo.nickLength = Integer.parseInt(value);
                     return true;
                 } catch (NumberFormatException ignored) {
                     return false;
@@ -253,7 +262,7 @@ final class IRCClient implements Client {
                     for (int index = 0; index < modes.length(); index++) {
                         prefixList.add(new ActorProvider.IRCChannelUserMode(modes.charAt(index), display.charAt(index)));
                     }
-                    client.prefixes = prefixList;
+                    client.serverInfo.channelUserModes = prefixList;
                 }
                 return true;
             }
@@ -315,14 +324,6 @@ final class IRCClient implements Client {
     private final Listener<String> outputListener;
 
     private final ActorProvider actorProvider = new ActorProvider(this);
-
-    private List<ChannelUserMode> prefixes = new ArrayList<ChannelUserMode>() {
-        {
-            this.add(new ActorProvider.IRCChannelUserMode('o', '@'));
-            this.add(new ActorProvider.IRCChannelUserMode('v', '+'));
-        }
-    };
-    private Map<Character, ChannelModeType> modes = ChannelModeType.getDefaultModes();
 
     IRCClient(Config config) {
         this.config = config;
@@ -666,7 +667,7 @@ final class IRCClient implements Client {
                     final ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
                     final Set<ChannelUserMode> modes = new HashSet<>();
                     for (char prefix : status.substring(1).toCharArray()) {
-                        for (ChannelUserMode mode : this.prefixes) {
+                        for (ChannelUserMode mode : this.serverInfo.channelUserModes) {
                             if (mode.getPrefix() == prefix) {
                                 modes.add(mode);
                                 break;
@@ -783,7 +784,7 @@ final class IRCClient implements Client {
                         } else {
                             boolean hasArg;
                             boolean isPrefix = false;
-                            for (ChannelUserMode prefix : this.prefixes) {
+                            for (ChannelUserMode prefix : this.serverInfo.channelUserModes) {
                                 if (prefix.getMode() == next) {
                                     isPrefix = true;
                                     break;
@@ -792,7 +793,7 @@ final class IRCClient implements Client {
                             if (isPrefix) {
                                 hasArg = true;
                             } else {
-                                ChannelModeType type = this.modes.get(next);
+                                ChannelModeType type = this.serverInfo.channelModes.get(next);
                                 if (type == null) {
                                     // TODO clean up error handling
                                     return;
@@ -802,9 +803,9 @@ final class IRCClient implements Client {
                             final String nick = hasArg ? args[currentArg++] : null;
                             if (isPrefix) {
                                 if (add) {
-                                    channel.trackUserModeAdd(nick, this.prefixes.get(next));
+                                    channel.trackUserModeAdd(nick, this.serverInfo.channelUserModes.get(next));
                                 } else {
-                                    channel.trackUserModeRemove(nick, this.prefixes.get(next));
+                                    channel.trackUserModeRemove(nick, this.serverInfo.channelUserModes.get(next));
                                 }
                             }
                             this.eventManager.callEvent(new ChannelModeEvent(this, actor.snapshot(), channel.snapshot(), add, next, nick));

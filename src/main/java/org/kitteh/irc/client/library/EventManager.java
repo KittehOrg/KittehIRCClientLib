@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
-import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.exception.KittehEventException;
+import org.kitteh.irc.client.library.util.Pair;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 /**
  * Processes and registers events for a single {@link Client} instance.

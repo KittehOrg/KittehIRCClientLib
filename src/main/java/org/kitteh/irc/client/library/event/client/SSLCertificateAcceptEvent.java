@@ -26,8 +26,8 @@ package org.kitteh.irc.client.library.event.client;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.ClientEvent;
 
-import java.security.cert.X509Certificate;
 import javax.net.ssl.X509TrustManager;
+import java.security.cert.X509Certificate;
 
 /**
  * Fires when connecting to a server via SSL. By default approves any certs.

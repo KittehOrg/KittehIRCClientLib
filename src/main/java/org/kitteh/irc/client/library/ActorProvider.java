@@ -151,19 +151,12 @@ class ActorProvider {
     }
 
     class IRCChannelSnapshot extends IRCMessageReceiverSnapshot implements Channel {
-        private final Map<String, User> nickMap;
         private final Map<User, Set<ChannelUserMode>> users;
 
         private IRCChannelSnapshot(String channel, Map<IRCUser, Set<ChannelUserMode>> userMap, IRCClient client) {
             super(channel, client);
-            Map<String, User> nicks = new LCKeyMap<>(client);
             Map<User, Set<ChannelUserMode>> users = new HashMap<>();
-            userMap.forEach((ircuser, set) -> {
-                User user = ircuser.snapshot();
-                nicks.put(user.getNick(), user);
-                users.put(user, set);
-            });
-            this.nickMap = Collections.unmodifiableMap(nicks);
+            userMap.forEach((ircuser, set) -> users.put(ircuser.snapshot(), set));
             this.users = Collections.unmodifiableMap(users);
         }
 
@@ -192,10 +185,6 @@ class ActorProvider {
         @Override
         public void part(String reason) {
             this.getClient().removeChannel(this, reason);
-        }
-
-        User getUser(String nick) {
-            return this.nickMap.get(nick);
         }
     }
 
@@ -313,15 +302,11 @@ class ActorProvider {
 
     private final IRCClient client;
 
-    private int channelLength = -1;
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
-    private char[] channelPrefixes = new char[]{'#', '&', '!', '+'};
-
-    private int nickLength = -1;
     // Valid nick chars: \w\[]^`{}|-_
     // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
     // You know what? Screw it.
@@ -329,7 +314,7 @@ class ActorProvider {
     // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
     private final Pattern nickPattern = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
 
-    private final Map<String, IRCChannel> trackedChannels; // TODO stop tracking at some point
+    private final Map<String, IRCChannel> trackedChannels;
 
     ActorProvider(IRCClient client) {
         this.client = client;
@@ -364,39 +349,16 @@ class ActorProvider {
         return channel;
     }
 
-    int getChannelLength() {
-        return this.channelLength;
-    }
-
-    char[] getChannelPrefixes() {
-        return this.channelPrefixes;
-    }
-
-    int getNickLength() {
-        return this.nickLength;
-    }
-
     boolean isValidChannel(String name) {
+        int channelLength = this.client.getServerInfo().getChannelLengthLimit();
         if (this.channelPattern.matcher(name).matches() && name.length() > 1 && (channelLength < 0 || name.length() <= channelLength)) {
-            for (char c : this.channelPrefixes) {
+            for (char c : this.client.getServerInfo().getChannelPrefixes()) {
                 if (name.charAt(0) == c) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    void setChannelLength(int length) {
-        this.channelLength = length;
-    }
-
-    void setChannelPrefixes(char[] prefixes) {
-        this.channelPrefixes = prefixes;
-    }
-
-    void setNickLength(int length) {
-        this.nickLength = length;
     }
 
     void trackUserNick(IRCUser user, String oldNick) {
