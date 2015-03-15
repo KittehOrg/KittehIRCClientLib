@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelKnockEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
@@ -687,6 +688,11 @@ final class IRCClient implements Client {
             case 432: // Erroneous nickname
             case 433: // Nick in use
                 this.sendNickChange(this.requestedNick + '`');
+                break;
+            case 710: // KNOCK KNOCK, WHO'S THERE?
+                ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[1]);
+                ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.actorProvider.getActor(args[2]);
+                this.eventManager.callEvent(new ChannelKnockEvent(this, channel.snapshot(), user.snapshot()));
                 break;
         }
     }
