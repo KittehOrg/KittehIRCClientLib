@@ -838,11 +838,13 @@ final class IRCClient implements Client {
                 break;
             case KICK:
                 ActorProvider.IRCChannel kickedChannel = this.actorProvider.getChannel(args[0]);
+                ActorProvider.IRCUser kickedUser = kickedChannel.getUser(args[1]);
+                kickedChannel.trackUserPart(kickedUser);
                 if (args[1].equals(this.currentNick)) {
                     this.channels.remove(kickedChannel.getName());
                     this.actorProvider.channelUntrack(kickedChannel);
                 }
-                this.eventManager.callEvent(new ChannelKickEvent(this, kickedChannel.snapshot(), actor.snapshot(), kickedChannel.getUser(args[1]).snapshot(), args.length > 2 ? args[2] : ""));
+                this.eventManager.callEvent(new ChannelKickEvent(this, kickedChannel.snapshot(), actor.snapshot(), kickedUser.snapshot(), args.length > 2 ? args[2] : ""));
                 break;
             case NICK:
                 if (actor instanceof ActorProvider.IRCUser) {
