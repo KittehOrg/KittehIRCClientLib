@@ -186,6 +186,15 @@ public interface Client {
     void sendRawLine(String message);
 
     /**
+     * Sends a raw IRC message, disregarding message delays and all sanity.
+     * Live life on the wild side with this method designed to ensure you
+     * get floodkicked before you finish dumping your life's work into chat.
+     *
+     * @param message message to send dangerously, you monster
+     */
+    void sendRawLineImmediately(String message);
+
+    /**
      * Sets values for authentication with services on the server. The
      * client will not attempt to utilize them until a future reconnect.
      *

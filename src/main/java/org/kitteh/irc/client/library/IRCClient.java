@@ -402,6 +402,12 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public void sendRawLineImmediately(String message) {
+        Sanity.nullCheck(message, "Message cannot be null");
+        this.connection.sendMessage(message, true);
+    }
+
+    @Override
     public void setAuth(AuthType authType, String name, String pass) {
         Sanity.nullCheck(authType, "Auth type cannot be null!");
         Sanity.nullCheck(name, "Name cannot be null!");
