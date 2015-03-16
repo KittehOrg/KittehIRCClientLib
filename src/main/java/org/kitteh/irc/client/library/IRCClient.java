@@ -35,6 +35,9 @@ import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelPartEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelTargetedCTCPEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelTargetedMessageEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
@@ -241,6 +244,7 @@ final class IRCClient implements Client {
 
     private enum MessageTarget {
         CHANNEL,
+        CHANNEL_TARGETED,
         PRIVATE,
         UNKNOWN
     }
@@ -703,6 +707,9 @@ final class IRCClient implements Client {
                         case CHANNEL:
                             this.eventManager.callEvent(new ChannelCTCPEvent(this, user.snapshot(), this.actorProvider.getChannel(args[0]).snapshot(), ctcpMessage));
                             break;
+                        case CHANNEL_TARGETED:
+                            this.eventManager.callEvent(new ChannelTargetedCTCPEvent(this, user.snapshot(), this.actorProvider.getChannel(args[0].substring(1)).snapshot(), this.serverInfo.getTargetedChannelInfo(args[0]), ctcpMessage));
+                            break;
                     }
                     break;
             }
@@ -714,6 +721,9 @@ final class IRCClient implements Client {
                     case CHANNEL:
                         this.eventManager.callEvent(new ChannelNoticeEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), this.actorProvider.getChannel(args[0]).snapshot(), args[1]));
                         break;
+                    case CHANNEL_TARGETED:
+                        this.eventManager.callEvent(new ChannelTargetedNoticeEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), this.actorProvider.getChannel(args[0].substring(1)).snapshot(), this.serverInfo.getTargetedChannelInfo(args[0]), args[1]));
+                        break;
                     case PRIVATE:
                         this.eventManager.callEvent(new PrivateNoticeEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), args[1]));
                         break;
@@ -723,6 +733,9 @@ final class IRCClient implements Client {
                 switch (this.getTypeByTarget(args[0])) {
                     case CHANNEL:
                         this.eventManager.callEvent(new ChannelMessageEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), this.actorProvider.getChannel(args[0]).snapshot(), args[1]));
+                        break;
+                    case CHANNEL_TARGETED:
+                        this.eventManager.callEvent(new ChannelTargetedMessageEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), this.actorProvider.getChannel(args[0].substring(1)).snapshot(), this.serverInfo.getTargetedChannelInfo(args[0]), args[1]));
                         break;
                     case PRIVATE:
                         this.eventManager.callEvent(new PrivateMessageEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), args[1]));
@@ -855,6 +868,9 @@ final class IRCClient implements Client {
     private MessageTarget getTypeByTarget(String target) {
         if (this.currentNick.equalsIgnoreCase(target)) {
             return MessageTarget.PRIVATE;
+        }
+        if (this.serverInfo.isTargetedChannel(target)) {
+            return MessageTarget.CHANNEL_TARGETED;
         }
         if (this.serverInfo.isValidChannel(target)) {
             return MessageTarget.CHANNEL;

@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,5 +128,22 @@ final class IRCServerInfo implements ServerInfo {
 
     boolean isValidChannel(String name) {
         return name.length() > 1 && this.channelLengthLimit < 0 || name.length() <= this.channelLengthLimit && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
+    }
+
+    boolean isTargetedChannel(String name) {
+        return getTargetedChannelInfo(name) != null;
+    }
+
+    ChannelUserMode getTargetedChannelInfo(String name) {
+        final char first = name.charAt(0);
+        final String shorter = name.substring(1);
+        if (!this.channelPrefixes.contains(first) && this.isValidChannel(shorter)) {
+            for (ChannelUserMode mode : this.channelUserModes) {
+                if (mode.getPrefix() == first) {
+                    return mode;
+                }
+            }
+        }
+        return null;
     }
 }
