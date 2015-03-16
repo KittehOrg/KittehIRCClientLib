@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
+import org.kitteh.irc.client.library.util.Consumer;
 
 import java.util.Set;
 
@@ -195,6 +196,24 @@ public interface Client {
     void setAuth(AuthType authType, String name, String pass);
 
     /**
+     * Sets a listener for all thrown exceptions on this client.
+     * <p>
+     * All exceptions are passed from a single, separate thread.
+     *
+     * @param listener catcher of throwables
+     */
+    void setExceptionListener(Consumer<Exception> listener);
+
+    /**
+     * Sets a listener for all incoming messages from the server.
+     * <p>
+     * All messages are passed from a single, separate thread.
+     *
+     * @param listener input listener
+     */
+    void setInputListener(Consumer<String> listener);
+
+    /**
      * Sets the delay between messages sent to the server.
      * <p>
      * Default is 1200ms.
@@ -209,6 +228,15 @@ public interface Client {
      * @param nick new nickname
      */
     void setNick(String nick);
+
+    /**
+     * Sets a listener for all outgoing messages to the server.
+     * <p>
+     * All messages are passed from a single, separate thread.
+     *
+     * @param listener output listener
+     */
+    void setOutputListener(Consumer<String> listener);
 
     /**
      * Shuts down the client.

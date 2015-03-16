@@ -45,6 +45,7 @@ import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.exception.KittehISupportProcessingFailureException;
+import org.kitteh.irc.client.library.util.Consumer;
 import org.kitteh.irc.client.library.util.LCSet;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -411,6 +412,16 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public void setExceptionListener(Consumer<Exception> listener) {
+        this.exceptionListener.setConsumer(listener);
+    }
+
+    @Override
+    public void setInputListener(Consumer<String> listener) {
+        this.inputListener.setConsumer(listener);
+    }
+
+    @Override
     public void setMessageDelay(int delay) {
         Sanity.truthiness(delay > -1, "Delay must be a positive value");
         this.config.set(Config.MESSAGE_DELAY, delay);
@@ -424,6 +435,11 @@ final class IRCClient implements Client {
         Sanity.nullCheck(nick, "Nick cannot be null");
         this.goalNick = nick.trim();
         this.sendNickChange(this.goalNick);
+    }
+
+    @Override
+    public void setOutputListener(Consumer<String> listener) {
+        this.outputListener.setConsumer(listener);
     }
 
     @Override

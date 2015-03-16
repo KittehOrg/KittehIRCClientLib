@@ -30,7 +30,7 @@ import java.util.Queue;
 
 final class Listener<Type> {
     private class ListenerThread extends QueueProcessingThread<Type> {
-        private final Consumer<Type> consumer;
+        private volatile Consumer<Type> consumer;
 
         private ListenerThread(String clientName, Consumer<Type> consumer) {
             super("Kitteh IRC Client Listener (" + clientName + ")");
@@ -68,6 +68,10 @@ final class Listener<Type> {
         if (this.thread != null) {
             this.thread.queue(item);
         }
+    }
+
+    void setConsumer(Consumer<Type> consumer) {
+        this.thread.consumer = consumer;
     }
 
     void shutdown() {
