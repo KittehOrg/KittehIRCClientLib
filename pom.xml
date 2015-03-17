@@ -15,13 +15,13 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec</artifactId>
-            <version>4.0.25.Final</version>
+            <version>4.0.26.Final</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>4.0.25.Final</version>
+            <version>4.0.26.Final</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
