@@ -41,6 +41,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
+import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
@@ -679,7 +680,9 @@ final class IRCClient implements Client {
             case 431: // No nick given
             case 432: // Erroneous nickname
             case 433: // Nick in use
-                this.sendNickChange(this.requestedNick + '`');
+                NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.requestedNick, this.requestedNick+'`');
+                this.eventManager.callEvent(nickRejectedEvent);
+                this.sendNickChange(nickRejectedEvent.getNewNick());
                 break;
             case 710: // KNOCK KNOCK, WHO'S THERE?
                 ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[1]);
