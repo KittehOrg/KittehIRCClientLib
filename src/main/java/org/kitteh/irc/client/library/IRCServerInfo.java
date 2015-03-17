@@ -24,7 +24,6 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.ChannelUserMode;
-import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;

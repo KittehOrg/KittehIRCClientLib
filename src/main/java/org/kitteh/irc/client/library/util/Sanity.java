@@ -66,4 +66,29 @@ public final class Sanity {
             throw new IllegalArgumentException(failMessage);
         }
     }
+
+    /**
+     * Checks if a message contains CR, LF, or NUL.
+     *
+     * @param message message to check
+     * @throws IllegalArgumentException if found
+     */
+    public static void safeMessageCheck(String message) {
+        Sanity.safeMessageCheck(message, "message");
+    }
+
+    /**
+     * Checks if a string contains CR, LF, or NUL.
+     *
+     * @param message string to check
+     * @param name name of the string
+     * @throws IllegalArgumentException if found
+     */
+    public static void safeMessageCheck(String message, String name) {
+        for (char ch : message.toCharArray()) {
+            if (ch == '\n' || ch == '\r' || ch == '\0') {
+                throw new IllegalArgumentException(name + " cannot contain CR, LF, or NUL");
+            }
+        }
+    }
 }

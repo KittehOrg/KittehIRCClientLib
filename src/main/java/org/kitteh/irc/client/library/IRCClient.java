@@ -350,6 +350,9 @@ final class IRCClient implements Client {
     @Override
     public void removeChannel(Channel channel, String reason) {
         Sanity.nullCheck(channel, "Channel cannot be null");
+        if (reason != null) {
+            Sanity.safeMessageCheck(reason, "part reason");
+        }
         String channelName = channel.getName();
         this.channelsIntended.remove(channelName);
         if (this.channels.contains(channel.getName())) {
@@ -360,7 +363,9 @@ final class IRCClient implements Client {
     @Override
     public void sendCTCPMessage(String target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.safeMessageCheck(message, "target");
         Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("PRIVMSG " + target + " :" + CTCPUtil.toCTCP(message));
     }
@@ -374,7 +379,9 @@ final class IRCClient implements Client {
     @Override
     public void sendMessage(String target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.safeMessageCheck(message, "target");
         Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("PRIVMSG " + target + " :" + message);
     }
@@ -388,7 +395,9 @@ final class IRCClient implements Client {
     @Override
     public void sendNotice(String target, String message) {
         Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.safeMessageCheck(message, "target");
         Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("NOTICE " + target + " :" + message);
     }
@@ -402,12 +411,14 @@ final class IRCClient implements Client {
     @Override
     public void sendRawLine(String message) {
         Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message);
         this.connection.sendMessage(message, false);
     }
 
     @Override
     public void sendRawLineImmediately(String message) {
         Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message);
         this.connection.sendMessage(message, true);
     }
 
@@ -415,7 +426,9 @@ final class IRCClient implements Client {
     public void setAuth(AuthType authType, String name, String pass) {
         Sanity.nullCheck(authType, "Auth type cannot be null!");
         Sanity.nullCheck(name, "Name cannot be null!");
+        Sanity.safeMessageCheck(name, "authentication name");
         Sanity.nullCheck(pass, "Password cannot be null!");
+        Sanity.safeMessageCheck(pass, "authentication password");
         this.config.set(Config.AUTH_TYPE, authType);
         this.config.set(Config.AUTH_NAME, name);
         this.config.set(Config.AUTH_PASS, pass);
@@ -443,6 +456,7 @@ final class IRCClient implements Client {
     @Override
     public void setNick(String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
+        Sanity.safeMessageCheck(nick, "nick");
         this.goalNick = nick.trim();
         this.sendNickChange(this.goalNick);
     }
@@ -454,6 +468,9 @@ final class IRCClient implements Client {
 
     @Override
     public void shutdown(String reason) {
+        if (reason != null) {
+            Sanity.safeMessageCheck(reason, "quit reason");
+        }
         this.processor.interrupt();
 
         this.connection.shutdown(reason != null && reason.isEmpty() ? null : reason);

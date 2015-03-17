@@ -56,7 +56,9 @@ public final class ClientBuilder implements Cloneable {
     public ClientBuilder auth(AuthType authType, String name, String pass) {
         Sanity.nullCheck(authType, "Auth type cannot be null!");
         Sanity.nullCheck(name, "Name cannot be null!");
+        Sanity.safeMessageCheck(name, "authentication name");
         Sanity.nullCheck(pass, "Password cannot be null!");
+        Sanity.safeMessageCheck(pass, "authentication password");
         this.config.set(Config.AUTH_TYPE, authType);
         this.config.set(Config.AUTH_NAME, name);
         this.config.set(Config.AUTH_PASS, pass);
@@ -136,6 +138,7 @@ public final class ClientBuilder implements Cloneable {
      */
     public ClientBuilder name(String name) {
         Sanity.nullCheck(name, "Name cannot be null");
+        Sanity.safeMessageCheck(name, "name");
         this.config.set(Config.NAME, name);
         return this;
     }
@@ -152,6 +155,7 @@ public final class ClientBuilder implements Cloneable {
     public ClientBuilder nick(String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
         Sanity.truthiness(!nick.contains(" "), "Nick cannot contain spaces");
+        Sanity.safeMessageCheck(nick, "nick");
         this.config.set(Config.NICK, nick);
         return this;
     }
@@ -167,6 +171,7 @@ public final class ClientBuilder implements Cloneable {
      */
     public ClientBuilder serverPassword(String password) {
         Sanity.nullCheck(password, "Server password cannot be null");
+        Sanity.safeMessageCheck(password, "server password");
         this.config.set(Config.SERVER_PASSWORD, password);
         return this;
     }
@@ -182,6 +187,7 @@ public final class ClientBuilder implements Cloneable {
      */
     public ClientBuilder realName(String name) {
         Sanity.nullCheck(name, "Real name cannot be null");
+        Sanity.safeMessageCheck(name, "real name");
         this.config.set(Config.REAL_NAME, name);
         return this;
     }
@@ -237,6 +243,7 @@ public final class ClientBuilder implements Cloneable {
     public ClientBuilder user(String user) {
         Sanity.nullCheck(user, "User cannot be null");
         Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
+        Sanity.safeMessageCheck(user, "user");
         this.config.set(Config.USER, user);
         return this;
     }
