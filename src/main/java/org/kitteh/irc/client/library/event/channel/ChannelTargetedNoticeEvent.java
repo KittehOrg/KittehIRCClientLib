@@ -41,6 +41,7 @@ public class ChannelTargetedNoticeEvent extends ActorChannelMessageEvent<User> {
      * @param client client for which this is occurring
      * @param sender who sent it
      * @param channel channel receiving
+     * @param prefix targeted prefix
      * @param message message sent
      */
     public ChannelTargetedNoticeEvent(Client client, User sender, Channel channel, ChannelUserMode prefix, String message) {
