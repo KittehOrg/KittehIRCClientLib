@@ -21,47 +21,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.event.capabilities;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.kitteh.irc.client.library.CapabilityState;
+import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Commands used in client/server communication.
+ * Fired when a CAP LIST is received, listing the current capabilities
  */
-enum Command {
-    CAP,
-    INVITE,
-    JOIN,
-    KICK,
-    MODE,
-    NICK,
-    NOTICE,
-    PART,
-    PRIVMSG,
-    TOPIC,
-    QUIT;
+public class CapabilitiesListEvent {
+    private final List<CapabilityState> capabilities;
 
-    private static final Map<String, Command> nameMap = new HashMap<>();
-
-    static {
-        for (Command command : values()) {
-            nameMap.put(command.name(), command);
-        }
+    public CapabilitiesListEvent(List<CapabilityState> capabilities) {
+        this.capabilities = Collections.unmodifiableList(capabilities);
     }
 
     /**
-     * Gets a Command by name. Case insensitive.
+     * Gets the currently enabled capabilities.
      *
-     * @param name the name of the Command to get
-     * @return the matching Command or null if no match
+     * @return list of capabilities
      */
-    public static Command getByName(String name) {
-        return nameMap.get(name.toUpperCase());
-    }
-
-    @Override
-    public String toString() {
-        return this.name(); // Explicitly overriding as a reminder that this is used as such
+    public List<CapabilityState> getCapabilities() {
+        return this.capabilities;
     }
 }

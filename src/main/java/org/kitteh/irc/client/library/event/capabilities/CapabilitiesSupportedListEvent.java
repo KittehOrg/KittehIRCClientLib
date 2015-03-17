@@ -21,47 +21,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.event.capabilities;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.kitteh.irc.client.library.CapabilityState;
+import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Commands used in client/server communication.
+ * Fired when a CAP LIST is received.
  */
-enum Command {
-    CAP,
-    INVITE,
-    JOIN,
-    KICK,
-    MODE,
-    NICK,
-    NOTICE,
-    PART,
-    PRIVMSG,
-    TOPIC,
-    QUIT;
+public class CapabilitiesSupportedListEvent extends CapabilityNegotiationResponseEvent {
+    private final List<CapabilityState> supportedCapabilities;
 
-    private static final Map<String, Command> nameMap = new HashMap<>();
-
-    static {
-        for (Command command : values()) {
-            nameMap.put(command.name(), command);
-        }
+    public CapabilitiesSupportedListEvent(boolean negotiating, List<CapabilityState> supportedCapabilities) {
+        super(negotiating);
+        this.supportedCapabilities = Collections.unmodifiableList(supportedCapabilities);
     }
 
     /**
-     * Gets a Command by name. Case insensitive.
+     * Gets a list of capabilities the server supports.
      *
-     * @param name the name of the Command to get
-     * @return the matching Command or null if no match
+     * @return supported capabilities
      */
-    public static Command getByName(String name) {
-        return nameMap.get(name.toUpperCase());
-    }
-
-    @Override
-    public String toString() {
-        return this.name(); // Explicitly overriding as a reminder that this is used as such
+    public List<CapabilityState> getSupportedCapabilities() {
+        return this.supportedCapabilities;
     }
 }

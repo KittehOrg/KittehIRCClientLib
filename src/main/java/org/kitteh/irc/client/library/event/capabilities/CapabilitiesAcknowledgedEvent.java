@@ -21,47 +21,32 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.event.capabilities;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.kitteh.irc.client.library.CapabilityState;
+import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Commands used in client/server communication.
+ * Fired when a CAP ACK command is received.
  */
-enum Command {
-    CAP,
-    INVITE,
-    JOIN,
-    KICK,
-    MODE,
-    NICK,
-    NOTICE,
-    PART,
-    PRIVMSG,
-    TOPIC,
-    QUIT;
+public class CapabilitiesAcknowledgedEvent extends CapabilityNegotiationResponseEvent {
+    private final List<CapabilityState> acknowledgedCapabilities;
 
-    private static final Map<String, Command> nameMap = new HashMap<>();
-
-    static {
-        for (Command command : values()) {
-            nameMap.put(command.name(), command);
-        }
+    public CapabilitiesAcknowledgedEvent(boolean negotiating, List<CapabilityState> acknowledgedCapabilities) {
+        super(negotiating);
+        this.acknowledgedCapabilities = Collections.unmodifiableList(acknowledgedCapabilities);
     }
 
     /**
-     * Gets a Command by name. Case insensitive.
+     * Gets capabilities acknowledged.
      *
-     * @param name the name of the Command to get
-     * @return the matching Command or null if no match
+     * @return ACK'd capabilities
      */
-    public static Command getByName(String name) {
-        return nameMap.get(name.toUpperCase());
-    }
-
-    @Override
-    public String toString() {
-        return this.name(); // Explicitly overriding as a reminder that this is used as such
+    public List<CapabilityState> getAcknowledgedCapabilities() {
+        return this.acknowledgedCapabilities;
     }
 }

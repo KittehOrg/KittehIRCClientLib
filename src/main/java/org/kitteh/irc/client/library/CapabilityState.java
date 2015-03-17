@@ -23,45 +23,33 @@
  */
 package org.kitteh.irc.client.library;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Commands used in client/server communication.
+ * Relects a capability state as told by the server.
  */
-enum Command {
-    CAP,
-    INVITE,
-    JOIN,
-    KICK,
-    MODE,
-    NICK,
-    NOTICE,
-    PART,
-    PRIVMSG,
-    TOPIC,
-    QUIT;
+public final class CapabilityState {
+    private final boolean disable;
+    private final String name;
 
-    private static final Map<String, Command> nameMap = new HashMap<>();
-
-    static {
-        for (Command command : values()) {
-            nameMap.put(command.name(), command);
-        }
+    CapabilityState(String capabilityListItem) {
+        this.disable = capabilityListItem.charAt(0) == '-';
+        this.name = this.disable ? capabilityListItem.substring(1) : capabilityListItem;
     }
 
     /**
-     * Gets a Command by name. Case insensitive.
+     * Gets if the state of the capability is disabled.
      *
-     * @param name the name of the Command to get
-     * @return the matching Command or null if no match
+     * @return true if disabled
      */
-    public static Command getByName(String name) {
-        return nameMap.get(name.toUpperCase());
+    public boolean isDisabled() {
+        return this.disable;
     }
 
-    @Override
-    public String toString() {
-        return this.name(); // Explicitly overriding as a reminder that this is used as such
+    /**
+     * Gets the name of the capability.
+     *
+     * @return capability name
+     */
+    public String getCapabilityName() {
+        return this.name;
     }
 }

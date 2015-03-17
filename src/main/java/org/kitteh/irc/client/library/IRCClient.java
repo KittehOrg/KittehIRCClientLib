@@ -26,6 +26,11 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
+import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesRejectedEvent;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
@@ -56,6 +61,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -266,6 +272,7 @@ final class IRCClient implements Client {
 
     private NettyManager.ClientConnection connection;
 
+    private final CapabilityManager capabilityManager = new CapabilityManager(this);
     private final EventManager eventManager = new EventManager(this);
 
     private final Listener<Exception> exceptionListener;
@@ -551,6 +558,8 @@ final class IRCClient implements Client {
     void connect() {
         this.connection = NettyManager.connect(this);
 
+        this.sendPriorityRawLine("CAP LS");
+
         // If the server has a password, send that along first
         if (this.config.get(Config.SERVER_PASSWORD) != null) {
             this.sendPriorityRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD));
@@ -748,6 +757,33 @@ final class IRCClient implements Client {
             return; // If handled as CTCP we don't care about further handling.
         }
         switch (command) {
+            case CAP:
+                CapabilityNegotiationResponseEvent event = null;
+                List<CapabilityState> capabilityStateList = Arrays.stream(args[2].split(" ")).map(CapabilityState::new).collect(Collectors.toList());
+                switch (args[1].toLowerCase()) {
+                    case "ack":
+                        event = new CapabilitiesAcknowledgedEvent(this.capabilityManager.isNegotiating(), capabilityStateList);
+                        this.eventManager.callEvent(event);
+                        break;
+                    case "list":
+                        this.eventManager.callEvent(new CapabilitiesListEvent(capabilityStateList));
+                        break;
+                    case "ls":
+                        event = new CapabilitiesSupportedListEvent(this.capabilityManager.isNegotiating(), capabilityStateList);
+                        this.eventManager.callEvent(event);
+                        break;
+                    case "nak":
+                        event = new CapabilitiesRejectedEvent(this.capabilityManager.isNegotiating(), capabilityStateList);
+                        this.eventManager.callEvent(event);
+                        break;
+                }
+                if (event != null) {
+                    if (event.isNegotiating() && event.isEndingNegotiation()) {
+                        this.sendRawLineImmediately("CAP END");
+                        this.capabilityManager.endNegotiation();
+                    }
+                }
+                break;
             case NOTICE:
                 switch (this.getTypeByTarget(args[0])) {
                     case CHANNEL:
