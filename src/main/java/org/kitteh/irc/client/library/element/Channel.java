@@ -33,11 +33,18 @@ import java.util.Set;
  */
 public interface Channel extends MessageReceiver {
     /**
-     * Gets the users in the channel.
+     * Gets the users in the channel, if the client is in the channel.
      *
      * @return users and their modes
      */
     Map<User, Set<ChannelUserMode>> getUsers();
+
+    /**
+     * Joins the channel.
+     *
+     * @see Client#addChannel(Channel...)
+     */
+    void join();
 
     /**
      * Parts the channel.

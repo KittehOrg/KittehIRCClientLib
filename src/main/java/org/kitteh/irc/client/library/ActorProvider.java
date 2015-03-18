@@ -183,6 +183,11 @@ class ActorProvider {
         }
 
         @Override
+        public void join() {
+            this.getClient().addChannel(this);
+        }
+
+        @Override
         public void part(String reason) {
             this.getClient().removeChannel(this, reason);
         }
