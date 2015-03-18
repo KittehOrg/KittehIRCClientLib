@@ -163,7 +163,7 @@ class ActorProvider {
         @Override
         public boolean equals(Object o) {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
-            return o instanceof IRCChannel && ((IRCChannel) o).getClient() == this.getClient() && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
+            return o instanceof IRCChannelSnapshot && ((IRCChannelSnapshot) o).getClient() == this.getClient() && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
         @Override
