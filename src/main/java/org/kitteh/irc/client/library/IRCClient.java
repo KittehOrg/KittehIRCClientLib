@@ -305,6 +305,18 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public void addChannel(Channel... channels) {
+        Sanity.nullCheck(channels, "Channels cannot be null");
+        Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
+        for (Channel channel : channels) {
+            if (channel.getClient().equals(this) && channel instanceof ActorProvider.IRCChannel) {
+                this.channelsIntended.add(channel.getName());
+                this.sendRawLine("JOIN :" + channel.getName());
+            }
+        }
+    }
+
+    @Override
     public Set<Channel> getChannels() {
         return this.channels.stream().map(this.actorProvider::getChannel).map(ActorProvider.IRCChannel::snapshot).collect(Collectors.toSet());
     }
@@ -680,7 +692,7 @@ final class IRCClient implements Client {
             case 431: // No nick given
             case 432: // Erroneous nickname
             case 433: // Nick in use
-                NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.requestedNick, this.requestedNick+'`');
+                NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.requestedNick, this.requestedNick + '`');
                 this.eventManager.callEvent(nickRejectedEvent);
                 this.sendNickChange(nickRejectedEvent.getNewNick());
                 break;

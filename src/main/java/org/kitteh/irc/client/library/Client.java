@@ -45,6 +45,15 @@ public interface Client {
     void addChannel(String... channel);
 
     /**
+     * Adds channels to this client.
+     * <p>
+     * Joins the channel if already connected.
+     *
+     * @param channel channel(s) to add
+     */
+    void addChannel(Channel... channel);
+
+    /**
      * Gets the channels in which the client is currently present.
      *
      * @return the client's current channels
