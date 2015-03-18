@@ -31,18 +31,18 @@ import org.kitteh.irc.client.library.event.ActorEvent;
  * A {@link User} has changed nickname!
  */
 public class UserNickChangeEvent extends ActorEvent<User> {
-    private final String newNick;
+    private final User newUser;
 
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
      * @param user user changing name
-     * @param newNick the new nickname
+     * @param newUser the new nickname
      */
-    public UserNickChangeEvent(Client client, User user, String newNick) {
+    public UserNickChangeEvent(Client client, User user, User newUser) {
         super(client, user);
-        this.newNick = newNick;
+        this.newUser = newUser;
     }
 
     /**
@@ -50,7 +50,7 @@ public class UserNickChangeEvent extends ActorEvent<User> {
      *
      * @return the user's new nickname
      */
-    public String getNewNick() {
-        return this.newNick;
+    public User getNewUser() {
+        return this.newUser;
     }
 }

@@ -135,13 +135,9 @@ class ActorProvider {
             }
         }
 
-        void trackUserNick(IRCUser user, String oldNick) {
-            IRCUser old = this.nickMap.remove(oldNick);
-            Set<ChannelUserMode> modes = null;
-            if (old != null) {
-                modes = this.users.remove(old);
-            }
-            this.trackUser(user, modes);
+        void trackUserNick(IRCUser oldUser, IRCUser newUser) {
+            this.nickMap.remove(oldUser.getNick());
+            this.trackUser(newUser, this.users.remove(oldUser));
         }
 
         void trackUserPart(IRCUser user) {
@@ -349,8 +345,10 @@ class ActorProvider {
         return channel;
     }
 
-    void trackUserNick(IRCUser user, String oldNick) {
-        this.trackedChannels.values().forEach(channel -> channel.trackUserNick(user, oldNick));
+    IRCUser trackUserNick(IRCUser user, String newNick) {
+        IRCUser newUser = (IRCUser) this.getActor(newNick + user.getName().substring(user.getName().indexOf('!'), user.getName().length()));
+        this.trackedChannels.values().forEach(channel -> channel.trackUserNick(user, newUser));
+        return newUser;
     }
 
     void trackUserQuit(IRCUser user) {

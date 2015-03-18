@@ -870,7 +870,7 @@ final class IRCClient implements Client {
                     this.channels.remove(kickedChannel.getName());
                     this.actorProvider.channelUntrack(kickedChannel);
                 }
-                this.eventManager.callEvent(new ChannelKickEvent(this, kickedChannel.snapshot(), ((ActorProvider.IRCUser)actor).snapshot(), kickedUser.snapshot(), args.length > 2 ? args[2] : ""));
+                this.eventManager.callEvent(new ChannelKickEvent(this, kickedChannel.snapshot(), ((ActorProvider.IRCUser) actor).snapshot(), kickedUser.snapshot(), args.length > 2 ? args[2] : ""));
                 break;
             case NICK:
                 if (actor instanceof ActorProvider.IRCUser) {
@@ -878,8 +878,8 @@ final class IRCClient implements Client {
                     if (user.getNick().equals(this.currentNick)) {
                         this.currentNick = args[0];
                     }
-                    this.actorProvider.trackUserNick(user, args[0]);
-                    this.eventManager.callEvent(new UserNickChangeEvent(this, user.snapshot(), args[0]));
+                    ActorProvider.IRCUser newUser = this.actorProvider.trackUserNick(user, args[0]);
+                    this.eventManager.callEvent(new UserNickChangeEvent(this, user.snapshot(), newUser.snapshot()));
                 }
                 break;
             case INVITE:
