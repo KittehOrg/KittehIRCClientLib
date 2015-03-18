@@ -459,7 +459,7 @@ final class IRCClient implements Client {
 
     @Override
     public void setMessageDelay(int delay) {
-        Sanity.truthiness(delay > -1, "Delay must be a positive value");
+        Sanity.truthiness(delay > 0, "Delay must be at least 1");
         this.config.set(Config.MESSAGE_DELAY, delay);
         if (this.connection != null) {
             this.connection.scheduleSending(delay);
