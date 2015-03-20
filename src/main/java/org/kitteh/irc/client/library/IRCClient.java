@@ -894,8 +894,8 @@ final class IRCClient implements Client {
                 break;
             case QUIT:
                 if (actor instanceof ActorProvider.IRCUser) { // Just in case
-                    this.actorProvider.trackUserQuit((ActorProvider.IRCUser) actor);
                     this.eventManager.callEvent(new UserQuitEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), args.length > 0 ? args[0] : ""));
+                    this.actorProvider.trackUserQuit((ActorProvider.IRCUser) actor);
                 }
                 break;
             case KICK:
