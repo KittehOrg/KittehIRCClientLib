@@ -272,7 +272,7 @@ final class IRCClient implements Client {
 
     private NettyManager.ClientConnection connection;
 
-    private final CapabilityManager capabilityManager = new CapabilityManager(this);
+    private final CapabilityManager capabilityManager = new CapabilityManager();
     private final EventManager eventManager = new EventManager(this);
 
     private final Listener<Exception> exceptionListener;
@@ -762,18 +762,18 @@ final class IRCClient implements Client {
                 List<CapabilityState> capabilityStateList = Arrays.stream(args[2].split(" ")).map(CapabilityState::new).collect(Collectors.toList());
                 switch (args[1].toLowerCase()) {
                     case "ack":
-                        event = new CapabilitiesAcknowledgedEvent(this.capabilityManager.isNegotiating(), capabilityStateList);
+                        event = new CapabilitiesAcknowledgedEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
                         this.eventManager.callEvent(event);
                         break;
                     case "list":
-                        this.eventManager.callEvent(new CapabilitiesListEvent(capabilityStateList));
+                        this.eventManager.callEvent(new CapabilitiesListEvent(this, capabilityStateList));
                         break;
                     case "ls":
-                        event = new CapabilitiesSupportedListEvent(this.capabilityManager.isNegotiating(), capabilityStateList);
+                        event = new CapabilitiesSupportedListEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
                         this.eventManager.callEvent(event);
                         break;
                     case "nak":
-                        event = new CapabilitiesRejectedEvent(this.capabilityManager.isNegotiating(), capabilityStateList);
+                        event = new CapabilitiesRejectedEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
                         this.eventManager.callEvent(event);
                         break;
                 }

@@ -33,11 +33,9 @@ import java.util.stream.Collectors;
 class CapabilityManager {
     private List<String> capabilities = new ArrayList<>();
     private List<String> supportedCapabilities = new ArrayList<>();
-    private final IRCClient client;
     private boolean negotiating = true;
 
-    CapabilityManager(IRCClient client) {
-        this.client = client;
+    CapabilityManager() {
     }
 
     List<String> getCapabilities() {

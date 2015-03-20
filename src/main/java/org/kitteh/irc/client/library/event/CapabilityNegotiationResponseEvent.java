@@ -23,14 +23,17 @@
  */
 package org.kitteh.irc.client.library.event;
 
+import org.kitteh.irc.client.library.Client;
+
 /**
  * CAP command handling.
  */
-public abstract class CapabilityNegotiationResponseEvent {
+public abstract class CapabilityNegotiationResponseEvent extends ClientEvent {
     private boolean endNegotiation = true;
     private final boolean negotiating;
 
-    protected CapabilityNegotiationResponseEvent(boolean negotiating) {
+    protected CapabilityNegotiationResponseEvent(Client client, boolean negotiating) {
+        super(client);
         this.negotiating = negotiating;
     }
 

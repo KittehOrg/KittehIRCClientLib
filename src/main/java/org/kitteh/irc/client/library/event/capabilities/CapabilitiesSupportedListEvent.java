@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.event.capabilities;
 
 import org.kitteh.irc.client.library.CapabilityState;
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
 
 import java.util.Collections;
@@ -35,8 +36,8 @@ import java.util.List;
 public class CapabilitiesSupportedListEvent extends CapabilityNegotiationResponseEvent {
     private final List<CapabilityState> supportedCapabilities;
 
-    public CapabilitiesSupportedListEvent(boolean negotiating, List<CapabilityState> supportedCapabilities) {
-        super(negotiating);
+    public CapabilitiesSupportedListEvent(Client client, boolean negotiating, List<CapabilityState> supportedCapabilities) {
+        super(client, negotiating);
         this.supportedCapabilities = Collections.unmodifiableList(supportedCapabilities);
     }
 

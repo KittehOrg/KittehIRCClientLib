@@ -21,32 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.capabilities;
-
-import org.kitteh.irc.client.library.CapabilityState;
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
-
-import java.util.Collections;
-import java.util.List;
-
 /**
- * Fired when a CAP ACK command is received.
+ * Events involving capabilities.
  */
-public class CapabilitiesAcknowledgedEvent extends CapabilityNegotiationResponseEvent {
-    private final List<CapabilityState> acknowledgedCapabilities;
-
-    public CapabilitiesAcknowledgedEvent(Client client, boolean negotiating, List<CapabilityState> acknowledgedCapabilities) {
-        super(client, negotiating);
-        this.acknowledgedCapabilities = Collections.unmodifiableList(acknowledgedCapabilities);
-    }
-
-    /**
-     * Gets capabilities acknowledged.
-     *
-     * @return ACK'd capabilities
-     */
-    public List<CapabilityState> getAcknowledgedCapabilities() {
-        return this.acknowledgedCapabilities;
-    }
-}
+package org.kitteh.irc.client.library.event.capabilities;
