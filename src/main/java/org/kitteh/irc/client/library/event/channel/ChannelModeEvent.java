@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorChannelEvent;
 
 /**
@@ -80,9 +81,22 @@ public class ChannelModeEvent extends ActorChannelEvent<Actor> {
      *
      * @return the channel mode information
      * @see #isPrefix()
+     * @see #getPrefixedUser()
      */
     public ChannelUserMode getPrefix() {
         return this.channelUserMode;
+    }
+
+    /**
+     * Gets the user whose prefix has been changed, if this mode change
+     * involves a user prefix.
+     *
+     * @return user changing prefix
+     * @see #isPrefix()
+     * @see #getPrefix()
+     */
+    public User getPrefixedUser() {
+        return this.isPrefix() ? this.getChannel().getUser(this.arg).getLeft() : null;
     }
 
     /**
@@ -90,6 +104,8 @@ public class ChannelModeEvent extends ActorChannelEvent<Actor> {
      * additional information via {@link #getPrefix()}.
      *
      * @return true if this mode sets a prefix
+     * @see #getPrefix()
+     * @see #getPrefixedUser()
      */
     public boolean isPrefix() {
         return this.channelUserMode != null;
