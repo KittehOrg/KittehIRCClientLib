@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.LCKeyMap;
+import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -148,11 +149,17 @@ class ActorProvider {
 
     class IRCChannelSnapshot extends IRCMessageReceiverSnapshot implements Channel {
         private final Map<User, Set<ChannelUserMode>> users;
+        private final Map<String, User> nickMap;
 
         private IRCChannelSnapshot(String channel, Map<IRCUser, Set<ChannelUserMode>> userMap, IRCClient client) {
             super(channel, client);
             Map<User, Set<ChannelUserMode>> users = new HashMap<>();
-            userMap.forEach((ircuser, set) -> users.put(ircuser.snapshot(), set));
+            this.nickMap = new LCKeyMap<>(client);
+            userMap.forEach((ircuser, set) -> {
+                User user = ircuser.snapshot();
+                users.put(user, set);
+                this.nickMap.put(user.getNick(), user);
+            });
             this.users = Collections.unmodifiableMap(users);
         }
 
@@ -170,6 +177,12 @@ class ActorProvider {
         @Override
         public Map<User, Set<ChannelUserMode>> getUsers() {
             return this.users;
+        }
+
+        @Override
+        public Pair<User, Set<ChannelUserMode>> getUser(String nick) {
+            User user = this.nickMap.get(nick);
+            return user == null ? null : new Pair<>(user, this.users.get(user));
         }
 
         @Override

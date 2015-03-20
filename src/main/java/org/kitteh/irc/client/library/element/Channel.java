@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +39,14 @@ public interface Channel extends MessageReceiver {
      * @return users and their modes
      */
     Map<User, Set<ChannelUserMode>> getUsers();
+
+    /**
+     * Gets a user by their nick.
+     *
+     * @param nick user's nick
+     * @return a pair of the user and their channel modes
+     */
+    Pair<User, Set<ChannelUserMode>> getUser(String nick);
 
     /**
      * Joins the channel.
