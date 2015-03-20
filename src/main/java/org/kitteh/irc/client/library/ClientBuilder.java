@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.util.Consumer;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 
 /**
@@ -200,6 +201,42 @@ public final class ClientBuilder implements Cloneable {
      */
     public ClientBuilder secure(boolean ssl) {
         this.config.set(Config.SSL, ssl);
+        return this;
+    }
+
+    /**
+     * Sets the public key for SSL connection.
+     *
+     * @param keyCertChainFile X.509 certificate chain file in PEM format
+     * @return this builder
+     * @see #secure(boolean)
+     */
+    public ClientBuilder secureKeyCertChain(File keyCertChainFile) {
+        this.config.set(Config.SSL_KEY_CERT_CHAIN, keyCertChainFile);
+        return this;
+    }
+
+    /**
+     * Sets the private key for SSL connection.
+     *
+     * @param keyFile PKCS#8 private key file in PEM format
+     * @return this builder
+     * @see #secure(boolean)
+     */
+    public ClientBuilder secureKey(File keyFile) {
+        this.config.set(Config.SSL_KEY, keyFile);
+        return this;
+    }
+
+    /**
+     * Sets the private key password for SSL connection.
+     *
+     * @param password password for private key
+     * @return this builder
+     * @see #secure(boolean)
+     */
+    public ClientBuilder secureKeyPassword(String password) {
+        this.config.set(Config.SSL_KEY_PASSWORD, password);
         return this;
     }
 

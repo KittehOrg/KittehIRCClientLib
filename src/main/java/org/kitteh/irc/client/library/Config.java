@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.util.Consumer;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -106,6 +107,9 @@ final class Config {
     static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6667), InetSocketAddress.class);
     static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class);
     static final Entry<Boolean> SSL = new Entry<>(false, Boolean.class);
+    static final Entry<File> SSL_KEY_CERT_CHAIN = new Entry<>(null, File.class);
+    static final Entry<File> SSL_KEY = new Entry<>(null, File.class);
+    static final Entry<String> SSL_KEY_PASSWORD = new Entry<>(null, String.class);
     static final Entry<String> USER = new Entry<>("Kitteh", String.class);
 
     /**
