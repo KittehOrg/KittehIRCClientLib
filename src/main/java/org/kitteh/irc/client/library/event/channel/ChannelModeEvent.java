@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.channel;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.event.ActorChannelEvent;
 
 /**
@@ -35,6 +36,7 @@ public class ChannelModeEvent extends ActorChannelEvent<Actor> {
     private final boolean setting;
     private final char mode;
     private final String arg;
+    private final ChannelUserMode channelUserMode;
 
     /**
      * Creates the event.
@@ -44,12 +46,14 @@ public class ChannelModeEvent extends ActorChannelEvent<Actor> {
      * @param channel the channel in which the mode is being set
      * @param setting if the mode is being set or unset
      * @param mode the mode being set or unset
+     * @param channelUserMode prefix mode if such
      * @param arg the argument presented for the mode
      */
-    public ChannelModeEvent(Client client, Actor actor, Channel channel, boolean setting, char mode, String arg) {
+    public ChannelModeEvent(Client client, Actor actor, Channel channel, boolean setting, char mode, ChannelUserMode channelUserMode, String arg) {
         super(client, actor, channel);
         this.setting = setting;
         this.mode = mode;
+        this.channelUserMode = channelUserMode;
         this.arg = arg;
     }
 
@@ -69,6 +73,26 @@ public class ChannelModeEvent extends ActorChannelEvent<Actor> {
      */
     public char getMode() {
         return this.mode;
+    }
+
+    /**
+     * Gets information on the mode if it sets a prefix on the user.
+     *
+     * @return the channel mode information
+     * @see #isPrefix()
+     */
+    public ChannelUserMode getPrefix() {
+        return this.channelUserMode;
+    }
+
+    /**
+     * Gets if the mode set sets a user's prefix. If true, you can acquire
+     * additional information via {@link #getPrefix()}.
+     *
+     * @return true if this mode sets a prefix
+     */
+    public boolean isPrefix() {
+        return this.channelUserMode != null;
     }
 
     /**

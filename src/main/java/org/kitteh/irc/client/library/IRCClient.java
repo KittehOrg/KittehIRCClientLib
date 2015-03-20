@@ -838,9 +838,11 @@ final class IRCClient implements Client {
                         } else {
                             boolean hasArg;
                             boolean isPrefix = false;
+                            ChannelUserMode prefixMode = null;
 
                             for (ChannelUserMode prefix : channelUserModes) {
                                 if (prefix.getMode() == next) {
+                                    prefixMode = prefix;
                                     isPrefix = true;
                                     break;
                                 }
@@ -863,7 +865,7 @@ final class IRCClient implements Client {
                                     channel.trackUserModeRemove(nick, channelUserModes.get(next));
                                 }
                             }
-                            this.eventManager.callEvent(new ChannelModeEvent(this, actor.snapshot(), channel.snapshot(), add, next, nick));
+                            this.eventManager.callEvent(new ChannelModeEvent(this, actor.snapshot(), channel.snapshot(), add, next, prefixMode, nick));
                         }
                     }
                 }
