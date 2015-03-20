@@ -63,8 +63,8 @@ public class ClientConnectedEvent extends ClientEvent {
      * Gets information about the server to which the client is currently
      * connected. As long as the client remains connected the information
      * returned by this object will update according to information received
-     * from the server. Note that at the time of this event the server may not
-     * yet have sent any information.
+     * from the server. Note that at the time of this event the server has
+     * not sent any information beyond its version.
      *
      * @return the server information object
      */

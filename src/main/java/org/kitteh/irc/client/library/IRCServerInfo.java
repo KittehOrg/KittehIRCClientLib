@@ -46,6 +46,7 @@ final class IRCServerInfo implements ServerInfo {
     };
     private String networkName;
     private int nickLengthLimit = -1;
+    private String serverVersion;
 
     // TODO adapt for changes
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
@@ -124,6 +125,17 @@ final class IRCServerInfo implements ServerInfo {
     void setNickLengthLimit(int nickLengthLimit) {
         this.nickLengthLimit = nickLengthLimit;
     }
+
+    @Override
+    public String getServerVersion() {
+        return this.serverVersion;
+    }
+
+    void setServerVersion(String serverVersion) {
+        this.serverVersion = serverVersion;
+    }
+
+    // Util stuffs
 
     boolean isValidChannel(String name) {
         return name.length() > 1 && this.channelLengthLimit < 0 || name.length() <= this.channelLengthLimit && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();

@@ -96,4 +96,11 @@ public interface ServerInfo {
      * @return nickname length limit or -1 if unknown
      */
     int getNickLengthLimit();
+
+    /**
+     * Gets the version of the IRCd.
+     *
+     * @return server version
+     */
+    String getServerVersion();
 }

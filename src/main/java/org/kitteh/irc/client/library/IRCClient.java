@@ -639,6 +639,7 @@ final class IRCClient implements Client {
                 // We're in! Start sending all messages.
                 this.authenticate();
                 this.serverInfo = new IRCServerInfo();
+                this.serverInfo.setServerVersion(args[2]);
                 this.eventManager.callEvent(new ClientConnectedEvent(this, actor.snapshot(), this.serverInfo));
                 this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
                 break;
