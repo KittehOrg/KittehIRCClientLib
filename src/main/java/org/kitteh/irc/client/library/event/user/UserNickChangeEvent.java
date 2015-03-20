@@ -24,13 +24,15 @@
 package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorEvent;
+import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
 /**
  * A {@link User} has changed nickname!
  */
-public class UserNickChangeEvent extends ActorEvent<User> {
+public class UserNickChangeEvent extends ActorEvent<User> implements ChannelUserListChange {
     private final User newUser;
 
     /**
@@ -45,6 +47,16 @@ public class UserNickChangeEvent extends ActorEvent<User> {
         this.newUser = newUser;
     }
 
+    @Override
+    public Change getChange() {
+        return Change.NICK_CHANGE;
+    }
+
+    @Override
+    public Channel getChannel() {
+        return null;
+    }
+
     /**
      * Gets the new nickname.
      *
@@ -52,5 +64,10 @@ public class UserNickChangeEvent extends ActorEvent<User> {
      */
     public User getNewUser() {
         return this.newUser;
+    }
+
+    @Override
+    public User getUser() {
+        return this.getActor();
     }
 }

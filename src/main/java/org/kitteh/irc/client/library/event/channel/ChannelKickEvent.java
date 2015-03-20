@@ -27,11 +27,12 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
+import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
 /**
  * A {@link User} has kicked another User!
  */
-public class ChannelKickEvent extends ActorChannelMessageEvent<User> {
+public class ChannelKickEvent extends ActorChannelMessageEvent<User> implements ChannelUserListChange {
     private final User target;
 
     /**
@@ -48,6 +49,11 @@ public class ChannelKickEvent extends ActorChannelMessageEvent<User> {
         this.target = target;
     }
 
+    @Override
+    public Change getChange() {
+        return Change.LEAVE;
+    }
+
     /**
      * Gets the kicked user.
      *
@@ -55,5 +61,10 @@ public class ChannelKickEvent extends ActorChannelMessageEvent<User> {
      */
     public User getTarget() {
         return this.target;
+    }
+
+    @Override
+    public User getUser() {
+        return this.getTarget();
     }
 }

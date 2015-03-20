@@ -27,11 +27,12 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
+import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
 /**
  * A {@link User} has left a {@link Channel}!
  */
-public class ChannelPartEvent extends ActorChannelMessageEvent<User> {
+public class ChannelPartEvent extends ActorChannelMessageEvent<User> implements ChannelUserListChange {
     /**
      * Creates the event.
      *
@@ -42,5 +43,15 @@ public class ChannelPartEvent extends ActorChannelMessageEvent<User> {
      */
     public ChannelPartEvent(Client client, Channel channel, User user, String message) {
         super(client, user, channel, message);
+    }
+
+    @Override
+    public Change getChange() {
+        return Change.LEAVE;
+    }
+
+    @Override
+    public User getUser() {
+        return this.getActor();
     }
 }

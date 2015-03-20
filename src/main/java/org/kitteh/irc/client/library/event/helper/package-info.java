@@ -21,41 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.user;
-
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorMessageEvent;
-import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
-
 /**
- * A {@link User} has quit the server!
+ * Helper interfaces.
  */
-public class UserQuitEvent extends ActorMessageEvent<User> implements ChannelUserListChange {
-    /**
-     * Creates the event.
-     *
-     * @param client client for which this is occurring
-     * @param user user quitting
-     * @param message message the user left
-     */
-    public UserQuitEvent(Client client, User user, String message) {
-        super(client, user, message);
-    }
-
-    @Override
-    public Change getChange() {
-        return Change.LEAVE;
-    }
-
-    @Override
-    public Channel getChannel() {
-        return null;
-    }
-
-    @Override
-    public User getUser() {
-        return this.getActor();
-    }
-}
+package org.kitteh.irc.client.library.event.helper;

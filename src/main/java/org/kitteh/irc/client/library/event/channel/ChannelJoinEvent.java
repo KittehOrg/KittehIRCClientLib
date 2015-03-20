@@ -27,11 +27,12 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorChannelEvent;
+import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
 /**
  * A {@link User} has joined a {@link Channel}!
  */
-public class ChannelJoinEvent extends ActorChannelEvent<User> {
+public class ChannelJoinEvent extends ActorChannelEvent<User> implements ChannelUserListChange {
     /**
      * Creates the event.
      *
@@ -41,5 +42,15 @@ public class ChannelJoinEvent extends ActorChannelEvent<User> {
      */
     public ChannelJoinEvent(Client client, Channel channel, User user) {
         super(client, user, channel);
+    }
+
+    @Override
+    public Change getChange() {
+        return Change.JOIN;
+    }
+
+    @Override
+    public User getUser() {
+        return this.getActor();
     }
 }
