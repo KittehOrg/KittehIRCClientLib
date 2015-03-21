@@ -54,6 +54,15 @@ public interface Client {
     void addChannel(Channel... channel);
 
     /**
+     * Gets the named channel.
+     *
+     * @param name channel name
+     * @return a channel snapshot of the named channel
+     * @see #getChannels()
+     */
+    Channel getChannel(String name);
+
+    /**
      * Gets the channels in which the client is currently present.
      *
      * @return the client's current channels

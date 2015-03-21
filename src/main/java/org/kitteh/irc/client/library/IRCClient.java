@@ -324,6 +324,11 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public Channel getChannel(String name) {
+        return this.actorProvider.getChannel(name).snapshot();
+    }
+
+    @Override
     public Set<Channel> getChannels() {
         return this.channels.stream().map(this.actorProvider::getChannel).map(ActorProvider.IRCChannel::snapshot).collect(Collectors.toSet());
     }
