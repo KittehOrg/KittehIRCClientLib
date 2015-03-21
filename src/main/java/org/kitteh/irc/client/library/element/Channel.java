@@ -34,6 +34,13 @@ import java.util.Set;
  */
 public interface Channel extends MessageReceiver {
     /**
+     * Gets the latest snapshot of this channel.
+     *
+     * @return an updated snapshot
+     */
+    Channel getLatest();
+
+    /**
      * Gets the users in the channel, if the client is in the channel.
      *
      * @return users and their modes

@@ -170,6 +170,11 @@ class ActorProvider {
         }
 
         @Override
+        public Channel getLatest() {
+            return ActorProvider.this.getChannel(this.getName()).snapshot();
+        }
+
+        @Override
         public String getMessagingName() {
             return this.getName();
         }
