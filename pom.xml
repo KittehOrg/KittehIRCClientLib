@@ -95,6 +95,10 @@
                                     <pattern>io.netty</pattern>
                                     <shadedPattern>org.kitteh.irc.lib.io.netty</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.engio</pattern>
+                                    <shadedPattern>org.kitteh.irc.lib.net.engio</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
