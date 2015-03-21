@@ -816,61 +816,53 @@ final class IRCClient implements Client {
                         break;
                 }
                 break;
-            case MODE: // TODO handle this format: "+mode param +mode param"
+            case MODE:
                 if (this.getTypeByTarget(args[0]) == MessageTarget.CHANNEL) {
                     ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
-                    String modechanges = args[1];
-                    int currentArg = 2;
-                    boolean add;
-                    switch (modechanges.charAt(0)) {
-                        case '+':
-                            add = true;
-                            break;
-                        case '-':
-                            add = false;
-                            break;
-                        default:
-                            return;
-                    }
                     List<ChannelUserMode> channelUserModes = this.serverInfo.getChannelUserModes();
                     Map<Character, ChannelModeType> channelModes = this.serverInfo.getChannelModes();
-                    for (int i = 1; i < modechanges.length() && currentArg < args.length; i++) {
-                        char next = modechanges.charAt(i);
-                        if (next == '+') {
-                            add = true;
-                        } else if (next == '-') {
-                            add = false;
-                        } else {
-                            boolean hasArg;
-                            boolean isPrefix = false;
-                            ChannelUserMode prefixMode = null;
-
-                            for (ChannelUserMode prefix : channelUserModes) {
-                                if (prefix.getMode() == next) {
-                                    prefixMode = prefix;
-                                    isPrefix = true;
+                    for (int currentArg = 1; currentArg < args.length; currentArg++) {
+                        String changes = args[currentArg];
+                        if (!(changes.charAt(0) == '+' || changes.charAt(0) == '-')) {
+                            // TODO Inform of failed MODE processing
+                            return;
+                        }
+                        boolean add = true;
+                        for (char modeChar : changes.toCharArray()) {
+                            switch (modeChar) {
+                                case '+':
+                                    add = true;
                                     break;
-                                }
+                                case '-':
+                                    add = false;
+                                    break;
+                                default:
+                                    ChannelModeType mode = channelModes.get(modeChar);
+                                    ChannelUserMode prefixMode = null;
+                                    String target = null;
+                                    if (mode == null) {
+                                        for (ChannelUserMode prefix : channelUserModes) {
+                                            if (prefix.getMode() == modeChar) {
+                                                target = args[++currentArg];
+                                                if (add) {
+                                                    channel.trackUserModeAdd(target, prefix);
+                                                } else {
+                                                    channel.trackUserModeRemove(target, prefix);
+                                                }
+                                                prefixMode = prefix;
+                                                break;
+                                            }
+                                        }
+                                        if (prefixMode == null) {
+                                            // TODO Inform of failed MODE processing
+                                            return;
+                                        }
+                                    } else if (add ? mode.isParameterRequiredOnSetting() : mode.isParameterRequiredOnRemoval()) {
+                                        target = args[++currentArg];
+                                    }
+                                    this.eventManager.callEvent(new ChannelModeEvent(this, actor.snapshot(), channel.snapshot(), add, modeChar, prefixMode, target));
+                                    break;
                             }
-                            if (isPrefix) {
-                                hasArg = true;
-                            } else {
-                                ChannelModeType type = channelModes.get(next);
-                                if (type == null) {
-                                    // TODO clean up error handling
-                                    return;
-                                }
-                                hasArg = (add && type.isParameterRequiredOnSetting()) || (!add && type.isParameterRequiredOnRemoval());
-                            }
-                            final String nick = hasArg ? args[currentArg++] : null;
-                            if (isPrefix) {
-                                if (add) {
-                                    channel.trackUserModeAdd(nick, channelUserModes.get(next));
-                                } else {
-                                    channel.trackUserModeRemove(nick, channelUserModes.get(next));
-                                }
-                            }
-                            this.eventManager.callEvent(new ChannelModeEvent(this, actor.snapshot(), channel.snapshot(), add, next, prefixMode, nick));
                         }
                     }
                 }
