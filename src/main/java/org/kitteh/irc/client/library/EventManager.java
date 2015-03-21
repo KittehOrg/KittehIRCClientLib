@@ -32,6 +32,9 @@ import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Processes and registers events for a single {@link Client} instance. This
  * event manager utilizes MBassador, a lightweight event bus.
@@ -44,8 +47,9 @@ public final class EventManager {
         }
     }
 
-    private final IRCClient client;
     private final SyncMessageBus<Object> bus = new SyncMessageBus<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).setProperty(Properties.Handler.PublicationError, new Exceptional()));
+    private final IRCClient client;
+    private final Set<Object> listeners = new HashSet<>();
 
     EventManager(IRCClient client) {
         this.client = client;
@@ -58,6 +62,7 @@ public final class EventManager {
      * @param listener listener in which to register events
      */
     public void registerEventListener(Object listener) {
+        this.listeners.add(listener);
         this.bus.subscribe(listener);
     }
 
