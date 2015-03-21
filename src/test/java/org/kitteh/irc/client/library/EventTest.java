@@ -1,5 +1,6 @@
 package org.kitteh.irc.client.library;
 
+import net.engio.mbassy.listener.Handler;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class EventTest {
         Assert.assertTrue("Failed to register and fire an event", event.success);
     }
 
-    @EventHandler
+    @Handler
     public void eventHandler(Event e) {
         e.success = true;
     }

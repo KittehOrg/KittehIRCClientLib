@@ -23,48 +23,41 @@
  */
 package org.kitteh.irc.client.library;
 
+import net.engio.mbassy.bus.SyncMessageBus;
+import net.engio.mbassy.bus.common.Properties;
+import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.bus.config.Feature;
+import net.engio.mbassy.bus.error.IPublicationErrorHandler;
+import net.engio.mbassy.bus.error.PublicationError;
+import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.exception.KittehEventException;
-import org.kitteh.irc.client.library.util.Pair;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Processes and registers events for a single {@link Client} instance.
  */
 public final class EventManager {
+    private class Exceptional implements IPublicationErrorHandler {
+        @Override
+        public void handleError(PublicationError publicationError) {
+            EventManager.this.client.getExceptionListener().queue(new KittehEventException(publicationError.getCause()));
+        }
+    }
+
     private final IRCClient client;
-    private final Map<Class<?>, Set<Pair<Object, Method>>> registeredEvents = new ConcurrentHashMap<>();
+    private final SyncMessageBus<Object> bus = new SyncMessageBus<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).setProperty(Properties.Handler.PublicationError, new Exceptional()));
 
     EventManager(IRCClient client) {
         this.client = client;
     }
 
     /**
-     * Registers any non-static methods annotated with {@link EventHandler},
+     * Registers annotated with {@link Handler} with sync invocation,
      * provided they have a single parameter. This parameter is the event.
-     * <p>
-     * The class listened to must be the same class called in
-     * {@link #callEvent(Object)}, not a super or subclass.
      *
      * @param listener listener in which to register events
      */
     public void registerEventListener(Object listener) {
-        Arrays.stream(listener.getClass().getDeclaredMethods())
-                // Disregard the following situations:
-                .filter(method -> !Modifier.isStatic(method.getModifiers())) // 1. Static method. We're registering objects here not classes.
-                .filter(method -> method.getAnnotation(EventHandler.class) != null) // 2. No EventHandler annotation
-                .filter(method -> method.getParameterTypes().length == 1) // 3. Methods with 0 or 2+ parameters. We only want methods with one parameter.
-                .filter(method -> (method.getParameterTypes()[0].getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) == 0) // 4. Parameters which are abstract classes or interfaces. We don't send subclasses, making those useless to register.
-                .forEach(method -> {
-                    method.setAccessible(true);
-                    this.getSet(method.getParameterTypes()[0]).add(new Pair<>(listener, method));
-                });
+        this.bus.subscribe(listener);
     }
 
     /**
@@ -73,24 +66,6 @@ public final class EventManager {
      * @param event event to call
      */
     public void callEvent(Object event) {
-        Set<Pair<Object, Method>> set = this.registeredEvents.get(event.getClass());
-        if (set != null) {
-            for (Pair<Object, Method> pair : set) {
-                try {
-                    pair.getRight().invoke(pair.getLeft(), event);
-                } catch (Throwable thrown) {
-                    this.client.getExceptionListener().queue(new KittehEventException(thrown));
-                }
-            }
-        }
-    }
-
-    private synchronized Set<Pair<Object, Method>> getSet(Class<?> type) {
-        Set<Pair<Object, Method>> set = this.registeredEvents.get(type);
-        if (set == null) {
-            set = Collections.newSetFromMap(new ConcurrentHashMap<>());
-            this.registeredEvents.put(type, set);
-        }
-        return set;
+        this.bus.publish(event);
     }
 }
