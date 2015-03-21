@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library;
 
-import org.kitteh.irc.client.library.util.Consumer;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import java.io.File;
 import java.net.InetSocketAddress;
+import java.util.function.Consumer;
 
 /**
  * Builds {@link Client}s.

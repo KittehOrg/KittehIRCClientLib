@@ -27,9 +27,9 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
-import org.kitteh.irc.client.library.util.Consumer;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * An individual IRC connection, see {@link ClientBuilder} to create one.

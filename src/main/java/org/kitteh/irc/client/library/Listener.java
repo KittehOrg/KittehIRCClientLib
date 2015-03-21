@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library;
 
-import org.kitteh.irc.client.library.util.Consumer;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 
 import java.util.Queue;
+import java.util.function.Consumer;
 
 final class Listener<Type> {
     private class ListenerThread extends QueueProcessingThread<Type> {

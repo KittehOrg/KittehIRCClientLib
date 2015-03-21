@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library;
 
-import org.kitteh.irc.client.library.util.Consumer;
-
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * Stores an IRCClient's configured data from the {@link ClientBuilder}.
