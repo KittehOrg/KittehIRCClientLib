@@ -707,7 +707,7 @@ final class IRCClient implements Client {
             case 431: // No nick given
             case 432: // Erroneous nickname
             case 433: // Nick in use
-                NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.requestedNick, this.requestedNick + '`');
+                NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this, this.requestedNick, this.requestedNick + '`');
                 this.eventManager.callEvent(nickRejectedEvent);
                 this.sendNickChange(nickRejectedEvent.getNewNick());
                 break;

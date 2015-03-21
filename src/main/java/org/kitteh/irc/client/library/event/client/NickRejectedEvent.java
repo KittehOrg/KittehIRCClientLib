@@ -23,16 +23,19 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.event.ClientEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 /**
  * The server has rejected your nick choice.
  */
-public class NickRejectedEvent {
+public class NickRejectedEvent extends ClientEvent {
     private final String attemptedNick;
     private String newNick;
 
-    public NickRejectedEvent(String attemptedNick, String newNick) {
+    public NickRejectedEvent(Client client, String attemptedNick, String newNick) {
+        super(client);
         this.attemptedNick = attemptedNick;
         this.newNick = newNick;
     }
