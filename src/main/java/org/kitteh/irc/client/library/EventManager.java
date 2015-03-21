@@ -56,22 +56,41 @@ public final class EventManager {
     }
 
     /**
-     * Registers annotated with {@link Handler} with sync invocation,
-     * provided they have a single parameter. This parameter is the event.
-     *
-     * @param listener listener in which to register events
-     */
-    public void registerEventListener(Object listener) {
-        this.listeners.add(listener);
-        this.bus.subscribe(listener);
-    }
-
-    /**
      * Calls an event, triggering any registered methods for the event class.
      *
      * @param event event to call
      */
     public void callEvent(Object event) {
         this.bus.publish(event);
+    }
+
+    /**
+     * Gets all registered listener objects.
+     *
+     * @return a set of objects
+     */
+    public synchronized Set<Object> getRegisteredEventListeners() {
+        return new HashSet<>(this.listeners);
+    }
+
+    /**
+     * Registers annotated with {@link Handler} with sync invocation,
+     * provided they have a single parameter. This parameter is the event.
+     *
+     * @param listener listener in which to register events
+     */
+    public synchronized void registerEventListener(Object listener) {
+        this.listeners.add(listener);
+        this.bus.subscribe(listener);
+    }
+
+    /**
+     * Unregisters a listener.
+     *
+     * @param listener listener to unregister
+     */
+    public synchronized void unregisterEventListener(Object listener) {
+        this.listeners.remove(listener);
+        this.bus.unsubscribe(listener);
     }
 }
