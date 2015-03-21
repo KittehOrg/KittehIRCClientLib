@@ -33,7 +33,8 @@ import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 
 /**
- * Processes and registers events for a single {@link Client} instance.
+ * Processes and registers events for a single {@link Client} instance. This
+ * event manager utilizes MBassador, a lightweight event bus.
  */
 public final class EventManager {
     private class Exceptional implements IPublicationErrorHandler {

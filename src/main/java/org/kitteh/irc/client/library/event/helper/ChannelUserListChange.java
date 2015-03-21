@@ -31,9 +31,18 @@ import org.kitteh.irc.client.library.element.User;
  */
 public interface ChannelUserListChange {
     public enum Change {
+        /**
+         * A user is joining.
+         */
         JOIN,
+        /**
+         * A user is changing their nickname.
+         */
         NICK_CHANGE,
-        LEAVE;
+        /**
+         * A user is leaving.
+         */
+        LEAVE
     }
 
     /**

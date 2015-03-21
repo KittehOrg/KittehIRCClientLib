@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * Provides information about the server to which the client is connected.
- * This information is acquired via ISUPPORT.
+ * This information is primarily acquired via ISUPPORT.
  */
 public interface ServerInfo {
     /**
