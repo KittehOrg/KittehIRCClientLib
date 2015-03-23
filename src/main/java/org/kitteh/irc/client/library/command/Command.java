@@ -21,62 +21,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.command.ModeCommand;
-import org.kitteh.irc.client.library.util.Pair;
-
-import java.util.Map;
-import java.util.Set;
+import org.kitteh.irc.client.library.util.Sanity;
 
 /**
- * Represents an IRC channel.
+ * Represents a command which is executable on the server by the client.
  */
-public interface Channel extends MessageReceiver {
-    /**
-     * Gets the latest snapshot of this channel.
-     *
-     * @return an updated snapshot
-     */
-    Channel getLatest();
+public abstract class Command {
+    private final Client client;
 
     /**
-     * Gets the users in the channel, if the client is in the channel.
+     * Constructs the command.
      *
-     * @return users and their modes
+     * @param client the client
+     * @throws IllegalArgumentException if client is null
      */
-    Map<User, Set<ChannelUserMode>> getUsers();
-
-    /**
-     * Gets a user by their nick.
-     *
-     * @param nick user's nick
-     * @return a pair of the user and their channel modes
-     */
-    Pair<User, Set<ChannelUserMode>> getUser(String nick);
-
-    /**
-     * Joins the channel.
-     *
-     * @see Client#addChannel(Channel...)
-     */
-    void join();
-
-    /**
-     * Provides a new MODE command.
-     *
-     * @return new mode command
-     */
-    default ModeCommand newModeCommand() {
-        return new ModeCommand(this.getClient(), this);
+    protected Command(Client client) {
+        Sanity.nullCheck(client, "Client cannot be null");
+        this.client = client;
     }
 
     /**
-     * Parts the channel.
+     * Gets the client on which this command will be run.
      *
-     * @param reason leaving reason
-     * @see Client#removeChannel(Channel, String)
+     * @return the client
      */
-    void part(String reason);
+    public Client getClient() {
+        return this.client;
+    }
+
+    /**
+     * Executes the command.
+     */
+    public abstract void execute();
 }
