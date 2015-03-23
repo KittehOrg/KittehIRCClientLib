@@ -104,7 +104,7 @@ public class ModeCommand extends Command {
      * @throws IllegalArgumentException if mode invalid or requires parameter
      */
     public ModeCommand addModeChange(boolean add, char mode) {
-        return this.addModeChange(add, mode, null);
+        return this.addModeChange(add, mode, (String) null);
     }
 
     /**
@@ -122,6 +122,22 @@ public class ModeCommand extends Command {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         return this.addModeChange(add, mode.getMode(), parameter);
+    }
+
+    /**
+     * Adds a mode change.
+     *
+     * @param add true if adding, false if removing
+     * @param mode the mode to be changed
+     * @param parameter user whose nick will be sent or null if not needed
+     * @return this ModeCommand
+     * @throws IllegalArgumentException if mode invalid or mode requires a
+     * parameter but one was not provided or mode requires no parameter but
+     * one was provided or the mode comes from a different client
+     */
+    public ModeCommand addModeChange(boolean add, char mode, User parameter) {
+        Sanity.nullCheck(parameter, "User cannot be null");
+        return this.addModeChange(add, mode, parameter.getNick());
     }
 
     /**
