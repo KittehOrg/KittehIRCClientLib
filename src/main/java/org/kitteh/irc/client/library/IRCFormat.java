@@ -77,6 +77,14 @@ public enum IRCFormat {
 
     public static final char COLOR_CHAR = '\u0003';
 
+    public static String stripColor(String input) {
+        return input.replaceAll(COLOR_CHAR + "[0-9]{1,2}", "");
+    }
+
+    public static String stripFormating(String input) {
+        return input.replaceAll("[" + BOLD + RESET + REVERSE + UNDERLINE + "]", "");
+    }
+
     /**
      * Gets if the format is a color.
      *
