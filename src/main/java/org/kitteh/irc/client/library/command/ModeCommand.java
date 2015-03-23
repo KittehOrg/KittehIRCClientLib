@@ -27,12 +27,14 @@ import org.kitteh.irc.client.library.ChannelModeType;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.regex.Pattern;
 
 /**
  * TODO javaducks
@@ -62,6 +64,8 @@ public class ModeCommand extends Command {
         }
     }
 
+    private static final Pattern MASK_PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+
     private final List<ModeChange> changes = new ArrayList<>();
     private final String channel;
 
@@ -88,6 +92,14 @@ public class ModeCommand extends Command {
         this.addModeChange(add, mode, null);
     }
 
+    public void addModeChange(boolean add, ChannelUserMode mode, String parameter) {
+        this.addModeChange(add, mode.getMode(), parameter);
+    }
+
+    public void addModeChange(boolean add, ChannelUserMode mode, User parameter) {
+        this.addModeChange(add, mode.getMode(), parameter.getNick());
+    }
+
     /**
      * TODO javaducks
      *
@@ -96,10 +108,14 @@ public class ModeCommand extends Command {
      * @param parameter QUACK!
      */
     public synchronized void addModeChange(boolean add, char mode, String parameter) {
-        boolean paramRequired = this.isParameterRequired(add, mode);
+        ChannelModeType channelModeType = this.getChannelModeType(mode);
         Sanity.safeMessageCheck(parameter);
+        boolean paramRequired = add ? channelModeType.isParameterRequiredOnSetting() : channelModeType.isParameterRequiredOnRemoval();
         Sanity.truthiness(paramRequired && parameter == null, "Provided mode '" + mode + "' without parameter when one is required.");
         Sanity.truthiness(!paramRequired && parameter != null, "Provided mode '" + mode + "' with parameter when one is not required.");
+        if (channelModeType == ChannelModeType.A_MASK) {
+            Sanity.truthiness(MASK_PATTERN.matcher(parameter).matches(), "Provided mode `" + mode + "' requires a mask parameter.");
+        }
         this.changes.add(new ModeChange(add, mode, parameter));
     }
 
@@ -132,14 +148,14 @@ public class ModeCommand extends Command {
         this.getClient().sendRawLine("MODE " + this.channel + " " + modes.toString() + parameters.toString());
     }
 
-    private boolean isParameterRequired(boolean add, char mode) {
+    private ChannelModeType getChannelModeType(char mode) {
         ChannelModeType type = this.getClient().getServerInfo().getChannelModes().get(mode);
         if (type != null) {
-            return add ? type.isParameterRequiredOnSetting() : type.isParameterRequiredOnRemoval();
+            return type;
         }
         for (ChannelUserMode prefix : this.getClient().getServerInfo().getChannelUserModes()) {
             if (prefix.getPrefix() == mode) {
-                return true;
+                return ChannelModeType.B_PARAMETER_ALWAYS;
             }
         }
         throw new IllegalArgumentException("Invalid mode '" + mode + "'");
