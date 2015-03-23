@@ -167,7 +167,9 @@ public class ModeCommand extends Command {
      */
     public synchronized ModeCommand addModeChange(boolean add, char mode, String parameter) {
         ChannelModeType channelModeType = this.getChannelModeType(mode);
-        Sanity.safeMessageCheck(parameter);
+        if (parameter != null) {
+            Sanity.safeMessageCheck(parameter);
+        }
         boolean paramRequired = add ? channelModeType.isParameterRequiredOnSetting() : channelModeType.isParameterRequiredOnRemoval();
         Sanity.truthiness(paramRequired && parameter == null, "Provided mode '" + mode + "' without parameter when one is required.");
         Sanity.truthiness(!paramRequired && parameter != null, "Provided mode '" + mode + "' with parameter when one is not required.");
