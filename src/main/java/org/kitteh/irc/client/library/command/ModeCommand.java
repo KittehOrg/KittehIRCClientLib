@@ -128,6 +128,9 @@ public class ModeCommand extends Command {
                 this.send(queue);
             }
         }
+        if (!queue.isEmpty()) {
+            this.send(queue);
+        }
     }
 
     private void send(Queue<ModeChange> queue) {
