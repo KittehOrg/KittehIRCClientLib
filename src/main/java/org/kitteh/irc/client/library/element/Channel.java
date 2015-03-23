@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.command.ModeCommand;
 import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.Map;
@@ -61,6 +62,15 @@ public interface Channel extends MessageReceiver {
      * @see Client#addChannel(Channel...)
      */
     void join();
+
+    /**
+     * Provides a new MODE command.
+     *
+     * @return new mode command
+     */
+    default ModeCommand newModeCommand() {
+        return new ModeCommand(this.getClient(), this);
+    }
 
     /**
      * Parts the channel.
