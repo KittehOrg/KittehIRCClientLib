@@ -23,10 +23,19 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.kitteh.irc.client.library.Client;
+
 /**
  * Describes a channel mode that a user can have, such as op.
  */
 public interface ChannelUserMode {
+    /**
+     * Gets the client this mode is for.
+     *
+     * @return client
+     */
+    Client getClient();
+
     /**
      * Gets the mode character.
      *

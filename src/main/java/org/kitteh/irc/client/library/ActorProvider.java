@@ -208,12 +208,19 @@ class ActorProvider {
     }
 
     static class IRCChannelUserMode implements ChannelUserMode {
+        private final Client client;
         private final char mode;
         private final char prefix;
 
-        IRCChannelUserMode(char mode, char prefix) {
+        IRCChannelUserMode(Client client, char mode, char prefix) {
+            this.client = client;
             this.mode = mode;
             this.prefix = prefix;
+        }
+
+        @Override
+        public Client getClient() {
+            return this.client;
         }
 
         @Override

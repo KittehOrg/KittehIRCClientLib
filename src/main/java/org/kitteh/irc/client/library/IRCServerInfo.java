@@ -38,12 +38,7 @@ final class IRCServerInfo implements ServerInfo {
     private Map<Character, Integer> channelLimits = new HashMap<>();
     private Map<Character, ChannelModeType> channelModes = ChannelModeType.getDefaultModes();
     private List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
-    private List<ChannelUserMode> channelUserModes = new ArrayList<ChannelUserMode>() {
-        {
-            this.add(new ActorProvider.IRCChannelUserMode('o', '@'));
-            this.add(new ActorProvider.IRCChannelUserMode('v', '+'));
-        }
-    };
+    private List<ChannelUserMode> channelUserModes;
     private String networkName;
     private int nickLengthLimit = -1;
     private String serverVersion;
@@ -53,6 +48,18 @@ final class IRCServerInfo implements ServerInfo {
     // Screw it, let's assume IRCDs disregard length policy
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
+
+    private final Client client;
+
+    IRCServerInfo(Client client) {
+        this.client = client;
+        channelUserModes = new ArrayList<ChannelUserMode>() {
+            {
+                this.add(new ActorProvider.IRCChannelUserMode(client, 'o', '@'));
+                this.add(new ActorProvider.IRCChannelUserMode(client, 'v', '+'));
+            }
+        };
+    }
 
     @Override
     public CaseMapping getCaseMapping() {

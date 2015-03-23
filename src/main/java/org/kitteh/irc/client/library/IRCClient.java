@@ -214,7 +214,7 @@ final class IRCClient implements Client {
                 if (modes.length() == display.length()) {
                     List<ChannelUserMode> prefixList = new ArrayList<>();
                     for (int index = 0; index < modes.length(); index++) {
-                        prefixList.add(new ActorProvider.IRCChannelUserMode(modes.charAt(index), display.charAt(index)));
+                        prefixList.add(new ActorProvider.IRCChannelUserMode(client, modes.charAt(index), display.charAt(index)));
                     }
                     client.serverInfo.setChannelUserModes(prefixList);
                 }
@@ -261,7 +261,7 @@ final class IRCClient implements Client {
 
     private final Config config;
     private final InputProcessor processor;
-    private IRCServerInfo serverInfo = new IRCServerInfo();
+    private IRCServerInfo serverInfo = new IRCServerInfo(this);
 
     private String goalNick;
     private String currentNick;
@@ -644,7 +644,7 @@ final class IRCClient implements Client {
             case 4: // version / modes
                 // We're in! Start sending all messages.
                 this.authenticate();
-                this.serverInfo = new IRCServerInfo();
+                this.serverInfo = new IRCServerInfo(this);
                 this.serverInfo.setServerVersion(args[2]);
                 this.eventManager.callEvent(new ClientConnectedEvent(this, actor.snapshot(), this.serverInfo));
                 this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
