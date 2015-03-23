@@ -325,7 +325,8 @@ final class IRCClient implements Client {
 
     @Override
     public Channel getChannel(String name) {
-        return this.actorProvider.getChannel(name).snapshot();
+        ActorProvider.IRCChannel channel = this.actorProvider.getChannel(name);
+        return channel == null ? null : channel.snapshot();
     }
 
     @Override
