@@ -885,12 +885,12 @@ final class IRCClient implements Client {
                 if (actor instanceof ActorProvider.IRCUser) { // Just in case
                     ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
                     ActorProvider.IRCUser user = (ActorProvider.IRCUser) actor;
+                    this.eventManager.callEvent(new ChannelPartEvent(this, channel.snapshot(), user.snapshot(), args.length > 1 ? args[1] : ""));
                     channel.trackUserPart(user);
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.remove(channel.getName());
                         this.actorProvider.channelUntrack(channel);
                     }
-                    this.eventManager.callEvent(new ChannelPartEvent(this, channel.snapshot(), user.snapshot(), args.length > 1 ? args[1] : ""));
                 }
                 break;
             case QUIT:
