@@ -40,7 +40,9 @@ public interface Channel extends MessageReceiver {
      *
      * @return an updated snapshot
      */
-    Channel getLatest();
+    default Channel getLatest() {
+        return this.getClient().getChannel(this.getName());
+    }
 
     /**
      * Gets the users in the channel, if the client is in the channel.
@@ -62,7 +64,9 @@ public interface Channel extends MessageReceiver {
      *
      * @see Client#addChannel(Channel...)
      */
-    void join();
+    default void join() {
+        this.getClient().addChannel(this);
+    }
 
     /**
      * Provides a new KICK command.
@@ -88,5 +92,7 @@ public interface Channel extends MessageReceiver {
      * @param reason leaving reason
      * @see Client#removeChannel(Channel, String)
      */
-    void part(String reason);
+    default void part(String reason) {
+        this.getClient().removeChannel(this, reason);
+    }
 }

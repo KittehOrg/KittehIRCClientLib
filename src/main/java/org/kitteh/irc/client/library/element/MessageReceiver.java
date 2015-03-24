@@ -42,7 +42,9 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendCTCPMessage(MessageReceiver, String)
      */
-    void sendCTCPMessage(String message);
+    default void sendCTCPMessage(String message) {
+        this.getClient().sendCTCPMessage(this, message);
+    }
 
     /**
      * Sends this actor a message.
@@ -50,7 +52,9 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendMessage(MessageReceiver, String)
      */
-    void sendMessage(String message);
+    default void sendMessage(String message) {
+        this.getClient().sendMessage(this, message);
+    }
 
     /**
      * Sends this actor a message
@@ -58,5 +62,7 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendNotice(MessageReceiver, String)
      */
-    void sendNotice(String message);
+    default void sendNotice(String message) {
+        this.getClient().sendNotice(this, message);
+    }
 }

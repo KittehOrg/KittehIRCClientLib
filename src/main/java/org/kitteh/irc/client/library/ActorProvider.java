@@ -170,11 +170,6 @@ class ActorProvider {
         }
 
         @Override
-        public Channel getLatest() {
-            return ActorProvider.this.getChannel(this.getName()).snapshot();
-        }
-
-        @Override
         public String getMessagingName() {
             return this.getName();
         }
@@ -194,16 +189,6 @@ class ActorProvider {
         public int hashCode() {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
             return this.toLowerCase(this.getName()).hashCode() * 2 + this.getClient().hashCode();
-        }
-
-        @Override
-        public void join() {
-            this.getClient().addChannel(this);
-        }
-
-        @Override
-        public void part(String reason) {
-            this.getClient().removeChannel(this, reason);
         }
     }
 
@@ -237,21 +222,6 @@ class ActorProvider {
     abstract class IRCMessageReceiverSnapshot extends IRCActorSnapshot implements MessageReceiver {
         protected IRCMessageReceiverSnapshot(String name, IRCClient client) {
             super(name, client);
-        }
-
-        @Override
-        public void sendCTCPMessage(String message) {
-            this.getClient().sendCTCPMessage(this, message);
-        }
-
-        @Override
-        public void sendMessage(String message) {
-            this.getClient().sendMessage(this, message);
-        }
-
-        @Override
-        public void sendNotice(String message) {
-            this.getClient().sendNotice(this, message);
         }
     }
 
