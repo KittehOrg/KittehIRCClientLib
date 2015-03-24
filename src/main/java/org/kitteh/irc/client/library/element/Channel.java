@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ModeCommand;
 import org.kitteh.irc.client.library.util.Pair;
 
@@ -62,6 +63,15 @@ public interface Channel extends MessageReceiver {
      * @see Client#addChannel(Channel...)
      */
     void join();
+
+    /**
+     * Provides a new KICK command.
+     *
+     * @return new kick command
+     */
+    default KickCommand newKickCommand() {
+        return new KickCommand(this.getClient(), this);
+    }
 
     /**
      * Provides a new MODE command.
