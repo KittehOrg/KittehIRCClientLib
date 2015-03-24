@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 /**
  * Commands a la MODE.
  */
-public class ModeCommand extends Command {
+public class ModeCommand extends ChannelCommand {
     private class ModeChange {
         private final Boolean add;
         private final char mode;
@@ -67,7 +67,6 @@ public class ModeCommand extends Command {
     private static final Pattern MASK_PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
 
     private final List<ModeChange> changes = new ArrayList<>();
-    private final String channel;
 
     /**
      * Constructs a MODE command for a given channel.
@@ -76,10 +75,7 @@ public class ModeCommand extends Command {
      * @param channel channel targeted
      */
     public ModeCommand(Client client, Channel channel) {
-        super(client);
-        Sanity.nullCheck(channel, "Channel cannot be null");
-        Sanity.truthiness(channel.getClient() == client, "Channel comes from a different Client");
-        this.channel = channel.getName();
+        super(client, channel);
     }
 
     /**
@@ -89,10 +85,7 @@ public class ModeCommand extends Command {
      * @param channel channel targeted
      */
     public ModeCommand(Client client, String channel) {
-        super(client);
-        Sanity.nullCheck(channel, "Channel cannot be null");
-        Sanity.nullCheck(client.getChannel(channel), "Invalid channel name '" + channel + "'");
-        this.channel = channel;
+        super(client, channel);
     }
 
     /**
@@ -222,6 +215,6 @@ public class ModeCommand extends Command {
                 parameters.append(' ').append(change.getParameter());
             }
         }
-        this.getClient().sendRawLine("MODE " + this.channel + " " + modes.toString() + parameters.toString());
+        this.getClient().sendRawLine("MODE " + this.getChannel() + " " + modes.toString() + parameters.toString());
     }
 }
