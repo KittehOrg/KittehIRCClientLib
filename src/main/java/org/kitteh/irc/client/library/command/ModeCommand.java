@@ -200,7 +200,7 @@ public class ModeCommand extends Command {
             return type;
         }
         for (ChannelUserMode prefix : this.getClient().getServerInfo().getChannelUserModes()) {
-            if (prefix.getPrefix() == mode) {
+            if (prefix.getMode() == mode) {
                 return ChannelModeType.B_PARAMETER_ALWAYS;
             }
         }
