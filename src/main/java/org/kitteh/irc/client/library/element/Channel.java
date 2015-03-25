@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.element;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ModeCommand;
+import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.Map;
@@ -64,6 +65,7 @@ public interface Channel extends MessageReceiver {
      * if the Client is in the channel and the WHO list has sent.
      *
      * @return true if Client is in channel and WHO has finished
+     * @see ChannelUsersUpdatedEvent
      */
     boolean isComplete();
 
