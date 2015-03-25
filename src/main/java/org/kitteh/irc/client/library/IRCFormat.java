@@ -56,11 +56,11 @@ public enum IRCFormat {
     private boolean isColor = false;
     private String toString;
 
-    private IRCFormat(char ch) {
+    IRCFormat(char ch) {
         this.toString = String.valueOf(ch);
     }
 
-    private IRCFormat(int color) {
+    IRCFormat(int color) {
         if ((color & 15) != color) {
             throw new AssertionError("Impossible color id: " + color);
         }

@@ -32,11 +32,11 @@ public enum AuthType {
 
     private final boolean nicksOwned;
 
-    private AuthType() {
+    AuthType() {
         this(true);
     }
 
-    private AuthType(boolean nickOwned) {
+    AuthType(boolean nickOwned) {
         this.nicksOwned = nickOwned;
     }
 

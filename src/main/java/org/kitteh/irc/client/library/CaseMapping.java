@@ -63,7 +63,7 @@ public enum CaseMapping {
 
     private final char upperbound;
 
-    private CaseMapping(char upperbound) {
+    CaseMapping(char upperbound) {
         this.upperbound = upperbound;
     }
 

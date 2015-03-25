@@ -30,7 +30,7 @@ import org.kitteh.irc.client.library.element.User;
  * A {@link Channel} is gaining or losing a {@link User}
  */
 public interface ChannelUserListChange {
-    public enum Change {
+    enum Change {
         /**
          * A user is joining.
          */

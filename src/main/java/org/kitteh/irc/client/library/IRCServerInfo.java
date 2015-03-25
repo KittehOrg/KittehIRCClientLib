@@ -49,10 +49,7 @@ final class IRCServerInfo implements ServerInfo {
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
-    private final Client client;
-
     IRCServerInfo(Client client) {
-        this.client = client;
         channelUserModes = new ArrayList<ChannelUserMode>() {
             {
                 this.add(new ActorProvider.IRCChannelUserMode(client, 'o', '@'));

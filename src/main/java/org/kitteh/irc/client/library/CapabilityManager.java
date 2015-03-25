@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * I'm the CAP man!
  */
 class CapabilityManager {
-    private List<String> capabilities = new ArrayList<>();
+    private final List<String> capabilities = new ArrayList<>();
     private List<String> supportedCapabilities = new ArrayList<>();
     private boolean negotiating = true;
 

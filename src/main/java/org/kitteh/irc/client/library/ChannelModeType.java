@@ -75,7 +75,7 @@ public enum ChannelModeType {
     private final boolean parameterRequiredOnRemoval;
     private final boolean parameterRequiredOnSetting;
 
-    private ChannelModeType(boolean parameterRequiredOnSetting, boolean parameterRequiredOnRemoval) {
+    ChannelModeType(boolean parameterRequiredOnSetting, boolean parameterRequiredOnRemoval) {
         this.parameterRequiredOnRemoval = parameterRequiredOnRemoval;
         this.parameterRequiredOnSetting = parameterRequiredOnSetting;
     }
