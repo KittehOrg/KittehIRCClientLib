@@ -666,7 +666,9 @@ final class IRCClient implements Client {
             case 315: // WHO completed
                 // Self is arg 0
                 if (this.serverInfo.isValidChannel(args[1])) { // target
-                    this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this, this.actorProvider.getChannel(args[1]).snapshot()));
+                    ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[1]);
+                    channel.setListReceived();
+                    this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this, channel.snapshot()));
                 }
                 break;
             // Channel info

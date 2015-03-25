@@ -98,6 +98,7 @@ class ActorProvider {
     class IRCChannel extends IRCActor {
         private final Map<IRCUser, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
         private final Map<String, IRCUser> nickMap;
+        private boolean fullListReceived;
 
         private IRCChannel(String channel, IRCClient client) {
             super(channel, client);
@@ -109,8 +110,12 @@ class ActorProvider {
             return this.nickMap.get(nick);
         }
 
+        void setListReceived() {
+            this.fullListReceived = true;
+        }
+
         IRCChannelSnapshot snapshot() {
-            return new IRCChannelSnapshot(this.getName(), this.users, this.getClient());
+            return new IRCChannelSnapshot(this.getName(), this.users, this.getClient(), this.fullListReceived);
         }
 
         void trackUser(IRCUser user, Set<ChannelUserMode> modes) {
@@ -150,9 +155,11 @@ class ActorProvider {
     class IRCChannelSnapshot extends IRCMessageReceiverSnapshot implements Channel {
         private final Map<User, Set<ChannelUserMode>> users;
         private final Map<String, User> nickMap;
+        private final boolean complete;
 
-        private IRCChannelSnapshot(String channel, Map<IRCUser, Set<ChannelUserMode>> userMap, IRCClient client) {
+        private IRCChannelSnapshot(String channel, Map<IRCUser, Set<ChannelUserMode>> userMap, IRCClient client, boolean complete) {
             super(channel, client);
+            this.complete = complete;
             Map<User, Set<ChannelUserMode>> users = new HashMap<>();
             this.nickMap = new LCKeyMap<>(client);
             userMap.forEach((ircuser, set) -> {
@@ -183,6 +190,11 @@ class ActorProvider {
         public Pair<User, Set<ChannelUserMode>> getUser(String nick) {
             User user = this.nickMap.get(nick);
             return user == null ? null : new Pair<>(user, this.users.get(user));
+        }
+
+        @Override
+        public boolean isComplete() {
+            return this.complete;
         }
 
         @Override

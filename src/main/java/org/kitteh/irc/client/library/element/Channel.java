@@ -60,6 +60,14 @@ public interface Channel extends MessageReceiver {
     Pair<User, Set<ChannelUserMode>> getUser(String nick);
 
     /**
+     * Gets if this Channel has complete user data available, only possible
+     * if the Client is in the channel and the WHO list has sent.
+     *
+     * @return true if Client is in channel and WHO has finished
+     */
+    boolean isComplete();
+
+    /**
      * Joins the channel.
      *
      * @see Client#addChannel(Channel...)
