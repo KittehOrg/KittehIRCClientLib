@@ -241,6 +241,18 @@ public final class ClientBuilder implements Cloneable {
     }
 
     /**
+     * Sets the delay between messages being sent to the server
+     *
+     * @param delay the delay in milliseconds
+     * @return this builder
+     */
+    public ClientBuilder messageDelay(int delay) {
+        Sanity.truthiness(delay > 0, "Delay must be at least 1");
+        this.config.set(Config.MESSAGE_DELAY, delay);
+        return this;
+    }
+
+    /**
      * Sets the server IP to which the client will connect.
      * <p>
      * By default, the port is 6667.
