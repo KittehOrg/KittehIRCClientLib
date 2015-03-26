@@ -164,8 +164,8 @@ public class ModeCommand extends ChannelCommand {
             Sanity.safeMessageCheck(parameter);
         }
         boolean paramRequired = add ? channelModeType.isParameterRequiredOnSetting() : channelModeType.isParameterRequiredOnRemoval();
-        Sanity.truthiness(paramRequired && parameter == null, "Provided mode '" + mode + "' without parameter when one is required.");
-        Sanity.truthiness(!paramRequired && parameter != null, "Provided mode '" + mode + "' with parameter when one is not required.");
+        Sanity.truthiness(paramRequired && parameter != null, "Provided mode '" + mode + "' without parameter when one is required.");
+        Sanity.truthiness(!paramRequired && parameter == null, "Provided mode '" + mode + "' with parameter when one is not required.");
         if (channelModeType == ChannelModeType.A_MASK) {
             Sanity.truthiness(MASK_PATTERN.matcher(parameter).matches(), "Provided mode `" + mode + "' requires a mask parameter.");
         }
