@@ -67,6 +67,7 @@ final class NettyManager {
         private final Queue<String> queue = new ConcurrentLinkedQueue<>();
         private boolean reconnect = true;
         private ScheduledFuture<?> scheduledSending;
+        private final Object scheduledSendingLock = new Object();
 
         private ClientConnection(final IRCClient client, ChannelFuture future) {
             this.client = client;
@@ -146,20 +147,6 @@ final class NettyManager {
             });
         }
 
-        void scheduleSending(int period) {
-            long delay = 0;
-            if (this.scheduledSending != null) {
-                delay = this.scheduledSending.getDelay(TimeUnit.MILLISECONDS); // Negligible added delay processing this
-                this.scheduledSending.cancel(false);
-            }
-            this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(() -> {
-                String message = ClientConnection.this.queue.poll();
-                if (message != null) {
-                    ClientConnection.this.channel.writeAndFlush(message);
-                }
-            }, delay, period, TimeUnit.MILLISECONDS);
-        }
-
         void sendMessage(String message, boolean priority) {
             if (priority) {
                 this.channel.writeAndFlush(message);
@@ -170,6 +157,33 @@ final class NettyManager {
 
         void shutdown(String message) {
             this.shutdown(message, false);
+        }
+
+        void startSending() {
+            this.schedule(true);
+        }
+
+        void updateScheduling() {
+            this.schedule(false);
+        }
+
+        private void schedule(boolean force) {
+            synchronized (this.scheduledSendingLock) {
+                if (!force && this.scheduledSending == null) {
+                    return;
+                }
+                long delay = 0;
+                if (this.scheduledSending != null) {
+                    delay = this.scheduledSending.getDelay(TimeUnit.MILLISECONDS); // Negligible added delay processing this
+                    this.scheduledSending.cancel(false);
+                }
+                this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(() -> {
+                    String message = ClientConnection.this.queue.poll();
+                    if (message != null) {
+                        ClientConnection.this.channel.writeAndFlush(message);
+                    }
+                }, delay, this.client.getMessageDelay(), TimeUnit.MILLISECONDS);
+            }
         }
 
         private void shutdown(String message, boolean reconnect) {

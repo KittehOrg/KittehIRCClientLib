@@ -475,7 +475,7 @@ final class IRCClient implements Client {
         Sanity.truthiness(delay > 0, "Delay must be at least 1");
         this.config.set(Config.MESSAGE_DELAY, delay);
         if (this.connection != null) {
-            this.connection.scheduleSending(delay);
+            this.connection.updateScheduling();
         }
     }
 
@@ -647,7 +647,7 @@ final class IRCClient implements Client {
                 this.serverInfo = new IRCServerInfo(this);
                 this.serverInfo.setServerVersion(args[2]);
                 this.eventManager.callEvent(new ClientConnectedEvent(this, actor.snapshot(), this.serverInfo));
-                this.connection.scheduleSending(this.config.get(Config.MESSAGE_DELAY));
+                this.connection.startSending();
                 break;
             case 5: // ISUPPORT
                 for (String arg : args) {
