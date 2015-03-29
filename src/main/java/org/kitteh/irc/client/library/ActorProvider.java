@@ -30,14 +30,13 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.LCKeyMap;
-import org.kitteh.irc.client.library.util.Pair;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -96,7 +95,7 @@ class ActorProvider {
     }
 
     class IRCChannel extends IRCActor {
-        private final Map<IRCUser, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
+        private final Map<String, Set<ChannelUserMode>> modes;
         private final Map<String, IRCUser> nickMap;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
@@ -104,6 +103,7 @@ class ActorProvider {
 
         private IRCChannel(String channel, IRCClient client) {
             super(channel, client);
+            this.modes = new LCKeyMap<>(this.getClient());
             this.nickMap = new LCKeyMap<>(this.getClient());
             ActorProvider.this.trackedChannels.put(channel, this);
         }
@@ -121,7 +121,7 @@ class ActorProvider {
         }
 
         IRCChannelSnapshot snapshot() {
-            synchronized (this.users) {
+            synchronized (this.modes) {
                 if (this.tracked && !this.fullListReceived) {
                     long now = System.currentTimeMillis();
                     if (now - this.lastWho > 5000) {
@@ -130,59 +130,66 @@ class ActorProvider {
                     }
                 }
             }
-            return new IRCChannelSnapshot(this.getName(), this.users, this.getClient(), this.fullListReceived);
+            return new IRCChannelSnapshot(this.getName(), this.modes, this.nickMap, this.getClient(), this.fullListReceived);
+        }
+
+        void trackNick(String nick, Set<ChannelUserMode> modes) {
+            this.getModes(nick).addAll(modes);
         }
 
         void trackUser(IRCUser user, Set<ChannelUserMode> modes) {
             this.nickMap.put(user.getNick(), user);
-            this.users.put(user, modes == null ? new CopyOnWriteArraySet<>() : new CopyOnWriteArraySet<>(modes));
+            this.modes.put(user.getNick(), modes == null ? new HashSet<>() : new HashSet<>(modes));
         }
 
         void trackUserJoin(IRCUser user) {
             this.trackUser(user, null);
         }
 
-        void trackUserModeAdd(String name, ChannelUserMode mode) {
-            IRCUser user = this.nickMap.get(name);
-            if (user != null) {
-                this.users.get(user).add(mode);
-            }
+        void trackUserModeAdd(String nick, ChannelUserMode mode) {
+            this.getModes(nick).add(mode);
         }
 
-        void trackUserModeRemove(String name, ChannelUserMode mode) {
-            IRCUser user = this.nickMap.get(name);
-            if (user != null) {
-                this.users.get(user).remove(mode);
-            }
+        void trackUserModeRemove(String nick, ChannelUserMode mode) {
+            this.getModes(nick).remove(mode);
         }
 
         void trackUserNick(IRCUser oldUser, IRCUser newUser) {
             this.nickMap.remove(oldUser.getNick());
-            this.trackUser(newUser, this.users.remove(oldUser));
+            this.trackUser(newUser, this.modes.remove(oldUser.getNick()));
         }
 
         void trackUserPart(IRCUser user) {
-            this.users.remove(user);
+            this.modes.remove(user.getNick());
             this.nickMap.remove(user.getNick());
+        }
+
+        private Set<ChannelUserMode> getModes(String nick) {
+            Set<ChannelUserMode> set = this.modes.get(nick);
+            if (set == null) {
+                set = new HashSet<>();
+                this.modes.put(nick, set);
+            }
+            return set;
         }
     }
 
     class IRCChannelSnapshot extends IRCMessageReceiverSnapshot implements Channel {
-        private final Map<User, Set<ChannelUserMode>> users;
+        private final Map<String, Set<ChannelUserMode>> modes;
+        private final List<String> names;
         private final Map<String, User> nickMap;
         private final boolean complete;
 
-        private IRCChannelSnapshot(String channel, Map<IRCUser, Set<ChannelUserMode>> userMap, IRCClient client, boolean complete) {
+        private IRCChannelSnapshot(String channel, Map<String, Set<ChannelUserMode>> modes, Map<String, IRCUser> nickMap, IRCClient client, boolean complete) {
             super(channel, client);
             this.complete = complete;
-            Map<User, Set<ChannelUserMode>> users = new HashMap<>();
-            this.nickMap = new LCKeyMap<>(client);
-            userMap.forEach((ircuser, set) -> {
-                User user = ircuser.snapshot();
-                users.put(user, set);
-                this.nickMap.put(user.getNick(), user);
-            });
-            this.users = Collections.unmodifiableMap(users);
+            Map<String, Set<ChannelUserMode>> newModes = new LCKeyMap<>(client);
+            newModes.putAll(modes);
+            this.modes = Collections.unmodifiableMap(newModes);
+            this.names = new ArrayList<>(this.modes.keySet());
+            Map<String, User> newNickMap = new LCKeyMap<>(client);
+            nickMap.forEach((nick, user) -> newNickMap.put(nick, user.snapshot()));
+            this.nickMap = Collections.unmodifiableMap(newNickMap);
         }
 
         @Override
@@ -197,14 +204,18 @@ class ActorProvider {
         }
 
         @Override
-        public Map<User, Set<ChannelUserMode>> getUsers() {
-            return this.users;
+        public List<String> getNames() {
+            return this.names;
         }
 
         @Override
-        public Pair<User, Set<ChannelUserMode>> getUser(String nick) {
-            User user = this.nickMap.get(nick);
-            return user == null ? null : new Pair<>(user, this.users.get(user));
+        public User getUser(String nick) {
+            return this.nickMap.get(nick);
+        }
+
+        @Override
+        public Set<ChannelUserMode> getUserModes(String nick) {
+            return this.modes.get(nick);
         }
 
         @Override

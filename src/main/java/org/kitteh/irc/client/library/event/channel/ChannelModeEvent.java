@@ -96,7 +96,7 @@ public class ChannelModeEvent extends ActorChannelEvent<Actor> {
      * @see #getPrefix()
      */
     public User getPrefixedUser() {
-        return this.isPrefix() ? this.getChannel().getUser(this.arg).getLeft() : null;
+        return this.isPrefix() ? this.getChannel().getUser(this.arg) : null;
     }
 
     /**

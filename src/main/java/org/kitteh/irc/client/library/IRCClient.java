@@ -38,6 +38,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKnockEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelNamesUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelPartEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTargetedCTCPEvent;
@@ -67,6 +68,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -701,7 +703,30 @@ final class IRCClient implements Client {
                 }
                 break;
             case 353: // Channel users list (/names). format is 353 nick = #channel :names
+                if (this.serverInfo.isValidChannel(args[2])) {
+                    ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[2]);
+                    List<ChannelUserMode> channelUserModes = this.serverInfo.getChannelUserModes();
+                    for (String combo : args[3].split(" ")) {
+                        Set<ChannelUserMode> modes = new HashSet<>();
+                        for (int i = 0; i < combo.length(); i++) {
+                            char c = combo.charAt(i);
+                            Optional<ChannelUserMode> mode = channelUserModes.stream().filter(m -> m.getPrefix() == c).findFirst();
+                            if (mode.isPresent()) {
+                                modes.add(mode.get());
+                            } else {
+                                channel.trackNick(combo.substring(i), modes);
+                                break;
+                            }
+                        }
+                    }
+                }
+                break;
             case 366: // End of /names
+                if (this.serverInfo.isValidChannel(args[1])) {
+                    ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[1]);
+                    this.eventManager.callEvent(new ChannelNamesUpdatedEvent(this, channel.snapshot()));
+                }
+                break;
             case 372: // info, such as continued motd
             case 375: // motd start
             case 376: // motd end
@@ -780,6 +805,9 @@ final class IRCClient implements Client {
                         break;
                     case "ls":
                         event = new CapabilitiesSupportedListEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
+                        if (capabilityStateList.stream().filter(state -> state.getCapabilityName().equalsIgnoreCase("multi-prefix")).findFirst().isPresent()) {
+                            this.sendRawLineImmediately("CAP REQ :multi-prefix");
+                        }
                         this.eventManager.callEvent(event);
                         break;
                     case "nak":

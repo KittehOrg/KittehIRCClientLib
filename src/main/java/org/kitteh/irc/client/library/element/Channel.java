@@ -27,9 +27,8 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ModeCommand;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
-import org.kitteh.irc.client.library.util.Pair;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -46,19 +45,28 @@ public interface Channel extends MessageReceiver {
     }
 
     /**
-     * Gets the users in the channel, if the client is in the channel.
+     * Gets the nicknames of users in the channel, if the client is in the
+     * channel.
      *
-     * @return users and their modes
+     * @return nicks in the channel
      */
-    Map<User, Set<ChannelUserMode>> getUsers();
+    List<String> getNames();
 
     /**
      * Gets a user by their nick.
      *
      * @param nick user's nick
-     * @return a pair of the user and their channel modes
+     * @return the user object, if known
      */
-    Pair<User, Set<ChannelUserMode>> getUser(String nick);
+    User getUser(String nick);
+
+    /**
+     * Gets the user modes of a given nickname in the channel.
+     *
+     * @param nick user's nick
+     * @return a set of modes the user is known to have
+     */
+    Set<ChannelUserMode> getUserModes(String nick);
 
     /**
      * Gets if this Channel has complete user data available, only possible
