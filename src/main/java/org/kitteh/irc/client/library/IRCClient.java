@@ -85,7 +85,9 @@ final class IRCClient implements Client {
             try {
                 IRCClient.this.handleLine(element);
             } catch (final Throwable thrown) {
-                // NOOP
+                if (thrown instanceof Exception) {
+                    IRCClient.this.exceptionListener.queue((Exception) thrown);
+                }
             }
         }
     }
