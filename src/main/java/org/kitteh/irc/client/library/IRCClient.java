@@ -699,7 +699,38 @@ final class IRCClient implements Client {
                 }
                 break;
             case 353: // Channel users list (/names). format is 353 nick = #channel :names
+                if (this.serverInfo.isValidChannel(args[2])) {
+                    final String channelName = args[2];
+                    final String[] names = args[3].split(" ");
+
+                    final ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
+                    for (String name : names) {
+                        final Set<ChannelUserMode> modes = new HashSet<>();
+                        // the modes of the user will be prefixed before the nick e.g @+ammar2
+                        int lastPrefixIndex = 0;
+                        for (char prefix : name.toCharArray()) {
+                            for (ChannelUserMode mode : this.serverInfo.getChannelUserModes()) {
+                                if (mode.getPrefix() == prefix) {
+                                    modes.add(mode);
+                                    lastPrefixIndex++;
+                                } else {
+                                    break;
+                                }
+                            }
+                        }
+
+                        String nick = name.substring(lastPrefixIndex);
+
+                    }
+                }
+                break;
             case 366: // End of /names
+                // Self is arg 0
+                if (this.serverInfo.isValidChannel(args[1])) {
+                    this.actorProvider.getChannel(args[1]).setListReceived();
+                    this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this, this.actorProvider.getChannel(args[1]).snapshot()));
+                }
+                break;
             case 372: // info, such as continued motd
             case 375: // motd start
             case 376: // motd end
@@ -877,7 +908,7 @@ final class IRCClient implements Client {
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.add(args[0]);
                         this.actorProvider.channelTrack(channel);
-                        this.sendRawLine("WHO " + channel.getName());
+                        this.sendRawLine("NAMES " + channel.getName());
                     }
                     this.eventManager.callEvent(new ChannelJoinEvent(this, channel.snapshot(), user.snapshot()));
                 }
