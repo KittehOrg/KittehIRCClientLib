@@ -58,9 +58,11 @@ final class Listener<Type> {
         }
     }
 
-    private final ListenerThread thread;
+    private final String clientName;
+    private ListenerThread thread;
 
     Listener(String clientName, Consumer<Type> consumer) {
+        this.clientName = clientName;
         this.thread = consumer == null ? null : new ListenerThread(clientName, consumer);
     }
 
@@ -71,7 +73,11 @@ final class Listener<Type> {
     }
 
     void setConsumer(Consumer<Type> consumer) {
-        this.thread.consumer = consumer;
+        if (this.thread == null) {
+            this.thread = new ListenerThread(this.clientName, consumer);
+        } else {
+            this.thread.consumer = consumer;
+        }
     }
 
     void shutdown() {
