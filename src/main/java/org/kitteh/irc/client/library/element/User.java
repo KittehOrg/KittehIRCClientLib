@@ -30,7 +30,7 @@ import java.util.Set;
  */
 public interface User extends MessageReceiver {
     /**
-     * Gets the user'c channels.
+     * Gets the user's channels.
      *
      * @return channel names the user is in
      */
@@ -56,4 +56,11 @@ public interface User extends MessageReceiver {
      * @return user
      */
     String getUser();
+
+    /**
+     * Gets the user's hostmask
+     *
+     * @return user host mask
+     */
+    String getMask();
 }
