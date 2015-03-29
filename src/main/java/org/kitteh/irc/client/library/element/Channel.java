@@ -50,15 +50,27 @@ public interface Channel extends MessageReceiver {
      *
      * @return nicks in the channel
      */
-    List<String> getNames();
+    List<String> getNicknames();
 
     /**
-     * Gets a user by their nick.
+     * Gets a user by their nick, if they are known to the client. Note that
+     * the server may not have sent the User data over, while the nickname
+     * may be known to the channel.
      *
      * @param nick user's nick
      * @return the user object, if known
      */
     User getUser(String nick);
+
+    /**
+     * Gets all Users known to be in the channel. Note that the server may
+     * not have sent all User data over, while the nickname may be known to
+     * the channel. If you just want a list of nicknames, see {@link
+     * #getNicknames()}.
+     *
+     * @return users in the channel
+     */
+    List<User> getUsers();
 
     /**
      * Gets the user modes of a given nickname in the channel.

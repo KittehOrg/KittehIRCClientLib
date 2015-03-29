@@ -178,6 +178,7 @@ class ActorProvider {
         private final Map<String, Set<ChannelUserMode>> modes;
         private final List<String> names;
         private final Map<String, User> nickMap;
+        private final List<User> users;
         private final boolean complete;
 
         private IRCChannelSnapshot(String channel, Map<String, Set<ChannelUserMode>> modes, Map<String, IRCUser> nickMap, IRCClient client, boolean complete) {
@@ -186,10 +187,11 @@ class ActorProvider {
             Map<String, Set<ChannelUserMode>> newModes = new LCKeyMap<>(client);
             newModes.putAll(modes);
             this.modes = Collections.unmodifiableMap(newModes);
-            this.names = new ArrayList<>(this.modes.keySet());
+            this.names = Collections.unmodifiableList(new ArrayList<>(this.modes.keySet()));
             Map<String, User> newNickMap = new LCKeyMap<>(client);
             nickMap.forEach((nick, user) -> newNickMap.put(nick, user.snapshot()));
             this.nickMap = Collections.unmodifiableMap(newNickMap);
+            this.users = Collections.unmodifiableList(new ArrayList<>(this.nickMap.values()));
         }
 
         @Override
@@ -204,7 +206,7 @@ class ActorProvider {
         }
 
         @Override
-        public List<String> getNames() {
+        public List<String> getNicknames() {
             return this.names;
         }
 
@@ -216,6 +218,11 @@ class ActorProvider {
         @Override
         public Set<ChannelUserMode> getUserModes(String nick) {
             return this.modes.get(nick);
+        }
+
+        @Override
+        public List<User> getUsers() {
+            return this.users;
         }
 
         @Override
