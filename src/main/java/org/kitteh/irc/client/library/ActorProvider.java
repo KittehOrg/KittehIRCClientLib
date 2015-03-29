@@ -98,7 +98,9 @@ class ActorProvider {
     class IRCChannel extends IRCActor {
         private final Map<IRCUser, Set<ChannelUserMode>> users = new ConcurrentHashMap<>();
         private final Map<String, IRCUser> nickMap;
-        private boolean fullListReceived;
+        private volatile boolean fullListReceived;
+        private long lastWho = System.currentTimeMillis();
+        private volatile boolean tracked;
 
         private IRCChannel(String channel, IRCClient client) {
             super(channel, client);
@@ -114,7 +116,20 @@ class ActorProvider {
             this.fullListReceived = true;
         }
 
+        private void setTracked(boolean tracked) {
+            this.tracked = tracked;
+        }
+
         IRCChannelSnapshot snapshot() {
+            synchronized (this.users) {
+                if (this.tracked && !this.fullListReceived) {
+                    long now = System.currentTimeMillis();
+                    if (now - this.lastWho > 5000) {
+                        this.lastWho = now;
+                        this.getClient().sendRawLine("WHO " + this.getName());
+                    }
+                }
+            }
             return new IRCChannelSnapshot(this.getName(), this.users, this.getClient(), this.fullListReceived);
         }
 
@@ -326,10 +341,12 @@ class ActorProvider {
 
     void channelTrack(IRCChannel channel) {
         this.trackedChannels.put(channel.getName(), channel);
+        channel.setTracked(true);
     }
 
     void channelUntrack(IRCChannel channel) {
         this.trackedChannels.remove(channel.getName());
+        channel.setTracked(false);
     }
 
     IRCActor getActor(String name) {
