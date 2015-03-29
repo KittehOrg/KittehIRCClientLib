@@ -56,4 +56,11 @@ public interface User extends MessageReceiver {
      * @return user
      */
     String getUser();
+
+    /**
+     * Gets the user's hostmask
+     *
+     * @return user host mask
+     */
+    String getMask();
 }

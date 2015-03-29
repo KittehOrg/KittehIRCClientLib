@@ -138,6 +138,19 @@ class ActorProvider {
             this.users.put(user, modes == null ? new CopyOnWriteArraySet<>() : new CopyOnWriteArraySet<>(modes));
         }
 
+        void trackUserOrUpdate(IRCUser user, Set<ChannelUserMode> modes) {
+            if (this.nickMap.containsKey(user.getNick())) {
+                // update the old entry with the new one
+                IRCUser oldUser = this.nickMap.get(user.getNick());
+                this.users.remove(oldUser);
+                this.nickMap.remove(user.getNick());
+
+                this.trackUser(user, modes);
+            } else {
+                this.trackUser(user, modes);
+            }
+        }
+
         void trackUserJoin(IRCUser user) {
             this.trackUser(user, null);
         }
@@ -253,15 +266,11 @@ class ActorProvider {
     }
 
     class IRCUser extends IRCActor {
-        private final String host;
-        private final String nick;
-        private final String user;
+        protected final String nick;
 
-        private IRCUser(String mask, String nick, String user, String host, IRCClient client) {
-            super(mask, client);
+        private IRCUser(String nick, IRCClient client) {
+            super(nick, client);
             this.nick = nick;
-            this.user = user;
-            this.host = host;
         }
 
         String getNick() {
@@ -269,7 +278,24 @@ class ActorProvider {
         }
 
         IRCUserSnapshot snapshot() {
-            return new IRCUserSnapshot(this.getName(), this.nick, this.user, this.host, this.getClient());
+            return new IRCUserSnapshot(null, this.nick, null, null, this.getClient());
+        }
+    }
+
+    class ExtendedIRCUser extends IRCUser {
+        private final String host;
+        private final String user;
+        private final String mask;
+
+        public ExtendedIRCUser(String mask, String nick, String user, String host, IRCClient client) {
+            super(nick, client);
+            this.user = user;
+            this.host = host;
+            this.mask = mask;
+        }
+
+        IRCUserSnapshot snapshot() {
+            return new IRCUserSnapshot(this.mask, this.nick, this.user, this.host, this.getClient());
         }
     }
 
@@ -278,18 +304,32 @@ class ActorProvider {
         private final String host;
         private final String nick;
         private final String user;
+        private final String mask;
 
         private IRCUserSnapshot(String mask, String nick, String user, String host, IRCClient client) {
-            super(mask, client);
+            super(nick, client);
             this.nick = nick;
             this.user = user;
             this.host = host;
+            this.mask = mask;
             this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(nick) != null).map(IRCChannel::getName).collect(Collectors.toSet()));
         }
 
         @Override
         public boolean equals(Object o) {
-            return o instanceof IRCUserSnapshot && ((IRCUserSnapshot) o).getClient() == this.getClient() && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
+            if (o instanceof IRCUserSnapshot) {
+                IRCUserSnapshot other = (IRCUserSnapshot) o;
+
+                if (this.getClient() != other.getClient()) {
+                    return false;
+                }
+                if (this.getMask() != null && other.getMask() != null) {
+                    return this.toLowerCase(this.getMask()).equals(this.toLowerCase(other.getMask()));
+                } else {
+                    return this.toLowerCase(this.getNick()).equals(this.toLowerCase(other.getNick()));
+                }
+            }
+            return false;
         }
 
         @Override
@@ -318,8 +358,17 @@ class ActorProvider {
         }
 
         @Override
+        public String getMask() {
+            return this.mask;
+        }
+
+        @Override
         public int hashCode() {
-            return this.toLowerCase(this.getName()).hashCode() * 2 + this.getClient().hashCode();
+            if (this.getMask() != null) {
+                return this.toLowerCase(this.getMask()).hashCode() * 2 + this.getClient().hashCode();
+            } else {
+                return this.toLowerCase(this.getNick()).hashCode() * 2 + this.getClient().hashCode();
+            }
         }
     }
 
@@ -330,7 +379,7 @@ class ActorProvider {
     // You know what? Screw it.
     // Let's just do it assuming no IRCD can handle following the rules.
     // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
-    private final Pattern nickPattern = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+    private final Pattern userMaskPattern = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
 
     private final Map<String, IRCChannel> trackedChannels;
 
@@ -349,16 +398,35 @@ class ActorProvider {
         channel.setTracked(false);
     }
 
+    /**
+     * Attempts to return the best possible actor matched for this name,
+     * for a host mask this returns a new user, if it doesn't detect a hostmask,
+     * it attempts to find a channel by that name, else it returns a plain old actor
+     * @param name
+     * @return A best matched IRCActor
+     */
     IRCActor getActor(String name) {
-        Matcher nickMatcher = this.nickPattern.matcher(name);
+        Matcher nickMatcher = this.userMaskPattern.matcher(name);
         if (nickMatcher.matches()) {
-            return new IRCUser(name, nickMatcher.group(1), nickMatcher.group(2), nickMatcher.group(3), this.client);
+            return new ExtendedIRCUser(name, nickMatcher.group(1), nickMatcher.group(2), nickMatcher.group(3), this.client);
         }
         IRCChannel channel = this.getChannel(name);
         if (channel != null) {
             return channel;
         }
         return new IRCActor(name, this.client);
+    }
+
+    IRCUser getUserByNick(String nick) {
+        return new IRCUser(nick, this.client);
+    }
+
+    IRCUser getUserByHostMask(String hostMask) {
+        Matcher nickMatcher = this.userMaskPattern.matcher(hostMask);
+        if (nickMatcher.matches()) {
+            return new ExtendedIRCUser(hostMask, nickMatcher.group(1), nickMatcher.group(2), nickMatcher.group(3), this.client);
+        }
+        return null;
     }
 
     IRCChannel getChannel(String name) {
@@ -370,9 +438,17 @@ class ActorProvider {
     }
 
     IRCUser trackUserNick(IRCUser user, String newNick) {
-        IRCUser newUser = (IRCUser) this.getActor(newNick + user.getName().substring(user.getName().indexOf('!'), user.getName().length()));
-        this.trackedChannels.values().forEach(channel -> channel.trackUserNick(user, newUser));
-        return newUser;
+        if (user instanceof ExtendedIRCUser) {
+            // we only have mask info on extended users
+            String mask = user.snapshot().getMask();
+            IRCUser newUser = this.getUserByHostMask(newNick + mask.substring(mask.indexOf('!'), mask.length()));
+            this.trackedChannels.values().forEach(channel -> channel.trackUserNick(user, newUser));
+            return newUser;
+        } else {
+            IRCUser newUser = this.getUserByNick(newNick);
+            this.trackedChannels.values().forEach(channel -> channel.trackUserNick(user, newUser));
+            return newUser;
+        }
     }
 
     void trackUserQuit(IRCUser user) {

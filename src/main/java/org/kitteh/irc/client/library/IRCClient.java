@@ -695,7 +695,7 @@ final class IRCClient implements Client {
                             }
                         }
                     }
-                    channel.trackUser(user, modes);
+                    channel.trackUserOrUpdate(user, modes);
                 }
                 break;
             case 353: // Channel users list (/names). format is 353 nick = #channel :names
@@ -720,7 +720,8 @@ final class IRCClient implements Client {
                         }
 
                         String nick = name.substring(lastPrefixIndex);
-
+                        final ActorProvider.IRCUser user = this.actorProvider.getUserByNick(nick);
+                        channel.trackUserOrUpdate(user, modes);
                     }
                 }
                 break;
