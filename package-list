@@ -1,4 +1,5 @@
 org.kitteh.irc.client.library
+org.kitteh.irc.client.library.command
 org.kitteh.irc.client.library.element
 org.kitteh.irc.client.library.event
 org.kitteh.irc.client.library.event.capabilities
