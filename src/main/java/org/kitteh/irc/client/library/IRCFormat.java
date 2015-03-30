@@ -111,4 +111,25 @@ public enum IRCFormat {
         Sanity.truthiness(background.isColor, "Cannot use non-color background");
         return this.toString() + "," + background.color;
     }
+
+    private static final IRCFormat[] RAINBOW = {
+            RED,
+            YELLOW,
+            YELLOW,
+            GREEN,
+            MAGENTA,
+            BLUE,
+            PURPLE
+    };
+
+    public static String rainbow(String text) {
+        char[] buf = new char[text.length() * 4];
+        for (int i = 0, pos = 0, c = 0; i < text.length(); i++, pos += 4, c++) {
+            if (c == RAINBOW.length) c = 0;
+            String color = RAINBOW[c].toString();
+            color.getChars(0, color.length(), buf, pos);
+            buf[pos+3] = text.charAt(i);
+        }
+        return new String(buf);
+    }
 }
