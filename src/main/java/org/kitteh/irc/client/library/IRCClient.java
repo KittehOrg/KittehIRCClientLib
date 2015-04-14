@@ -651,6 +651,7 @@ final class IRCClient implements Client {
                 // We're in! Start sending all messages.
                 this.authenticate();
                 this.serverInfo = new IRCServerInfo(this);
+                this.serverInfo.setServerAddress(args[1]);
                 this.serverInfo.setServerVersion(args[2]);
                 this.eventManager.callEvent(new ClientConnectedEvent(this, actor.snapshot(), this.serverInfo));
                 this.connection.startSending();

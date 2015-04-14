@@ -41,6 +41,7 @@ final class IRCServerInfo implements ServerInfo {
     private List<ChannelUserMode> channelUserModes;
     private String networkName;
     private int nickLengthLimit = -1;
+    private String serverAddress;
     private String serverVersion;
 
     // TODO adapt for changes
@@ -128,6 +129,15 @@ final class IRCServerInfo implements ServerInfo {
 
     void setNickLengthLimit(int nickLengthLimit) {
         this.nickLengthLimit = nickLengthLimit;
+    }
+
+    @Override
+    public String getServerAddress() {
+        return this.serverAddress;
+    }
+
+    void setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
     @Override

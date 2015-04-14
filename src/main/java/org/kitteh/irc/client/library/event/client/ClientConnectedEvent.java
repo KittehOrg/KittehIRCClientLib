@@ -64,9 +64,11 @@ public class ClientConnectedEvent extends ClientEvent {
      * connected. As long as the client remains connected the information
      * returned by this object will update according to information received
      * from the server. Note that at the time of this event the server has
-     * not sent any information beyond its version.
+     * not sent any information beyond its address and version.
      *
      * @return the server information object
+     * @see ServerInfo#getServerAddress()
+     * @see ServerInfo#getServerVersion()
      */
     public ServerInfo getServerInfo() {
         return this.serverInfo;

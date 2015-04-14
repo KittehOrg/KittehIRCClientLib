@@ -98,6 +98,13 @@ public interface ServerInfo {
     int getNickLengthLimit();
 
     /**
+     * Gets the server-stated address of the server.
+     *
+     * @return the server's address
+     */
+    String getServerAddress();
+
+    /**
      * Gets the version of the IRCd.
      *
      * @return server version
