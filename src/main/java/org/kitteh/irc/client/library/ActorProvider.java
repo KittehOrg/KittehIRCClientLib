@@ -29,7 +29,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.util.LCKeyMap;
+import org.kitteh.irc.client.library.util.CIKeyMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,8 +103,8 @@ class ActorProvider {
 
         private IRCChannel(String channel, IRCClient client) {
             super(channel, client);
-            this.modes = new LCKeyMap<>(this.getClient());
-            this.nickMap = new LCKeyMap<>(this.getClient());
+            this.modes = new CIKeyMap<>(this.getClient());
+            this.nickMap = new CIKeyMap<>(this.getClient());
             ActorProvider.this.trackedChannels.put(channel, this);
         }
 
@@ -184,11 +184,11 @@ class ActorProvider {
         private IRCChannelSnapshot(String channel, Map<String, Set<ChannelUserMode>> modes, Map<String, IRCUser> nickMap, IRCClient client, boolean complete) {
             super(channel, client);
             this.complete = complete;
-            Map<String, Set<ChannelUserMode>> newModes = new LCKeyMap<>(client);
+            Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(client);
             newModes.putAll(modes);
             this.modes = Collections.unmodifiableMap(newModes);
             this.names = Collections.unmodifiableList(new ArrayList<>(this.modes.keySet()));
-            Map<String, User> newNickMap = new LCKeyMap<>(client);
+            Map<String, User> newNickMap = new CIKeyMap<>(client);
             nickMap.forEach((nick, user) -> newNickMap.put(nick, user.snapshot()));
             this.nickMap = Collections.unmodifiableMap(newNickMap);
             this.users = Collections.unmodifiableList(new ArrayList<>(this.nickMap.values()));
@@ -354,7 +354,7 @@ class ActorProvider {
 
     ActorProvider(IRCClient client) {
         this.client = client;
-        this.trackedChannels = new LCKeyMap<>(this.client);
+        this.trackedChannels = new CIKeyMap<>(this.client);
     }
 
     void channelTrack(IRCChannel channel) {
