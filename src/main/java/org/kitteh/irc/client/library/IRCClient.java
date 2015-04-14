@@ -640,6 +640,8 @@ final class IRCClient implements Client {
     private void handleLineNumeric(final ActorProvider.IRCActor actor, final int command, final String[] args) {
         switch (command) {
             case 1: // Welcome
+                // Use this to acquire the current nickname
+                this.currentNick = args[0];
                 break;
             case 2: // Your host is...
                 break;
