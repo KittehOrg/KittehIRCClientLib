@@ -672,7 +672,6 @@ final class IRCClient implements Client {
             case 266: // global users, max
                 break;
             case 315: // WHO completed
-                // Self is arg 0
                 if (this.serverInfo.isValidChannel(args[1])) { // target
                     this.actorProvider.getChannel(args[1]).setListReceived();
                     this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this, this.actorProvider.getChannel(args[1]).snapshot()));
@@ -690,7 +689,6 @@ final class IRCClient implements Client {
                 }
                 break;
             case 352: // WHO list
-                // Self is arg 0
                 if (this.serverInfo.isValidChannel(args[1])) {
                     final String channelName = args[1];
                     final String ident = args[2];
