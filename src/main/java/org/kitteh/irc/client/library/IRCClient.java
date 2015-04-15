@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
@@ -969,9 +970,10 @@ final class IRCClient implements Client {
                 break;
             case TOPIC:
                 ActorProvider.IRCChannel topicChannel = this.actorProvider.getChannel(args[0]);
+                User user = ((ActorProvider.IRCUser) actor).snapshot();
                 topicChannel.setTopic(args[1]);
-                topicChannel.setTopic(System.currentTimeMillis(), ((ActorProvider.IRCUser) actor).snapshot());
-                this.eventManager.callEvent(new ChannelTopicEvent(this, actor.snapshot(), topicChannel.snapshot(), args[1]));
+                topicChannel.setTopic(System.currentTimeMillis(), user);
+                this.eventManager.callEvent(new ChannelTopicEvent(this, user, topicChannel.snapshot(), args[1]));
                 break;
             default:
                 break;

@@ -24,8 +24,8 @@
 package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
 
 /**
@@ -33,7 +33,7 @@ import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
  * <p>
  * Either the topic has changed or we requested to know what the topic was.
  */
-public class ChannelTopicEvent extends ActorChannelMessageEvent<Actor> {
+public class ChannelTopicEvent extends ActorChannelMessageEvent<User> {
     /**
      * Creates the event.
      *
@@ -42,7 +42,7 @@ public class ChannelTopicEvent extends ActorChannelMessageEvent<Actor> {
      * @param channel channel the topic is about
      * @param message topic that has been set
      */
-    public ChannelTopicEvent(Client client, Actor sender, Channel channel, String message) {
+    public ChannelTopicEvent(Client client, User sender, Channel channel, String message) {
         super(client, sender, channel, message);
     }
 }
