@@ -99,6 +99,9 @@ class ActorProvider {
         private final Map<String, IRCUser> nickMap;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
+        private String topic;
+        private long topicTime;
+        private User topicUser;
         private volatile boolean tracked;
 
         private IRCChannel(String channel, IRCClient client) {
@@ -120,6 +123,17 @@ class ActorProvider {
             this.tracked = tracked;
         }
 
+        void setTopic(String topic) {
+            this.topic = topic;
+            this.topicTime = -1;
+            this.topicUser = null;
+        }
+
+        void setTopic(long time, User user) {
+            this.topicTime = time;
+            this.topicUser = user;
+        }
+
         IRCChannelSnapshot snapshot() {
             synchronized (this.modes) {
                 if (this.tracked && !this.fullListReceived) {
@@ -130,7 +144,8 @@ class ActorProvider {
                     }
                 }
             }
-            return new IRCChannelSnapshot(this.getName(), this.modes, this.nickMap, this.getClient(), this.fullListReceived);
+            Channel.Topic topic = new IRCChannelTopicSnapshot(this.topicTime, this.topic, this.topicUser);
+            return new IRCChannelSnapshot(this.getName(), this.modes, this.nickMap, this.getClient(), this.fullListReceived, topic);
         }
 
         void trackNick(String nick, Set<ChannelUserMode> modes) {
@@ -174,16 +189,45 @@ class ActorProvider {
         }
     }
 
+    class IRCChannelTopicSnapshot implements Channel.Topic {
+        private final long time;
+        private final String topic;
+        private final User user;
+
+        private IRCChannelTopicSnapshot(long time, String topic, User user) {
+            this.time = time;
+            this.topic = topic;
+            this.user = user;
+        }
+
+        @Override
+        public long getTime() {
+            return this.time;
+        }
+
+        @Override
+        public String getTopic() {
+            return this.topic;
+        }
+
+        @Override
+        public User getUser() {
+            return this.user;
+        }
+    }
+
     class IRCChannelSnapshot extends IRCMessageReceiverSnapshot implements Channel {
         private final Map<String, Set<ChannelUserMode>> modes;
         private final List<String> names;
         private final Map<String, User> nickMap;
         private final List<User> users;
         private final boolean complete;
+        private final Topic topic;
 
-        private IRCChannelSnapshot(String channel, Map<String, Set<ChannelUserMode>> modes, Map<String, IRCUser> nickMap, IRCClient client, boolean complete) {
+        private IRCChannelSnapshot(String channel, Map<String, Set<ChannelUserMode>> modes, Map<String, IRCUser> nickMap, IRCClient client, boolean complete, Topic topic) {
             super(channel, client);
             this.complete = complete;
+            this.topic = topic;
             Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(client);
             newModes.putAll(modes);
             this.modes = Collections.unmodifiableMap(newModes);
@@ -208,6 +252,11 @@ class ActorProvider {
         @Override
         public List<String> getNicknames() {
             return this.names;
+        }
+
+        @Override
+        public Topic getTopic() {
+            return this.topic;
         }
 
         @Override

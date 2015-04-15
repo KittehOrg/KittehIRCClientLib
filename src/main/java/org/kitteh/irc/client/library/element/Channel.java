@@ -35,6 +35,29 @@ import java.util.Set;
  * Represents an IRC channel.
  */
 public interface Channel extends MessageReceiver {
+    interface Topic {
+        /**
+         * Gets the time the topic was set.
+         *
+         * @return epoch time in milliseconds or -1 if unknown
+         */
+        long getTime();
+
+        /**
+         * Gets the channel topic.
+         *
+         * @return the topic
+         */
+        String getTopic();
+
+        /**
+         * Gets the user who set the channel topic.
+         *
+         * @return topic setter or null if unknown
+         */
+        User getUser();
+    }
+
     /**
      * Gets the latest snapshot of this channel.
      *
@@ -51,6 +74,13 @@ public interface Channel extends MessageReceiver {
      * @return nicks in the channel
      */
     List<String> getNicknames();
+
+    /**
+     * Gets the channel's topic.
+     *
+     * @return channel topic or null if unknown
+     */
+    Topic getTopic();
 
     /**
      * Gets a user by their nick, if they are known to the client. Note that

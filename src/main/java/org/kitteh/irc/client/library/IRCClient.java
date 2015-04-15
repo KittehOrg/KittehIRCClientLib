@@ -679,7 +679,14 @@ final class IRCClient implements Client {
                 break;
             // Channel info
             case 332: // Channel topic
+                if (this.serverInfo.isValidChannel(args[1])) {
+                    this.actorProvider.getChannel(args[1]).setTopic(args[2]);
+                }
+                break;
             case 333: // Topic set by
+                if (this.serverInfo.isValidChannel(args[1])) {
+                    this.actorProvider.getChannel(args[1]).setTopic(Long.parseLong(args[3]) * 1000, ((ActorProvider.IRCUser) this.actorProvider.getActor(args[2])).snapshot());
+                }
                 break;
             case 352: // WHO list
                 // Self is arg 0
@@ -961,7 +968,10 @@ final class IRCClient implements Client {
                 this.eventManager.callEvent(new ChannelInviteEvent(this, invitedChannel.snapshot(), actor.snapshot(), args[0]));
                 break;
             case TOPIC:
-                this.eventManager.callEvent(new ChannelTopicEvent(this, actor.snapshot(), this.actorProvider.getChannel(args[0]).snapshot(), args[1]));
+                ActorProvider.IRCChannel topicChannel = this.actorProvider.getChannel(args[0]);
+                topicChannel.setTopic(args[1]);
+                topicChannel.setTopic(System.currentTimeMillis(), ((ActorProvider.IRCUser) actor).snapshot());
+                this.eventManager.callEvent(new ChannelTopicEvent(this, actor.snapshot(), topicChannel.snapshot(), args[1]));
                 break;
             default:
                 break;
