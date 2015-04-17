@@ -92,7 +92,6 @@ public class CIKeyMap<Value> implements Map<String, Value> {
 
     @Override
     public Value put(String key, Value value) {
-        int sb = this.size();
         Pair<String, Value> pair = this.map.put(this.toLowerCase(key), new Pair<>(key, value));
         return pair == null ? null : pair.getRight();
     }
