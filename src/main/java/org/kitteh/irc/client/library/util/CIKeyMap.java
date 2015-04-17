@@ -28,113 +28,121 @@ import org.kitteh.irc.client.library.Client;
 
 import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * A threadsafe hash map with case insensitive keys, and a keySet and
- * entrySet that is not yet actually production ready.
+ * A threadsafe hash map with case insensitive keys.
  */
 public class CIKeyMap<Value> implements Map<String, Value> {
     private final Client client;
     private CaseMapping lastCaseMapping;
-    private final Map<String, String> keys = Collections.synchronizedMap(new WeakHashMap<>());
-    private final Map<String, Value> values = new ConcurrentHashMap<>();
+    private final Map<String, Pair<String, Value>> map = new ConcurrentHashMap<>();
 
     public CIKeyMap(Client client) {
         this.client = client;
     }
 
+    protected final synchronized String toLowerCase(String input) {
+        CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
+        if (caseMapping != this.lastCaseMapping) {
+            Set<Entry<String, Value>> entrySet = this.entrySet();
+            this.lastCaseMapping = caseMapping;
+            this.map.clear();
+            entrySet.forEach(entry -> this.put(entry.getKey(), entry.getValue()));
+        }
+        return caseMapping.toLowerCase(input);
+    }
+
     @Override
     public int size() {
-        return this.values.size();
+        return this.map.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return this.values.isEmpty();
+        return this.map.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return key instanceof String && this.values.containsKey(this.toLowerCase((String) key));
+        return key instanceof String && this.map.containsKey(this.toLowerCase((String) key));
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return this.values.containsValue(value);
+        for (Pair<String, Value> pair : this.map.values()) {
+            if (value == null ? pair.getRight() == null : pair.getRight().equals(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public Value get(Object key) {
-        return key instanceof String ? this.values.get(this.toLowerCase((String) key)) : null;
+        if (key instanceof String) {
+            Pair<String, Value> pair = this.map.get(this.toLowerCase((String) key));
+            return pair == null ? null : pair.getRight();
+        }
+        return null;
     }
 
     @Override
     public Value put(String key, Value value) {
-        this.keys.put(this.toLowerCase(key), key);
-        return this.values.put(this.toLowerCase(key), value);
+        int sb = this.size();
+        Pair<String, Value> pair = this.map.put(this.toLowerCase(key), new Pair<>(key, value));
+        return pair == null ? null : pair.getRight();
     }
 
     @Override
     public Value remove(Object key) {
         if (key instanceof String) {
-            String lc = this.toLowerCase((String) key);
-            this.keys.remove(lc);
-            return this.values.remove(lc);
-        } else {
-            return null;
+            Pair<String, Value> pair = this.map.remove(this.toLowerCase((String) key));
+            return pair == null ? null : pair.getRight();
         }
+        return null;
     }
 
     @Override
     public void putAll(Map<? extends String, ? extends Value> m) {
-        m.entrySet().forEach(entry -> this.put(entry.getKey(), entry.getValue())); // Lowercased via put
+        m.forEach(this::put);
     }
 
     @Override
     public void clear() {
-        this.keys.clear();
-        this.values.clear();
+        this.map.clear();
     }
 
+    /**
+     * Gets an UNCHANGING representation of the keys.
+     *
+     * @return set of keys
+     */
     @Override
     public Set<String> keySet() {
-        return this.values.keySet().stream().map(this.keys::get).collect(Collectors.toSet());
+        return this.map.values().stream().map(Pair::getLeft).collect(Collectors.toSet());
     }
 
+    /**
+     * Gets an UNCHANGING representation of the values.
+     *
+     * @return list of values
+     */
     @Override
     public Collection<Value> values() {
-        return this.values.values();
+        return this.map.values().stream().map(Pair::getRight).collect(Collectors.toList());
     }
 
+    /**
+     * Gets an UNCHANGING representation of the entries.
+     *
+     * @return set of entries
+     */
     @Override
     public Set<Entry<String, Value>> entrySet() {
-        return this.values.entrySet().stream().map(entry -> new AbstractMap.SimpleImmutableEntry<>(this.keys.get(entry.getKey()), entry.getValue())).collect(Collectors.toSet());
-    }
-
-    protected final synchronized String toLowerCase(String input) {
-        CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
-        if (caseMapping != this.lastCaseMapping) {
-            this.lastCaseMapping = caseMapping;
-            Iterator<Entry<String, Value>> i = this.entrySet().iterator();
-            Entry<String, Value> entry;
-            while (i.hasNext()) {
-                entry = i.next();
-                final String lowerKey = caseMapping.toLowerCase(entry.getKey());
-                if (!lowerKey.equals(entry.getKey())) {
-                    if (!this.values.containsKey(lowerKey)) {
-                        this.put(lowerKey, entry.getValue());
-                    }
-                    i.remove();
-                }
-            }
-        }
-        return caseMapping.toLowerCase(input);
+        return this.map.values().stream().map(pair -> new AbstractMap.SimpleImmutableEntry<>(pair.getLeft(), pair.getRight())).collect(Collectors.toSet());
     }
 }
