@@ -519,7 +519,7 @@ final class IRCClient implements Client {
      */
     void processLine(String line) {
         if (line.startsWith("PING ")) {
-            this.sendPriorityRawLine("PONG " + line.substring(5));
+            this.sendRawLineImmediately("PONG " + line.substring(5));
         } else {
             this.processor.queue(line);
         }
@@ -559,25 +559,25 @@ final class IRCClient implements Client {
                     authReclaim = "PRIVMSG NickServ :ghost " + name + " " + pass;
             }
             if (!this.currentNick.equals(this.goalNick) && authType.isNickOwned()) {
-                this.sendPriorityRawLine(authReclaim);
+                this.sendRawLineImmediately(authReclaim);
                 this.sendNickChange(this.goalNick);
             }
-            this.sendPriorityRawLine(auth);
+            this.sendRawLineImmediately(auth);
         }
     }
 
     void connect() {
         this.connection = NettyManager.connect(this);
 
-        this.sendPriorityRawLine("CAP LS");
+        this.sendRawLineImmediately("CAP LS");
 
         // If the server has a password, send that along first
         if (this.config.get(Config.SERVER_PASSWORD) != null) {
-            this.sendPriorityRawLine("PASS " + this.config.get(Config.SERVER_PASSWORD));
+            this.sendRawLineImmediately("PASS " + this.config.get(Config.SERVER_PASSWORD));
         }
 
         // Initial USER and NICK messages. Let's just assume we want +iw (send 8)
-        this.sendPriorityRawLine("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME));
+        this.sendRawLineImmediately("USER " + this.config.get(Config.USER) + " 8 * :" + this.config.get(Config.REAL_NAME));
         this.sendNickChange(this.goalNick);
     }
 
@@ -993,10 +993,6 @@ final class IRCClient implements Client {
 
     private void sendNickChange(String newnick) {
         this.requestedNick = newnick;
-        this.sendPriorityRawLine("NICK " + newnick);
-    }
-
-    private void sendPriorityRawLine(String message) {
-        this.connection.sendMessage(message, true);
+        this.sendRawLineImmediately("NICK " + newnick);
     }
 }
