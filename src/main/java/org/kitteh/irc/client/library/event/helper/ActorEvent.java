@@ -21,29 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.abstractbase;
+package org.kitteh.irc.client.library.event.helper;
 
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.helper.CapabilityNegotiaonResponseEvent;
+import org.kitteh.irc.client.library.element.Actor;
 
-public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase implements CapabilityNegotiaonResponseEvent {
-    private boolean endNegotiation = true;
-    private final boolean negotiating;
-
-    protected CapabilityNegotiationResponseEventBase(Client client, boolean negotiating) {
-        super(client);
-        this.negotiating = negotiating;
-    }
-
-    public final boolean isEndingNegotiation() {
-        return this.endNegotiation;
-    }
-
-    public final boolean isNegotiating() {
-        return this.negotiating;
-    }
-
-    public final void setEndingNegotiation(boolean endNegotiation) {
-        this.endNegotiation = endNegotiation;
-    }
+/**
+ * An event involving an {@link Actor}.
+ */
+public interface ActorEvent<A extends Actor> {
+    /**
+     * Gets the actor responsible for this event.
+     *
+     * @return the actor
+     */
+    A getActor();
 }

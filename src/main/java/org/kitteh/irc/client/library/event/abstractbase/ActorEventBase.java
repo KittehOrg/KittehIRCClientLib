@@ -25,11 +25,9 @@ package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.event.helper.ActorEvent;
 
-/**
- * Abstract event describing an {@link Actor} performing an action.
- */
-public abstract class ActorEventBase<A extends Actor> extends ClientEventBase {
+public abstract class ActorEventBase<A extends Actor> extends ClientEventBase implements ActorEvent<A> {
     private final A actor;
 
     protected ActorEventBase(Client client, A actor) {
@@ -37,11 +35,6 @@ public abstract class ActorEventBase<A extends Actor> extends ClientEventBase {
         this.actor = actor;
     }
 
-    /**
-     * Gets the actor who performed this action.
-     *
-     * @return the actor
-     */
     public final A getActor() {
         return this.actor;
     }

@@ -24,18 +24,16 @@
 package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.event.helper.ClientEvent;
 
-/**
- * Abstract event describing an event about a {@link Client}.
- */
-public abstract class ClientEventBase {
+public abstract class ClientEventBase implements ClientEvent {
     private final Client client;
 
     protected ClientEventBase(Client client) {
         this.client = client;
     }
 
-    public Client getClient() {
+    public final Client getClient() {
         return this.client;
     }
 }

@@ -25,12 +25,9 @@ package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.event.helper.MessageEvent;
 
-/**
- * Abstract event describing an {@link Actor} performing an action with a
- * message.
- */
-public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventBase<A> {
+public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventBase<A> implements MessageEvent {
     private final String message;
 
     protected ActorMessageEventBase(Client client, A actor, String message) {
@@ -38,11 +35,6 @@ public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventB
         this.message = message;
     }
 
-    /**
-     * Gets the sent message.
-     *
-     * @return the sent message
-     */
     public final String getMessage() {
         return this.message;
     }

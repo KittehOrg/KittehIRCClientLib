@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Abstract events for minimizing code duplication.
+ * Abstract events for minimizing code duplication, not guaranteed stable.
  */
 package org.kitteh.irc.client.library.event.abstractbase;

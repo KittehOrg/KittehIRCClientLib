@@ -25,11 +25,9 @@ package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 
-/**
- * Abstract event describing things in a {@link Channel}.
- */
-public abstract class ChannelEventBase extends ClientEventBase {
+public abstract class ChannelEventBase extends ClientEventBase implements ChannelEvent {
     private final Channel channel;
 
     protected ChannelEventBase(Client client, Channel channel) {
@@ -37,12 +35,7 @@ public abstract class ChannelEventBase extends ClientEventBase {
         this.channel = channel;
     }
 
-    /**
-     * Gets the channel involved in this event.
-     *
-     * @return the channel
-     */
-    public Channel getChannel() {
+    public final Channel getChannel() {
         return this.channel;
     }
 }

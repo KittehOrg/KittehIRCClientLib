@@ -21,29 +21,34 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.abstractbase;
+package org.kitteh.irc.client.library.event.helper;
 
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.helper.CapabilityNegotiaonResponseEvent;
+/**
+ * An event caused by a received response to capability handling.
+ */
+public interface CapabilityNegotiaonResponseEvent {
+    /**
+     * Gets if negotiation should end after this event fires, which can be
+     * changed via this event.
+     *
+     * @return true if negotiation will end after this event
+     * @see #setEndingNegotiation(boolean)
+     */
+    boolean isEndingNegotiation();
 
-public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase implements CapabilityNegotiaonResponseEvent {
-    private boolean endNegotiation = true;
-    private final boolean negotiating;
+    /**
+     * Gets if this event is fired during capability negotiation.
+     *
+     * @return true if negotiating capabilities
+     */
+    boolean isNegotiating();
 
-    protected CapabilityNegotiationResponseEventBase(Client client, boolean negotiating) {
-        super(client);
-        this.negotiating = negotiating;
-    }
-
-    public final boolean isEndingNegotiation() {
-        return this.endNegotiation;
-    }
-
-    public final boolean isNegotiating() {
-        return this.negotiating;
-    }
-
-    public final void setEndingNegotiation(boolean endNegotiation) {
-        this.endNegotiation = endNegotiation;
-    }
+    /**
+     * Sets if negotiation should end after this event fires. Note that if
+     * negotiation is not set to end, and {@link #isNegotiating()} is true,
+     * the connection will not complete.
+     *
+     * @param endNegotiation true if negotiation should end, false if not
+     */
+    void setEndingNegotiation(boolean endNegotiation);
 }
