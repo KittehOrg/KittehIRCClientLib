@@ -27,12 +27,12 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 
 /**
  * Fires when a message is sent to a subset of users in a channel.
  */
-public class ChannelTargetedMessageEvent extends ActorChannelMessageEvent<User> {
+public class ChannelTargetedMessageEvent extends ActorChannelMessageEventBase<User> {
     private final ChannelUserMode prefix;
 
     /**

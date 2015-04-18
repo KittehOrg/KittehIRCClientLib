@@ -25,7 +25,7 @@ package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorMessageEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
 /**
  * The client has received a CTCP message! There are a few (FINGER, PING,
@@ -35,7 +35,7 @@ import org.kitteh.irc.client.library.event.ActorMessageEvent;
  * <p>
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
-public class PrivateCTCPQueryEvent extends ActorMessageEvent<User> {
+public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
     private String reply;
 
     /**

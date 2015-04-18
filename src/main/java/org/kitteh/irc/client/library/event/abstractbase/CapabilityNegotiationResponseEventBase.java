@@ -21,18 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event;
+package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
 
 /**
  * CAP command handling.
  */
-public abstract class CapabilityNegotiationResponseEvent extends ClientEvent {
+public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase {
     private boolean endNegotiation = true;
     private final boolean negotiating;
 
-    protected CapabilityNegotiationResponseEvent(Client client, boolean negotiating) {
+    protected CapabilityNegotiationResponseEventBase(Client client, boolean negotiating) {
         super(client);
         this.negotiating = negotiating;
     }

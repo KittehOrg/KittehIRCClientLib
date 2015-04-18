@@ -25,12 +25,12 @@ package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.event.ChannelEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
 /**
  * Called after completion of a WHO command.
  */
-public class ChannelUsersUpdatedEvent extends ChannelEvent {
+public class ChannelUsersUpdatedEvent extends ChannelEventBase {
     /**
      * Constructs the event.
      *

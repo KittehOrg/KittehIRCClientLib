@@ -26,13 +26,13 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
 /**
  * A {@link User} has changed nickname!
  */
-public class UserNickChangeEvent extends ActorEvent<User> implements ChannelUserListChange {
+public class UserNickChangeEvent extends ActorEventBase<User> implements ChannelUserListChange {
     private final User newUser;
 
     /**

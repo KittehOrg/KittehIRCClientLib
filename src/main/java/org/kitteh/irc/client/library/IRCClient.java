@@ -27,7 +27,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
+import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesRejectedEvent;
@@ -802,7 +802,7 @@ final class IRCClient implements Client {
         }
         switch (command) {
             case CAP:
-                CapabilityNegotiationResponseEvent event = null;
+                CapabilityNegotiationResponseEventBase event = null;
                 List<CapabilityState> capabilityStateList = Arrays.stream(args[2].split(" ")).map(CapabilityState::new).collect(Collectors.toList());
                 switch (args[1].toLowerCase()) {
                     case "ack":

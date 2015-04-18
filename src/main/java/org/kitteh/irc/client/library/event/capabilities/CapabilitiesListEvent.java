@@ -25,7 +25,7 @@ package org.kitteh.irc.client.library.event.capabilities;
 
 import org.kitteh.irc.client.library.CapabilityState;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.ClientEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Fired when a CAP LIST is received, listing the current capabilities
  */
-public class CapabilitiesListEvent extends ClientEvent {
+public class CapabilitiesListEvent extends ClientEventBase {
     private final List<CapabilityState> capabilities;
 
     public CapabilitiesListEvent(Client client, List<CapabilityState> capabilities) {

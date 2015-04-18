@@ -24,12 +24,12 @@
 package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.ClientEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 
 /**
  * The {@link Client} has disconnected from the server.
  */
-public class ClientConnectionClosedEvent extends ClientEvent {
+public class ClientConnectionClosedEvent extends ClientEventBase {
     private final boolean reconnecting;
 
     /**

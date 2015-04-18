@@ -24,13 +24,13 @@
 package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.ClientEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
 /**
  * The server has rejected your nick choice.
  */
-public class NickRejectedEvent extends ClientEvent {
+public class NickRejectedEvent extends ClientEventBase {
     private final String attemptedNick;
     private String newNick;
 

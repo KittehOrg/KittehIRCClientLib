@@ -26,12 +26,12 @@ package org.kitteh.irc.client.library.event.channel;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 
 /**
  * Fires when a message is sent to a channel.
  */
-public class ChannelMessageEvent extends ActorChannelMessageEvent<User> {
+public class ChannelMessageEvent extends ActorChannelMessageEventBase<User> {
     /**
      * Creates the event.
      *

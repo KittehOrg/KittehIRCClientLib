@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event;
+package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
@@ -30,10 +30,10 @@ import org.kitteh.irc.client.library.element.Actor;
  * Abstract event describing an {@link Actor} performing an action with a
  * message.
  */
-public abstract class ActorMessageEvent<A extends Actor> extends ActorEvent<A> {
+public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventBase<A> {
     private final String message;
 
-    protected ActorMessageEvent(Client client, A actor, String message) {
+    protected ActorMessageEventBase(Client client, A actor, String message) {
         super(client, actor);
         this.message = message;
     }

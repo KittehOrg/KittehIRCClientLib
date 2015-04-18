@@ -26,13 +26,13 @@ package org.kitteh.irc.client.library.event.channel;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorChannelEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
 /**
  * A {@link User} has joined a {@link Channel}!
  */
-public class ChannelJoinEvent extends ActorChannelEvent<User> implements ChannelUserListChange {
+public class ChannelJoinEvent extends ActorChannelEventBase<User> implements ChannelUserListChange {
     /**
      * Creates the event.
      *

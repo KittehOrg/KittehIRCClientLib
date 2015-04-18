@@ -25,13 +25,13 @@ package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorMessageEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
 /**
  * The client has received a reply to a CTCP query! The method
  * {@link #getMessage()} returns the message with the delimiter (1) removed.
  */
-public class PrivateCTCPReplyEvent extends ActorMessageEvent<User> {
+public class PrivateCTCPReplyEvent extends ActorMessageEventBase<User> {
     /**
      * Creates the event.
      *

@@ -21,28 +21,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event;
+package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 
 /**
- * Abstract event describing things in a {@link Channel}.
+ * Abstract event describing an {@link Actor} performing an action in a
+ * {@link Channel}.
  */
-public abstract class ChannelEvent extends ClientEvent {
+public abstract class ActorChannelEventBase<A extends Actor> extends ActorEventBase<A> {
     private final Channel channel;
 
-    protected ChannelEvent(Client client, Channel channel) {
-        super(client);
+    protected ActorChannelEventBase(Client client, A actor, Channel channel) {
+        super(client, actor);
         this.channel = channel;
     }
 
     /**
-     * Gets the channel involved in this event.
+     * Gets the channel in which the action occured.
      *
      * @return the channel
      */
-    public Channel getChannel() {
+    public final Channel getChannel() {
         return this.channel;
     }
 }

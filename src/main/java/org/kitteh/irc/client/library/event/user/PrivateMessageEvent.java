@@ -25,12 +25,12 @@ package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorMessageEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
 /**
  * Fires when a message is sent to the client.
  */
-public class PrivateMessageEvent extends ActorMessageEvent<User> {
+public class PrivateMessageEvent extends ActorMessageEventBase<User> {
     /**
      * Creates the event.
      *

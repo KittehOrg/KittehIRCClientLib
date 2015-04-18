@@ -21,28 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event;
-
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
-
 /**
- * Abstract event describing an {@link Actor} performing an action.
+ * Abstract events for minimizing code duplication.
  */
-public abstract class ActorEvent<A extends Actor> extends ClientEvent {
-    private final A actor;
-
-    protected ActorEvent(Client client, A actor) {
-        super(client);
-        this.actor = actor;
-    }
-
-    /**
-     * Gets the actor who performed this action.
-     *
-     * @return the actor
-     */
-    public final A getActor() {
-        return this.actor;
-    }
-}
+package org.kitteh.irc.client.library.event.abstractbase;

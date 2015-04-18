@@ -21,39 +21,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.channel;
+package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 
 /**
- * A {@link User} has invited somebody to a {@link Channel}!
+ * Abstract event describing an {@link Actor} performing an action with a
+ * message in a {@link Channel}.
  */
-public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
-    private final String target;
+public abstract class ActorChannelMessageEventBase<A extends Actor> extends ActorChannelEventBase<A> {
+    private final String message;
 
-    /**
-     * Creates the event.
-     *
-     * @param client client for which this is occurring
-     * @param channel the channel
-     * @param actor the actor inviting another
-     * @param target the nick invited
-     */
-    public ChannelInviteEvent(Client client, Channel channel, Actor actor, String target) {
+    protected ActorChannelMessageEventBase(Client client, A actor, Channel channel, String message) {
         super(client, actor, channel);
-        this.target = target;
+        this.message = message;
     }
 
     /**
-     * Gets the invited nick.
+     * Gets the sent message.
      *
-     * @return the nickname of the invited user
+     * @return the sent message
      */
-    public String getTarget() {
-        return this.target;
+    public final String getMessage() {
+        return this.message;
     }
 }

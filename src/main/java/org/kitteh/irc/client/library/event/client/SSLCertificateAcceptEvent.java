@@ -24,7 +24,7 @@
 package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.ClientEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
@@ -35,7 +35,7 @@ import java.security.cert.X509Certificate;
  * X509TrustManager#checkServerTrusted}. Instead of throwing an exception,
  * just use {@link #setDenied} and one will be thrown for you.
  */
-public class SSLCertificateAcceptEvent extends ClientEvent {
+public class SSLCertificateAcceptEvent extends ClientEventBase {
     private final String authType;
     private final X509Certificate[] chain;
     private boolean denied = false;

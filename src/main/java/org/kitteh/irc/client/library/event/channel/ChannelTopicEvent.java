@@ -26,14 +26,14 @@ package org.kitteh.irc.client.library.event.channel;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 
 /**
  * The server has informed us of a channel's topic.
  * <p>
  * Either the topic has changed or we requested to know what the topic was.
  */
-public class ChannelTopicEvent extends ActorChannelMessageEvent<User> {
+public class ChannelTopicEvent extends ActorChannelMessageEventBase<User> {
     /**
      * Creates the event.
      *

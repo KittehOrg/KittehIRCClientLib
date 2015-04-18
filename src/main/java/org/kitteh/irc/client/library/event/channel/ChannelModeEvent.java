@@ -28,12 +28,12 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorChannelEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 
 /**
  * Channel a la mode.
  */
-public class ChannelModeEvent extends ActorChannelEvent<Actor> {
+public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
     private final boolean setting;
     private final char mode;
     private final String arg;

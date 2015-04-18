@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Only abstract classes exist at this level.
+ * Events! Stuff happening!
  */
 package org.kitteh.irc.client.library.event;

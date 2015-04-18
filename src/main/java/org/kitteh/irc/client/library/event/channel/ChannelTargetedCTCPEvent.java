@@ -27,14 +27,14 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.ActorChannelMessageEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 
 /**
  * Fires when a CTCP message is sent to a subset of users in a channel. The
  * method {@link #getMessage()} returns the message with the delimiter
  * character (1) removed.
  */
-public class ChannelTargetedCTCPEvent extends ActorChannelMessageEvent<User> {
+public class ChannelTargetedCTCPEvent extends ActorChannelMessageEventBase<User> {
     private final ChannelUserMode prefix;
 
     /**

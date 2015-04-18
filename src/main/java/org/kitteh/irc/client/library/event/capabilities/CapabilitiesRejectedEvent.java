@@ -25,7 +25,7 @@ package org.kitteh.irc.client.library.event.capabilities;
 
 import org.kitteh.irc.client.library.CapabilityState;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.CapabilityNegotiationResponseEvent;
+import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Fired when a CAP NAK is received.
  */
-public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEvent {
+public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEventBase {
     private final List<CapabilityState> rejectedCapabilitiesRequest;
 
     public CapabilitiesRejectedEvent(Client client, boolean negotiating, List<CapabilityState> rejectedCapabilitiesRequest) {
