@@ -56,7 +56,7 @@ import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.exception.KittehISupportProcessingFailureException;
-import org.kitteh.irc.client.library.util.LCSet;
+import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
@@ -272,8 +272,8 @@ final class IRCClient implements Client {
     private String currentNick;
     private String requestedNick;
 
-    private final Set<String> channels = new LCSet(this);
-    private final Set<String> channelsIntended = new LCSet(this);
+    private final Set<String> channels = new CISet(this);
+    private final Set<String> channelsIntended = new CISet(this);
 
     private NettyManager.ClientConnection connection;
 
