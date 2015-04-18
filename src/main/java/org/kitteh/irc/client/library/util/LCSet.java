@@ -34,7 +34,10 @@ import java.util.stream.Collectors;
 
 /**
  * A threadsafe, automagically lowercased Set.
+ *
+ * @deprecated Removal after 0.2.4 release. Replaced by {@link CISet}.
  */
+@Deprecated
 public class LCSet extends CopyOnWriteArraySet<String> {
     private final Client client;
     private CaseMapping lastCaseMapping;

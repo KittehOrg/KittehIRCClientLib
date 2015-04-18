@@ -32,7 +32,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A threadsafe hash map with lowercased keys.
+ *
+ * @deprecated Removal after 0.2.4 release. Replaced by {@link CIKeyMap}.
  */
+@Deprecated
 public class LCKeyMap<Value> extends ConcurrentHashMap<String, Value> {
     private final Client client;
     private CaseMapping lastCaseMapping;
