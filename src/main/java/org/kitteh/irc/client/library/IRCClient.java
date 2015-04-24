@@ -575,9 +575,9 @@ final class IRCClient implements Client {
         if (this.config.get(Config.WEBIRC_PASSWORD) != null && this.config.get(Config.WEBIRC_USER) != null && this.config.get(Config.WEBIRC_HOST) != null && this.config.get(Config.WEBIRC_IP) != null) {
             this.sendPriorityRawLine(
                 "WEBIRC "
-                + this.config.get(Config.WEBIRC_PASSWORD)
-                + this.config.get(Config.WEBIRC_USER)
-                + this.config.get(Config.WEBIRC_HOST)
+                + this.config.get(Config.WEBIRC_PASSWORD) + " "
+                + this.config.get(Config.WEBIRC_USER) + " "
+                + this.config.get(Config.WEBIRC_HOST) + " "
                 + this.config.get(Config.WEBIRC_IP)
             );
         }
