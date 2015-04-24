@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
@@ -294,6 +295,39 @@ public final class ClientBuilder implements Cloneable {
         Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
         Sanity.safeMessageCheck(user, "user");
         this.config.set(Config.USER, user);
+        return this;
+    }
+
+    /**
+     * Sets all the information for, and enables, WebIRC.
+     * <p>
+     * By default, WebIRC is disabled.
+     *
+     * @param password password as defined in the IRCd config
+     * @param user username part of the client's address
+     * @param host hostname part of the client's address
+     * @param ip client's IP address
+     * @return this builder
+     */
+    public ClientBuilder webirc(String password, String user, String host, InetAddress ip) {
+        Sanity.nullCheck(password, "Password cannot be null");
+        Sanity.nullCheck(user, "User cannot be null");
+        Sanity.nullCheck(host, "Host cannot be null");
+        Sanity.nullCheck(ip, "IP cannot be null");
+
+        Sanity.truthiness(!password.contains(" "), "Password cannot contain spaces");
+        Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
+        Sanity.truthiness(!host.contains(" "), "Host cannot contain spaces");
+
+        Sanity.safeMessageCheck(password, "password");
+        Sanity.safeMessageCheck(user, "user");
+        Sanity.safeMessageCheck(host, "host");
+
+        this.config.set(Config.WEBIRC_PASSWORD, password);
+        this.config.set(Config.WEBIRC_USER, user);
+        this.config.set(Config.WEBIRC_HOST, host);
+        this.config.set(Config.WEBIRC_IP, ip);
+
         return this;
     }
 

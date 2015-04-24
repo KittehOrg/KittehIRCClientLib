@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,6 +111,10 @@ final class Config {
     static final Entry<File> SSL_KEY = new Entry<>(null, File.class);
     static final Entry<String> SSL_KEY_PASSWORD = new Entry<>(null, String.class);
     static final Entry<String> USER = new Entry<>("Kitteh", String.class);
+    static final Entry<String> WEBIRC_HOST = new Entry<>(null, String.class);
+    static final Entry<InetAddress> WEBIRC_IP = new Entry<>(null, InetAddress.class);
+    static final Entry<String> WEBIRC_PASSWORD = new Entry<>(null, String.class);
+    static final Entry<String> WEBIRC_USER = new Entry<>(null, String.class);
 
     /**
      * Magical null value for {@link java.util.concurrent.ConcurrentHashMap}.
