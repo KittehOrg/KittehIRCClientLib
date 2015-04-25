@@ -57,6 +57,7 @@ public enum IRCFormat {
     private String toString;
 
     IRCFormat(char ch) {
+        this.color = -1;
         this.toString = String.valueOf(ch);
     }
 
@@ -92,6 +93,16 @@ public enum IRCFormat {
      */
     public boolean isColor() {
         return this.isColor;
+    }
+
+    /**
+     * Gets the int value for the color, if this is a color.
+     *
+     * @return color int or -1 if not a color
+     * @see #isColor()
+     */
+    public int getColorChar() {
+        return this.color;
     }
 
     @Override
