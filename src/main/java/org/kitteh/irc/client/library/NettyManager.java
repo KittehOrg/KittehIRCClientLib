@@ -201,31 +201,30 @@ final class NettyManager {
         }
     }
 
-    private static final Bootstrap bootstrap = new Bootstrap();
-    private static EventLoopGroup eventLoopGroup = null;
+    private static Bootstrap bootstrap;
+    private static EventLoopGroup eventLoopGroup;
     private static final Set<ClientConnection> connections = new HashSet<>();
-
-    static {
-        bootstrap.channel(NioSocketChannel.class);
-        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            public void initChannel(SocketChannel channel) throws Exception {
-                // NOOP
-            }
-        });
-        bootstrap.option(ChannelOption.TCP_NODELAY, true);
-    }
 
     private static synchronized void removeClientConnection(ClientConnection connection, boolean reconnecting) {
         connections.remove(connection);
         if (!reconnecting && connections.isEmpty()) {
             eventLoopGroup.shutdownGracefully();
             eventLoopGroup = null;
+            bootstrap = null;
         }
     }
 
     synchronized static ClientConnection connect(IRCClient client) {
-        if (eventLoopGroup == null) {
+        if (bootstrap == null) {
+            bootstrap = new Bootstrap();
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                public void initChannel(SocketChannel channel) throws Exception {
+                    // NOOP
+                }
+            });
+            bootstrap.option(ChannelOption.TCP_NODELAY, true);
             eventLoopGroup = new NioEventLoopGroup();
             bootstrap.group(eventLoopGroup);
         }
