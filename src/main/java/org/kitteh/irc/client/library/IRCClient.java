@@ -579,6 +579,7 @@ final class IRCClient implements Client {
             builder.append(this.config.get(Config.WEBIRC_USER)).append(' ');
             builder.append(this.config.get(Config.WEBIRC_HOST)).append(' ');
             builder.append(this.config.get(Config.WEBIRC_IP).getHostAddress());
+            this.sendRawLineImmediately(builder.toString());
         }
 
         // If the server has a password, send that along before USER and NICK.
