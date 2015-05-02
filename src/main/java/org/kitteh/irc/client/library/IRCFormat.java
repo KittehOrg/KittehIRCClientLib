@@ -122,4 +122,22 @@ public enum IRCFormat {
         Sanity.truthiness(background.isColor, "Cannot use non-color background");
         return this.toString() + "," + background.color;
     }
+
+    private static final IRCFormat[] RAINBOW = {RED, BROWN, OLIVE, YELLOW, DARK_GREEN, GREEN, TEAL, BLUE, MAGENTA, PURPLE};
+    /**
+     * Adds rainbow colors to every character of a message
+     *
+     * @param message The message to color
+     * @return The colorized message
+     */
+    public static String rainbowize(String message) {
+        Sanity.nullCheck(message, "Can't rainbowize a null message :(");
+
+        StringBuilder builder = new StringBuilder(message.length() * 3);
+        for (int i = 0; i < message.length(); i++) {
+            builder.append(RAINBOW[i % RAINBOW.length].toString());
+            builder.append(message.charAt(i));
+        }
+        return builder.toString();
+    }
 }
