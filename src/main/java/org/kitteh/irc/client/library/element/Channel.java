@@ -37,6 +37,13 @@ import java.util.Set;
 public interface Channel extends MessageReceiver {
     interface Topic {
         /**
+         * Gets who set the channel topic.
+         *
+         * @return topic setter or null if unknown
+         */
+        Actor getSetter();
+
+        /**
          * Gets the time the topic was set.
          *
          * @return epoch time in milliseconds or -1 if unknown
@@ -49,13 +56,6 @@ public interface Channel extends MessageReceiver {
          * @return the topic
          */
         String getTopic();
-
-        /**
-         * Gets the user who set the channel topic.
-         *
-         * @return topic setter or null if unknown
-         */
-        User getUser();
     }
 
     /**

@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
-import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
@@ -696,7 +696,7 @@ final class IRCClient implements Client {
                 break;
             case 333: // Topic set by
                 if (this.serverInfo.isValidChannel(args[1])) {
-                    this.actorProvider.getChannel(args[1]).setTopic(Long.parseLong(args[3]) * 1000, ((ActorProvider.IRCUser) this.actorProvider.getActor(args[2])).snapshot());
+                    this.actorProvider.getChannel(args[1]).setTopic(Long.parseLong(args[3]) * 1000, this.actorProvider.getActor(args[2]).snapshot());
                 }
                 break;
             case 352: // WHO list
@@ -979,10 +979,10 @@ final class IRCClient implements Client {
                 break;
             case TOPIC:
                 ActorProvider.IRCChannel topicChannel = this.actorProvider.getChannel(args[0]);
-                User user = ((ActorProvider.IRCUser) actor).snapshot();
+                Actor setter = actor.snapshot();
                 topicChannel.setTopic(args[1]);
-                topicChannel.setTopic(System.currentTimeMillis(), user);
-                this.eventManager.callEvent(new ChannelTopicEvent(this, user, topicChannel.snapshot(), args[1]));
+                topicChannel.setTopic(System.currentTimeMillis(), setter);
+                this.eventManager.callEvent(new ChannelTopicEvent(this, setter, topicChannel.snapshot(), args[1]));
                 break;
             default:
                 break;

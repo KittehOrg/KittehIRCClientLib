@@ -100,8 +100,8 @@ class ActorProvider {
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
+        private Actor topicSetter;
         private long topicTime;
-        private User topicUser;
         private volatile boolean tracked;
 
         private IRCChannel(String channel, IRCClient client) {
@@ -126,12 +126,12 @@ class ActorProvider {
         void setTopic(String topic) {
             this.topic = topic;
             this.topicTime = -1;
-            this.topicUser = null;
+            this.topicSetter = null;
         }
 
-        void setTopic(long time, User user) {
+        void setTopic(long time, Actor user) {
             this.topicTime = time;
-            this.topicUser = user;
+            this.topicSetter = user;
         }
 
         IRCChannelSnapshot snapshot() {
@@ -144,7 +144,7 @@ class ActorProvider {
                     }
                 }
             }
-            Channel.Topic topic = new IRCChannelTopicSnapshot(this.topicTime, this.topic, this.topicUser);
+            Channel.Topic topic = new IRCChannelTopicSnapshot(this.topicTime, this.topic, this.topicSetter);
             return new IRCChannelSnapshot(this.getName(), this.modes, this.nickMap, this.getClient(), this.fullListReceived, topic);
         }
 
@@ -190,14 +190,19 @@ class ActorProvider {
     }
 
     class IRCChannelTopicSnapshot implements Channel.Topic {
+        private final Actor setter;
         private final long time;
         private final String topic;
-        private final User user;
 
-        private IRCChannelTopicSnapshot(long time, String topic, User user) {
+        private IRCChannelTopicSnapshot(long time, String topic, Actor setter) {
             this.time = time;
             this.topic = topic;
-            this.user = user;
+            this.setter = setter;
+        }
+
+        @Override
+        public Actor getSetter() {
+            return this.setter;
         }
 
         @Override
@@ -208,11 +213,6 @@ class ActorProvider {
         @Override
         public String getTopic() {
             return this.topic;
-        }
-
-        @Override
-        public User getUser() {
-            return this.user;
         }
     }
 
