@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.event.helper;
 /**
  * An event caused by a received response to capability handling.
  */
-public interface CapabilityNegotiaonResponseEvent {
+public interface CapabilityNegotiationResponseEvent {
     /**
      * Gets if negotiation should end after this event fires, which can be
      * changed via this event.

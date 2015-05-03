@@ -24,9 +24,9 @@
 package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.helper.CapabilityNegotiaonResponseEvent;
+import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 
-public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase implements CapabilityNegotiaonResponseEvent {
+public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase implements CapabilityNegotiationResponseEvent {
     private boolean endNegotiation = true;
     private final boolean negotiating;
 
