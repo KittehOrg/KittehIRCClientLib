@@ -148,9 +148,13 @@ final class NettyManager {
         }
 
         void sendMessage(String message, boolean priority) {
+            this.sendMessage(message, priority, false);
+        }
+
+        void sendMessage(String message, boolean priority, boolean avoidDuplicates) {
             if (priority) {
                 this.channel.writeAndFlush(message);
-            } else {
+            } else if (!avoidDuplicates || !this.queue.contains(message)) {
                 this.queue.add(message);
             }
         }

@@ -140,7 +140,7 @@ class ActorProvider {
                     long now = System.currentTimeMillis();
                     if (now - this.lastWho > 5000) {
                         this.lastWho = now;
-                        this.getClient().sendRawLine("WHO " + this.getName());
+                        this.getClient().sendRawLineAvoidingDuplication("WHO " + this.getName());
                     }
                 }
             }

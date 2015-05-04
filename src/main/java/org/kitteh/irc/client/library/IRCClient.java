@@ -596,6 +596,10 @@ final class IRCClient implements Client {
         this.sendRawLine("PING :" + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
     }
 
+    void sendRawLineAvoidingDuplication(String message) {
+        this.connection.sendMessage(message, false, true);
+    }
+
     private String[] handleArgs(String[] split, int start) {
         final List<String> argsList = new LinkedList<>();
 
