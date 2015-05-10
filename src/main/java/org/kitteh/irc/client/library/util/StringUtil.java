@@ -23,10 +23,14 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.kitteh.irc.client.library.IRCFormat;
+
 /**
  * String tools!
  */
 public final class StringUtil {
+    private static final IRCFormat[] DEFAULT_RAINBOW = {IRCFormat.RED, IRCFormat.BROWN, IRCFormat.OLIVE, IRCFormat.YELLOW, IRCFormat.DARK_GREEN, IRCFormat.GREEN, IRCFormat.TEAL, IRCFormat.BLUE, IRCFormat.MAGENTA, IRCFormat.PURPLE};
+
     /**
      * Combines an array into a super string!
      * <p>
@@ -69,5 +73,46 @@ public final class StringUtil {
     public static String combineSplit(String[] split, int start) {
         Sanity.nullCheck((Object) split, "Cannot combine a null array");
         return StringUtil.combineSplit(split, start, split.length - start, " ");
+    }
+
+    /**
+     * Turns a message into a rainbow.
+     *
+     * @param message message to become rainbow
+     * @return the colorful new message
+     * @throws IllegalArgumentException for null message
+     */
+    public static String makeRainbow(String message) {
+        return StringUtil.makeRainbow(message, DEFAULT_RAINBOW);
+    }
+
+    /**
+     * Turns a message into a rainbow.
+     *
+     * @param message message to become rainbow
+     * @param colorOrder order of colors to send
+     * @return the colorful new message
+     * @throws IllegalArgumentException for null parameters, null entries in
+     * array, or non-color entries in array
+     */
+    public static String makeRainbow(String message, IRCFormat[] colorOrder) {
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message);
+        Sanity.nullCheck(colorOrder, "Color order cannot be null");
+        for (IRCFormat format : colorOrder) {
+            if (!format.isColor()) {
+                throw new IllegalArgumentException("Color order must contain only colors");
+            }
+        }
+
+        StringBuilder builder = new StringBuilder(message.length() * 3);
+        int count = 0;
+        for (char c : message.toCharArray()) {
+            if (!(c == ' ' || c == '\t')) {
+                builder.append(colorOrder[count++ % colorOrder.length].toString());
+            }
+            builder.append(c);
+        }
+        return builder.toString();
     }
 }
