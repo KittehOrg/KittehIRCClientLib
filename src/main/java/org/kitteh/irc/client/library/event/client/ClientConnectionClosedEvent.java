@@ -26,6 +26,8 @@ package org.kitteh.irc.client.library.event.client;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 
+import javax.annotation.Nonnull;
+
 /**
  * The {@link Client} has disconnected from the server.
  */
@@ -38,7 +40,7 @@ public class ClientConnectionClosedEvent extends ClientEventBase {
      * @param client client for which this is occurring
      * @param reconnecting true if the client plans to reconnect
      */
-    public ClientConnectionClosedEvent(Client client, boolean reconnecting) {
+    public ClientConnectionClosedEvent(@Nonnull Client client, boolean reconnecting) {
         super(client);
         this.reconnecting = reconnecting;
     }

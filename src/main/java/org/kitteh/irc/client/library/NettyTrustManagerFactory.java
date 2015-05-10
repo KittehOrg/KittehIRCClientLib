@@ -27,6 +27,7 @@ import io.netty.handler.ssl.util.SimpleTrustManagerFactory;
 import io.netty.util.internal.EmptyArrays;
 import org.kitteh.irc.client.library.event.client.SSLCertificateAcceptEvent;
 
+import javax.annotation.Nonnull;
 import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -42,7 +43,7 @@ final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
         }
 
         @Override
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        public void checkServerTrusted(@Nonnull X509Certificate[] chain, @Nonnull String authType) throws CertificateException {
             SSLCertificateAcceptEvent event = new SSLCertificateAcceptEvent(NettyTrustManagerFactory.this.client, authType, chain);
             NettyTrustManagerFactory.this.client.getEventManager().callEvent(event);
             if (event.isDenied()) {
@@ -50,6 +51,7 @@ final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
             }
         }
 
+        @Nonnull
         @Override
         public X509Certificate[] getAcceptedIssuers() {
             return EmptyArrays.EMPTY_X509_CERTIFICATES;
@@ -59,11 +61,12 @@ final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
     private final Client client;
     private final TrustManager trustManager;
 
-    NettyTrustManagerFactory(Client client) {
+    NettyTrustManagerFactory(@Nonnull Client client) {
         this.client = client;
         this.trustManager = new EventTrustManager();
     }
 
+    @Nonnull
     @Override
     protected TrustManager[] engineGetTrustManagers() {
         return new TrustManager[]{this.trustManager};

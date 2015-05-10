@@ -26,15 +26,20 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
 
 public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventBase<A> implements MessageEvent {
     private final String message;
 
-    protected ActorMessageEventBase(Client client, A actor, String message) {
+    protected ActorMessageEventBase(@Nonnull Client client, @Nonnull A actor, @Nonnull String message) {
         super(client, actor);
+        Sanity.nullCheck(message, "Message cannot be null");
         this.message = message;
     }
 
+    @Nonnull
     public final String getMessage() {
         return this.message;
     }

@@ -26,7 +26,9 @@ package org.kitteh.irc.client.library.event.capabilities;
 import org.kitteh.irc.client.library.CapabilityState;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,8 +38,9 @@ import java.util.List;
 public class CapabilitiesSupportedListEvent extends CapabilityNegotiationResponseEventBase {
     private final List<CapabilityState> supportedCapabilities;
 
-    public CapabilitiesSupportedListEvent(Client client, boolean negotiating, List<CapabilityState> supportedCapabilities) {
+    public CapabilitiesSupportedListEvent(@Nonnull Client client, boolean negotiating, @Nonnull List<CapabilityState> supportedCapabilities) {
         super(client, negotiating);
+        Sanity.nullCheck(supportedCapabilities, "Capabilities list cannot be null");
         this.supportedCapabilities = Collections.unmodifiableList(supportedCapabilities);
     }
 
@@ -46,6 +49,7 @@ public class CapabilitiesSupportedListEvent extends CapabilityNegotiationRespons
      *
      * @return supported capabilities
      */
+    @Nonnull
     public List<CapabilityState> getSupportedCapabilities() {
         return this.supportedCapabilities;
     }

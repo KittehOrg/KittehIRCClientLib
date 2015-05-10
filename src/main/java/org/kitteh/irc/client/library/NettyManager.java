@@ -50,6 +50,8 @@ import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import java.io.File;
 import java.net.SocketAddress;
@@ -69,7 +71,7 @@ final class NettyManager {
         private ScheduledFuture<?> scheduledSending;
         private final Object scheduledSendingLock = new Object();
 
-        private ClientConnection(final IRCClient client, ChannelFuture future) {
+        private ClientConnection(@Nonnull final IRCClient client, @Nonnull ChannelFuture future) {
             this.client = client;
             this.channel = future.channel();
 
@@ -147,11 +149,11 @@ final class NettyManager {
             });
         }
 
-        void sendMessage(String message, boolean priority) {
+        void sendMessage(@Nonnull String message, boolean priority) {
             this.sendMessage(message, priority, false);
         }
 
-        void sendMessage(String message, boolean priority, boolean avoidDuplicates) {
+        void sendMessage(@Nonnull String message, boolean priority, boolean avoidDuplicates) {
             if (priority) {
                 this.channel.writeAndFlush(message);
             } else if (!avoidDuplicates || !this.queue.contains(message)) {
@@ -159,7 +161,7 @@ final class NettyManager {
             }
         }
 
-        void shutdown(String message) {
+        void shutdown(@Nullable String message) {
             this.shutdown(message, false);
         }
 
@@ -190,7 +192,7 @@ final class NettyManager {
             }
         }
 
-        private void shutdown(String message, boolean reconnect) {
+        private void shutdown(@Nullable String message, boolean reconnect) {
             this.reconnect = reconnect;
 
             final StringBuilder quitBuilder = new StringBuilder();
@@ -209,7 +211,7 @@ final class NettyManager {
     private static EventLoopGroup eventLoopGroup;
     private static final Set<ClientConnection> connections = new HashSet<>();
 
-    private static synchronized void removeClientConnection(ClientConnection connection, boolean reconnecting) {
+    private static synchronized void removeClientConnection(@Nonnull ClientConnection connection, boolean reconnecting) {
         connections.remove(connection);
         if (!reconnecting && connections.isEmpty()) {
             eventLoopGroup.shutdownGracefully();
@@ -218,7 +220,7 @@ final class NettyManager {
         }
     }
 
-    synchronized static ClientConnection connect(IRCClient client) {
+    synchronized static ClientConnection connect(@Nonnull IRCClient client) {
         if (bootstrap == null) {
             bootstrap = new Bootstrap();
             bootstrap.channel(NioSocketChannel.class);

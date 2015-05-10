@@ -28,6 +28,10 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A {@link User} has changed nickname!
@@ -42,16 +46,19 @@ public class UserNickChangeEvent extends ActorEventBase<User> implements Channel
      * @param user user changing name
      * @param newUser the new nickname
      */
-    public UserNickChangeEvent(Client client, User user, User newUser) {
+    public UserNickChangeEvent(@Nonnull Client client, @Nonnull User user, @Nonnull User newUser) {
         super(client, user);
+        Sanity.nullCheck(newUser, "User cannot be null");
         this.newUser = newUser;
     }
 
+    @Nonnull
     @Override
     public Change getChange() {
         return Change.NICK_CHANGE;
     }
 
+    @Nullable
     @Override
     public Channel getChannel() {
         return null;
@@ -62,10 +69,12 @@ public class UserNickChangeEvent extends ActorEventBase<User> implements Channel
      *
      * @return the user's new nickname
      */
+    @Nonnull
     public User getNewUser() {
         return this.newUser;
     }
 
+    @Nonnull
     @Override
     public User getUser() {
         return this.getActor();

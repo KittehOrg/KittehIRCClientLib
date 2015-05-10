@@ -26,6 +26,8 @@ package org.kitteh.irc.client.library.util;
 import org.kitteh.irc.client.library.CaseMapping;
 import org.kitteh.irc.client.library.Client;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
@@ -46,7 +48,8 @@ public class CIKeyMap<Value> implements Map<String, Value> {
         this.client = client;
     }
 
-    protected final synchronized String toLowerCase(String input) {
+    @Nonnull
+    protected final synchronized String toLowerCase(@Nonnull String input) {
         CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
         if (caseMapping != this.lastCaseMapping) {
             Set<Entry<String, Value>> entrySet = this.entrySet();
@@ -68,22 +71,23 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(@Nullable Object key) {
         return key instanceof String && this.map.containsKey(this.toLowerCase((String) key));
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(@Nullable Object value) {
         for (Pair<String, Value> pair : this.map.values()) {
-            if (value == null ? pair.getRight() == null : pair.getRight().equals(value)) {
+            if (value == null ? pair.getRight() == null : value.equals(pair.getRight())) {
                 return true;
             }
         }
         return false;
     }
 
+    @Nullable
     @Override
-    public Value get(Object key) {
+    public Value get(@Nullable Object key) {
         if (key instanceof String) {
             Pair<String, Value> pair = this.map.get(this.toLowerCase((String) key));
             return pair == null ? null : pair.getRight();
@@ -91,14 +95,17 @@ public class CIKeyMap<Value> implements Map<String, Value> {
         return null;
     }
 
+    @Nullable
     @Override
-    public Value put(String key, Value value) {
+    public Value put(@Nonnull String key, @Nullable Value value) {
+        Sanity.nullCheck(key, "Key cannot be null");
         Pair<String, Value> pair = this.map.put(this.toLowerCase(key), new Pair<>(key, value));
         return pair == null ? null : pair.getRight();
     }
 
+    @Nullable
     @Override
-    public Value remove(Object key) {
+    public Value remove(@Nullable Object key) {
         if (key instanceof String) {
             Pair<String, Value> pair = this.map.remove(this.toLowerCase((String) key));
             return pair == null ? null : pair.getRight();
@@ -107,7 +114,8 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends Value> m) {
+    public void putAll(@Nonnull Map<? extends String, ? extends Value> m) {
+        Sanity.nullCheck(m, "Map cannot be null");
         m.forEach(this::put);
     }
 
@@ -121,6 +129,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return set of keys
      */
+    @Nonnull
     @Override
     public Set<String> keySet() {
         return this.map.values().stream().map(Pair::getLeft).collect(Collectors.toSet());
@@ -131,6 +140,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return list of values
      */
+    @Nonnull
     @Override
     public Collection<Value> values() {
         return this.map.values().stream().map(Pair::getRight).collect(Collectors.toList());
@@ -141,6 +151,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return set of entries
      */
+    @Nonnull
     @Override
     public Set<Entry<String, Value>> entrySet() {
         return this.map.values().stream().map(pair -> new AbstractMap.SimpleImmutableEntry<>(pair.getLeft(), pair.getRight())).collect(Collectors.toSet());

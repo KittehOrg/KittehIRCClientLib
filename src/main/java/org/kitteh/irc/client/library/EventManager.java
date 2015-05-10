@@ -31,7 +31,9 @@ import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.exception.KittehEventException;
+import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +44,7 @@ import java.util.Set;
 public final class EventManager {
     private class Exceptional implements IPublicationErrorHandler {
         @Override
-        public void handleError(PublicationError publicationError) {
+        public void handleError(@Nonnull PublicationError publicationError) {
             EventManager.this.client.getExceptionListener().queue(new KittehEventException(publicationError.getCause()));
         }
     }
@@ -51,7 +53,7 @@ public final class EventManager {
     private final IRCClient client;
     private final Set<Object> listeners = new HashSet<>();
 
-    EventManager(IRCClient client) {
+    EventManager(@Nonnull IRCClient client) {
         this.client = client;
     }
 
@@ -59,8 +61,10 @@ public final class EventManager {
      * Calls an event, triggering any registered methods for the event class.
      *
      * @param event event to call
+     * @throws IllegalArgumentException for a null event
      */
-    public void callEvent(Object event) {
+    public void callEvent(@Nonnull Object event) {
+        Sanity.nullCheck(event, "Event cannot be null");
         this.bus.publish(event);
     }
 
@@ -69,6 +73,7 @@ public final class EventManager {
      *
      * @return a set of objects
      */
+    @Nonnull
     public synchronized Set<Object> getRegisteredEventListeners() {
         return new HashSet<>(this.listeners);
     }
@@ -78,8 +83,9 @@ public final class EventManager {
      * provided they have a single parameter. This parameter is the event.
      *
      * @param listener listener in which to register events
+     * @throws IllegalArgumentException for a null listener
      */
-    public synchronized void registerEventListener(Object listener) {
+    public synchronized void registerEventListener(@Nonnull Object listener) {
         this.listeners.add(listener);
         this.bus.subscribe(listener);
     }
@@ -88,8 +94,9 @@ public final class EventManager {
      * Unregisters a listener.
      *
      * @param listener listener to unregister
+     * @throws IllegalArgumentException for a null listener
      */
-    public synchronized void unregisterEventListener(Object listener) {
+    public synchronized void unregisterEventListener(@Nonnull Object listener) {
         this.listeners.remove(listener);
         this.bus.unsubscribe(listener);
     }

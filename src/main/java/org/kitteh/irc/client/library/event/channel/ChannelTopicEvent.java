@@ -28,6 +28,8 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 
+import javax.annotation.Nonnull;
+
 /**
  * The server has informed us of a channel's topic.
  * <p>
@@ -42,7 +44,7 @@ public class ChannelTopicEvent extends ActorChannelMessageEventBase<Actor> {
      * @param channel channel the topic is about
      * @param message topic that has been set
      */
-    public ChannelTopicEvent(Client client, Actor setter, Channel channel, String message) {
+    public ChannelTopicEvent(@Nonnull Client client, @Nonnull Actor setter, @Nonnull Channel channel, @Nonnull String message) {
         super(client, setter, channel, message);
     }
 }

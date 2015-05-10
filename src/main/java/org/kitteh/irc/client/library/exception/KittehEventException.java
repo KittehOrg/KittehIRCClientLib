@@ -23,11 +23,13 @@
  */
 package org.kitteh.irc.client.library.exception;
 
+import javax.annotation.Nullable;
+
 /**
  * Thrown in reaction to exceptions in event processing.
  */
 public class KittehEventException extends Exception {
-    public KittehEventException(Throwable cause) {
+    public KittehEventException(@Nullable Throwable cause) {
         super(cause);
     }
 }

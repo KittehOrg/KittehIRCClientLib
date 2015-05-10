@@ -25,14 +25,19 @@ package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
 
 public abstract class ClientEventBase implements ClientEvent {
     private final Client client;
 
-    protected ClientEventBase(Client client) {
+    protected ClientEventBase(@Nonnull Client client) {
+        Sanity.nullCheck(client, "Client cannot be null");
         this.client = client;
     }
 
+    @Nonnull
     public final Client getClient() {
         return this.client;
     }

@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -45,7 +47,7 @@ final class Config {
         private final Type defaultValue;
         private final Class<Type> type;
 
-        private Entry(Type defaultValue, Class<Type> type) {
+        private Entry(@Nullable Type defaultValue, @Nonnull Class<Type> type) {
             this.defaultValue = defaultValue;
             this.type = type;
         }
@@ -55,6 +57,7 @@ final class Config {
          *
          * @return the default value
          */
+        @Nullable
         private Type getDefault() {
             return this.defaultValue;
         }
@@ -64,6 +67,7 @@ final class Config {
          *
          * @return the entry type
          */
+        @Nonnull
         private Class<Type> getType() {
             return this.type;
         }
@@ -72,23 +76,24 @@ final class Config {
     static abstract class Wrapper<Type> {
         private final Consumer<Type> consumer;
 
-        Wrapper(Consumer<Type> consumer) {
+        Wrapper(@Nonnull Consumer<Type> consumer) {
             this.consumer = consumer;
         }
 
+        @Nonnull
         Consumer<Type> getConsumer() {
             return this.consumer;
         }
     }
 
     static final class ExceptionConsumerWrapper extends Wrapper<Exception> {
-        ExceptionConsumerWrapper(Consumer<Exception> consumer) {
+        ExceptionConsumerWrapper(@Nonnull Consumer<Exception> consumer) {
             super(consumer);
         }
     }
 
     static final class StringConsumerWrapper extends Wrapper<String> {
-        StringConsumerWrapper(Consumer<String> consumer) {
+        StringConsumerWrapper(@Nonnull Consumer<String> consumer) {
             super(consumer);
         }
     }
@@ -124,6 +129,7 @@ final class Config {
 
     private final Map<Entry<?>, Object> map = new ConcurrentHashMap<>();
 
+    @Nonnull
     @Override
     protected Config clone() {
         Config config = new Config();
@@ -138,6 +144,7 @@ final class Config {
      * @param <Type> entry type
      * @return the stored entry, or the default value if not set
      */
+    @Nullable
     <Type> Type get(Entry<Type> entry) {
         if (this.map.containsKey(entry)) {
             Object uncastValue = this.map.get(entry);
@@ -158,7 +165,7 @@ final class Config {
      * @param value value to set for the given entry
      * @param <Type> entry type
      */
-    <Type> void set(Entry<Type> entry, Type value) {
+    <Type> void set(@Nonnull Entry<Type> entry, @Nullable Type value) {
         this.map.put(entry, value != null ? value : NULL);
     }
 }

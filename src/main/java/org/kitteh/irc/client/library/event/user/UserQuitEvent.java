@@ -29,6 +29,9 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A {@link User} has quit the server!
  */
@@ -40,20 +43,23 @@ public class UserQuitEvent extends ActorMessageEventBase<User> implements Channe
      * @param user user quitting
      * @param message message the user left
      */
-    public UserQuitEvent(Client client, User user, String message) {
+    public UserQuitEvent(@Nonnull Client client, @Nonnull User user, @Nonnull String message) {
         super(client, user, message);
     }
 
+    @Nonnull
     @Override
     public Change getChange() {
         return Change.LEAVE;
     }
 
+    @Nullable
     @Override
     public Channel getChannel() {
         return null;
     }
 
+    @Nonnull
     @Override
     public User getUser() {
         return this.getActor();

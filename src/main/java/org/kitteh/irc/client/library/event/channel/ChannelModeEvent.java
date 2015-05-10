@@ -30,6 +30,9 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Channel a la mode.
  */
@@ -50,7 +53,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * @param channelUserMode prefix mode if such
      * @param arg the argument presented for the mode
      */
-    public ChannelModeEvent(Client client, Actor actor, Channel channel, boolean setting, char mode, ChannelUserMode channelUserMode, String arg) {
+    public ChannelModeEvent(@Nonnull Client client, @Nonnull Actor actor, @Nonnull Channel channel, boolean setting, char mode, @Nullable ChannelUserMode channelUserMode, @Nullable String arg) {
         super(client, actor, channel);
         this.setting = setting;
         this.mode = mode;
@@ -63,6 +66,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      *
      * @return the mode argument, or null if no argument
      */
+    @Nullable
     public String getArgument() {
         return this.arg;
     }
@@ -83,6 +87,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * @see #isPrefix()
      * @see #getPrefixedUser()
      */
+    @Nullable
     public ChannelUserMode getPrefix() {
         return this.channelUserMode;
     }
@@ -95,8 +100,9 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * @see #isPrefix()
      * @see #getPrefix()
      */
+    @Nullable
     public User getPrefixedUser() {
-        return this.isPrefix() ? this.getChannel().getUser(this.arg) : null;
+        return this.isPrefix() && this.arg != null ? this.getChannel().getUser(this.arg) : null;
     }
 
     /**

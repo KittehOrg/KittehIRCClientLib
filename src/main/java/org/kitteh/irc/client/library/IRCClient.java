@@ -61,6 +61,8 @@ import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -84,7 +86,7 @@ final class IRCClient implements Client {
         }
 
         @Override
-        protected void processElement(String element) {
+        protected void processElement(@Nullable String element) {
             try {
                 IRCClient.this.handleLine(element);
             } catch (final Throwable thrown) {
@@ -98,7 +100,7 @@ final class IRCClient implements Client {
     private enum ISupport {
         CASEMAPPING {
             @Override
-            boolean process(String value, IRCClient client) {
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
                 CaseMapping caseMapping = CaseMapping.getByName(value);
                 if (caseMapping != null) {
                     client.serverInfo.setCaseMapping(caseMapping);
@@ -109,7 +111,7 @@ final class IRCClient implements Client {
         },
         CHANNELLEN {
             @Override
-            boolean process(String value, IRCClient client) {
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
                 try {
                     client.serverInfo.setChannelLengthLimit(Integer.parseInt(value));
                     return true;
@@ -120,7 +122,7 @@ final class IRCClient implements Client {
         },
         CHANLIMIT {
             @Override
-            boolean process(String value, IRCClient client) {
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
                 String[] pairs = value.split(",");
                 Map<Character, Integer> limits = new HashMap<>();
                 for (String p : pairs) {
@@ -147,7 +149,7 @@ final class IRCClient implements Client {
         },
         CHANMODES {
             @Override
-            boolean process(String value, IRCClient client) {
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
                 String[] modes = value.split(",");
                 Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
                 for (int typeId = 0; typeId < modes.length; typeId++) {
@@ -175,7 +177,7 @@ final class IRCClient implements Client {
         },
         CHANTYPES {
             @Override
-            boolean process(String value, IRCClient client) {
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
                 if (value.isEmpty()) {
                     return false;
                 }
@@ -189,14 +191,14 @@ final class IRCClient implements Client {
         },
         NETWORK {
             @Override
-            boolean process(String value, IRCClient client) {
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
                 client.serverInfo.setNetworkName(value);
                 return true;
             }
         },
         NICKLEN {
             @Override
-            boolean process(String value, IRCClient client) {
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
                 try {
                     client.serverInfo.setNickLengthLimit(Integer.parseInt(value));
                     return true;
@@ -209,7 +211,7 @@ final class IRCClient implements Client {
             final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
             @Override
-            boolean process(String value, IRCClient client) {
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
                 Matcher matcher = PATTERN.matcher(value);
                 if (!matcher.find()) {
                     return false;
@@ -237,7 +239,7 @@ final class IRCClient implements Client {
             }
         }
 
-        private static void handle(String arg, IRCClient client) {
+        private static void handle(@Nonnull String arg, @Nonnull IRCClient client) {
             Matcher matcher = PATTERN.matcher(arg);
             if (!matcher.find()) {
                 return;
@@ -251,7 +253,7 @@ final class IRCClient implements Client {
             }
         }
 
-        abstract boolean process(String value, IRCClient client);
+        abstract boolean process(@Nonnull String value, @Nonnull IRCClient client);
     }
 
     private enum MessageTarget {
@@ -286,7 +288,7 @@ final class IRCClient implements Client {
 
     private final ActorProvider actorProvider = new ActorProvider(this);
 
-    IRCClient(Config config) {
+    IRCClient(@Nonnull Config config) {
         this.config = config;
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
@@ -304,7 +306,7 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void addChannel(String... channels) {
+    public void addChannel(@Nonnull String... channels) {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (String channelName : channels) {
@@ -317,7 +319,7 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void addChannel(Channel... channels) {
+    public void addChannel(@Nonnull Channel... channels) {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (Channel channel : channels) {
@@ -329,21 +331,26 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public Channel getChannel(String name) {
+    @Nullable
+    public Channel getChannel(@Nonnull String name) {
+        Sanity.nullCheck(name, "Channel name cannot be null");
         ActorProvider.IRCChannel channel = this.actorProvider.getChannel(name);
         return channel == null ? null : channel.snapshot();
     }
 
+    @Nonnull
     @Override
     public Set<Channel> getChannels() {
         return this.channels.stream().map(this.actorProvider::getChannel).map(ActorProvider.IRCChannel::snapshot).collect(Collectors.toSet());
     }
 
+    @Nonnull
     @Override
     public EventManager getEventManager() {
         return this.eventManager;
     }
 
+    @Nonnull
     @Override
     public String getIntendedNick() {
         return this.goalNick;
@@ -354,23 +361,26 @@ final class IRCClient implements Client {
         return this.config.get(Config.MESSAGE_DELAY);
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return this.config.get(Config.NAME);
     }
 
+    @Nonnull
     @Override
     public String getNick() {
         return this.currentNick;
     }
 
+    @Nonnull
     @Override
     public IRCServerInfo getServerInfo() {
         return this.serverInfo;
     }
 
     @Override
-    public void removeChannel(String channelName, String reason) {
+    public void removeChannel(@Nonnull String channelName, @Nullable String reason) {
         Sanity.nullCheck(channelName, "Channel cannot be null");
         ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
         if (channel != null) {
@@ -379,7 +389,7 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void removeChannel(Channel channel, String reason) {
+    public void removeChannel(@Nonnull Channel channel, @Nullable String reason) {
         Sanity.nullCheck(channel, "Channel cannot be null");
         if (reason != null) {
             Sanity.safeMessageCheck(reason, "part reason");
@@ -392,7 +402,7 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void sendCTCPMessage(String target, String message) {
+    public void sendCTCPMessage(@Nonnull String target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.safeMessageCheck(message, "target");
         Sanity.nullCheck(message, "Message cannot be null");
@@ -402,13 +412,13 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void sendCTCPMessage(MessageReceiver target, String message) {
+    public void sendCTCPMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendCTCPMessage(target.getMessagingName(), message);
     }
 
     @Override
-    public void sendMessage(String target, String message) {
+    public void sendMessage(@Nonnull String target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.safeMessageCheck(message, "target");
         Sanity.nullCheck(message, "Message cannot be null");
@@ -418,13 +428,13 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void sendMessage(MessageReceiver target, String message) {
+    public void sendMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendMessage(target.getMessagingName(), message);
     }
 
     @Override
-    public void sendNotice(String target, String message) {
+    public void sendNotice(@Nonnull String target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.safeMessageCheck(message, "target");
         Sanity.nullCheck(message, "Message cannot be null");
@@ -434,32 +444,34 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void sendNotice(MessageReceiver target, String message) {
+    public void sendNotice(@Nonnull MessageReceiver target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendNotice(target.getMessagingName(), message);
     }
 
     @Override
-    public void sendRawLine(String message) {
+    public void sendRawLine(@Nonnull String message) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
         this.connection.sendMessage(message, false);
     }
 
     @Override
-    public void sendRawLineAvoidingDuplication(String message) {
+    public void sendRawLineAvoidingDuplication(@Nonnull String message) {
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message);
         this.connection.sendMessage(message, false, true);
     }
 
     @Override
-    public void sendRawLineImmediately(String message) {
+    public void sendRawLineImmediately(@Nonnull String message) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
         this.connection.sendMessage(message, true);
     }
 
     @Override
-    public void setAuth(AuthType authType, String name, String pass) {
+    public void setAuth(@Nonnull AuthType authType, @Nonnull String name, @Nonnull String pass) {
         Sanity.nullCheck(authType, "Auth type cannot be null!");
         Sanity.nullCheck(name, "Name cannot be null!");
         Sanity.safeMessageCheck(name, "authentication name");
@@ -471,12 +483,12 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void setExceptionListener(Consumer<Exception> listener) {
+    public void setExceptionListener(@Nullable Consumer<Exception> listener) {
         this.exceptionListener.setConsumer(listener);
     }
 
     @Override
-    public void setInputListener(Consumer<String> listener) {
+    public void setInputListener(@Nullable Consumer<String> listener) {
         this.inputListener.setConsumer(listener);
     }
 
@@ -490,7 +502,7 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void setNick(String nick) {
+    public void setNick(@Nonnull String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
         Sanity.safeMessageCheck(nick, "nick");
         this.goalNick = nick.trim();
@@ -498,12 +510,12 @@ final class IRCClient implements Client {
     }
 
     @Override
-    public void setOutputListener(Consumer<String> listener) {
+    public void setOutputListener(@Nullable Consumer<String> listener) {
         this.outputListener.setConsumer(listener);
     }
 
     @Override
-    public void shutdown(String reason) {
+    public void shutdown(@Nullable String reason) {
         if (reason != null) {
             Sanity.safeMessageCheck(reason, "quit reason");
         }
@@ -522,7 +534,7 @@ final class IRCClient implements Client {
      *
      * @param line line to be processed
      */
-    void processLine(String line) {
+    void processLine(@Nonnull String line) {
         if (line.startsWith("PING ")) {
             this.sendRawLineImmediately("PONG " + line.substring(5));
         } else {
@@ -530,18 +542,22 @@ final class IRCClient implements Client {
         }
     }
 
+    @Nonnull
     Config getConfig() {
         return this.config;
     }
 
+    @Nonnull
     Listener<Exception> getExceptionListener() {
         return this.exceptionListener;
     }
 
+    @Nonnull
     Listener<String> getInputListener() {
         return this.inputListener;
     }
 
+    @Nonnull
     Listener<String> getOutputListener() {
         return this.outputListener;
     }
@@ -601,7 +617,7 @@ final class IRCClient implements Client {
         this.sendRawLine("PING :" + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
     }
 
-    private String[] handleArgs(String[] split, int start) {
+    private String[] handleArgs(@Nonnull String[] split, int start) {
         final List<String> argsList = new LinkedList<>();
 
         int index = start;
@@ -617,7 +633,7 @@ final class IRCClient implements Client {
         return argsList.toArray(new String[argsList.size()]);
     }
 
-    private void handleLine(final String line) {
+    private void handleLine(@Nullable final String line) {
         if ((line == null) || (line.length() == 0)) {
             return;
         }
@@ -654,7 +670,7 @@ final class IRCClient implements Client {
         }
     }
 
-    private void handleLineNumeric(final ActorProvider.IRCActor actor, final int command, final String[] args) {
+    private void handleLineNumeric(@Nonnull final ActorProvider.IRCActor actor, final int command, @Nonnull final String[] args) {
         switch (command) {
             case 1: // Welcome
                 // Use this to acquire the current nickname
@@ -688,20 +704,23 @@ final class IRCClient implements Client {
             case 266: // global users, max
                 break;
             case 315: // WHO completed
-                if (this.serverInfo.isValidChannel(args[1])) { // target
-                    this.actorProvider.getChannel(args[1]).setListReceived();
-                    this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this, this.actorProvider.getChannel(args[1]).snapshot()));
+                ActorProvider.IRCChannel whoChannel = this.actorProvider.getChannel(args[1]);
+                if (whoChannel != null) {
+                    whoChannel.setListReceived();
+                    this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this, whoChannel.snapshot()));
                 }
                 break;
             // Channel info
             case 332: // Channel topic
-                if (this.serverInfo.isValidChannel(args[1])) {
-                    this.actorProvider.getChannel(args[1]).setTopic(args[2]);
+                ActorProvider.IRCChannel topicChannel = this.actorProvider.getChannel(args[1]);
+                if (topicChannel != null) {
+                    topicChannel.setTopic(args[2]);
                 }
                 break;
             case 333: // Topic set by
-                if (this.serverInfo.isValidChannel(args[1])) {
-                    this.actorProvider.getChannel(args[1]).setTopic(Long.parseLong(args[3]) * 1000, this.actorProvider.getActor(args[2]).snapshot());
+                ActorProvider.IRCChannel topicSetChannel = this.actorProvider.getChannel(args[1]);
+                if (topicSetChannel != null) {
+                    topicSetChannel.setTopic(Long.parseLong(args[3]) * 1000, this.actorProvider.getActor(args[2]).snapshot());
                 }
                 break;
             case 352: // WHO list
@@ -773,7 +792,7 @@ final class IRCClient implements Client {
         }
     }
 
-    private void handleLineCommand(final ActorProvider.IRCActor actor, final Command command, final String[] args) {
+    private void handleLineCommand(@Nonnull final ActorProvider.IRCActor actor, @Nonnull final Command command, @Nonnull final String[] args) {
         // CTCP
         if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(args[1])) {
             final String ctcpMessage = CTCPUtil.fromCTCP(args[1]);
@@ -994,7 +1013,7 @@ final class IRCClient implements Client {
         }
     }
 
-    private MessageTarget getTypeByTarget(String target) {
+    private MessageTarget getTypeByTarget(@Nonnull String target) {
         if (this.currentNick.equalsIgnoreCase(target)) {
             return MessageTarget.PRIVATE;
         }
@@ -1007,7 +1026,7 @@ final class IRCClient implements Client {
         return MessageTarget.UNKNOWN;
     }
 
-    private void sendNickChange(String newnick) {
+    private void sendNickChange(@Nonnull String newnick) {
         this.requestedNick = newnick;
         this.sendRawLineImmediately("NICK " + newnick);
     }

@@ -26,7 +26,9 @@ package org.kitteh.irc.client.library.event.capabilities;
 import org.kitteh.irc.client.library.CapabilityState;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,8 +38,9 @@ import java.util.List;
 public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEventBase {
     private final List<CapabilityState> rejectedCapabilitiesRequest;
 
-    public CapabilitiesRejectedEvent(Client client, boolean negotiating, List<CapabilityState> rejectedCapabilitiesRequest) {
+    public CapabilitiesRejectedEvent(@Nonnull Client client, boolean negotiating, @Nonnull List<CapabilityState> rejectedCapabilitiesRequest) {
         super(client, negotiating);
+        Sanity.nullCheck(rejectedCapabilitiesRequest, "Capabilities list cannot be null");
         this.rejectedCapabilitiesRequest = Collections.unmodifiableList(rejectedCapabilitiesRequest);
     }
 
@@ -46,6 +49,7 @@ public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEven
      *
      * @return rejected request list
      */
+    @Nonnull
     public List<CapabilityState> getRejectedCapabilitiesRequest() {
         return this.rejectedCapabilitiesRequest;
     }

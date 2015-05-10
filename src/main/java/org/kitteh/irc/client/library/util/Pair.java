@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import javax.annotation.Nullable;
+
 /**
  * A pair of objects!
  *
@@ -39,7 +41,7 @@ public final class Pair<Left, Right> {
      * @param left first object
      * @param right second object
      */
-    public Pair(Left left, Right right) {
+    public Pair(@Nullable Left left, @Nullable Right right) {
         this.left = left;
         this.right = right;
     }
@@ -49,6 +51,7 @@ public final class Pair<Left, Right> {
      *
      * @return first object
      */
+    @Nullable
     public Left getLeft() {
         return this.left;
     }
@@ -58,6 +61,7 @@ public final class Pair<Left, Right> {
      *
      * @return second object
      */
+    @Nullable
     public Right getRight() {
         return this.right;
     }

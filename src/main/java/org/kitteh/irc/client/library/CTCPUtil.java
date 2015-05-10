@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library;
 
+import javax.annotation.Nonnull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,7 +74,8 @@ class CTCPUtil {
      * @param message message to convert
      * @return converted message
      */
-    static String fromCTCP(String message) {
+    @Nonnull
+    static String fromCTCP(@Nonnull String message) {
         message = message.substring(1); // Strip the starting delimiter
         message = message.substring(0, message.indexOf(CTCP_DELIMITER)); // Strip the second delimiter
         StringBuilder builder = new StringBuilder();
@@ -122,7 +124,7 @@ class CTCPUtil {
      * @param message message to test
      * @return true if the message is a CTCP message
      */
-    static boolean isCTCP(String message) {
+    static boolean isCTCP(@Nonnull String message) {
         return CTCP_MESSAGE.matcher(message).matches();
     }
 
@@ -132,7 +134,8 @@ class CTCPUtil {
      * @param message message to convert
      * @return converted message
      */
-    static String toCTCP(String message) {
+    @Nonnull
+    static String toCTCP(@Nonnull String message) {
         StringBuilder builder = new StringBuilder();
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;

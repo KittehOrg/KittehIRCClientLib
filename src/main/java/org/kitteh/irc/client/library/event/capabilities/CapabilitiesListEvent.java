@@ -26,7 +26,9 @@ package org.kitteh.irc.client.library.event.capabilities;
 import org.kitteh.irc.client.library.CapabilityState;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,8 +38,9 @@ import java.util.List;
 public class CapabilitiesListEvent extends ClientEventBase {
     private final List<CapabilityState> capabilities;
 
-    public CapabilitiesListEvent(Client client, List<CapabilityState> capabilities) {
+    public CapabilitiesListEvent(@Nonnull Client client, @Nonnull List<CapabilityState> capabilities) {
         super(client);
+        Sanity.nullCheck(capabilities, "Capabilities list cannot be null");
         this.capabilities = Collections.unmodifiableList(capabilities);
     }
 
@@ -46,6 +49,7 @@ public class CapabilitiesListEvent extends ClientEventBase {
      *
      * @return list of capabilities
      */
+    @Nonnull
     public List<CapabilityState> getCapabilities() {
         return this.capabilities;
     }

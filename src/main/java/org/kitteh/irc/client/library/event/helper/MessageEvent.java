@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import javax.annotation.Nonnull;
+
 /**
  * An event involving a message.
  */
@@ -32,5 +34,6 @@ public interface MessageEvent {
      *
      * @return the message
      */
+    @Nonnull
     String getMessage();
 }

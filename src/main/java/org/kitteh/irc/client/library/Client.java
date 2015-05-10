@@ -28,6 +28,8 @@ import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -41,8 +43,9 @@ public interface Client {
      * Joins the channel if already connected.
      *
      * @param channel channel(s) to add
+     * @throws IllegalArgumentException if null
      */
-    void addChannel(String... channel);
+    void addChannel(@Nonnull String... channel);
 
     /**
      * Adds channels to this client.
@@ -50,23 +53,28 @@ public interface Client {
      * Joins the channel if already connected.
      *
      * @param channel channel(s) to add
+     * @throws IllegalArgumentException if null
      */
-    void addChannel(Channel... channel);
+    void addChannel(@Nonnull Channel... channel);
 
     /**
      * Gets the named channel.
      *
      * @param name channel name
-     * @return a channel snapshot of the named channel
+     * @return a channel snapshot of the named channel or null if no longer
+     * known to the Client
+     * @throws IllegalArgumentException if name is null
      * @see #getChannels()
      */
-    Channel getChannel(String name);
+    @Nullable
+    Channel getChannel(@Nonnull String name);
 
     /**
      * Gets the channels in which the client is currently present.
      *
      * @return the client's current channels
      */
+    @Nonnull
     Set<Channel> getChannels();
 
     /**
@@ -74,6 +82,7 @@ public interface Client {
      *
      * @return the event manager for this client
      */
+    @Nonnull
     EventManager getEventManager();
 
     /**
@@ -85,6 +94,7 @@ public interface Client {
      *
      * @return the nickname the client tries to maintain
      */
+    @Nonnull
     String getIntendedNick();
 
     /**
@@ -102,6 +112,7 @@ public interface Client {
      *
      * @return the client name
      */
+    @Nonnull
     String getName();
 
     /**
@@ -109,6 +120,7 @@ public interface Client {
      *
      * @return the current nick
      */
+    @Nonnull
     String getNick();
 
     /**
@@ -120,23 +132,26 @@ public interface Client {
      *
      * @return the server information object
      */
+    @Nonnull
     ServerInfo getServerInfo();
 
     /**
      * Removes a channel from the client, leaving as necessary.
      *
      * @param channel channel to leave
-     * @param reason part reason
+     * @param reason part reason or null to not send a reason
+     * @throws IllegalArgumentException if channel is null
      */
-    void removeChannel(String channel, String reason);
+    void removeChannel(@Nonnull String channel, @Nullable String reason);
 
     /**
      * Removes a channel from the client, leaving as necessary.
      *
      * @param channel channel to leave
-     * @param reason part reason
+     * @param reason part reason or null to not send a reason
+     * @throws IllegalArgumentException if channel is null
      */
-    void removeChannel(Channel channel, String reason);
+    void removeChannel(@Nonnull Channel channel, @Nullable String reason);
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
@@ -148,8 +163,9 @@ public interface Client {
      *
      * @param target the destination of the message
      * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
      */
-    void sendCTCPMessage(String target, String message);
+    void sendCTCPMessage(@Nonnull String target, @Nonnull String message);
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
@@ -161,55 +177,62 @@ public interface Client {
      *
      * @param target the destination of the message
      * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
      */
-    void sendCTCPMessage(MessageReceiver target, String message);
+    void sendCTCPMessage(@Nonnull MessageReceiver target, @Nonnull String message);
 
     /**
      * Sends a message to a target user or channel.
      *
      * @param target the destination of the message
      * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
      */
-    void sendMessage(String target, String message);
+    void sendMessage(@Nonnull String target, @Nonnull String message);
 
     /**
      * Sends a message to a target user or channel.
      *
      * @param target the destination of the message
      * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
      */
-    void sendMessage(MessageReceiver target, String message);
+    void sendMessage(@Nonnull MessageReceiver target, @Nonnull String message);
 
     /**
      * Sends a notice to a target user or channel.
      *
      * @param target the destination of the message
      * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
      */
-    void sendNotice(String target, String message);
+    void sendNotice(@Nonnull String target, @Nonnull String message);
 
     /**
      * Sends a notice to a target user or channel.
      *
      * @param target the destination of the message
      * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
      */
-    void sendNotice(MessageReceiver target, String message);
+    void sendNotice(@Nonnull MessageReceiver target, @Nonnull String message);
 
     /**
      * Sends a raw IRC message.
      *
      * @param message message to send
+     * @throws IllegalArgumentException if message is null
      */
-    void sendRawLine(String message);
+    void sendRawLine(@Nonnull String message);
 
     /**
      * Sends a raw IRC message, unless the exact same message is already in
      * the queue of messages not yet sent.
      *
      * @param message message to send
+     * @throws IllegalArgumentException if message is null
      */
-    void sendRawLineAvoidingDuplication(String message);
+    void sendRawLineAvoidingDuplication(@Nonnull String message);
 
     /**
      * Sends a raw IRC message, disregarding message delays and all sanity.
@@ -217,8 +240,9 @@ public interface Client {
      * get floodkicked before you finish dumping your life's work into chat.
      *
      * @param message message to send dangerously, you monster
+     * @throws IllegalArgumentException if message is null
      */
-    void sendRawLineImmediately(String message);
+    void sendRawLineImmediately(@Nonnull String message);
 
     /**
      * Sets values for authentication with services on the server. The
@@ -227,8 +251,9 @@ public interface Client {
      * @param authType type of authentication (See {@link AuthType})
      * @param name username
      * @param pass password
+     * @throws IllegalArgumentException for null parameters
      */
-    void setAuth(AuthType authType, String name, String pass);
+    void setAuth(@Nonnull AuthType authType, @Nonnull String name, @Nonnull String pass);
 
     /**
      * Sets a listener for all thrown exceptions on this client.
@@ -237,7 +262,7 @@ public interface Client {
      *
      * @param listener catcher of throwables
      */
-    void setExceptionListener(Consumer<Exception> listener);
+    void setExceptionListener(@Nullable Consumer<Exception> listener);
 
     /**
      * Sets a listener for all incoming messages from the server.
@@ -246,7 +271,7 @@ public interface Client {
      *
      * @param listener input listener
      */
-    void setInputListener(Consumer<String> listener);
+    void setInputListener(@Nullable Consumer<String> listener);
 
     /**
      * Sets the delay between messages sent to the server.
@@ -261,8 +286,9 @@ public interface Client {
      * Sets the nick the client wishes to use.
      *
      * @param nick new nickname
+     * @throws IllegalArgumentException if nick is null
      */
-    void setNick(String nick);
+    void setNick(@Nonnull String nick);
 
     /**
      * Sets a listener for all outgoing messages to the server.
@@ -271,12 +297,12 @@ public interface Client {
      *
      * @param listener output listener
      */
-    void setOutputListener(Consumer<String> listener);
+    void setOutputListener(@Nullable Consumer<String> listener);
 
     /**
      * Shuts down the client.
      *
      * @param reason quit message to send, null for blank message
      */
-    void shutdown(String reason);
+    void shutdown(@Nullable String reason);
 }

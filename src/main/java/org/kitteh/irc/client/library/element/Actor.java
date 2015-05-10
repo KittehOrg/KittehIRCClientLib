@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an entity on an IRC server which can perform actions.
  */
@@ -34,6 +36,7 @@ public interface Actor extends Snapshot {
      *
      * @return the actor's client
      */
+    @Nonnull
     Client getClient();
 
     /**
@@ -41,5 +44,6 @@ public interface Actor extends Snapshot {
      *
      * @return the Actor's name
      */
+    @Nonnull
     String getName();
 }

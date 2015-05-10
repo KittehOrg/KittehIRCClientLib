@@ -30,6 +30,8 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,12 +47,13 @@ public class ModeCommand extends ChannelCommand {
         private final char mode;
         private final String parameter;
 
-        private ModeChange(boolean add, char mode, String parameter) {
+        private ModeChange(boolean add, char mode, @Nullable String parameter) {
             this.add = add;
             this.mode = mode;
             this.parameter = parameter;
         }
 
+        @Nullable
         private Boolean getAdd() {
             return this.add;
         }
@@ -59,6 +62,7 @@ public class ModeCommand extends ChannelCommand {
             return this.mode;
         }
 
+        @Nullable
         private String getParameter() {
             return this.parameter;
         }
@@ -73,8 +77,10 @@ public class ModeCommand extends ChannelCommand {
      *
      * @param client the client on which this command is executing
      * @param channel channel targeted
+     * @throws IllegalArgumentException if null parameters or Channel is from
+     * another Client
      */
-    public ModeCommand(Client client, Channel channel) {
+    public ModeCommand(@Nonnull Client client, @Nonnull Channel channel) {
         super(client, channel);
     }
 
@@ -83,8 +89,10 @@ public class ModeCommand extends ChannelCommand {
      *
      * @param client the client on which this command is executing
      * @param channel channel targeted
+     * @throws IllegalArgumentException if null parameters or Channel is from
+     * another Client
      */
-    public ModeCommand(Client client, String channel) {
+    public ModeCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client, channel);
     }
 
@@ -96,6 +104,7 @@ public class ModeCommand extends ChannelCommand {
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid or requires parameter
      */
+    @Nonnull
     public ModeCommand addModeChange(boolean add, char mode) {
         return this.addModeChange(add, mode, (String) null);
     }
@@ -111,7 +120,8 @@ public class ModeCommand extends ChannelCommand {
      * parameter but one was not provided or mode requires no parameter but
      * one was provided or the mode comes from a different client
      */
-    public ModeCommand addModeChange(boolean add, ChannelUserMode mode, String parameter) {
+    @Nonnull
+    public ModeCommand addModeChange(boolean add, @Nonnull ChannelUserMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         return this.addModeChange(add, mode.getMode(), parameter);
@@ -128,7 +138,8 @@ public class ModeCommand extends ChannelCommand {
      * parameter but one was not provided or mode requires no parameter but
      * one was provided or the mode comes from a different client
      */
-    public ModeCommand addModeChange(boolean add, char mode, User parameter) {
+    @Nonnull
+    public ModeCommand addModeChange(boolean add, char mode, @Nonnull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
         return this.addModeChange(add, mode, parameter.getNick());
     }
@@ -144,7 +155,8 @@ public class ModeCommand extends ChannelCommand {
      * parameter but one was not provided or mode requires no parameter but
      * one was provided or the mode comes from a different client
      */
-    public ModeCommand addModeChange(boolean add, ChannelUserMode mode, User parameter) {
+    @Nonnull
+    public ModeCommand addModeChange(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
         return this.addModeChange(add, mode, parameter.getNick());
     }
@@ -158,7 +170,8 @@ public class ModeCommand extends ChannelCommand {
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid or requires parameter
      */
-    public synchronized ModeCommand addModeChange(boolean add, char mode, String parameter) {
+    @Nonnull
+    public synchronized ModeCommand addModeChange(boolean add, char mode, @Nullable String parameter) {
         ChannelModeType channelModeType = this.getChannelModeType(mode);
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter);
@@ -169,7 +182,7 @@ public class ModeCommand extends ChannelCommand {
             Sanity.truthiness(parameter == null, "Provided mode '" + mode + "' with parameter when one is not required.");
         }
         if (channelModeType == ChannelModeType.A_MASK) {
-            Sanity.truthiness(MASK_PATTERN.matcher(parameter).matches(), "Provided mode `" + mode + "' requires a mask parameter.");
+            Sanity.truthiness(parameter != null && MASK_PATTERN.matcher(parameter).matches(), "Provided mode `" + mode + "' requires a mask parameter.");
         }
         this.changes.add(new ModeChange(add, mode, parameter));
         return this;
@@ -189,6 +202,7 @@ public class ModeCommand extends ChannelCommand {
         }
     }
 
+    @Nonnull
     private ChannelModeType getChannelModeType(char mode) {
         ChannelModeType type = this.getClient().getServerInfo().getChannelModes().get(mode);
         if (type != null) {
@@ -202,7 +216,7 @@ public class ModeCommand extends ChannelCommand {
         throw new IllegalArgumentException("Invalid mode '" + mode + "'");
     }
 
-    private void send(Queue<ModeChange> queue) {
+    private void send(@Nonnull Queue<ModeChange> queue) {
         StringBuilder modes = new StringBuilder();
         StringBuilder parameters = new StringBuilder();
         ModeChange change;

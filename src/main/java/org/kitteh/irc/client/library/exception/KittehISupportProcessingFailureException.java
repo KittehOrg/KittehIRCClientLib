@@ -23,13 +23,15 @@
  */
 package org.kitteh.irc.client.library.exception;
 
+import javax.annotation.Nullable;
+
 /**
  * Fired upon failure to process a single ISUPPORT message.
  */
 public class KittehISupportProcessingFailureException extends Exception {
     private final String arg;
 
-    public KittehISupportProcessingFailureException(String arg) {
+    public KittehISupportProcessingFailureException(@Nullable String arg) {
         super("Failed to process an ISupport line: [" + arg + "]");
         this.arg = arg;
     }
@@ -37,8 +39,9 @@ public class KittehISupportProcessingFailureException extends Exception {
     /**
      * Gets the ISUPPORT argument which could not be processed.
      *
-     * @return the unprocessed argument
+     * @return the unprocessed argument which may be null
      */
+    @Nullable
     public String getArg() {
         return this.arg;
     }

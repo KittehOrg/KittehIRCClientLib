@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,7 @@ public interface ServerInfo {
      *
      * @return the casemapping
      */
+    @Nonnull
     CaseMapping getCaseMapping();
 
     /**
@@ -53,6 +56,7 @@ public interface ServerInfo {
      *
      * @return a map of channel prefixes to limits
      */
+    @Nonnull
     Map<Character, Integer> getChannelLimits();
 
     /**
@@ -62,6 +66,7 @@ public interface ServerInfo {
      *
      * @return a mapping of mode characters to their type
      */
+    @Nonnull
     Map<Character, ChannelModeType> getChannelModes();
 
     /**
@@ -71,6 +76,7 @@ public interface ServerInfo {
      *
      * @return available channel prefixes
      */
+    @Nonnull
     List<Character> getChannelPrefixes();
 
     /**
@@ -81,6 +87,7 @@ public interface ServerInfo {
      *
      * @return channel modes defining user status
      */
+    @Nonnull
     List<ChannelUserMode> getChannelUserModes();
 
     /**
@@ -88,6 +95,7 @@ public interface ServerInfo {
      *
      * @return network name or null if unknown
      */
+    @Nullable
     String getNetworkName();
 
     /**
@@ -100,14 +108,16 @@ public interface ServerInfo {
     /**
      * Gets the server-stated address of the server.
      *
-     * @return the server's address
+     * @return the server's address or null if unknown
      */
+    @Nullable
     String getServerAddress();
 
     /**
      * Gets the version of the IRCd.
      *
-     * @return server version
+     * @return server version or null if unknown
      */
+    @Nullable
     String getServerVersion();
 }

@@ -28,6 +28,8 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 
+import javax.annotation.Nonnull;
+
 /**
  * Fires when a message is sent to a channel.
  */
@@ -40,7 +42,7 @@ public class ChannelMessageEvent extends ActorChannelMessageEventBase<User> {
      * @param channel channel receiving
      * @param message message sent
      */
-    public ChannelMessageEvent(Client client, User sender, Channel channel, String message) {
+    public ChannelMessageEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull Channel channel, @Nonnull String message) {
         super(client, sender, channel, message);
     }
 }

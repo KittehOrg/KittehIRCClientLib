@@ -28,6 +28,9 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
 
 /**
  * A {@link User} has invited somebody to a {@link Channel}!
@@ -43,8 +46,9 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
      * @param actor the actor inviting another
      * @param target the nick invited
      */
-    public ChannelInviteEvent(Client client, Channel channel, Actor actor, String target) {
+    public ChannelInviteEvent(@Nonnull Client client, @Nonnull Channel channel, @Nonnull Actor actor, @Nonnull String target) {
         super(client, actor, channel);
+        Sanity.nullCheck(target, "Target cannot be null");
         this.target = target;
     }
 
@@ -53,6 +57,7 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
      *
      * @return the nickname of the invited user
      */
+    @Nonnull
     public String getTarget() {
         return this.target;
     }

@@ -27,6 +27,8 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
+
 /**
  * The server has rejected your nick choice.
  */
@@ -34,8 +36,10 @@ public class NickRejectedEvent extends ClientEventBase {
     private final String attemptedNick;
     private String newNick;
 
-    public NickRejectedEvent(Client client, String attemptedNick, String newNick) {
+    public NickRejectedEvent(@Nonnull Client client, @Nonnull String attemptedNick, @Nonnull String newNick) {
         super(client);
+        Sanity.nullCheck(attemptedNick, "Attempted nick cannot be null");
+        Sanity.nullCheck(newNick, "New nick cannot be null");
         this.attemptedNick = attemptedNick;
         this.newNick = newNick;
     }
@@ -45,6 +49,7 @@ public class NickRejectedEvent extends ClientEventBase {
      *
      * @return the attempted nick
      */
+    @Nonnull
     public String getAttemptedNick() {
         return this.attemptedNick;
     }
@@ -55,11 +60,20 @@ public class NickRejectedEvent extends ClientEventBase {
      *
      * @return new nick to attempt
      */
+    @Nonnull
     public String getNewNick() {
         return this.newNick;
     }
 
-    public void setNewNick(String newNick) {
+    /**
+     * Sets the new nickname to attempt.
+     *
+     * @param newNick a new nickname
+     * @throws IllegalArgumentException if nickname is null, is same as the
+     * nickname this events reports has failed, contains invalid characters,
+     * or contains spaces
+     */
+    public void setNewNick(@Nonnull String newNick) {
         Sanity.nullCheck(newNick, "Nickname cannot be null!");
         Sanity.truthiness(!newNick.equals(this.attemptedNick), "Cannot set new nick to the currently failing nick");
         Sanity.safeMessageCheck(newNick, "nick");

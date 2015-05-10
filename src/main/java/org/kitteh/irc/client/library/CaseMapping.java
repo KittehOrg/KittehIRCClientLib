@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,8 +59,9 @@ public enum CaseMapping {
      * @param name the name of the CaseMapping to get
      * @return the matching CaseMapping or null if no match
      */
-    public static CaseMapping getByName(String name) {
-        return nameMap.get(name.toUpperCase());
+    @Nullable
+    public static CaseMapping getByName(@Nullable String name) {
+        return name == null ? null : nameMap.get(name.toUpperCase());
     }
 
     private final char upperbound;
@@ -72,8 +75,10 @@ public enum CaseMapping {
      *
      * @param input string to be lowercased
      * @return lowercased string
+     * @throws IllegalArgumentException if input is null
      */
-    public String toLowerCase(String input) {
+    @Nonnull
+    public String toLowerCase(@Nonnull String input) {
         char[] arr = input.toCharArray();
         for (int i = 0; i < arr.length; i++) {
             char c = arr[i];

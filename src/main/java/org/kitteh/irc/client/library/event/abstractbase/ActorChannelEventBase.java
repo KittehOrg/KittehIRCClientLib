@@ -27,15 +27,21 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.helper.ChannelEvent;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
 
 public abstract class ActorChannelEventBase<A extends Actor> extends ActorEventBase<A> implements ChannelEvent {
     private final Channel channel;
 
-    protected ActorChannelEventBase(Client client, A actor, Channel channel) {
+    protected ActorChannelEventBase(@Nonnull Client client, @Nonnull A actor, @Nonnull Channel channel) {
         super(client, actor);
+        Sanity.nullCheck(channel, "Channel cannot be null");
+        Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
         this.channel = channel;
     }
 
+    @Nonnull
     public final Channel getChannel() {
         return this.channel;
     }

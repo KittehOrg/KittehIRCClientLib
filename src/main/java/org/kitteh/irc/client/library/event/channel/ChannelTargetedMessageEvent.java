@@ -28,6 +28,9 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
 
 /**
  * Fires when a message is sent to a subset of users in a channel.
@@ -44,8 +47,9 @@ public class ChannelTargetedMessageEvent extends ActorChannelMessageEventBase<Us
      * @param prefix targeted prefix
      * @param message message sent
      */
-    public ChannelTargetedMessageEvent(Client client, User sender, Channel channel, ChannelUserMode prefix, String message) {
+    public ChannelTargetedMessageEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
         super(client, sender, channel, message);
+        Sanity.nullCheck(prefix, "Prefix cannot be null");
         this.prefix = prefix;
     }
 
@@ -54,6 +58,7 @@ public class ChannelTargetedMessageEvent extends ActorChannelMessageEventBase<Us
      *
      * @return the prefix targetted
      */
+    @Nonnull
     public ChannelUserMode getPrefix() {
         return this.prefix;
     }

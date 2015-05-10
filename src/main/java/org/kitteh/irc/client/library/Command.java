@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,10 +58,12 @@ enum Command {
      * @param name the name of the Command to get
      * @return the matching Command or null if no match
      */
+    @Nullable
     public static Command getByName(String name) {
         return nameMap.get(name.toUpperCase());
     }
 
+    @Nonnull
     @Override
     public String toString() {
         return this.name(); // Explicitly overriding as a reminder that this is used as such

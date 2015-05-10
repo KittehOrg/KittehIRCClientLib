@@ -28,6 +28,9 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Get your KICKs on Route 66.
  */
@@ -35,11 +38,27 @@ public class KickCommand extends ChannelCommand {
     private String target;
     private String reason;
 
-    public KickCommand(Client client, Channel channel) {
+    /**
+     * Constructs a KICK command for a given channel.
+     *
+     * @param client the client on which this command is executing
+     * @param channel channel targeted
+     * @throws IllegalArgumentException if null parameters or Channel is from
+     * another Client
+     */
+    public KickCommand(@Nonnull Client client, @Nonnull Channel channel) {
         super(client, channel);
     }
 
-    public KickCommand(Client client, String channel) {
+    /**
+     * Constructs a KICK command for a given channel.
+     *
+     * @param client the client on which this command is executing
+     * @param channel channel targeted
+     * @throws IllegalArgumentException if null parameters or Channel is from
+     * another Client
+     */
+    public KickCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client, channel);
     }
 
@@ -48,8 +67,10 @@ public class KickCommand extends ChannelCommand {
      *
      * @param target target
      * @return this command
+     * @throws IllegalArgumentException if target is null or contains invalid characters
      */
-    public KickCommand target(String target) {
+    @Nonnull
+    public KickCommand target(@Nonnull String target) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.safeMessageCheck(target, "target");
         this.target = target;
@@ -61,8 +82,10 @@ public class KickCommand extends ChannelCommand {
      *
      * @param target target
      * @return this command
+     * @throws IllegalArgumentException if target is null or from a different Client
      */
-    public KickCommand target(User target) {
+    @Nonnull
+    public KickCommand target(@Nonnull User target) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.truthiness(target.getClient() == this.getClient(), "User comes from a different client");
         this.target(target.getNick());
@@ -74,16 +97,27 @@ public class KickCommand extends ChannelCommand {
      *
      * @param reason or null for no reason
      * @return this command
+     * @throws IllegalArgumentException if reason is null or contains invalid characters
      */
-    public KickCommand reason(String reason) {
-        Sanity.safeMessageCheck(reason);
+    @Nonnull
+    public KickCommand reason(@Nullable String reason) {
+        if (reason != null) {
+            Sanity.safeMessageCheck(reason);
+        }
         this.reason = reason;
         return this;
     }
 
+    /**
+     * Exectures the command.
+     *
+     * @throws IllegalStateException if target is not defined
+     */
     @Override
     public void execute() {
-        Sanity.nullCheck(this.target, "Target not defined");
+        if (this.target == null) {
+            throw new IllegalStateException("Target not defined");
+        }
         StringBuilder builder = new StringBuilder();
         builder.append("KICK ").append(this.getChannel()).append(' ').append(this.target);
         if (this.reason != null) {

@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.client;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 
+import javax.annotation.Nonnull;
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
 
@@ -47,7 +48,7 @@ public class SSLCertificateAcceptEvent extends ClientEventBase {
      * @param authType auth type
      * @param chain certificate chain
      */
-    public SSLCertificateAcceptEvent(Client client, String authType, X509Certificate[] chain) {
+    public SSLCertificateAcceptEvent(@Nonnull Client client, @Nonnull String authType, @Nonnull X509Certificate[] chain) {
         super(client);
         this.authType = authType;
         this.chain = chain;
@@ -58,6 +59,7 @@ public class SSLCertificateAcceptEvent extends ClientEventBase {
      *
      * @return auth type
      */
+    @Nonnull
     public String getAuthType() {
         return authType;
     }
@@ -67,6 +69,7 @@ public class SSLCertificateAcceptEvent extends ClientEventBase {
      *
      * @return the cert chain
      */
+    @Nonnull
     public X509Certificate[] getChain() {
         return chain.clone();
     }

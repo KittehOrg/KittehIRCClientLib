@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
+import javax.annotation.Nonnull;
+
 /**
  * Relects a capability state as told by the server.
  */
@@ -30,7 +32,7 @@ public final class CapabilityState {
     private final boolean disable;
     private final String name;
 
-    CapabilityState(String capabilityListItem) {
+    CapabilityState(@Nonnull String capabilityListItem) {
         this.disable = capabilityListItem.charAt(0) == '-';
         this.name = this.disable ? capabilityListItem.substring(1) : capabilityListItem;
     }
@@ -49,6 +51,7 @@ public final class CapabilityState {
      *
      * @return capability name
      */
+    @Nonnull
     public String getCapabilityName() {
         return this.name;
     }

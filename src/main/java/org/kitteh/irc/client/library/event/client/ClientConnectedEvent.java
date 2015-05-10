@@ -27,6 +27,9 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ServerInfo;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
 
 /**
  * The {@link Client} has successfully connected to the server. At this time
@@ -44,8 +47,10 @@ public class ClientConnectedEvent extends ClientEventBase {
      * @param server the server to which the client is connected
      * @param serverInfo information about the server
      */
-    public ClientConnectedEvent(Client client, Actor server, ServerInfo serverInfo) {
+    public ClientConnectedEvent(@Nonnull Client client, @Nonnull Actor server, @Nonnull ServerInfo serverInfo) {
         super(client);
+        Sanity.nullCheck(server, "Server cannot be null");
+        Sanity.nullCheck(serverInfo, "ServerInfo cannot be null");
         this.server = server;
         this.serverInfo = serverInfo;
     }
@@ -55,6 +60,7 @@ public class ClientConnectedEvent extends ClientEventBase {
      *
      * @return the server the client is connected to
      */
+    @Nonnull
     public Actor getServer() {
         return this.server;
     }
@@ -70,6 +76,7 @@ public class ClientConnectedEvent extends ClientEventBase {
      * @see ServerInfo#getServerAddress()
      * @see ServerInfo#getServerVersion()
      */
+    @Nonnull
     public ServerInfo getServerInfo() {
         return this.serverInfo;
     }

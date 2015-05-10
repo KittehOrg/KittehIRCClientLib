@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
 
+import javax.annotation.Nonnull;
+
 /**
  * Describes a channel mode that a user can have, such as op.
  */
@@ -34,6 +36,7 @@ public interface ChannelUserMode {
      *
      * @return client
      */
+    @Nonnull
     Client getClient();
 
     /**

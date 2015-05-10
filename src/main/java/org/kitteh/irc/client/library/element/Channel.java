@@ -28,6 +28,8 @@ import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ModeCommand;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +43,7 @@ public interface Channel extends MessageReceiver {
          *
          * @return topic setter or null if unknown
          */
+        @Nullable
         Actor getSetter();
 
         /**
@@ -55,6 +58,7 @@ public interface Channel extends MessageReceiver {
          *
          * @return the topic
          */
+        @Nonnull
         String getTopic();
     }
 
@@ -63,6 +67,7 @@ public interface Channel extends MessageReceiver {
      *
      * @return an updated snapshot
      */
+    @Nullable
     default Channel getLatest() {
         return this.getClient().getChannel(this.getName());
     }
@@ -73,6 +78,7 @@ public interface Channel extends MessageReceiver {
      *
      * @return nicks in the channel
      */
+    @Nonnull
     List<String> getNicknames();
 
     /**
@@ -80,6 +86,7 @@ public interface Channel extends MessageReceiver {
      *
      * @return channel topic or null if unknown
      */
+    @Nullable
     Topic getTopic();
 
     /**
@@ -89,8 +96,10 @@ public interface Channel extends MessageReceiver {
      *
      * @param nick user's nick
      * @return the user object, if known
+     * @throws IllegalArgumentException if nick is null
      */
-    User getUser(String nick);
+    @Nullable
+    User getUser(@Nonnull String nick);
 
     /**
      * Gets all Users known to be in the channel. Note that the server may
@@ -100,6 +109,7 @@ public interface Channel extends MessageReceiver {
      *
      * @return users in the channel
      */
+    @Nonnull
     List<User> getUsers();
 
     /**
@@ -108,7 +118,8 @@ public interface Channel extends MessageReceiver {
      * @param nick user's nick
      * @return a set of modes the user is known to have
      */
-    Set<ChannelUserMode> getUserModes(String nick);
+    @Nullable
+    Set<ChannelUserMode> getUserModes(@Nonnull String nick);
 
     /**
      * Gets if this Channel has complete user data available, only possible
@@ -133,6 +144,7 @@ public interface Channel extends MessageReceiver {
      *
      * @return new kick command
      */
+    @Nonnull
     default KickCommand newKickCommand() {
         return new KickCommand(this.getClient(), this);
     }
@@ -142,6 +154,7 @@ public interface Channel extends MessageReceiver {
      *
      * @return new mode command
      */
+    @Nonnull
     default ModeCommand newModeCommand() {
         return new ModeCommand(this.getClient(), this);
     }
@@ -152,7 +165,7 @@ public interface Channel extends MessageReceiver {
      * @param reason leaving reason
      * @see Client#removeChannel(Channel, String)
      */
-    default void part(String reason) {
+    default void part(@Nullable String reason) {
         this.getClient().removeChannel(this, reason);
     }
 }

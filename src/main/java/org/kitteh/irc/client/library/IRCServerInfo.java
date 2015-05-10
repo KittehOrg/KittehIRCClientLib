@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,7 +52,7 @@ final class IRCServerInfo implements ServerInfo {
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
-    IRCServerInfo(Client client) {
+    IRCServerInfo(@Nonnull Client client) {
         channelUserModes = new ArrayList<ChannelUserMode>() {
             {
                 this.add(new ActorProvider.IRCChannelUserMode(client, 'o', '@'));
@@ -59,12 +61,13 @@ final class IRCServerInfo implements ServerInfo {
         };
     }
 
+    @Nonnull
     @Override
     public CaseMapping getCaseMapping() {
         return this.caseMapping;
     }
 
-    void setCaseMapping(CaseMapping caseMapping) {
+    void setCaseMapping(@Nonnull CaseMapping caseMapping) {
         this.caseMapping = caseMapping;
     }
 
@@ -77,6 +80,7 @@ final class IRCServerInfo implements ServerInfo {
         this.channelLengthLimit = channelLengthLimit;
     }
 
+    @Nonnull
     @Override
     public Map<Character, Integer> getChannelLimits() {
         return new HashMap<>(this.channelLimits);
@@ -86,6 +90,7 @@ final class IRCServerInfo implements ServerInfo {
         this.channelLimits = channelLimits;
     }
 
+    @Nonnull
     @Override
     public Map<Character, ChannelModeType> getChannelModes() {
         return new HashMap<>(this.channelModes);
@@ -95,30 +100,33 @@ final class IRCServerInfo implements ServerInfo {
         this.channelModes = channelModes;
     }
 
+    @Nonnull
     @Override
     public List<Character> getChannelPrefixes() {
         return new ArrayList<>(this.channelPrefixes);
     }
 
-    void setChannelPrefixes(List<Character> channelPrefixes) {
+    void setChannelPrefixes(@Nonnull List<Character> channelPrefixes) {
         this.channelPrefixes = channelPrefixes;
     }
 
+    @Nonnull
     @Override
     public List<ChannelUserMode> getChannelUserModes() {
         return new ArrayList<>(this.channelUserModes);
     }
 
-    void setChannelUserModes(List<ChannelUserMode> channelUserModes) {
+    void setChannelUserModes(@Nonnull List<ChannelUserMode> channelUserModes) {
         this.channelUserModes = channelUserModes;
     }
 
+    @Nullable
     @Override
     public String getNetworkName() {
         return this.networkName;
     }
 
-    void setNetworkName(String networkName) {
+    void setNetworkName(@Nonnull String networkName) {
         this.networkName = networkName;
     }
 
@@ -131,35 +139,38 @@ final class IRCServerInfo implements ServerInfo {
         this.nickLengthLimit = nickLengthLimit;
     }
 
+    @Nullable
     @Override
     public String getServerAddress() {
         return this.serverAddress;
     }
 
-    void setServerAddress(String serverAddress) {
+    void setServerAddress(@Nonnull String serverAddress) {
         this.serverAddress = serverAddress;
     }
 
+    @Nullable
     @Override
     public String getServerVersion() {
         return this.serverVersion;
     }
 
-    void setServerVersion(String serverVersion) {
+    void setServerVersion(@Nonnull String serverVersion) {
         this.serverVersion = serverVersion;
     }
 
     // Util stuffs
 
-    boolean isValidChannel(String name) {
+    boolean isValidChannel(@Nonnull String name) {
         return name.length() > 1 && this.channelLengthLimit < 0 || name.length() <= this.channelLengthLimit && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
     }
 
-    boolean isTargetedChannel(String name) {
+    boolean isTargetedChannel(@Nonnull String name) {
         return getTargetedChannelInfo(name) != null;
     }
 
-    ChannelUserMode getTargetedChannelInfo(String name) {
+    @Nullable
+    ChannelUserMode getTargetedChannelInfo(@Nonnull String name) {
         final char first = name.charAt(0);
         final String shorter = name.substring(1);
         if (!this.channelPrefixes.contains(first) && this.isValidChannel(shorter)) {

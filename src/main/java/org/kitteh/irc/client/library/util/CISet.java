@@ -26,6 +26,8 @@ package org.kitteh.irc.client.library.util;
 import org.kitteh.irc.client.library.CaseMapping;
 import org.kitteh.irc.client.library.Client;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,7 +49,7 @@ public class CISet implements Set<String> {
         this.client = client;
     }
 
-    protected final synchronized String toLowerCase(String input) {
+    protected final synchronized String toLowerCase(@Nonnull String input) {
         CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
         if (caseMapping != this.lastCaseMapping) {
             Set<String> set = new HashSet<>(this.map.values());
@@ -69,38 +71,43 @@ public class CISet implements Set<String> {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(@Nullable Object o) {
         return o instanceof String && this.map.containsKey(this.toLowerCase((String) o));
     }
 
+    @Nonnull
     @Override
     public Iterator<String> iterator() {
         return this.map.values().iterator();
     }
 
+    @Nonnull
     @Override
     public Object[] toArray() {
         return this.map.values().toArray();
     }
 
+    @Nonnull
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(@Nonnull T[] a) {
         return this.map.values().toArray(a);
     }
 
     @Override
-    public boolean add(String s) {
+    public boolean add(@Nonnull String s) {
+        Sanity.nullCheck(s, "String cannot be null");
         this.map.put(this.toLowerCase(s), s);
         return true;
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(@Nullable Object o) {
         return o instanceof String && this.map.remove(this.toLowerCase((String) o)) != null;
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(@Nonnull Collection<?> c) {
+        Sanity.nullCheck(c, "Collection cannot be null");
         for (Object o : c) {
             if (!this.contains(o)) {
                 return false;
@@ -110,18 +117,21 @@ public class CISet implements Set<String> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends String> c) {
+    public boolean addAll(@Nonnull Collection<? extends String> c) {
+        Sanity.nullCheck(c, "Collection cannot be null");
         c.forEach(this::add);
         return true;
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(@Nonnull Collection<?> c) {
+        Sanity.nullCheck(c, "Collection cannot be null");
         return this.map.keySet().retainAll(c.stream().filter(i -> i instanceof String).map(i -> (String) i).map(this::toLowerCase).collect(Collectors.toSet()));
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(@Nonnull Collection<?> c) {
+        Sanity.nullCheck(c, "Collection cannot be null");
         return this.map.keySet().removeAll(c.stream().filter(i -> i instanceof String).map(i -> (String) i).map(this::toLowerCase).collect(Collectors.toSet()));
     }
 

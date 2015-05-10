@@ -26,11 +26,13 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 
+import javax.annotation.Nonnull;
+
 public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase implements CapabilityNegotiationResponseEvent {
     private boolean endNegotiation = true;
     private final boolean negotiating;
 
-    protected CapabilityNegotiationResponseEventBase(Client client, boolean negotiating) {
+    protected CapabilityNegotiationResponseEventBase(@Nonnull Client client, boolean negotiating) {
         super(client);
         this.negotiating = negotiating;
     }

@@ -27,6 +27,8 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
+
 /**
  * A command only executed on a chanenl.
  */
@@ -38,8 +40,10 @@ public abstract class ChannelCommand extends Command {
      *
      * @param client the client on which this command is executing
      * @param channel channel targeted
+     * @throws IllegalArgumentException if null parameters or Channel is from
+     * another Client
      */
-    public ChannelCommand(Client client, Channel channel) {
+    public ChannelCommand(@Nonnull Client client, @Nonnull Channel channel) {
         super(client);
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.truthiness(channel.getClient() == client, "Channel comes from a different Client");
@@ -51,14 +55,22 @@ public abstract class ChannelCommand extends Command {
      *
      * @param client the client on which this command is executing
      * @param channel channel targeted
+     * @throws IllegalArgumentException if null parameters or Channel is from
+     * another Client
      */
-    public ChannelCommand(Client client, String channel) {
+    public ChannelCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client);
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.nullCheck(client.getChannel(channel), "Invalid channel name '" + channel + "'");
         this.channel = channel;
     }
 
+    /**
+     * Gets the channel this command affects.
+     *
+     * @return channel relevant to this command
+     */
+    @Nonnull
     public String getChannel() {
         return this.channel;
     }

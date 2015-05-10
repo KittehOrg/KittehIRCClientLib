@@ -29,6 +29,8 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
+import javax.annotation.Nonnull;
+
 /**
  * A {@link User} has left a {@link Channel}!
  */
@@ -41,15 +43,17 @@ public class ChannelPartEvent extends ActorChannelMessageEventBase<User> impleme
      * @param user user leaving
      * @param message message the user left
      */
-    public ChannelPartEvent(Client client, Channel channel, User user, String message) {
+    public ChannelPartEvent(@Nonnull Client client, @Nonnull Channel channel, @Nonnull User user, @Nonnull String message) {
         super(client, user, channel, message);
     }
 
+    @Nonnull
     @Override
     public Change getChange() {
         return Change.LEAVE;
     }
 
+    @Nonnull
     @Override
     public User getUser() {
         return this.getActor();

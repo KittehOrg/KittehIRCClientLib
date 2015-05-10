@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents various formatting available in IRC.
  * <p>
@@ -78,11 +80,15 @@ public enum IRCFormat {
 
     public static final char COLOR_CHAR = '\u0003';
 
-    public static String stripColor(String input) {
+    @Nonnull
+    public static String stripColor(@Nonnull String input) {
+        Sanity.nullCheck(input, "Input cannot be null");
         return input.replaceAll(COLOR_CHAR + "[0-9]{1,2}", "");
     }
 
-    public static String stripFormating(String input) {
+    @Nonnull
+    public static String stripFormating(@Nonnull String input) {
+        Sanity.nullCheck(input, "Input cannot be null");
         return input.replaceAll("[" + BOLD + RESET + REVERSE + UNDERLINE + "]", "");
     }
 
@@ -105,6 +111,7 @@ public enum IRCFormat {
         return this.color;
     }
 
+    @Nonnull
     @Override
     public String toString() {
         return this.toString;
@@ -117,7 +124,9 @@ public enum IRCFormat {
      * @return the color string
      * @throws IllegalArgumentException if using or providing a non-color
      */
-    public String withBackground(IRCFormat background) {
+    @Nonnull
+    public String withBackground(@Nonnull IRCFormat background) {
+        Sanity.nullCheck(background, "Background cannot be null");
         Sanity.truthiness(this.isColor, "Cannot use non-color foreground.");
         Sanity.truthiness(background.isColor, "Cannot use non-color background");
         return this.toString() + "," + background.color;

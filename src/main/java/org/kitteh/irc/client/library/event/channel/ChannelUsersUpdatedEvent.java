@@ -27,6 +27,8 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
+import javax.annotation.Nonnull;
+
 /**
  * Called after completion of a WHO command.
  */
@@ -37,7 +39,7 @@ public class ChannelUsersUpdatedEvent extends ChannelEventBase {
      * @param client client for which this is occurring
      * @param channel channel with the updated users list
      */
-    public ChannelUsersUpdatedEvent(Client client, Channel channel) {
+    public ChannelUsersUpdatedEvent(@Nonnull Client client, @Nonnull Channel channel) {
         super(client, channel);
     }
 }

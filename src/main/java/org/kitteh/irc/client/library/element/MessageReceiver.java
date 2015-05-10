@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents an {@link Actor} capable of recieving messages.
  */
@@ -34,6 +36,7 @@ public interface MessageReceiver extends Actor {
      *
      * @return the name by which you can message this receiver
      */
+    @Nonnull
     String getMessagingName();
 
     /**
@@ -42,7 +45,7 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendCTCPMessage(MessageReceiver, String)
      */
-    default void sendCTCPMessage(String message) {
+    default void sendCTCPMessage(@Nonnull String message) {
         this.getClient().sendCTCPMessage(this, message);
     }
 
@@ -52,7 +55,7 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendMessage(MessageReceiver, String)
      */
-    default void sendMessage(String message) {
+    default void sendMessage(@Nonnull String message) {
         this.getClient().sendMessage(this, message);
     }
 
@@ -62,7 +65,7 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendNotice(MessageReceiver, String)
      */
-    default void sendNotice(String message) {
+    default void sendNotice(@Nonnull String message) {
         this.getClient().sendNotice(this, message);
     }
 }

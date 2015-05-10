@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library.event.helper;
 
 import org.kitteh.irc.client.library.Client;
 
+import javax.annotation.Nonnull;
+
 /**
  * An event involving a Client
  */
@@ -34,5 +36,6 @@ public interface ClientEvent {
      *
      * @return the client
      */
+    @Nonnull
     Client getClient();
 }

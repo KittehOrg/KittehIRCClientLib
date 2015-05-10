@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 /**
@@ -34,6 +35,7 @@ public interface User extends MessageReceiver {
      *
      * @return channel names the user is in
      */
+    @Nonnull
     Set<String> getChannels();
 
     /**
@@ -41,6 +43,7 @@ public interface User extends MessageReceiver {
      *
      * @return user host
      */
+    @Nonnull
     String getHost();
 
     /**
@@ -48,6 +51,7 @@ public interface User extends MessageReceiver {
      *
      * @return user nick
      */
+    @Nonnull
     String getNick();
 
     /**
@@ -55,5 +59,6 @@ public interface User extends MessageReceiver {
      *
      * @return user
      */
+    @Nonnull
     String getUser();
 }

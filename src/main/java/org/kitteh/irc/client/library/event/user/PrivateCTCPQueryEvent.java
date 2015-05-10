@@ -27,6 +27,9 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * The client has received a CTCP message! There are a few (FINGER, PING,
  * TIME, VERSION) queries which have a default reply message. Others are
@@ -46,7 +49,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCTCPQueryEvent(Client client, User sender, String message, String reply) {
+    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull String message, @Nullable String reply) {
         super(client, sender, message);
         this.reply = reply;
     }
@@ -56,6 +59,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      *
      * @return the reply, or null if no reply will be sent
      */
+    @Nullable
     public String getReply() {
         return this.reply;
     }
@@ -65,7 +69,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      *
      * @param reply message to send back
      */
-    public void setReply(String reply) {
+    public void setReply(@Nullable String reply) {
         this.reply = reply;
     }
 }

@@ -30,7 +30,10 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.CIKeyMap;
+import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,19 +49,22 @@ class ActorProvider {
         private final String name;
         private final IRCClient client;
 
-        private IRCActor(String name, IRCClient client) {
+        private IRCActor(@Nonnull String name, @Nonnull IRCClient client) {
             this.client = client;
             this.name = name;
         }
 
+        @Nonnull
         protected IRCClient getClient() {
             return this.client;
         }
 
+        @Nonnull
         protected String getName() {
             return this.name;
         }
 
+        @Nonnull
         IRCActorSnapshot snapshot() {
             return new IRCActorSnapshot(this.name, this.client);
         }
@@ -69,11 +75,12 @@ class ActorProvider {
         private final long creationTime = System.currentTimeMillis();
         private final String name;
 
-        private IRCActorSnapshot(String name, IRCClient client) {
+        private IRCActorSnapshot(@Nonnull String name, @Nonnull IRCClient client) {
             this.client = client;
             this.name = name;
         }
 
+        @Nonnull
         @Override
         public Client getClient() {
             return this.client;
@@ -84,12 +91,14 @@ class ActorProvider {
             return this.creationTime;
         }
 
+        @Nonnull
         @Override
         public String getName() {
             return this.name;
         }
 
-        protected String toLowerCase(String input) { // Shortcut
+        @Nonnull
+        protected String toLowerCase(@Nonnull String input) { // Shortcut
             return this.client.getServerInfo().getCaseMapping().toLowerCase(input);
         }
     }
@@ -104,14 +113,15 @@ class ActorProvider {
         private long topicTime;
         private volatile boolean tracked;
 
-        private IRCChannel(String channel, IRCClient client) {
+        private IRCChannel(@Nonnull String channel, @Nonnull IRCClient client) {
             super(channel, client);
             this.modes = new CIKeyMap<>(this.getClient());
             this.nickMap = new CIKeyMap<>(this.getClient());
             ActorProvider.this.trackedChannels.put(channel, this);
         }
 
-        IRCUser getUser(String nick) {
+        @Nullable
+        IRCUser getUser(@Nullable String nick) {
             return this.nickMap.get(nick);
         }
 
@@ -123,17 +133,18 @@ class ActorProvider {
             this.tracked = tracked;
         }
 
-        void setTopic(String topic) {
+        void setTopic(@Nonnull String topic) {
             this.topic = topic;
             this.topicTime = -1;
             this.topicSetter = null;
         }
 
-        void setTopic(long time, Actor user) {
+        void setTopic(long time, @Nonnull Actor user) {
             this.topicTime = time;
             this.topicSetter = user;
         }
 
+        @Nonnull
         IRCChannelSnapshot snapshot() {
             synchronized (this.modes) {
                 if (this.tracked && !this.fullListReceived) {
@@ -148,38 +159,39 @@ class ActorProvider {
             return new IRCChannelSnapshot(this.getName(), this.modes, this.nickMap, this.getClient(), this.fullListReceived, topic);
         }
 
-        void trackNick(String nick, Set<ChannelUserMode> modes) {
+        void trackNick(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
             this.getModes(nick).addAll(modes);
         }
 
-        void trackUser(IRCUser user, Set<ChannelUserMode> modes) {
+        void trackUser(@Nonnull IRCUser user, @Nullable Set<ChannelUserMode> modes) {
             this.nickMap.put(user.getNick(), user);
             this.modes.put(user.getNick(), modes == null ? new HashSet<>() : new HashSet<>(modes));
         }
 
-        void trackUserJoin(IRCUser user) {
+        void trackUserJoin(@Nonnull IRCUser user) {
             this.trackUser(user, null);
         }
 
-        void trackUserModeAdd(String nick, ChannelUserMode mode) {
+        void trackUserModeAdd(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
             this.getModes(nick).add(mode);
         }
 
-        void trackUserModeRemove(String nick, ChannelUserMode mode) {
+        void trackUserModeRemove(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
             this.getModes(nick).remove(mode);
         }
 
-        void trackUserNick(IRCUser oldUser, IRCUser newUser) {
+        void trackUserNick(@Nonnull IRCUser oldUser, @Nonnull IRCUser newUser) {
             this.nickMap.remove(oldUser.getNick());
             this.trackUser(newUser, this.modes.remove(oldUser.getNick()));
         }
 
-        void trackUserPart(IRCUser user) {
+        void trackUserPart(@Nonnull IRCUser user) {
             this.modes.remove(user.getNick());
             this.nickMap.remove(user.getNick());
         }
 
-        private Set<ChannelUserMode> getModes(String nick) {
+        @Nonnull
+        private Set<ChannelUserMode> getModes(@Nonnull String nick) {
             Set<ChannelUserMode> set = this.modes.get(nick);
             if (set == null) {
                 set = new HashSet<>();
@@ -194,12 +206,13 @@ class ActorProvider {
         private final long time;
         private final String topic;
 
-        private IRCChannelTopicSnapshot(long time, String topic, Actor setter) {
+        private IRCChannelTopicSnapshot(long time, @Nonnull String topic, @Nullable Actor setter) {
             this.time = time;
             this.topic = topic;
             this.setter = setter;
         }
 
+        @Nullable
         @Override
         public Actor getSetter() {
             return this.setter;
@@ -210,6 +223,7 @@ class ActorProvider {
             return this.time;
         }
 
+        @Nonnull
         @Override
         public String getTopic() {
             return this.topic;
@@ -224,7 +238,7 @@ class ActorProvider {
         private final boolean complete;
         private final Topic topic;
 
-        private IRCChannelSnapshot(String channel, Map<String, Set<ChannelUserMode>> modes, Map<String, IRCUser> nickMap, IRCClient client, boolean complete, Topic topic) {
+        private IRCChannelSnapshot(@Nonnull String channel, @Nonnull Map<String, Set<ChannelUserMode>> modes, @Nonnull Map<String, IRCUser> nickMap, @Nonnull IRCClient client, boolean complete, @Nullable Topic topic) {
             super(channel, client);
             this.complete = complete;
             this.topic = topic;
@@ -244,31 +258,39 @@ class ActorProvider {
             return o instanceof IRCChannelSnapshot && ((IRCChannelSnapshot) o).getClient() == this.getClient() && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
+        @Nonnull
         @Override
         public String getMessagingName() {
             return this.getName();
         }
 
+        @Nonnull
         @Override
         public List<String> getNicknames() {
             return this.names;
         }
 
+        @Nonnull
         @Override
         public Topic getTopic() {
             return this.topic;
         }
 
+        @Nullable
         @Override
-        public User getUser(String nick) {
+        public User getUser(@Nonnull String nick) {
+            Sanity.nullCheck(nick, "Nick cannot be null");
             return this.nickMap.get(nick);
         }
 
+        @Nullable
         @Override
-        public Set<ChannelUserMode> getUserModes(String nick) {
+        public Set<ChannelUserMode> getUserModes(@Nonnull String nick) {
+            Sanity.nullCheck(nick, "Nick cannot be null");
             return this.modes.get(nick);
         }
 
+        @Nonnull
         @Override
         public List<User> getUsers() {
             return this.users;
@@ -291,12 +313,13 @@ class ActorProvider {
         private final char mode;
         private final char prefix;
 
-        IRCChannelUserMode(Client client, char mode, char prefix) {
+        IRCChannelUserMode(@Nonnull Client client, char mode, char prefix) {
             this.client = client;
             this.mode = mode;
             this.prefix = prefix;
         }
 
+        @Nonnull
         @Override
         public Client getClient() {
             return this.client;
@@ -314,7 +337,7 @@ class ActorProvider {
     }
 
     abstract class IRCMessageReceiverSnapshot extends IRCActorSnapshot implements MessageReceiver {
-        protected IRCMessageReceiverSnapshot(String name, IRCClient client) {
+        protected IRCMessageReceiverSnapshot(@Nonnull String name, @Nonnull IRCClient client) {
             super(name, client);
         }
     }
@@ -324,17 +347,19 @@ class ActorProvider {
         private final String nick;
         private final String user;
 
-        private IRCUser(String mask, String nick, String user, String host, IRCClient client) {
+        private IRCUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull IRCClient client) {
             super(mask, client);
             this.nick = nick;
             this.user = user;
             this.host = host;
         }
 
+        @Nonnull
         String getNick() {
             return this.nick;
         }
 
+        @Nonnull
         IRCUserSnapshot snapshot() {
             return new IRCUserSnapshot(this.getName(), this.nick, this.user, this.host, this.getClient());
         }
@@ -346,7 +371,7 @@ class ActorProvider {
         private final String nick;
         private final String user;
 
-        private IRCUserSnapshot(String mask, String nick, String user, String host, IRCClient client) {
+        private IRCUserSnapshot(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull IRCClient client) {
             super(mask, client);
             this.nick = nick;
             this.user = user;
@@ -359,26 +384,31 @@ class ActorProvider {
             return o instanceof IRCUserSnapshot && ((IRCUserSnapshot) o).getClient() == this.getClient() && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
+        @Nonnull
         @Override
         public Set<String> getChannels() {
             return this.channels;
         }
 
+        @Nonnull
         @Override
         public String getHost() {
             return this.host;
         }
 
+        @Nonnull
         @Override
         public String getMessagingName() {
             return this.getNick();
         }
 
+        @Nonnull
         @Override
         public String getNick() {
             return this.nick;
         }
 
+        @Nonnull
         @Override
         public String getUser() {
             return this.user;
@@ -401,22 +431,23 @@ class ActorProvider {
 
     private final Map<String, IRCChannel> trackedChannels;
 
-    ActorProvider(IRCClient client) {
+    ActorProvider(@Nonnull IRCClient client) {
         this.client = client;
         this.trackedChannels = new CIKeyMap<>(this.client);
     }
 
-    void channelTrack(IRCChannel channel) {
+    void channelTrack(@Nonnull IRCChannel channel) {
         this.trackedChannels.put(channel.getName(), channel);
         channel.setTracked(true);
     }
 
-    void channelUntrack(IRCChannel channel) {
+    void channelUntrack(@Nonnull IRCChannel channel) {
         this.trackedChannels.remove(channel.getName());
         channel.setTracked(false);
     }
 
-    IRCActor getActor(String name) {
+    @Nonnull
+    IRCActor getActor(@Nonnull String name) {
         Matcher nickMatcher = this.nickPattern.matcher(name);
         if (nickMatcher.matches()) {
             return new IRCUser(name, nickMatcher.group(1), nickMatcher.group(2), nickMatcher.group(3), this.client);
@@ -428,7 +459,8 @@ class ActorProvider {
         return new IRCActor(name, this.client);
     }
 
-    IRCChannel getChannel(String name) {
+    @Nullable
+    IRCChannel getChannel(@Nonnull String name) {
         IRCChannel channel = this.trackedChannels.get(name);
         if (channel == null && this.client.getServerInfo().isValidChannel(name)) {
             channel = new IRCChannel(name, this.client);
@@ -436,13 +468,14 @@ class ActorProvider {
         return channel;
     }
 
-    IRCUser trackUserNick(IRCUser user, String newNick) {
+    @Nonnull
+    IRCUser trackUserNick(@Nonnull IRCUser user, @Nonnull String newNick) {
         IRCUser newUser = (IRCUser) this.getActor(newNick + user.getName().substring(user.getName().indexOf('!'), user.getName().length()));
         this.trackedChannels.values().forEach(channel -> channel.trackUserNick(user, newUser));
         return newUser;
     }
 
-    void trackUserQuit(IRCUser user) {
+    void trackUserQuit(@Nonnull IRCUser user) {
         this.trackedChannels.values().forEach(channel -> channel.trackUserPart(user));
     }
 }

@@ -26,6 +26,9 @@ package org.kitteh.irc.client.library.event.helper;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A {@link Channel} is gaining or losing a {@link User}
  */
@@ -50,6 +53,7 @@ public interface ChannelUserListChange {
      *
      * @return type of change
      */
+    @Nonnull
     Change getChange();
 
     /**
@@ -58,6 +62,7 @@ public interface ChannelUserListChange {
      *
      * @return channel or null for all channels
      */
+    @Nullable
     Channel getChannel();
 
     /**
@@ -65,5 +70,6 @@ public interface ChannelUserListChange {
      *
      * @return user
      */
+    @Nonnull
     User getUser();
 }

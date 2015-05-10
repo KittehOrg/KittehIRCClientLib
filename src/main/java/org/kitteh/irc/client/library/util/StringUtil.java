@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library.util;
 
 import org.kitteh.irc.client.library.IRCFormat;
 
+import javax.annotation.Nonnull;
+
 /**
  * String tools!
  */
@@ -43,10 +45,12 @@ public final class StringUtil {
      * @param delimiter delimiter
      * @return the combined string
      * @throws IllegalArgumentException for a null array, a length less than
-     * 1 or an index less than 0
+     * 1, an index less than 0, or a null delimiter
      */
-    public static String combineSplit(String[] split, int start, int length, String delimiter) {
+    @Nonnull
+    public static String combineSplit(@Nonnull String[] split, int start, int length, @Nonnull String delimiter) {
         Sanity.nullCheck((Object) split, "Cannot combine a null array");
+        Sanity.nullCheck(delimiter, "Delimiter cannot be null");
         Sanity.truthiness(start >= 0, "Negative array indexes are not valid");
         Sanity.truthiness(length > 0, "Cannot combine less than one element of an array");
 
@@ -70,7 +74,8 @@ public final class StringUtil {
      * @return the combined string
      * @throws IllegalArgumentException for null array or index less than 0
      */
-    public static String combineSplit(String[] split, int start) {
+    @Nonnull
+    public static String combineSplit(@Nonnull String[] split, int start) {
         Sanity.nullCheck((Object) split, "Cannot combine a null array");
         return StringUtil.combineSplit(split, start, split.length - start, " ");
     }
@@ -82,7 +87,8 @@ public final class StringUtil {
      * @return the colorful new message
      * @throws IllegalArgumentException for null message
      */
-    public static String makeRainbow(String message) {
+    @Nonnull
+    public static String makeRainbow(@Nonnull String message) {
         return StringUtil.makeRainbow(message, DEFAULT_RAINBOW);
     }
 
@@ -95,7 +101,8 @@ public final class StringUtil {
      * @throws IllegalArgumentException for null parameters, null entries in
      * array, or non-color entries in array
      */
-    public static String makeRainbow(String message, IRCFormat[] colorOrder) {
+    @Nonnull
+    public static String makeRainbow(@Nonnull String message, @Nonnull IRCFormat[] colorOrder) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
         Sanity.nullCheck(colorOrder, "Color order cannot be null");

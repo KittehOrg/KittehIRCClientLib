@@ -28,6 +28,9 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
 
 /**
  * A {@link User} has kicked another User!
@@ -44,11 +47,13 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<User> impleme
      * @param target targeted user
      * @param message message the user left
      */
-    public ChannelKickEvent(Client client, Channel channel, User user, User target, String message) {
+    public ChannelKickEvent(@Nonnull Client client, @Nonnull Channel channel, @Nonnull User user, @Nonnull User target, @Nonnull String message) {
         super(client, user, channel, message);
+        Sanity.nullCheck(target, "Target cannot be null");
         this.target = target;
     }
 
+    @Nonnull
     @Override
     public Change getChange() {
         return Change.LEAVE;
@@ -59,10 +64,12 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<User> impleme
      *
      * @return the nickname of the kicked user
      */
+    @Nonnull
     public User getTarget() {
         return this.target;
     }
 
+    @Nonnull
     @Override
     public User getUser() {
         return this.getTarget();

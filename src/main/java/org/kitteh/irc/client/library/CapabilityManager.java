@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,10 +39,12 @@ class CapabilityManager {
     CapabilityManager() {
     }
 
+    @Nonnull
     List<String> getCapabilities() {
         return new ArrayList<>(this.capabilities);
     }
 
+    @Nonnull
     List<String> getSupportedCapabilities() {
         return new ArrayList<>(this.supportedCapabilities);
     }
@@ -54,7 +57,7 @@ class CapabilityManager {
         this.negotiating = false;
     }
 
-    void updateCapabilities(List<CapabilityState> capabilityStates) {
+    void updateCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
         for (CapabilityState capabilityState : capabilityStates) {
             if (capabilityState.isDisabled()) {
                 this.capabilities.remove(capabilityState.getCapabilityName());
@@ -64,7 +67,7 @@ class CapabilityManager {
         }
     }
 
-    void setSupportedCapabilities(List<CapabilityState> capabilityStates) {
+    void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
         this.supportedCapabilities = capabilityStates.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toList());
     }
 }
