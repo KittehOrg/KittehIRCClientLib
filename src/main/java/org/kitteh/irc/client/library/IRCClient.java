@@ -447,6 +447,11 @@ final class IRCClient implements Client {
     }
 
     @Override
+    public void sendRawLineAvoidingDuplication(String message) {
+        this.connection.sendMessage(message, false, true);
+    }
+
+    @Override
     public void sendRawLineImmediately(String message) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
@@ -594,10 +599,6 @@ final class IRCClient implements Client {
 
     void ping() {
         this.sendRawLine("PING :" + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
-    }
-
-    void sendRawLineAvoidingDuplication(String message) {
-        this.connection.sendMessage(message, false, true);
     }
 
     private String[] handleArgs(String[] split, int start) {

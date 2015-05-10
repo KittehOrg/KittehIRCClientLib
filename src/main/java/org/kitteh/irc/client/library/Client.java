@@ -204,6 +204,14 @@ public interface Client {
     void sendRawLine(String message);
 
     /**
+     * Sends a raw IRC message, unless the exact same message is already in
+     * the queue of messages not yet sent.
+     *
+     * @param message message to send
+     */
+    void sendRawLineAvoidingDuplication(String message);
+
+    /**
      * Sends a raw IRC message, disregarding message delays and all sanity.
      * Live life on the wild side with this method designed to ensure you
      * get floodkicked before you finish dumping your life's work into chat.
