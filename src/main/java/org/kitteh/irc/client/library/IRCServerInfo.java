@@ -162,7 +162,7 @@ final class IRCServerInfo implements ServerInfo {
     // Util stuffs
 
     boolean isValidChannel(@Nonnull String name) {
-        return name.length() > 1 && this.channelLengthLimit < 0 || name.length() <= this.channelLengthLimit && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
+        return name.length() > 1 && (this.channelLengthLimit < 0 || (name.length() <= this.channelLengthLimit && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches()));
     }
 
     boolean isTargetedChannel(@Nonnull String name) {
