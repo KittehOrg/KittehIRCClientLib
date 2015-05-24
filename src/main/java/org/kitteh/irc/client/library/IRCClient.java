@@ -358,13 +358,13 @@ final class IRCClient implements Client {
 
     @Override
     public int getMessageDelay() {
-        return this.config.get(Config.MESSAGE_DELAY);
+        return this.config.getNotNull(Config.MESSAGE_DELAY);
     }
 
     @Nonnull
     @Override
     public String getName() {
-        return this.config.get(Config.NAME);
+        return this.config.getNotNull(Config.NAME);
     }
 
     @Nonnull
@@ -599,7 +599,7 @@ final class IRCClient implements Client {
             builder.append(this.config.get(Config.WEBIRC_PASSWORD)).append(' ');
             builder.append(this.config.get(Config.WEBIRC_USER)).append(' ');
             builder.append(this.config.get(Config.WEBIRC_HOST)).append(' ');
-            builder.append(this.config.get(Config.WEBIRC_IP).getHostAddress());
+            builder.append(this.config.getNotNull(Config.WEBIRC_IP).getHostAddress());
             this.sendRawLineImmediately(builder.toString());
         }
 

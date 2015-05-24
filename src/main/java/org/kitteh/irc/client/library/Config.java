@@ -159,6 +159,23 @@ final class Config {
     }
 
     /**
+     * Gets a stored configuration entry that is never null.
+     *
+     * @param entry entry to acquire
+     * @param <Type> entry type
+     * @return the stored entry
+     * @throws NullPointerException for a null entry
+     */
+    @Nonnull
+    <Type> Type getNotNull(Entry<Type> entry) {
+        Type t = this.get(entry);
+        if (t == null) {
+            throw new NullPointerException();
+        }
+        return t;
+    }
+
+    /**
      * Sets a configuration entry.
      *
      * @param entry entry to set

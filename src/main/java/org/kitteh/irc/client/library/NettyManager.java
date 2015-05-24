@@ -126,7 +126,7 @@ final class NettyManager {
             });
 
             // SSL
-            if (this.client.getConfig().get(Config.SSL)) {
+            if (this.client.getConfig().getNotNull(Config.SSL)) {
                 try {
                     File keyCertChainFile = this.client.getConfig().get(Config.SSL_KEY_CERT_CHAIN);
                     File keyFile = this.client.getConfig().get(Config.SSL_KEY);
@@ -235,7 +235,7 @@ final class NettyManager {
             bootstrap.group(eventLoopGroup);
         }
         SocketAddress bind = client.getConfig().get(Config.BIND_ADDRESS);
-        SocketAddress server = client.getConfig().get(Config.SERVER_ADDRESS);
+        SocketAddress server = client.getConfig().getNotNull(Config.SERVER_ADDRESS);
         ClientConnection clientConnection;
         if (bind == null) {
             clientConnection = new ClientConnection(client, bootstrap.connect(server));
