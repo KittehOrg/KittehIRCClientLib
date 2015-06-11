@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  */
 public class ModeCommand extends ChannelCommand {
     private class ModeChange {
-        private final Boolean add;
+        private final boolean add;
         private final char mode;
         private final String parameter;
 
@@ -53,8 +53,7 @@ public class ModeCommand extends ChannelCommand {
             this.parameter = parameter;
         }
 
-        @Nullable
-        private Boolean getAdd() {
+        private boolean getAdd() {
             return this.add;
         }
 
@@ -222,7 +221,7 @@ public class ModeCommand extends ChannelCommand {
         ModeChange change;
         Boolean add = null;
         while ((change = queue.poll()) != null) {
-            if (add != change.getAdd()) {
+            if (add == null || add != change.getAdd()) {
                 add = change.getAdd();
                 modes.append(add ? '+' : '-');
             }
