@@ -181,8 +181,9 @@ class ActorProvider {
         }
 
         void trackUserNick(@Nonnull IRCUser oldUser, @Nonnull IRCUser newUser) {
-            this.nickMap.remove(oldUser.getNick());
-            this.trackUser(newUser, this.modes.remove(oldUser.getNick()));
+            if (this.nickMap.remove(oldUser.getNick()) != null) {
+                this.trackUser(newUser, this.modes.remove(oldUser.getNick()));
+            }
         }
 
         void trackUserPart(@Nonnull IRCUser user) {
