@@ -128,5 +128,5 @@ public interface ServerInfo {
      * @param name potentially valid name
      * @return true if valid according to the known info
      */
-    boolean isValidChannel(String name);
+    boolean isValidChannel(@Nonnull String name);
 }
