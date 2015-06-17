@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 /**
  * An event involving an {@link Actor}.
  */
-public interface ActorEvent<A extends Actor> {
+public interface ActorEvent<A extends Actor> extends ClientEvent {
     /**
      * Gets the actor responsible for this event.
      *

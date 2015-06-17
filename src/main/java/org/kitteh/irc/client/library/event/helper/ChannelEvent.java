@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 /**
  * An event involving a {@link Channel}.
  */
-public interface ChannelEvent {
+public interface ChannelEvent extends ClientEvent {
     /**
      * Gets the {@link Channel} involved in this event.
      *

@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 /**
  * A {@link Channel} is gaining or losing a {@link User}
  */
-public interface ChannelUserListChange {
+public interface ChannelUserListChange extends ClientEvent {
     enum Change {
         /**
          * A user is joining.
