@@ -120,4 +120,13 @@ public interface ServerInfo {
      */
     @Nullable
     String getServerVersion();
+
+    /**
+     * Gets if a given string is a valid channel name according to the
+     * available server information.
+     *
+     * @param name potentially valid name
+     * @return true if valid according to the known info
+     */
+    boolean isValidChannel(String name);
 }

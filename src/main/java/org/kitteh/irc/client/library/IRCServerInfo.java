@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -160,8 +161,9 @@ final class IRCServerInfo implements ServerInfo {
     }
 
     // Util stuffs
-
-    boolean isValidChannel(@Nonnull String name) {
+    @Override
+    public boolean isValidChannel(@Nonnull String name) {
+        Sanity.nullCheck(name, "Name cannot be null");
         return name.length() > 1 && (this.channelLengthLimit < 0 || (name.length() <= this.channelLengthLimit && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches()));
     }
 
