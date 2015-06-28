@@ -29,8 +29,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -54,6 +56,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import java.io.File;
+import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.HashSet;
 import java.util.List;
@@ -139,6 +142,20 @@ final class NettyManager {
                 }
             }
 
+            // Exception handling
+            this.channel.pipeline().addLast("[INPUT] Exception handler", new ChannelInboundHandlerAdapter() {
+                @Override
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                    ClientConnection.this.handleException(cause);
+                }
+            });
+            this.channel.pipeline().addFirst("[OUTPUT] Exception handler", new ChannelOutboundHandlerAdapter() {
+                @Override
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                    ClientConnection.this.handleException(cause);
+                }
+            });
+
             // Clean up on disconnect
             this.channel.closeFuture().addListener(futureListener -> {
                 if (ClientConnection.this.reconnect) {
@@ -171,6 +188,15 @@ final class NettyManager {
 
         void updateScheduling() {
             this.schedule(false);
+        }
+
+        private void handleException(Throwable thrown) {
+            if (thrown instanceof Exception) { // TODO handle non-exceptions
+                this.client.getExceptionListener().queue((Exception) thrown);
+            }
+            if (thrown instanceof IOException) {
+                this.shutdown("IO Error. Reconnecting...", true);
+            }
         }
 
         private void schedule(boolean force) {
