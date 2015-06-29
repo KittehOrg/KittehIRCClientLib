@@ -721,8 +721,7 @@ final class IRCClient implements Client {
                 ActorProvider.IRCChannel topicSetChannel = this.actorProvider.getChannel(args[1]);
                 if (topicSetChannel != null) {
                     topicSetChannel.setTopic(Long.parseLong(args[3]) * 1000, this.actorProvider.getActor(args[2]).snapshot());
-                    Channel channel = topicSetChannel.snapshot();
-                    this.eventManager.callEvent(new ChannelTopicEvent(this, channel.getTopic().getSetter(), channel, channel.getTopic().getTopic()));
+                    this.eventManager.callEvent(new ChannelTopicEvent(this, topicSetChannel.snapshot(), false));
                 }
                 break;
             case 352: // WHO list
@@ -1008,7 +1007,7 @@ final class IRCClient implements Client {
                 Actor setter = actor.snapshot();
                 topicChannel.setTopic(args[1]);
                 topicChannel.setTopic(System.currentTimeMillis(), setter);
-                this.eventManager.callEvent(new ChannelTopicEvent(this, setter, topicChannel.snapshot(), args[1]));
+                this.eventManager.callEvent(new ChannelTopicEvent(this, topicChannel.snapshot(), true));
                 break;
             default:
                 break;

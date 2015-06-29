@@ -24,9 +24,8 @@
 package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
 import javax.annotation.Nonnull;
 
@@ -35,16 +34,29 @@ import javax.annotation.Nonnull;
  * <p>
  * Either the topic has changed or we requested to know what the topic was.
  */
-public class ChannelTopicEvent extends ActorChannelMessageEventBase<Actor> {
+public class ChannelTopicEvent extends ChannelEventBase {
+    private boolean updated;
+
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param setter who set the topic
      * @param channel channel the topic is about
-     * @param message topic that has been set
+     * @param updated if this is a new change
+     * @see Channel#getTopic() for the topic
      */
-    public ChannelTopicEvent(@Nonnull Client client, @Nonnull Actor setter, @Nonnull Channel channel, @Nonnull String message) {
-        super(client, setter, channel, message);
+    public ChannelTopicEvent(@Nonnull Client client, @Nonnull Channel channel, boolean updated) {
+        super(client, channel);
+        this.updated = updated;
+    }
+
+    /**
+     * Gets if this is a new topic update, or just the server informing us of
+     * a change from the past.
+     *
+     * @return true if a new topic change
+     */
+    public boolean isNew() {
+        return this.updated;
     }
 }
