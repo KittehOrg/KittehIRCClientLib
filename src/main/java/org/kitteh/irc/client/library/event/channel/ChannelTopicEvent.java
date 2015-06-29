@@ -51,6 +51,16 @@ public class ChannelTopicEvent extends ChannelEventBase {
     }
 
     /**
+     * Gets the channel's topic.
+     *
+     * @return the channel topic
+     * @see Channel#getTopic() the method for which this is a shortcut
+     */
+    public Channel.Topic getTopic() {
+        return this.getChannel().getTopic();
+    }
+
+    /**
      * Gets if this is a new topic update, or just the server informing us of
      * a change from the past.
      *
