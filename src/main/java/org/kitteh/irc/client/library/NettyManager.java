@@ -42,8 +42,8 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.ssl.IdentityCipherSuiteFilter;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -134,7 +134,7 @@ final class NettyManager {
                     File keyCertChainFile = this.client.getConfig().get(Config.SSL_KEY_CERT_CHAIN);
                     File keyFile = this.client.getConfig().get(Config.SSL_KEY);
                     String keyPassword = this.client.getConfig().get(Config.SSL_KEY_PASSWORD);
-                    SslContext sslContext = SslContext.newClientContext(null, null, new NettyTrustManagerFactory(this.client), keyCertChainFile, keyFile, keyPassword, null, null, IdentityCipherSuiteFilter.INSTANCE, null, 0, 0);
+                    SslContext sslContext = SslContextBuilder.forClient().trustManager(new NettyTrustManagerFactory(this.client)).keyManager(keyCertChainFile, keyFile, keyPassword).build();
                     this.channel.pipeline().addFirst(sslContext.newHandler(this.channel.alloc()));
                 } catch (SSLException e) {
                     this.client.getExceptionListener().queue(new KittehConnectionException(e, true));
