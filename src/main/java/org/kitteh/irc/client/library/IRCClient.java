@@ -594,13 +594,7 @@ final class IRCClient implements Client {
 
         // If we have WebIRC information, send it before PASS, USER, and NICK.
         if (this.config.get(Config.WEBIRC_PASSWORD) != null) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("WEBIRC ");
-            builder.append(this.config.get(Config.WEBIRC_PASSWORD)).append(' ');
-            builder.append(this.config.get(Config.WEBIRC_USER)).append(' ');
-            builder.append(this.config.get(Config.WEBIRC_HOST)).append(' ');
-            builder.append(this.config.getNotNull(Config.WEBIRC_IP).getHostAddress());
-            this.sendRawLineImmediately(builder.toString());
+            this.sendRawLineImmediately("WEBIRC " + this.config.get(Config.WEBIRC_PASSWORD) + ' ' + this.config.get(Config.WEBIRC_USER) + ' ' + this.config.get(Config.WEBIRC_HOST) + ' ' + this.config.getNotNull(Config.WEBIRC_IP).getHostAddress());
         }
 
         // If the server has a password, send that along before USER and NICK.
