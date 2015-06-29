@@ -30,6 +30,12 @@ import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Abstract base class for events involving a Channel. Use the helper events
+ * if you want to listen to such events.
+ *
+ * @see ChannelEvent for events involving channels
+ */
 public abstract class ChannelEventBase extends ClientEventBase implements ChannelEvent {
     private final Channel channel;
 

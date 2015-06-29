@@ -26,11 +26,23 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.event.helper.ActorEvent;
+import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Abstract base class for events involving an Actor and Channel and have a
+ * message. Use the helper events if you want to listen to events involving
+ * either.
+ *
+ * @param <A> actor involved
+ * @see ActorEvent for events involving actors
+ * @see ChannelEvent for events involving channels
+ * @see MessageEvent for events involving messages
+ */
 public abstract class ActorChannelMessageEventBase<A extends Actor> extends ActorChannelEventBase<A> implements MessageEvent {
     private final String message;
 

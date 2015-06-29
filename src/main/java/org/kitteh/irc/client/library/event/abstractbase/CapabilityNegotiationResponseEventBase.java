@@ -24,10 +24,18 @@
 package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Abstract base class for events involving capability negotiation (CAP) that
+ * can have a response.
+ *
+ * @see CapabilityNegotiationResponseEvent for CAP messages needing reply
+ * @see CapabilitiesListEvent for CAP LIST, which doesn't involve replies
+ */
 public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase implements CapabilityNegotiationResponseEvent {
     private boolean endNegotiation = true;
     private final boolean negotiating;

@@ -30,6 +30,13 @@ import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Abstract base class for events involving an Actor. Use the helper events
+ * if you want to listen to such events.
+ *
+ * @param <A> actor involved
+ * @see ActorEvent for events involving actors
+ */
 public abstract class ActorEventBase<A extends Actor> extends ClientEventBase implements ActorEvent<A> {
     private final A actor;
 
