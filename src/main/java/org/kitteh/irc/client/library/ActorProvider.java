@@ -239,7 +239,7 @@ class ActorProvider {
         private final boolean complete;
         private final Topic topic;
 
-        private IRCChannelSnapshot(@Nonnull String channel, @Nonnull Map<String, Set<ChannelUserMode>> modes, @Nonnull Map<String, IRCUser> nickMap, @Nonnull IRCClient client, boolean complete, @Nullable Topic topic) {
+        private IRCChannelSnapshot(@Nonnull String channel, @Nonnull Map<String, Set<ChannelUserMode>> modes, @Nonnull Map<String, IRCUser> nickMap, @Nonnull IRCClient client, boolean complete, @Nonnull Topic topic) {
             super(channel, client);
             this.complete = complete;
             this.topic = topic;
