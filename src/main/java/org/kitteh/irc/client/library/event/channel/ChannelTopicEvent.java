@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
  * Either the topic has changed or we requested to know what the topic was.
  */
 public class ChannelTopicEvent extends ChannelEventBase {
-    private boolean updated;
+    private final boolean updated;
 
     /**
      * Creates the event.
