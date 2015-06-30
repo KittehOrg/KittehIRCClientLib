@@ -104,7 +104,7 @@ public final class ClientBuilder implements Cloneable {
      * <p>
      * All exceptions are passed from a single, separate thread.
      *
-     * @param listener catcher of throwables
+     * @param listener catcher of throwable objects
      * @return this builder
      */
     @Nonnull

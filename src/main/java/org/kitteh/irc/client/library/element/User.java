@@ -31,7 +31,7 @@ import java.util.Set;
  */
 public interface User extends MessageReceiver {
     /**
-     * Gets the user'c channels.
+     * Gets the user's channels.
      *
      * @return channel names the user is in
      */

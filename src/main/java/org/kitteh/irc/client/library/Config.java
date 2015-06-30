@@ -147,10 +147,10 @@ final class Config {
     @Nullable
     <Type> Type get(Entry<Type> entry) {
         if (this.map.containsKey(entry)) {
-            Object uncastValue = this.map.get(entry);
-            if (uncastValue != NULL && entry.getType().isAssignableFrom(uncastValue.getClass())) {
+            Object value = this.map.get(entry);
+            if (value != NULL && entry.getType().isAssignableFrom(value.getClass())) {
                 @SuppressWarnings("unchecked")
-                Type castValue = (Type) uncastValue;
+                Type castValue = (Type) value;
                 return castValue;
             }
             return null;

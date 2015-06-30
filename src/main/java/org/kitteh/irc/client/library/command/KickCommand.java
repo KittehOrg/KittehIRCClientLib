@@ -109,7 +109,7 @@ public class KickCommand extends ChannelCommand {
     }
 
     /**
-     * Exectures the command.
+     * Executes the command.
      *
      * @throws IllegalStateException if target is not defined
      */

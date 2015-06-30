@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.Client;
 import javax.annotation.Nonnull;
 
 /**
- * Represents an {@link Actor} capable of recieving messages.
+ * Represents an {@link Actor} capable of receiving messages.
  */
 public interface MessageReceiver extends Actor {
     /**

@@ -237,7 +237,7 @@ public interface Client {
     /**
      * Sends a raw IRC message, disregarding message delays and all sanity.
      * Live life on the wild side with this method designed to ensure you
-     * get floodkicked before you finish dumping your life's work into chat.
+     * get flood-kicked before you finish dumping your life's work into chat.
      *
      * @param message message to send dangerously, you monster
      * @throws IllegalArgumentException if message is null
@@ -260,7 +260,7 @@ public interface Client {
      * <p>
      * All exceptions are passed from a single, separate thread.
      *
-     * @param listener catcher of throwables
+     * @param listener catcher of throwable objects
      */
     void setExceptionListener(@Nullable Consumer<Exception> listener);
 

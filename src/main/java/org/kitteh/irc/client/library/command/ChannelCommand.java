@@ -30,7 +30,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import javax.annotation.Nonnull;
 
 /**
- * A command only executed on a chanenl.
+ * A command only executed on a channel.
  */
 public abstract class ChannelCommand extends Command {
     private final String channel;

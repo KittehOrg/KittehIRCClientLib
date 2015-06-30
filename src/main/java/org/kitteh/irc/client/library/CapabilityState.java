@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library;
 import javax.annotation.Nonnull;
 
 /**
- * Relects a capability state as told by the server.
+ * Reflects a capability state as told by the server.
  */
 public final class CapabilityState {
     private final boolean disable;

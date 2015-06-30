@@ -1021,8 +1021,8 @@ final class IRCClient implements Client {
         return MessageTarget.UNKNOWN;
     }
 
-    private void sendNickChange(@Nonnull String newnick) {
-        this.requestedNick = newnick;
-        this.sendRawLineImmediately("NICK " + newnick);
+    private void sendNickChange(@Nonnull String newNick) {
+        this.requestedNick = newNick;
+        this.sendRawLineImmediately("NICK " + newNick);
     }
 }

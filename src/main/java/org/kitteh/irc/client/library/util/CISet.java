@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * A threadsafe set with case insensitivity by a {@link Client}'s {@link
+ * A thread-safe set with case insensitivity by a {@link Client}'s {@link
  * CaseMapping}.
  */
 public class CISet implements Set<String> {

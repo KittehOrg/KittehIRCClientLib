@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * A threadsafe hash map with case insensitive keys by a {@link Client}'s
+ * A thread-safe hash map with case insensitive keys by a {@link Client}'s
  * {@link CaseMapping}.
  */
 public class CIKeyMap<Value> implements Map<String, Value> {
