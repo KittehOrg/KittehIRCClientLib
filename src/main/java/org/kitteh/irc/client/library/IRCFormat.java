@@ -54,12 +54,13 @@ public enum IRCFormat {
     WHITE(0),
     YELLOW(8);
 
-    private int color;
-    private boolean isColor = false;
-    private String toString;
+    private final int color;
+    private final boolean isColor;
+    private final String toString;
 
     IRCFormat(char ch) {
         this.color = -1;
+        this.isColor = false;
         this.toString = String.valueOf(ch);
     }
 
@@ -67,15 +68,9 @@ public enum IRCFormat {
         if ((color & 15) != color) {
             throw new AssertionError("Impossible color id: " + color);
         }
-        final StringBuilder builder = new StringBuilder();
-        builder.append(COLOR_CHAR);
-        if (color < 10) {
-            builder.append('0');
-        }
-        builder.append(color);
         this.color = color;
         this.isColor = true;
-        this.toString = builder.toString();
+        this.toString = COLOR_CHAR + ((color < 10) ? "0" : "") + color;
     }
 
     public static final char COLOR_CHAR = '\u0003';
@@ -89,7 +84,7 @@ public enum IRCFormat {
     @Nonnull
     public static String stripFormatting(@Nonnull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
-        return input.replaceAll("[" + BOLD + RESET + REVERSE + UNDERLINE + "]", "");
+        return input.replaceAll("[" + BOLD + RESET + REVERSE + UNDERLINE + ']', "");
     }
 
     /**
@@ -129,6 +124,6 @@ public enum IRCFormat {
         Sanity.nullCheck(background, "Background cannot be null");
         Sanity.truthiness(this.isColor, "Cannot use non-color foreground.");
         Sanity.truthiness(background.isColor, "Cannot use non-color background");
-        return this.toString() + "," + background.color;
+        return this.toString() + ',' + background.color;
     }
 }

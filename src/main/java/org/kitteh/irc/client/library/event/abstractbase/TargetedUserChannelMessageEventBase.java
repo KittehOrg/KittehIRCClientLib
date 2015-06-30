@@ -24,8 +24,9 @@
 package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
@@ -35,26 +36,30 @@ import javax.annotation.Nonnull;
 
 /**
  * Abstract base class for events involving an Actor and Channel and have a
- * message. Use the helper events if you want to listen to events involving
+ * message while being targeted at a specific subset of users to that
+ * Channel. Use the helper events if you want to listen to events involving
  * either.
  *
- * @param <A> actor involved
  * @see ActorEvent for events involving actors
  * @see ChannelEvent for events involving channels
  * @see MessageEvent for events involving messages
  */
-public abstract class ActorChannelMessageEventBase<A extends Actor> extends ActorChannelEventBase<A> implements MessageEvent {
-    private final String message;
+public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMessageEventBase<User> implements MessageEvent {
+    private final ChannelUserMode prefix;
 
-    protected ActorChannelMessageEventBase(@Nonnull Client client, @Nonnull A actor, @Nonnull Channel channel, @Nonnull String message) {
-        super(client, actor, channel);
-        Sanity.nullCheck(message, "Message cannot be null");
-        this.message = message;
+    protected TargetedUserChannelMessageEventBase(@Nonnull Client client, @Nonnull User user, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
+        super(client, user, channel, message);
+        Sanity.nullCheck(prefix, "Prefix cannot be null");
+        this.prefix = prefix;
     }
 
-    @Override
+    /**
+     * Gets the prefix to which the message was sent.
+     *
+     * @return the prefix targeted
+     */
     @Nonnull
-    public final String getMessage() {
-        return this.message;
+    public final ChannelUserMode getPrefix() {
+        return this.prefix;
     }
 }

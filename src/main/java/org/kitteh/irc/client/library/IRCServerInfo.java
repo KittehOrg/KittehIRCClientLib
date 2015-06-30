@@ -54,12 +54,9 @@ final class IRCServerInfo implements ServerInfo {
     private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
     IRCServerInfo(@Nonnull Client client) {
-        channelUserModes = new ArrayList<ChannelUserMode>() {
-            {
-                this.add(new ActorProvider.IRCChannelUserMode(client, 'o', '@'));
-                this.add(new ActorProvider.IRCChannelUserMode(client, 'v', '+'));
-            }
-        };
+        this.channelUserModes = new ArrayList<>();
+        this.channelUserModes.add(new ActorProvider.IRCChannelUserMode(client, 'o', '@'));
+        this.channelUserModes.add(new ActorProvider.IRCChannelUserMode(client, 'v', '+'));
     }
 
     @Nonnull
@@ -164,11 +161,11 @@ final class IRCServerInfo implements ServerInfo {
     @Override
     public boolean isValidChannel(@Nonnull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
-        return name.length() > 1 && (this.channelLengthLimit < 0 || (name.length() <= this.channelLengthLimit && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches()));
+        return (name.length() > 1) && ((this.channelLengthLimit < 0) || ((name.length() <= this.channelLengthLimit) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches()));
     }
 
     boolean isTargetedChannel(@Nonnull String name) {
-        return getTargetedChannelInfo(name) != null;
+        return this.getTargetedChannelInfo(name) != null;
     }
 
     @Nullable

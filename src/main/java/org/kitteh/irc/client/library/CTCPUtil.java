@@ -60,13 +60,16 @@ import java.util.regex.Pattern;
  * This stuff is all handled internally by the client; no client user needs
  * to know how to do this.
  */
-class CTCPUtil {
+final class CTCPUtil {
     private static final char CTCP_DELIMITER = '\u0001';
     private static final char CTCP_MQUOTE = '\u0016';
 
     private static final Pattern CTCP_ESCAPABLE_CHAR = Pattern.compile("[\n\r\u0000" + CTCP_DELIMITER + CTCP_MQUOTE + "\\\\]");
     private static final Pattern CTCP_ESCAPED_CHAR = Pattern.compile("([" + CTCP_MQUOTE + "\\\\])(.)");
     private static final Pattern CTCP_MESSAGE = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
+
+    private CTCPUtil() {
+    }
 
     /**
      * Converts a given message from CTCP escaping.
@@ -78,7 +81,7 @@ class CTCPUtil {
     static String fromCTCP(@Nonnull String message) {
         message = message.substring(1); // Strip the starting delimiter
         message = message.substring(0, message.indexOf(CTCP_DELIMITER)); // Strip the second delimiter
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(message.length());
         int currentIndex = 0;
         Matcher matcher = CTCP_ESCAPED_CHAR.matcher(message);
         while (matcher.find()) {
@@ -136,7 +139,7 @@ class CTCPUtil {
      */
     @Nonnull
     static String toCTCP(@Nonnull String message) {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(message.length());
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;
         Matcher matcher = CTCP_ESCAPABLE_CHAR.matcher(message);

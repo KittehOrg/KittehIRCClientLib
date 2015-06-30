@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * Commands a la MODE.
  */
 public class ModeCommand extends ChannelCommand {
-    private class ModeChange {
+    private final class ModeChange {
         private final boolean add;
         private final char mode;
         private final String parameter;
@@ -68,6 +68,7 @@ public class ModeCommand extends ChannelCommand {
     }
 
     private static final Pattern MASK_PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+    private static final int MODES_PER_LINE = 3;
 
     private final List<ModeChange> changes = new ArrayList<>();
 
@@ -181,7 +182,7 @@ public class ModeCommand extends ChannelCommand {
             Sanity.truthiness(parameter == null, "Provided mode '" + mode + "' with parameter when one is not required.");
         }
         if (channelModeType == ChannelModeType.A_MASK) {
-            Sanity.truthiness(parameter != null && MASK_PATTERN.matcher(parameter).matches(), "Provided mode `" + mode + "' requires a mask parameter.");
+            Sanity.truthiness((parameter != null) && MASK_PATTERN.matcher(parameter).matches(), "Provided mode `" + mode + "' requires a mask parameter.");
         }
         this.changes.add(new ModeChange(add, mode, parameter));
         return this;
@@ -192,7 +193,7 @@ public class ModeCommand extends ChannelCommand {
         Queue<ModeChange> queue = new LinkedList<>();
         for (ModeChange modeChange : this.changes) {
             queue.offer(modeChange);
-            if (queue.size() == 3) {
+            if (queue.size() == MODES_PER_LINE) {
                 this.send(queue);
             }
         }
@@ -212,16 +213,16 @@ public class ModeCommand extends ChannelCommand {
                 return ChannelModeType.B_PARAMETER_ALWAYS;
             }
         }
-        throw new IllegalArgumentException("Invalid mode '" + mode + "'");
+        throw new IllegalArgumentException("Invalid mode '" + mode + '\'');
     }
 
     private void send(@Nonnull Queue<ModeChange> queue) {
-        StringBuilder modes = new StringBuilder();
+        StringBuilder modes = new StringBuilder(MODES_PER_LINE * 2);
         StringBuilder parameters = new StringBuilder();
         ModeChange change;
         Boolean add = null;
         while ((change = queue.poll()) != null) {
-            if (add == null || add != change.getAdd()) {
+            if ((add == null) || (add != change.getAdd())) {
                 add = change.getAdd();
                 modes.append(add ? '+' : '-');
             }
@@ -230,6 +231,6 @@ public class ModeCommand extends ChannelCommand {
                 parameters.append(' ').append(change.getParameter());
             }
         }
-        this.getClient().sendRawLine("MODE " + this.getChannel() + " " + modes.toString() + parameters.toString());
+        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + modes + parameters);
     }
 }

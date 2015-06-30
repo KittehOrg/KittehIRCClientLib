@@ -144,12 +144,13 @@ class ActorProvider {
             this.topicSetter = user;
         }
 
+        @Override
         @Nonnull
         IRCChannelSnapshot snapshot() {
             synchronized (this.modes) {
                 if (this.tracked && !this.fullListReceived) {
                     long now = System.currentTimeMillis();
-                    if (now - this.lastWho > 5000) {
+                    if ((now - this.lastWho) > 5000) {
                         this.lastWho = now;
                         this.getClient().sendRawLineAvoidingDuplication("WHO " + this.getName());
                     }
@@ -165,7 +166,7 @@ class ActorProvider {
 
         void trackUser(@Nonnull IRCUser user, @Nullable Set<ChannelUserMode> modes) {
             this.nickMap.put(user.getNick(), user);
-            this.modes.put(user.getNick(), modes == null ? new HashSet<>() : new HashSet<>(modes));
+            this.modes.put(user.getNick(), (modes == null) ? new HashSet<>() : new HashSet<>(modes));
         }
 
         void trackUserJoin(@Nonnull IRCUser user) {
@@ -256,7 +257,7 @@ class ActorProvider {
         @Override
         public boolean equals(Object o) {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
-            return o instanceof IRCChannelSnapshot && ((IRCChannelSnapshot) o).getClient() == this.getClient() && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
+            return (o instanceof IRCChannelSnapshot) && (((IRCChannelSnapshot) o).getClient() == this.getClient()) && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
         @Nonnull
@@ -305,7 +306,7 @@ class ActorProvider {
         @Override
         public int hashCode() {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
-            return this.toLowerCase(this.getName()).hashCode() * 2 + this.getClient().hashCode();
+            return (this.toLowerCase(this.getName()).hashCode() * 2) + this.getClient().hashCode();
         }
     }
 
@@ -360,6 +361,7 @@ class ActorProvider {
             return this.nick;
         }
 
+        @Override
         @Nonnull
         IRCUserSnapshot snapshot() {
             return new IRCUserSnapshot(this.getName(), this.nick, this.user, this.host, this.getClient());
@@ -382,7 +384,7 @@ class ActorProvider {
 
         @Override
         public boolean equals(Object o) {
-            return o instanceof IRCUserSnapshot && ((IRCUserSnapshot) o).getClient() == this.getClient() && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
+            return (o instanceof IRCUserSnapshot) && (((IRCUserSnapshot) o).getClient() == this.getClient()) && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
         @Nonnull
@@ -417,7 +419,7 @@ class ActorProvider {
 
         @Override
         public int hashCode() {
-            return this.toLowerCase(this.getName()).hashCode() * 2 + this.getClient().hashCode();
+            return (this.toLowerCase(this.getName()).hashCode() * 2) + this.getClient().hashCode();
         }
     }
 
@@ -463,7 +465,7 @@ class ActorProvider {
     @Nullable
     IRCChannel getChannel(@Nonnull String name) {
         IRCChannel channel = this.trackedChannels.get(name);
-        if (channel == null && this.client.getServerInfo().isValidChannel(name)) {
+        if ((channel == null) && this.client.getServerInfo().isValidChannel(name)) {
             channel = new IRCChannel(name, this.client);
         }
         return channel;

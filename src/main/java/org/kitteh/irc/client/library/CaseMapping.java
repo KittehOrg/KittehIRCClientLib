@@ -61,7 +61,7 @@ public enum CaseMapping {
      */
     @Nullable
     public static CaseMapping getByName(@Nullable String name) {
-        return name == null ? null : nameMap.get(name.toUpperCase());
+        return (name == null) ? null : nameMap.get(name.toUpperCase());
     }
 
     private final char upperbound;
@@ -82,8 +82,8 @@ public enum CaseMapping {
         char[] arr = input.toCharArray();
         for (int i = 0; i < arr.length; i++) {
             char c = arr[i];
-            if (c >= 'A' && c <= this.upperbound) {
-                arr[i] += 32;
+            if ((c >= 'A') && (c <= this.upperbound)) {
+                arr[i] += (char) 32;
             }
         }
         return new String(arr);

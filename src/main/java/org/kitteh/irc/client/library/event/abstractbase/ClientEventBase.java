@@ -43,6 +43,7 @@ public abstract class ClientEventBase implements ClientEvent {
         this.client = client;
     }
 
+    @Override
     @Nonnull
     public final Client getClient() {
         return this.client;

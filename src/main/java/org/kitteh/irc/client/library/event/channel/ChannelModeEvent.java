@@ -102,7 +102,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      */
     @Nullable
     public User getPrefixedUser() {
-        return this.isPrefix() && this.arg != null ? this.getChannel().getUser(this.arg) : null;
+        return (this.isPrefix() && (this.arg != null)) ? this.getChannel().getUser(this.arg) : null;
     }
 
     /**

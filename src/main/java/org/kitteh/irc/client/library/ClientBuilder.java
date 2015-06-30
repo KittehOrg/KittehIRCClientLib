@@ -109,7 +109,7 @@ public final class ClientBuilder implements Cloneable {
      */
     @Nonnull
     public ClientBuilder listenException(@Nullable Consumer<Exception> listener) {
-        this.config.set(Config.LISTENER_EXCEPTION, listener == null ? null : new Config.ExceptionConsumerWrapper(listener));
+        this.config.set(Config.LISTENER_EXCEPTION, (listener == null) ? null : new Config.ExceptionConsumerWrapper(listener));
         return this;
     }
 
@@ -123,7 +123,7 @@ public final class ClientBuilder implements Cloneable {
      */
     @Nonnull
     public ClientBuilder listenInput(@Nullable Consumer<String> listener) {
-        this.config.set(Config.LISTENER_INPUT, listener == null ? null : new Config.StringConsumerWrapper(listener));
+        this.config.set(Config.LISTENER_INPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
         return this;
     }
 
@@ -137,7 +137,7 @@ public final class ClientBuilder implements Cloneable {
      */
     @Nonnull
     public ClientBuilder listenOutput(@Nullable Consumer<String> listener) {
-        this.config.set(Config.LISTENER_OUTPUT, listener == null ? null : new Config.StringConsumerWrapper(listener));
+        this.config.set(Config.LISTENER_OUTPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
         return this;
     }
 
@@ -416,6 +416,6 @@ public final class ClientBuilder implements Cloneable {
      * @return valid port
      */
     private int validPort(int port) {
-        return (port > 65535 || port < 0) ? 0 : port;
+        return ((port > 65535) || (port < 0)) ? 0 : port;
     }
 }

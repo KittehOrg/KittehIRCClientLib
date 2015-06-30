@@ -73,7 +73,7 @@ final class Config {
         }
     }
 
-    static abstract class Wrapper<Type> {
+    abstract static class Wrapper<Type> {
         private final Consumer<Type> consumer;
 
         Wrapper(@Nonnull Consumer<Type> consumer) {
@@ -148,7 +148,7 @@ final class Config {
     <Type> Type get(Entry<Type> entry) {
         if (this.map.containsKey(entry)) {
             Object value = this.map.get(entry);
-            if (value != NULL && entry.getType().isAssignableFrom(value.getClass())) {
+            if ((value != NULL) && entry.getType().isAssignableFrom(value.getClass())) {
                 @SuppressWarnings("unchecked")
                 Type castValue = (Type) value;
                 return castValue;
@@ -183,6 +183,6 @@ final class Config {
      * @param <Type> entry type
      */
     <Type> void set(@Nonnull Entry<Type> entry, @Nullable Type value) {
-        this.map.put(entry, value != null ? value : NULL);
+        this.map.put(entry, (value != null) ? value : NULL);
     }
 }

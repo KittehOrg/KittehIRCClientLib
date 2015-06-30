@@ -33,6 +33,9 @@ import javax.annotation.Nonnull;
 public final class StringUtil {
     private static final IRCFormat[] DEFAULT_RAINBOW = {IRCFormat.RED, IRCFormat.BROWN, IRCFormat.OLIVE, IRCFormat.YELLOW, IRCFormat.DARK_GREEN, IRCFormat.GREEN, IRCFormat.TEAL, IRCFormat.BLUE, IRCFormat.MAGENTA, IRCFormat.PURPLE};
 
+    private StringUtil() {
+    }
+
     /**
      * Combines an array into a super string!
      * <p>
@@ -115,7 +118,7 @@ public final class StringUtil {
         StringBuilder builder = new StringBuilder(message.length() * 3);
         int count = 0;
         for (char c : message.toCharArray()) {
-            if (!(c == ' ' || c == '\t')) {
+            if (!((c == ' ') || (c == '\t'))) {
                 builder.append(colorOrder[count++ % colorOrder.length].toString());
             }
             builder.append(c);

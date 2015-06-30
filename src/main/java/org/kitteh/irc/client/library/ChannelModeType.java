@@ -48,19 +48,19 @@ public enum ChannelModeType {
      */
     D_PARAMETER_NEVER(false, false);
 
-    private final static Map<Character, ChannelModeType> DEFAULT_MODES = new HashMap<Character, ChannelModeType>() {
-        {
-            put('b', ChannelModeType.A_MASK);
-            put('k', ChannelModeType.B_PARAMETER_ALWAYS);
-            put('l', ChannelModeType.C_PARAMETER_ON_SET);
-            put('i', ChannelModeType.D_PARAMETER_NEVER);
-            put('m', ChannelModeType.D_PARAMETER_NEVER);
-            put('n', ChannelModeType.D_PARAMETER_NEVER);
-            put('p', ChannelModeType.D_PARAMETER_NEVER);
-            put('s', ChannelModeType.D_PARAMETER_NEVER);
-            put('t', ChannelModeType.D_PARAMETER_NEVER);
-        }
-    };
+    private static final Map<Character, ChannelModeType> DEFAULT_MODES = new HashMap<>();
+
+    static {
+        DEFAULT_MODES.put('t', ChannelModeType.D_PARAMETER_NEVER);
+        DEFAULT_MODES.put('s', ChannelModeType.D_PARAMETER_NEVER);
+        DEFAULT_MODES.put('p', ChannelModeType.D_PARAMETER_NEVER);
+        DEFAULT_MODES.put('n', ChannelModeType.D_PARAMETER_NEVER);
+        DEFAULT_MODES.put('m', ChannelModeType.D_PARAMETER_NEVER);
+        DEFAULT_MODES.put('i', ChannelModeType.D_PARAMETER_NEVER);
+        DEFAULT_MODES.put('l', ChannelModeType.C_PARAMETER_ON_SET);
+        DEFAULT_MODES.put('k', ChannelModeType.B_PARAMETER_ALWAYS);
+        DEFAULT_MODES.put('b', ChannelModeType.A_MASK);
+    }
 
     /**
      * Gets the default modes expected by the client if not sent by the

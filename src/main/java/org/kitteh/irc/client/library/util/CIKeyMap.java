@@ -72,13 +72,13 @@ public class CIKeyMap<Value> implements Map<String, Value> {
 
     @Override
     public boolean containsKey(@Nullable Object key) {
-        return key instanceof String && this.map.containsKey(this.toLowerCase((String) key));
+        return (key instanceof String) && this.map.containsKey(this.toLowerCase((String) key));
     }
 
     @Override
     public boolean containsValue(@Nullable Object value) {
         for (Pair<String, Value> pair : this.map.values()) {
-            if (value == null ? pair.getRight() == null : value.equals(pair.getRight())) {
+            if ((value == null) ? (pair.getRight() == null) : value.equals(pair.getRight())) {
                 return true;
             }
         }
@@ -90,7 +90,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     public Value get(@Nullable Object key) {
         if (key instanceof String) {
             Pair<String, Value> pair = this.map.get(this.toLowerCase((String) key));
-            return pair == null ? null : pair.getRight();
+            return (pair == null) ? null : pair.getRight();
         }
         return null;
     }
@@ -100,7 +100,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     public Value put(@Nonnull String key, @Nullable Value value) {
         Sanity.nullCheck(key, "Key cannot be null");
         Pair<String, Value> pair = this.map.put(this.toLowerCase(key), new Pair<>(key, value));
-        return pair == null ? null : pair.getRight();
+        return (pair == null) ? null : pair.getRight();
     }
 
     @Nullable
@@ -108,7 +108,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     public Value remove(@Nullable Object key) {
         if (key instanceof String) {
             Pair<String, Value> pair = this.map.remove(this.toLowerCase((String) key));
-            return pair == null ? null : pair.getRight();
+            return (pair == null) ? null : pair.getRight();
         }
         return null;
     }

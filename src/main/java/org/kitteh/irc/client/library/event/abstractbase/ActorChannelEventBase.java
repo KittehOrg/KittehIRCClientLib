@@ -50,6 +50,7 @@ public abstract class ActorChannelEventBase<A extends Actor> extends ActorEventB
         this.channel = channel;
     }
 
+    @Override
     @Nonnull
     public final Channel getChannel() {
         return this.channel;

@@ -48,6 +48,7 @@ public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventB
         this.message = message;
     }
 
+    @Override
     @Nonnull
     public final String getMessage() {
         return this.message;

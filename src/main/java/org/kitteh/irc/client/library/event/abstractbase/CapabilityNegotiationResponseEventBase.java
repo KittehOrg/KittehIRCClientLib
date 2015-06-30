@@ -45,14 +45,17 @@ public abstract class CapabilityNegotiationResponseEventBase extends ClientEvent
         this.negotiating = negotiating;
     }
 
+    @Override
     public final boolean isEndingNegotiation() {
         return this.endNegotiation;
     }
 
+    @Override
     public final boolean isNegotiating() {
         return this.negotiating;
     }
 
+    @Override
     public final void setEndingNegotiation(boolean endNegotiation) {
         this.endNegotiation = endNegotiation;
     }

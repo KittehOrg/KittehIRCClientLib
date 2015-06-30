@@ -11,7 +11,7 @@ public class IRCFormatTest {
     public void format() {
         String colorChar = IRCFormat.COLOR_CHAR + "";
         for (IRCFormat format : IRCFormat.values()) {
-            Assert.assertTrue("Color format with wrong length: " + format.name(), !format.toString().startsWith(colorChar) || format.toString().length() == 3);
+            Assert.assertTrue("Color format with wrong length: " + format.name(), !format.toString().startsWith(colorChar) || (format.toString().length() == 3));
         }
     }
 }

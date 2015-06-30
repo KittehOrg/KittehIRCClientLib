@@ -46,6 +46,7 @@ public abstract class ChannelEventBase extends ClientEventBase implements Channe
         this.channel = channel;
     }
 
+    @Override
     @Nonnull
     public final Channel getChannel() {
         return this.channel;

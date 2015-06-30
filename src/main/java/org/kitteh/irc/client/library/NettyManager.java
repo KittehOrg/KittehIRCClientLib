@@ -66,7 +66,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 final class NettyManager {
-    static class ClientConnection {
+    static final class ClientConnection {
         private final IRCClient client;
         private final Channel channel;
         private final Queue<String> queue = new ConcurrentLinkedQueue<>();
@@ -108,9 +108,9 @@ final class NettyManager {
                 public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                     if (evt instanceof IdleStateEvent) {
                         IdleStateEvent e = (IdleStateEvent) evt;
-                        if (e.state() == IdleState.READER_IDLE && e.isFirst()) {
+                        if ((e.state() == IdleState.READER_IDLE) && e.isFirst()) {
                             ClientConnection.this.shutdown("Reconnecting...", true);
-                        } else if (e.state() == IdleState.ALL_IDLE && e.isFirst()) {
+                        } else if ((e.state() == IdleState.ALL_IDLE) && e.isFirst()) {
                             ClientConnection.this.client.ping();
                         }
                     }
@@ -118,7 +118,7 @@ final class NettyManager {
             });
 
             // Inbound
-            this.channel.pipeline().addLast("[INPUT] Line splitter", new DelimiterBasedFrameDecoder(512, Unpooled.wrappedBuffer(new byte[]{'\r', '\n'})));
+            this.channel.pipeline().addLast("[INPUT] Line splitter", new DelimiterBasedFrameDecoder(512, Unpooled.wrappedBuffer(new byte[]{(byte) '\r', (byte) '\n'})));
             this.channel.pipeline().addLast("[INPUT] String decoder", new StringDecoder(CharsetUtil.UTF_8));
             this.channel.pipeline().addLast("[INPUT] Send to client", new SimpleChannelInboundHandler<String>() {
                 @Override
@@ -201,7 +201,7 @@ final class NettyManager {
 
         private void schedule(boolean force) {
             synchronized (this.scheduledSendingLock) {
-                if (!force && this.scheduledSending == null) {
+                if (!force && (this.scheduledSending == null)) {
                     return;
                 }
                 long delay = 0;
@@ -221,14 +221,7 @@ final class NettyManager {
         private void shutdown(@Nullable String message, boolean reconnect) {
             this.reconnect = reconnect;
 
-            final StringBuilder quitBuilder = new StringBuilder();
-            quitBuilder.append("QUIT");
-            if (message != null) {
-                quitBuilder.append(" :").append(message);
-            }
-            final String quitMessage = quitBuilder.toString();
-
-            this.sendMessage(quitMessage, true);
+            this.sendMessage("QUIT" + ((message != null) ? (" :" + message) : ""), true);
             this.channel.close();
         }
     }
@@ -236,6 +229,10 @@ final class NettyManager {
     private static Bootstrap bootstrap;
     private static EventLoopGroup eventLoopGroup;
     private static final Set<ClientConnection> connections = new HashSet<>();
+
+    private NettyManager() {
+
+    }
 
     private static synchronized void removeClientConnection(@Nonnull ClientConnection connection, boolean reconnecting) {
         connections.remove(connection);
@@ -246,7 +243,7 @@ final class NettyManager {
         }
     }
 
-    synchronized static ClientConnection connect(@Nonnull IRCClient client) {
+    static synchronized ClientConnection connect(@Nonnull IRCClient client) {
         if (bootstrap == null) {
             bootstrap = new Bootstrap();
             bootstrap.channel(NioSocketChannel.class);

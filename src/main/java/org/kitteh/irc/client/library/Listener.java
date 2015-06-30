@@ -29,11 +29,11 @@ import java.util.Queue;
 import java.util.function.Consumer;
 
 final class Listener<Type> {
-    private class ListenerThread extends QueueProcessingThread<Type> {
+    private final class ListenerThread extends QueueProcessingThread<Type> {
         private volatile Consumer<Type> consumer;
 
         private ListenerThread(String clientName, Consumer<Type> consumer) {
-            super("Kitteh IRC Client Listener (" + clientName + ")");
+            super("Kitteh IRC Client Listener (" + clientName + ')');
             this.consumer = consumer;
         }
 
@@ -63,7 +63,7 @@ final class Listener<Type> {
 
     Listener(String clientName, Consumer<Type> consumer) {
         this.clientName = clientName;
-        this.thread = consumer == null ? null : new ListenerThread(clientName, consumer);
+        this.thread = (consumer == null) ? null : new ListenerThread(clientName, consumer);
     }
 
     void queue(Type item) {

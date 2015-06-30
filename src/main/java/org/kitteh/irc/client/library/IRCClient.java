@@ -80,19 +80,19 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 final class IRCClient implements Client {
-    private class InputProcessor extends QueueProcessingThread<String> {
+    private final class InputProcessor extends QueueProcessingThread<String> {
         private InputProcessor() {
-            super("Kitteh IRC Client Input Processor (" + IRCClient.this.getName() + ")");
+            super("Kitteh IRC Client Input Processor (" + IRCClient.this.getName() + ')');
         }
 
         @Override
         protected void processElement(@Nullable String element) {
             try {
                 IRCClient.this.handleLine(element);
-            } catch (final Throwable thrown) {
-                if (thrown instanceof Exception) {
-                    IRCClient.this.exceptionListener.queue((Exception) thrown);
-                }
+            } catch (final Exception thrown) {
+                IRCClient.this.exceptionListener.queue(thrown);
+            } catch (final Throwable ignored) {
+                // TODO do something!
             }
         }
     }
@@ -208,11 +208,11 @@ final class IRCClient implements Client {
             }
         },
         PREFIX {
-            final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
+            private final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
             @Override
             boolean process(@Nonnull String value, @Nonnull IRCClient client) {
-                Matcher matcher = PATTERN.matcher(value);
+                Matcher matcher = this.PATTERN.matcher(value);
                 if (!matcher.find()) {
                     return false;
                 }
@@ -246,8 +246,8 @@ final class IRCClient implements Client {
             }
             ISupport iSupport = MAP.get(matcher.group(1));
             if (iSupport != null) {
-                boolean success = iSupport.process(matcher.group(2), client);
-                if (!success) {
+                boolean failure = !iSupport.process(matcher.group(2), client);
+                if (failure) {
                     client.exceptionListener.queue(new KittehISupportProcessingFailureException(arg));
                 }
             }
@@ -295,11 +295,11 @@ final class IRCClient implements Client {
         final String name = this.config.get(Config.NAME);
 
         Config.ExceptionConsumerWrapper exceptionListenerWrapper = this.config.get(Config.LISTENER_EXCEPTION);
-        this.exceptionListener = new Listener<>(name, exceptionListenerWrapper == null ? null : exceptionListenerWrapper.getConsumer());
+        this.exceptionListener = new Listener<>(name, (exceptionListenerWrapper == null) ? null : exceptionListenerWrapper.getConsumer());
         Config.StringConsumerWrapper inputListenerWrapper = this.config.get(Config.LISTENER_INPUT);
-        this.inputListener = new Listener<>(name, inputListenerWrapper == null ? null : inputListenerWrapper.getConsumer());
+        this.inputListener = new Listener<>(name, (inputListenerWrapper == null) ? null : inputListenerWrapper.getConsumer());
         Config.StringConsumerWrapper outputListenerWrapper = this.config.get(Config.LISTENER_OUTPUT);
-        this.outputListener = new Listener<>(name, outputListenerWrapper == null ? null : outputListenerWrapper.getConsumer());
+        this.outputListener = new Listener<>(name, (outputListenerWrapper == null) ? null : outputListenerWrapper.getConsumer());
 
         this.processor = new InputProcessor();
         this.connect();
@@ -323,7 +323,7 @@ final class IRCClient implements Client {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (Channel channel : channels) {
-            if (channel.getClient().equals(this) && channel instanceof ActorProvider.IRCChannel) {
+            if (channel.getClient().equals(this) && (channel instanceof ActorProvider.IRCChannel)) {
                 this.channelsIntended.add(channel.getName());
                 this.sendRawLine("JOIN :" + channel.getName());
             }
@@ -335,7 +335,7 @@ final class IRCClient implements Client {
     public Channel getChannel(@Nonnull String name) {
         Sanity.nullCheck(name, "Channel name cannot be null");
         ActorProvider.IRCChannel channel = this.actorProvider.getChannel(name);
-        return channel == null ? null : channel.snapshot();
+        return (channel == null) ? null : channel.snapshot();
     }
 
     @Nonnull
@@ -521,7 +521,7 @@ final class IRCClient implements Client {
         }
         this.processor.interrupt();
 
-        this.connection.shutdown(reason != null && reason.isEmpty() ? null : reason);
+        this.connection.shutdown(((reason != null) && reason.isEmpty()) ? null : reason);
 
         // Shut these down last, so they get any last firings
         this.exceptionListener.shutdown();
@@ -571,13 +571,13 @@ final class IRCClient implements Client {
             String pass = this.config.get(Config.AUTH_PASS);
             switch (authType) {
                 case GAMESURGE:
-                    auth = "PRIVMSG AuthServ@services.gamesurge.net :auth " + name + " " + pass;
+                    auth = "PRIVMSG AuthServ@services.gamesurge.net :auth " + name + ' ' + pass;
                     authReclaim = "";
                     break;
                 case NICKSERV:
                 default:
-                    auth = "PRIVMSG NickServ :identify " + name + " " + pass;
-                    authReclaim = "PRIVMSG NickServ :ghost " + name + " " + pass;
+                    auth = "PRIVMSG NickServ :identify " + name + ' ' + pass;
+                    authReclaim = "PRIVMSG NickServ :ghost " + name + ' ' + pass;
             }
             if (!this.currentNick.equals(this.goalNick) && authType.isNickOwned()) {
                 this.sendRawLineImmediately(authReclaim);
@@ -628,7 +628,7 @@ final class IRCClient implements Client {
     }
 
     private void handleLine(@Nullable final String line) {
-        if ((line == null) || (line.length() == 0)) {
+        if ((line == null) || (line.isEmpty())) {
             return;
         }
 
@@ -727,7 +727,7 @@ final class IRCClient implements Client {
                     final String nick = args[5];
                     final String status = args[6];
                     // The rest I don't care about
-                    final ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.actorProvider.getActor(nick + "!" + ident + "@" + host);
+                    final ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.actorProvider.getActor(nick + '!' + ident + '@' + host);
                     final ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
                     final Set<ChannelUserMode> modes = new HashSet<>();
                     for (char prefix : status.substring(1).toCharArray()) {
@@ -789,7 +789,7 @@ final class IRCClient implements Client {
 
     private void handleLineCommand(@Nonnull final ActorProvider.IRCActor actor, @Nonnull final Command command, @Nonnull final String[] args) {
         // CTCP
-        if ((command == Command.NOTICE || command == Command.PRIVMSG) && CTCPUtil.isCTCP(args[1])) {
+        if (((command == Command.NOTICE) || (command == Command.PRIVMSG)) && CTCPUtil.isCTCP(args[1])) {
             final String ctcpMessage = CTCPUtil.fromCTCP(args[1]);
             final MessageTarget messageTarget = this.getTypeByTarget(args[0]);
             ActorProvider.IRCUser user = (ActorProvider.IRCUser) actor;
@@ -803,20 +803,25 @@ final class IRCClient implements Client {
                     switch (messageTarget) {
                         case PRIVATE:
                             String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
-                            if (ctcpMessage.equals("VERSION")) {
-                                reply = "VERSION I am Kitteh!";
-                            } else if (ctcpMessage.equals("TIME")) {
-                                reply = "TIME " + new Date().toString();
-                            } else if (ctcpMessage.equals("FINGER")) {
-                                reply = "FINGER om nom nom tasty finger";
-                            } else if (ctcpMessage.startsWith("PING ")) {
+                            switch (ctcpMessage) {
+                                case "VERSION":
+                                    reply = "VERSION I am Kitteh!";
+                                    break;
+                                case "TIME":
+                                    reply = "TIME " + new Date().toString();
+                                    break;
+                                case "FINGER":
+                                    reply = "FINGER om nom nom tasty finger";
+                                    break;
+                            }
+                            if (ctcpMessage.startsWith("PING ")) {
                                 reply = ctcpMessage;
                             }
                             PrivateCTCPQueryEvent event = new PrivateCTCPQueryEvent(this, user.snapshot(), ctcpMessage, reply);
                             this.eventManager.callEvent(event);
-                            reply = event.getReply();
-                            if (reply != null) {
-                                this.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(reply));
+                            String eventReply = event.getReply();
+                            if (eventReply != null) {
+                                this.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(eventReply));
                             }
                             break;
                         case CHANNEL:
@@ -844,7 +849,7 @@ final class IRCClient implements Client {
                         break;
                     case "ls":
                         event = new CapabilitiesSupportedListEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
-                        if (capabilityStateList.stream().filter(state -> state.getCapabilityName().equalsIgnoreCase("multi-prefix")).findFirst().isPresent()) {
+                        if (capabilityStateList.stream().filter(state -> "multi-prefix".equalsIgnoreCase(state.getCapabilityName())).findFirst().isPresent()) {
                             this.sendRawLineImmediately("CAP REQ :multi-prefix");
                         }
                         this.eventManager.callEvent(event);
@@ -892,9 +897,9 @@ final class IRCClient implements Client {
                     ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
                     List<ChannelUserMode> channelUserModes = this.serverInfo.getChannelUserModes();
                     Map<Character, ChannelModeType> channelModes = this.serverInfo.getChannelModes();
-                    for (int currentArg = 1; currentArg < args.length; currentArg++) {
+                    for (int currentArg = 1; currentArg < args.length; currentArg++) { // Note: currentArg changes outside here too
                         String changes = args[currentArg];
-                        if (!(changes.charAt(0) == '+' || changes.charAt(0) == '-')) {
+                        if (!((changes.charAt(0) == '+') || (changes.charAt(0) == '-'))) {
                             // TODO Inform of failed MODE processing
                             return;
                         }
@@ -955,7 +960,7 @@ final class IRCClient implements Client {
                 if (actor instanceof ActorProvider.IRCUser) { // Just in case
                     ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
                     ActorProvider.IRCUser user = (ActorProvider.IRCUser) actor;
-                    this.eventManager.callEvent(new ChannelPartEvent(this, channel.snapshot(), user.snapshot(), args.length > 1 ? args[1] : ""));
+                    this.eventManager.callEvent(new ChannelPartEvent(this, channel.snapshot(), user.snapshot(), (args.length > 1) ? args[1] : ""));
                     channel.trackUserPart(user);
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.remove(channel.getName());
@@ -965,14 +970,14 @@ final class IRCClient implements Client {
                 break;
             case QUIT:
                 if (actor instanceof ActorProvider.IRCUser) { // Just in case
-                    this.eventManager.callEvent(new UserQuitEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), args.length > 0 ? args[0] : ""));
+                    this.eventManager.callEvent(new UserQuitEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), (args.length > 0) ? args[0] : ""));
                     this.actorProvider.trackUserQuit((ActorProvider.IRCUser) actor);
                 }
                 break;
             case KICK:
                 ActorProvider.IRCChannel kickedChannel = this.actorProvider.getChannel(args[0]);
                 ActorProvider.IRCUser kickedUser = kickedChannel.getUser(args[1]);
-                this.eventManager.callEvent(new ChannelKickEvent(this, kickedChannel.snapshot(), ((ActorProvider.IRCUser) actor).snapshot(), kickedUser.snapshot(), args.length > 2 ? args[2] : ""));
+                this.eventManager.callEvent(new ChannelKickEvent(this, kickedChannel.snapshot(), ((ActorProvider.IRCUser) actor).snapshot(), kickedUser.snapshot(), (args.length > 2) ? args[2] : ""));
                 kickedChannel.trackUserPart(kickedUser);
                 if (args[1].equals(this.currentNick)) {
                     this.channels.remove(kickedChannel.getName());
@@ -991,7 +996,7 @@ final class IRCClient implements Client {
                 break;
             case INVITE:
                 ActorProvider.IRCChannel invitedChannel = this.actorProvider.getChannel(args[1]);
-                if (this.getTypeByTarget(args[0]) == MessageTarget.PRIVATE && this.channelsIntended.contains(invitedChannel.getName())) {
+                if ((this.getTypeByTarget(args[0]) == MessageTarget.PRIVATE) && this.channelsIntended.contains(invitedChannel.getName())) {
                     this.sendRawLine("JOIN " + invitedChannel.getName());
                 }
                 this.eventManager.callEvent(new ChannelInviteEvent(this, invitedChannel.snapshot(), actor.snapshot(), args[0]));

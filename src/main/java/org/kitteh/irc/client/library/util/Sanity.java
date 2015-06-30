@@ -30,6 +30,9 @@ import javax.annotation.Nullable;
  * Do you know the definition of sanity?
  */
 public final class Sanity {
+    private Sanity() {
+    }
+
     /**
      * Checks if an object is null.
      *
@@ -90,7 +93,7 @@ public final class Sanity {
     public static void safeMessageCheck(@Nonnull String message, @Nonnull String name) {
         Sanity.nullCheck(message, name + " cannot be null");
         for (char ch : message.toCharArray()) {
-            if (ch == '\n' || ch == '\r' || ch == '\0') {
+            if ((ch == '\n') || (ch == '\r') || (ch == '\0')) {
                 throw new IllegalArgumentException(name + " cannot contain CR, LF, or NUL");
             }
         }

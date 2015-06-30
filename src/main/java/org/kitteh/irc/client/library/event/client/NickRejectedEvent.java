@@ -56,7 +56,7 @@ public class NickRejectedEvent extends ClientEventBase {
 
     /**
      * Gets the new nickname to attempt, by default this is the previously
-     * attempted name ({@link #getAttemptedNick()}) with a backtick appended.
+     * attempted name ({@link #getAttemptedNick()}) with a ` appended.
      *
      * @return new nick to attempt
      */

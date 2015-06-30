@@ -72,7 +72,7 @@ public class CISet implements Set<String> {
 
     @Override
     public boolean contains(@Nullable Object o) {
-        return o instanceof String && this.map.containsKey(this.toLowerCase((String) o));
+        return (o instanceof String) && this.map.containsKey(this.toLowerCase((String) o));
     }
 
     @Nonnull
@@ -102,7 +102,7 @@ public class CISet implements Set<String> {
 
     @Override
     public boolean remove(@Nullable Object o) {
-        return o instanceof String && this.map.remove(this.toLowerCase((String) o)) != null;
+        return (o instanceof String) && (this.map.remove(this.toLowerCase((String) o)) != null);
     }
 
     @Override

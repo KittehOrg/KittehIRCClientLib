@@ -32,7 +32,7 @@ public class KittehISupportProcessingFailureException extends Exception {
     private final String arg;
 
     public KittehISupportProcessingFailureException(@Nullable String arg) {
-        super("Failed to process an ISupport line: [" + arg + "]");
+        super("Failed to process an ISupport line: [" + arg + ']');
         this.arg = arg;
     }
 

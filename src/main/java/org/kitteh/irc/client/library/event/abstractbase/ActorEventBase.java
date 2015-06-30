@@ -47,6 +47,7 @@ public abstract class ActorEventBase<A extends Actor> extends ClientEventBase im
         this.actor = actor;
     }
 
+    @Override
     @Nonnull
     public final A getActor() {
         return this.actor;

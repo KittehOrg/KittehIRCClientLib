@@ -61,7 +61,7 @@ public class SSLCertificateAcceptEvent extends ClientEventBase {
      */
     @Nonnull
     public String getAuthType() {
-        return authType;
+        return this.authType;
     }
 
     /**
@@ -71,7 +71,7 @@ public class SSLCertificateAcceptEvent extends ClientEventBase {
      */
     @Nonnull
     public X509Certificate[] getChain() {
-        return chain.clone();
+        return this.chain.clone();
     }
 
     /**
@@ -80,7 +80,7 @@ public class SSLCertificateAcceptEvent extends ClientEventBase {
      * @return true if set to deny connection
      */
     public boolean isDenied() {
-        return denied;
+        return this.denied;
     }
 
     /**

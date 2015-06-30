@@ -118,11 +118,6 @@ public class KickCommand extends ChannelCommand {
         if (this.target == null) {
             throw new IllegalStateException("Target not defined");
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append("KICK ").append(this.getChannel()).append(' ').append(this.target);
-        if (this.reason != null) {
-            builder.append(" :").append(this.reason);
-        }
-        this.getClient().sendRawLine(builder.toString());
+        this.getClient().sendRawLine("KICK " + this.getChannel() + ' ' + this.target + (this.reason != null ? (" :" + this.reason) : ""));
     }
 }

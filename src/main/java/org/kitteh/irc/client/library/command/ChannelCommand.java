@@ -43,7 +43,7 @@ public abstract class ChannelCommand extends Command {
      * @throws IllegalArgumentException if null parameters or Channel is from
      * another Client
      */
-    public ChannelCommand(@Nonnull Client client, @Nonnull Channel channel) {
+    protected ChannelCommand(@Nonnull Client client, @Nonnull Channel channel) {
         super(client);
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.truthiness(channel.getClient() == client, "Channel comes from a different Client");
@@ -58,10 +58,10 @@ public abstract class ChannelCommand extends Command {
      * @throws IllegalArgumentException if null parameters or Channel is from
      * another Client
      */
-    public ChannelCommand(@Nonnull Client client, @Nonnull String channel) {
+    protected ChannelCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client);
         Sanity.nullCheck(channel, "Channel cannot be null");
-        Sanity.nullCheck(client.getChannel(channel), "Invalid channel name '" + channel + "'");
+        Sanity.nullCheck(client.getChannel(channel), "Invalid channel name '" + channel + '\'');
         this.channel = channel;
     }
 

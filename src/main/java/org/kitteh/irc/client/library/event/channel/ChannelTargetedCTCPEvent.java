@@ -27,8 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
-import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.event.abstractbase.TargetedUserChannelMessageEventBase;
 
 import javax.annotation.Nonnull;
 
@@ -37,9 +36,7 @@ import javax.annotation.Nonnull;
  * method {@link #getMessage()} returns the message with the delimiter
  * character (1) removed.
  */
-public class ChannelTargetedCTCPEvent extends ActorChannelMessageEventBase<User> {
-    private final ChannelUserMode prefix;
-
+public class ChannelTargetedCTCPEvent extends TargetedUserChannelMessageEventBase {
     /**
      * Creates the event.
      *
@@ -50,18 +47,6 @@ public class ChannelTargetedCTCPEvent extends ActorChannelMessageEventBase<User>
      * @param message message sent
      */
     public ChannelTargetedCTCPEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
-        super(client, sender, channel, message);
-        Sanity.nullCheck(prefix, "Prefix cannot be null");
-        this.prefix = prefix;
-    }
-
-    /**
-     * Gets the prefix to which the message was sent.
-     *
-     * @return the prefix targetted
-     */
-    @Nonnull
-    public ChannelUserMode getPrefix() {
-        return this.prefix;
+        super(client, sender, channel, prefix, message);
     }
 }
