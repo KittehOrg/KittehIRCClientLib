@@ -87,7 +87,7 @@ public enum IRCFormat {
     }
 
     @Nonnull
-    public static String stripFormating(@Nonnull String input) {
+    public static String stripFormatting(@Nonnull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
         return input.replaceAll("[" + BOLD + RESET + REVERSE + UNDERLINE + "]", "");
     }
