@@ -38,6 +38,13 @@ import java.util.List;
 public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEventBase {
     private final List<CapabilityState> rejectedCapabilitiesRequest;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param negotiating if we are negotiating right now
+     * @param rejectedCapabilitiesRequest capabilities rejected
+     */
     public CapabilitiesRejectedEvent(@Nonnull Client client, boolean negotiating, @Nonnull List<CapabilityState> rejectedCapabilitiesRequest) {
         super(client, negotiating);
         Sanity.nullCheck(rejectedCapabilitiesRequest, "Capabilities list cannot be null");

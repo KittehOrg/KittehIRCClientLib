@@ -36,6 +36,13 @@ public class NickRejectedEvent extends ClientEventBase {
     private final String attemptedNick;
     private String newNick;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param attemptedNick the nick that failed
+     * @param newNick the new nick to attempt
+     */
     public NickRejectedEvent(@Nonnull Client client, @Nonnull String attemptedNick, @Nonnull String newNick) {
         super(client);
         Sanity.nullCheck(attemptedNick, "Attempted nick cannot be null");

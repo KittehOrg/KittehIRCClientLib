@@ -45,10 +45,22 @@ public class CISet implements Set<String> {
     private CaseMapping lastCaseMapping;
     private final Map<String, String> map = new ConcurrentHashMap<>();
 
+    /**
+     * Constructs a set tied to a client.
+     *
+     * @param client the client to which this set is tied
+     */
     public CISet(Client client) {
         this.client = client;
     }
 
+    /**
+     * Converts a given input to lower case based on the current {@link
+     * CaseMapping}.
+     *
+     * @param input input to convert
+     * @return lower cased input
+     */
     protected final synchronized String toLowerCase(@Nonnull String input) {
         CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
         if (caseMapping != this.lastCaseMapping) {

@@ -7,6 +7,9 @@ import org.junit.Test;
  * Make sure nothing has gone horribly wrong at the format factory.
  */
 public class IRCFormatTest {
+    /**
+     * Tests for colors of incorrect length.
+     */
     @Test
     public void format() {
         String colorChar = IRCFormat.COLOR_CHAR + "";

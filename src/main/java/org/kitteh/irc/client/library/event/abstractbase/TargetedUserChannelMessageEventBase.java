@@ -47,6 +47,15 @@ import javax.annotation.Nonnull;
 public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMessageEventBase<User> implements MessageEvent {
     private final ChannelUserMode prefix;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param user the user
+     * @param channel the channel
+     * @param prefix the targeted prefix
+     * @param message the message
+     */
     protected TargetedUserChannelMessageEventBase(@Nonnull Client client, @Nonnull User user, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
         super(client, user, channel, message);
         Sanity.nullCheck(prefix, "Prefix cannot be null");

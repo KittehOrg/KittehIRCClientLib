@@ -29,6 +29,11 @@ import javax.annotation.Nullable;
  * Thrown in reaction to exceptions in event processing.
  */
 public class KittehEventException extends Exception {
+    /**
+     * Constructs this event.
+     *
+     * @param cause thrown cause
+     */
     public KittehEventException(@Nullable Throwable cause) {
         super(cause);
     }

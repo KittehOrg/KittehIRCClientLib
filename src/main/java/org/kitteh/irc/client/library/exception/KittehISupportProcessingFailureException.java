@@ -31,8 +31,13 @@ import javax.annotation.Nullable;
 public class KittehISupportProcessingFailureException extends Exception {
     private final String arg;
 
+    /**
+     * Constructs the disappointment.
+     *
+     * @param arg ISUPPORT line that failed
+     */
     public KittehISupportProcessingFailureException(@Nullable String arg) {
-        super("Failed to process an ISupport line: [" + arg + ']');
+        super("Failed to process an ISUPPORT line: [" + arg + ']');
         this.arg = arg;
     }
 

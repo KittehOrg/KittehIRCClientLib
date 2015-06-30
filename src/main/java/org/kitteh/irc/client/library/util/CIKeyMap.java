@@ -44,10 +44,22 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     private CaseMapping lastCaseMapping;
     private final Map<String, Pair<String, Value>> map = new ConcurrentHashMap<>();
 
+    /**
+     * Constructs a map tied to a client.
+     *
+     * @param client the client to which this map is tied
+     */
     public CIKeyMap(Client client) {
         this.client = client;
     }
 
+    /**
+     * Converts a given input to lower case based on the current {@link
+     * CaseMapping}.
+     *
+     * @param input input to convert
+     * @return lower cased input
+     */
     @Nonnull
     protected final synchronized String toLowerCase(@Nonnull String input) {
         CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();

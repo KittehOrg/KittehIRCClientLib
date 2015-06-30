@@ -38,6 +38,13 @@ import java.util.List;
 public class CapabilitiesAcknowledgedEvent extends CapabilityNegotiationResponseEventBase {
     private final List<CapabilityState> acknowledgedCapabilities;
 
+    /**
+     * Constructs this event.
+     *
+     * @param client the client
+     * @param negotiating if we are negotiating right now
+     * @param acknowledgedCapabilities capabilities acknowledged
+     */
     public CapabilitiesAcknowledgedEvent(@Nonnull Client client, boolean negotiating, @Nonnull List<CapabilityState> acknowledgedCapabilities) {
         super(client, negotiating);
         Sanity.nullCheck(acknowledgedCapabilities, "Capabilities list cannot be null");

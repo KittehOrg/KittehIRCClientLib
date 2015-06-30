@@ -31,6 +31,12 @@ import javax.annotation.Nullable;
 public class KittehConnectionException extends Exception {
     private final boolean fatal;
 
+    /**
+     * Constructs this event.
+     *
+     * @param cause the cause
+     * @param fatal if the exception indicates a failure to connect
+     */
     public KittehConnectionException(@Nullable Throwable cause, boolean fatal) {
         super(cause);
         this.fatal = fatal;

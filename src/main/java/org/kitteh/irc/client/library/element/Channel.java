@@ -37,6 +37,9 @@ import java.util.Set;
  * Represents an IRC channel.
  */
 public interface Channel extends MessageReceiver {
+    /**
+     * Information about the channel's topic.
+     */
     interface Topic {
         /**
          * Gets who set the channel topic.

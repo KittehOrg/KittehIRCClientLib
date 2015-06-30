@@ -46,6 +46,14 @@ import javax.annotation.Nonnull;
 public abstract class ActorChannelMessageEventBase<A extends Actor> extends ActorChannelEventBase<A> implements MessageEvent {
     private final String message;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param actor the actor
+     * @param channel the channel
+     * @param message the message
+     */
     protected ActorChannelMessageEventBase(@Nonnull Client client, @Nonnull A actor, @Nonnull Channel channel, @Nonnull String message) {
         super(client, actor, channel);
         Sanity.nullCheck(message, "Message cannot be null");

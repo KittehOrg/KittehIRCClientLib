@@ -10,6 +10,12 @@ import java.lang.reflect.Modifier;
  * Tests the config class.
  */
 public class ConfigTest {
+    /**
+     * Tests for attempts at null values in the declared Config entries.
+     *
+     * @throws IllegalAccessException if something goes wrong
+     * @throws NoSuchFieldException if something goes wrong
+     */
     @Test
     public void safeType() throws IllegalAccessException, NoSuchFieldException {
         Field typeField = Config.Entry.class.getDeclaredField("type");

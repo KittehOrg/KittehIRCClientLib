@@ -38,6 +38,12 @@ import java.util.List;
 public class CapabilitiesListEvent extends ClientEventBase {
     private final List<CapabilityState> capabilities;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param capabilities capabilities listed
+     */
     public CapabilitiesListEvent(@Nonnull Client client, @Nonnull List<CapabilityState> capabilities) {
         super(client);
         Sanity.nullCheck(capabilities, "Capabilities list cannot be null");

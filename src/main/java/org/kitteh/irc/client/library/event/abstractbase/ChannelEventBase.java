@@ -39,6 +39,12 @@ import javax.annotation.Nonnull;
 public abstract class ChannelEventBase extends ClientEventBase implements ChannelEvent {
     private final Channel channel;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param channel the channel
+     */
     protected ChannelEventBase(@Nonnull Client client, @Nonnull Channel channel) {
         super(client);
         Sanity.nullCheck(channel, "Channel cannot be null");

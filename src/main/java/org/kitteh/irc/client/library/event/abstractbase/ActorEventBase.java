@@ -40,6 +40,12 @@ import javax.annotation.Nonnull;
 public abstract class ActorEventBase<A extends Actor> extends ClientEventBase implements ActorEvent<A> {
     private final A actor;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param actor the actor
+     */
     protected ActorEventBase(@Nonnull Client client, @Nonnull A actor) {
         super(client);
         Sanity.nullCheck(actor, "Actor cannot be null");

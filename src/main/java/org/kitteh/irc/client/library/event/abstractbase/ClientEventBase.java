@@ -38,6 +38,11 @@ import javax.annotation.Nonnull;
 public abstract class ClientEventBase implements ClientEvent {
     private final Client client;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     */
     protected ClientEventBase(@Nonnull Client client) {
         Sanity.nullCheck(client, "Client cannot be null");
         this.client = client;

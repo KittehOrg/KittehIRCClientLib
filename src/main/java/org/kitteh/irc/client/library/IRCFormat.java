@@ -33,25 +33,85 @@ import javax.annotation.Nonnull;
  * The {@link #toString} method provides the String you need.
  */
 public enum IRCFormat {
+    /**
+     * Black.
+     */
     BLACK(1),
+    /**
+     * Blue.
+     */
     BLUE(12),
+    /**
+     * It’s a BOLD strategy Cotton. Let’s see if it pays off for him.
+     */
     BOLD('\u0002'),
+    /**
+     * Brown.
+     */
     BROWN(5),
+    /**
+     * Cyan.
+     */
     CYAN(11),
+    /**
+     * Dark blue.
+     */
     DARK_BLUE(2),
+    /**
+     * Dark gray.
+     */
     DARK_GRAY(14),
+    /**
+     * Dark green.
+     */
     DARK_GREEN(3),
+    /**
+     * Green.
+     */
     GREEN(9),
+    /**
+     * Light gray.
+     */
     LIGHT_GRAY(15),
+    /**
+     * Magenta.
+     */
     MAGENTA(13),
+    /**
+     * Reset formatting.
+     */
     RESET('\u000f'),
+    /**
+     * Olive.
+     */
     OLIVE(7),
+    /**
+     * Purple.
+     */
     PURPLE(6),
+    /**
+     * Red.
+     */
     RED(4),
+    /**
+     * esreveR.
+     */
     REVERSE('\u0016'),
+    /**
+     * Teal.
+     */
     TEAL(10),
+    /**
+     * Underline.
+     */
     UNDERLINE('\u001f'),
+    /**
+     * White.
+     */
     WHITE(0),
+    /**
+     * Yello. Oh yeah.
+     */
     YELLOW(8);
 
     private final int color;
@@ -73,14 +133,29 @@ public enum IRCFormat {
         this.toString = COLOR_CHAR + ((color < 10) ? "0" : "") + color;
     }
 
+    /**
+     * Character indicating color.
+     */
     public static final char COLOR_CHAR = '\u0003';
 
+    /**
+     * Strips color from a given input.
+     *
+     * @param input input to strip
+     * @return stripped input
+     */
     @Nonnull
     public static String stripColor(@Nonnull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
         return input.replaceAll(COLOR_CHAR + "[0-9]{1,2}", "");
     }
 
+    /**
+     * Strips formatting from a given input.
+     *
+     * @param input input to strip
+     * @return stripped input
+     */
     @Nonnull
     public static String stripFormatting(@Nonnull String input) {
         Sanity.nullCheck(input, "Input cannot be null");

@@ -40,6 +40,12 @@ public abstract class CapabilityNegotiationResponseEventBase extends ClientEvent
     private boolean endNegotiation = true;
     private final boolean negotiating;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param negotiating if we are negotiating right now
+     */
     protected CapabilityNegotiationResponseEventBase(@Nonnull Client client, boolean negotiating) {
         super(client);
         this.negotiating = negotiating;

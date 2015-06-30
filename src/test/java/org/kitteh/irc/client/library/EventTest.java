@@ -12,6 +12,9 @@ public class EventTest {
         private boolean success = false;
     }
 
+    /**
+     * Tests ability to register and fire an event.
+     */
     @Test
     public void testEventRegistration() {
         EventManager manager = new EventManager(null);
@@ -21,6 +24,11 @@ public class EventTest {
         Assert.assertTrue("Failed to register and fire an event", event.success);
     }
 
+    /**
+     * A test method for listening to an event.
+     *
+     * @param e the test event
+     */
     @Handler
     public void eventHandler(Event e) {
         e.success = true;

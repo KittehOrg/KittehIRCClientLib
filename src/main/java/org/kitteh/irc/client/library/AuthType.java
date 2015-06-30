@@ -27,7 +27,13 @@ package org.kitteh.irc.client.library;
  * Authentication types supported by the client.
  */
 public enum AuthType {
+    /**
+     * Classic nickserv authentication. IDENTIFY [user] [password].
+     */
     NICKSERV,
+    /**
+     * GameSurge's unique brand of authentication. Nicks are not owned.
+     */
     GAMESURGE(false);
 
     private final boolean nicksOwned;

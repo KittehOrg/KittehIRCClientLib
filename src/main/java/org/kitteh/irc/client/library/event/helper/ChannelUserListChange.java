@@ -33,6 +33,9 @@ import javax.annotation.Nullable;
  * A {@link Channel} is gaining or losing a {@link User}
  */
 public interface ChannelUserListChange extends ClientEvent {
+    /**
+     * Describes the change occurring.
+     */
     enum Change {
         /**
          * A user is joining.
