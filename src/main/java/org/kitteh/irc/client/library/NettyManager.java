@@ -226,7 +226,9 @@ final class NettyManager {
         }
     }
 
+    @Nullable
     private static Bootstrap bootstrap;
+    @Nullable
     private static EventLoopGroup eventLoopGroup;
     private static final Set<ClientConnection> connections = new HashSet<>();
 
@@ -237,7 +239,9 @@ final class NettyManager {
     private static synchronized void removeClientConnection(@Nonnull ClientConnection connection, boolean reconnecting) {
         connections.remove(connection);
         if (!reconnecting && connections.isEmpty()) {
-            eventLoopGroup.shutdownGracefully();
+            if (eventLoopGroup != null) {
+                eventLoopGroup.shutdownGracefully();
+            }
             eventLoopGroup = null;
             bootstrap = null;
         }

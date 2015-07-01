@@ -109,6 +109,7 @@ class ActorProvider {
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
+        @Nullable
         private Actor topicSetter;
         private long topicTime;
         private volatile boolean tracked;

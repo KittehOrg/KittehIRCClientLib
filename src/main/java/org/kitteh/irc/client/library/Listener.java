@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 
+import javax.annotation.Nullable;
 import java.util.Queue;
 import java.util.function.Consumer;
 
@@ -59,6 +60,7 @@ final class Listener<Type> {
     }
 
     private final String clientName;
+    @Nullable
     private ListenerThread thread;
 
     Listener(String clientName, Consumer<Type> consumer) {
