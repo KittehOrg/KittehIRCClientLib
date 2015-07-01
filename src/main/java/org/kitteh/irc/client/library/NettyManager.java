@@ -67,14 +67,14 @@ import java.util.concurrent.TimeUnit;
 
 final class NettyManager {
     static final class ClientConnection {
-        private final IRCClient client;
+        private final InternalClient client;
         private final Channel channel;
         private final Queue<String> queue = new ConcurrentLinkedQueue<>();
         private boolean reconnect = true;
         private ScheduledFuture<?> scheduledSending;
         private final Object scheduledSendingLock = new Object();
 
-        private ClientConnection(@Nonnull final IRCClient client, @Nonnull ChannelFuture future) {
+        private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture future) {
             this.client = client;
             this.channel = future.channel();
 
@@ -243,7 +243,7 @@ final class NettyManager {
         }
     }
 
-    static synchronized ClientConnection connect(@Nonnull IRCClient client) {
+    static synchronized ClientConnection connect(@Nonnull InternalClient client) {
         if (bootstrap == null) {
             bootstrap = new Bootstrap();
             bootstrap.channel(NioSocketChannel.class);

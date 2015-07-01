@@ -50,10 +50,10 @@ public final class EventManager {
     }
 
     private final SyncMessageBus<Object> bus = new SyncMessageBus<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).setProperty(Properties.Handler.PublicationError, new Exceptional()));
-    private final IRCClient client;
+    private final InternalClient client;
     private final Set<Object> listeners = new HashSet<>();
 
-    EventManager(@Nonnull IRCClient client) {
+    EventManager(@Nonnull InternalClient client) {
         this.client = client;
     }
 

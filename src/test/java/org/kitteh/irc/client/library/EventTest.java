@@ -17,7 +17,8 @@ public class EventTest {
      */
     @Test
     public void testEventRegistration() {
-        EventManager manager = new EventManager(null);
+        FakeClient fakeClient = new FakeClient();
+        EventManager manager = fakeClient.getEventManager();
         manager.registerEventListener(this);
         Event event = new Event();
         manager.callEvent(event);

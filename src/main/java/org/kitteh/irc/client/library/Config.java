@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
- * Stores an IRCClient's configured data from the {@link ClientBuilder}.
+ * Stores a Client's configured data from the {@link ClientBuilder}.
  * <p>
  * This class is for internal use only.
  */

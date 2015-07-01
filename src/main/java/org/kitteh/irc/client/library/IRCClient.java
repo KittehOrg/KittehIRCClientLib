@@ -79,7 +79,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-final class IRCClient implements Client {
+final class IRCClient extends InternalClient {
     private final class InputProcessor extends QueueProcessingThread<String> {
         private InputProcessor() {
             super("Kitteh IRC Client Input Processor (" + IRCClient.this.getName() + ')');
@@ -534,6 +534,7 @@ final class IRCClient implements Client {
      *
      * @param line line to be processed
      */
+    @Override
     void processLine(@Nonnull String line) {
         if (line.startsWith("PING ")) {
             this.sendRawLineImmediately("PONG " + line.substring(5));
@@ -543,25 +544,30 @@ final class IRCClient implements Client {
     }
 
     @Nonnull
+    @Override
     Config getConfig() {
         return this.config;
     }
 
     @Nonnull
+    @Override
     Listener<Exception> getExceptionListener() {
         return this.exceptionListener;
     }
 
     @Nonnull
+    @Override
     Listener<String> getInputListener() {
         return this.inputListener;
     }
 
     @Nonnull
+    @Override
     Listener<String> getOutputListener() {
         return this.outputListener;
     }
 
+    @Override
     void authenticate() {
         AuthType authType = this.config.get(Config.AUTH_TYPE);
         if (authType != null) {
@@ -587,6 +593,7 @@ final class IRCClient implements Client {
         }
     }
 
+    @Override
     void connect() {
         this.connection = NettyManager.connect(this);
 
@@ -607,6 +614,7 @@ final class IRCClient implements Client {
         this.sendNickChange(this.goalNick);
     }
 
+    @Override
     void ping() {
         this.sendRawLine("PING :" + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
     }

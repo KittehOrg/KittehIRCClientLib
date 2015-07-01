@@ -47,15 +47,15 @@ import java.util.stream.Collectors;
 class ActorProvider {
     class IRCActor {
         private final String name;
-        private final IRCClient client;
+        private final InternalClient client;
 
-        private IRCActor(@Nonnull String name, @Nonnull IRCClient client) {
+        private IRCActor(@Nonnull String name, @Nonnull InternalClient client) {
             this.client = client;
             this.name = name;
         }
 
         @Nonnull
-        protected IRCClient getClient() {
+        protected InternalClient getClient() {
             return this.client;
         }
 
@@ -75,7 +75,7 @@ class ActorProvider {
         private final long creationTime = System.currentTimeMillis();
         private final String name;
 
-        private IRCActorSnapshot(@Nonnull String name, @Nonnull IRCClient client) {
+        private IRCActorSnapshot(@Nonnull String name, @Nonnull Client client) {
             this.client = client;
             this.name = name;
         }
@@ -113,7 +113,7 @@ class ActorProvider {
         private long topicTime;
         private volatile boolean tracked;
 
-        private IRCChannel(@Nonnull String channel, @Nonnull IRCClient client) {
+        private IRCChannel(@Nonnull String channel, @Nonnull InternalClient client) {
             super(channel, client);
             this.modes = new CIKeyMap<>(this.getClient());
             this.nickMap = new CIKeyMap<>(this.getClient());
@@ -240,7 +240,7 @@ class ActorProvider {
         private final boolean complete;
         private final Topic topic;
 
-        private IRCChannelSnapshot(@Nonnull String channel, @Nonnull Map<String, Set<ChannelUserMode>> modes, @Nonnull Map<String, IRCUser> nickMap, @Nonnull IRCClient client, boolean complete, @Nonnull Topic topic) {
+        private IRCChannelSnapshot(@Nonnull String channel, @Nonnull Map<String, Set<ChannelUserMode>> modes, @Nonnull Map<String, IRCUser> nickMap, @Nonnull InternalClient client, boolean complete, @Nonnull Topic topic) {
             super(channel, client);
             this.complete = complete;
             this.topic = topic;
@@ -339,7 +339,7 @@ class ActorProvider {
     }
 
     abstract class IRCMessageReceiverSnapshot extends IRCActorSnapshot implements MessageReceiver {
-        protected IRCMessageReceiverSnapshot(@Nonnull String name, @Nonnull IRCClient client) {
+        protected IRCMessageReceiverSnapshot(@Nonnull String name, @Nonnull InternalClient client) {
             super(name, client);
         }
     }
@@ -349,7 +349,7 @@ class ActorProvider {
         private final String nick;
         private final String user;
 
-        private IRCUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull IRCClient client) {
+        private IRCUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull InternalClient client) {
             super(mask, client);
             this.nick = nick;
             this.user = user;
@@ -374,7 +374,7 @@ class ActorProvider {
         private final String nick;
         private final String user;
 
-        private IRCUserSnapshot(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull IRCClient client) {
+        private IRCUserSnapshot(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull InternalClient client) {
             super(mask, client);
             this.nick = nick;
             this.user = user;
@@ -423,7 +423,7 @@ class ActorProvider {
         }
     }
 
-    private final IRCClient client;
+    private final InternalClient client;
 
     // Valid nick chars: \w\[]^`{}|-_
     // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
@@ -434,7 +434,7 @@ class ActorProvider {
 
     private final Map<String, IRCChannel> trackedChannels;
 
-    ActorProvider(@Nonnull IRCClient client) {
+    ActorProvider(@Nonnull InternalClient client) {
         this.client = client;
         this.trackedChannels = new CIKeyMap<>(this.client);
     }
