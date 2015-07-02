@@ -1,0 +1,8 @@
+site_name: KICL Documentation
+repo_url: https://github.com/KittehOrg/KittehIRCClientLib
+pages:
+- Home: index.md
+- Advanced: advanced.md
+
+markdown_extensions: [fenced_code]
+theme: readthedocs
