@@ -67,7 +67,6 @@ public class ModeCommand extends ChannelCommand {
         }
     }
 
-    private static final Pattern MASK_PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
     private static final int MODES_PER_LINE = 3;
 
     private final List<ModeChange> changes = new ArrayList<>();
@@ -97,12 +96,12 @@ public class ModeCommand extends ChannelCommand {
     }
 
     /**
-     * Adds a mode change for a mode not requiring a parameter.
+     * Adds a mode change without a parameter.
      *
      * @param add true if adding, false if removing
      * @param mode the mode to be changed
      * @return this ModeCommand
-     * @throws IllegalArgumentException if mode invalid or requires parameter
+     * @throws IllegalArgumentException if mode invalid
      */
     @Nonnull
     public ModeCommand addModeChange(boolean add, char mode) {
@@ -116,9 +115,8 @@ public class ModeCommand extends ChannelCommand {
      * @param mode the mode to be changed
      * @param parameter mode parameter or null if one is not needed
      * @return this ModeCommand
-     * @throws IllegalArgumentException if mode invalid or mode requires a
-     * parameter but one was not provided or mode requires no parameter but
-     * one was provided or the mode comes from a different client
+     * @throws IllegalArgumentException if mode invalid comes from a
+     * different client
      */
     @Nonnull
     public ModeCommand addModeChange(boolean add, @Nonnull ChannelUserMode mode, @Nullable String parameter) {
@@ -134,13 +132,13 @@ public class ModeCommand extends ChannelCommand {
      * @param mode the mode to be changed
      * @param parameter user whose nick will be sent or null if not needed
      * @return this ModeCommand
-     * @throws IllegalArgumentException if mode invalid or mode requires a
-     * parameter but one was not provided or mode requires no parameter but
-     * one was provided or the mode comes from a different client
+     * @throws IllegalArgumentException if mode invalid or user comes from a
+     * different client
      */
     @Nonnull
     public ModeCommand addModeChange(boolean add, char mode, @Nonnull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
+        Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
         return this.addModeChange(add, mode, parameter.getNick());
     }
 
@@ -151,13 +149,13 @@ public class ModeCommand extends ChannelCommand {
      * @param mode the mode to be changed
      * @param parameter user whose nick will be sent or null if not needed
      * @return this ModeCommand
-     * @throws IllegalArgumentException if mode invalid or mode requires a
-     * parameter but one was not provided or mode requires no parameter but
-     * one was provided or the mode comes from a different client
+     * @throws IllegalArgumentException if mode invalid or either mode or
+     * user comes from a different client
      */
     @Nonnull
     public ModeCommand addModeChange(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
+        Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
         return this.addModeChange(add, mode, parameter.getNick());
     }
 
@@ -168,7 +166,7 @@ public class ModeCommand extends ChannelCommand {
      * @param mode the mode to be changed
      * @param parameter mode parameter or null if one is not needed
      * @return this ModeCommand
-     * @throws IllegalArgumentException if mode invalid or requires parameter
+     * @throws IllegalArgumentException if mode invalid
      */
     @Nonnull
     public synchronized ModeCommand addModeChange(boolean add, char mode, @Nullable String parameter) {
@@ -191,20 +189,6 @@ public class ModeCommand extends ChannelCommand {
         if (!queue.isEmpty()) {
             this.send(queue);
         }
-    }
-
-    @Nonnull
-    private ChannelModeType getChannelModeType(char mode) {
-        ChannelModeType type = this.getClient().getServerInfo().getChannelModes().get(mode);
-        if (type != null) {
-            return type;
-        }
-        for (ChannelUserMode prefix : this.getClient().getServerInfo().getChannelUserModes()) {
-            if (prefix.getMode() == mode) {
-                return ChannelModeType.B_PARAMETER_ALWAYS;
-            }
-        }
-        throw new IllegalArgumentException("Invalid mode '" + mode + '\'');
     }
 
     private void send(@Nonnull Queue<ModeChange> queue) {
