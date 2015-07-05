@@ -172,17 +172,8 @@ public class ModeCommand extends ChannelCommand {
      */
     @Nonnull
     public synchronized ModeCommand addModeChange(boolean add, char mode, @Nullable String parameter) {
-        ChannelModeType channelModeType = this.getChannelModeType(mode);
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter);
-        }
-        if (add ? channelModeType.isParameterRequiredOnSetting() : channelModeType.isParameterRequiredOnRemoval()) {
-            Sanity.truthiness(parameter != null, "Provided mode '" + mode + "' without parameter when one is required.");
-        } else {
-            Sanity.truthiness(parameter == null, "Provided mode '" + mode + "' with parameter when one is not required.");
-        }
-        if (channelModeType == ChannelModeType.A_MASK) {
-            Sanity.truthiness((parameter != null) && MASK_PATTERN.matcher(parameter).matches(), "Provided mode `" + mode + "' requires a mask parameter.");
         }
         this.changes.add(new ModeChange(add, mode, parameter));
         return this;
