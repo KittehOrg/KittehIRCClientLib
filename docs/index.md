@@ -69,3 +69,9 @@ public class FriendlyBot {
     }
 }
 ```
+
+## More information
+
+Consult the [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/) to answer most questions.
+
+Check out the [Issue Tracker](https://github.com/KittehOrg/KittehIRCClientLib/issues) if you have trouble.
