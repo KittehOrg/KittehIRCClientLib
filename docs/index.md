@@ -3,7 +3,7 @@
 KICL is a powerful, modern Java IRC library built with NIO 
 using the Netty library to maximize performance and scalability.
 
-Some nicities about KICL include:
+Some niceties about KICL include:
 
 * Full SSL support
 * WEBIRC authentication
@@ -13,7 +13,7 @@ Some nicities about KICL include:
 
 ## Getting started
 
-KICL deisgned with a simple and intuitive API, 
+KICL designed with a simple and intuitive API,
 a hello world is as simple as:
 
 ```java
