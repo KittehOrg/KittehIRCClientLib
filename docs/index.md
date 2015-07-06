@@ -1,6 +1,6 @@
 # Kitteh IRC Client Library Documentation
 
-KICL is a powerful, modern Java IRC library built with NIO 
+The Kitteh IRC Client Library (KICL) is a powerful, modern Java IRC library built with NIO
 using the Netty library to maximize performance and scalability.
 
 Some niceties about KICL include:
@@ -13,11 +13,11 @@ Some niceties about KICL include:
 
 ## Getting started
 
-KICL designed with a simple and intuitive API,
-a hello world is as simple as:
+KICL is designed with a simple and intuitive API.
+A hello world is as simple as:
 
 ```java
-Client client = new ClientBuilder().name("KittehBot").server("irc.gamesurge.net").build();
+Client client = new ClientBuilder().nick("KittehBot").server("irc.esper.net").build();
 
 client.addChannel("#kitteh.org");
 client.sendMessage("#kitteh.org", "Hello World!");
@@ -27,12 +27,12 @@ client.sendMessage("#kitteh.org", "Hello World!");
 ## Using KICL in your maven project
 
 KICL is built and deployed using maven, adding it as a dependency is simple as
-including the kitteh repo with
+including the Kitteh repo with
 
 ```xml
 <repository>
     <id>kitteh-repo</id>
-    <url>http://repo.kitteh.org/content/groups/public/</ulr>
+    <url>http://repo.kitteh.org/content/groups/public/</url>
 </repository>
 ```
 
@@ -49,8 +49,8 @@ and adding the dependency with
 
 ## Events
 
-KICL uses a simple event system driven by ```@Handler``` annotations, a simple
-event listener example is shown below
+KICL uses a simple event system driven by ```@Handler``` annotations.
+A simple event listener example is shown below:
 
 ```java
 public class Bot {
