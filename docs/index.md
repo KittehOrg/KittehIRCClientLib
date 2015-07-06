@@ -53,7 +53,7 @@ KICL uses a simple event system driven by ```@Handler``` annotations.
 A simple event listener example is shown below:
 
 ```java
-public class Bot {
+public class FriendlyBot {
     private Client client;
 
     public void connect() {
