@@ -59,13 +59,13 @@ public class Bot {
     public void connect() {
         ...;
 
-        client.getEventManager().registerEventListener(this);
+        this.client.getEventManager().registerEventListener(this);
     }
 
     @Handler
     public void onJoin(ChannelJoinEvent event) {
         Channel channel = event.getChannel();
-        client.sendMessage(channel, "Hi " + event.getUser().getNick() + "!");
+        this.client.sendMessage(channel, "Hi " + event.getUser().getNick() + "!");
     }
 }
 ```
