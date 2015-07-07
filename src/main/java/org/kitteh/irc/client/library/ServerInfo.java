@@ -122,6 +122,13 @@ public interface ServerInfo {
     String getServerVersion();
 
     /**
+     * Gets if the server supports WHOX.
+     *
+     * @return true if WHOX is supported
+     */
+    boolean hasWhoXSupport();
+
+    /**
      * Gets if a given string is a valid channel name according to the
      * available server information.
      *

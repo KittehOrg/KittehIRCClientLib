@@ -227,6 +227,13 @@ final class IRCClient extends InternalClient {
                 }
                 return true;
             }
+        },
+        WHOX {
+            @Override
+            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+                client.serverInfo.setWhoXSupport();
+                return true;
+            }
         };
 
         private static final Map<String, ISupport> MAP;

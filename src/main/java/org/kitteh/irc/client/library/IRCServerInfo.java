@@ -46,6 +46,7 @@ final class IRCServerInfo implements ServerInfo {
     private int nickLengthLimit = -1;
     private String serverAddress;
     private String serverVersion;
+    private boolean supportsWhoX;
 
     // TODO adapt for changes
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
@@ -155,6 +156,15 @@ final class IRCServerInfo implements ServerInfo {
 
     void setServerVersion(@Nonnull String serverVersion) {
         this.serverVersion = serverVersion;
+    }
+
+    @Override
+    public boolean hasWhoXSupport() {
+        return this.supportsWhoX;
+    }
+
+    void setWhoXSupport() {
+        this.supportsWhoX = true;
     }
 
     // Util stuffs
