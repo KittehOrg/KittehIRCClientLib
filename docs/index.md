@@ -50,7 +50,8 @@ and adding the dependency with
 ## Events
 
 KICL uses a simple event system driven by ```@Handler``` annotations.
-A simple event listener example is shown below:
+A simple event listener example is shown below.
+For more information on events, see the [Events](events.md) documentation.
 
 ```java
 public class FriendlyBot {
