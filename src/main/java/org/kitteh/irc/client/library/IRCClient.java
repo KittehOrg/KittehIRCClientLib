@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
@@ -1040,11 +1041,13 @@ final class IRCClient extends InternalClient {
             case NICK:
                 if (actor instanceof ActorProvider.IRCUser) {
                     ActorProvider.IRCUser user = (ActorProvider.IRCUser) actor;
+                    User oldUser = user.snapshot();
                     if (user.getNick().equals(this.currentNick)) {
                         this.currentNick = args[0];
                     }
                     this.actorProvider.trackUserNick(user.getNick(), args[0]);
-                    this.eventManager.callEvent(new UserNickChangeEvent(this, user.snapshot(), user.getNick()));
+                    User newUser = user.snapshot();
+                    this.eventManager.callEvent(new UserNickChangeEvent(this, oldUser, newUser));
                 }
                 break;
             case INVITE:
