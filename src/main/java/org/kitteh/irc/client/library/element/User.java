@@ -23,13 +23,26 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.kitteh.irc.client.library.ServerInfo;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
  * Represents an IRC user.
  */
 public interface User extends MessageReceiver {
+    /**
+     * Gets the Services account this user is signed into. Only available if
+     * the server supports WHOX and the user and client share a channel.
+     *
+     * @return the account name or null if no account or WHOX not supported
+     * @see ServerInfo#hasWhoXSupport() for if this can return a value
+     */
+    @Nullable
+    String getAccount();
+
     /**
      * Gets the user's channels.
      *
@@ -55,10 +68,26 @@ public interface User extends MessageReceiver {
     String getNick();
 
     /**
+     * Gets the user's real name
+     *
+     * @return real name or null if this user does not share any channels
+     * with the client
+     */
+    @Nullable
+    String getRealName();
+
+    /**
      * Gets the user's user string.
      *
      * @return user
      */
     @Nonnull
     String getUser();
+
+    /**
+     * Gets if the user is away.
+     *
+     * @return true if away
+     */
+    boolean isAway();
 }

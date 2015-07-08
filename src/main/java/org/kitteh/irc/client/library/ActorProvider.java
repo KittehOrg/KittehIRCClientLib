@@ -345,10 +345,14 @@ class ActorProvider {
         }
     }
 
+    // TODO track users overall, not by encounter
     class IRCUser extends IRCActor {
+        private String account;
         private final String host;
         private final String nick;
         private final String user;
+        private boolean isAway;
+        private String realName;
 
         private IRCUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull InternalClient client) {
             super(mask, client);
@@ -362,30 +366,54 @@ class ActorProvider {
             return this.nick;
         }
 
+        void setAccount(@Nullable String account) {
+            this.account = account;
+        }
+
+        void setAway() {
+            this.isAway = true;
+        }
+
+        void setRealName(@Nullable String realName) {
+            this.realName = realName;
+        }
+
         @Override
         @Nonnull
         IRCUserSnapshot snapshot() {
-            return new IRCUserSnapshot(this.getName(), this.nick, this.user, this.host, this.getClient());
+            return new IRCUserSnapshot(this.getName(), this.nick, this.user, this.host, this.realName, this.isAway, this.account, this.getClient());
         }
     }
 
     class IRCUserSnapshot extends IRCMessageReceiverSnapshot implements User {
+        private final String account;
         private final Set<String> channels;
+        private final boolean isAway;
         private final String host;
         private final String nick;
+        private final String realName;
         private final String user;
 
-        private IRCUserSnapshot(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull InternalClient client) {
+        private IRCUserSnapshot(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nullable String realName, boolean isAway, String account, @Nonnull InternalClient client) {
             super(mask, client);
+            this.account = account;
+            this.isAway = isAway;
             this.nick = nick;
             this.user = user;
             this.host = host;
+            this.realName = realName;
             this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(nick) != null).map(IRCChannel::getName).collect(Collectors.toSet()));
         }
 
         @Override
         public boolean equals(Object o) {
             return (o instanceof IRCUserSnapshot) && (((IRCUserSnapshot) o).getClient() == this.getClient()) && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
+        }
+
+        @Nullable
+        @Override
+        public String getAccount() {
+            return this.account;
         }
 
         @Nonnull
@@ -412,6 +440,11 @@ class ActorProvider {
             return this.nick;
         }
 
+        @Nullable
+        public String getRealName() {
+            return this.realName;
+        }
+
         @Nonnull
         @Override
         public String getUser() {
@@ -421,6 +454,11 @@ class ActorProvider {
         @Override
         public int hashCode() {
             return (this.toLowerCase(this.getName()).hashCode() * 2) + this.getClient().hashCode();
+        }
+
+        @Override
+        public boolean isAway() {
+            return this.isAway;
         }
     }
 

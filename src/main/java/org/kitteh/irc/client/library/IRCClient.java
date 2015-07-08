@@ -734,18 +734,37 @@ final class IRCClient extends InternalClient {
                 }
                 break;
             case 352: // WHO list
+            case 354: // WHOX list
                 if (this.serverInfo.isValidChannel(args[1])) {
                     final String channelName = args[1];
                     final String ident = args[2];
                     final String host = args[3];
-                    // server is arg 4
+                    final String server = args[4];
                     final String nick = args[5];
-                    final String status = args[6];
-                    // The rest I don't care about
                     final ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.actorProvider.getActor(nick + '!' + ident + '@' + host);
+                    final String status = args[6];
+                    String realName = null;
+                    switch (command) {
+                        case 352:
+                            realName = args[7];
+                            break;
+                        case 354:
+                            String account = args[7];
+                            if (account.equals("0")) {
+                                account = null;
+                            }
+                            user.setAccount(account);
+                            realName = args[8];
+                            break;
+                    }
+                    user.setRealName(realName);
                     final ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
                     final Set<ChannelUserMode> modes = new HashSet<>();
                     for (char prefix : status.substring(1).toCharArray()) {
+                        if (prefix == 'G') {
+                            user.setAway();
+                            continue;
+                        }
                         for (ChannelUserMode mode : this.serverInfo.getChannelUserModes()) {
                             if (mode.getPrefix() == prefix) {
                                 modes.add(mode);
@@ -966,7 +985,7 @@ final class IRCClient extends InternalClient {
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.add(args[0]);
                         this.actorProvider.channelTrack(channel);
-                        this.sendRawLine("WHO " + channel.getName());
+                        this.sendRawLine("WHO " + channel.getName() + (this.serverInfo.hasWhoXSupport() ? " %cuhsnfar" : ""));
                     }
                     this.eventManager.callEvent(new ChannelJoinEvent(this, channel.snapshot(), user.snapshot()));
                 }
