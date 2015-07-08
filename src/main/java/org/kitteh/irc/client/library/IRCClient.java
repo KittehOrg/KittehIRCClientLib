@@ -763,7 +763,7 @@ final class IRCClient extends InternalClient {
                     final Set<ChannelUserMode> modes = new HashSet<>();
                     for (char prefix : status.substring(1).toCharArray()) {
                         if (prefix == 'G') {
-                            user.setAway();
+                            user.setAway(true);
                             continue;
                         }
                         for (ChannelUserMode mode : this.serverInfo.getChannelUserModes()) {
@@ -885,7 +885,7 @@ final class IRCClient extends InternalClient {
                     case "ls":
                         event = new CapabilitiesSupportedListEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
                         Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toCollection(HashSet::new));
-                        capabilities.retainAll(Arrays.asList("account-notify", "extended-join", "multi-prefix"));
+                        capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
                         if (!capabilities.isEmpty()) { // TODO if too large, split across lines
                             this.sendRawLineImmediately("CAP REQ :" + StringUtil.combineSplit(capabilities.toArray(new String[capabilities.size()]), 0));
                         }
@@ -909,6 +909,9 @@ final class IRCClient extends InternalClient {
                     account = null;
                 }
                 this.actorProvider.trackUserAccount(((ActorProvider.IRCUser) actor).getNick(), account);
+                break;
+            case AWAY:
+                this.actorProvider.trackUserAway(((ActorProvider.IRCUser) actor).getNick(), args.length > 0);
                 break;
             case NOTICE:
                 switch (this.getTypeByTarget(args[0])) {

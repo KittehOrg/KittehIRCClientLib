@@ -33,6 +33,7 @@ import java.util.Map;
  */
 enum Command {
     ACCOUNT,
+    AWAY,
     CAP,
     INVITE,
     JOIN,

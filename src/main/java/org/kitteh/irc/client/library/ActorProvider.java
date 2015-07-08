@@ -176,6 +176,13 @@ class ActorProvider {
             }
         }
 
+        void trackUserAway(@Nonnull String nick, boolean away) {
+            IRCUser user = this.nickMap.get(nick);
+            if (user != null) {
+                user.setAway(away);
+            }
+        }
+
         void trackUserJoin(@Nonnull IRCUser user) {
             this.trackUser(user, null);
         }
@@ -371,8 +378,8 @@ class ActorProvider {
             this.account = account;
         }
 
-        void setAway() {
-            this.isAway = true;
+        void setAway(boolean isAway) {
+            this.isAway = isAway;
         }
 
         void setRealName(@Nullable String realName) {
@@ -526,6 +533,10 @@ class ActorProvider {
 
     void trackUserAccount(@Nonnull String nick, @Nullable String account) {
         this.trackedChannels.values().forEach(channel -> channel.trackUserAccount(nick, account));
+    }
+
+    void trackUserAway(@Nonnull String nick, boolean away) {
+        this.trackedChannels.values().forEach(channel -> channel.trackUserAway(nick, away));
     }
 
     @Nonnull
