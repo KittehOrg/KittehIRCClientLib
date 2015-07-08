@@ -27,7 +27,6 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
-import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -66,7 +65,7 @@ class ActorProvider {
 
         @Nonnull
         IRCActorSnapshot snapshot() {
-            return new IRCActorSnapshot(this.name, this.client);
+            return new IRCActorSnapshot(this);
         }
     }
 
@@ -75,9 +74,9 @@ class ActorProvider {
         private final long creationTime = System.currentTimeMillis();
         private final String name;
 
-        private IRCActorSnapshot(@Nonnull String name, @Nonnull Client client) {
-            this.client = client;
-            this.name = name;
+        private IRCActorSnapshot(@Nonnull IRCActor actor) {
+            this.client = actor.client;
+            this.name = actor.name;
         }
 
         @Nonnull
@@ -158,7 +157,7 @@ class ActorProvider {
                 }
             }
             Channel.Topic topic = new IRCChannelTopicSnapshot(this.topicTime, this.topic, this.topicSetter);
-            return new IRCChannelSnapshot(this.getName(), this.modes, this.nickMap, this.getClient(), this.fullListReceived, topic);
+            return new IRCChannelSnapshot(this, topic);
         }
 
         void trackNick(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
@@ -233,7 +232,7 @@ class ActorProvider {
         }
     }
 
-    class IRCChannelSnapshot extends IRCMessageReceiverSnapshot implements Channel {
+    class IRCChannelSnapshot extends IRCActorSnapshot implements Channel {
         private final Map<String, Set<ChannelUserMode>> modes;
         private final List<String> names;
         private final Map<String, User> nickMap;
@@ -241,16 +240,16 @@ class ActorProvider {
         private final boolean complete;
         private final Topic topic;
 
-        private IRCChannelSnapshot(@Nonnull String channel, @Nonnull Map<String, Set<ChannelUserMode>> modes, @Nonnull Map<String, IRCUser> nickMap, @Nonnull InternalClient client, boolean complete, @Nonnull Topic topic) {
-            super(channel, client);
-            this.complete = complete;
+        private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic) {
+            super(channel);
+            this.complete = channel.fullListReceived;
             this.topic = topic;
             Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(client);
-            newModes.putAll(modes);
+            newModes.putAll(channel.modes);
             this.modes = Collections.unmodifiableMap(newModes);
             this.names = Collections.unmodifiableList(new ArrayList<>(this.modes.keySet()));
             Map<String, User> newNickMap = new CIKeyMap<>(client);
-            nickMap.forEach((nick, user) -> newNickMap.put(nick, user.snapshot()));
+            channel.nickMap.forEach((nick, user) -> newNickMap.put(nick, user.snapshot()));
             this.nickMap = Collections.unmodifiableMap(newNickMap);
             this.users = Collections.unmodifiableList(new ArrayList<>(this.nickMap.values()));
         }
@@ -339,12 +338,6 @@ class ActorProvider {
         }
     }
 
-    abstract class IRCMessageReceiverSnapshot extends IRCActorSnapshot implements MessageReceiver {
-        protected IRCMessageReceiverSnapshot(@Nonnull String name, @Nonnull InternalClient client) {
-            super(name, client);
-        }
-    }
-
     // TODO track users overall, not by encounter
     class IRCUser extends IRCActor {
         private String account;
@@ -381,11 +374,11 @@ class ActorProvider {
         @Override
         @Nonnull
         IRCUserSnapshot snapshot() {
-            return new IRCUserSnapshot(this.getName(), this.nick, this.user, this.host, this.realName, this.isAway, this.account, this.getClient());
+            return new IRCUserSnapshot(this);
         }
     }
 
-    class IRCUserSnapshot extends IRCMessageReceiverSnapshot implements User {
+    class IRCUserSnapshot extends IRCActorSnapshot implements User {
         private final String account;
         private final Set<String> channels;
         private final boolean isAway;
@@ -394,15 +387,15 @@ class ActorProvider {
         private final String realName;
         private final String user;
 
-        private IRCUserSnapshot(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nullable String realName, boolean isAway, String account, @Nonnull InternalClient client) {
-            super(mask, client);
-            this.account = account;
-            this.isAway = isAway;
-            this.nick = nick;
-            this.user = user;
-            this.host = host;
-            this.realName = realName;
-            this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(nick) != null).map(IRCChannel::getName).collect(Collectors.toSet()));
+        private IRCUserSnapshot(@Nonnull IRCUser user) {
+            super(user);
+            this.account = user.account;
+            this.isAway = user.isAway;
+            this.nick = user.nick;
+            this.user = user.user;
+            this.host = user.host;
+            this.realName = user.realName;
+            this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(this.nick) != null).map(IRCChannel::getName).collect(Collectors.toSet()));
         }
 
         @Override
