@@ -68,7 +68,8 @@ public interface Channel extends MessageReceiver {
     /**
      * Gets the latest snapshot of this channel.
      *
-     * @return an updated snapshot
+     * @return an updated snapshot or null if this channel is no longer
+     * tracked by the client
      */
     @Nullable
     default Channel getLatest() {
@@ -99,6 +100,8 @@ public interface Channel extends MessageReceiver {
      *
      * @param nick user's nick
      * @return the user object, if known
+     * @see #isComplete() for knowing if the User data is sent
+     * @see ChannelUsersUpdatedEvent for knowing when the User data is sent
      * @throws IllegalArgumentException if nick is null
      */
     @Nullable
@@ -111,6 +114,8 @@ public interface Channel extends MessageReceiver {
      * #getNicknames()}.
      *
      * @return users in the channel
+     * @see #isComplete() for knowing if the User data is sent
+     * @see ChannelUsersUpdatedEvent for knowing when the User data is sent
      */
     @Nonnull
     List<User> getUsers();
