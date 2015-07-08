@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc.client.library.command;
 
-import org.kitteh.irc.client.library.ChannelModeType;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
@@ -36,7 +35,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.regex.Pattern;
 
 /**
  * Commands a la MODE.

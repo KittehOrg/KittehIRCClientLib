@@ -994,7 +994,7 @@ final class IRCClient extends InternalClient {
                 if (actor instanceof ActorProvider.IRCUser) { // Just in case
                     ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
                     ActorProvider.IRCUser user = (ActorProvider.IRCUser) actor;
-                    channel.trackUserJoin(user);
+                    channel.trackUser(user, null);
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.add(args[0]);
                         this.actorProvider.channelTrack(channel);
@@ -1014,7 +1014,7 @@ final class IRCClient extends InternalClient {
                     ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[0]);
                     ActorProvider.IRCUser user = (ActorProvider.IRCUser) actor;
                     this.eventManager.callEvent(new ChannelPartEvent(this, channel.snapshot(), user.snapshot(), (args.length > 1) ? args[1] : ""));
-                    channel.trackUserPart(user);
+                    channel.trackUserPart(user.getNick());
                     if (user.getNick().equals(this.currentNick)) {
                         this.channels.remove(channel.getName());
                         this.actorProvider.channelUntrack(channel);
@@ -1024,14 +1024,14 @@ final class IRCClient extends InternalClient {
             case QUIT:
                 if (actor instanceof ActorProvider.IRCUser) { // Just in case
                     this.eventManager.callEvent(new UserQuitEvent(this, ((ActorProvider.IRCUser) actor).snapshot(), (args.length > 0) ? args[0] : ""));
-                    this.actorProvider.trackUserQuit((ActorProvider.IRCUser) actor);
+                    this.actorProvider.trackUserQuit(((ActorProvider.IRCUser) actor).getNick());
                 }
                 break;
             case KICK:
                 ActorProvider.IRCChannel kickedChannel = this.actorProvider.getChannel(args[0]);
-                ActorProvider.IRCUser kickedUser = kickedChannel.getUser(args[1]);
+                ActorProvider.IRCUser kickedUser = this.actorProvider.getUser(args[1]);
                 this.eventManager.callEvent(new ChannelKickEvent(this, kickedChannel.snapshot(), ((ActorProvider.IRCUser) actor).snapshot(), kickedUser.snapshot(), (args.length > 2) ? args[2] : ""));
-                kickedChannel.trackUserPart(kickedUser);
+                kickedChannel.trackUserPart(args[1]);
                 if (args[1].equals(this.currentNick)) {
                     this.channels.remove(kickedChannel.getName());
                     this.actorProvider.channelUntrack(kickedChannel);
@@ -1043,8 +1043,8 @@ final class IRCClient extends InternalClient {
                     if (user.getNick().equals(this.currentNick)) {
                         this.currentNick = args[0];
                     }
-                    ActorProvider.IRCUser newUser = this.actorProvider.trackUserNick(user, args[0]);
-                    this.eventManager.callEvent(new UserNickChangeEvent(this, user.snapshot(), newUser.snapshot()));
+                    this.actorProvider.trackUserNick(user.getNick(), args[0]);
+                    this.eventManager.callEvent(new UserNickChangeEvent(this, user.snapshot(), user.getNick()));
                 }
                 break;
             case INVITE:

@@ -38,14 +38,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 class ActorProvider {
     class IRCActor {
-        private final String name;
+        private String name;
         private final InternalClient client;
 
         private IRCActor(@Nonnull String name, @Nonnull InternalClient client) {
@@ -61,6 +63,10 @@ class ActorProvider {
         @Nonnull
         protected String getName() {
             return this.name;
+        }
+
+        protected void setName(@Nonnull String name) {
+            this.name = name;
         }
 
         @Nonnull
@@ -104,7 +110,6 @@ class ActorProvider {
 
     class IRCChannel extends IRCActor {
         private final Map<String, Set<ChannelUserMode>> modes;
-        private final Map<String, IRCUser> nickMap;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
@@ -116,13 +121,7 @@ class ActorProvider {
         private IRCChannel(@Nonnull String channel, @Nonnull InternalClient client) {
             super(channel, client);
             this.modes = new CIKeyMap<>(this.getClient());
-            this.nickMap = new CIKeyMap<>(this.getClient());
             ActorProvider.this.trackedChannels.put(channel, this);
-        }
-
-        @Nullable
-        IRCUser getUser(@Nullable String nick) {
-            return this.nickMap.get(nick);
         }
 
         void setListReceived() {
@@ -160,31 +159,19 @@ class ActorProvider {
             return new IRCChannelSnapshot(this, topic);
         }
 
-        void trackNick(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
-            this.getModes(nick).addAll(modes);
-        }
-
         void trackUser(@Nonnull IRCUser user, @Nullable Set<ChannelUserMode> modes) {
-            this.nickMap.put(user.getNick(), user);
-            this.modes.put(user.getNick(), (modes == null) ? new HashSet<>() : new HashSet<>(modes));
+            ActorProvider.this.trackUser(user);
+            this.trackUser(user.getNick(), modes);
         }
 
-        void trackUserAccount(@Nonnull String nick, @Nullable String account) {
-            IRCUser user = this.nickMap.get(nick);
-            if (user != null) {
-                user.setAccount(account);
+        void trackUser(@Nonnull String nick, @Nullable Set<ChannelUserMode> modes) {
+            this.modes.put(nick, (modes == null) ? new HashSet<>() : new HashSet<>(modes));
+        }
+
+        void trackNick(@Nonnull String nick, @Nullable Set<ChannelUserMode> modes) {
+            if (!this.modes.containsKey(nick) || this.modes.get(nick).isEmpty()) {
+                this.trackUser(nick, modes);
             }
-        }
-
-        void trackUserAway(@Nonnull String nick, boolean away) {
-            IRCUser user = this.nickMap.get(nick);
-            if (user != null) {
-                user.setAway(away);
-            }
-        }
-
-        void trackUserJoin(@Nonnull IRCUser user) {
-            this.trackUser(user, null);
         }
 
         void trackUserModeAdd(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
@@ -195,15 +182,13 @@ class ActorProvider {
             this.getModes(nick).remove(mode);
         }
 
-        void trackUserNick(@Nonnull IRCUser oldUser, @Nonnull IRCUser newUser) {
-            if (this.nickMap.remove(oldUser.getNick()) != null) {
-                this.trackUser(newUser, this.modes.remove(oldUser.getNick()));
-            }
+        void trackUserNick(@Nonnull String oldNick, @Nonnull String newNick) {
+            this.trackUser(newNick, this.modes.remove(oldNick));
         }
 
-        void trackUserPart(@Nonnull IRCUser user) {
-            this.modes.remove(user.getNick());
-            this.nickMap.remove(user.getNick());
+        void trackUserPart(@Nonnull String nick) {
+            this.modes.remove(nick);
+            ActorProvider.this.updateUser(nick);
         }
 
         @Nonnull
@@ -262,9 +247,7 @@ class ActorProvider {
             newModes.putAll(channel.modes);
             this.modes = Collections.unmodifiableMap(newModes);
             this.names = Collections.unmodifiableList(new ArrayList<>(this.modes.keySet()));
-            Map<String, User> newNickMap = new CIKeyMap<>(client);
-            channel.nickMap.forEach((nick, user) -> newNickMap.put(nick, user.snapshot()));
-            this.nickMap = Collections.unmodifiableMap(newNickMap);
+            this.nickMap = Collections.unmodifiableMap(channel.modes.keySet().stream().map(ActorProvider.this.trackedUsers::get).filter(Objects::nonNull).map(IRCUser::snapshot).collect(Collectors.toMap(User::getNick, Function.identity())));
             this.users = Collections.unmodifiableList(new ArrayList<>(this.nickMap.values()));
         }
 
@@ -356,7 +339,7 @@ class ActorProvider {
     class IRCUser extends IRCActor {
         private String account;
         private final String host;
-        private final String nick;
+        private String nick;
         private final String user;
         private boolean isAway;
         private String realName;
@@ -372,6 +355,11 @@ class ActorProvider {
         @Nonnull
         String getNick() {
             return this.nick;
+        }
+
+        private void setNick(@Nonnull String newNick) {
+            this.nick = newNick;
+            this.setName(this.nick + '!' + this.user + '@' + this.host);
         }
 
         void setAccount(@Nullable String account) {
@@ -416,7 +404,7 @@ class ActorProvider {
             this.host = user.host;
             this.realName = user.realName;
             this.server = user.server;
-            this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(this.nick) != null).map(IRCChannel::getName).collect(Collectors.toSet()));
+            this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.modes.containsKey(this.nick)).map(IRCChannel::getName).collect(Collectors.toSet()));
         }
 
         @Override
@@ -493,10 +481,12 @@ class ActorProvider {
     private final Pattern nickPattern = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
 
     private final Map<String, IRCChannel> trackedChannels;
+    private final Map<String, IRCUser> trackedUsers;
 
     ActorProvider(@Nonnull InternalClient client) {
         this.client = client;
         this.trackedChannels = new CIKeyMap<>(this.client);
+        this.trackedUsers = new CIKeyMap<>(this.client);
     }
 
     void channelTrack(@Nonnull IRCChannel channel) {
@@ -513,7 +503,12 @@ class ActorProvider {
     IRCActor getActor(@Nonnull String name) {
         Matcher nickMatcher = this.nickPattern.matcher(name);
         if (nickMatcher.matches()) {
-            return new IRCUser(name, nickMatcher.group(1), nickMatcher.group(2), nickMatcher.group(3), this.client);
+            String nick = nickMatcher.group(1);
+            IRCUser user = this.trackedUsers.get(nick);
+            if (user != null) {
+                return user;
+            }
+            return new IRCUser(name, nick, nickMatcher.group(2), nickMatcher.group(3), this.client);
         }
         IRCChannel channel = this.getChannel(name);
         if (channel != null) {
@@ -531,22 +526,39 @@ class ActorProvider {
         return channel;
     }
 
+    @Nullable
+    IRCUser getUser(@Nonnull String nick) {
+        return this.trackedUsers.get(nick);
+    }
+
     void trackUserAccount(@Nonnull String nick, @Nullable String account) {
-        this.trackedChannels.values().forEach(channel -> channel.trackUserAccount(nick, account));
+        this.trackedUsers.get(nick).setAccount(account);
+    }
+
+    private void trackUser(@Nonnull IRCUser user) {
+        if (!this.trackedUsers.containsKey(user.getNick())) {
+            this.trackedUsers.put(user.getNick(), user);
+        }
     }
 
     void trackUserAway(@Nonnull String nick, boolean away) {
-        this.trackedChannels.values().forEach(channel -> channel.trackUserAway(nick, away));
+        this.trackedUsers.get(nick).setAway(away);
     }
 
-    @Nonnull
-    IRCUser trackUserNick(@Nonnull IRCUser user, @Nonnull String newNick) {
-        IRCUser newUser = (IRCUser) this.getActor(newNick + user.getName().substring(user.getName().indexOf('!'), user.getName().length()));
-        this.trackedChannels.values().forEach(channel -> channel.trackUserNick(user, newUser));
-        return newUser;
+    void trackUserNick(@Nonnull String oldNick, @Nonnull String newNick) {
+        this.trackedUsers.get(oldNick).setNick(newNick);
+        this.trackedChannels.values().forEach(channel -> channel.trackUserNick(oldNick, newNick));
     }
 
-    void trackUserQuit(@Nonnull IRCUser user) {
-        this.trackedChannels.values().forEach(channel -> channel.trackUserPart(user));
+    void trackUserQuit(@Nonnull String nick) {
+        this.trackedUsers.remove(nick);
+        this.trackedChannels.values().forEach(channel -> channel.trackUserPart(nick));
+        this.updateUser(nick);
+    }
+
+    void updateUser(@Nonnull String nick) {
+        if (this.trackedChannels.values().stream().noneMatch(channel -> channel.modes.containsKey(nick))) {
+            this.trackedUsers.remove(nick);
+        }
     }
 }
