@@ -169,6 +169,13 @@ class ActorProvider {
             this.modes.put(user.getNick(), (modes == null) ? new HashSet<>() : new HashSet<>(modes));
         }
 
+        void trackUserAccount(@Nonnull String nick, @Nullable String account) {
+            IRCUser user = this.nickMap.get(nick);
+            if (user != null) {
+                user.setAccount(account);
+            }
+        }
+
         void trackUserJoin(@Nonnull IRCUser user) {
             this.trackUser(user, null);
         }
@@ -515,6 +522,10 @@ class ActorProvider {
             channel = new IRCChannel(name, this.client);
         }
         return channel;
+    }
+
+    void trackUserAccount(@Nonnull String nick, @Nullable String account) {
+        this.trackedChannels.values().forEach(channel -> channel.trackUserAccount(nick, account));
     }
 
     @Nonnull

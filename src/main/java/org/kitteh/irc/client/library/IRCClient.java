@@ -885,7 +885,7 @@ final class IRCClient extends InternalClient {
                     case "ls":
                         event = new CapabilitiesSupportedListEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
                         Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toCollection(HashSet::new));
-                        capabilities.retainAll(Arrays.asList("extended-join", "multi-prefix"));
+                        capabilities.retainAll(Arrays.asList("account-notify", "extended-join", "multi-prefix"));
                         if (!capabilities.isEmpty()) { // TODO if too large, split across lines
                             this.sendRawLineImmediately("CAP REQ :" + StringUtil.combineSplit(capabilities.toArray(new String[capabilities.size()]), 0));
                         }
@@ -902,6 +902,13 @@ final class IRCClient extends InternalClient {
                         this.capabilityManager.endNegotiation();
                     }
                 }
+                break;
+            case ACCOUNT:
+                String account = args[0];
+                if (account.equals("*")) {
+                    account = null;
+                }
+                this.actorProvider.trackUserAccount(((ActorProvider.IRCUser) actor).getNick(), account);
                 break;
             case NOTICE:
                 switch (this.getTypeByTarget(args[0])) {

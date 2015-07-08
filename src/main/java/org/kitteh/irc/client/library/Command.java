@@ -32,6 +32,7 @@ import java.util.Map;
  * Commands used in client/server communication.
  */
 enum Command {
+    ACCOUNT,
     CAP,
     INVITE,
     JOIN,
