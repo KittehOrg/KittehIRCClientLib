@@ -742,6 +742,7 @@ final class IRCClient extends InternalClient {
                     final String server = args[4];
                     final String nick = args[5];
                     final ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.actorProvider.getActor(nick + '!' + ident + '@' + host);
+                    user.setServer(server);
                     final String status = args[6];
                     String realName = null;
                     switch (command) {

@@ -346,6 +346,7 @@ class ActorProvider {
         private final String user;
         private boolean isAway;
         private String realName;
+        private String server;
 
         private IRCUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull InternalClient client) {
             super(mask, client);
@@ -371,6 +372,10 @@ class ActorProvider {
             this.realName = realName;
         }
 
+        void setServer(@Nonnull String server) {
+            this.server = server;
+        }
+
         @Override
         @Nonnull
         IRCUserSnapshot snapshot() {
@@ -385,6 +390,7 @@ class ActorProvider {
         private final String host;
         private final String nick;
         private final String realName;
+        private final String server;
         private final String user;
 
         private IRCUserSnapshot(@Nonnull IRCUser user) {
@@ -395,6 +401,7 @@ class ActorProvider {
             this.user = user.user;
             this.host = user.host;
             this.realName = user.realName;
+            this.server = user.server;
             this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.getUser(this.nick) != null).map(IRCChannel::getName).collect(Collectors.toSet()));
         }
 
@@ -434,8 +441,15 @@ class ActorProvider {
         }
 
         @Nullable
+        @Override
         public String getRealName() {
             return this.realName;
+        }
+
+        @Nullable
+        @Override
+        public String getServer() {
+            return this.server;
         }
 
         @Nonnull

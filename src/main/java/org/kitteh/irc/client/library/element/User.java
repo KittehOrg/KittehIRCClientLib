@@ -77,6 +77,15 @@ public interface User extends MessageReceiver {
     String getRealName();
 
     /**
+     * Gets the name of the server the user is on.
+     *
+     * @return user's server or null if this user does not share any channels
+     * with the client
+     */
+    @Nullable
+    String getServer();
+
+    /**
      * Gets the user's user string.
      *
      * @return user
