@@ -884,8 +884,10 @@ final class IRCClient extends InternalClient {
                         break;
                     case "ls":
                         event = new CapabilitiesSupportedListEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
-                        if (capabilityStateList.stream().filter(state -> "multi-prefix".equalsIgnoreCase(state.getCapabilityName())).findFirst().isPresent()) {
-                            this.sendRawLineImmediately("CAP REQ :multi-prefix");
+                        Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toCollection(HashSet::new));
+                        capabilities.retainAll(Arrays.asList("extended-join", "multi-prefix"));
+                        if (!capabilities.isEmpty()) { // TODO if too large, split across lines
+                            this.sendRawLineImmediately("CAP REQ :" + StringUtil.combineSplit(capabilities.toArray(new String[capabilities.size()]), 0));
                         }
                         this.eventManager.callEvent(event);
                         break;
@@ -987,6 +989,12 @@ final class IRCClient extends InternalClient {
                         this.channels.add(args[0]);
                         this.actorProvider.channelTrack(channel);
                         this.sendRawLine("WHO " + channel.getName() + (this.serverInfo.hasWhoXSupport() ? " %cuhsnfar" : ""));
+                    }
+                    if (args.length > 2) {
+                        if (!args[1].equals("*")) {
+                            user.setAccount(args[1]);
+                        }
+                        user.setRealName(args[2]);
                     }
                     this.eventManager.callEvent(new ChannelJoinEvent(this, channel.snapshot(), user.snapshot()));
                 }
