@@ -335,7 +335,6 @@ class ActorProvider {
         }
     }
 
-    // TODO track users overall, not by encounter
     class IRCUser extends IRCActor {
         private String account;
         private final String host;
