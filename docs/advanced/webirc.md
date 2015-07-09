@@ -1,5 +1,3 @@
-### WebIRC
-
 KICL supports the WEBIRC command.
 
 ```

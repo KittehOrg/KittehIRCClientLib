@@ -1,5 +1,3 @@
-### SSL
-
 KICL supports connecting to a server via SSL.
 
 To utilize this functionality, simply call the `secure(boolean)` method.
