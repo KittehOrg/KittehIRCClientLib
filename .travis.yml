@@ -2,3 +2,7 @@ language: java
 jdk:
   - oraclejdk8
 sudo: false
+branches:
+  except:
+    - travis
+script: "mvn deploy -P duckswithsauce --settings .travis_settings.xml"
