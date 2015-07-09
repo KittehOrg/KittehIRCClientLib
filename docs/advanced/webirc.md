@@ -1,5 +1,8 @@
-## WebIRC
+### WebIRC
+
+KICL supports the WEBIRC command.
 
 ```
-TODO
+InetAddress ip = ...; // User's IP address
+Client client = new ClientBuilder().webirc("password", "user", "host", ip).build();
 ```
