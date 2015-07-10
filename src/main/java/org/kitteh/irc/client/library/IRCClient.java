@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
@@ -287,7 +288,7 @@ final class IRCClient extends InternalClient {
 
     private NettyManager.ClientConnection connection;
 
-    private final CapabilityManager capabilityManager = new CapabilityManager();
+    private final CapabilityManager capabilityManager = new CapabilityManager(this);
     private final EventManager eventManager = new EventManager(this);
 
     private final Listener<Exception> exceptionListener;
@@ -336,6 +337,12 @@ final class IRCClient extends InternalClient {
                 this.sendRawLine("JOIN :" + channel.getName());
             }
         }
+    }
+
+    @Override
+    @Nonnull
+    public CapabilityManager getCapabilityManager() {
+        return this.capabilityManager;
     }
 
     @Override
@@ -874,16 +881,19 @@ final class IRCClient extends InternalClient {
         switch (command) {
             case CAP:
                 CapabilityNegotiationResponseEventBase event = null;
-                List<CapabilityState> capabilityStateList = Arrays.stream(args[2].split(" ")).map(CapabilityState::new).collect(Collectors.toList());
+                List<CapabilityState> capabilityStateList = Arrays.stream(args[2].split(" ")).map(CapabilityManager.IRCCapabilityState::new).collect(Collectors.toList());
                 switch (args[1].toLowerCase()) {
                     case "ack":
+                        this.capabilityManager.updateCapabilities(capabilityStateList);
                         event = new CapabilitiesAcknowledgedEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
                         this.eventManager.callEvent(event);
                         break;
                     case "list":
+                        this.capabilityManager.setCapabilities(capabilityStateList);
                         this.eventManager.callEvent(new CapabilitiesListEvent(this, capabilityStateList));
                         break;
                     case "ls":
+                        this.capabilityManager.setSupportedCapabilities(capabilityStateList);
                         event = new CapabilitiesSupportedListEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
                         Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toCollection(HashSet::new));
                         capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
@@ -893,6 +903,7 @@ final class IRCClient extends InternalClient {
                         this.eventManager.callEvent(event);
                         break;
                     case "nak":
+                        this.capabilityManager.updateCapabilities(capabilityStateList);
                         event = new CapabilitiesRejectedEvent(this, this.capabilityManager.isNegotiating(), capabilityStateList);
                         this.eventManager.callEvent(event);
                         break;

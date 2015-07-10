@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 class FakeClient extends InternalClient {
+    private final CapabilityManager capabilityManager = new CapabilityManager(this);
     private final Config config = new Config();
     private final EventManager eventManager = new EventManager(this);
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
@@ -69,6 +70,12 @@ class FakeClient extends InternalClient {
     @Override
     public void addChannel(@Nonnull Channel... channel) {
 
+    }
+
+    @Nonnull
+    @Override
+    public CapabilityManager getCapabilityManager() {
+        return this.capabilityManager;
     }
 
     @Nullable

@@ -23,29 +23,92 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
+import org.kitteh.irc.client.library.element.CapabilityState;
+
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * I'm the CAP man!
+ * Provides information on IRCv3 extensions available and in use.
  */
-class CapabilityManager {
+public final class CapabilityManager {
+    static class IRCCapabilityState implements CapabilityState {
+        private long creationTime;
+        private final boolean disable;
+        private final String name;
+
+        IRCCapabilityState(@Nonnull String capabilityListItem) {
+            this.creationTime = System.currentTimeMillis();
+            this.disable = capabilityListItem.charAt(0) == '-';
+            this.name = this.disable ? capabilityListItem.substring(1) : capabilityListItem;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof IRCCapabilityState) {
+                IRCCapabilityState state = (IRCCapabilityState) o;
+                return state.name.equals(this.name) && (state.disable == this.disable);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isDisabled() {
+            return this.disable;
+        }
+
+        /**
+         * Gets the name of the capability.
+         *
+         * @return capability name
+         */
+        @Nonnull
+        public String getCapabilityName() {
+            return this.name;
+        }
+
+        @Override
+        public long getCreationTime() {
+            return this.creationTime;
+        }
+
+        @Override
+        public int hashCode() {
+            return (2 * this.name.hashCode()) + (this.disable ? 1 : 0);
+        }
+    }
+
+    private final Client client;
     private final List<String> capabilities = new ArrayList<>();
     private List<String> supportedCapabilities = new ArrayList<>();
     private boolean negotiating = true;
 
-    CapabilityManager() {
+    CapabilityManager(Client client) {
+        this.client = client;
     }
 
+    /**
+     * Gets capabilities currently enabled.
+     *
+     * @return the capabilities currently enabled
+     * @see CapabilityRequestCommand to request changes to what is enabled
+     */
     @Nonnull
-    List<String> getCapabilities() {
+    public List<String> getCapabilities() {
         return new ArrayList<>(this.capabilities);
     }
 
+    /**
+     * Gets capabilities supported by the server.
+     *
+     * @return the capabilities supported
+     * @see CapabilityRequestCommand to request changes to what is enabled
+     */
     @Nonnull
-    List<String> getSupportedCapabilities() {
+    public List<String> getSupportedCapabilities() {
         return new ArrayList<>(this.supportedCapabilities);
     }
 
@@ -65,6 +128,11 @@ class CapabilityManager {
                 this.capabilities.add(capabilityState.getCapabilityName());
             }
         }
+    }
+
+    void setCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
+        this.capabilities.clear();
+        this.updateCapabilities(capabilityStates);
     }
 
     void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates) {

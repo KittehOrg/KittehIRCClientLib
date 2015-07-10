@@ -23,8 +23,10 @@
  */
 package org.kitteh.irc.client.library.event.capabilities;
 
-import org.kitteh.irc.client.library.CapabilityState;
+import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
+import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -34,6 +36,9 @@ import java.util.List;
 
 /**
  * Fired when a CAP LIST is received.
+ *
+ * @see CapabilityManager for information on capabilities at any time
+ * @see CapabilityRequestCommand to request changes
  */
 public class CapabilitiesSupportedListEvent extends CapabilityNegotiationResponseEventBase {
     private final List<CapabilityState> supportedCapabilities;

@@ -21,30 +21,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.element;
 
 import javax.annotation.Nonnull;
 
 /**
  * Reflects a capability state as told by the server.
  */
-public final class CapabilityState {
-    private final boolean disable;
-    private final String name;
-
-    CapabilityState(@Nonnull String capabilityListItem) {
-        this.disable = capabilityListItem.charAt(0) == '-';
-        this.name = this.disable ? capabilityListItem.substring(1) : capabilityListItem;
-    }
-
+public interface CapabilityState extends Snapshot {
     /**
      * Gets if the state of the capability is disabled.
      *
      * @return true if disabled
      */
-    public boolean isDisabled() {
-        return this.disable;
-    }
+    public boolean isDisabled();
 
     /**
      * Gets the name of the capability.
@@ -52,7 +42,5 @@ public final class CapabilityState {
      * @return capability name
      */
     @Nonnull
-    public String getCapabilityName() {
-        return this.name;
-    }
+    public String getCapabilityName();
 }

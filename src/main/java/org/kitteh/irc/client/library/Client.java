@@ -58,6 +58,14 @@ public interface Client {
     void addChannel(@Nonnull Channel... channel);
 
     /**
+     * Gets the capability manager.
+     *
+     * @return the capability manager
+     */
+    @Nonnull
+    CapabilityManager getCapabilityManager();
+
+    /**
      * Gets the named channel.
      *
      * @param name channel name
