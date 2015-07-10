@@ -5,4 +5,4 @@ sudo: false
 branches:
   except:
     - travis
-script: "mvn deploy -P duckswithsauce --settings .travis_settings.xml"
+script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn deploy -P duckswithsauce --settings .travis_settings.xml || mvn test -B"
