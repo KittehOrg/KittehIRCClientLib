@@ -2,7 +2,4 @@ language: java
 jdk:
   - oraclejdk8
 sudo: false
-branches:
-  except:
-    - travis
-script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn deploy -P duckswithsauce --settings .travis_settings.xml || mvn test -B"
+script: "if [ ${TRAVIS_PULL_REQUEST} = 'true' ]; then mvn test -B; else mvn deploy -P duckswithsauce --settings .travis_settings.xml; fi"
