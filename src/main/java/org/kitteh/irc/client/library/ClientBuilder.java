@@ -53,21 +53,22 @@ public final class ClientBuilder implements Cloneable {
      * Sets values for authentication with services on the server.
      *
      * @param authType type of authentication (See {@link AuthType})
-     * @param name username
-     * @param pass password
+     * @param username username
+     * @param password password
      * @return this builder
      * @throws IllegalArgumentException for null parameters
+     * @see AuthManager for managing authentication later
      */
     @Nonnull
-    public ClientBuilder auth(@Nonnull AuthType authType, @Nonnull String name, @Nonnull String pass) {
+    public ClientBuilder auth(@Nonnull AuthType authType, @Nonnull String username, @Nonnull String password) {
         Sanity.nullCheck(authType, "Auth type cannot be null!");
-        Sanity.nullCheck(name, "Name cannot be null!");
-        Sanity.safeMessageCheck(name, "authentication name");
-        Sanity.nullCheck(pass, "Password cannot be null!");
-        Sanity.safeMessageCheck(pass, "authentication password");
+        Sanity.nullCheck(username, "Username cannot be null!");
+        Sanity.safeMessageCheck(username, "authentication username");
+        Sanity.nullCheck(password, "Password cannot be null!");
+        Sanity.safeMessageCheck(password, "authentication password");
         this.config.set(Config.AUTH_TYPE, authType);
-        this.config.set(Config.AUTH_NAME, name);
-        this.config.set(Config.AUTH_PASS, pass);
+        this.config.set(Config.AUTH_NAME, username);
+        this.config.set(Config.AUTH_PASS, password);
         return this;
     }
 

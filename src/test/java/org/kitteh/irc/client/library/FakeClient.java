@@ -48,11 +48,6 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    void authenticate() {
-
-    }
-
-    @Override
     void connect() {
 
     }
@@ -70,6 +65,12 @@ class FakeClient extends InternalClient {
     @Override
     public void addChannel(@Nonnull Channel... channel) {
 
+    }
+
+    @Nonnull
+    @Override
+    public AuthManager getAuthManager() {
+        return null;
     }
 
     @Nonnull
@@ -177,11 +178,6 @@ class FakeClient extends InternalClient {
 
     @Override
     public void sendRawLineImmediately(@Nonnull String message) {
-
-    }
-
-    @Override
-    public void setAuth(@Nonnull AuthType authType, @Nonnull String name, @Nonnull String pass) {
 
     }
 

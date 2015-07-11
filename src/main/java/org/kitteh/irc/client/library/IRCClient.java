@@ -288,6 +288,7 @@ final class IRCClient extends InternalClient {
 
     private NettyManager.ClientConnection connection;
 
+    private final AuthManager authManager = new AuthManager(this);
     private final CapabilityManager capabilityManager = new CapabilityManager(this);
     private final EventManager eventManager = new EventManager(this);
 
@@ -337,6 +338,12 @@ final class IRCClient extends InternalClient {
                 this.sendRawLine("JOIN :" + channel.getName());
             }
         }
+    }
+
+    @Override
+    @Nonnull
+    public AuthManager getAuthManager() {
+        return this.authManager;
     }
 
     @Override
@@ -486,18 +493,6 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void setAuth(@Nonnull AuthType authType, @Nonnull String name, @Nonnull String pass) {
-        Sanity.nullCheck(authType, "Auth type cannot be null!");
-        Sanity.nullCheck(name, "Name cannot be null!");
-        Sanity.safeMessageCheck(name, "authentication name");
-        Sanity.nullCheck(pass, "Password cannot be null!");
-        Sanity.safeMessageCheck(pass, "authentication password");
-        this.config.set(Config.AUTH_TYPE, authType);
-        this.config.set(Config.AUTH_NAME, name);
-        this.config.set(Config.AUTH_PASS, pass);
-    }
-
-    @Override
     public void setExceptionListener(@Nullable Consumer<Exception> listener) {
         this.exceptionListener.setConsumer(listener);
     }
@@ -580,32 +575,6 @@ final class IRCClient extends InternalClient {
     @Override
     Listener<String> getOutputListener() {
         return this.outputListener;
-    }
-
-    @Override
-    void authenticate() {
-        AuthType authType = this.config.get(Config.AUTH_TYPE);
-        if (authType != null) {
-            String auth;
-            String authReclaim;
-            String name = this.config.get(Config.AUTH_NAME);
-            String pass = this.config.get(Config.AUTH_PASS);
-            switch (authType) {
-                case GAMESURGE:
-                    auth = "PRIVMSG AuthServ@services.gamesurge.net :auth " + name + ' ' + pass;
-                    authReclaim = "";
-                    break;
-                case NICKSERV:
-                default:
-                    auth = "PRIVMSG NickServ :identify " + name + ' ' + pass;
-                    authReclaim = "PRIVMSG NickServ :ghost " + name + ' ' + pass;
-            }
-            if (!this.currentNick.equals(this.goalNick) && authType.isNickOwned()) {
-                this.sendRawLineImmediately(authReclaim);
-                this.sendNickChange(this.goalNick);
-            }
-            this.sendRawLineImmediately(auth);
-        }
     }
 
     @Override
@@ -699,7 +668,10 @@ final class IRCClient extends InternalClient {
                 break;
             case 4: // version / modes
                 // We're in! Start sending all messages.
-                this.authenticate();
+                try {
+                    this.authManager.authenticate();
+                } catch (IllegalStateException | UnsupportedOperationException ignored) {
+                }
                 this.serverInfo = new IRCServerInfo(this);
                 this.serverInfo.setServerAddress(args[1]);
                 this.serverInfo.setServerVersion(args[2]);

@@ -23,18 +23,50 @@
  */
 package org.kitteh.irc.client.library;
 
+import javax.annotation.Nonnull;
+
 /**
  * Authentication types supported by the client.
  */
 public enum AuthType {
+    // TODO listen to success
     /**
-     * Classic nickserv authentication. IDENTIFY [user] [password].
+     * Authentication disabled!
      */
-    NICKSERV,
+    DISABLED(false) {
+        @Override
+        void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+            throw new IllegalStateException("Authentication is disabled!");
+        }
+
+        @Override
+        void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
+            throw new IllegalStateException("Authentication is disabled!");
+        }
+    },
     /**
      * GameSurge's unique brand of authentication. Nicks are not owned.
      */
-    GAMESURGE(false);
+    GAMESURGE(false) {
+        @Override
+        void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+            client.sendRawLineImmediately("PRIVMSG AuthServ@services.gamesurge.net :auth " + username + ' ' + password);
+        }
+    },
+    /**
+     * Classic nickserv authentication. IDENTIFY [user] [password].
+     */
+    NICKSERV() {
+        @Override
+        void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+            client.sendRawLineImmediately("NickServ :IDENTIFY " + username + ' ' + password);
+        }
+
+        @Override
+        void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
+            client.sendRawLineImmediately("NickServ :GHOST " + nick);
+        }
+    },;
 
     private final boolean nicksOwned;
 
@@ -46,10 +78,16 @@ public enum AuthType {
         this.nicksOwned = nickOwned;
     }
 
+    abstract void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password);
+
+    void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
+        throw new UnsupportedOperationException("Nick reclamation is not supported by auth type " + this.name());
+    }
+
     /**
      * Are nicks owned on this network?
      *
-     * @return true if nicks are owned
+     * @return true if nicks are owned and can thus be reclaimed
      */
     public boolean isNickOwned() {
         return this.nicksOwned;

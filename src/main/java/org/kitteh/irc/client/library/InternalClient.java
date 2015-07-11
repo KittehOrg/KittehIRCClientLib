@@ -40,8 +40,6 @@ abstract class InternalClient implements Client {
     @Nonnull
     abstract Listener<String> getOutputListener();
 
-    abstract void authenticate();
-
     abstract void connect();
 
     abstract void ping();

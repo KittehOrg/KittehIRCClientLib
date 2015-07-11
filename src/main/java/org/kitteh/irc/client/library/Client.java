@@ -58,6 +58,14 @@ public interface Client {
     void addChannel(@Nonnull Channel... channel);
 
     /**
+     * Gets the authentication manager.
+     *
+     * @return auth manager
+     */
+    @Nonnull
+    AuthManager getAuthManager();
+
+    /**
      * Gets the capability manager.
      *
      * @return the capability manager
@@ -251,17 +259,6 @@ public interface Client {
      * @throws IllegalArgumentException if message is null
      */
     void sendRawLineImmediately(@Nonnull String message);
-
-    /**
-     * Sets values for authentication with services on the server. The
-     * client will not attempt to utilize them until a future reconnect.
-     *
-     * @param authType type of authentication (See {@link AuthType})
-     * @param name username
-     * @param pass password
-     * @throws IllegalArgumentException for null parameters
-     */
-    void setAuth(@Nonnull AuthType authType, @Nonnull String name, @Nonnull String pass);
 
     /**
      * Sets a listener for all thrown exceptions on this client.
