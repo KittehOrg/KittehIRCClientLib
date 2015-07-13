@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
+import net.engio.mbassy.listener.Filter;
+import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;
@@ -50,6 +52,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
@@ -59,6 +62,7 @@ import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.exception.KittehISupportProcessingFailureException;
 import org.kitteh.irc.client.library.util.CISet;
+import org.kitteh.irc.client.library.util.NumericFilter;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
@@ -295,6 +299,7 @@ final class IRCClient extends InternalClient {
     private final Listener<Exception> exceptionListener;
     private final Listener<String> inputListener;
     private final Listener<String> outputListener;
+    private final NumericListener numericListener = new NumericListener();
 
     private final ActorProvider actorProvider = new ActorProvider(this);
 
@@ -312,6 +317,7 @@ final class IRCClient extends InternalClient {
         this.outputListener = new Listener<>(name, (outputListenerWrapper == null) ? null : outputListenerWrapper.getConsumer());
 
         this.processor = new InputProcessor();
+        this.eventManager.registerEventListener(this.numericListener);
         this.connect();
     }
 
@@ -647,7 +653,7 @@ final class IRCClient extends InternalClient {
         } catch (NumberFormatException ignored) {
         }
         if (numeric > -1) {
-            this.handleLineNumeric(actor, numeric, args);
+            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, actor.snapshot(), numeric, args));
         } else {
             Command command = Command.getByName(commandString);
             if (command != null) {
@@ -656,150 +662,159 @@ final class IRCClient extends InternalClient {
         }
     }
 
-    private void handleLineNumeric(@Nonnull final ActorProvider.IRCActor actor, final int command, @Nonnull final String[] args) {
-        switch (command) {
-            case 1: // Welcome
-                // Use this to acquire the current nickname
-                this.currentNick = args[0];
-                break;
-            case 2: // Your host is...
-                break;
-            case 3: // server created
-                break;
-            case 4: // version / modes
-                // We're in! Start sending all messages.
-                try {
-                    this.authManager.authenticate();
-                } catch (IllegalStateException | UnsupportedOperationException ignored) {
-                }
-                this.serverInfo = new IRCServerInfo(this);
-                this.serverInfo.setServerAddress(args[1]);
-                this.serverInfo.setServerVersion(args[2]);
-                this.eventManager.callEvent(new ClientConnectedEvent(this, actor.snapshot(), this.serverInfo));
-                this.connection.startSending();
-                break;
-            case 5: // ISUPPORT
-                for (String arg : args) {
-                    ISupport.handle(arg, this);
-                }
-                break;
-            case 250: // Highest connection count
-            case 251: // There are X users
-            case 252: // X IRC OPs
-            case 253: // X unknown connections
-            case 254: // X channels formed
-            case 255: // X clients, X servers
-            case 265: // Local users, max
-            case 266: // global users, max
-                break;
-            case 315: // WHO completed
-                ActorProvider.IRCChannel whoChannel = this.actorProvider.getChannel(args[1]);
-                if (whoChannel != null) {
-                    whoChannel.setListReceived();
-                    this.eventManager.callEvent(new ChannelUsersUpdatedEvent(this, whoChannel.snapshot()));
-                }
-                break;
-            // Channel info
-            case 332: // Channel topic
-                ActorProvider.IRCChannel topicChannel = this.actorProvider.getChannel(args[1]);
-                if (topicChannel != null) {
-                    topicChannel.setTopic(args[2]);
-                }
-                break;
-            case 333: // Topic set by
-                ActorProvider.IRCChannel topicSetChannel = this.actorProvider.getChannel(args[1]);
-                if (topicSetChannel != null) {
-                    topicSetChannel.setTopic(Long.parseLong(args[3]) * 1000, this.actorProvider.getActor(args[2]).snapshot());
-                    this.eventManager.callEvent(new ChannelTopicEvent(this, topicSetChannel.snapshot(), false));
-                }
-                break;
-            case 352: // WHO list
-            case 354: // WHOX list
-                if (this.serverInfo.isValidChannel(args[1])) {
-                    final String channelName = args[1];
-                    final String ident = args[2];
-                    final String host = args[3];
-                    final String server = args[4];
-                    final String nick = args[5];
-                    final ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.actorProvider.getActor(nick + '!' + ident + '@' + host);
-                    user.setServer(server);
-                    final String status = args[6];
-                    String realName = null;
-                    switch (command) {
-                        case 352:
-                            realName = args[7];
-                            break;
-                        case 354:
-                            String account = args[7];
-                            if (account.equals("0")) {
-                                account = null;
-                            }
-                            user.setAccount(account);
-                            realName = args[8];
-                            break;
-                    }
-                    user.setRealName(realName);
-                    final ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
-                    final Set<ChannelUserMode> modes = new HashSet<>();
-                    for (char prefix : status.substring(1).toCharArray()) {
-                        if (prefix == 'G') {
-                            user.setAway(true);
-                            continue;
-                        }
-                        for (ChannelUserMode mode : this.serverInfo.getChannelUserModes()) {
-                            if (mode.getPrefix() == prefix) {
-                                modes.add(mode);
-                                break;
-                            }
-                        }
-                    }
-                    channel.trackUser(user, modes);
-                }
-                break;
-            case 353: // Channel users list (/names). format is 353 nick = #channel :names
-                if (this.serverInfo.isValidChannel(args[2])) {
-                    ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[2]);
-                    List<ChannelUserMode> channelUserModes = this.serverInfo.getChannelUserModes();
-                    for (String combo : args[3].split(" ")) {
-                        Set<ChannelUserMode> modes = new HashSet<>();
-                        for (int i = 0; i < combo.length(); i++) {
-                            char c = combo.charAt(i);
-                            Optional<ChannelUserMode> mode = channelUserModes.stream().filter(m -> m.getPrefix() == c).findFirst();
-                            if (mode.isPresent()) {
-                                modes.add(mode.get());
-                            } else {
-                                channel.trackNick(combo.substring(i), modes);
-                                break;
-                            }
-                        }
-                    }
-                }
-                break;
-            case 366: // End of /names
-                if (this.serverInfo.isValidChannel(args[1])) {
-                    ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[1]);
-                    this.eventManager.callEvent(new ChannelNamesUpdatedEvent(this, channel.snapshot()));
-                }
-                break;
-            case 372: // info, such as continued motd
-            case 375: // motd start
-            case 376: // motd end
-            case 422: // MOTD missing
-                break;
-            // Nick errors, try for new nick below
-            case 431: // No nick given
-            case 432: // Erroneous nickname
-            case 433: // Nick in use
-                NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this, this.requestedNick, this.requestedNick + '`');
-                this.eventManager.callEvent(nickRejectedEvent);
-                this.sendNickChange(nickRejectedEvent.getNewNick());
-                break;
-            case 710: // KNOCK KNOCK, WHO'S THERE?
-                ActorProvider.IRCChannel channel = this.actorProvider.getChannel(args[1]);
-                ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.actorProvider.getActor(args[2]);
-                this.eventManager.callEvent(new ChannelKnockEvent(this, channel.snapshot(), user.snapshot()));
-                break;
+    private class NumericListener {
+        @NumericFilter(numeric = 1)
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void welcome(ClientReceiveNumericEvent event) {
+            IRCClient.this.currentNick = event.getArgs()[0];
         }
+
+        @NumericFilter(numeric = 4)
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void version(ClientReceiveNumericEvent event) {
+            try {
+                IRCClient.this.authManager.authenticate();
+            } catch (IllegalStateException | UnsupportedOperationException ignored) {
+            }
+            IRCClient.this.serverInfo = new IRCServerInfo(IRCClient.this);
+            IRCClient.this.serverInfo.setServerAddress(event.getArgs()[1]);
+            IRCClient.this.serverInfo.setServerVersion(event.getArgs()[2]);
+            IRCClient.this.eventManager.callEvent(new ClientConnectedEvent(IRCClient.this, event.getServer(), IRCClient.this.serverInfo));
+            IRCClient.this.connection.startSending();
+        }
+
+        @NumericFilter(numeric = 5) // WHO completed
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void iSupport(ClientReceiveNumericEvent event) {
+            for (String arg : event.getArgs()) {
+                ISupport.handle(arg, IRCClient.this);
+            }
+        }
+
+        @NumericFilter(numeric = 352) // WHO
+        @NumericFilter(numeric = 354) // WHOX
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void who(ClientReceiveNumericEvent event) {
+            if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[1])) {
+                final String channelName = event.getArgs()[1];
+                final String ident = event.getArgs()[2];
+                final String host = event.getArgs()[3];
+                final String server = event.getArgs()[4];
+                final String nick = event.getArgs()[5];
+                final ActorProvider.IRCUser user = (ActorProvider.IRCUser) IRCClient.this.actorProvider.getActor(nick + '!' + ident + '@' + host);
+                user.setServer(server);
+                final String status = event.getArgs()[6];
+                String realName = null;
+                switch (event.getNumeric()) {
+                    case 352:
+                        realName = event.getArgs()[7];
+                        break;
+                    case 354:
+                        String account = event.getArgs()[7];
+                        if (account.equals("0")) {
+                            account = null;
+                        }
+                        user.setAccount(account);
+                        realName = event.getArgs()[8];
+                        break;
+                }
+                user.setRealName(realName);
+                final ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(channelName);
+                final Set<ChannelUserMode> modes = new HashSet<>();
+                for (char prefix : status.substring(1).toCharArray()) {
+                    if (prefix == 'G') {
+                        user.setAway(true);
+                        continue;
+                    }
+                    for (ChannelUserMode mode : IRCClient.this.serverInfo.getChannelUserModes()) {
+                        if (mode.getPrefix() == prefix) {
+                            modes.add(mode);
+                            break;
+                        }
+                    }
+                }
+                channel.trackUser(user, modes);
+            }
+        }
+
+        @NumericFilter(numeric = 315) // WHO completed
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void whoComplete(ClientReceiveNumericEvent event) {
+            ActorProvider.IRCChannel whoChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
+            if (whoChannel != null) {
+                whoChannel.setListReceived();
+                IRCClient.this.eventManager.callEvent(new ChannelUsersUpdatedEvent(IRCClient.this, whoChannel.snapshot()));
+            }
+        }
+
+        @NumericFilter(numeric = 332) // Topic
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void topic(ClientReceiveNumericEvent event) {
+            ActorProvider.IRCChannel topicChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
+            if (topicChannel != null) {
+                topicChannel.setTopic(event.getArgs()[2]);
+            }
+        }
+
+        @NumericFilter(numeric = 333) // Topic info
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void topicInfo(ClientReceiveNumericEvent event) {
+            ActorProvider.IRCChannel topicSetChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
+            if (topicSetChannel != null) {
+                topicSetChannel.setTopic(Long.parseLong(event.getArgs()[3]) * 1000, IRCClient.this.actorProvider.getActor(event.getArgs()[2]).snapshot());
+                IRCClient.this.eventManager.callEvent(new ChannelTopicEvent(IRCClient.this, topicSetChannel.snapshot(), false));
+            }
+        }
+
+        @NumericFilter(numeric = 353) // NAMES
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void names(ClientReceiveNumericEvent event) {
+            if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[2])) {
+                ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[2]);
+                List<ChannelUserMode> channelUserModes = IRCClient.this.serverInfo.getChannelUserModes();
+                for (String combo : event.getArgs()[3].split(" ")) {
+                    Set<ChannelUserMode> modes = new HashSet<>();
+                    for (int i = 0; i < combo.length(); i++) {
+                        char c = combo.charAt(i);
+                        Optional<ChannelUserMode> mode = channelUserModes.stream().filter(m -> m.getPrefix() == c).findFirst();
+                        if (mode.isPresent()) {
+                            modes.add(mode.get());
+                        } else {
+                            channel.trackNick(combo.substring(i), modes);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        @NumericFilter(numeric = 366) // End of NAMES
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void namesComplete(ClientReceiveNumericEvent event) {
+            if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[1])) {
+                ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
+                IRCClient.this.eventManager.callEvent(new ChannelNamesUpdatedEvent(IRCClient.this, channel.snapshot()));
+            }
+        }
+
+        @NumericFilter(numeric = 431) // No nick given
+        @NumericFilter(numeric = 432) // Erroneous nickname
+        @NumericFilter(numeric = 433) // Nick in use
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void nickInUse(ClientReceiveNumericEvent event) {
+            NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(IRCClient.this, IRCClient.this.requestedNick, IRCClient.this.requestedNick + '`');
+            IRCClient.this.eventManager.callEvent(nickRejectedEvent);
+            IRCClient.this.sendNickChange(nickRejectedEvent.getNewNick());
+        }
+
+        @NumericFilter(numeric = 710) // Knock
+        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        public void knock(ClientReceiveNumericEvent event) {
+            ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
+            ActorProvider.IRCUser user = (ActorProvider.IRCUser) IRCClient.this.actorProvider.getActor(event.getArgs()[2]);
+            IRCClient.this.eventManager.callEvent(new ChannelKnockEvent(IRCClient.this, channel.snapshot(), user.snapshot()));
+        }
+
     }
 
     private void handleLineCommand(@Nonnull final ActorProvider.IRCActor actor, @Nonnull final Command command, @Nonnull final String[] args) {
