@@ -66,7 +66,8 @@ public final class AuthManager {
      * Attempts to reclaim a nickname.
      *
      * @param nick nickname to reclaim
-     * @throws UnsupportedOperationException
+     * @throws UnsupportedOperationException if not supported by the selected
+     * {@link AuthType}
      */
     public void reclaimNick(@Nonnull String nick) {
         Sanity.nullCheck(nick, "Nickname cannot be null");

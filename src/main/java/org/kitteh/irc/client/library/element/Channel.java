@@ -100,9 +100,9 @@ public interface Channel extends MessageReceiver {
      *
      * @param nick user's nick
      * @return the user object, if known
+     * @throws IllegalArgumentException if nick is null
      * @see #isComplete() for knowing if the User data is sent
      * @see ChannelUsersUpdatedEvent for knowing when the User data is sent
-     * @throws IllegalArgumentException if nick is null
      */
     @Nullable
     User getUser(@Nonnull String nick);
