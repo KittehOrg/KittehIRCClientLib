@@ -40,10 +40,18 @@ import java.util.Arrays;
  * @see NumericFilter for filtering by numerics
  */
 public class ClientReceiveNumericEvent extends ClientEventBase {
-    private String[] args;
-    private int numeric;
-    private Actor server;
+    private final String[] args;
+    private final int numeric;
+    private final Actor server;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client client
+     * @param server server
+     * @param numeric numeric
+     * @param args args
+     */
     public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull Actor server, int numeric, @Nonnull String[] args) {
         super(client);
         this.args = args;

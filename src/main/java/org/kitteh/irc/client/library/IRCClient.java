@@ -663,14 +663,14 @@ final class IRCClient extends InternalClient {
     }
 
     private class NumericListener {
-        @NumericFilter(numeric = 1)
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(1)
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void welcome(ClientReceiveNumericEvent event) {
             IRCClient.this.currentNick = event.getArgs()[0];
         }
 
-        @NumericFilter(numeric = 4)
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(4)
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void version(ClientReceiveNumericEvent event) {
             try {
                 IRCClient.this.authManager.authenticate();
@@ -683,17 +683,17 @@ final class IRCClient extends InternalClient {
             IRCClient.this.connection.startSending();
         }
 
-        @NumericFilter(numeric = 5) // WHO completed
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(5) // WHO completed
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void iSupport(ClientReceiveNumericEvent event) {
             for (String arg : event.getArgs()) {
                 ISupport.handle(arg, IRCClient.this);
             }
         }
 
-        @NumericFilter(numeric = 352) // WHO
-        @NumericFilter(numeric = 354) // WHOX
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(352) // WHO
+        @NumericFilter(354) // WHOX
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void who(ClientReceiveNumericEvent event) {
             if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[1])) {
                 final String channelName = event.getArgs()[1];
@@ -737,8 +737,8 @@ final class IRCClient extends InternalClient {
             }
         }
 
-        @NumericFilter(numeric = 315) // WHO completed
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(315) // WHO completed
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void whoComplete(ClientReceiveNumericEvent event) {
             ActorProvider.IRCChannel whoChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
             if (whoChannel != null) {
@@ -747,8 +747,8 @@ final class IRCClient extends InternalClient {
             }
         }
 
-        @NumericFilter(numeric = 332) // Topic
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(332) // Topic
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void topic(ClientReceiveNumericEvent event) {
             ActorProvider.IRCChannel topicChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
             if (topicChannel != null) {
@@ -756,8 +756,8 @@ final class IRCClient extends InternalClient {
             }
         }
 
-        @NumericFilter(numeric = 333) // Topic info
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(333) // Topic info
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void topicInfo(ClientReceiveNumericEvent event) {
             ActorProvider.IRCChannel topicSetChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
             if (topicSetChannel != null) {
@@ -766,8 +766,8 @@ final class IRCClient extends InternalClient {
             }
         }
 
-        @NumericFilter(numeric = 353) // NAMES
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(353) // NAMES
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void names(ClientReceiveNumericEvent event) {
             if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[2])) {
                 ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[2]);
@@ -788,8 +788,8 @@ final class IRCClient extends InternalClient {
             }
         }
 
-        @NumericFilter(numeric = 366) // End of NAMES
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(366) // End of NAMES
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void namesComplete(ClientReceiveNumericEvent event) {
             if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[1])) {
                 ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
@@ -797,18 +797,18 @@ final class IRCClient extends InternalClient {
             }
         }
 
-        @NumericFilter(numeric = 431) // No nick given
-        @NumericFilter(numeric = 432) // Erroneous nickname
-        @NumericFilter(numeric = 433) // Nick in use
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(431) // No nick given
+        @NumericFilter(432) // Erroneous nickname
+        @NumericFilter(433) // Nick in use
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void nickInUse(ClientReceiveNumericEvent event) {
             NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(IRCClient.this, IRCClient.this.requestedNick, IRCClient.this.requestedNick + '`');
             IRCClient.this.eventManager.callEvent(nickRejectedEvent);
             IRCClient.this.sendNickChange(nickRejectedEvent.getNewNick());
         }
 
-        @NumericFilter(numeric = 710) // Knock
-        @Handler(filters = {@Filter(NumericFilter.Filter.class)}, priority = Integer.MAX_VALUE - 1)
+        @NumericFilter(710) // Knock
+        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void knock(ClientReceiveNumericEvent event) {
             ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
             ActorProvider.IRCUser user = (ActorProvider.IRCUser) IRCClient.this.actorProvider.getActor(event.getArgs()[2]);

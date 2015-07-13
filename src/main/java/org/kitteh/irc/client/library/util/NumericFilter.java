@@ -39,16 +39,16 @@ import java.lang.annotation.Target;
  *
  * The below code only listens to numeric 1:
  * <pre>
- *     {@code @Numeric(numeric = 1)}
- *     {@code @Handler(filters = {@Filter(Numeric.Filter.class)})}
+ *     {@code @NumericFilter(1)}
+ *     {@code @Handler(filters = @Filter(NumericFilter.Filter.class))}
  *     public void numeric1(ClientReceiveNumericEvent event) {
  *         this.currentNick = event.getArgs()[0];
  *     }
  * </pre>
  */
-@Repeatable(value = NumericFilter.Numerics.class)
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target(value = ElementType.METHOD)
+@Repeatable(NumericFilter.Numerics.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface NumericFilter {
     /**
      * A Filter of numerics.
@@ -58,7 +58,7 @@ public @interface NumericFilter {
         public boolean accepts(ClientReceiveNumericEvent event, SubscriptionContext subscriptionContext) {
             NumericFilter[] numericFilters = subscriptionContext.getHandler().getMethod().getAnnotationsByType(NumericFilter.class);
             for (NumericFilter numericFilter : numericFilters) {
-                if (numericFilter.numeric() == event.getNumeric()) {
+                if (numericFilter.value() == event.getNumeric()) {
                     return true;
                 }
             }
@@ -70,8 +70,8 @@ public @interface NumericFilter {
      * This is an annotation for storing repeated Numeric annotations. Just
      * use the Numeric annotation instead, multiple times!
      */
-    @Retention(value = RetentionPolicy.RUNTIME)
-    @Target(value = ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
     @interface Numerics {
         /**
          * Gets the stored annotations.
@@ -86,5 +86,5 @@ public @interface NumericFilter {
      *
      * @return the numeric
      */
-    int numeric();
+    int value();
 }
