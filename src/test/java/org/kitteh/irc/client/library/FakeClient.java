@@ -10,7 +10,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 class FakeClient extends InternalClient {
-    private final CapabilityManager capabilityManager = new CapabilityManager(this);
+    private final AuthManager authManager = new AuthManager(this);
+    private final CapabilityManager capabilityManager = new CapabilityManager();
     private final Config config = new Config();
     private final EventManager eventManager = new EventManager(this);
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
@@ -70,7 +71,7 @@ class FakeClient extends InternalClient {
     @Nonnull
     @Override
     public AuthManager getAuthManager() {
-        return null;
+        return this.authManager;
     }
 
     @Nonnull

@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  */
 public final class CapabilityManager {
     static class IRCCapabilityState implements CapabilityState {
-        private long creationTime;
+        private final long creationTime;
         private final boolean disable;
         private final String name;
 
@@ -65,6 +65,7 @@ public final class CapabilityManager {
          *
          * @return capability name
          */
+        @Override
         @Nonnull
         public String getCapabilityName() {
             return this.name;
@@ -81,13 +82,11 @@ public final class CapabilityManager {
         }
     }
 
-    private final Client client;
     private final List<String> capabilities = new ArrayList<>();
     private List<String> supportedCapabilities = new ArrayList<>();
     private boolean negotiating = true;
 
-    CapabilityManager(Client client) {
-        this.client = client;
+    CapabilityManager() {
     }
 
     /**

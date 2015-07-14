@@ -35,7 +35,7 @@ import java.util.List;
  * Sends a capability request to the server.
  */
 public class CapabilityRequestCommand extends Command {
-    private List<String> requests = new ArrayList<>();
+    private final List<String> requests = new ArrayList<>();
 
     /**
      * Constructs the CAP REQ command.
@@ -72,7 +72,7 @@ public class CapabilityRequestCommand extends Command {
      */
     public synchronized CapabilityRequestCommand requestDisable(String capability) {
         Sanity.nullCheck(capability, "Capability cannot be null");
-        this.requests.add("-" + capability);
+        this.requests.add('-' + capability);
         return this;
     }
 
@@ -80,7 +80,7 @@ public class CapabilityRequestCommand extends Command {
     public synchronized void execute() {
         StringBuilder builder = new StringBuilder(200);
         for (String request : this.requests) {
-            if (builder.length() > 0 && request.length() + builder.length() > 200) {
+            if ((builder.length() > 0) && ((request.length() + builder.length()) > 200)) {
                 this.send(builder.toString());
                 builder.setLength(0);
             }

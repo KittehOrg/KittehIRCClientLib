@@ -34,7 +34,7 @@ public interface CapabilityState extends Snapshot {
      *
      * @return true if disabled
      */
-    public boolean isDisabled();
+    boolean isDisabled();
 
     /**
      * Gets the name of the capability.
@@ -42,5 +42,5 @@ public interface CapabilityState extends Snapshot {
      * @return capability name
      */
     @Nonnull
-    public String getCapabilityName();
+    String getCapabilityName();
 }

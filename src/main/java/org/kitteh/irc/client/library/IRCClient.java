@@ -295,7 +295,7 @@ final class IRCClient extends InternalClient {
     private NettyManager.ClientConnection connection;
 
     private final AuthManager authManager = new AuthManager(this);
-    private final CapabilityManager capabilityManager = new CapabilityManager(this);
+    private final CapabilityManager capabilityManager = new CapabilityManager();
     private final EventManager eventManager = new EventManager(this);
 
     private final Listener<Exception> exceptionListener;

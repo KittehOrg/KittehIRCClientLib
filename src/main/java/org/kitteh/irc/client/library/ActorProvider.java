@@ -48,16 +48,9 @@ import java.util.stream.Collectors;
 class ActorProvider {
     class IRCActor {
         private String name;
-        private final InternalClient client;
 
-        private IRCActor(@Nonnull String name, @Nonnull InternalClient client) {
-            this.client = client;
+        private IRCActor(@Nonnull String name) {
             this.name = name;
-        }
-
-        @Nonnull
-        protected InternalClient getClient() {
-            return this.client;
         }
 
         @Nonnull
@@ -81,7 +74,7 @@ class ActorProvider {
         private final String name;
 
         private IRCActorSnapshot(@Nonnull IRCActor actor) {
-            this.client = actor.client;
+            this.client = ActorProvider.this.client;
             this.name = actor.name;
         }
 
@@ -118,9 +111,9 @@ class ActorProvider {
         private long topicTime;
         private volatile boolean tracked;
 
-        private IRCChannel(@Nonnull String channel, @Nonnull InternalClient client) {
-            super(channel, client);
-            this.modes = new CIKeyMap<>(this.getClient());
+        private IRCChannel(@Nonnull String channel) {
+            super(channel);
+            this.modes = new CIKeyMap<>(ActorProvider.this.client);
             ActorProvider.this.trackedChannels.put(channel, this);
         }
 
@@ -151,7 +144,7 @@ class ActorProvider {
                     long now = System.currentTimeMillis();
                     if ((now - this.lastWho) > 5000) {
                         this.lastWho = now;
-                        this.getClient().sendRawLineAvoidingDuplication("WHO " + this.getName());
+                        ActorProvider.this.client.sendRawLineAvoidingDuplication("WHO " + this.getName() + (ActorProvider.this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
                     }
                 }
             }
@@ -243,7 +236,7 @@ class ActorProvider {
             super(channel);
             this.complete = channel.fullListReceived;
             this.topic = topic;
-            Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(client);
+            Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(ActorProvider.this.client);
             newModes.putAll(channel.modes);
             this.modes = Collections.unmodifiableMap(newModes);
             this.names = Collections.unmodifiableList(new ArrayList<>(this.modes.keySet()));
@@ -344,8 +337,8 @@ class ActorProvider {
         private String realName;
         private String server;
 
-        private IRCUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host, @Nonnull InternalClient client) {
-            super(mask, client);
+        private IRCUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host) {
+            super(mask);
             this.nick = nick;
             this.user = user;
             this.host = host;
@@ -507,20 +500,20 @@ class ActorProvider {
             if (user != null) {
                 return user;
             }
-            return new IRCUser(name, nick, nickMatcher.group(2), nickMatcher.group(3), this.client);
+            return new IRCUser(name, nick, nickMatcher.group(2), nickMatcher.group(3));
         }
         IRCChannel channel = this.getChannel(name);
         if (channel != null) {
             return channel;
         }
-        return new IRCActor(name, this.client);
+        return new IRCActor(name);
     }
 
     @Nullable
     IRCChannel getChannel(@Nonnull String name) {
         IRCChannel channel = this.trackedChannels.get(name);
         if ((channel == null) && this.client.getServerInfo().isValidChannel(name)) {
-            channel = new IRCChannel(name, this.client);
+            channel = new IRCChannel(name);
         }
         return channel;
     }
@@ -555,7 +548,7 @@ class ActorProvider {
         this.updateUser(nick);
     }
 
-    void updateUser(@Nonnull String nick) {
+    private void updateUser(@Nonnull String nick) {
         if (this.trackedChannels.values().stream().noneMatch(channel -> channel.modes.containsKey(nick))) {
             this.trackedUsers.remove(nick);
         }
