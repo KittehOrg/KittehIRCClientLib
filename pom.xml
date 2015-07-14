@@ -6,7 +6,7 @@
     <packaging>jar</packaging>
     <version>0.2.9-SNAPSHOT</version>
     <name>Kitteh IRC Client Library</name>
-    <url>http://github.com/KittehOrg/KittehIRCLib</url>
+    <url>http://github.com/KittehOrg/KittehIRCClientLib</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugin.javadocs.version>2.10.3</plugin.javadocs.version>
