@@ -84,7 +84,7 @@ public class CapabilityRequestCommand extends Command {
                 this.send(builder.toString());
                 builder.setLength(0);
             }
-            builder.append(request);
+            builder.append(request).append(' ');
         }
         this.send(builder.toString());
     }
