@@ -59,9 +59,9 @@ public interface Channel extends MessageReceiver {
         /**
          * Gets the channel topic.
          *
-         * @return the topic
+         * @return the topic or null if not yet sent by the server
          */
-        @Nonnull
+        @Nullable
         String getTopic();
     }
 
@@ -88,9 +88,9 @@ public interface Channel extends MessageReceiver {
     /**
      * Gets the channel's topic.
      *
-     * @return channel topic or null if unknown
+     * @return channel topic
      */
-    @Nullable
+    @Nonnull
     Topic getTopic();
 
     /**

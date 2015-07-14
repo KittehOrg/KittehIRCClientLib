@@ -200,7 +200,7 @@ class ActorProvider {
         private final long time;
         private final String topic;
 
-        private IRCChannelTopicSnapshot(long time, @Nonnull String topic, @Nullable Actor setter) {
+        private IRCChannelTopicSnapshot(long time, @Nullable String topic, @Nullable Actor setter) {
             this.time = time;
             this.topic = topic;
             this.setter = setter;
@@ -217,7 +217,7 @@ class ActorProvider {
             return this.time;
         }
 
-        @Nonnull
+        @Nullable
         @Override
         public String getTopic() {
             return this.topic;
