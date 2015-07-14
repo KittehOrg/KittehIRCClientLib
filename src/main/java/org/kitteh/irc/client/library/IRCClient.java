@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
+import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
@@ -108,7 +109,7 @@ final class IRCClient extends InternalClient {
     private enum ISupport {
         CASEMAPPING {
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 CaseMapping caseMapping = CaseMapping.getByName(value);
                 if (caseMapping != null) {
                     client.serverInfo.setCaseMapping(caseMapping);
@@ -119,7 +120,7 @@ final class IRCClient extends InternalClient {
         },
         CHANNELLEN {
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 try {
                     client.serverInfo.setChannelLengthLimit(Integer.parseInt(value));
                     return true;
@@ -130,7 +131,7 @@ final class IRCClient extends InternalClient {
         },
         CHANLIMIT {
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 String[] pairs = value.split(",");
                 Map<Character, Integer> limits = new HashMap<>();
                 for (String p : pairs) {
@@ -157,7 +158,7 @@ final class IRCClient extends InternalClient {
         },
         CHANMODES {
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 String[] modes = value.split(",");
                 Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
                 for (int typeId = 0; typeId < modes.length; typeId++) {
@@ -185,7 +186,7 @@ final class IRCClient extends InternalClient {
         },
         CHANTYPES {
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 if (value.isEmpty()) {
                     return false;
                 }
@@ -199,14 +200,14 @@ final class IRCClient extends InternalClient {
         },
         NETWORK {
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 client.serverInfo.setNetworkName(value);
                 return true;
             }
         },
         NICKLEN {
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 try {
                     client.serverInfo.setNickLengthLimit(Integer.parseInt(value));
                     return true;
@@ -219,7 +220,7 @@ final class IRCClient extends InternalClient {
             private final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 Matcher matcher = this.PATTERN.matcher(value);
                 if (!matcher.find()) {
                     return false;
@@ -238,14 +239,14 @@ final class IRCClient extends InternalClient {
         },
         WHOX {
             @Override
-            boolean process(@Nonnull String value, @Nonnull IRCClient client) {
+            boolean process(@Nullable String value, @Nonnull IRCClient client) {
                 client.serverInfo.setWhoXSupport();
                 return true;
             }
         };
 
         private static final Map<String, ISupport> MAP;
-        private static final Pattern PATTERN = Pattern.compile("([A-Z0-9]+)=(.*)");
+        private static final Pattern PATTERN = Pattern.compile("([A-Z0-9]+)(?:=(.*))?");
 
         static {
             MAP = new ConcurrentHashMap<>();
@@ -261,14 +262,18 @@ final class IRCClient extends InternalClient {
             }
             ISupport iSupport = MAP.get(matcher.group(1));
             if (iSupport != null) {
-                boolean failure = !iSupport.process(matcher.group(2), client);
+                String value = null;
+                if (matcher.groupCount() > 1) {
+                    value = matcher.group(2);
+                }
+                boolean failure = !iSupport.process(value, client);
                 if (failure) {
                     client.exceptionListener.queue(new KittehISupportProcessingFailureException(arg));
                 }
             }
         }
 
-        abstract boolean process(@Nonnull String value, @Nonnull IRCClient client);
+        abstract boolean process(@Nullable String value, @Nonnull IRCClient client);
     }
 
     private enum MessageTarget {
@@ -682,8 +687,8 @@ final class IRCClient extends InternalClient {
         @NumericFilter(5) // WHO completed
         @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void iSupport(ClientReceiveNumericEvent event) {
-            for (String arg : event.getArgs()) {
-                ISupport.handle(arg, IRCClient.this);
+            for (int i = 1; i < event.getArgs().length; i++) {
+                ISupport.handle(event.getArgs()[i], IRCClient.this);
             }
         }
 
@@ -882,8 +887,10 @@ final class IRCClient extends InternalClient {
                     responseEvent = new CapabilitiesSupportedListEvent(IRCClient.this, IRCClient.this.capabilityManager.isNegotiating(), capabilityStateList);
                     Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toCollection(HashSet::new));
                     capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
-                    if (!capabilities.isEmpty()) { // TODO if too large, split across lines
-                        IRCClient.this.sendRawLineImmediately("CAP REQ :" + StringUtil.combineSplit(capabilities.toArray(new String[capabilities.size()]), 0));
+                    if (!capabilities.isEmpty()) {
+                        CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(IRCClient.this);
+                        capabilities.forEach(capabilityRequestCommand::requestEnable);
+                        capabilityRequestCommand.execute();
                     }
                     IRCClient.this.eventManager.callEvent(responseEvent);
                     break;
