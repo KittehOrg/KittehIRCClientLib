@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 
 class FakeClient extends InternalClient {
     private final AuthManager authManager = new IRCAuthManager(this);
-    private final CapabilityManager capabilityManager = new CapabilityManager();
+    private final IRCCapabilityManager capabilityManager = new IRCCapabilityManager();
     private final Config config = new Config();
     private final EventManager eventManager = new IRCEventManager(this);
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
@@ -115,7 +115,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public CapabilityManager getCapabilityManager() {
+    public IRCCapabilityManager getCapabilityManager() {
         return this.capabilityManager;
     }
 

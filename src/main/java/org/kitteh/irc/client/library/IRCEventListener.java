@@ -288,7 +288,7 @@ class IRCEventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void cap(ClientReceiveCommandEvent event) {
         CapabilityNegotiationResponseEventBase responseEvent = null;
-        List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs()[2].split(" ")).map(CapabilityManager.IRCCapabilityState::new).collect(Collectors.toList());
+        List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs()[2].split(" ")).map(IRCCapabilityManager.IRCCapabilityState::new).collect(Collectors.toList());
         switch (event.getArgs()[1].toLowerCase()) {
             case "ack":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);

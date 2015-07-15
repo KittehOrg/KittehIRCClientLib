@@ -33,6 +33,10 @@ abstract class InternalClient implements Client {
     abstract ActorProvider getActorProvider();
 
     @Nonnull
+    @Override
+    public abstract IRCCapabilityManager getCapabilityManager();
+
+    @Nonnull
     abstract Config getConfig();
 
     @Nonnull
