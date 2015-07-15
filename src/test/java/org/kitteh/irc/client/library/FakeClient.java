@@ -14,7 +14,7 @@ class FakeClient extends InternalClient {
     private final AuthManager authManager = new AuthManager(this);
     private final CapabilityManager capabilityManager = new CapabilityManager();
     private final Config config = new Config();
-    private final EventManager eventManager = new EventManager(this);
+    private final EventManager eventManager = new IRCEventManager(this);
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
     private final Listener<String> listenerInput = new Listener<>("Test", null);
     private final Listener<String> listenerOutput = new Listener<>("Test", null);

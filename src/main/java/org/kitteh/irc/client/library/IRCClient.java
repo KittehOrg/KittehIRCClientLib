@@ -75,7 +75,7 @@ final class IRCClient extends InternalClient {
 
     private final AuthManager authManager = new AuthManager(this);
     private final CapabilityManager capabilityManager = new CapabilityManager();
-    private final EventManager eventManager = new EventManager(this);
+    private final EventManager eventManager = new IRCEventManager(this);
 
     private final Listener<Exception> exceptionListener;
     private final Listener<String> inputListener;

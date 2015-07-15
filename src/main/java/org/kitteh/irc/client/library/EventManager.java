@@ -23,50 +23,23 @@
  */
 package org.kitteh.irc.client.library;
 
-import net.engio.mbassy.bus.SyncMessageBus;
-import net.engio.mbassy.bus.common.Properties;
-import net.engio.mbassy.bus.config.BusConfiguration;
-import net.engio.mbassy.bus.config.Feature;
-import net.engio.mbassy.bus.error.IPublicationErrorHandler;
-import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
-import org.kitteh.irc.client.library.exception.KittehEventException;
-import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Processes and registers events for a single {@link Client} instance. This
  * event manager utilizes MBassador, a lightweight event bus.
  */
-public final class EventManager {
-    private class Exceptional implements IPublicationErrorHandler {
-        @Override
-        public void handleError(@Nonnull PublicationError publicationError) {
-            EventManager.this.client.getExceptionListener().queue(new KittehEventException(publicationError.getCause()));
-        }
-    }
-
-    private final SyncMessageBus<Object> bus = new SyncMessageBus<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).setProperty(Properties.Handler.PublicationError, new Exceptional()));
-    private final InternalClient client;
-    private final Set<Object> listeners = new HashSet<>();
-
-    EventManager(@Nonnull InternalClient client) {
-        this.client = client;
-    }
-
+public interface EventManager {
     /**
      * Calls an event, triggering any registered methods for the event class.
      *
      * @param event event to call
      * @throws IllegalArgumentException for a null event
      */
-    public void callEvent(@Nonnull Object event) {
-        Sanity.nullCheck(event, "Event cannot be null");
-        this.bus.publish(event);
-    }
+    void callEvent(@Nonnull Object event);
 
     /**
      * Gets all registered listener objects.
@@ -74,9 +47,7 @@ public final class EventManager {
      * @return a set of objects
      */
     @Nonnull
-    public synchronized Set<Object> getRegisteredEventListeners() {
-        return new HashSet<>(this.listeners);
-    }
+    Set<Object> getRegisteredEventListeners();
 
     /**
      * Registers annotated with {@link Handler} with sync invocation,
@@ -85,10 +56,7 @@ public final class EventManager {
      * @param listener listener in which to register events
      * @throws IllegalArgumentException for a null listener
      */
-    public synchronized void registerEventListener(@Nonnull Object listener) {
-        this.listeners.add(listener);
-        this.bus.subscribe(listener);
-    }
+    void registerEventListener(@Nonnull Object listener);
 
     /**
      * Unregisters a listener.
@@ -96,8 +64,5 @@ public final class EventManager {
      * @param listener listener to unregister
      * @throws IllegalArgumentException for a null listener
      */
-    public synchronized void unregisterEventListener(@Nonnull Object listener) {
-        this.listeners.remove(listener);
-        this.bus.unsubscribe(listener);
-    }
+    void unregisterEventListener(@Nonnull Object listener);
 }
