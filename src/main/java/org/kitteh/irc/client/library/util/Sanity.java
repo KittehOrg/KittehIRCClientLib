@@ -38,12 +38,14 @@ public final class Sanity {
      *
      * @param object object to check
      * @param failMessage message to throw
+     * @return the sane object
      * @throws IllegalArgumentException if the object is null
      */
-    public static void nullCheck(@Nullable Object object, @Nullable String failMessage) {
+    public static <T> T nullCheck(@Nullable T object, @Nullable String failMessage) {
         if (object == null) {
             throw new IllegalArgumentException(failMessage);
         }
+        return object;
     }
 
     /**
@@ -51,13 +53,15 @@ public final class Sanity {
      *
      * @param array array to check
      * @param failMessage message to throw
+     * @return the sane object
      * @throws IllegalArgumentException if null or contains null elements
      */
-    public static void nullCheck(@Nullable Object[] array, @Nullable String failMessage) {
+    public static <T> T[] nullCheck(@Nullable T[] array, @Nullable String failMessage) {
         Sanity.nullCheck((Object) array, failMessage);
         for (Object element : array) {
             Sanity.nullCheck(element, failMessage);
         }
+        return array;
     }
 
     /**
@@ -77,10 +81,11 @@ public final class Sanity {
      * Checks if a message contains CR, LF, or NUL.
      *
      * @param message message to check
+     * @return the safe message
      * @throws IllegalArgumentException if found
      */
-    public static void safeMessageCheck(@Nonnull String message) {
-        Sanity.safeMessageCheck(message, "message");
+    public static String safeMessageCheck(@Nonnull String message) {
+        return Sanity.safeMessageCheck(message, "message");
     }
 
     /**
@@ -88,14 +93,16 @@ public final class Sanity {
      *
      * @param message string to check
      * @param name name of the string
+     * @return the safe message
      * @throws IllegalArgumentException if found
      */
-    public static void safeMessageCheck(@Nonnull String message, @Nonnull String name) {
+    public static String safeMessageCheck(@Nonnull String message, @Nonnull String name) {
         Sanity.nullCheck(message, name + " cannot be null");
         for (char ch : message.toCharArray()) {
             if ((ch == '\n') || (ch == '\r') || (ch == '\0')) {
                 throw new IllegalArgumentException(name + " cannot contain CR, LF, or NUL");
             }
         }
+        return message;
     }
 }
