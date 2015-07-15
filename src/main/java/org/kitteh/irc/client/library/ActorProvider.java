@@ -538,7 +538,10 @@ class ActorProvider {
     }
 
     void trackUserNick(@Nonnull String oldNick, @Nonnull String newNick) {
-        this.trackedUsers.get(oldNick).setNick(newNick);
+        IRCUser user = this.trackedUsers.get(oldNick);
+        user.setNick(newNick);
+        this.trackedUsers.put(newNick, user);
+        this.trackedUsers.remove(oldNick);
         this.trackedChannels.values().forEach(channel -> channel.trackUserNick(oldNick, newNick));
     }
 
