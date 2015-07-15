@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -518,9 +519,23 @@ class ActorProvider {
         return channel;
     }
 
+    @Nonnull
+    Set<String> getTrackedChannelNames() {
+        return this.trackedChannels.keySet();
+    }
+
+    @Nonnull
+    Collection<IRCChannel> getTrackedChannels() {
+        return this.trackedChannels.values();
+    }
+
     @Nullable
     IRCUser getUser(@Nonnull String nick) {
         return this.trackedUsers.get(nick);
+    }
+
+    boolean isChannelTracked(String channel) {
+        return this.trackedChannels.containsKey(channel);
     }
 
     void trackUserAccount(@Nonnull String nick, @Nullable String account) {

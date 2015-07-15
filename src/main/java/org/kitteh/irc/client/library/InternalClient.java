@@ -24,9 +24,13 @@
 package org.kitteh.irc.client.library;
 
 import javax.annotation.Nonnull;
+import java.util.Set;
 
 abstract class InternalClient implements Client {
-    abstract void processLine(@Nonnull String line);
+    abstract void connect();
+
+    @Nonnull
+    abstract ActorProvider getActorProvider();
 
     @Nonnull
     abstract Config getConfig();
@@ -38,9 +42,27 @@ abstract class InternalClient implements Client {
     abstract Listener<String> getInputListener();
 
     @Nonnull
+    abstract Set<String> getIntendedChannels();
+
+    @Nonnull
     abstract Listener<String> getOutputListener();
 
-    abstract void connect();
+    @Nonnull
+    abstract String getRequestedNick();
+
+    @Override
+    @Nonnull
+    public abstract IRCServerInfo getServerInfo();
 
     abstract void ping();
+
+    abstract void processLine(@Nonnull String line);
+
+    abstract void resetServerInfo();
+
+    abstract void sendNickChange(@Nonnull String newNick);
+
+    abstract void setCurrentNick(@Nonnull String nick);
+
+    abstract void startSending();
 }

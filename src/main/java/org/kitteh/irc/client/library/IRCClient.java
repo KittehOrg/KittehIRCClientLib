@@ -23,69 +23,21 @@
  */
 package org.kitteh.irc.client.library;
 
-import net.engio.mbassy.listener.Filter;
-import net.engio.mbassy.listener.Handler;
-import net.engio.mbassy.listener.References;
-import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
-import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.MessageReceiver;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
-import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
-import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
-import org.kitteh.irc.client.library.event.capabilities.CapabilitiesRejectedEvent;
-import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelKnockEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelNamesUpdatedEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelPartEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelTargetedCTCPEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelTargetedMessageEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
-import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
-import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
-import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
-import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
-import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
-import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
-import org.kitteh.irc.client.library.event.user.UserQuitEvent;
-import org.kitteh.irc.client.library.exception.KittehISupportProcessingFailureException;
 import org.kitteh.irc.client.library.util.CISet;
-import org.kitteh.irc.client.library.util.CommandFilter;
-import org.kitteh.irc.client.library.util.NumericFilter;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 final class IRCClient extends InternalClient {
@@ -106,183 +58,6 @@ final class IRCClient extends InternalClient {
         }
     }
 
-    private enum ISupport {
-        CASEMAPPING {
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                CaseMapping caseMapping = CaseMapping.getByName(value);
-                if (caseMapping != null) {
-                    client.serverInfo.setCaseMapping(caseMapping);
-                    return true;
-                }
-                return false;
-            }
-        },
-        CHANNELLEN {
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                try {
-                    client.serverInfo.setChannelLengthLimit(Integer.parseInt(value));
-                    return true;
-                } catch (NumberFormatException ignored) {
-                    return false;
-                }
-            }
-        },
-        CHANLIMIT {
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                String[] pairs = value.split(",");
-                Map<Character, Integer> limits = new HashMap<>();
-                for (String p : pairs) {
-                    String[] pair = p.split(":");
-                    if (pair.length != 2) {
-                        return false;
-                    }
-                    int limit;
-                    try {
-                        limit = Integer.parseInt(pair[1]);
-                    } catch (Exception e) {
-                        return false;
-                    }
-                    for (char prefix : pair[0].toCharArray()) {
-                        limits.put(prefix, limit);
-                    }
-                }
-                if (limits.isEmpty()) {
-                    return false;
-                }
-                client.serverInfo.setChannelLimits(limits);
-                return true;
-            }
-        },
-        CHANMODES {
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                String[] modes = value.split(",");
-                Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
-                for (int typeId = 0; typeId < modes.length; typeId++) {
-                    for (char mode : modes[typeId].toCharArray()) {
-                        ChannelModeType type = null;
-                        switch (typeId) {
-                            case 0:
-                                type = ChannelModeType.A_MASK;
-                                break;
-                            case 1:
-                                type = ChannelModeType.B_PARAMETER_ALWAYS;
-                                break;
-                            case 2:
-                                type = ChannelModeType.C_PARAMETER_ON_SET;
-                                break;
-                            case 3:
-                                type = ChannelModeType.D_PARAMETER_NEVER;
-                        }
-                        modesMap.put(mode, type);
-                    }
-                }
-                client.serverInfo.setChannelModes(modesMap);
-                return true;
-            }
-        },
-        CHANTYPES {
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                if (value.isEmpty()) {
-                    return false;
-                }
-                List<Character> prefixes = new ArrayList<>();
-                for (char c : value.toCharArray()) {
-                    prefixes.add(c);
-                }
-                client.serverInfo.setChannelPrefixes(prefixes);
-                return true;
-            }
-        },
-        NETWORK {
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                client.serverInfo.setNetworkName(value);
-                return true;
-            }
-        },
-        NICKLEN {
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                try {
-                    client.serverInfo.setNickLengthLimit(Integer.parseInt(value));
-                    return true;
-                } catch (NumberFormatException ignored) {
-                    return false;
-                }
-            }
-        },
-        PREFIX {
-            private final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
-
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                Matcher matcher = this.PATTERN.matcher(value);
-                if (!matcher.find()) {
-                    return false;
-                }
-                String modes = matcher.group(1);
-                String display = matcher.group(2);
-                if (modes.length() == display.length()) {
-                    List<ChannelUserMode> prefixList = new ArrayList<>();
-                    for (int index = 0; index < modes.length(); index++) {
-                        prefixList.add(new ActorProvider.IRCChannelUserMode(client, modes.charAt(index), display.charAt(index)));
-                    }
-                    client.serverInfo.setChannelUserModes(prefixList);
-                }
-                return true;
-            }
-        },
-        WHOX {
-            @Override
-            boolean process(@Nullable String value, @Nonnull IRCClient client) {
-                client.serverInfo.setWhoXSupport();
-                return true;
-            }
-        };
-
-        private static final Map<String, ISupport> MAP;
-        private static final Pattern PATTERN = Pattern.compile("([A-Z0-9]+)(?:=(.*))?");
-
-        static {
-            MAP = new ConcurrentHashMap<>();
-            for (ISupport iSupport : ISupport.values()) {
-                MAP.put(iSupport.name(), iSupport);
-            }
-        }
-
-        private static void handle(@Nonnull String arg, @Nonnull IRCClient client) {
-            Matcher matcher = PATTERN.matcher(arg);
-            if (!matcher.find()) {
-                return;
-            }
-            ISupport iSupport = MAP.get(matcher.group(1));
-            if (iSupport != null) {
-                String value = null;
-                if (matcher.groupCount() > 1) {
-                    value = matcher.group(2);
-                }
-                boolean failure = !iSupport.process(value, client);
-                if (failure) {
-                    client.exceptionListener.queue(new KittehISupportProcessingFailureException(arg));
-                }
-            }
-        }
-
-        abstract boolean process(@Nullable String value, @Nonnull IRCClient client);
-    }
-
-    private enum MessageTarget {
-        CHANNEL,
-        CHANNEL_TARGETED,
-        PRIVATE,
-        UNKNOWN
-    }
-
     private final String[] pingPurr = new String[]{"MEOW", "MEOW!", "PURR", "PURRRRRRR"};
     private int pingPurrCount;
 
@@ -294,7 +69,6 @@ final class IRCClient extends InternalClient {
     private String currentNick;
     private String requestedNick;
 
-    private final Set<String> channels = new CISet(this);
     private final Set<String> channelsIntended = new CISet(this);
 
     private NettyManager.ClientConnection connection;
@@ -323,8 +97,7 @@ final class IRCClient extends InternalClient {
         this.outputListener = new Listener<>(name, (outputListenerWrapper == null) ? null : outputListenerWrapper.getConsumer());
 
         this.processor = new InputProcessor();
-        EventListener eventListener = new EventListener();
-        this.eventManager.registerEventListener(eventListener);
+        this.eventManager.registerEventListener(new IRCEventListener(this));
         this.connect();
     }
 
@@ -376,7 +149,7 @@ final class IRCClient extends InternalClient {
     @Nonnull
     @Override
     public Set<Channel> getChannels() {
-        return this.channels.stream().map(this.actorProvider::getChannel).map(ActorProvider.IRCChannel::snapshot).collect(Collectors.toSet());
+        return this.actorProvider.getTrackedChannels().stream().map(ActorProvider.IRCChannel::snapshot).collect(Collectors.toSet());
     }
 
     @Nonnull
@@ -431,7 +204,7 @@ final class IRCClient extends InternalClient {
         }
         String channelName = channel.getName();
         this.channelsIntended.remove(channelName);
-        if (this.channels.contains(channel.getName())) {
+        if (this.actorProvider.getTrackedChannelNames().contains(channel.getName())) {
             this.sendRawLine("PART " + channelName + (reason == null ? "" : " :" + reason));
         }
     }
@@ -568,6 +341,12 @@ final class IRCClient extends InternalClient {
 
     @Nonnull
     @Override
+    ActorProvider getActorProvider() {
+        return this.actorProvider;
+    }
+
+    @Nonnull
+    @Override
     Config getConfig() {
         return this.config;
     }
@@ -586,8 +365,20 @@ final class IRCClient extends InternalClient {
 
     @Nonnull
     @Override
+    Set<String> getIntendedChannels() {
+        return this.channelsIntended;
+    }
+
+    @Nonnull
+    @Override
     Listener<String> getOutputListener() {
         return this.outputListener;
+    }
+
+    @Nonnull
+    @Override
+    String getRequestedNick() {
+        return this.requestedNick;
     }
 
     @Override
@@ -614,6 +405,27 @@ final class IRCClient extends InternalClient {
     @Override
     void ping() {
         this.sendRawLine("PING :" + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
+    }
+
+    @Override
+    void resetServerInfo() {
+        this.serverInfo = new IRCServerInfo(this);
+    }
+
+    @Override
+    void sendNickChange(@Nonnull String newNick) {
+        this.requestedNick = newNick;
+        this.sendRawLineImmediately("NICK " + newNick);
+    }
+
+    @Override
+    void setCurrentNick(@Nonnull String nick) {
+        this.currentNick = nick;
+    }
+
+    @Override
+    void startSending() {
+        this.connection.startSending();
     }
 
     private String[] handleArgs(@Nonnull String[] split, int start) {
@@ -660,468 +472,5 @@ final class IRCClient extends InternalClient {
         } catch (NumberFormatException exception) {
             this.eventManager.callEvent(new ClientReceiveCommandEvent(this, actor.snapshot(), commandString, args));
         }
-    }
-
-    @net.engio.mbassy.listener.Listener(references = References.Strong)
-    private class EventListener {
-        @NumericFilter(1)
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void welcome(ClientReceiveNumericEvent event) {
-            IRCClient.this.currentNick = event.getArgs()[0];
-        }
-
-        @NumericFilter(4)
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void version(ClientReceiveNumericEvent event) {
-            try {
-                IRCClient.this.authManager.authenticate();
-            } catch (IllegalStateException | UnsupportedOperationException ignored) {
-            }
-            IRCClient.this.serverInfo = new IRCServerInfo(IRCClient.this);
-            IRCClient.this.serverInfo.setServerAddress(event.getArgs()[1]);
-            IRCClient.this.serverInfo.setServerVersion(event.getArgs()[2]);
-            IRCClient.this.eventManager.callEvent(new ClientConnectedEvent(IRCClient.this, event.getServer(), IRCClient.this.serverInfo));
-            IRCClient.this.connection.startSending();
-        }
-
-        @NumericFilter(5) // WHO completed
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void iSupport(ClientReceiveNumericEvent event) {
-            for (int i = 1; i < event.getArgs().length; i++) {
-                ISupport.handle(event.getArgs()[i], IRCClient.this);
-            }
-        }
-
-        @NumericFilter(352) // WHO
-        @NumericFilter(354) // WHOX
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void who(ClientReceiveNumericEvent event) {
-            if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[1])) {
-                final String channelName = event.getArgs()[1];
-                final String ident = event.getArgs()[2];
-                final String host = event.getArgs()[3];
-                final String server = event.getArgs()[4];
-                final String nick = event.getArgs()[5];
-                final ActorProvider.IRCUser user = (ActorProvider.IRCUser) IRCClient.this.actorProvider.getActor(nick + '!' + ident + '@' + host);
-                user.setServer(server);
-                final String status = event.getArgs()[6];
-                String realName = null;
-                switch (event.getNumeric()) {
-                    case 352:
-                        realName = event.getArgs()[7];
-                        break;
-                    case 354:
-                        String account = event.getArgs()[7];
-                        if ("0".equals(account)) {
-                            account = null;
-                        }
-                        user.setAccount(account);
-                        realName = event.getArgs()[8];
-                        break;
-                }
-                user.setRealName(realName);
-                final ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(channelName);
-                final Set<ChannelUserMode> modes = new HashSet<>();
-                for (char prefix : status.substring(1).toCharArray()) {
-                    if (prefix == 'G') {
-                        user.setAway(true);
-                        continue;
-                    }
-                    for (ChannelUserMode mode : IRCClient.this.serverInfo.getChannelUserModes()) {
-                        if (mode.getPrefix() == prefix) {
-                            modes.add(mode);
-                            break;
-                        }
-                    }
-                }
-                channel.trackUser(user, modes);
-            }
-        }
-
-        @NumericFilter(315) // WHO completed
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void whoComplete(ClientReceiveNumericEvent event) {
-            ActorProvider.IRCChannel whoChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
-            if (whoChannel != null) {
-                whoChannel.setListReceived();
-                IRCClient.this.eventManager.callEvent(new ChannelUsersUpdatedEvent(IRCClient.this, whoChannel.snapshot()));
-            }
-        }
-
-        @NumericFilter(332) // Topic
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void topic(ClientReceiveNumericEvent event) {
-            ActorProvider.IRCChannel topicChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
-            if (topicChannel != null) {
-                topicChannel.setTopic(event.getArgs()[2]);
-            }
-        }
-
-        @NumericFilter(333) // Topic info
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void topicInfo(ClientReceiveNumericEvent event) {
-            ActorProvider.IRCChannel topicSetChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
-            if (topicSetChannel != null) {
-                topicSetChannel.setTopic(Long.parseLong(event.getArgs()[3]) * 1000, IRCClient.this.actorProvider.getActor(event.getArgs()[2]).snapshot());
-                IRCClient.this.eventManager.callEvent(new ChannelTopicEvent(IRCClient.this, topicSetChannel.snapshot(), false));
-            }
-        }
-
-        @NumericFilter(353) // NAMES
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void names(ClientReceiveNumericEvent event) {
-            if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[2])) {
-                ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[2]);
-                List<ChannelUserMode> channelUserModes = IRCClient.this.serverInfo.getChannelUserModes();
-                for (String combo : event.getArgs()[3].split(" ")) {
-                    Set<ChannelUserMode> modes = new HashSet<>();
-                    for (int i = 0; i < combo.length(); i++) {
-                        char c = combo.charAt(i);
-                        Optional<ChannelUserMode> mode = channelUserModes.stream().filter(m -> m.getPrefix() == c).findFirst();
-                        if (mode.isPresent()) {
-                            modes.add(mode.get());
-                        } else {
-                            channel.trackNick(combo.substring(i), modes);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        @NumericFilter(366) // End of NAMES
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void namesComplete(ClientReceiveNumericEvent event) {
-            if (IRCClient.this.serverInfo.isValidChannel(event.getArgs()[1])) {
-                ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
-                IRCClient.this.eventManager.callEvent(new ChannelNamesUpdatedEvent(IRCClient.this, channel.snapshot()));
-            }
-        }
-
-        @NumericFilter(431) // No nick given
-        @NumericFilter(432) // Erroneous nickname
-        @NumericFilter(433) // Nick in use
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void nickInUse(ClientReceiveNumericEvent event) {
-            NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(IRCClient.this, IRCClient.this.requestedNick, IRCClient.this.requestedNick + '`');
-            IRCClient.this.eventManager.callEvent(nickRejectedEvent);
-            IRCClient.this.sendNickChange(nickRejectedEvent.getNewNick());
-        }
-
-        @NumericFilter(710) // Knock
-        @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void knock(ClientReceiveNumericEvent event) {
-            ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
-            ActorProvider.IRCUser user = (ActorProvider.IRCUser) IRCClient.this.actorProvider.getActor(event.getArgs()[2]);
-            IRCClient.this.eventManager.callEvent(new ChannelKnockEvent(IRCClient.this, channel.snapshot(), user.snapshot()));
-        }
-
-        @CommandFilter("NOTICE")
-        @CommandFilter("PRIVMSG")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void ctcp(ClientReceiveCommandEvent event) {
-            if (CTCPUtil.isCTCP(event.getArgs()[1])) {
-                final String ctcpMessage = CTCPUtil.fromCTCP(event.getArgs()[1]);
-                final MessageTarget messageTarget = IRCClient.this.getTypeByTarget(event.getArgs()[0]);
-                User user = (User) event.getActor();
-                switch (event.getCommand()) {
-                    case "NOTICE":
-                        if (messageTarget == MessageTarget.PRIVATE) {
-                            IRCClient.this.eventManager.callEvent(new PrivateCTCPReplyEvent(IRCClient.this, user, ctcpMessage));
-                        }
-                        break;
-                    case "PRIVMSG":
-                        switch (messageTarget) {
-                            case PRIVATE:
-                                String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
-                                switch (ctcpMessage) {
-                                    case "VERSION":
-                                        reply = "VERSION I am Kitteh!";
-                                        break;
-                                    case "TIME":
-                                        reply = "TIME " + new Date().toString();
-                                        break;
-                                    case "FINGER":
-                                        reply = "FINGER om nom nom tasty finger";
-                                        break;
-                                }
-                                if (ctcpMessage.startsWith("PING ")) {
-                                    reply = ctcpMessage;
-                                }
-                                PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(IRCClient.this, user, ctcpMessage, reply);
-                                IRCClient.this.eventManager.callEvent(ctcpEvent);
-                                String eventReply = ctcpEvent.getReply();
-                                if (eventReply != null) {
-                                    IRCClient.this.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(eventReply));
-                                }
-                                break;
-                            case CHANNEL:
-                                IRCClient.this.eventManager.callEvent(new ChannelCTCPEvent(IRCClient.this, user, IRCClient.this.actorProvider.getChannel(event.getArgs()[0]).snapshot(), ctcpMessage));
-                                break;
-                            case CHANNEL_TARGETED:
-                                IRCClient.this.eventManager.callEvent(new ChannelTargetedCTCPEvent(IRCClient.this, user, IRCClient.this.actorProvider.getChannel(event.getArgs()[0].substring(1)).snapshot(), IRCClient.this.serverInfo.getTargetedChannelInfo(event.getArgs()[0]), ctcpMessage));
-                                break;
-                        }
-                        break;
-                }
-            }
-        }
-
-        @CommandFilter("CAP")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void cap(ClientReceiveCommandEvent event) {
-            CapabilityNegotiationResponseEventBase responseEvent = null;
-            List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs()[2].split(" ")).map(CapabilityManager.IRCCapabilityState::new).collect(Collectors.toList());
-            switch (event.getArgs()[1].toLowerCase()) {
-                case "ack":
-                    IRCClient.this.capabilityManager.updateCapabilities(capabilityStateList);
-                    responseEvent = new CapabilitiesAcknowledgedEvent(IRCClient.this, IRCClient.this.capabilityManager.isNegotiating(), capabilityStateList);
-                    IRCClient.this.eventManager.callEvent(responseEvent);
-                    break;
-                case "list":
-                    IRCClient.this.capabilityManager.setCapabilities(capabilityStateList);
-                    IRCClient.this.eventManager.callEvent(new CapabilitiesListEvent(IRCClient.this, capabilityStateList));
-                    break;
-                case "ls":
-                    IRCClient.this.capabilityManager.setSupportedCapabilities(capabilityStateList);
-                    responseEvent = new CapabilitiesSupportedListEvent(IRCClient.this, IRCClient.this.capabilityManager.isNegotiating(), capabilityStateList);
-                    Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toCollection(HashSet::new));
-                    capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
-                    if (!capabilities.isEmpty()) {
-                        CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(IRCClient.this);
-                        capabilities.forEach(capabilityRequestCommand::requestEnable);
-                        capabilityRequestCommand.execute();
-                    }
-                    IRCClient.this.eventManager.callEvent(responseEvent);
-                    break;
-                case "nak":
-                    IRCClient.this.capabilityManager.updateCapabilities(capabilityStateList);
-                    responseEvent = new CapabilitiesRejectedEvent(IRCClient.this, IRCClient.this.capabilityManager.isNegotiating(), capabilityStateList);
-                    IRCClient.this.eventManager.callEvent(responseEvent);
-                    break;
-            }
-            if (responseEvent != null) {
-                if (responseEvent.isNegotiating() && responseEvent.isEndingNegotiation()) {
-                    IRCClient.this.sendRawLineImmediately("CAP END");
-                    IRCClient.this.capabilityManager.endNegotiation();
-                }
-            }
-        }
-
-        @CommandFilter("ACCOUNT")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void account(ClientReceiveCommandEvent event) {
-            String account = event.getArgs()[0];
-            if ("*".equals(account)) {
-                account = null;
-            }
-            IRCClient.this.actorProvider.trackUserAccount(((User) event.getActor()).getNick(), account);
-        }
-
-        @CommandFilter("AWAY")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void away(ClientReceiveCommandEvent event) {
-            IRCClient.this.actorProvider.trackUserAway(((User) event.getActor()).getNick(), event.getArgs().length > 0);
-        }
-
-        @CommandFilter("NOTICE")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void notice(ClientReceiveCommandEvent event) {
-            switch (IRCClient.this.getTypeByTarget(event.getArgs()[0])) {
-                case CHANNEL:
-                    IRCClient.this.eventManager.callEvent(new ChannelNoticeEvent(IRCClient.this, (User) event.getActor(), IRCClient.this.actorProvider.getChannel(event.getArgs()[0]).snapshot(), event.getArgs()[1]));
-                    break;
-                case CHANNEL_TARGETED:
-                    IRCClient.this.eventManager.callEvent(new ChannelTargetedNoticeEvent(IRCClient.this, (User) event.getActor(), IRCClient.this.actorProvider.getChannel(event.getArgs()[0].substring(1)).snapshot(), IRCClient.this.serverInfo.getTargetedChannelInfo(event.getArgs()[0]), event.getArgs()[1]));
-                    break;
-                case PRIVATE:
-                    IRCClient.this.eventManager.callEvent(new PrivateNoticeEvent(IRCClient.this, (User) event.getActor(), event.getArgs()[1]));
-                    break;
-            }
-        }
-
-        @CommandFilter("PRIVMSG")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void privmsg(ClientReceiveCommandEvent event) {
-            if (CTCPUtil.isCTCP(event.getArgs()[1])) {
-                return;
-            }
-            switch (IRCClient.this.getTypeByTarget(event.getArgs()[0])) {
-                case CHANNEL:
-                    IRCClient.this.eventManager.callEvent(new ChannelMessageEvent(IRCClient.this, (User) event.getActor(), IRCClient.this.actorProvider.getChannel(event.getArgs()[0]).snapshot(), event.getArgs()[1]));
-                    break;
-                case CHANNEL_TARGETED:
-                    IRCClient.this.eventManager.callEvent(new ChannelTargetedMessageEvent(IRCClient.this, (User) event.getActor(), IRCClient.this.actorProvider.getChannel(event.getArgs()[0].substring(1)).snapshot(), IRCClient.this.serverInfo.getTargetedChannelInfo(event.getArgs()[0]), event.getArgs()[1]));
-                    break;
-                case PRIVATE:
-                    IRCClient.this.eventManager.callEvent(new PrivateMessageEvent(IRCClient.this, (User) event.getActor(), event.getArgs()[1]));
-                    break;
-            }
-        }
-
-        @CommandFilter("MODE")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void mode(ClientReceiveCommandEvent event) {
-            if (IRCClient.this.getTypeByTarget(event.getArgs()[0]) == MessageTarget.CHANNEL) {
-                ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[0]);
-                List<ChannelUserMode> channelUserModes = IRCClient.this.serverInfo.getChannelUserModes();
-                Map<Character, ChannelModeType> channelModes = IRCClient.this.serverInfo.getChannelModes();
-                for (int currentArg = 1; currentArg < event.getArgs().length; currentArg++) { // Note: currentArg changes outside here too
-                    String changes = event.getArgs()[currentArg];
-                    if (!((changes.charAt(0) == '+') || (changes.charAt(0) == '-'))) {
-                        // TODO Inform of failed MODE processing
-                        return;
-                    }
-                    boolean add = true;
-                    for (char modeChar : changes.toCharArray()) {
-                        switch (modeChar) {
-                            case '+':
-                                add = true;
-                                break;
-                            case '-':
-                                add = false;
-                                break;
-                            default:
-                                ChannelModeType mode = channelModes.get(modeChar);
-                                ChannelUserMode prefixMode = null;
-                                String target = null;
-                                if (mode == null) {
-                                    for (ChannelUserMode prefix : channelUserModes) {
-                                        if (prefix.getMode() == modeChar) {
-                                            target = event.getArgs()[++currentArg];
-                                            if (add) {
-                                                channel.trackUserModeAdd(target, prefix);
-                                            } else {
-                                                channel.trackUserModeRemove(target, prefix);
-                                            }
-                                            prefixMode = prefix;
-                                            break;
-                                        }
-                                    }
-                                    if (prefixMode == null) {
-                                        // TODO Inform of failed MODE processing
-                                        return;
-                                    }
-                                } else if (add ? mode.isParameterRequiredOnSetting() : mode.isParameterRequiredOnRemoval()) {
-                                    target = event.getArgs()[++currentArg];
-                                }
-                                IRCClient.this.eventManager.callEvent(new ChannelModeEvent(IRCClient.this, event.getActor(), channel.snapshot(), add, modeChar, prefixMode, target));
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-
-        @CommandFilter("JOIN")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void join(ClientReceiveCommandEvent event) {
-            if (event.getActor() instanceof User) { // Just in case
-                ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[0]);
-                ActorProvider.IRCUser user = (ActorProvider.IRCUser) IRCClient.this.actorProvider.getActor(event.getActor().getName());
-                channel.trackUser(user, null);
-                if (user.getNick().equals(IRCClient.this.currentNick)) {
-                    IRCClient.this.channels.add(event.getArgs()[0]);
-                    IRCClient.this.actorProvider.channelTrack(channel);
-                    IRCClient.this.sendRawLine("WHO " + channel.getName() + (IRCClient.this.serverInfo.hasWhoXSupport() ? " %cuhsnfar" : ""));
-                }
-                if (event.getArgs().length > 2) {
-                    if (!"*".equals(event.getArgs()[1])) {
-                        user.setAccount(event.getArgs()[1]);
-                    }
-                    user.setRealName(event.getArgs()[2]);
-                }
-                IRCClient.this.eventManager.callEvent(new ChannelJoinEvent(IRCClient.this, channel.snapshot(), user.snapshot()));
-            }
-        }
-
-        @CommandFilter("PART")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void part(ClientReceiveCommandEvent event) {
-            if (event.getActor() instanceof User) { // Just in case
-                ActorProvider.IRCChannel channel = IRCClient.this.actorProvider.getChannel(event.getArgs()[0]);
-                ActorProvider.IRCUser user = IRCClient.this.actorProvider.getUser((((User) event.getActor()).getNick()));
-                IRCClient.this.eventManager.callEvent(new ChannelPartEvent(IRCClient.this, channel.snapshot(), user.snapshot(), (event.getArgs().length > 1) ? event.getArgs()[1] : ""));
-                channel.trackUserPart(user.getNick());
-                if (user.getNick().equals(IRCClient.this.currentNick)) {
-                    IRCClient.this.channels.remove(channel.getName());
-                    IRCClient.this.actorProvider.channelUntrack(channel);
-                }
-            }
-        }
-
-        @CommandFilter("QUIT")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void quit(ClientReceiveCommandEvent event) {
-            if (event.getActor() instanceof User) { // Just in case
-                IRCClient.this.eventManager.callEvent(new UserQuitEvent(IRCClient.this, (User) event.getActor(), (event.getArgs().length > 0) ? event.getArgs()[0] : ""));
-                IRCClient.this.actorProvider.trackUserQuit(((User) event.getActor()).getNick());
-            }
-        }
-
-        @CommandFilter("KICK")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void kick(ClientReceiveCommandEvent event) {
-            ActorProvider.IRCChannel kickedChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[0]);
-            ActorProvider.IRCUser kickedUser = IRCClient.this.actorProvider.getUser(event.getArgs()[1]);
-            IRCClient.this.eventManager.callEvent(new ChannelKickEvent(IRCClient.this, kickedChannel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), (event.getArgs().length > 2) ? event.getArgs()[2] : ""));
-            kickedChannel.trackUserPart(event.getArgs()[1]);
-            if (event.getArgs()[1].equals(IRCClient.this.currentNick)) {
-                IRCClient.this.channels.remove(kickedChannel.getName());
-                IRCClient.this.actorProvider.channelUntrack(kickedChannel);
-            }
-        }
-
-        @CommandFilter("NICK")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void nick(ClientReceiveCommandEvent event) {
-            if (event.getActor() instanceof User) {
-                ActorProvider.IRCUser user = IRCClient.this.actorProvider.getUser(((User) event.getActor()).getNick());
-                User oldUser = user.snapshot();
-                if (user.getNick().equals(IRCClient.this.currentNick)) {
-                    IRCClient.this.currentNick = event.getArgs()[0];
-                }
-                IRCClient.this.actorProvider.trackUserNick(user.getNick(), event.getArgs()[0]);
-                User newUser = user.snapshot();
-                IRCClient.this.eventManager.callEvent(new UserNickChangeEvent(IRCClient.this, oldUser, newUser));
-            }
-        }
-
-        @CommandFilter("INVITE")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void invite(ClientReceiveCommandEvent event) {
-            ActorProvider.IRCChannel invitedChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[1]);
-            if ((IRCClient.this.getTypeByTarget(event.getArgs()[0]) == MessageTarget.PRIVATE) && IRCClient.this.channelsIntended.contains(invitedChannel.getName())) {
-                IRCClient.this.sendRawLine("JOIN " + invitedChannel.getName());
-            }
-            IRCClient.this.eventManager.callEvent(new ChannelInviteEvent(IRCClient.this, invitedChannel.snapshot(), event.getActor(), event.getArgs()[0]));
-        }
-
-        @CommandFilter("TOPIC")
-        @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-        public void topic(ClientReceiveCommandEvent event) {
-            ActorProvider.IRCChannel topicChannel = IRCClient.this.actorProvider.getChannel(event.getArgs()[0]);
-            topicChannel.setTopic(event.getArgs()[1]);
-            topicChannel.setTopic(System.currentTimeMillis(), event.getActor());
-            IRCClient.this.eventManager.callEvent(new ChannelTopicEvent(IRCClient.this, topicChannel.snapshot(), true));
-        }
-    }
-
-    private MessageTarget getTypeByTarget(@Nonnull String target) {
-        if (this.currentNick.equalsIgnoreCase(target)) {
-            return MessageTarget.PRIVATE;
-        }
-        if (this.serverInfo.isTargetedChannel(target)) {
-            return MessageTarget.CHANNEL_TARGETED;
-        }
-        if (this.serverInfo.isValidChannel(target)) {
-            return MessageTarget.CHANNEL;
-        }
-        return MessageTarget.UNKNOWN;
-    }
-
-    private void sendNickChange(@Nonnull String newNick) {
-        this.requestedNick = newNick;
-        this.sendRawLineImmediately("NICK " + newNick);
     }
 }

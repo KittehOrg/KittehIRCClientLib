@@ -6,6 +6,7 @@ import org.kitteh.irc.client.library.element.MessageReceiver;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -17,10 +18,30 @@ class FakeClient extends InternalClient {
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
     private final Listener<String> listenerInput = new Listener<>("Test", null);
     private final Listener<String> listenerOutput = new Listener<>("Test", null);
-    private final ServerInfo serverInfo = new IRCServerInfo(this);
+    private final IRCServerInfo serverInfo = new IRCServerInfo(this);
 
     @Override
     void processLine(@Nonnull String line) {
+
+    }
+
+    @Override
+    void resetServerInfo() {
+
+    }
+
+    @Override
+    void sendNickChange(@Nonnull String newNick) {
+
+    }
+
+    @Override
+    void setCurrentNick(@Nonnull String nick) {
+
+    }
+
+    @Override
+    void startSending() {
 
     }
 
@@ -44,13 +65,31 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
+    Set<String> getIntendedChannels() {
+        return new HashSet<>();
+    }
+
+    @Nonnull
+    @Override
     Listener<String> getOutputListener() {
         return this.listenerOutput;
+    }
+
+    @Nonnull
+    @Override
+    String getRequestedNick() {
+        return "";
     }
 
     @Override
     void connect() {
 
+    }
+
+    @Nonnull
+    @Override
+    ActorProvider getActorProvider() {
+        return null;
     }
 
     @Override
@@ -123,7 +162,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public ServerInfo getServerInfo() {
+    public IRCServerInfo getServerInfo() {
         return this.serverInfo;
     }
 
