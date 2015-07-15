@@ -17,7 +17,7 @@ KICL is designed with a simple and intuitive API.
 A hello world is as simple as:
 
 ```java
-Client client = new ClientBuilder().nick("KittehBot").server("irc.esper.net").build();
+Client client = Client.builder().nick("KittehBot").server("irc.esper.net").build();
 
 client.addChannel("#kitteh.org");
 client.sendMessage("#kitteh.org", "Hello World!");

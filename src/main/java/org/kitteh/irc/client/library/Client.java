@@ -34,9 +34,22 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * An individual IRC connection, see {@link ClientBuilder} to create one.
+ * An individual IRC connection, see {@link #builder()} to create one.
  */
 public interface Client {
+    /**
+     * Creates a {@link ClientBuilder} to build clients.
+     *
+     * @return a client builder
+     */
+    static ClientBuilder builder() {
+        try {
+            return (ClientBuilder) Class.forName(Client.class.getPackage().getName() + ".IRCClientBuilder").getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Kitteh IRC Client Library cannot create a ClientBuilder.", e);
+        }
+    }
+
     /**
      * Adds channels to this client.
      * <p>

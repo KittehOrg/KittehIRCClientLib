@@ -81,11 +81,13 @@ final class IRCCapabilityManager implements CapabilityManager {
     }
 
     @Nonnull
+    @Override
     public List<String> getCapabilities() {
         return new ArrayList<>(this.capabilities);
     }
 
     @Nonnull
+    @Override
     public List<String> getSupportedCapabilities() {
         return new ArrayList<>(this.supportedCapabilities);
     }

@@ -23,32 +23,16 @@
  */
 package org.kitteh.irc.client.library;
 
-import org.kitteh.irc.client.library.util.Sanity;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
 /**
- * Builds {@link Client}s.
+ * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
  */
-public final class ClientBuilder implements Cloneable {
-    private Config config;
-    private String bindHost;
-    private int bindPort;
-    private String serverHost;
-    private int serverPort = 6667;
-
-    /**
-     * Creates a ClientBuilder!
-     */
-    public ClientBuilder() {
-        this.config = new Config();
-    }
-
+public interface ClientBuilder extends Cloneable {
     /**
      * Sets values for authentication with services on the server.
      *
@@ -60,17 +44,7 @@ public final class ClientBuilder implements Cloneable {
      * @see AuthManager for managing authentication later
      */
     @Nonnull
-    public ClientBuilder auth(@Nonnull AuthType authType, @Nonnull String username, @Nonnull String password) {
-        Sanity.nullCheck(authType, "Auth type cannot be null!");
-        Sanity.nullCheck(username, "Username cannot be null!");
-        Sanity.safeMessageCheck(username, "authentication username");
-        Sanity.nullCheck(password, "Password cannot be null!");
-        Sanity.safeMessageCheck(password, "authentication password");
-        this.config.set(Config.AUTH_TYPE, authType);
-        this.config.set(Config.AUTH_NAME, username);
-        this.config.set(Config.AUTH_PASS, password);
-        return this;
-    }
+    ClientBuilder auth(@Nonnull AuthType authType, @Nonnull String username, @Nonnull String password);
 
     /**
      * Binds the client to a host or IP locally. Null for wildcard binding.
@@ -81,10 +55,7 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder bind(@Nullable String host) {
-        this.bindHost = host;
-        return this;
-    }
+    ClientBuilder bind(@Nullable String host);
 
     /**
      * Binds the client to the specified port. Invalid ports are set to 0.
@@ -95,10 +66,7 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder bind(int port) {
-        this.bindPort = this.validPort(port);
-        return this;
-    }
+    ClientBuilder bind(int port);
 
     /**
      * Sets a listener for all thrown exceptions on this client.
@@ -109,10 +77,7 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder listenException(@Nullable Consumer<Exception> listener) {
-        this.config.set(Config.LISTENER_EXCEPTION, (listener == null) ? null : new Config.ExceptionConsumerWrapper(listener));
-        return this;
-    }
+    ClientBuilder listenException(@Nullable Consumer<Exception> listener);
 
     /**
      * Sets a listener for all incoming messages from the server.
@@ -123,10 +88,7 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder listenInput(@Nullable Consumer<String> listener) {
-        this.config.set(Config.LISTENER_INPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
-        return this;
-    }
+    ClientBuilder listenInput(@Nullable Consumer<String> listener);
 
     /**
      * Sets a listener for all outgoing messages to the server.
@@ -137,10 +99,7 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder listenOutput(@Nullable Consumer<String> listener) {
-        this.config.set(Config.LISTENER_OUTPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
-        return this;
-    }
+    ClientBuilder listenOutput(@Nullable Consumer<String> listener);
 
     /**
      * Names the client, for internal labeling.
@@ -150,12 +109,7 @@ public final class ClientBuilder implements Cloneable {
      * @throws IllegalArgumentException if name is null
      */
     @Nonnull
-    public ClientBuilder name(@Nonnull String name) {
-        Sanity.nullCheck(name, "Name cannot be null");
-        Sanity.safeMessageCheck(name, "name");
-        this.config.set(Config.NAME, name);
-        return this;
-    }
+    ClientBuilder name(@Nonnull String name);
 
     /**
      * Sets the client's nick.
@@ -167,13 +121,7 @@ public final class ClientBuilder implements Cloneable {
      * @throws IllegalArgumentException if nick is null
      */
     @Nonnull
-    public ClientBuilder nick(@Nonnull String nick) {
-        Sanity.nullCheck(nick, "Nick cannot be null");
-        Sanity.truthiness(!nick.contains(" "), "Nick cannot contain spaces");
-        Sanity.safeMessageCheck(nick, "nick");
-        this.config.set(Config.NICK, nick);
-        return this;
-    }
+    ClientBuilder nick(@Nonnull String nick);
 
     /**
      * Sets the server password.
@@ -184,13 +132,7 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder serverPassword(@Nullable String password) {
-        if (password != null) {
-            Sanity.safeMessageCheck(password, "server password");
-        }
-        this.config.set(Config.SERVER_PASSWORD, password);
-        return this;
-    }
+    ClientBuilder serverPassword(@Nullable String password);
 
     /**
      * Sets the realname the client uses.
@@ -202,12 +144,7 @@ public final class ClientBuilder implements Cloneable {
      * @throws IllegalArgumentException for null realname
      */
     @Nonnull
-    public ClientBuilder realName(@Nonnull String name) {
-        Sanity.nullCheck(name, "Real name cannot be null");
-        Sanity.safeMessageCheck(name, "real name");
-        this.config.set(Config.REAL_NAME, name);
-        return this;
-    }
+    ClientBuilder realName(@Nonnull String name);
 
     /**
      * Sets whether the client connects via SSL.
@@ -216,23 +153,17 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder secure(boolean ssl) {
-        this.config.set(Config.SSL, ssl);
-        return this;
-    }
+    ClientBuilder secure(boolean ssl);
 
     /**
-     * Sets the public key for SSL connection.
+     * Sets the key for SSL connection.
      *
      * @param keyCertChainFile X.509 certificate chain file in PEM format
      * @return this builder
      * @see #secure(boolean)
      */
     @Nonnull
-    public ClientBuilder secureKeyCertChain(@Nullable File keyCertChainFile) {
-        this.config.set(Config.SSL_KEY_CERT_CHAIN, keyCertChainFile);
-        return this;
-    }
+    ClientBuilder secureKeyCertChain(@Nullable File keyCertChainFile);
 
     /**
      * Sets the private key for SSL connection.
@@ -242,10 +173,7 @@ public final class ClientBuilder implements Cloneable {
      * @see #secure(boolean)
      */
     @Nonnull
-    public ClientBuilder secureKey(@Nullable File keyFile) {
-        this.config.set(Config.SSL_KEY, keyFile);
-        return this;
-    }
+    ClientBuilder secureKey(@Nullable File keyFile);
 
     /**
      * Sets the private key password for SSL connection.
@@ -255,10 +183,7 @@ public final class ClientBuilder implements Cloneable {
      * @see #secure(boolean)
      */
     @Nonnull
-    public ClientBuilder secureKeyPassword(@Nullable String password) {
-        this.config.set(Config.SSL_KEY_PASSWORD, password);
-        return this;
-    }
+    ClientBuilder secureKeyPassword(@Nullable String password);
 
     /**
      * Sets the delay between messages being sent to the server
@@ -267,11 +192,7 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder messageDelay(int delay) {
-        Sanity.truthiness(delay > 0, "Delay must be at least 1");
-        this.config.set(Config.MESSAGE_DELAY, delay);
-        return this;
-    }
+    ClientBuilder messageDelay(int delay);
 
     /**
      * Sets the server IP to which the client will connect.
@@ -282,10 +203,7 @@ public final class ClientBuilder implements Cloneable {
      * @return this builder
      */
     @Nonnull
-    public ClientBuilder server(int port) {
-        this.serverPort = this.validPort(port);
-        return this;
-    }
+    ClientBuilder server(int port);
 
     /**
      * Sets the server host to which the client will connect.
@@ -297,11 +215,7 @@ public final class ClientBuilder implements Cloneable {
      * @throws IllegalArgumentException for null host
      */
     @Nonnull
-    public ClientBuilder server(@Nonnull String host) {
-        Sanity.nullCheck(host, "Host cannot be null");
-        this.serverHost = host;
-        return this;
-    }
+    ClientBuilder server(@Nonnull String host);
 
     /**
      * Sets the user the client connects as.
@@ -313,13 +227,7 @@ public final class ClientBuilder implements Cloneable {
      * @throws IllegalArgumentException for null user
      */
     @Nonnull
-    public ClientBuilder user(@Nonnull String user) {
-        Sanity.nullCheck(user, "User cannot be null");
-        Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
-        Sanity.safeMessageCheck(user, "user");
-        this.config.set(Config.USER, user);
-        return this;
-    }
+    ClientBuilder user(@Nonnull String user);
 
     /**
      * Sets all the information for, and enables, WebIRC.
@@ -334,27 +242,8 @@ public final class ClientBuilder implements Cloneable {
      * @throws IllegalArgumentException for any null parameters
      * @see #webircDisable()
      */
-    public ClientBuilder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip) {
-        Sanity.nullCheck(password, "Password cannot be null");
-        Sanity.nullCheck(user, "User cannot be null");
-        Sanity.nullCheck(host, "Host cannot be null");
-        Sanity.nullCheck(ip, "IP cannot be null");
-
-        Sanity.truthiness(!password.contains(" "), "Password cannot contain spaces");
-        Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
-        Sanity.truthiness(!host.contains(" "), "Host cannot contain spaces");
-
-        Sanity.safeMessageCheck(password, "password");
-        Sanity.safeMessageCheck(user, "user");
-        Sanity.safeMessageCheck(host, "host");
-
-        this.config.set(Config.WEBIRC_PASSWORD, password);
-        this.config.set(Config.WEBIRC_USER, user);
-        this.config.set(Config.WEBIRC_HOST, host);
-        this.config.set(Config.WEBIRC_IP, ip);
-
-        return this;
-    }
+    @Nonnull
+    ClientBuilder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip);
 
     /**
      * Disables WebIRC.
@@ -363,13 +252,7 @@ public final class ClientBuilder implements Cloneable {
      * @see #webirc(String, String, String, InetAddress)
      */
     @Nonnull
-    public ClientBuilder webircDisable() {
-        this.config.set(Config.WEBIRC_PASSWORD, null);
-        this.config.set(Config.WEBIRC_USER, null);
-        this.config.set(Config.WEBIRC_HOST, null);
-        this.config.set(Config.WEBIRC_IP, null);
-        return this;
-    }
+    ClientBuilder webircDisable();
 
     /**
      * Clientmaker, clientmaker, make me a client!
@@ -377,46 +260,5 @@ public final class ClientBuilder implements Cloneable {
      * @return a client designed to your liking
      */
     @Nonnull
-    public Client build() {
-        this.inetSet(Config.BIND_ADDRESS, this.bindHost, this.bindPort);
-        this.inetSet(Config.SERVER_ADDRESS, this.serverHost, this.serverPort);
-        return new IRCClient(this.config);
-    }
-
-    /**
-     * Clones this builder.
-     *
-     * @return a clone of this builder
-     */
-    @Nonnull
-    @Override
-    public ClientBuilder clone() {
-        try {
-            ClientBuilder clientBuilder = (ClientBuilder) super.clone();
-            clientBuilder.config = this.config.clone();
-            return clientBuilder;
-        } catch (CloneNotSupportedException ignored) {
-            throw new IllegalStateException("Something has gone horribly wrong");
-        }
-    }
-
-    private void inetSet(@Nonnull Config.Entry<InetSocketAddress> entry, @Nullable String host, int port) {
-        if (host != null) {
-            this.config.set(entry, new InetSocketAddress(host, port));
-        } else if (port > 0) {
-            this.config.set(entry, new InetSocketAddress(port));
-        }
-    }
-
-    /**
-     * Gets a valid port number from a potentially invalid port number.
-     * <p>
-     * Returns the valid port, or 0 if invalid.
-     *
-     * @param port port provided
-     * @return valid port
-     */
-    private int validPort(int port) {
-        return ((port > 65535) || (port < 0)) ? 0 : port;
-    }
+    Client build();
 }

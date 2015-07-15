@@ -3,7 +3,7 @@ KICL supports connecting to a server via SSL.
 To utilize this functionality, simply call the `secure(boolean)` method.
 
 ```
-Client client = new ClientBuilder().secure(true).server("irc.esper.net").server(6697).build();
+Client client = Client.builder().secure(true).server("irc.esper.net").server(6697).build();
 ```
 
 *Don't forget that SSL is generally on a non-standard port (typically 6697).*
