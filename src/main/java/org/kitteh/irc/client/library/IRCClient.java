@@ -1076,7 +1076,7 @@ final class IRCClient extends InternalClient {
         @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
         public void nick(ClientReceiveCommandEvent event) {
             if (event.getActor() instanceof User) {
-                ActorProvider.IRCUser user = IRCClient.this.actorProvider.getUser((((User) event.getActor()).getNick()));
+                ActorProvider.IRCUser user = IRCClient.this.actorProvider.getUser(((User) event.getActor()).getNick());
                 User oldUser = user.snapshot();
                 if (user.getNick().equals(IRCClient.this.currentNick)) {
                     IRCClient.this.currentNick = event.getArgs()[0];
