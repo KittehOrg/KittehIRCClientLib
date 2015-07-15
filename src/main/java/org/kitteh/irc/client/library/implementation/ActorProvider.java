@@ -291,7 +291,7 @@ class ActorProvider {
         }
 
         @Override
-        public boolean isComplete() {
+        public boolean hasCompleteUserData() {
             return this.complete;
         }
 

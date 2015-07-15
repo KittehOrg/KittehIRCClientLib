@@ -101,7 +101,7 @@ public interface Channel extends MessageReceiver {
      * @param nick user's nick
      * @return the user object, if known
      * @throws IllegalArgumentException if nick is null
-     * @see #isComplete() for knowing if the User data is sent
+     * @see #hasCompleteUserData() for knowing if the User data is sent
      * @see ChannelUsersUpdatedEvent for knowing when the User data is sent
      */
     @Nullable
@@ -114,7 +114,7 @@ public interface Channel extends MessageReceiver {
      * #getNicknames()}.
      *
      * @return users in the channel
-     * @see #isComplete() for knowing if the User data is sent
+     * @see #hasCompleteUserData() for knowing if the User data is sent
      * @see ChannelUsersUpdatedEvent for knowing when the User data is sent
      */
     @Nonnull
@@ -136,7 +136,7 @@ public interface Channel extends MessageReceiver {
      * @return true if Client is in channel and WHO has finished
      * @see ChannelUsersUpdatedEvent
      */
-    boolean isComplete();
+    boolean hasCompleteUserData();
 
     /**
      * Joins the channel.
