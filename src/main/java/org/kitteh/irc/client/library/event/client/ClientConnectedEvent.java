@@ -73,8 +73,8 @@ public class ClientConnectedEvent extends ClientEventBase {
      * not sent any information beyond its address and version.
      *
      * @return the server information object
-     * @see ServerInfo#getServerAddress()
-     * @see ServerInfo#getServerVersion()
+     * @see ServerInfo#getAddress()
+     * @see ServerInfo#getVersion()
      */
     @Nonnull
     public ServerInfo getServerInfo() {

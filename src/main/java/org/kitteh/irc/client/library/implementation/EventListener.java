@@ -96,8 +96,8 @@ class EventListener {
         } catch (IllegalStateException | UnsupportedOperationException ignored) {
         }
         this.client.resetServerInfo();
-        this.client.getServerInfo().setServerAddress(event.getArgs()[1]);
-        this.client.getServerInfo().setServerVersion(event.getArgs()[2]);
+        this.client.getServerInfo().setAddress(event.getArgs()[1]);
+        this.client.getServerInfo().setVersion(event.getArgs()[2]);
         this.client.getEventManager().callEvent(new ClientConnectedEvent(this.client, event.getServer(), this.client.getServerInfo()));
         this.client.startSending();
     }

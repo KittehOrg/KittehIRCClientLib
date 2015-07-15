@@ -36,6 +36,14 @@ import java.util.Map;
  */
 public interface ServerInfo {
     /**
+     * Gets the server-stated address of the server.
+     *
+     * @return the server's address or null if unknown
+     */
+    @Nullable
+    String getAddress();
+
+    /**
      * Gets the casemapping for the server. By default {@link
      * CaseMapping#RFC1459}
      *
@@ -106,20 +114,12 @@ public interface ServerInfo {
     int getNickLengthLimit();
 
     /**
-     * Gets the server-stated address of the server.
-     *
-     * @return the server's address or null if unknown
-     */
-    @Nullable
-    String getServerAddress();
-
-    /**
      * Gets the version of the IRCd.
      *
      * @return server version or null if unknown
      */
     @Nullable
-    String getServerVersion();
+    String getVersion();
 
     /**
      * Gets if the server supports WHOX.

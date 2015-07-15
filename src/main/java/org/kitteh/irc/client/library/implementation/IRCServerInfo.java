@@ -48,8 +48,8 @@ final class IRCServerInfo implements ServerInfo {
     private List<ChannelUserMode> channelUserModes;
     private String networkName;
     private int nickLengthLimit = -1;
-    private String serverAddress;
-    private String serverVersion;
+    private String address;
+    private String version;
     private boolean supportsWhoX;
 
     // TODO adapt for changes
@@ -62,6 +62,16 @@ final class IRCServerInfo implements ServerInfo {
         this.channelUserModes = new ArrayList<>();
         this.channelUserModes.add(new ActorProvider.IRCChannelUserMode(client, 'o', '@'));
         this.channelUserModes.add(new ActorProvider.IRCChannelUserMode(client, 'v', '+'));
+    }
+
+    @Nullable
+    @Override
+    public String getAddress() {
+        return this.address;
+    }
+
+    void setAddress(@Nonnull String serverAddress) {
+        this.address = serverAddress;
     }
 
     @Nonnull
@@ -144,22 +154,12 @@ final class IRCServerInfo implements ServerInfo {
 
     @Nullable
     @Override
-    public String getServerAddress() {
-        return this.serverAddress;
+    public String getVersion() {
+        return this.version;
     }
 
-    void setServerAddress(@Nonnull String serverAddress) {
-        this.serverAddress = serverAddress;
-    }
-
-    @Nullable
-    @Override
-    public String getServerVersion() {
-        return this.serverVersion;
-    }
-
-    void setServerVersion(@Nonnull String serverVersion) {
-        this.serverVersion = serverVersion;
+    void setVersion(@Nonnull String version) {
+        this.version = version;
     }
 
     @Override
