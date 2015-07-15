@@ -21,8 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.AuthManager;
+import org.kitteh.irc.client.library.EventManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;

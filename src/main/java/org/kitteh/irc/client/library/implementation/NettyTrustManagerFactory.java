@@ -21,10 +21,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
 import io.netty.handler.ssl.util.SimpleTrustManagerFactory;
 import io.netty.util.internal.EmptyArrays;
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.SSLCertificateAcceptEvent;
 
 import javax.annotation.Nonnull;

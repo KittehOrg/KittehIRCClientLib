@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
 import net.engio.mbassy.bus.SyncMessageBus;
 import net.engio.mbassy.bus.common.Properties;
@@ -29,6 +29,7 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
+import org.kitteh.irc.client.library.EventManager;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.util.Sanity;
 

@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.reflect.Constructor;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -44,7 +45,9 @@ public interface Client {
      */
     static ClientBuilder builder() {
         try {
-            return (ClientBuilder) Class.forName(Client.class.getPackage().getName() + ".IRCClientBuilder").getDeclaredConstructor().newInstance();
+            Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".implementation.IRCClientBuilder").getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return (ClientBuilder) constructor.newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Kitteh IRC Client Library cannot create a ClientBuilder.", e);
         }

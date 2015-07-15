@@ -21,8 +21,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.CaseMapping;
+import org.kitteh.irc.client.library.ChannelModeType;
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.ServerInfo;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.util.Sanity;
 

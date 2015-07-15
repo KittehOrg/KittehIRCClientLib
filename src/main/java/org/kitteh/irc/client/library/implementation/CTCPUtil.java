@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
 import javax.annotation.Nonnull;
 import java.util.regex.Matcher;

@@ -21,8 +21,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.element.CapabilityState;
 
 import javax.annotation.Nonnull;

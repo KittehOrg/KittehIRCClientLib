@@ -1,8 +1,9 @@
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
 import net.engio.mbassy.listener.Handler;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kitteh.irc.client.library.EventManager;
 
 /**
  * Confirm an event listener can be registered and an event fired.

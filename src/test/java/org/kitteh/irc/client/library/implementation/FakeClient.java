@@ -1,7 +1,17 @@
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.AuthManager;
+import org.kitteh.irc.client.library.EventManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
+import org.kitteh.irc.client.library.implementation.ActorProvider;
+import org.kitteh.irc.client.library.implementation.Config;
+import org.kitteh.irc.client.library.implementation.IRCAuthManager;
+import org.kitteh.irc.client.library.implementation.IRCCapabilityManager;
+import org.kitteh.irc.client.library.implementation.IRCEventManager;
+import org.kitteh.irc.client.library.implementation.IRCServerInfo;
+import org.kitteh.irc.client.library.implementation.InternalClient;
+import org.kitteh.irc.client.library.implementation.Listener;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

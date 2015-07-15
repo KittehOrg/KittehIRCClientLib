@@ -21,11 +21,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.implementation;
 
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
+import org.kitteh.irc.client.library.ChannelModeType;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
