@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-enum IRCISupport {
+enum ISupport {
     CASEMAPPING {
         @Override
         boolean process(@Nullable String value, @Nonnull InternalClient client) {
@@ -177,12 +177,12 @@ enum IRCISupport {
         }
     };
 
-    private static final Map<String, IRCISupport> MAP;
+    private static final Map<String, ISupport> MAP;
     private static final Pattern PATTERN = Pattern.compile("([A-Z0-9]+)(?:=(.*))?");
 
     static {
         MAP = new ConcurrentHashMap<>();
-        for (IRCISupport iSupport : IRCISupport.values()) {
+        for (ISupport iSupport : ISupport.values()) {
             MAP.put(iSupport.name(), iSupport);
         }
     }
@@ -192,7 +192,7 @@ enum IRCISupport {
         if (!matcher.find()) {
             return;
         }
-        IRCISupport iSupport = MAP.get(matcher.group(1));
+        ISupport iSupport = MAP.get(matcher.group(1));
         if (iSupport != null) {
             String value = null;
             if (matcher.groupCount() > 1) {

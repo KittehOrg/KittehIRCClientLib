@@ -99,7 +99,7 @@ final class IRCClient extends InternalClient {
         this.outputListener = new Listener<>(name, (outputListenerWrapper == null) ? null : outputListenerWrapper.getConsumer());
 
         this.processor = new InputProcessor();
-        this.eventManager.registerEventListener(new IRCEventListener(this));
+        this.eventManager.registerEventListener(new EventListener(this));
         this.connect();
     }
 

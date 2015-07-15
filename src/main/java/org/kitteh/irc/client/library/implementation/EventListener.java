@@ -75,10 +75,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @net.engio.mbassy.listener.Listener(references = References.Strong)
-class IRCEventListener {
+class EventListener {
     private final InternalClient client;
 
-    IRCEventListener(InternalClient client) {
+    EventListener(InternalClient client) {
         this.client = client;
     }
 
@@ -106,7 +106,7 @@ class IRCEventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void iSupport(ClientReceiveNumericEvent event) {
         for (int i = 1; i < event.getArgs().length; i++) {
-            IRCISupport.handle(event.getArgs()[i], this.client);
+            ISupport.handle(event.getArgs()[i], this.client);
         }
     }
 
