@@ -60,7 +60,7 @@ final class IRCClient extends InternalClient {
         }
     }
 
-    private final String[] pingPurr = new String[]{"MEOW", "MEOW!", "PURR", "PURRRRRRR"};
+    private final String[] pingPurr = new String[]{"MEOW", "MEOW!", "PURR", "PURRRRRRR", "MEOWMEOW", ":3"};
     private int pingPurrCount;
 
     private final Config config;
@@ -406,7 +406,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     void ping() {
-        this.sendRawLine("PING :" + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
+        this.sendRawLine("PING " + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
     }
 
     @Override
