@@ -99,6 +99,14 @@ public interface ServerInfo {
     List<ChannelUserMode> getChannelUserModes();
 
     /**
+     * Gets the server's MOTD.
+     *
+     * @return motd or null if unknown
+     */
+    @Nullable
+    List<String> getMOTD();
+
+    /**
      * Gets the name of this network.
      *
      * @return network name or null if unknown

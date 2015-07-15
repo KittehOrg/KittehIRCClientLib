@@ -34,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ final class IRCServerInfo implements ServerInfo {
     private Map<Character, ChannelModeType> channelModes = ChannelModeType.getDefaultModes();
     private List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
     private List<ChannelUserMode> channelUserModes;
+    private List<String> motd;
     private String networkName;
     private int nickLengthLimit = -1;
     private String address;
@@ -131,6 +133,16 @@ final class IRCServerInfo implements ServerInfo {
 
     void setChannelUserModes(@Nonnull List<ChannelUserMode> channelUserModes) {
         this.channelUserModes = channelUserModes;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getMOTD() {
+        return this.motd;
+    }
+
+    void setMOTD(@Nonnull List<String> motd) {
+        this.motd = Collections.unmodifiableList(motd);
     }
 
     @Nullable

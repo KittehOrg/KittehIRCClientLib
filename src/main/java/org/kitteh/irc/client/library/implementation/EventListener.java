@@ -53,6 +53,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
@@ -65,9 +66,11 @@ import org.kitteh.irc.client.library.util.CommandFilter;
 import org.kitteh.irc.client.library.util.NumericFilter;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -214,6 +217,27 @@ class EventListener {
             ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
             this.client.getEventManager().callEvent(new ChannelNamesUpdatedEvent(this.client, channel.snapshot()));
         }
+    }
+
+    private final List<String> motd = new LinkedList<>();
+
+    @NumericFilter(375)
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void motdStart(ClientReceiveNumericEvent event) {
+        this.motd.clear();
+    }
+
+    @NumericFilter(372)
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void motdContent(ClientReceiveNumericEvent event) {
+        this.motd.add(event.getArgs()[1]);
+    }
+
+    @NumericFilter(376)
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void motdEnd(ClientReceiveNumericEvent event) {
+        this.client.getServerInfo().setMOTD(new ArrayList<>(this.motd));
+        this.client.getEventManager().callEvent(new ClientReceiveMOTDEvent(this.client));
     }
 
     @NumericFilter(431) // No nick given
