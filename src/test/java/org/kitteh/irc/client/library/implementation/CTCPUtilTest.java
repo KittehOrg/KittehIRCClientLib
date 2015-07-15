@@ -2,7 +2,6 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kitteh.irc.client.library.implementation.CTCPUtil;
 
 /**
  * Test the pants off the CTCP conversion.
