@@ -35,12 +35,12 @@ public enum AuthType {
      */
     DISABLED(false) {
         @Override
-        void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+        public void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
             throw new IllegalStateException("Authentication is disabled!");
         }
 
         @Override
-        void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
+        public void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
             throw new IllegalStateException("Authentication is disabled!");
         }
     },
@@ -49,7 +49,7 @@ public enum AuthType {
      */
     GAMESURGE(false) {
         @Override
-        void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+        public void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
             client.sendRawLineImmediately("PRIVMSG AuthServ@services.gamesurge.net :auth " + username + ' ' + password);
         }
     },
@@ -58,12 +58,12 @@ public enum AuthType {
      */
     NICKSERV() {
         @Override
-        void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+        public void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
             client.sendRawLineImmediately("NickServ :IDENTIFY " + username + ' ' + password);
         }
 
         @Override
-        void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
+        public void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
             client.sendRawLineImmediately("NickServ :GHOST " + nick);
         }
     },;
@@ -78,9 +78,9 @@ public enum AuthType {
         this.nicksOwned = nickOwned;
     }
 
-    abstract void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password);
+    public abstract void authenticate(@Nonnull Client client, @Nonnull String username, @Nonnull String password);
 
-    void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
+    public void reclaimNick(@Nonnull Client client, @Nonnull String nick) {
         throw new UnsupportedOperationException("Nick reclamation is not supported by auth type " + this.name());
     }
 
