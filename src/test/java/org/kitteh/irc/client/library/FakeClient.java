@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 class FakeClient extends InternalClient {
-    private final AuthManager authManager = new AuthManager(this);
+    private final AuthManager authManager = new IRCAuthManager(this);
     private final CapabilityManager capabilityManager = new CapabilityManager();
     private final Config config = new Config();
     private final EventManager eventManager = new IRCEventManager(this);

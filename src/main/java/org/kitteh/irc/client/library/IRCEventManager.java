@@ -29,7 +29,6 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
-import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -53,21 +52,25 @@ final class IRCEventManager implements EventManager {
         this.client = client;
     }
 
+    @Override
     public void callEvent(@Nonnull Object event) {
         Sanity.nullCheck(event, "Event cannot be null");
         this.bus.publish(event);
     }
 
     @Nonnull
+    @Override
     public synchronized Set<Object> getRegisteredEventListeners() {
         return new HashSet<>(this.listeners);
     }
 
+    @Override
     public synchronized void registerEventListener(@Nonnull Object listener) {
         this.listeners.add(listener);
         this.bus.subscribe(listener);
     }
 
+    @Override
     public synchronized void unregisterEventListener(@Nonnull Object listener) {
         this.listeners.remove(listener);
         this.bus.unsubscribe(listener);

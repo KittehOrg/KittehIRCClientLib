@@ -23,23 +23,12 @@
  */
 package org.kitteh.irc.client.library;
 
-import org.kitteh.irc.client.library.util.Sanity;
-
 import javax.annotation.Nonnull;
 
 /**
  * Manages authentication.
  */
-public final class AuthManager {
-    private final Client client;
-    private AuthType authType;
-    private String username;
-    private String password;
-
-    AuthManager(@Nonnull Client client) {
-        this.client = client;
-    }
-
+public interface AuthManager {
     /**
      * Attempts to authenticate with the server's authentication system as
      * defined in this manager.
@@ -52,15 +41,7 @@ public final class AuthManager {
      * @see #setPassword(String) to set password
      * @see #setUsername(String) to set username
      */
-    public void authenticate() {
-        if (this.username == null) {
-            throw new IllegalStateException("No username has been defined.");
-        }
-        if (this.password == null) {
-            throw new IllegalStateException("No password has been defined.");
-        }
-        this.authType.authenticate(this.client, this.username, this.password);
-    }
+    void authenticate();
 
     /**
      * Attempts to reclaim a nickname.
@@ -69,10 +50,7 @@ public final class AuthManager {
      * @throws UnsupportedOperationException if not supported by the selected
      * {@link AuthType}
      */
-    public void reclaimNick(@Nonnull String nick) {
-        Sanity.nullCheck(nick, "Nickname cannot be null");
-        this.authType.reclaimNick(this.client, nick);
-    }
+    void reclaimNick(@Nonnull String nick);
 
     /**
      * Sets the authentication type to utilize.
@@ -80,10 +58,7 @@ public final class AuthManager {
      * @param authType authentication type
      * @throws IllegalArgumentException if authType is null
      */
-    public void setAuthType(@Nonnull AuthType authType) {
-        Sanity.nullCheck(authType, "Authentication type cannot be null. See AuthType.DISABLED");
-        this.authType = authType;
-    }
+    void setAuthType(@Nonnull AuthType authType);
 
     /**
      * Sets the authentication password.
@@ -92,11 +67,7 @@ public final class AuthManager {
      * @throws IllegalArgumentException if password is null or contains
      * spaces/invalid characters
      */
-    public void setPassword(@Nonnull String password) {
-        Sanity.nullCheck(password, "Password cannot be null");
-        Sanity.safeMessageCheck(password, "authentication password");
-        this.password = password;
-    }
+    void setPassword(@Nonnull String password);
 
     /**
      * Sets the authentication password.
@@ -105,9 +76,5 @@ public final class AuthManager {
      * @throws IllegalArgumentException if username is null or contains
      * spaces/invalid characters
      */
-    public void setUsername(@Nonnull String username) {
-        Sanity.nullCheck(username, "Username cannot be null");
-        Sanity.safeMessageCheck(username, "authentication username");
-        this.username = username;
-    }
+    void setUsername(@Nonnull String username);
 }
