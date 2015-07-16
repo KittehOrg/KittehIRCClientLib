@@ -187,7 +187,7 @@ final class IRCServerInfo implements ServerInfo {
     @Override
     public boolean isValidChannel(@Nonnull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
-        return (name.length() > 1) && ((this.channelLengthLimit < 0) || ((name.length() <= this.channelLengthLimit) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches()));
+        return (name.length() > 1) && ((this.channelLengthLimit < 0) || (name.length() <= this.channelLengthLimit)) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
     }
 
     boolean isTargetedChannel(@Nonnull String name) {
