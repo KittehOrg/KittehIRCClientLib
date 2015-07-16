@@ -196,6 +196,9 @@ final class IRCServerInfo implements ServerInfo {
 
     @Nullable
     ChannelUserMode getTargetedChannelInfo(@Nonnull String name) {
+        if (name.length() < 2) {
+            return null;
+        }
         final char first = name.charAt(0);
         final String shorter = name.substring(1);
         if (!this.channelPrefixes.contains(first) && this.isValidChannel(shorter)) {
