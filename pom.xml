@@ -4,7 +4,7 @@
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.9-SNAPSHOT</version>
+    <version>0.2.9</version>
     <name>Kitteh IRC Client Library</name>
     <url>http://github.com/KittehOrg/KittehIRCClientLib</url>
     <properties>
