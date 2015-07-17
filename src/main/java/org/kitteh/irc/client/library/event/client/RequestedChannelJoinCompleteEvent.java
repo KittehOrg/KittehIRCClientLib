@@ -21,40 +21,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.channel;
+package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
-import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
+import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
 
 import javax.annotation.Nonnull;
 
 /**
- * A {@link User} has joined a {@link Channel}!
+ * I have successfully joined the channel I wanted! Will fire each time the
+ * client joins a channel added via {@link Client#addChannel} and not removed
+ * via {@link Client#removeChannel}, such as if the client is repeatedly
+ * kicked and then invited back.
  */
-public class ChannelJoinEvent extends ActorChannelEventBase<User> implements ChannelUserListChange {
+public class RequestedChannelJoinCompleteEvent extends ChannelJoinEvent {
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
      * @param channel the channel joined
-     * @param user the user joining
+     * @param user the client
      */
-    public ChannelJoinEvent(@Nonnull Client client, @Nonnull Channel channel, @Nonnull User user) {
-        super(client, user, channel);
-    }
-
-    @Nonnull
-    @Override
-    public Change getChange() {
-        return Change.JOIN;
-    }
-
-    @Nonnull
-    @Override
-    public User getUser() {
-        return this.getActor();
+    public RequestedChannelJoinCompleteEvent(@Nonnull Client client, @Nonnull Channel channel, @Nonnull User user) {
+        super(client, channel, user);
     }
 }

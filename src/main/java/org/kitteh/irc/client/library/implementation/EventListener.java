@@ -56,6 +56,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
+import org.kitteh.irc.client.library.event.client.RequestedChannelJoinCompleteEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
@@ -470,9 +471,13 @@ class EventListener {
             ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[0]);
             ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getActor().getName());
             channel.trackUser(user, null);
+            ChannelJoinEvent joinEvent = null;
             if (user.getNick().equals(this.client.getNick())) {
                 this.client.getActorProvider().channelTrack(channel);
                 this.client.sendRawLine("WHO " + channel.getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+                if (this.client.getIntendedChannels().contains(channel.getName())) {
+                    joinEvent = new RequestedChannelJoinCompleteEvent(this.client, channel.snapshot(), user.snapshot());
+                }
             }
             if (event.getArgs().length > 2) {
                 if (!"*".equals(event.getArgs()[1])) {
@@ -480,7 +485,10 @@ class EventListener {
                 }
                 user.setRealName(event.getArgs()[2]);
             }
-            this.client.getEventManager().callEvent(new ChannelJoinEvent(this.client, channel.snapshot(), user.snapshot()));
+            if (joinEvent == null) {
+                joinEvent = new ChannelJoinEvent(this.client, channel.snapshot(), user.snapshot());
+            }
+            this.client.getEventManager().callEvent(joinEvent);
         }
     }
 
