@@ -56,11 +56,11 @@ class ActorProvider {
         }
 
         @Nonnull
-        protected String getName() {
+        String getName() {
             return this.name;
         }
 
-        protected void setName(@Nonnull String name) {
+        void setName(@Nonnull String name) {
             this.name = name;
         }
 
@@ -98,7 +98,7 @@ class ActorProvider {
         }
 
         @Nonnull
-        protected String toLowerCase(@Nonnull String input) { // Shortcut
+        String toLowerCase(@Nonnull String input) { // Shortcut
             return this.client.getServerInfo().getCaseMapping().toLowerCase(input);
         }
     }
