@@ -369,15 +369,19 @@ class EventListener {
     @CommandFilter("NOTICE")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void notice(ClientReceiveCommandEvent event) {
+        if (!(event.getActor() instanceof User)) {
+            return; // TODO handle this
+        }
+        User user = (User) event.getActor();
         switch (MessageTarget.getTypeByTarget(this.client, event.getArgs()[0])) {
             case CHANNEL:
-                this.client.getEventManager().callEvent(new ChannelNoticeEvent(this.client, (User) event.getActor(), this.client.getActorProvider().getChannel(event.getArgs()[0]).snapshot(), event.getArgs()[1]));
+                this.client.getEventManager().callEvent(new ChannelNoticeEvent(this.client, user, this.client.getActorProvider().getChannel(event.getArgs()[0]).snapshot(), event.getArgs()[1]));
                 break;
             case CHANNEL_TARGETED:
-                this.client.getEventManager().callEvent(new ChannelTargetedNoticeEvent(this.client, (User) event.getActor(), this.client.getActorProvider().getChannel(event.getArgs()[0].substring(1)).snapshot(), this.client.getServerInfo().getTargetedChannelInfo(event.getArgs()[0]), event.getArgs()[1]));
+                this.client.getEventManager().callEvent(new ChannelTargetedNoticeEvent(this.client, user, this.client.getActorProvider().getChannel(event.getArgs()[0].substring(1)).snapshot(), this.client.getServerInfo().getTargetedChannelInfo(event.getArgs()[0]), event.getArgs()[1]));
                 break;
             case PRIVATE:
-                this.client.getEventManager().callEvent(new PrivateNoticeEvent(this.client, (User) event.getActor(), event.getArgs()[1]));
+                this.client.getEventManager().callEvent(new PrivateNoticeEvent(this.client, user, event.getArgs()[1]));
                 break;
         }
     }
@@ -388,15 +392,19 @@ class EventListener {
         if (CTCPUtil.isCTCP(event.getArgs()[1])) {
             return;
         }
+        if (!(event.getActor() instanceof User)) {
+            return; // TODO handle this
+        }
+        User user = (User) event.getActor();
         switch (MessageTarget.getTypeByTarget(this.client, event.getArgs()[0])) {
             case CHANNEL:
-                this.client.getEventManager().callEvent(new ChannelMessageEvent(this.client, (User) event.getActor(), this.client.getActorProvider().getChannel(event.getArgs()[0]).snapshot(), event.getArgs()[1]));
+                this.client.getEventManager().callEvent(new ChannelMessageEvent(this.client, user, this.client.getActorProvider().getChannel(event.getArgs()[0]).snapshot(), event.getArgs()[1]));
                 break;
             case CHANNEL_TARGETED:
-                this.client.getEventManager().callEvent(new ChannelTargetedMessageEvent(this.client, (User) event.getActor(), this.client.getActorProvider().getChannel(event.getArgs()[0].substring(1)).snapshot(), this.client.getServerInfo().getTargetedChannelInfo(event.getArgs()[0]), event.getArgs()[1]));
+                this.client.getEventManager().callEvent(new ChannelTargetedMessageEvent(this.client, user, this.client.getActorProvider().getChannel(event.getArgs()[0].substring(1)).snapshot(), this.client.getServerInfo().getTargetedChannelInfo(event.getArgs()[0]), event.getArgs()[1]));
                 break;
             case PRIVATE:
-                this.client.getEventManager().callEvent(new PrivateMessageEvent(this.client, (User) event.getActor(), event.getArgs()[1]));
+                this.client.getEventManager().callEvent(new PrivateMessageEvent(this.client, user, event.getArgs()[1]));
                 break;
         }
     }
