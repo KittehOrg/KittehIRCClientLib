@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -463,6 +464,10 @@ final class IRCClient extends InternalClient {
             actorName = "";
         }
         final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
+
+        if (split.length < (argsIndex - 1)) {
+            throw new KittehServerMessageException(line, "Server sent a message without a command");
+        }
 
         final String commandString = split[argsIndex - 1];
 
