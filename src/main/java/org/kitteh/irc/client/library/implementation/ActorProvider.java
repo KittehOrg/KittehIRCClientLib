@@ -178,7 +178,10 @@ class ActorProvider {
         }
 
         void trackUserNick(@Nonnull String oldNick, @Nonnull String newNick) {
-            this.trackUser(newNick, this.modes.remove(oldNick));
+            Set<ChannelUserMode> modes = this.modes.remove(oldNick);
+            if (modes != null) {
+                this.trackUser(newNick, modes);
+            }
         }
 
         void trackUserPart(@Nonnull String nick) {
