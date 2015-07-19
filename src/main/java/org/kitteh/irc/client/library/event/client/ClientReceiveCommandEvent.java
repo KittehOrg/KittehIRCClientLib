@@ -42,6 +42,7 @@ import java.util.Arrays;
 public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
     private final String[] args;
     private final String command;
+    private final String originalMessage;
 
     /**
      * Constructs the event.
@@ -51,10 +52,11 @@ public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
      * @param command command
      * @param args args
      */
-    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull Actor actor, @Nonnull String command, @Nonnull String[] args) {
+    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull String originalMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull String[] args) {
         super(client, actor);
         this.args = args;
         this.command = command;
+        this.originalMessage = originalMessage;
     }
 
     /**
@@ -75,5 +77,15 @@ public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
     @Nonnull
     public String getCommand() {
         return this.command;
+    }
+
+    /**
+     * Gets the original message received by the server.
+     *
+     * @return unprocessed, original message
+     */
+    @Nonnull
+    public String getOriginalMessage() {
+        return this.originalMessage;
     }
 }

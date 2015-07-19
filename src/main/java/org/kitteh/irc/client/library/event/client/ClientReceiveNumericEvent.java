@@ -42,6 +42,7 @@ import java.util.Arrays;
 public class ClientReceiveNumericEvent extends ClientEventBase {
     private final String[] args;
     private final int numeric;
+    private final String originalMessage;
     private final Actor server;
 
     /**
@@ -52,10 +53,11 @@ public class ClientReceiveNumericEvent extends ClientEventBase {
      * @param numeric numeric
      * @param args args
      */
-    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull Actor server, int numeric, @Nonnull String[] args) {
+    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull String originalMessage, @Nonnull Actor server, int numeric, @Nonnull String[] args) {
         super(client);
         this.args = args;
         this.numeric = numeric;
+        this.originalMessage = originalMessage;
         this.server = server;
     }
 
@@ -76,6 +78,16 @@ public class ClientReceiveNumericEvent extends ClientEventBase {
      */
     public int getNumeric() {
         return this.numeric;
+    }
+
+    /**
+     * Gets the original message received by the server.
+     *
+     * @return unprocessed, original message
+     */
+    @Nonnull
+    public String getOriginalMessage() {
+        return this.originalMessage;
     }
 
     /**
