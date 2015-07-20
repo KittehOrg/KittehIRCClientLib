@@ -119,7 +119,7 @@ class EventListener {
         this.client.startSending();
     }
 
-    @NumericFilter(5) // WHO completed
+    @NumericFilter(5)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void iSupport(ClientReceiveNumericEvent event) {
         for (int i = 1; i < event.getArgs().length; i++) {
@@ -169,9 +169,7 @@ class EventListener {
                 }
             }
             channel.trackUser(user, modes);
-        } else {
-            throw new KittehServerMessageException(event.getOriginalMessage(), "WHO reply sent for invalid channel name");
-        }
+        } // No else, server might send other WHO information about non-channels.
     }
 
     @NumericFilter(315) // WHO completed
@@ -184,9 +182,7 @@ class EventListener {
         if (whoChannel != null) {
             whoChannel.setListReceived();
             this.client.getEventManager().callEvent(new ChannelUsersUpdatedEvent(this.client, whoChannel.snapshot()));
-        } else {
-            throw new KittehServerMessageException(event.getOriginalMessage(), "WHO reply sent for invalid channel name");
-        }
+        } // No else, server might send other WHO information about non-channels.
     }
 
     @NumericFilter(332) // Topic
