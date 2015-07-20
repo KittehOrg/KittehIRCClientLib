@@ -185,6 +185,14 @@ class EventListener {
         } // No else, server might send other WHO information about non-channels.
     }
 
+    @NumericFilter(324)
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void channelMode(ClientReceiveNumericEvent event) {
+        // TODO Updated mode processing
+        // [1]      channel name
+        // [2...]   mode / params
+    }
+
     @NumericFilter(332) // Topic
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveNumericEvent event) {
@@ -542,6 +550,7 @@ class EventListener {
                 ChannelJoinEvent joinEvent = null;
                 if (user.getNick().equals(this.client.getNick())) {
                     this.client.getActorProvider().channelTrack(channel);
+                    this.client.sendRawLine("MODE " + channel.getName());
                     this.client.sendRawLine("WHO " + channel.getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
                     if (this.client.getIntendedChannels().contains(channel.getName())) {
                         joinEvent = new RequestedChannelJoinCompleteEvent(this.client, channel.snapshot(), user.snapshot());
