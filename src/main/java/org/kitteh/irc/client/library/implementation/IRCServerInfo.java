@@ -24,9 +24,9 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.CaseMapping;
-import org.kitteh.irc.client.library.ChannelModeType;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ServerInfo;
+import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -44,7 +44,8 @@ final class IRCServerInfo implements ServerInfo {
     private CaseMapping caseMapping = CaseMapping.RFC1459;
     private int channelLengthLimit = -1;
     private Map<Character, Integer> channelLimits = new HashMap<>();
-    private Map<Character, ChannelModeType> channelModes = ChannelModeType.getDefaultModes();
+    private List<ChannelMode> channelModes;
+    private Map<Character, ChannelMode> channelModesMap;
     private List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
     private List<ChannelUserMode> channelUserModes;
     private List<String> motd;
@@ -61,9 +62,19 @@ final class IRCServerInfo implements ServerInfo {
     private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
     IRCServerInfo(@Nonnull Client client) {
+        this.channelModes = new ArrayList<>();
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER));
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER));
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER));
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER));
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER));
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER));
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET));
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS));
+        this.channelModes.add(new ModeData.IRCChannelMode(client, 'b', ChannelMode.Type.A_MASK));
         this.channelUserModes = new ArrayList<>();
-        this.channelUserModes.add(new ActorProvider.IRCChannelUserMode(client, 'o', '@'));
-        this.channelUserModes.add(new ActorProvider.IRCChannelUserMode(client, 'v', '+'));
+        this.channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'o', '@'));
+        this.channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'v', '+'));
     }
 
     @Nullable
@@ -107,12 +118,23 @@ final class IRCServerInfo implements ServerInfo {
 
     @Nonnull
     @Override
-    public Map<Character, ChannelModeType> getChannelModes() {
-        return new HashMap<>(this.channelModes);
+    public List<ChannelMode> getChannelModes() {
+        return new ArrayList<>(this.channelModes);
     }
 
-    void setChannelModes(Map<Character, ChannelModeType> channelModes) {
+    synchronized Map<Character, ChannelMode> getChannelModesMap() {
+        List<ChannelMode> modes = this.channelModes;
+        if (this.channelModesMap == null) {
+            this.channelModesMap = new HashMap<>();
+            modes.forEach(mode -> this.channelModesMap.put(mode.getMode(), mode));
+            this.channelModesMap = Collections.unmodifiableMap(this.channelModesMap);
+        }
+        return this.channelModesMap;
+    }
+
+    void setChannelModes(List<ChannelMode> channelModes) {
         this.channelModes = channelModes;
+        this.channelModesMap = null;
     }
 
     @Nonnull

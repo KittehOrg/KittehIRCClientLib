@@ -24,7 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.CaseMapping;
-import org.kitteh.irc.client.library.ChannelModeType;
+import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.exception.KittehISupportProcessingFailureException;
 
@@ -92,27 +92,27 @@ enum ISupport {
         @Override
         boolean process(@Nullable String value, @Nonnull InternalClient client) {
             String[] modes = value.split(",");
-            Map<Character, ChannelModeType> modesMap = new ConcurrentHashMap<>();
+            List<ChannelMode> modesList = new ArrayList<>();
             for (int typeId = 0; typeId < modes.length; typeId++) {
                 for (char mode : modes[typeId].toCharArray()) {
-                    ChannelModeType type = null;
+                    ChannelMode.Type type = null;
                     switch (typeId) {
                         case 0:
-                            type = ChannelModeType.A_MASK;
+                            type = ChannelMode.Type.A_MASK;
                             break;
                         case 1:
-                            type = ChannelModeType.B_PARAMETER_ALWAYS;
+                            type = ChannelMode.Type.B_PARAMETER_ALWAYS;
                             break;
                         case 2:
-                            type = ChannelModeType.C_PARAMETER_ON_SET;
+                            type = ChannelMode.Type.C_PARAMETER_ON_SET;
                             break;
                         case 3:
-                            type = ChannelModeType.D_PARAMETER_NEVER;
+                            type = ChannelMode.Type.D_PARAMETER_NEVER;
                     }
-                    modesMap.put(mode, type);
+                    modesList.add(new ModeData.IRCChannelMode(client, mode, type));
                 }
             }
-            client.getServerInfo().setChannelModes(modesMap);
+            client.getServerInfo().setChannelModes(modesList);
             return true;
         }
     },
@@ -162,7 +162,7 @@ enum ISupport {
             if (modes.length() == display.length()) {
                 List<ChannelUserMode> prefixList = new ArrayList<>();
                 for (int index = 0; index < modes.length(); index++) {
-                    prefixList.add(new ActorProvider.IRCChannelUserMode(client, modes.charAt(index), display.charAt(index)));
+                    prefixList.add(new ModeData.IRCChannelUserMode(client, modes.charAt(index), display.charAt(index)));
                 }
                 client.getServerInfo().setChannelUserModes(prefixList);
             }

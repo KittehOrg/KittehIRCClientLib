@@ -26,9 +26,9 @@ package org.kitteh.irc.client.library.implementation;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
-import org.kitteh.irc.client.library.ChannelModeType;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
@@ -487,7 +487,7 @@ class EventListener {
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             ActorProvider.IRCChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
             List<ChannelUserMode> channelUserModes = this.client.getServerInfo().getChannelUserModes();
-            Map<Character, ChannelModeType> channelModes = this.client.getServerInfo().getChannelModes();
+            Map<Character, ChannelMode> channelModes = this.client.getServerInfo().getChannelModesMap();
             int currentArg = 0;
             while (++currentArg < event.getArgs().length) {
                 String changes = event.getArgs()[currentArg];
@@ -504,7 +504,7 @@ class EventListener {
                             add = false;
                             break;
                         default:
-                            ChannelModeType mode = channelModes.get(modeChar);
+                            ChannelMode mode = channelModes.get(modeChar);
                             ChannelUserMode prefixMode = null;
                             String target = null;
                             if (mode == null) {
@@ -523,7 +523,7 @@ class EventListener {
                                 if (prefixMode == null) {
                                     throw new KittehServerMessageException(event.getOriginalMessage(), "MODE message invalid");
                                 }
-                            } else if (add ? mode.isParameterRequiredOnSetting() : mode.isParameterRequiredOnRemoval()) {
+                            } else if (add ? mode.getType().isParameterRequiredOnSetting() : mode.getType().isParameterRequiredOnRemoval()) {
                                 target = event.getArgs()[++currentArg];
                             }
                             this.client.getEventManager().callEvent(new ChannelModeEvent(this.client, event.getActor(), channel.snapshot(), add, modeChar, prefixMode, target));

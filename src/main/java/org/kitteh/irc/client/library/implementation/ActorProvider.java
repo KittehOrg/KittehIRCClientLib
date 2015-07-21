@@ -305,34 +305,6 @@ class ActorProvider {
         }
     }
 
-    static class IRCChannelUserMode implements ChannelUserMode {
-        private final Client client;
-        private final char mode;
-        private final char prefix;
-
-        IRCChannelUserMode(@Nonnull Client client, char mode, char prefix) {
-            this.client = client;
-            this.mode = mode;
-            this.prefix = prefix;
-        }
-
-        @Nonnull
-        @Override
-        public Client getClient() {
-            return this.client;
-        }
-
-        @Override
-        public char getMode() {
-            return this.mode;
-        }
-
-        @Override
-        public char getPrefix() {
-            return this.prefix;
-        }
-    }
-
     class IRCUser extends IRCActor {
         private String account;
         private final String host;

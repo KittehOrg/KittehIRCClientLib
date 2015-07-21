@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 
 import javax.annotation.Nonnull;
@@ -69,13 +70,12 @@ public interface ServerInfo {
 
     /**
      * Gets the channel modes available. If the server has not provided
-     * information on channel modes, the default specified by {@link
-     * ChannelModeType#getDefaultModes()} is used and returned here.
+     * information on channel modes, defaults are used and returned here.
      *
      * @return a mapping of mode characters to their type
      */
     @Nonnull
-    Map<Character, ChannelModeType> getChannelModes();
+    List<ChannelMode> getChannelModes();
 
     /**
      * Gets the list of accepted channel prefixes. If the server has not
