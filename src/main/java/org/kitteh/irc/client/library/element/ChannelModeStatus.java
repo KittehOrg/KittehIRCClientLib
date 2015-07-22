@@ -31,14 +31,41 @@ import javax.annotation.Nullable;
 /**
  * A particular status of a channel mode.
  */
-public interface ChannelModeStatus {
+public class ChannelModeStatus {
+    private final ChannelMode mode;
+    private final String parameter;
+    private final boolean setting;
+
+    /**
+     * Creates a status without a parameter.
+     *
+     * @param setting true for setting mode, false for removing
+     * @param mode mode to set
+     */
+    public ChannelModeStatus(boolean setting, @Nonnull ChannelMode mode) {
+        this(setting, mode, null);
+    }
+
+    /**
+     * Creates a status.
+     *
+     * @param setting true for setting mode, false for removing
+     * @param mode mode to set
+     * @param parameter parameter or null for no parameter
+     */
+    public ChannelModeStatus(boolean setting, @Nonnull ChannelMode mode, @Nullable String parameter) {
+        this.mode = mode;
+        this.parameter = parameter;
+        this.setting = setting;
+    }
+
     /**
      * Gets the client this status is for.
      *
      * @return client
      */
     @Nonnull
-    default Client getClient() {
+    public Client getClient() {
         return this.getMode().getClient();
     }
 
@@ -48,7 +75,9 @@ public interface ChannelModeStatus {
      * @return the mode
      */
     @Nonnull
-    ChannelMode getMode();
+    public ChannelMode getMode() {
+        return this.mode;
+    }
 
     /**
      * Gets the parameter for the mode status, if applicable.
@@ -56,12 +85,16 @@ public interface ChannelModeStatus {
      * @return parameter or null if no parameter
      */
     @Nullable
-    String getParameter();
+    public String getParameter() {
+        return this.parameter;
+    }
 
     /**
      * Gets if this mode is being set.
      *
      * @return true for setting, false for removing
      */
-    boolean isSetting();
+    public boolean isSetting() {
+        return this.setting;
+    }
 }

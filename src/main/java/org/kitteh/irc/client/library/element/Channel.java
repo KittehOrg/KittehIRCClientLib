@@ -77,6 +77,14 @@ public interface Channel extends MessageReceiver {
     }
 
     /**
+     * Gets the channel's current known modes.
+     *
+     * @return known modes
+     */
+    @Nonnull
+    ChannelModeStatusList getModes();
+
+    /**
      * Gets the nicknames of users in the channel, if the client is in the
      * channel.
      *

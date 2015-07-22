@@ -26,103 +26,36 @@ package org.kitteh.irc.client.library.event.channel;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
-import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Channel a la mode.
  */
 public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
-    private final boolean setting;
-    private final char mode;
-    private final String arg;
-    private final ChannelUserMode channelUserMode;
+    private final ChannelModeStatusList statusList;
 
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
      * @param actor the mode setter
-     * @param channel the channel in which the mode is being set
-     * @param setting if the mode is being set or unset
-     * @param mode the mode being set or unset
-     * @param channelUserMode prefix mode if such
-     * @param arg the argument presented for the mode
+     * @param channel the channel in which the change is occuring
+     * @param statusList list of statuses
      */
-    public ChannelModeEvent(@Nonnull Client client, @Nonnull Actor actor, @Nonnull Channel channel, boolean setting, char mode, @Nullable ChannelUserMode channelUserMode, @Nullable String arg) {
+    public ChannelModeEvent(@Nonnull Client client, @Nonnull Actor actor, @Nonnull Channel channel, @Nonnull ChannelModeStatusList statusList) {
         super(client, actor, channel);
-        this.setting = setting;
-        this.mode = mode;
-        this.channelUserMode = channelUserMode;
-        this.arg = arg;
+        this.statusList = statusList;
     }
 
     /**
-     * Gets the argument for the mode.
+     * Gets the list of statuses.
      *
-     * @return the mode argument, or null if no argument
+     * @return status list
      */
-    @Nullable
-    public String getArgument() {
-        return this.arg;
-    }
-
-    /**
-     * Gets the mode.
-     *
-     * @return the mode
-     */
-    public char getMode() {
-        return this.mode;
-    }
-
-    /**
-     * Gets information on the mode if it sets a prefix on the user.
-     *
-     * @return the channel mode information
-     * @see #isPrefix()
-     * @see #getPrefixedUser()
-     */
-    @Nullable
-    public ChannelUserMode getPrefix() {
-        return this.channelUserMode;
-    }
-
-    /**
-     * Gets the user whose prefix has been changed, if this mode change
-     * involves a user prefix.
-     *
-     * @return user changing prefix
-     * @see #isPrefix()
-     * @see #getPrefix()
-     */
-    @Nullable
-    public User getPrefixedUser() {
-        return (this.isPrefix() && (this.arg != null)) ? this.getChannel().getUser(this.arg) : null;
-    }
-
-    /**
-     * Gets if the mode set sets a user's prefix. If true, you can acquire
-     * additional information via {@link #getPrefix()}.
-     *
-     * @return true if this mode sets a prefix
-     * @see #getPrefix()
-     * @see #getPrefixedUser()
-     */
-    public boolean isPrefix() {
-        return this.channelUserMode != null;
-    }
-
-    /**
-     * Gets if the mode is being set or unset.
-     *
-     * @return true if set, false if unset
-     */
-    public boolean isSetting() {
-        return this.setting;
+    public ChannelModeStatusList getStatusList() {
+        return this.statusList;
     }
 }

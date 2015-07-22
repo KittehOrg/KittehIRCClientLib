@@ -27,6 +27,9 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ChannelMode;
+import org.kitteh.irc.client.library.element.ChannelModeStatus;
+import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.CIKeyMap;
@@ -37,6 +40,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +108,7 @@ class ActorProvider {
     }
 
     class IRCChannel extends IRCActor {
+        private final Map<Character, ChannelModeStatus> channelModes = new HashMap<>();
         private final Map<String, Set<ChannelUserMode>> modes;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
@@ -198,6 +203,16 @@ class ActorProvider {
             }
             return set;
         }
+
+        void updateChannelModes(ChannelModeStatusList statusList) {
+            statusList.getStatuses().stream().filter(status -> !(status instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
+                if (status.isSetting()) {
+                    this.channelModes.put(status.getMode().getMode(), status);
+                } else {
+                    this.channelModes.remove(status.getMode().getMode());
+                }
+            });
+        }
     }
 
     class IRCChannelTopicSnapshot implements Channel.Topic {
@@ -230,6 +245,7 @@ class ActorProvider {
     }
 
     class IRCChannelSnapshot extends IRCActorSnapshot implements Channel {
+        private final ChannelModeStatusList channelModes;
         private final Map<String, Set<ChannelUserMode>> modes;
         private final List<String> names;
         private final Map<String, User> nickMap;
@@ -240,6 +256,7 @@ class ActorProvider {
         private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic) {
             super(channel);
             this.complete = channel.fullListReceived;
+            this.channelModes = ChannelModeStatusList.of(channel.channelModes.values());
             this.topic = topic;
             Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(ActorProvider.this.client);
             newModes.putAll(channel.modes);
@@ -259,6 +276,12 @@ class ActorProvider {
         @Override
         public String getMessagingName() {
             return this.getName();
+        }
+
+        @Override
+        @Nonnull
+        public ChannelModeStatusList getModes() {
+            return this.channelModes;
         }
 
         @Nonnull

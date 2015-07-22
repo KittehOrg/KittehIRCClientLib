@@ -25,14 +25,9 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ChannelMode;
-import org.kitteh.irc.client.library.element.ChannelModeStatus;
-import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
 
 final class ModeData {
     static class IRCChannelModeBase {
@@ -80,35 +75,6 @@ final class ModeData {
         @Override
         public Type getType() {
             return this.type;
-        }
-    }
-
-    static class IRCChannelModeStatus implements ChannelModeStatus {
-        private final ChannelMode mode;
-        private final String parameter;
-        private final boolean setting;
-
-        IRCChannelModeStatus(@Nonnull ChannelMode mode, @Nullable String parameter, boolean setting) {
-            this.mode = mode;
-            this.parameter = parameter;
-            this.setting = setting;
-        }
-
-        @Nonnull
-        @Override
-        public ChannelMode getMode() {
-            return this.mode;
-        }
-
-        @Nullable
-        @Override
-        public String getParameter() {
-            return this.parameter;
-        }
-
-        @Override
-        public boolean isSetting() {
-            return this.setting;
         }
     }
 }

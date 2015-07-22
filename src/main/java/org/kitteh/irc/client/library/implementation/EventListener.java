@@ -28,7 +28,7 @@ import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
-import org.kitteh.irc.client.library.element.ChannelMode;
+import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
@@ -66,6 +66,7 @@ import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.CommandFilter;
 import org.kitteh.irc.client.library.util.NumericFilter;
+import org.kitteh.irc.client.library.util.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -74,7 +75,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -188,9 +188,16 @@ class EventListener {
     @NumericFilter(324)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void channelMode(ClientReceiveNumericEvent event) {
-        // TODO Updated mode processing
-        // [1]      channel name
-        // [2...]   mode / params
+        if (event.getArgs().length < 3) {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "Channel mode info message of incorrect length");
+        }
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        if (channel != null) {
+            ChannelModeStatusList statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getArgs(), 2));
+            channel.updateChannelModes(statusList);
+        } else {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "Channel mode info message sent for invalid channel name");
+        }
     }
 
     @NumericFilter(332) // Topic
@@ -486,51 +493,21 @@ class EventListener {
             // TODO listen to mode on self
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             ActorProvider.IRCChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
-            List<ChannelUserMode> channelUserModes = this.client.getServerInfo().getChannelUserModes();
-            Map<Character, ChannelMode> channelModes = this.client.getServerInfo().getChannelModesMap();
-            int currentArg = 0;
-            while (++currentArg < event.getArgs().length) {
-                String changes = event.getArgs()[currentArg];
-                if (!((changes.charAt(0) == '+') || (changes.charAt(0) == '-'))) {
-                    throw new KittehServerMessageException(event.getOriginalMessage(), "MODE message invalid");
-                }
-                boolean add = true;
-                for (char modeChar : changes.toCharArray()) {
-                    switch (modeChar) {
-                        case '+':
-                            add = true;
-                            break;
-                        case '-':
-                            add = false;
-                            break;
-                        default:
-                            ChannelMode mode = channelModes.get(modeChar);
-                            ChannelUserMode prefixMode = null;
-                            String target = null;
-                            if (mode == null) {
-                                for (ChannelUserMode prefix : channelUserModes) {
-                                    if (prefix.getMode() == modeChar) {
-                                        target = event.getArgs()[++currentArg];
-                                        if (add) {
-                                            channel.trackUserModeAdd(target, prefix);
-                                        } else {
-                                            channel.trackUserModeRemove(target, prefix);
-                                        }
-                                        prefixMode = prefix;
-                                        break;
-                                    }
-                                }
-                                if (prefixMode == null) {
-                                    throw new KittehServerMessageException(event.getOriginalMessage(), "MODE message invalid");
-                                }
-                            } else if (add ? mode.getType().isParameterRequiredOnSetting() : mode.getType().isParameterRequiredOnRemoval()) {
-                                target = event.getArgs()[++currentArg];
-                            }
-                            this.client.getEventManager().callEvent(new ChannelModeEvent(this.client, event.getActor(), channel.snapshot(), add, modeChar, prefixMode, target));
-                            break;
-                    }
-                }
+            ChannelModeStatusList statusList;
+            try {
+                statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getArgs(), 1));
+            } catch (IllegalArgumentException e) {
+                throw new KittehServerMessageException(event.getOriginalMessage(), e.getMessage());
             }
+            this.client.getEventManager().callEvent(new ChannelModeEvent(this.client, event.getActor(), channel.snapshot(), statusList));
+            statusList.getStatuses().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter() != null)).forEach(status -> {
+                if (status.isSetting()) {
+                    channel.trackUserModeAdd(status.getParameter(), (ChannelUserMode) status.getMode());
+                } else {
+                    channel.trackUserModeRemove(status.getParameter(), (ChannelUserMode) status.getMode());
+                }
+            });
+            channel.updateChannelModes(statusList);
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "MODE message sent for invalid target");
         }
