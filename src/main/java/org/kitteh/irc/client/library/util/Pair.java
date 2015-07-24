@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -64,5 +65,11 @@ public final class Pair<Left, Right> {
     @Nullable
     public Right getRight() {
         return this.right;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return "[" + left + ", " + right + "]";
     }
 }

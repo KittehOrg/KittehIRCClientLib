@@ -151,4 +151,10 @@ public class CISet implements Set<String> {
     public void clear() {
         this.map.clear();
     }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return this.map.values().toString();
+    }
 }

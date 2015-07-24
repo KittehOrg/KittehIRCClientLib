@@ -168,4 +168,10 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     public Set<Entry<String, Value>> entrySet() {
         return this.map.values().stream().map(pair -> new AbstractMap.SimpleImmutableEntry<>(pair.getLeft(), pair.getRight())).collect(Collectors.toSet());
     }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return this.map.values().stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)).toString();
+    }
 }
