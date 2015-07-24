@@ -27,6 +27,7 @@ import net.engio.mbassy.listener.IMessageFilter;
 import net.engio.mbassy.subscription.SubscriptionContext;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -63,6 +64,12 @@ public @interface CommandFilter {
                 }
             }
             return false;
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return this.getClass().getSimpleName() + "()";
         }
     }
 
