@@ -223,6 +223,7 @@
                 <configuration>
                     <packageName>org.kitteh.irc.client.library</packageName>
                     <toStringRequired>false</toStringRequired>
+                    <toStringIgnoreUtilities>true</toStringIgnoreUtilities>
                 </configuration>
                 <executions>
                     <execution>
