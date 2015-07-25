@@ -1,0 +1,116 @@
+/*
+ * * Copyright (C) 2013-2015 Matt Baxter http://kitteh.org
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package org.kitteh.irc.client.library.util;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * A toString helper.
+ */
+public class ToStringer {
+    private final List<Pair<String, Object>> list = new LinkedList<>();
+    private final String name;
+
+    /**
+     * Creates a toString helper.
+     *
+     * @param object object that is being toString'd
+     */
+    public ToStringer(@Nonnull Object object) {
+        Sanity.nullCheck(object, "Object cannot be null");
+        this.name = object.getClass().getSimpleName();
+    }
+
+    public ToStringer add(@Nonnull String name, @Nullable Object object) {
+        Sanity.nullCheck(name, "Name cannot be null");
+        this.list.add(new Pair<>(name, object));
+        return this;
+    }
+
+    public ToStringer add(@Nonnull String name, boolean b) {
+        this.add(name, String.valueOf(b));
+        return this;
+    }
+
+    public ToStringer add(@Nonnull String name, byte b) {
+        this.add(name, String.valueOf(b));
+        return this;
+    }
+
+    public ToStringer add(@Nonnull String name, char c) {
+        this.add(name, String.valueOf(c));
+        return this;
+    }
+
+    public ToStringer add(@Nonnull String name, double d) {
+        this.add(name, String.valueOf(d));
+        return this;
+    }
+
+    public ToStringer add(@Nonnull String name, float f) {
+        this.add(name, String.valueOf(f));
+        return this;
+    }
+
+    public ToStringer add(@Nonnull String name, int i) {
+        this.add(name, String.valueOf(i));
+        return this;
+    }
+
+    public ToStringer add(@Nonnull String name, long l) {
+        this.add(name, String.valueOf(l));
+        return this;
+    }
+
+    public ToStringer add(@Nonnull String name, short s) {
+        this.add(name, String.valueOf(s));
+        return this;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder(this.name.length() + (this.list.size() * 10));
+        builder.append(name).append(" (");
+        boolean first = true;
+        for (Pair<String, Object> pair : this.list) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append(", ");
+            }
+            builder.append(pair.getLeft()).append('=');
+            if ((pair.getRight() != null) && pair.getRight().getClass().isArray()) {
+                String arr = Arrays.deepToString(new Object[]{pair.getRight()});
+                builder.append(arr.substring(1, arr.length() - 1));
+            } else {
+                builder.append(pair.getRight());
+            }
+        }
+        builder.append(')');
+        return builder.toString();
+    }
+}
