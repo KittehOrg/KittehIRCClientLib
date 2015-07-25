@@ -145,7 +145,7 @@ final class IRCClient extends InternalClient {
     @Nullable
     public Channel getChannel(@Nonnull String name) {
         Sanity.nullCheck(name, "Channel name cannot be null");
-        ActorProvider.IRCChannel channel = this.actorProvider.getChannel(name);
+        ActorProvider.IRCChannel channel = this.actorProvider.getTrackedChannel(name);
         return (channel == null) ? null : channel.snapshot();
     }
 

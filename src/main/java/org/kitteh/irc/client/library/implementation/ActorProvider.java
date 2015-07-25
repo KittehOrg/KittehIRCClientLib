@@ -511,11 +511,16 @@ class ActorProvider {
 
     @Nullable
     IRCChannel getChannel(@Nonnull String name) {
-        IRCChannel channel = this.trackedChannels.get(name);
+        IRCChannel channel = this.getTrackedChannel(name);
         if ((channel == null) && this.client.getServerInfo().isValidChannel(name)) {
             channel = new IRCChannel(name);
         }
         return channel;
+    }
+
+    @Nullable
+    IRCChannel getTrackedChannel(@Nonnull String name) {
+        return this.trackedChannels.get(name);
     }
 
     @Nonnull
