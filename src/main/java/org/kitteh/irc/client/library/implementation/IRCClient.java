@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -326,6 +327,12 @@ final class IRCClient extends InternalClient {
         this.exceptionListener.shutdown();
         this.inputListener.shutdown();
         this.outputListener.shutdown();
+    }
+
+    @Override
+    @Nonnull
+    public String toString() {
+        return new ToStringer(this).add("name", this.getName()).add("server", this.getConfig().getNotNull(Config.SERVER_ADDRESS)).toString();
     }
 
     /**

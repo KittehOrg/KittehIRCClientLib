@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -104,6 +105,12 @@ class ActorProvider {
         @Nonnull
         String toLowerCase(@Nonnull String input) { // Shortcut
             return this.client.getServerInfo().getCaseMapping().toLowerCase(input);
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("client", this.client).add("name", this.name).toString();
         }
     }
 
@@ -242,6 +249,12 @@ class ActorProvider {
         public String getTopic() {
             return this.topic;
         }
+
+        @Nullable
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("topic", this.topic).add("setter", this.setter).add("time", this.time).toString();
+        }
     }
 
     class IRCChannelSnapshot extends IRCActorSnapshot implements Channel {
@@ -325,6 +338,12 @@ class ActorProvider {
         public int hashCode() {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
             return (this.toLowerCase(this.getName()).hashCode() * 2) + this.getClient().hashCode();
+        }
+
+        @Override
+        @Nonnull
+        public String toString() {
+            return new ToStringer(this).add("client", this.getClient()).add("name", this.getName()).add("complete", this.complete).add("users", this.users.size()).toString();
         }
     }
 
@@ -460,6 +479,12 @@ class ActorProvider {
         @Override
         public boolean isAway() {
             return this.isAway;
+        }
+
+        @Override
+        @Nonnull
+        public String toString() {
+            return new ToStringer(this).add("client", this.getClient()).add("nick", this.nick).add("user", this.user).add("host", this.host).add("channels", this.channels.size()).toString();
         }
     }
 
