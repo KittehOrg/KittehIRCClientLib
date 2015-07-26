@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.command;
 import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -91,5 +92,11 @@ public class CapabilityRequestCommand extends Command {
 
     private void send(String requests) {
         this.getClient().sendRawLineImmediately("CAP REQ :" + requests);
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.getClient()).add("requests", this.requests).toString();
     }
 }

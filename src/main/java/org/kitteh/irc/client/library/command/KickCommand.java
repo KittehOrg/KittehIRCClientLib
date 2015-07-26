@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -119,5 +120,11 @@ public class KickCommand extends ChannelCommand {
             throw new IllegalStateException("Target not defined");
         }
         this.getClient().sendRawLine("KICK " + this.getChannel() + ' ' + this.target + (this.reason != null ? (" :" + this.reason) : ""));
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.getClient()).add("target", this.target).add("reason", this.reason).toString();
     }
 }

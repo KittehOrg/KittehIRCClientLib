@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -149,5 +150,11 @@ public class ChannelModeStatusList {
             }
         }
         return modes.toString() + parameters;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("list", this.statuses).toString();
     }
 }

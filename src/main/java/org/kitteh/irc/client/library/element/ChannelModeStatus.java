@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,5 +97,11 @@ public class ChannelModeStatus {
      */
     public boolean isSetting() {
         return this.setting;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.getClient()).add("mode", this.mode).add("setting", this.setting).add("parameter", this.parameter).toString();
     }
 }

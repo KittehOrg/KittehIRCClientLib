@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -137,5 +138,11 @@ public class ModeCommand extends ChannelCommand {
 
     private void send(@Nonnull List<ChannelModeStatus> queue) {
         this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + ChannelModeStatusList.of(queue).getStatusString());
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.getClient()).add("modes", this.changes).toString();
     }
 }
