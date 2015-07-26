@@ -27,6 +27,7 @@ import io.netty.handler.ssl.util.SimpleTrustManagerFactory;
 import io.netty.util.internal.EmptyArrays;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.SSLCertificateAcceptEvent;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.net.ssl.ManagerFactoryParameters;
@@ -56,6 +57,12 @@ final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
         @Override
         public X509Certificate[] getAcceptedIssuers() {
             return EmptyArrays.EMPTY_X509_CERTIFICATES;
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
         }
     }
 

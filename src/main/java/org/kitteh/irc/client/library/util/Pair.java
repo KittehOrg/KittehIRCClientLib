@@ -70,6 +70,6 @@ public final class Pair<Left, Right> {
     @Nonnull
     @Override
     public String toString() {
-        return "[" + left + ", " + right + "]";
+        return new ToStringer(this).add("left", this.left).add("right", this.right).toString();
     }
 }

@@ -32,6 +32,7 @@ import net.engio.mbassy.bus.error.PublicationError;
 import org.kitteh.irc.client.library.EventManager;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -42,6 +43,12 @@ final class IRCEventManager implements EventManager {
         @Override
         public void handleError(@Nonnull PublicationError publicationError) {
             IRCEventManager.this.client.getExceptionListener().queue(new KittehEventException(publicationError.getCause()));
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
         }
     }
 
@@ -75,5 +82,11 @@ final class IRCEventManager implements EventManager {
     public synchronized void unregisterEventListener(@Nonnull Object listener) {
         this.listeners.remove(listener);
         this.bus.unsubscribe(listener);
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.client).toString();
     }
 }

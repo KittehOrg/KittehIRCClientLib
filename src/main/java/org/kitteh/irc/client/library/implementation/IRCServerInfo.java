@@ -24,11 +24,11 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.CaseMapping;
-import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ServerInfo;
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 final class IRCServerInfo implements ServerInfo {
+    private final InternalClient client;
     private CaseMapping caseMapping = CaseMapping.RFC1459;
     private int channelLengthLimit = -1;
     private Map<Character, Integer> channelLimits = new HashMap<>();
@@ -61,7 +62,8 @@ final class IRCServerInfo implements ServerInfo {
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
 
-    IRCServerInfo(@Nonnull Client client) {
+    IRCServerInfo(@Nonnull InternalClient client) {
+        this.client = client;
         this.channelModes = new ArrayList<>();
         this.channelModes.add(new ModeData.IRCChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER));
         this.channelModes.add(new ModeData.IRCChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER));
@@ -227,5 +229,11 @@ final class IRCServerInfo implements ServerInfo {
             }
         }
         return null;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.client).toString();
     }
 }

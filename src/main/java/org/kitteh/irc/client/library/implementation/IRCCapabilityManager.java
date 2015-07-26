@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -72,13 +73,21 @@ final class IRCCapabilityManager implements CapabilityManager {
         public int hashCode() {
             return (2 * this.name.hashCode()) + (this.disable ? 1 : 0);
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
+        }
     }
 
+    private final InternalClient client;
     private final List<String> capabilities = new ArrayList<>();
     private List<String> supportedCapabilities = new ArrayList<>();
     private boolean negotiating = true;
 
-    IRCCapabilityManager() {
+    IRCCapabilityManager(InternalClient client) {
+        this.client = client;
     }
 
     @Nonnull
@@ -118,5 +127,11 @@ final class IRCCapabilityManager implements CapabilityManager {
 
     void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
         this.supportedCapabilities = capabilityStates.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toList());
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.client).toString();
     }
 }

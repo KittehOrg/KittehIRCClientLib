@@ -172,6 +172,6 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     @Nonnull
     @Override
     public String toString() {
-        return this.map.values().stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)).toString();
+        return new ToStringer(this).add("client", this.client).add("map", this.map.values().stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight))).toString();
     }
 }

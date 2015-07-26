@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.AuthType;
 import org.kitteh.irc.client.library.ClientBuilder;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,6 +75,12 @@ final class Config {
         private Class<Type> getType() {
             return this.type;
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
+        }
     }
 
     abstract static class Wrapper<Type> {
@@ -93,11 +100,23 @@ final class Config {
         ExceptionConsumerWrapper(@Nonnull Consumer<Exception> consumer) {
             super(consumer);
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
+        }
     }
 
     static final class StringConsumerWrapper extends Wrapper<String> {
         StringConsumerWrapper(@Nonnull Consumer<String> consumer) {
             super(consumer);
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
         }
     }
 
@@ -187,5 +206,11 @@ final class Config {
      */
     <Type> void set(@Nonnull Entry<Type> entry, @Nullable Type value) {
         this.map.put(entry, (value != null) ? value : NULL);
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).toString();
     }
 }

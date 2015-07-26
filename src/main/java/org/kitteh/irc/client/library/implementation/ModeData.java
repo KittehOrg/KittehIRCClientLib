@@ -26,11 +26,12 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
 final class ModeData {
-    static class IRCChannelModeBase {
+    static abstract class IRCChannelModeBase {
         private final Client client;
         private final char mode;
 
@@ -61,6 +62,12 @@ final class ModeData {
         public char getPrefix() {
             return this.prefix;
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("client", this.getClient()).add("mode", this.getMode()).add("prefix", this.prefix).toString();
+        }
     }
 
     static class IRCChannelMode extends IRCChannelModeBase implements ChannelMode {
@@ -75,6 +82,12 @@ final class ModeData {
         @Override
         public Type getType() {
             return this.type;
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("client", this.getClient()).add("mode", this.getMode()).add("type", this.type).toString();
         }
     }
 }

@@ -155,6 +155,6 @@ public class CISet implements Set<String> {
     @Nonnull
     @Override
     public String toString() {
-        return this.map.values().toString();
+        return new ToStringer(this).add("client", this.client).add("set", this.map.values()).toString();
     }
 }

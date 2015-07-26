@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.AuthManager;
 import org.kitteh.irc.client.library.AuthType;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -75,5 +76,11 @@ final class IRCAuthManager implements AuthManager {
         Sanity.nullCheck(username, "Username cannot be null");
         Sanity.safeMessageCheck(username, "authentication username");
         this.username = username;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.client).toString();
     }
 }

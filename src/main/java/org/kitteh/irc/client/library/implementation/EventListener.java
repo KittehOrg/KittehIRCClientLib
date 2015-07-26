@@ -67,6 +67,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.CommandFilter;
 import org.kitteh.irc.client.library.util.NumericFilter;
 import org.kitteh.irc.client.library.util.StringUtil;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -676,6 +677,12 @@ class EventListener {
             ActorProvider.IRCChannel getChannel() {
                 return this.channel;
             }
+
+            @Nonnull
+            @Override
+            public String toString() {
+                return new ToStringer(this).toString();
+            }
         }
 
         private static class TargetedChannel extends MessageTargetInfo {
@@ -696,13 +703,34 @@ class EventListener {
             ChannelUserMode getPrefix() {
                 return this.prefix;
             }
+
+            @Nonnull
+            @Override
+            public String toString() {
+                return new ToStringer(this).toString();
+            }
         }
 
         private static class Private extends MessageTargetInfo {
             static final Private INSTANCE = new Private();
+
+            private Private() {
+            }
+
+            @Nonnull
+            @Override
+            public String toString() {
+                return new ToStringer(this).toString();
+            }
         }
 
         static final MessageTargetInfo UNKNOWN = new MessageTargetInfo();
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).toString();
     }
 
     @Nonnull

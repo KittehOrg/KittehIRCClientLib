@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 class FakeClient extends InternalClient {
     private final AuthManager authManager = new IRCAuthManager(this);
-    private final IRCCapabilityManager capabilityManager = new IRCCapabilityManager();
+    private final IRCCapabilityManager capabilityManager = new IRCCapabilityManager(this);
     private final Config config = new Config();
     private final EventManager eventManager = new IRCEventManager(this);
     private final Listener<Exception> listenerException = new Listener<>("Test", null);

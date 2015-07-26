@@ -69,7 +69,7 @@ public @interface NumericFilter {
         @Nonnull
         @Override
         public String toString() {
-            return this.getClass().getSimpleName() + "()";
+            return new ToStringer(this).toString();
         }
     }
 

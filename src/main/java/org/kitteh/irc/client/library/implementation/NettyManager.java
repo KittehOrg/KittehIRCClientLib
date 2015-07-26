@@ -51,6 +51,7 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -224,6 +225,12 @@ final class NettyManager {
             this.sendMessage("QUIT" + ((message != null) ? (" :" + message) : ""), true);
             this.channel.close();
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("client", this.client).toString();
+        }
     }
 
     @Nullable
@@ -271,5 +278,11 @@ final class NettyManager {
         }
         connections.add(clientConnection);
         return clientConnection;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).toString();
     }
 }

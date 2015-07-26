@@ -73,6 +73,12 @@ class ActorProvider {
         IRCActorSnapshot snapshot() {
             return new IRCActorSnapshot(this);
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
+        }
     }
 
     class IRCActorSnapshot implements Actor {
@@ -219,6 +225,12 @@ class ActorProvider {
                     this.channelModes.remove(status.getMode().getMode());
                 }
             });
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
         }
     }
 
@@ -393,6 +405,12 @@ class ActorProvider {
         @Nonnull
         IRCUserSnapshot snapshot() {
             return new IRCUserSnapshot(this);
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
         }
     }
 
@@ -599,5 +617,11 @@ class ActorProvider {
         if (this.trackedChannels.values().stream().noneMatch(channel -> channel.modes.containsKey(nick))) {
             this.trackedUsers.remove(nick);
         }
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.client).toString();
     }
 }

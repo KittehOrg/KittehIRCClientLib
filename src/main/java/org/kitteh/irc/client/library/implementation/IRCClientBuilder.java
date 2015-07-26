@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.AuthType;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ClientBuilder;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -246,6 +247,12 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
         } catch (CloneNotSupportedException ignored) {
             throw new IllegalStateException("Something has gone horribly wrong");
         }
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("question", "Why would you toString this?").toString();
     }
 
     private void inetSet(@Nonnull Config.Entry<InetSocketAddress> entry, @Nullable String host, int port) {

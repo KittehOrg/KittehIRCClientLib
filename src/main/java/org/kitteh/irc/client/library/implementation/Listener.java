@@ -24,7 +24,9 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
+import org.kitteh.irc.client.library.util.ToStringer;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Queue;
 import java.util.function.Consumer;
@@ -91,5 +93,11 @@ final class Listener<Type> {
         if (this.thread != null) {
             this.thread.interrupt();
         }
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).toString();
     }
 }
