@@ -220,9 +220,9 @@ class ActorProvider {
         void updateChannelModes(ChannelModeStatusList statusList) {
             statusList.getStatuses().stream().filter(status -> !(status instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
                 if (status.isSetting()) {
-                    this.channelModes.put(status.getMode().getMode(), status);
+                    this.channelModes.put(status.getMode().getChar(), status);
                 } else {
-                    this.channelModes.remove(status.getMode().getMode());
+                    this.channelModes.remove(status.getMode().getChar());
                 }
             });
         }

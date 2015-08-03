@@ -45,7 +45,7 @@ final class ModeData {
             return this.client;
         }
 
-        public char getMode() {
+        public char getChar() {
             return this.mode;
         }
     }
@@ -66,7 +66,7 @@ final class ModeData {
         @Nonnull
         @Override
         public String toString() {
-            return new ToStringer(this).add("client", this.getClient()).add("mode", this.getMode()).add("prefix", this.prefix).toString();
+            return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar()).add("prefix", this.prefix).toString();
         }
     }
 
@@ -87,7 +87,7 @@ final class ModeData {
         @Nonnull
         @Override
         public String toString() {
-            return new ToStringer(this).add("client", this.getClient()).add("mode", this.getMode()).add("type", this.type).toString();
+            return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar()).add("type", this.type).toString();
         }
     }
 }

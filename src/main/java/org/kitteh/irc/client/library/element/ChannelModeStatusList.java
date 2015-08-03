@@ -53,8 +53,8 @@ public class ChannelModeStatusList {
         Sanity.nullCheck(client, "String cannot be null");
         Sanity.safeMessageCheck(string, "string");
         Map<Character, ChannelMode> modes = new HashMap<>();
-        client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getMode(), mode));
-        client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getMode(), mode));
+        client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
+        client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));
         List<ChannelModeStatus> list = new LinkedList<>();
         String[] args = string.split(" ");
         int currentArg = -1;
@@ -144,7 +144,7 @@ public class ChannelModeStatusList {
                 add = change.isSetting();
                 modes.append(add ? '+' : '-');
             }
-            modes.append(change.getMode().getMode());
+            modes.append(change.getMode().getChar());
             if (change.getParameter() != null) {
                 parameters.append(' ').append(change.getParameter());
             }

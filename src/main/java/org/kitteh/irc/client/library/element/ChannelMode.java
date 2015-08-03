@@ -80,19 +80,19 @@ public interface ChannelMode {
     }
 
     /**
+     * Gets the mode character.
+     *
+     * @return mode character
+     */
+    char getChar();
+
+    /**
      * Gets the client this mode is for.
      *
      * @return client
      */
     @Nonnull
     Client getClient();
-
-    /**
-     * Gets the mode character.
-     *
-     * @return mode character
-     */
-    char getMode();
 
     /**
      * Gets the type this mode is.

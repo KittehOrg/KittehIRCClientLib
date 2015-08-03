@@ -128,7 +128,7 @@ final class IRCServerInfo implements ServerInfo {
         List<ChannelMode> modes = this.channelModes;
         if (this.channelModesMap == null) {
             this.channelModesMap = new HashMap<>();
-            modes.forEach(mode -> this.channelModesMap.put(mode.getMode(), mode));
+            modes.forEach(mode -> this.channelModesMap.put(mode.getChar(), mode));
             this.channelModesMap = Collections.unmodifiableMap(this.channelModesMap);
         }
         return this.channelModesMap;
