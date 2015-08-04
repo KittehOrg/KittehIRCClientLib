@@ -32,7 +32,7 @@ import java.util.Set;
 /**
  * Represents an IRC user.
  */
-public interface User extends MessageReceiver {
+public interface User extends MessageReceiver, Staleable {
     /**
      * Gets the Services account this user is signed into. Only available if
      * the server supports WHOX and the user and client share a channel.

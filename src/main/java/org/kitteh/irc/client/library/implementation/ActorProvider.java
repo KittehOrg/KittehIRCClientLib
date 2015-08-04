@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelModeStatus;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.Staleable;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -48,6 +49,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -120,7 +122,30 @@ class ActorProvider {
         }
     }
 
-    class IRCChannel extends IRCActor {
+    private class IRCStaleable<T extends Staleable> extends IRCActor {
+        private T snapshot;
+
+        protected IRCStaleable(@Nonnull String name) {
+            super(name);
+        }
+
+        protected boolean isStale(T potentiallyStale) {
+            return this.snapshot != potentiallyStale;
+        }
+
+        protected void markStale() {
+            this.snapshot = null;
+        }
+
+        protected synchronized T snapshot(Supplier<T> supplier) {
+            if (this.snapshot != null) {
+                return this.snapshot;
+            }
+            return this.snapshot = supplier.get();
+        }
+    }
+
+    class IRCChannel extends IRCStaleable<IRCChannelSnapshot> {
         private final Map<Character, ChannelModeStatus> channelModes = new HashMap<>();
         private final Map<String, Set<ChannelUserMode>> modes;
         private volatile boolean fullListReceived;
@@ -138,20 +163,25 @@ class ActorProvider {
         }
 
         void setListReceived() {
+            this.markStale();
             this.fullListReceived = true;
         }
 
         private void setTracked(boolean tracked) {
+            this.markStale();
             this.tracked = tracked;
+            this.modes.keySet().forEach(ActorProvider.this::staleUser);
         }
 
         void setTopic(@Nonnull String topic) {
+            this.markStale();
             this.topic = topic;
             this.topicTime = -1;
             this.topicSetter = null;
         }
 
         void setTopic(long time, @Nonnull Actor user) {
+            this.markStale();
             this.topicTime = time;
             this.topicSetter = user;
         }
@@ -168,43 +198,46 @@ class ActorProvider {
                     }
                 }
             }
-            Channel.Topic topic = new IRCChannelTopicSnapshot(this.topicTime, this.topic, this.topicSetter);
-            return new IRCChannelSnapshot(this, topic);
+            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter)));
         }
 
         void trackUser(@Nonnull IRCUser user, @Nullable Set<ChannelUserMode> modes) {
+            this.markStale();
+            user.markStale();
             ActorProvider.this.trackUser(user);
-            this.trackUser(user.getNick(), modes);
-        }
-
-        void trackUser(@Nonnull String nick, @Nullable Set<ChannelUserMode> modes) {
-            this.modes.put(nick, (modes == null) ? new HashSet<>() : new HashSet<>(modes));
+            this.setModes(user.getNick(), modes);
         }
 
         void trackNick(@Nonnull String nick, @Nullable Set<ChannelUserMode> modes) {
+            this.markStale();
             if (!this.modes.containsKey(nick) || this.modes.get(nick).isEmpty()) {
-                this.trackUser(nick, modes);
+                this.setModes(nick, modes);
             }
         }
 
         void trackUserModeAdd(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
+            this.markStale();
             this.getModes(nick).add(mode);
         }
 
         void trackUserModeRemove(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
+            this.markStale();
             this.getModes(nick).remove(mode);
         }
 
         void trackUserNick(@Nonnull String oldNick, @Nonnull String newNick) {
+            this.markStale();
             Set<ChannelUserMode> modes = this.modes.remove(oldNick);
             if (modes != null) {
-                this.trackUser(newNick, modes);
+                this.setModes(newNick, modes);
             }
         }
 
         void trackUserPart(@Nonnull String nick) {
+            this.markStale();
             this.modes.remove(nick);
             ActorProvider.this.updateUser(nick);
+            ActorProvider.this.staleUser(nick);
         }
 
         @Nonnull
@@ -217,7 +250,13 @@ class ActorProvider {
             return set;
         }
 
+        private void setModes(@Nonnull String nick, @Nullable Set<ChannelUserMode> modes) {
+            this.markStale();
+            this.modes.put(nick, (modes == null) ? new HashSet<>() : new HashSet<>(modes));
+        }
+
         void updateChannelModes(ChannelModeStatusList statusList) {
+            this.markStale();
             statusList.getStatuses().stream().filter(status -> !(status instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
                 if (status.isSetting()) {
                     this.channelModes.put(status.getMode().getChar(), status);
@@ -353,13 +392,22 @@ class ActorProvider {
         }
 
         @Override
+        public boolean isStale() {
+            IRCChannel channel = ActorProvider.this.getTrackedChannel(this.getName());
+            if (channel != null) {
+                return channel.isStale(this);
+            }
+            return true;
+        }
+
+        @Override
         @Nonnull
         public String toString() {
             return new ToStringer(this).add("client", this.getClient()).add("name", this.getName()).add("complete", this.complete).add("users", this.users.size()).toString();
         }
     }
 
-    class IRCUser extends IRCActor {
+    class IRCUser extends IRCStaleable<IRCUserSnapshot> {
         private String account;
         private final String host;
         private String nick;
@@ -381,30 +429,35 @@ class ActorProvider {
         }
 
         private void setNick(@Nonnull String newNick) {
+            this.markStale();
             this.nick = newNick;
             this.setName(this.nick + '!' + this.user + '@' + this.host);
         }
 
         void setAccount(@Nullable String account) {
+            this.markStale();
             this.account = account;
         }
 
         void setAway(boolean isAway) {
+            this.markStale();
             this.isAway = isAway;
         }
 
         void setRealName(@Nullable String realName) {
+            this.markStale();
             this.realName = realName;
         }
 
         void setServer(@Nonnull String server) {
+            this.markStale();
             this.server = server;
         }
 
         @Override
         @Nonnull
         IRCUserSnapshot snapshot() {
-            return new IRCUserSnapshot(this);
+            return super.snapshot(() -> new IRCUserSnapshot(this));
         }
 
         @Nonnull
@@ -500,6 +553,15 @@ class ActorProvider {
         }
 
         @Override
+        public boolean isStale() {
+            IRCUser user = ActorProvider.this.getUser(this.getNick());
+            if (user != null) {
+                return user.isStale(this);
+            }
+            return true;
+        }
+
+        @Override
         @Nonnull
         public String toString() {
             return new ToStringer(this).add("client", this.getClient()).add("nick", this.nick).add("user", this.user).add("host", this.host).add("channels", this.channels.size()).toString();
@@ -585,6 +647,13 @@ class ActorProvider {
         return this.trackedChannels.containsKey(channel);
     }
 
+    void staleUser(String nick) {
+        IRCUser user = this.getUser(nick);
+        if (user != null) {
+            user.markStale();
+        }
+    }
+
     void trackUserAccount(@Nonnull String nick, @Nullable String account) {
         this.trackedUsers.get(nick).setAccount(account);
     }
@@ -615,7 +684,10 @@ class ActorProvider {
 
     private void updateUser(@Nonnull String nick) {
         if (this.trackedChannels.values().stream().noneMatch(channel -> channel.modes.containsKey(nick))) {
-            this.trackedUsers.remove(nick);
+            IRCUser removed = this.trackedUsers.remove(nick);
+            if (removed != null) {
+                removed.markStale();
+            }
         }
     }
 
