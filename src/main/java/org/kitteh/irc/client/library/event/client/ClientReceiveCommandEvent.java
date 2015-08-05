@@ -48,6 +48,7 @@ public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
      * Constructs the event.
      *
      * @param client client
+     * @param originalMessage original message
      * @param actor actor
      * @param command command
      * @param args args

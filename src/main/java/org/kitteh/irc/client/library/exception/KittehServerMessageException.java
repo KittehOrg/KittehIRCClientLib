@@ -24,9 +24,15 @@
 package org.kitteh.irc.client.library.exception;
 
 /**
- * Indicates a problem has occured in the information sent by the server.
+ * Indicates a problem has occurred in the information sent by the server.
  */
 public class KittehServerMessageException extends RuntimeException {
+    /**
+     * Constructs the exception.
+     *
+     * @param message message that couldn't be processed
+     * @param problem why it couldn't be processed
+     */
     public KittehServerMessageException(String message, String problem) {
         super("Error processing message: " + problem + ". Message: " + message);
     }

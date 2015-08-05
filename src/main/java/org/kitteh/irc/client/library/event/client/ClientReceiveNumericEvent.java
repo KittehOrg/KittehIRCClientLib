@@ -49,6 +49,7 @@ public class ClientReceiveNumericEvent extends ClientEventBase {
      * Constructs the event.
      *
      * @param client client
+     * @param originalMessage original message
      * @param server server
      * @param numeric numeric
      * @param args args

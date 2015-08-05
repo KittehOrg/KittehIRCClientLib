@@ -94,7 +94,7 @@ public class ToStringer {
 
     public String toString() {
         StringBuilder builder = new StringBuilder(this.name.length() + (this.list.size() * 10));
-        builder.append(name).append(" (");
+        builder.append(this.name).append(" (");
         boolean first = true;
         for (Pair<String, Object> pair : this.list) {
             if (first) {

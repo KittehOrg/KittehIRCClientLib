@@ -31,7 +31,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.annotation.Nonnull;
 
 final class ModeData {
-    static abstract class IRCChannelModeBase {
+    abstract static class IRCChannelModeBase {
         private final Client client;
         private final char mode;
 

@@ -42,7 +42,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      *
      * @param client client for which this is occurring
      * @param actor the mode setter
-     * @param channel the channel in which the change is occuring
+     * @param channel the channel in which the change is occurring
      * @param statusList list of statuses
      */
     public ChannelModeEvent(@Nonnull Client client, @Nonnull Actor actor, @Nonnull Channel channel, @Nonnull ChannelModeStatusList statusList) {
