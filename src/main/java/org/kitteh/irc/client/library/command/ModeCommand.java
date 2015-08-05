@@ -80,7 +80,7 @@ public class ModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if mode invalid
      */
     @Nonnull
-    public ModeCommand addModeChange(boolean add, @Nonnull ChannelMode mode) {
+    public ModeCommand add(boolean add, @Nonnull ChannelMode mode) {
         return this.addChange(add, mode, null);
     }
 
@@ -95,7 +95,7 @@ public class ModeCommand extends ChannelCommand {
      * different client or parameter is null
      */
     @Nonnull
-    public ModeCommand addModeChange(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
+    public ModeCommand add(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
         Sanity.nullCheck(parameter, "Parameter cannot be null");
         return this.addChange(add, mode, parameter);
     }
@@ -111,7 +111,7 @@ public class ModeCommand extends ChannelCommand {
      * user comes from a different client or parameter is null
      */
     @Nonnull
-    public ModeCommand addModeChange(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
+    public ModeCommand add(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
         Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
         return this.addChange(add, mode, parameter.getNick());
