@@ -81,7 +81,7 @@ public class ModeCommand extends ChannelCommand {
      */
     @Nonnull
     public ModeCommand addModeChange(boolean add, @Nonnull ChannelMode mode) {
-        return this.addModeChange(add, mode, null);
+        return this.addChange(add, mode, null);
     }
 
     /**
@@ -89,19 +89,14 @@ public class ModeCommand extends ChannelCommand {
      *
      * @param add true if adding, false if removing
      * @param mode the mode to be changed
-     * @param parameter mode parameter or null if one is not needed
+     * @param parameter mode parameter
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid comes from a
-     * different client
+     * different client or parameter is null
      */
     @Nonnull
-    public ModeCommand addModeChange(boolean add, @Nonnull ChannelMode mode, @Nullable String parameter) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
-        Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
-        if (parameter != null) {
-            Sanity.safeMessageCheck(parameter);
-        }
-        this.changes.add(new ChannelModeStatus(add, mode, parameter));
+    public ModeCommand addModeChange(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
+        Sanity.nullCheck(parameter, "Parameter cannot be null");
         return this;
     }
 
@@ -113,13 +108,25 @@ public class ModeCommand extends ChannelCommand {
      * @param parameter user whose nick will be sent or null if not needed
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid or either mode or
-     * user comes from a different client
+     * user comes from a different client or parameter is null
      */
     @Nonnull
     public ModeCommand addModeChange(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
         Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
-        return this.addModeChange(add, mode, parameter.getNick());
+        return this.addChange(add, mode, parameter.getNick());
+    }
+
+    private ModeCommand addChange(boolean add, @Nonnull ChannelMode mode, @Nullable String parameter) {
+        Sanity.nullCheck(mode, "Mode cannot be null");
+        Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
+        if (parameter != null) {
+            Sanity.safeMessageCheck(parameter);
+            this.changes.add(new ChannelModeStatus(add, mode, parameter));
+        } else {
+            this.changes.add(new ChannelModeStatus(add, mode));
+        }
+        return this;
     }
 
     @Override

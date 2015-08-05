@@ -40,6 +40,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -51,7 +52,7 @@ final class IRCClient extends InternalClient {
         }
 
         @Override
-        protected void processElement(@Nullable String element) {
+        protected void processElement(@Nonnull String element) {
             try {
                 IRCClient.this.handleLine(element);
             } catch (final Exception thrown) {
@@ -142,12 +143,12 @@ final class IRCClient extends InternalClient {
         return this.capabilityManager;
     }
 
+    @Nonnull
     @Override
-    @Nullable
-    public Channel getChannel(@Nonnull String name) {
+    public Optional<Channel> getChannel(@Nonnull String name) {
         Sanity.nullCheck(name, "Channel name cannot be null");
         ActorProvider.IRCChannel channel = this.actorProvider.getTrackedChannel(name);
-        return (channel == null) ? null : channel.snapshot();
+        return (channel == null) ? Optional.empty() : Optional.of(channel.snapshot());
     }
 
     @Nonnull
@@ -192,7 +193,28 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void removeChannel(@Nonnull String channelName, @Nullable String reason) {
+    public void removeChannel(@Nonnull String channelName) {
+        this.removeChannel(channelName, Optional.empty());
+    }
+
+    @Override
+    public void removeChannel(@Nonnull Channel channel) {
+        this.removeChannel(channel, Optional.empty());
+    }
+
+    @Override
+    public void removeChannel(@Nonnull String channelName, @Nonnull String reason) {
+        Sanity.nullCheck(reason, "Reason cannot be null");
+        this.removeChannel(channelName, Optional.of(reason));
+    }
+
+    @Override
+    public void removeChannel(@Nonnull Channel channel, @Nonnull String reason) {
+        Sanity.nullCheck(reason, "Reason cannot be null");
+        this.removeChannel(channel, Optional.of(reason));
+    }
+
+    private void removeChannel(@Nonnull String channelName, @Nonnull Optional<String> reason) {
         Sanity.nullCheck(channelName, "Channel cannot be null");
         ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
         if (channel != null) {
@@ -200,17 +222,29 @@ final class IRCClient extends InternalClient {
         }
     }
 
-    @Override
-    public void removeChannel(@Nonnull Channel channel, @Nullable String reason) {
+    private void removeChannel(@Nonnull Channel channel, @Nonnull Optional<String> reason) {
         Sanity.nullCheck(channel, "Channel cannot be null");
-        if (reason != null) {
-            Sanity.safeMessageCheck(reason, "part reason");
-        }
+        reason.ifPresent(message -> Sanity.safeMessageCheck(message, "part reason"));
         String channelName = channel.getName();
         this.channelsIntended.remove(channelName);
         if (this.actorProvider.getTrackedChannelNames().contains(channel.getName())) {
-            this.sendRawLine("PART " + channelName + (reason == null ? "" : " :" + reason));
+            this.sendRawLine("PART " + channelName + (reason.isPresent() ? (" :" + reason) : ""));
         }
+    }
+
+    @Override
+    public void removeExceptionListener() {
+        this.exceptionListener.removeConsumer();
+    }
+
+    @Override
+    public void removeInputListener() {
+        this.inputListener.removeConsumer();
+    }
+
+    @Override
+    public void removeOutputListener() {
+        this.outputListener.removeConsumer();
     }
 
     @Override
@@ -283,12 +317,14 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void setExceptionListener(@Nullable Consumer<Exception> listener) {
+    public void setExceptionListener(@Nonnull Consumer<Exception> listener) {
+        Sanity.nullCheck(listener, "Listener cannot be null");
         this.exceptionListener.setConsumer(listener);
     }
 
     @Override
-    public void setInputListener(@Nullable Consumer<String> listener) {
+    public void setInputListener(@Nonnull Consumer<String> listener) {
+        Sanity.nullCheck(listener, "Listener cannot be null");
         this.inputListener.setConsumer(listener);
     }
 
@@ -310,18 +346,27 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void setOutputListener(@Nullable Consumer<String> listener) {
+    public void setOutputListener(@Nonnull Consumer<String> listener) {
+        Sanity.nullCheck(listener, "Listener cannot be null");
         this.outputListener.setConsumer(listener);
     }
 
     @Override
-    public void shutdown(@Nullable String reason) {
-        if (reason != null) {
-            Sanity.safeMessageCheck(reason, "quit reason");
-        }
+    public void shutdown() {
+        this.shutdownInternal(null);
+    }
+
+    @Override
+    public void shutdown(@Nonnull String reason) {
+        Sanity.nullCheck(reason, "Reason cannot be null");
+        Sanity.safeMessageCheck(reason, "quit reason");
+        this.shutdownInternal(reason);
+    }
+
+    private void shutdownInternal(@Nullable String reason) {
         this.processor.interrupt();
 
-        this.connection.shutdown(((reason != null) && reason.isEmpty()) ? null : reason);
+        this.connection.shutdown(reason);
 
         // Shut these down last, so they get any last firings
         this.exceptionListener.shutdown();
@@ -454,8 +499,8 @@ final class IRCClient extends InternalClient {
         return argsList.toArray(new String[argsList.size()]);
     }
 
-    private void handleLine(@Nullable final String line) {
-        if ((line == null) || (line.isEmpty())) {
+    private void handleLine(@Nonnull final String line) {
+        if (line.isEmpty()) {
             return;
         }
 

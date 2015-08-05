@@ -48,6 +48,7 @@ public class ChannelModeStatusList {
      * @param string string to parse
      * @return list
      */
+    @Nonnull
     public static ChannelModeStatusList from(@Nonnull Client client, @Nonnull String string) {
         Sanity.nullCheck(client, "Client cannot be null");
         Sanity.nullCheck(client, "String cannot be null");
@@ -81,7 +82,7 @@ public class ChannelModeStatusList {
                         if ((mode instanceof ChannelUserMode) || (add ? mode.getType().isParameterRequiredOnSetting() : mode.getType().isParameterRequiredOnRemoval())) {
                             target = args[++currentArg];
                         }
-                        list.add(new ChannelModeStatus(add, mode, target));
+                        list.add(target == null ? new ChannelModeStatus(add, mode) : new ChannelModeStatus(add, mode, target));
                 }
             }
         }
@@ -94,6 +95,7 @@ public class ChannelModeStatusList {
      * @param statuses statuses
      * @return list
      */
+    @Nonnull
     public static ChannelModeStatusList of(@Nonnull ChannelModeStatus... statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
         Sanity.truthiness(Arrays.stream(statuses).map(ChannelModeStatus::getClient).distinct().count() == 1, "Statuses must all be from one client");
@@ -106,6 +108,7 @@ public class ChannelModeStatusList {
      * @param statuses statuses
      * @return list
      */
+    @Nonnull
     public static ChannelModeStatusList of(@Nonnull Collection<ChannelModeStatus> statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
         List<ChannelModeStatus> list = new ArrayList<>(statuses);
@@ -145,8 +148,8 @@ public class ChannelModeStatusList {
                 modes.append(add ? '+' : '-');
             }
             modes.append(change.getMode().getChar());
-            if (change.getParameter() != null) {
-                parameters.append(' ').append(change.getParameter());
+            if (change.getParameter().isPresent()) {
+                parameters.append(' ').append(change.getParameter().get());
             }
         }
         return modes.toString() + parameters;

@@ -26,9 +26,10 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * The client has received a CTCP message! There are a few (FINGER, PING,
@@ -39,7 +40,7 @@ import javax.annotation.Nullable;
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
 public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
-    private String reply;
+    private Optional<String> reply;
 
     /**
      * Creates the event
@@ -49,7 +50,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull String message, @Nullable String reply) {
+    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull String message, @Nonnull Optional<String> reply) {
         super(client, sender, message);
         this.reply = reply;
     }
@@ -59,9 +60,16 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      *
      * @return the reply, or null if no reply will be sent
      */
-    @Nullable
-    public String getReply() {
+    @Nonnull
+    public Optional<String> getReply() {
         return this.reply;
+    }
+
+    /**
+     * Removes the reply to be sent back.
+     */
+    public void removeReply() {
+        this.reply = Optional.empty();
     }
 
     /**
@@ -69,7 +77,8 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      *
      * @param reply message to send back
      */
-    public void setReply(@Nullable String reply) {
-        this.reply = reply;
+    public void setReply(@Nonnull String reply) {
+        Sanity.nullCheck(reply, "Reply cannot be null");
+        this.reply = Optional.of(reply);
     }
 }

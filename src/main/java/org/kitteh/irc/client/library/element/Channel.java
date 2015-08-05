@@ -27,10 +27,11 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ModeCommand;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -44,10 +45,10 @@ public interface Channel extends MessageReceiver, Staleable {
         /**
          * Gets who set the channel topic.
          *
-         * @return topic setter or null if unknown
+         * @return topic setter if known
          */
-        @Nullable
-        Actor getSetter();
+        @Nonnull
+        Optional<Actor> getSetter();
 
         /**
          * Gets the time the topic was set.
@@ -59,20 +60,20 @@ public interface Channel extends MessageReceiver, Staleable {
         /**
          * Gets the channel topic.
          *
-         * @return the topic or null if not yet sent by the server
+         * @return the topic if known
          */
-        @Nullable
-        String getTopic();
+        @Nonnull
+        Optional<String> getTopic();
     }
 
     /**
      * Gets the latest snapshot of this channel.
      *
-     * @return an updated snapshot or null if this channel is no longer
-     * tracked by the client
+     * @return an updated snapshot if the channel is currently tracked by
+     * the client
      */
-    @Nullable
-    default Channel getLatest() {
+    @Nonnull
+    default Optional<Channel> getLatest() {
         return this.getClient().getChannel(this.getName());
     }
 
@@ -112,8 +113,8 @@ public interface Channel extends MessageReceiver, Staleable {
      * @see #hasCompleteUserData() for knowing if the User data is sent
      * @see ChannelUsersUpdatedEvent for knowing when the User data is sent
      */
-    @Nullable
-    User getUser(@Nonnull String nick);
+    @Nonnull
+    Optional<User> getUser(@Nonnull String nick);
 
     /**
      * Gets all Users known to be in the channel. Note that the server may
@@ -132,10 +133,10 @@ public interface Channel extends MessageReceiver, Staleable {
      * Gets the user modes of a given nickname in the channel.
      *
      * @param nick user's nick
-     * @return a set of modes the user is known to have
+     * @return a set of modes the user is known to have, if the user is known
      */
-    @Nullable
-    Set<ChannelUserMode> getUserModes(@Nonnull String nick);
+    @Nonnull
+    Optional<Set<ChannelUserMode>> getUserModes(@Nonnull String nick);
 
     /**
      * Gets if this Channel has complete user data available, only possible
@@ -176,12 +177,20 @@ public interface Channel extends MessageReceiver, Staleable {
     }
 
     /**
+     * Parts the channel without stating a reason.
+     */
+    default void part() {
+        this.getClient().removeChannel(this);
+    }
+
+    /**
      * Parts the channel.
      *
      * @param reason leaving reason
      * @see Client#removeChannel(Channel, String)
      */
-    default void part(@Nullable String reason) {
+    default void part(@Nonnull String reason) {
+        Sanity.nullCheck(reason, "Reason cannot be null");
         this.getClient().removeChannel(this, reason);
     }
 }

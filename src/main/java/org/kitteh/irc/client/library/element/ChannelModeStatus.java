@@ -24,17 +24,18 @@
 package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * A particular status of a channel mode.
  */
 public class ChannelModeStatus {
     private final ChannelMode mode;
-    private final String parameter;
+    private final Optional<String> parameter;
     private final boolean setting;
 
     /**
@@ -44,7 +45,10 @@ public class ChannelModeStatus {
      * @param mode mode to set
      */
     public ChannelModeStatus(boolean setting, @Nonnull ChannelMode mode) {
-        this(setting, mode, null);
+        Sanity.nullCheck(mode, "Mode cannot be null");
+        this.mode = mode;
+        this.parameter = Optional.empty();
+        this.setting = setting;
     }
 
     /**
@@ -52,11 +56,13 @@ public class ChannelModeStatus {
      *
      * @param setting true for setting mode, false for removing
      * @param mode mode to set
-     * @param parameter parameter or null for no parameter
+     * @param parameter parameter
      */
-    public ChannelModeStatus(boolean setting, @Nonnull ChannelMode mode, @Nullable String parameter) {
+    public ChannelModeStatus(boolean setting, @Nonnull ChannelMode mode, @Nonnull String parameter) {
+        Sanity.nullCheck(mode, "Mode cannot be null");
+        Sanity.nullCheck(parameter, "Parameter cannot be null");
         this.mode = mode;
-        this.parameter = parameter;
+        this.parameter = Optional.of(parameter);
         this.setting = setting;
     }
 
@@ -85,8 +91,8 @@ public class ChannelModeStatus {
      *
      * @return parameter or null if no parameter
      */
-    @Nullable
-    public String getParameter() {
+    @Nonnull
+    public Optional<String> getParameter() {
         return this.parameter;
     }
 

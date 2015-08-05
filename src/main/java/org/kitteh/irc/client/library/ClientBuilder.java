@@ -29,6 +29,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.util.function.Consumer;
 
+// TODO Optional
 /**
  * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
  */

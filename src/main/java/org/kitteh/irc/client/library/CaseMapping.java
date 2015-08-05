@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * ISUPPORT CASEMAPPING.
@@ -60,8 +61,8 @@ public enum CaseMapping {
      * @return the matching CaseMapping or null if no match
      */
     @Nullable
-    public static CaseMapping getByName(@Nullable String name) {
-        return (name == null) ? null : nameMap.get(name.toUpperCase());
+    public static Optional<CaseMapping> getByName(@Nullable String name) {
+        return (name == null) ? Optional.empty() : Optional.of(nameMap.get(name.toUpperCase()));
     }
 
     private final char upperbound;

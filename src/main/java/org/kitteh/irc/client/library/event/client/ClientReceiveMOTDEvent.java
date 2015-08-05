@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Indicates the Client has received a complete MOTD from the server.
@@ -46,10 +47,11 @@ public class ClientReceiveMOTDEvent extends ClientEventBase {
     /**
      * Gets the MOTD.
      *
-     * @return the motd
+     * @return the motd if known
      * @see ServerInfo#getMOTD()
      */
-    public List<String> getMOTD() {
+    @Nonnull
+    public Optional<List<String>> getMOTD() {
         return this.getClient().getServerInfo().getMOTD();
     }
 }

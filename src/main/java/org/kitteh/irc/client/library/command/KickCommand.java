@@ -30,7 +30,6 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Get your KICKs on Route 66.
@@ -94,6 +93,17 @@ public class KickCommand extends ChannelCommand {
     }
 
     /**
+     * Removes the reason for this kick, if previously set.
+     *
+     * @return this command
+     */
+    @Nonnull
+    public KickCommand reason() {
+        this.reason = null;
+        return this;
+    }
+
+    /**
      * Sets the reason for this kick.
      *
      * @param reason or null for no reason
@@ -101,10 +111,9 @@ public class KickCommand extends ChannelCommand {
      * @throws IllegalArgumentException if reason is null or contains invalid characters
      */
     @Nonnull
-    public KickCommand reason(@Nullable String reason) {
-        if (reason != null) {
-            Sanity.safeMessageCheck(reason);
-        }
+    public KickCommand reason(@Nonnull String reason) {
+        Sanity.nullCheck(reason, "Reason cannot be null");
+        Sanity.safeMessageCheck(reason);
         this.reason = reason;
         return this;
     }

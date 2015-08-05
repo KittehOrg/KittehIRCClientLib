@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 final class IRCServerInfo implements ServerInfo {
@@ -46,14 +47,13 @@ final class IRCServerInfo implements ServerInfo {
     private int channelLengthLimit = -1;
     private Map<Character, Integer> channelLimits = new HashMap<>();
     private List<ChannelMode> channelModes;
-    private Map<Character, ChannelMode> channelModesMap;
     private List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
     private List<ChannelUserMode> channelUserModes;
-    private List<String> motd;
-    private String networkName;
+    private Optional<List<String>> motd;
+    private Optional<String> networkName;
     private int nickLengthLimit = -1;
-    private String address;
-    private String version;
+    private Optional<String> address;
+    private Optional<String> version;
     private boolean supportsWhoX;
 
     // TODO adapt for changes
@@ -79,14 +79,14 @@ final class IRCServerInfo implements ServerInfo {
         this.channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'v', '+'));
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public String getAddress() {
+    public Optional<String> getAddress() {
         return this.address;
     }
 
     void setAddress(@Nonnull String serverAddress) {
-        this.address = serverAddress;
+        this.address = Optional.of(serverAddress);
     }
 
     @Nonnull
@@ -124,19 +124,8 @@ final class IRCServerInfo implements ServerInfo {
         return new ArrayList<>(this.channelModes);
     }
 
-    synchronized Map<Character, ChannelMode> getChannelModesMap() {
-        List<ChannelMode> modes = this.channelModes;
-        if (this.channelModesMap == null) {
-            this.channelModesMap = new HashMap<>();
-            modes.forEach(mode -> this.channelModesMap.put(mode.getChar(), mode));
-            this.channelModesMap = Collections.unmodifiableMap(this.channelModesMap);
-        }
-        return this.channelModesMap;
-    }
-
     void setChannelModes(List<ChannelMode> channelModes) {
         this.channelModes = channelModes;
-        this.channelModesMap = null;
     }
 
     @Nonnull
@@ -161,22 +150,22 @@ final class IRCServerInfo implements ServerInfo {
 
     @Nonnull
     @Override
-    public List<String> getMOTD() {
+    public Optional<List<String>> getMOTD() {
         return this.motd;
     }
 
     void setMOTD(@Nonnull List<String> motd) {
-        this.motd = Collections.unmodifiableList(motd);
+        this.motd = Optional.of(Collections.unmodifiableList(motd));
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public String getNetworkName() {
+    public Optional<String> getNetworkName() {
         return this.networkName;
     }
 
     void setNetworkName(@Nonnull String networkName) {
-        this.networkName = networkName;
+        this.networkName = Optional.of(networkName);
     }
 
     @Override
@@ -188,14 +177,14 @@ final class IRCServerInfo implements ServerInfo {
         this.nickLengthLimit = nickLengthLimit;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public String getVersion() {
+    public Optional<String> getVersion() {
         return this.version;
     }
 
     void setVersion(@Nonnull String version) {
-        this.version = version;
+        this.version = Optional.of(version);
     }
 
     @Override

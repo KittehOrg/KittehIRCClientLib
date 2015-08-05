@@ -144,12 +144,13 @@ class EventListener {
             final ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(nick + '!' + ident + '@' + host);
             user.setServer(server);
             final String status = event.getArgs()[6];
-            String realName = null;
+            String realName;
             switch (event.getNumeric()) {
                 case 352:
                     realName = event.getArgs()[7];
                     break;
                 case 354:
+                default:
                     String account = event.getArgs()[7];
                     user.setAccount("0".equals(account) ? null : account);
                     realName = event.getArgs()[8];
@@ -354,11 +355,10 @@ class EventListener {
                         if (ctcpMessage.startsWith("PING ")) {
                             reply = ctcpMessage;
                         }
-                        PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, user, ctcpMessage, reply);
+                        PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, user, ctcpMessage, Optional.ofNullable(reply));
                         this.client.getEventManager().callEvent(ctcpEvent);
-                        String eventReply = ctcpEvent.getReply();
-                        if (eventReply != null) {
-                            this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(eventReply));
+                        if (ctcpEvent.getReply().isPresent()) {
+                            this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(ctcpEvent.getReply().get()));
                         }
                     } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
                         MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
@@ -501,11 +501,11 @@ class EventListener {
                 throw new KittehServerMessageException(event.getOriginalMessage(), e.getMessage());
             }
             this.client.getEventManager().callEvent(new ChannelModeEvent(this.client, event.getActor(), channel.snapshot(), statusList));
-            statusList.getStatuses().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter() != null)).forEach(status -> {
+            statusList.getStatuses().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter().isPresent())).forEach(status -> {
                 if (status.isSetting()) {
-                    channel.trackUserModeAdd(status.getParameter(), (ChannelUserMode) status.getMode());
+                    channel.trackUserModeAdd(status.getParameter().get(), (ChannelUserMode) status.getMode());
                 } else {
-                    channel.trackUserModeRemove(status.getParameter(), (ChannelUserMode) status.getMode());
+                    channel.trackUserModeRemove(status.getParameter().get(), (ChannelUserMode) status.getMode());
                 }
             });
             channel.updateChannelModes(statusList);
@@ -524,7 +524,7 @@ class EventListener {
         if (channel != null) {
             if (event.getActor() instanceof User) {
                 ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getActor().getName());
-                channel.trackUser(user, null);
+                channel.trackUser(user, new HashSet<>());
                 ChannelJoinEvent joinEvent = null;
                 if (user.getNick().equals(this.client.getNick())) {
                     this.client.getActorProvider().channelTrack(channel);

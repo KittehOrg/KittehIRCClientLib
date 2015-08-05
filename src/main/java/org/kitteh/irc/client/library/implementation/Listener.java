@@ -76,12 +76,12 @@ final class Listener<Type> {
         }
     }
 
+    void removeConsumer() {
+        this.shutdown();
+        this.thread = null;
+    }
+
     void setConsumer(Consumer<Type> consumer) {
-        if (consumer == null) {
-            this.shutdown();
-            this.thread = null;
-            return;
-        }
         if (this.thread == null) {
             this.thread = new ListenerThread(this.clientName, consumer);
         } else {

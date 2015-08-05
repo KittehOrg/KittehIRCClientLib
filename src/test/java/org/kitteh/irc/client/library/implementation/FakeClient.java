@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -121,10 +122,10 @@ class FakeClient extends InternalClient {
         return this.capabilityManager;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public Channel getChannel(@Nonnull String name) {
-        return null;
+    public Optional<Channel> getChannel(@Nonnull String name) {
+        return Optional.empty();
     }
 
     @Nonnull
@@ -169,12 +170,37 @@ class FakeClient extends InternalClient {
     }
 
     @Override
+    public void removeChannel(@Nonnull String channel) {
+
+    }
+
+    @Override
+    public void removeChannel(@Nonnull Channel channel) {
+
+    }
+
+    @Override
     public void removeChannel(@Nonnull String channel, @Nullable String reason) {
 
     }
 
     @Override
     public void removeChannel(@Nonnull Channel channel, @Nullable String reason) {
+
+    }
+
+    @Override
+    public void removeExceptionListener() {
+
+    }
+
+    @Override
+    public void removeInputListener() {
+
+    }
+
+    @Override
+    public void removeOutputListener() {
 
     }
 
@@ -245,6 +271,11 @@ class FakeClient extends InternalClient {
 
     @Override
     public void setOutputListener(@Nullable Consumer<String> listener) {
+
+    }
+
+    @Override
+    public void shutdown() {
 
     }
 

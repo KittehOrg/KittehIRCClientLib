@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.element;
 import org.kitteh.irc.client.library.ServerInfo;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -37,11 +37,11 @@ public interface User extends MessageReceiver, Staleable {
      * Gets the Services account this user is signed into. Only available if
      * the server supports WHOX and the user and client share a channel.
      *
-     * @return the account name or null if no account or WHOX not supported
+     * @return the account name if known
      * @see ServerInfo#hasWhoXSupport() for if this can return a value
      */
-    @Nullable
-    String getAccount();
+    @Nonnull
+    Optional<String> getAccount();
 
     /**
      * Gets the user's channels.
@@ -70,20 +70,18 @@ public interface User extends MessageReceiver, Staleable {
     /**
      * Gets the user's real name
      *
-     * @return real name or null if this user does not share any channels
-     * with the client
+     * @return real name if known
      */
-    @Nullable
-    String getRealName();
+    @Nonnull
+    Optional<String> getRealName();
 
     /**
      * Gets the name of the server the user is on.
      *
-     * @return user's server or null if unknown or this user does not share
-     * any channels with the client
+     * @return user's server if known
      */
-    @Nullable
-    String getServer();
+    @Nonnull
+    Optional<String> getServer();
 
     /**
      * Gets the user's user string.

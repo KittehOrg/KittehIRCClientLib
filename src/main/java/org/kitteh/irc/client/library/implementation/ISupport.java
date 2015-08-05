@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,9 +43,9 @@ enum ISupport {
     CASEMAPPING {
         @Override
         boolean process(@Nullable String value, @Nonnull InternalClient client) {
-            CaseMapping caseMapping = CaseMapping.getByName(value);
-            if (caseMapping != null) {
-                client.getServerInfo().setCaseMapping(caseMapping);
+            Optional<CaseMapping> caseMapping = CaseMapping.getByName(value);
+            if (caseMapping.isPresent()) {
+                client.getServerInfo().setCaseMapping(caseMapping.get());
                 return true;
             }
             return false;

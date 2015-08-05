@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -198,17 +199,18 @@ class ActorProvider {
                     }
                 }
             }
-            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter)));
+            Channel.Topic topicSnapshot = new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, Optional.ofNullable(IRCChannel.this.topic), Optional.ofNullable(IRCChannel.this.topicSetter));
+            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, topicSnapshot));
         }
 
-        void trackUser(@Nonnull IRCUser user, @Nullable Set<ChannelUserMode> modes) {
+        void trackUser(@Nonnull IRCUser user, @Nonnull Set<ChannelUserMode> modes) {
             this.markStale();
             user.markStale();
             ActorProvider.this.trackUser(user);
             this.setModes(user.getNick(), modes);
         }
 
-        void trackNick(@Nonnull String nick, @Nullable Set<ChannelUserMode> modes) {
+        void trackNick(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
             this.markStale();
             if (!this.modes.containsKey(nick) || this.modes.get(nick).isEmpty()) {
                 this.setModes(nick, modes);
@@ -250,9 +252,9 @@ class ActorProvider {
             return set;
         }
 
-        private void setModes(@Nonnull String nick, @Nullable Set<ChannelUserMode> modes) {
+        private void setModes(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
             this.markStale();
-            this.modes.put(nick, (modes == null) ? new HashSet<>() : new HashSet<>(modes));
+            this.modes.put(nick, new HashSet<>(modes));
         }
 
         void updateChannelModes(ChannelModeStatusList statusList) {
@@ -274,19 +276,19 @@ class ActorProvider {
     }
 
     class IRCChannelTopicSnapshot implements Channel.Topic {
-        private final Actor setter;
+        private final Optional<Actor> setter;
         private final long time;
-        private final String topic;
+        private final Optional<String> topic;
 
-        private IRCChannelTopicSnapshot(long time, @Nullable String topic, @Nullable Actor setter) {
+        private IRCChannelTopicSnapshot(long time, @Nonnull Optional<String> topic, @Nonnull Optional<Actor> setter) {
             this.time = time;
             this.topic = topic;
             this.setter = setter;
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public Actor getSetter() {
+        public Optional<Actor> getSetter() {
             return this.setter;
         }
 
@@ -295,13 +297,13 @@ class ActorProvider {
             return this.time;
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public String getTopic() {
+        public Optional<String> getTopic() {
             return this.topic;
         }
 
-        @Nullable
+        @Nonnull
         @Override
         public String toString() {
             return new ToStringer(this).add("topic", this.topic).add("setter", this.setter).add("time", this.time).toString();
@@ -360,18 +362,18 @@ class ActorProvider {
             return this.topic;
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public User getUser(@Nonnull String nick) {
+        public Optional<User> getUser(@Nonnull String nick) {
             Sanity.nullCheck(nick, "Nick cannot be null");
-            return this.nickMap.get(nick);
+            return Optional.ofNullable(this.nickMap.get(nick));
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public Set<ChannelUserMode> getUserModes(@Nonnull String nick) {
+        public Optional<Set<ChannelUserMode>> getUserModes(@Nonnull String nick) {
             Sanity.nullCheck(nick, "Nick cannot be null");
-            return this.modes.get(nick);
+            return Optional.ofNullable(this.modes.get(nick));
         }
 
         @Nonnull
@@ -441,7 +443,7 @@ class ActorProvider {
             this.isAway = isAway;
         }
 
-        void setRealName(@Nullable String realName) {
+        void setRealName(@Nonnull String realName) {
             this.markStale();
             this.realName = realName;
         }
@@ -465,24 +467,24 @@ class ActorProvider {
     }
 
     class IRCUserSnapshot extends IRCActorSnapshot implements User {
-        private final String account;
+        private final Optional<String> account;
         private final Set<String> channels;
         private final boolean isAway;
         private final String host;
         private final String nick;
-        private final String realName;
-        private final String server;
+        private final Optional<String> realName;
+        private final Optional<String> server;
         private final String user;
 
         private IRCUserSnapshot(@Nonnull IRCUser user) {
             super(user);
-            this.account = user.account;
+            this.account = Optional.ofNullable(user.account);
             this.isAway = user.isAway;
             this.nick = user.nick;
             this.user = user.user;
             this.host = user.host;
-            this.realName = user.realName;
-            this.server = user.server;
+            this.realName = Optional.ofNullable(user.realName);
+            this.server = Optional.ofNullable(user.server);
             this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.modes.containsKey(this.nick)).map(IRCChannel::getName).collect(Collectors.toSet()));
         }
 
@@ -491,9 +493,9 @@ class ActorProvider {
             return (o instanceof IRCUserSnapshot) && (((IRCUserSnapshot) o).getClient() == this.getClient()) && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public String getAccount() {
+        public Optional<String> getAccount() {
             return this.account;
         }
 
@@ -521,15 +523,15 @@ class ActorProvider {
             return this.nick;
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public String getRealName() {
+        public Optional<String> getRealName() {
             return this.realName;
         }
 
-        @Nullable
+        @Nonnull
         @Override
-        public String getServer() {
+        public Optional<String> getServer() {
             return this.server;
         }
 

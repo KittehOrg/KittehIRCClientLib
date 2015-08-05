@@ -57,7 +57,8 @@ public class CapabilityRequestCommand extends Command {
      * @see CapabilityManager#getCapabilities() for current enabled list
      * @see CapabilityManager#getSupportedCapabilities() for supported list
      */
-    public synchronized CapabilityRequestCommand requestEnable(String capability) {
+    @Nonnull
+    public synchronized CapabilityRequestCommand requestEnable(@Nonnull String capability) {
         Sanity.nullCheck(capability, "Capability cannot be null");
         this.requests.add(capability);
         return this;
@@ -71,7 +72,8 @@ public class CapabilityRequestCommand extends Command {
      * @throws IllegalArgumentException if capability is null
      * @see CapabilityManager#getCapabilities() for current enabled list
      */
-    public synchronized CapabilityRequestCommand requestDisable(String capability) {
+    @Nonnull
+    public synchronized CapabilityRequestCommand requestDisable(@Nonnull String capability) {
         Sanity.nullCheck(capability, "Capability cannot be null");
         this.requests.add('-' + capability);
         return this;
@@ -90,7 +92,7 @@ public class CapabilityRequestCommand extends Command {
         this.send(builder.toString());
     }
 
-    private void send(String requests) {
+    private void send(@Nonnull String requests) {
         this.getClient().sendRawLineImmediately("CAP REQ :" + requests);
     }
 

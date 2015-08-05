@@ -27,9 +27,9 @@ import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Provides information about the server to which the client is connected.
@@ -39,10 +39,10 @@ public interface ServerInfo {
     /**
      * Gets the server-stated address of the server.
      *
-     * @return the server's address or null if unknown
+     * @return the server's address if known
      */
-    @Nullable
-    String getAddress();
+    @Nonnull
+    Optional<String> getAddress();
 
     /**
      * Gets the casemapping for the server. By default {@link
@@ -103,16 +103,16 @@ public interface ServerInfo {
      *
      * @return motd or null if unknown
      */
-    @Nullable
-    List<String> getMOTD();
+    @Nonnull
+    Optional<List<String>> getMOTD();
 
     /**
      * Gets the name of this network.
      *
-     * @return network name or null if unknown
+     * @return network name if known
      */
-    @Nullable
-    String getNetworkName();
+    @Nonnull
+    Optional<String> getNetworkName();
 
     /**
      * Gets the maximum length of nicknames.
@@ -124,10 +124,10 @@ public interface ServerInfo {
     /**
      * Gets the version of the IRCd.
      *
-     * @return server version or null if unknown
+     * @return server version if known
      */
-    @Nullable
-    String getVersion();
+    @Nonnull
+    Optional<String> getVersion();
 
     /**
      * Gets if the server supports WHOX.

@@ -29,8 +29,8 @@ import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -93,13 +93,13 @@ public interface Client {
      * Gets the named channel.
      *
      * @param name channel name
-     * @return a channel snapshot of the named channel or null if no longer
-     * known to the Client
+     * @return a channel snapshot of the named channel if tracked by the
+     * client
      * @throws IllegalArgumentException if name is null
      * @see #getChannels()
      */
-    @Nullable
-    Channel getChannel(@Nonnull String name);
+    @Nonnull
+    Optional<Channel> getChannel(@Nonnull String name);
 
     /**
      * Gets the channels in which the client is currently present.
@@ -171,19 +171,50 @@ public interface Client {
      * Removes a channel from the client, leaving as necessary.
      *
      * @param channel channel to leave
-     * @param reason part reason or null to not send a reason
-     * @throws IllegalArgumentException if channel is null
+     * @throws IllegalArgumentException if arguments are null
      */
-    void removeChannel(@Nonnull String channel, @Nullable String reason);
+    void removeChannel(@Nonnull String channel);
 
     /**
      * Removes a channel from the client, leaving as necessary.
      *
      * @param channel channel to leave
-     * @param reason part reason or null to not send a reason
-     * @throws IllegalArgumentException if channel is null
+     * @throws IllegalArgumentException if arguments are null
      */
-    void removeChannel(@Nonnull Channel channel, @Nullable String reason);
+    void removeChannel(@Nonnull Channel channel);
+
+    /**
+     * Removes a channel from the client, leaving as necessary.
+     *
+     * @param channel channel to leave
+     * @param reason part reason
+     * @throws IllegalArgumentException if arguments are null
+     */
+    void removeChannel(@Nonnull String channel, @Nonnull String reason);
+
+    /**
+     * Removes a channel from the client, leaving as necessary.
+     *
+     * @param channel channel to leave
+     * @param reason part reason
+     * @throws IllegalArgumentException if arguments are null
+     */
+    void removeChannel(@Nonnull Channel channel, @Nonnull String reason);
+
+    /**
+     * Removes the exception listener.
+     */
+    void removeExceptionListener();
+
+    /**
+     * Removes the input listener.
+     */
+    void removeInputListener();
+
+    /**
+     * Removes the output listener.
+     */
+    void removeOutputListener();
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
@@ -283,7 +314,7 @@ public interface Client {
      *
      * @param listener catcher of throwable objects
      */
-    void setExceptionListener(@Nullable Consumer<Exception> listener);
+    void setExceptionListener(@Nonnull Consumer<Exception> listener);
 
     /**
      * Sets a listener for all incoming messages from the server.
@@ -292,7 +323,7 @@ public interface Client {
      *
      * @param listener input listener
      */
-    void setInputListener(@Nullable Consumer<String> listener);
+    void setInputListener(@Nonnull Consumer<String> listener);
 
     /**
      * Sets the delay between messages sent to the server.
@@ -318,12 +349,17 @@ public interface Client {
      *
      * @param listener output listener
      */
-    void setOutputListener(@Nullable Consumer<String> listener);
+    void setOutputListener(@Nonnull Consumer<String> listener);
+
+    /**
+     * Shuts down the client without a quit message.
+     */
+    void shutdown();
 
     /**
      * Shuts down the client.
      *
-     * @param reason quit message to send, null for blank message
+     * @param reason quit message to send
      */
-    void shutdown(@Nullable String reason);
+    void shutdown(@Nonnull String reason);
 }

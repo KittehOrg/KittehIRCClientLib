@@ -56,6 +56,7 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * @return the channel topic
      * @see Channel#getTopic() the method for which this is a shortcut
      */
+    @Nonnull
     public Channel.Topic getTopic() {
         return this.getChannel().getTopic();
     }

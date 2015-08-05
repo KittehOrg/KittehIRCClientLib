@@ -55,6 +55,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      *
      * @return status list
      */
+    @Nonnull
     public ChannelModeStatusList getStatusList() {
         return this.statusList;
     }
