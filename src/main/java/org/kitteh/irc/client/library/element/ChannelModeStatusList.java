@@ -98,7 +98,7 @@ public class ChannelModeStatusList {
     @Nonnull
     public static ChannelModeStatusList of(@Nonnull ChannelModeStatus... statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
-        Sanity.truthiness(Arrays.stream(statuses).map(ChannelModeStatus::getClient).distinct().count() == 1, "Statuses must all be from one client");
+        Sanity.truthiness((statuses.length <= 1) || (Arrays.stream(statuses).map(ChannelModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
         return new ChannelModeStatusList(Arrays.asList(statuses));
     }
 
@@ -112,7 +112,7 @@ public class ChannelModeStatusList {
     public static ChannelModeStatusList of(@Nonnull Collection<ChannelModeStatus> statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
         List<ChannelModeStatus> list = new ArrayList<>(statuses);
-        Sanity.truthiness(statuses.stream().map(ChannelModeStatus::getClient).distinct().count() == 1, "Statuses must all be from one client");
+        Sanity.truthiness((list.size() <= 1) || (list.stream().map(ChannelModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
         return new ChannelModeStatusList(list);
     }
 
