@@ -97,7 +97,7 @@ public class ModeCommand extends ChannelCommand {
     @Nonnull
     public ModeCommand addModeChange(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
         Sanity.nullCheck(parameter, "Parameter cannot be null");
-        return this.addChange(add, mode, parameter);;
+        return this.addChange(add, mode, parameter);
     }
 
     /**
@@ -144,7 +144,8 @@ public class ModeCommand extends ChannelCommand {
     }
 
     private void send(@Nonnull List<ChannelModeStatus> queue) {
-        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + ChannelModeStatusList.of(queue).getStatusString());
+        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + ChannelModeStatusList.of(new ArrayList<>(queue)).getStatusString());
+        queue.clear();
     }
 
     @Nonnull
