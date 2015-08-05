@@ -299,7 +299,7 @@ class ActorProvider {
 
         @Nonnull
         @Override
-        public Optional<String> getTopic() {
+        public Optional<String> getValue() {
             return this.topic;
         }
 
@@ -537,7 +537,7 @@ class ActorProvider {
 
         @Nonnull
         @Override
-        public String getUser() {
+        public String getUserString() {
             return this.user;
         }
 

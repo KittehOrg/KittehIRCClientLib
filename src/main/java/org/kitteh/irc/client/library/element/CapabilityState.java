@@ -42,5 +42,5 @@ public interface CapabilityState extends Snapshot {
      * @return capability name
      */
     @Nonnull
-    String getCapabilityName();
+    String getName();
 }

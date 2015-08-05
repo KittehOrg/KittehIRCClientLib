@@ -393,7 +393,7 @@ class EventListener {
             case "ls":
                 this.client.getCapabilityManager().setSupportedCapabilities(capabilityStateList);
                 responseEvent = new CapabilitiesSupportedListEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
-                Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toCollection(HashSet::new));
+                Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
                 capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
                 if (!capabilities.isEmpty()) {
                     CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);

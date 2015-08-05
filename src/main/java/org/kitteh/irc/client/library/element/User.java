@@ -89,7 +89,7 @@ public interface User extends MessageReceiver, Staleable {
      * @return user
      */
     @Nonnull
-    String getUser();
+    String getUserString();
 
     /**
      * Gets if the user is away.

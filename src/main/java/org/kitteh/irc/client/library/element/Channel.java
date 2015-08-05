@@ -63,7 +63,7 @@ public interface Channel extends MessageReceiver, Staleable {
          * @return the topic if known
          */
         @Nonnull
-        Optional<String> getTopic();
+        Optional<String> getValue();
     }
 
     /**

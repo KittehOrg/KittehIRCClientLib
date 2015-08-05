@@ -60,7 +60,7 @@ final class IRCCapabilityManager implements CapabilityManager {
 
         @Override
         @Nonnull
-        public String getCapabilityName() {
+        public String getName() {
             return this.name;
         }
 
@@ -113,9 +113,9 @@ final class IRCCapabilityManager implements CapabilityManager {
     void updateCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
         for (CapabilityState capabilityState : capabilityStates) {
             if (capabilityState.isDisabled()) {
-                this.capabilities.remove(capabilityState.getCapabilityName());
+                this.capabilities.remove(capabilityState.getName());
             } else {
-                this.capabilities.add(capabilityState.getCapabilityName());
+                this.capabilities.add(capabilityState.getName());
             }
         }
     }
@@ -126,7 +126,7 @@ final class IRCCapabilityManager implements CapabilityManager {
     }
 
     void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
-        this.supportedCapabilities = capabilityStates.stream().map(CapabilityState::getCapabilityName).collect(Collectors.toList());
+        this.supportedCapabilities = capabilityStates.stream().map(CapabilityState::getName).collect(Collectors.toList());
     }
 
     @Nonnull
