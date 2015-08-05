@@ -61,7 +61,6 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
