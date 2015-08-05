@@ -58,7 +58,7 @@ public class CapabilityRequestCommand extends Command {
      * @see CapabilityManager#getSupportedCapabilities() for supported list
      */
     @Nonnull
-    public synchronized CapabilityRequestCommand requestEnable(@Nonnull String capability) {
+    public synchronized CapabilityRequestCommand enable(@Nonnull String capability) {
         Sanity.nullCheck(capability, "Capability cannot be null");
         this.requests.add(capability);
         return this;
@@ -73,7 +73,7 @@ public class CapabilityRequestCommand extends Command {
      * @see CapabilityManager#getCapabilities() for current enabled list
      */
     @Nonnull
-    public synchronized CapabilityRequestCommand requestDisable(@Nonnull String capability) {
+    public synchronized CapabilityRequestCommand disable(@Nonnull String capability) {
         Sanity.nullCheck(capability, "Capability cannot be null");
         this.requests.add('-' + capability);
         return this;

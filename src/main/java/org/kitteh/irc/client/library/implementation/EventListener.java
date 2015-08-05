@@ -397,7 +397,7 @@ class EventListener {
                 capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
                 if (!capabilities.isEmpty()) {
                     CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
-                    capabilities.forEach(capabilityRequestCommand::requestEnable);
+                    capabilities.forEach(capabilityRequestCommand::enable);
                     capabilityRequestCommand.execute();
                 }
                 this.client.getEventManager().callEvent(responseEvent);
