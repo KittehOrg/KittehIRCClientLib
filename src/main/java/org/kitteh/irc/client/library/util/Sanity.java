@@ -41,7 +41,7 @@ public final class Sanity {
      * @return the sane object
      * @throws IllegalArgumentException if the object is null
      */
-    public static <T> T nullCheck(@Nullable T object, @Nullable String failMessage) {
+    public static <T> T nullCheck(@Nullable T object, @Nonnull String failMessage) {
         if (object == null) {
             throw new IllegalArgumentException(failMessage);
         }
@@ -56,7 +56,7 @@ public final class Sanity {
      * @return the sane object
      * @throws IllegalArgumentException if null or contains null elements
      */
-    public static <T> T[] nullCheck(@Nullable T[] array, @Nullable String failMessage) {
+    public static <T> T[] nullCheck(@Nullable T[] array, @Nonnull String failMessage) {
         Sanity.nullCheck((Object) array, failMessage);
         for (Object element : array) {
             Sanity.nullCheck(element, failMessage);
@@ -71,7 +71,7 @@ public final class Sanity {
      * @param failMessage message to throw
      * @throws IllegalArgumentException if false
      */
-    public static void truthiness(boolean bool, @Nullable String failMessage) {
+    public static void truthiness(boolean bool, @Nonnull String failMessage) {
         if (!bool) {
             throw new IllegalArgumentException(failMessage);
         }
