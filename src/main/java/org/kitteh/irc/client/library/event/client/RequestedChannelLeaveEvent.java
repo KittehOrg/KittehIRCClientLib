@@ -24,11 +24,12 @@
 package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 
 /**
  * I have left the channel I wanted! Will fire each time the client leaves a
  * channel added via {@link Client#addChannel} and not removed via {@link
  * Client#removeChannel}.
  */
-public interface RequestedChannelLeaveEvent  {
+public interface RequestedChannelLeaveEvent extends ChannelEvent {
 }
