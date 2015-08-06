@@ -51,6 +51,8 @@ import org.kitteh.irc.client.library.event.channel.ChannelTargetedMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
+import org.kitteh.irc.client.library.event.channel.RequestedChannelLeaveViaKickEvent;
+import org.kitteh.irc.client.library.event.channel.RequestedChannelLeaveViaPartEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
@@ -562,9 +564,17 @@ class EventListener {
         if (channel != null) {
             if (event.getActor() instanceof User) {
                 User user = (User) event.getActor();
-                this.client.getEventManager().callEvent(new ChannelPartEvent(this.client, channel.snapshot(), user, (event.getArgs().length > 1) ? event.getArgs()[1] : ""));
+                boolean isSelf = user.getNick().equals(this.client.getNick());
+                String partReason = (event.getArgs().length > 1) ? event.getArgs()[1] : "";
+                ChannelPartEvent partEvent;
+                if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
+                    partEvent = new RequestedChannelLeaveViaPartEvent(this.client, channel.snapshot(), user, partReason);
+                } else {
+                    partEvent = new ChannelPartEvent(this.client, channel.snapshot(), user, partReason);
+                }
+                this.client.getEventManager().callEvent(partEvent);
                 channel.trackUserPart(user.getNick());
-                if (user.getNick().equals(this.client.getNick())) {
+                if (isSelf) {
                     this.client.getActorProvider().channelUntrack(channel);
                 }
             } else {
@@ -596,9 +606,17 @@ class EventListener {
         if (channel != null) {
             ActorProvider.IRCUser kickedUser = this.client.getActorProvider().getUser(event.getArgs()[1]);
             if (kickedUser != null) {
-                this.client.getEventManager().callEvent(new ChannelKickEvent(this.client, channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), (event.getArgs().length > 2) ? event.getArgs()[2] : ""));
+                boolean isSelf = event.getArgs()[1].equals(this.client.getNick());
+                ChannelKickEvent kickEvent;
+                String kickReason = (event.getArgs().length > 2) ? event.getArgs()[2] : "";
+                if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
+                    kickEvent = new RequestedChannelLeaveViaKickEvent(this.client, channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
+                } else {
+                    kickEvent = new ChannelKickEvent(this.client, channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
+                }
+                this.client.getEventManager().callEvent(kickEvent);
                 channel.trackUserPart(event.getArgs()[1]);
-                if (event.getArgs()[1].equals(this.client.getNick())) {
+                if (isSelf) {
                     this.client.getActorProvider().channelUntrack(channel);
                 }
             } else {
