@@ -752,7 +752,7 @@ class EventListener {
     }
 
     @Nonnull
-    MessageTargetInfo getTypeByTarget(@Nonnull String target) {
+    private MessageTargetInfo getTypeByTarget(@Nonnull String target) {
         if (this.client.getNick().equalsIgnoreCase(target)) {
             return MessageTargetInfo.Private.INSTANCE;
         }

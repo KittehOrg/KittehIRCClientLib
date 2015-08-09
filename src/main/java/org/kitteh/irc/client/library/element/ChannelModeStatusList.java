@@ -82,7 +82,7 @@ public class ChannelModeStatusList {
                         if ((mode instanceof ChannelUserMode) || (add ? mode.getType().isParameterRequiredOnSetting() : mode.getType().isParameterRequiredOnRemoval())) {
                             target = args[++currentArg];
                         }
-                        list.add(target == null ? new ChannelModeStatus(add, mode) : new ChannelModeStatus(add, mode, target));
+                        list.add((target == null) ? new ChannelModeStatus(add, mode) : new ChannelModeStatus(add, mode, target));
                 }
             }
         }

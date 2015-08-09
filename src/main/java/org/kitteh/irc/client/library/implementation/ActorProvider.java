@@ -396,7 +396,7 @@ class ActorProvider {
         @Override
         public boolean isStale() {
             IRCChannel channel = ActorProvider.this.getTrackedChannel(this.getName());
-            return channel == null || channel.isStale(this);
+            return (channel == null) || channel.isStale(this);
         }
 
         @Override
@@ -554,7 +554,7 @@ class ActorProvider {
         @Override
         public boolean isStale() {
             IRCUser user = ActorProvider.this.getUser(this.getNick());
-            return user == null || user.isStale(this);
+            return (user == null) || user.isStale(this);
         }
 
         @Override
@@ -643,7 +643,7 @@ class ActorProvider {
         return this.trackedChannels.containsKey(channel);
     }
 
-    void staleUser(String nick) {
+    private void staleUser(String nick) {
         IRCUser user = this.getUser(nick);
         if (user != null) {
             user.markStale();
