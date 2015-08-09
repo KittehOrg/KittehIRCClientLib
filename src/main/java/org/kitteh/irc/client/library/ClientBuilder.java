@@ -24,12 +24,10 @@
 package org.kitteh.irc.client.library;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.net.InetAddress;
 import java.util.function.Consumer;
 
-// TODO Optional
 /**
  * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
  */
@@ -48,15 +46,23 @@ public interface ClientBuilder extends Cloneable {
     ClientBuilder auth(@Nonnull AuthType authType, @Nonnull String username, @Nonnull String password);
 
     /**
-     * Binds the client to a host or IP locally. Null for wildcard binding.
-     * <p>
-     * By default, the host is null for wildcard binding.
+     * Binds the client to no specific host.
      *
-     * @param host host to bind to or null for wildcard
      * @return this builder
      */
     @Nonnull
-    ClientBuilder bind(@Nullable String host);
+    ClientBuilder bind();
+
+    /**
+     * Binds the client to a host or IP locally.
+     * <p>
+     * By default, the host is not set which results in wildcard binding.
+     *
+     * @param host host to bind to
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder bind(@Nonnull String host);
 
     /**
      * Binds the client to the specified port. Invalid ports are set to 0.
@@ -70,6 +76,14 @@ public interface ClientBuilder extends Cloneable {
     ClientBuilder bind(int port);
 
     /**
+     * Removes the exception listener from this builder.
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder listenException();
+
+    /**
      * Sets a listener for all thrown exceptions on this client.
      * <p>
      * All exceptions are passed from a single, separate thread.
@@ -78,7 +92,15 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder listenException(@Nullable Consumer<Exception> listener);
+    ClientBuilder listenException(@Nonnull Consumer<Exception> listener);
+
+    /**
+     * Removes the input listener from this builder.
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder listenInput();
 
     /**
      * Sets a listener for all incoming messages from the server.
@@ -89,7 +111,15 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder listenInput(@Nullable Consumer<String> listener);
+    ClientBuilder listenInput(@Nonnull Consumer<String> listener);
+
+    /**
+     * Removes the output listener from this builder.
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder listenOutput();
 
     /**
      * Sets a listener for all outgoing messages to the server.
@@ -100,7 +130,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder listenOutput(@Nullable Consumer<String> listener);
+    ClientBuilder listenOutput(@Nonnull Consumer<String> listener);
 
     /**
      * Names the client, for internal labeling.
@@ -125,6 +155,16 @@ public interface ClientBuilder extends Cloneable {
     ClientBuilder nick(@Nonnull String nick);
 
     /**
+     * Removes the server password.
+     * <p>
+     * If not set, no password is sent
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder serverPassword();
+
+    /**
      * Sets the server password.
      * <p>
      * If not set, no password is sent
@@ -133,7 +173,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder serverPassword(@Nullable String password);
+    ClientBuilder serverPassword(@Nonnull String password);
 
     /**
      * Sets the realname the client uses.
@@ -157,6 +197,14 @@ public interface ClientBuilder extends Cloneable {
     ClientBuilder secure(boolean ssl);
 
     /**
+     * Removes the key for SSL connection.
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder secureKeyCertChain();
+
+    /**
      * Sets the key for SSL connection.
      *
      * @param keyCertChainFile X.509 certificate chain file in PEM format
@@ -164,7 +212,15 @@ public interface ClientBuilder extends Cloneable {
      * @see #secure(boolean)
      */
     @Nonnull
-    ClientBuilder secureKeyCertChain(@Nullable File keyCertChainFile);
+    ClientBuilder secureKeyCertChain(@Nonnull File keyCertChainFile);
+
+    /**
+     * Removes the private key for SSL connection.
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder secureKey();
 
     /**
      * Sets the private key for SSL connection.
@@ -174,7 +230,15 @@ public interface ClientBuilder extends Cloneable {
      * @see #secure(boolean)
      */
     @Nonnull
-    ClientBuilder secureKey(@Nullable File keyFile);
+    ClientBuilder secureKey(@Nonnull File keyFile);
+
+    /**
+     * Removes the private key password for SSL connection.
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder secureKeyPassword();
 
     /**
      * Sets the private key password for SSL connection.
@@ -184,7 +248,7 @@ public interface ClientBuilder extends Cloneable {
      * @see #secure(boolean)
      */
     @Nonnull
-    ClientBuilder secureKeyPassword(@Nullable String password);
+    ClientBuilder secureKeyPassword(@Nonnull String password);
 
     /**
      * Sets the delay between messages being sent to the server
