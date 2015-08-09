@@ -85,7 +85,7 @@ public final class Sanity {
      * @throws IllegalArgumentException if found
      */
     public static String safeMessageCheck(@Nonnull String message) {
-        return Sanity.safeMessageCheck(message, "message");
+        return Sanity.safeMessageCheck(message, "Message");
     }
 
     /**
@@ -96,7 +96,7 @@ public final class Sanity {
      * @return the safe message
      * @throws IllegalArgumentException if found
      */
-    public static String safeMessageCheck(@Nonnull String message, @Nonnull String name) {
+    public static String safeMessageCheck(@Nullable String message, @Nonnull String name) {
         Sanity.nullCheck(message, name + " cannot be null");
         for (char ch : message.toCharArray()) {
             if ((ch == '\n') || (ch == '\r') || (ch == '\0')) {
