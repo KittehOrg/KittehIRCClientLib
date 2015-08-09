@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.exception;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * Thrown in reaction to exceptions while attempting connection.
@@ -37,7 +37,7 @@ public class KittehConnectionException extends Exception {
      * @param cause the cause
      * @param fatal if the exception indicates a failure to connect
      */
-    public KittehConnectionException(@Nullable Throwable cause, boolean fatal) {
+    public KittehConnectionException(@Nonnull Throwable cause, boolean fatal) {
         super(cause);
         this.fatal = fatal;
     }

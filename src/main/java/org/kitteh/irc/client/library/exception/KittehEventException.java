@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.exception;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * Thrown in reaction to exceptions in event processing.
@@ -34,7 +34,7 @@ public class KittehEventException extends Exception {
      *
      * @param cause thrown cause
      */
-    public KittehEventException(@Nullable Throwable cause) {
+    public KittehEventException(@Nonnull Throwable cause) {
         super(cause);
     }
 }

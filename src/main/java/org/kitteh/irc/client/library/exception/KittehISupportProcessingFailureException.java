@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.exception;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * Fired upon failure to process a single ISUPPORT message.
@@ -36,7 +36,7 @@ public class KittehISupportProcessingFailureException extends Exception {
      *
      * @param arg ISUPPORT line that failed
      */
-    public KittehISupportProcessingFailureException(@Nullable String arg) {
+    public KittehISupportProcessingFailureException(@Nonnull String arg) {
         super("Failed to process an ISUPPORT line: [" + arg + ']');
         this.arg = arg;
     }
@@ -46,7 +46,7 @@ public class KittehISupportProcessingFailureException extends Exception {
      *
      * @return the unprocessed argument which may be null
      */
-    @Nullable
+    @Nonnull
     public String getArg() {
         return this.arg;
     }
