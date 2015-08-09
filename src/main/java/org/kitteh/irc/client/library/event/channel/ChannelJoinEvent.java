@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * A {@link User} has joined a {@link Channel}!
@@ -44,6 +45,12 @@ public class ChannelJoinEvent extends ActorChannelEventBase<User> implements Cha
      */
     public ChannelJoinEvent(@Nonnull Client client, @Nonnull Channel channel, @Nonnull User user) {
         super(client, user, channel);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Channel> getAffectedChannel() {
+        return Optional.of(this.getChannel());
     }
 
     @Nonnull

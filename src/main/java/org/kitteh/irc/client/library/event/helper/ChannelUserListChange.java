@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.User;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * A {@link Channel} is gaining or losing a {@link User}
@@ -52,21 +53,21 @@ public interface ChannelUserListChange extends ClientEvent {
     }
 
     /**
+     * Gets the channel affected or empty if affecting all channels the user
+     * is present in.
+     *
+     * @return channel or empty if all channels affected
+     */
+    @Nonnull
+    Optional<Channel> getAffectedChannel();
+
+    /**
      * Gets the type of change occurring.
      *
      * @return type of change
      */
     @Nonnull
     Change getChange();
-
-    /**
-     * Gets the channel affected or null if affecting all channels the user
-     * is present in.
-     *
-     * @return channel or null for all channels
-     */
-    @Nullable
-    Channel getChannel();
 
     /**
      * Gets the current user affected.

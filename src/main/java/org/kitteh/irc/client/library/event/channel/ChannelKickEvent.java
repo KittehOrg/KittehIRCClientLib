@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * A {@link User} has kicked another User!
@@ -51,6 +52,12 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<User> impleme
         super(client, user, channel, message);
         Sanity.nullCheck(target, "Target cannot be null");
         this.target = target;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Channel> getAffectedChannel() {
+        return Optional.of(this.getChannel());
     }
 
     @Nonnull

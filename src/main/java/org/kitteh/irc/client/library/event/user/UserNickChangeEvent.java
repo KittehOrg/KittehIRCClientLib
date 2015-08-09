@@ -31,7 +31,7 @@ import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * A {@link User} has changed nickname!
@@ -54,14 +54,14 @@ public class UserNickChangeEvent extends ActorEventBase<User> implements Channel
 
     @Nonnull
     @Override
-    public Change getChange() {
-        return Change.NICK_CHANGE;
+    public Optional<Channel> getAffectedChannel() {
+        return Optional.empty();
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public Channel getChannel() {
-        return null;
+    public Change getChange() {
+        return Change.NICK_CHANGE;
     }
 
     /**
