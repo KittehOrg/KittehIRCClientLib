@@ -79,14 +79,13 @@ final class CTCPUtil {
      */
     @Nonnull
     static String fromCTCP(@Nonnull String message) {
-        message = message.substring(1); // Strip the starting delimiter
-        message = message.substring(0, message.indexOf(CTCP_DELIMITER)); // Strip the second delimiter
-        StringBuilder builder = new StringBuilder(message.length());
+        final String ctcpContent = message.substring(1, message.indexOf(CTCP_DELIMITER, 1)); // Strip the delimiters
+        StringBuilder builder = new StringBuilder(ctcpContent.length());
         int currentIndex = 0;
-        Matcher matcher = CTCP_ESCAPED_CHAR.matcher(message);
+        Matcher matcher = CTCP_ESCAPED_CHAR.matcher(ctcpContent);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
-                builder.append(message.substring(currentIndex, matcher.start()));
+                builder.append(ctcpContent.substring(currentIndex, matcher.start()));
             }
             switch (matcher.group(1)) {
                 case CTCP_MQUOTE + "":
@@ -115,8 +114,8 @@ final class CTCPUtil {
             }
             currentIndex = matcher.end();
         }
-        if (currentIndex < message.length()) {
-            builder.append(message.substring(currentIndex));
+        if (currentIndex < ctcpContent.length()) {
+            builder.append(ctcpContent.substring(currentIndex));
         }
         return builder.toString();
     }
