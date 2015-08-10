@@ -47,12 +47,10 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
     private class Listener {
         @Handler(priority = 1)
         public void capList(CapabilitiesSupportedListEvent event) {
-            if (event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0) {
+            if (event.isNegotiating() && !SaslPlain.this.authenticating && event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0) {
                 new CapabilityRequestCommand(SaslPlain.this.getClient()).enable("sasl").execute();
                 event.setEndingNegotiation(false);
                 SaslPlain.this.authenticating = true;
-            } else {
-                SaslPlain.this.authenticating = false;
             }
         }
 
