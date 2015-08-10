@@ -33,19 +33,6 @@ import java.util.function.Consumer;
  */
 public interface ClientBuilder extends Cloneable {
     /**
-     * Sets values for authentication with services on the server.
-     *
-     * @param authType type of authentication (See {@link AuthType})
-     * @param username username
-     * @param password password
-     * @return this builder
-     * @throws IllegalArgumentException for null parameters
-     * @see AuthManager for managing authentication later
-     */
-    @Nonnull
-    ClientBuilder auth(@Nonnull AuthType authType, @Nonnull String username, @Nonnull String password);
-
-    /**
      * Binds the client to no specific host.
      *
      * @return this builder

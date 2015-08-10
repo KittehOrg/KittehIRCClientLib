@@ -103,10 +103,6 @@ class EventListener {
     @NumericFilter(4)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void version(ClientReceiveNumericEvent event) {
-        try {
-            this.client.getAuthManager().authenticate();
-        } catch (IllegalStateException | UnsupportedOperationException ignored) {
-        }
         this.client.resetServerInfo();
         if (event.getArgs().length > 1) {
             this.client.getServerInfo().setAddress(event.getArgs()[1]);

@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.AuthType;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ClientBuilder;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -45,20 +44,6 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     IRCClientBuilder() {
         this.config = new Config();
-    }
-
-    @Nonnull
-    @Override
-    public IRCClientBuilder auth(@Nonnull AuthType authType, @Nonnull String username, @Nonnull String password) {
-        Sanity.nullCheck(authType, "Auth type cannot be null!");
-        Sanity.nullCheck(username, "Username cannot be null!");
-        Sanity.safeMessageCheck(username, "authentication username");
-        Sanity.nullCheck(password, "Password cannot be null!");
-        Sanity.safeMessageCheck(password, "authentication password");
-        this.config.set(Config.AUTH_TYPE, authType);
-        this.config.set(Config.AUTH_NAME, username);
-        this.config.set(Config.AUTH_PASS, password);
-        return this;
     }
 
     @Nonnull

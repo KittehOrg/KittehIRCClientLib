@@ -23,59 +23,51 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.AuthManager;
-import org.kitteh.irc.client.library.AuthType;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.auth.AuthManager;
+import org.kitteh.irc.client.library.auth.protocol.AuthProtocol;
+import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 final class IRCAuthManager implements AuthManager {
     private final Client client;
-    private AuthType authType;
-    private String username;
-    private String password;
+    private final Set<AuthProtocol> protocols = new HashSet<>();
 
     IRCAuthManager(@Nonnull Client client) {
         this.client = client;
     }
 
     @Override
-    public void authenticate() {
-        if (this.username == null) {
-            throw new IllegalStateException("No username has been defined.");
+    public synchronized Optional<AuthProtocol> addProtocol(AuthProtocol protocol) {
+        List<AuthProtocol> matching = this.protocols.stream().filter(p -> p.getClass() == protocol.getClass()).collect(Collectors.toList());
+        Optional<AuthProtocol> removed = Optional.ofNullable(matching.isEmpty() ? null : matching.get(0));
+        removed.ifPresent(this::removeProtocol);
+        this.protocols.add(protocol);
+        if (protocol instanceof EventListening) {
+            this.client.getEventManager().registerEventListener(((EventListening) protocol).getEventListener());
         }
-        if (this.password == null) {
-            throw new IllegalStateException("No password has been defined.");
+        return removed;
+    }
+
+    @Override
+    public synchronized Set<AuthProtocol> getProtocols() {
+        return Collections.unmodifiableSet(new HashSet<>(this.protocols));
+    }
+
+    @Override
+    public synchronized void removeProtocol(AuthProtocol protocol) {
+        this.protocols.remove(protocol);
+        if (protocol instanceof EventListening) {
+            this.client.getEventManager().unregisterEventListener(((EventListening) protocol).getEventListener());
         }
-        this.authType.authenticate(this.client, this.username, this.password);
-    }
-
-    @Override
-    public void reclaimNick(@Nonnull String nick) {
-        Sanity.nullCheck(nick, "Nickname cannot be null");
-        this.authType.reclaimNick(this.client, nick);
-    }
-
-    @Override
-    public void setAuthType(@Nonnull AuthType authType) {
-        Sanity.nullCheck(authType, "Authentication type cannot be null. See AuthType.DISABLED");
-        this.authType = authType;
-    }
-
-    @Override
-    public void setPassword(@Nonnull String password) {
-        Sanity.nullCheck(password, "Password cannot be null");
-        Sanity.safeMessageCheck(password, "authentication password");
-        this.password = password;
-    }
-
-    @Override
-    public void setUsername(@Nonnull String username) {
-        Sanity.nullCheck(username, "Username cannot be null");
-        Sanity.safeMessageCheck(username, "authentication username");
-        this.username = username;
     }
 
     @Nonnull
