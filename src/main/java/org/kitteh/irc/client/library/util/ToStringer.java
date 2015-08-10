@@ -46,52 +46,62 @@ public class ToStringer {
         this.name = object.getClass().getSimpleName();
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, @Nullable Object object) {
         Sanity.nullCheck(name, "Name cannot be null");
         this.list.add(new Pair<>(name, object));
         return this;
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, boolean b) {
         this.add(name, String.valueOf(b));
         return this;
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, byte b) {
         this.add(name, String.valueOf(b));
         return this;
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, char c) {
         this.add(name, String.valueOf(c));
         return this;
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, double d) {
         this.add(name, String.valueOf(d));
         return this;
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, float f) {
         this.add(name, String.valueOf(f));
         return this;
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, int i) {
         this.add(name, String.valueOf(i));
         return this;
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, long l) {
         this.add(name, String.valueOf(l));
         return this;
     }
 
+    @Nonnull
     public ToStringer add(@Nonnull String name, short s) {
         this.add(name, String.valueOf(s));
         return this;
     }
 
+    @Nonnull
     public String toString() {
         StringBuilder builder = new StringBuilder(this.name.length() + (this.list.size() * 10));
         builder.append(this.name).append(" (");

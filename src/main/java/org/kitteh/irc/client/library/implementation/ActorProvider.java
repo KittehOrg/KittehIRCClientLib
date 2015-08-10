@@ -124,13 +124,14 @@ class ActorProvider {
     }
 
     private class IRCStaleable<T extends Staleable> extends IRCActor {
+        @Nullable
         private T snapshot;
 
         protected IRCStaleable(@Nonnull String name) {
             super(name);
         }
 
-        protected boolean isStale(T potentiallyStale) {
+        protected boolean isStale(@Nonnull T potentiallyStale) {
             return this.snapshot != potentiallyStale;
         }
 
@@ -138,7 +139,8 @@ class ActorProvider {
             this.snapshot = null;
         }
 
-        protected synchronized T snapshot(Supplier<T> supplier) {
+        @Nonnull
+        protected synchronized T snapshot(@Nonnull Supplier<T> supplier) {
             if (this.snapshot != null) {
                 return this.snapshot;
             }

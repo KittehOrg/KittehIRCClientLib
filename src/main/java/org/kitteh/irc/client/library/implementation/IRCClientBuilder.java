@@ -37,7 +37,9 @@ import java.util.function.Consumer;
 
 final class IRCClientBuilder implements ClientBuilder, Cloneable {
     private Config config;
+    @Nullable
     private Consumer<Client> after;
+    @Nullable
     private String bindHost;
     private int bindPort;
     private String serverHost;

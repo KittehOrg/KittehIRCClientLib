@@ -35,7 +35,7 @@ final class Listener<Type> {
     private final class ListenerThread extends QueueProcessingThread<Type> {
         private volatile Consumer<Type> consumer;
 
-        private ListenerThread(String clientName, Consumer<Type> consumer) {
+        private ListenerThread(@Nonnull String clientName, @Nonnull Consumer<Type> consumer) {
             super("Kitteh IRC Client Listener (" + clientName + ')');
             this.consumer = consumer;
         }
@@ -65,12 +65,12 @@ final class Listener<Type> {
     @Nullable
     private ListenerThread thread;
 
-    Listener(String clientName, Consumer<Type> consumer) {
+    Listener(@Nonnull String clientName, @Nullable Consumer<Type> consumer) {
         this.clientName = clientName;
         this.thread = (consumer == null) ? null : new ListenerThread(clientName, consumer);
     }
 
-    void queue(Type item) {
+    void queue(@Nonnull Type item) {
         if (this.thread != null) {
             this.thread.queue(item);
         }
@@ -81,7 +81,7 @@ final class Listener<Type> {
         this.thread = null;
     }
 
-    void setConsumer(Consumer<Type> consumer) {
+    void setConsumer(@Nonnull Consumer<Type> consumer) {
         if (this.thread == null) {
             this.thread = new ListenerThread(this.clientName, consumer);
         } else {

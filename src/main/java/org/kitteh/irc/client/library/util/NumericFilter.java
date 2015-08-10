@@ -85,6 +85,7 @@ public @interface NumericFilter {
          *
          * @return stored annotations
          */
+        @Nonnull
         NumericFilter[] value();
     }
 

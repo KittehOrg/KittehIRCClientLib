@@ -44,6 +44,7 @@ public interface Client {
      *
      * @return a client builder
      */
+    @Nonnull
     static ClientBuilder builder() {
         try {
             Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".implementation.IRCClientBuilder").getDeclaredConstructor();

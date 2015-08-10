@@ -117,6 +117,7 @@ public class ModeCommand extends ChannelCommand {
         return this.addChange(add, mode, parameter.getNick());
     }
 
+    @Nonnull
     private ModeCommand addChange(boolean add, @Nonnull ChannelMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");

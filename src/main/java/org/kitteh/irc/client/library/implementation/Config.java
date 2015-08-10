@@ -163,7 +163,7 @@ final class Config {
      * @return the stored entry, or the default value if not set
      */
     @Nullable
-    <Type> Type get(Entry<Type> entry) {
+    <Type> Type get(@Nonnull Entry<Type> entry) {
         if (this.map.containsKey(entry)) {
             Object value = this.map.get(entry);
             if ((value != NULL) && entry.getType().isAssignableFrom(value.getClass())) {
@@ -185,7 +185,7 @@ final class Config {
      * @throws NullPointerException for a null entry
      */
     @Nonnull
-    <Type> Type getNotNull(Entry<Type> entry) {
+    <Type> Type getNotNull(@Nonnull Entry<Type> entry) {
         Type t = this.get(entry);
         if (t == null) {
             throw new NullPointerException();

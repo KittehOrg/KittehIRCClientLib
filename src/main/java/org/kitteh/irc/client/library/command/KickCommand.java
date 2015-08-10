@@ -30,12 +30,14 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Get your KICKs on Route 66.
  */
 public class KickCommand extends ChannelCommand {
     private String target;
+    @Nullable
     private String reason;
 
     /**

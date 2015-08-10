@@ -41,6 +41,7 @@ public final class Sanity {
      * @return the sane object
      * @throws IllegalArgumentException if the object is null
      */
+    @Nonnull
     public static <T> T nullCheck(@Nullable T object, @Nonnull String failMessage) {
         if (object == null) {
             throw new IllegalArgumentException(failMessage);
@@ -56,6 +57,7 @@ public final class Sanity {
      * @return the sane object
      * @throws IllegalArgumentException if null or contains null elements
      */
+    @Nonnull
     public static <T> T[] nullCheck(@Nullable T[] array, @Nonnull String failMessage) {
         Sanity.nullCheck((Object) array, failMessage);
         for (Object element : array) {
@@ -84,6 +86,7 @@ public final class Sanity {
      * @return the safe message
      * @throws IllegalArgumentException if found
      */
+    @Nonnull
     public static String safeMessageCheck(@Nonnull String message) {
         return Sanity.safeMessageCheck(message, "Message");
     }
@@ -96,6 +99,7 @@ public final class Sanity {
      * @return the safe message
      * @throws IllegalArgumentException if found
      */
+    @Nonnull
     public static String safeMessageCheck(@Nullable String message, @Nonnull String name) {
         Sanity.nullCheck(message, name + " cannot be null");
         for (char ch : message.toCharArray()) {
