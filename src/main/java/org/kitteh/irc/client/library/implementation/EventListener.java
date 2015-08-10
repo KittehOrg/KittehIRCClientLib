@@ -394,6 +394,7 @@ class EventListener {
                 Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
                 capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
                 if (!capabilities.isEmpty()) {
+                    responseEvent.setEndingNegotiation(false);
                     CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
                     capabilities.forEach(capabilityRequestCommand::enable);
                     capabilityRequestCommand.execute();

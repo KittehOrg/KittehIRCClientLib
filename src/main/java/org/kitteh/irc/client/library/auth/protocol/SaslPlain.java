@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesRejectedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
@@ -48,15 +49,24 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
         public void capList(CapabilitiesSupportedListEvent event) {
             if (event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0) {
                 new CapabilityRequestCommand(SaslPlain.this.getClient()).enable("sasl").execute();
+                event.setEndingNegotiation(false);
+                SaslPlain.this.authenticating = true;
             } else {
                 SaslPlain.this.authenticating = false;
             }
         }
 
-        @Handler
+        @Handler(priority = 1)
         public void capAck(CapabilitiesAcknowledgedEvent event) {
             if (event.getAcknowledgedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0) {
                 SaslPlain.this.startAuthentication();
+            }
+        }
+
+        @Handler(priority = 1)
+        public void capNak(CapabilitiesRejectedEvent event) {
+            if (event.getRejectedCapabilitiesRequest().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0) {
+                SaslPlain.this.authenticating = false;
             }
         }
 
@@ -122,7 +132,6 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
     @Nonnull
     @Override
     protected String getAuthentication() {
-        this.authenticating = true;
         return "AUTHENTICATE PLAIN";
     }
 
