@@ -23,14 +23,9 @@
  */
 package org.kitteh.irc.client.library.auth.protocol;
 
-import net.engio.mbassy.listener.Filter;
-import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 import org.kitteh.irc.client.library.auth.protocol.element.Password;
 import org.kitteh.irc.client.library.auth.protocol.element.Username;
-import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.util.NumericFilter;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -39,35 +34,6 @@ import javax.annotation.Nonnull;
  * Abstract general username/password protocol.
  */
 public abstract class AbstractUserPassProtocol implements Password, Username {
-    public static abstract class WithListener extends AbstractUserPassProtocol implements EventListening {
-        private class Listener {
-            @NumericFilter(4)
-            @Handler(filters = @Filter(NumericFilter.Filter.class))
-            public void listenVersion(ClientReceiveNumericEvent event) {
-                WithListener.this.startAuthentication();
-            }
-        }
-
-        private final Listener listener = new Listener();
-
-        /**
-         * Creates an instance.
-         *
-         * @param client client
-         * @param username username
-         * @param password password
-         */
-        protected WithListener(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-            super(client, username, password);
-        }
-
-        @Nonnull
-        @Override
-        public Object getEventListener() {
-            return this.listener;
-        }
-    }
-
     private final Client client;
     private String password;
     private String username;

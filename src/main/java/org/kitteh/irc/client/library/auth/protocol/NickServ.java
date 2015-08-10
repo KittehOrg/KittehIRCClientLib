@@ -23,15 +23,43 @@
  */
 package org.kitteh.irc.client.library.auth.protocol;
 
+import net.engio.mbassy.listener.Filter;
+import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.IRCFormat;
+import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 import org.kitteh.irc.client.library.auth.protocol.element.NickReclamation;
+import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
+import org.kitteh.irc.client.library.util.NumericFilter;
 
 import javax.annotation.Nonnull;
 
 /**
  * NickServ protocol.
  */
-public class NickServ extends AbstractUserPassProtocol.WithListener implements NickReclamation {
+public class NickServ extends AbstractUserPassProtocol implements EventListening, NickReclamation {
+    private class Listener {
+        @NumericFilter(4)
+        @Handler(filters = @Filter(NumericFilter.Filter.class))
+        public void listenVersion(ClientReceiveNumericEvent event) {
+            NickServ.this.startAuthentication();
+        }
+
+        @Handler
+        public void listenSuccess(PrivateNoticeEvent event) {
+            if (event.getActor().getNick().equals("NickServ")) {
+                if (event.getMessage().startsWith("You are now identified")) {
+                    int first;
+                    String username = event.getMessage().substring((first = event.getMessage().indexOf(IRCFormat.BOLD.toString()) + 1), event.getMessage().indexOf(IRCFormat.BOLD.toString(), first));
+                    // TODO do something with this information
+                }
+            }
+        }
+    }
+
+    private final Listener listener = new Listener();
+
     /**
      * Creates a NickServ authentication protocol instance.
      *
@@ -47,5 +75,11 @@ public class NickServ extends AbstractUserPassProtocol.WithListener implements N
     @Override
     protected String getAuthentication() {
         return "NickServ :IDENTIFY " + this.getUsername() + ' ' + this.getPassword();
+    }
+
+    @Nonnull
+    @Override
+    public Object getEventListener() {
+        return this.listener;
     }
 }

@@ -23,14 +23,31 @@
  */
 package org.kitteh.irc.client.library.auth.protocol;
 
+import net.engio.mbassy.listener.Filter;
+import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
+import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.util.CommandFilter;
+import org.kitteh.irc.client.library.util.NumericFilter;
 
 import javax.annotation.Nonnull;
 
 /**
  * GameSurge's AuthServ protocol.
  */
-public class GameSurge extends AbstractUserPassProtocol.WithListener {
+public class GameSurge extends AbstractUserPassProtocol implements EventListening {
+    private class Listener {
+        @NumericFilter(4)
+        @Handler(filters = @Filter(NumericFilter.Filter.class))
+        public void listenVersion(ClientReceiveNumericEvent event) {
+            GameSurge.this.startAuthentication();
+        }
+    }
+
+    private final Listener listener = new Listener();
+
     /**
      * Creates a GameSurge authentication protocol instance.
      *
@@ -46,5 +63,11 @@ public class GameSurge extends AbstractUserPassProtocol.WithListener {
     @Override
     protected String getAuthentication() {
         return "PRIVMSG AuthServ@services.gamesurge.net :auth " + this.getUsername() + ' ' + this.getPassword();
+    }
+
+    @Nonnull
+    @Override
+    public Object getEventListener() {
+        return this.listener;
     }
 }
