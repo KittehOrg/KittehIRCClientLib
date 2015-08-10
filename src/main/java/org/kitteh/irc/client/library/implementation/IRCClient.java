@@ -103,7 +103,6 @@ final class IRCClient extends InternalClient {
 
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
-        this.connect();
     }
 
     @Override

@@ -37,6 +37,7 @@ import java.util.function.Consumer;
 
 final class IRCClientBuilder implements ClientBuilder, Cloneable {
     private Config config;
+    private Consumer<Client> after;
     private String bindHost;
     private int bindPort;
     private String serverHost;
@@ -44,6 +45,19 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     IRCClientBuilder() {
         this.config = new Config();
+    }
+
+    @Nonnull
+    public ClientBuilder after() {
+        this.after = null;
+        return this;
+    }
+
+    @Nonnull
+    public ClientBuilder after(Consumer<Client> consumer) {
+        Sanity.nullCheck(consumer, "Consumer cannot be null");
+        this.after = consumer;
+        return this;
     }
 
     @Nonnull
@@ -269,7 +283,12 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
     public Client build() {
         this.inetSet(Config.BIND_ADDRESS, this.bindHost, this.bindPort);
         this.inetSet(Config.SERVER_ADDRESS, this.serverHost, this.serverPort);
-        return new IRCClient(this.config);
+        IRCClient client = new IRCClient(this.config);
+        if (this.after != null) {
+            this.after.accept(client);
+        }
+        client.connect();
+        return client;
     }
 
     @Nonnull

@@ -33,6 +33,24 @@ import java.util.function.Consumer;
  */
 public interface ClientBuilder extends Cloneable {
     /**
+     * Removes the Consumer set to fire after the client is built.
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder after();
+
+    /**
+     * Sets up a Consumer to fire on the newly created client after it is
+     * built, prior to connection.
+     *
+     * @param consumer consumer
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder after(Consumer<Client> consumer);
+
+    /**
      * Binds the client to no specific host.
      *
      * @return this builder
