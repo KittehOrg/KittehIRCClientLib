@@ -92,7 +92,7 @@ final class IRCClient extends InternalClient {
         this.config = config;
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
-        final String name = this.config.get(Config.NAME);
+        final String name = this.config.getNotNull(Config.NAME);
 
         Config.ExceptionConsumerWrapper exceptionListenerWrapper = this.config.get(Config.LISTENER_EXCEPTION);
         this.exceptionListener = new Listener<>(name, (exceptionListenerWrapper == null) ? null : exceptionListenerWrapper.getConsumer());

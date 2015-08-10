@@ -85,8 +85,7 @@ public @interface CommandFilter {
          *
          * @return stored annotations
          */
-        @Nonnull
-        CommandFilter[] value();
+        @Nonnull CommandFilter[] value();
     }
 
     /**
@@ -94,6 +93,5 @@ public @interface CommandFilter {
      *
      * @return the command
      */
-    @Nonnull
-    String value();
+    @Nonnull String value();
 }

@@ -47,7 +47,7 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
     private class Listener {
         @Handler(priority = 1)
         public void capList(CapabilitiesSupportedListEvent event) {
-            if (event.isNegotiating() && !SaslPlain.this.authenticating && event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0) {
+            if (event.isNegotiating() && !SaslPlain.this.authenticating && (event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0)) {
                 new CapabilityRequestCommand(SaslPlain.this.getClient()).enable("sasl").execute();
                 event.setEndingNegotiation(false);
                 SaslPlain.this.authenticating = true;
@@ -93,7 +93,7 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
         @NumericFilter(903)
         @Handler(filters = @Filter(NumericFilter.Filter.class))
         public void success(ClientReceiveNumericEvent event) {
-            finish();
+            this.finish();
         }
 
         @NumericFilter(902)
@@ -104,7 +104,7 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
         @NumericFilter(908)
         @Handler(filters = @Filter(NumericFilter.Filter.class))
         public void fail(ClientReceiveNumericEvent event) {
-            finish();
+            this.finish();
         }
 
         private void finish() {

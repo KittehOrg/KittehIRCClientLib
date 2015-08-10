@@ -27,9 +27,7 @@ import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
-import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.util.CommandFilter;
 import org.kitteh.irc.client.library.util.NumericFilter;
 
 import javax.annotation.Nonnull;
