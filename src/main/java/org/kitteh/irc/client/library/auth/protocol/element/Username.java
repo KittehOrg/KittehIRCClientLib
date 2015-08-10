@@ -36,6 +36,7 @@ public interface Username extends AuthProtocol {
      *
      * @return username
      */
+    @Nonnull
     String getUsername();
 
     /**

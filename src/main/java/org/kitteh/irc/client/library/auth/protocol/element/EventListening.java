@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.auth.protocol.element;
 
+import javax.annotation.Nonnull;
+
 /**
  * Listens to events
  */
@@ -32,5 +34,6 @@ public interface EventListening {
      *
      * @return listener
      */
+    @Nonnull
     Object getEventListener();
 }

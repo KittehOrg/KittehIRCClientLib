@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library.auth.protocol;
 
 import org.kitteh.irc.client.library.Client;
 
+import javax.annotation.Nonnull;
+
 /**
  * GameSurge's AuthServ protocol.
  */
@@ -36,10 +38,11 @@ public class GameSurge extends AbstractUserPassProtocol.WithListener {
      * @param username username
      * @param password password
      */
-    public GameSurge(Client client, String username, String password) {
+    public GameSurge(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
         super(client, username, password);
     }
 
+    @Nonnull
     @Override
     protected String getAuthentication() {
         return "PRIVMSG AuthServ@services.gamesurge.net :auth " + this.getUsername() + ' ' + this.getPassword();

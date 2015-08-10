@@ -57,10 +57,11 @@ public abstract class AbstractUserPassProtocol implements Password, Username {
          * @param username username
          * @param password password
          */
-        protected WithListener(Client client, String username, String password) {
+        protected WithListener(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
             super(client, username, password);
         }
 
+        @Nonnull
         @Override
         public Object getEventListener() {
             return this.listener;
@@ -78,7 +79,7 @@ public abstract class AbstractUserPassProtocol implements Password, Username {
      * @param username username
      * @param password password
      */
-    protected AbstractUserPassProtocol(Client client, String username, String password) {
+    protected AbstractUserPassProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
         Sanity.nullCheck(client, "Client cannot be null");
         Sanity.safeMessageCheck(username, "Username");
         Sanity.safeMessageCheck(password, "Password");
@@ -127,5 +128,6 @@ public abstract class AbstractUserPassProtocol implements Password, Username {
      *
      * @return auth string
      */
+    @Nonnull
     protected abstract String getAuthentication();
 }

@@ -26,6 +26,8 @@ package org.kitteh.irc.client.library.auth.protocol;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.NickReclamation;
 
+import javax.annotation.Nonnull;
+
 /**
  * NickServ protocol.
  */
@@ -37,10 +39,11 @@ public class NickServ extends AbstractUserPassProtocol.WithListener implements N
      * @param username username
      * @param password password
      */
-    public NickServ(Client client, String username, String password) {
+    public NickServ(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
         super(client, username, password);
     }
 
+    @Nonnull
     @Override
     protected String getAuthentication() {
         return "NickServ :IDENTIFY " + this.getUsername() + ' ' + this.getPassword();

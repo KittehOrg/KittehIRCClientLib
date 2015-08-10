@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.auth;
 import org.kitteh.irc.client.library.auth.protocol.AuthProtocol;
 import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.Set;
 
@@ -42,13 +43,15 @@ public interface AuthManager {
      * @return displaced protocol of same class
      * @throws IllegalArgumentException if the protocol is for another Client
      */
-    Optional<AuthProtocol> addProtocol(AuthProtocol protocol);
+    @Nonnull
+    Optional<AuthProtocol> addProtocol(@Nonnull AuthProtocol protocol);
 
     /**
      * Gets all protocols currently registered to the manager.
      *
      * @return all protocols
      */
+    @Nonnull
     Set<AuthProtocol> getProtocols();
 
     /**
@@ -57,5 +60,5 @@ public interface AuthManager {
      *
      * @param protocol protocol to remove
      */
-    void removeProtocol(AuthProtocol protocol);
+    void removeProtocol(@Nonnull AuthProtocol protocol);
 }

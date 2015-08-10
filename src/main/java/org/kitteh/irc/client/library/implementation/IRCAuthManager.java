@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.auth.protocol.AuthProtocol;
 import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -45,8 +46,10 @@ final class IRCAuthManager implements AuthManager {
         this.client = client;
     }
 
+    @Nonnull
     @Override
-    public synchronized Optional<AuthProtocol> addProtocol(AuthProtocol protocol) {
+    public synchronized Optional<AuthProtocol> addProtocol(@Nonnull AuthProtocol protocol) {
+        Sanity.nullCheck(protocol, "Protocol cannot be null");
         List<AuthProtocol> matching = this.protocols.stream().filter(p -> p.getClass() == protocol.getClass()).collect(Collectors.toList());
         Optional<AuthProtocol> removed = Optional.ofNullable(matching.isEmpty() ? null : matching.get(0));
         removed.ifPresent(this::removeProtocol);
@@ -57,13 +60,15 @@ final class IRCAuthManager implements AuthManager {
         return removed;
     }
 
+    @Nonnull
     @Override
     public synchronized Set<AuthProtocol> getProtocols() {
         return Collections.unmodifiableSet(new HashSet<>(this.protocols));
     }
 
     @Override
-    public synchronized void removeProtocol(AuthProtocol protocol) {
+    public synchronized void removeProtocol(@Nonnull AuthProtocol protocol) {
+        Sanity.nullCheck(protocol, "Protocol cannot be null");
         this.protocols.remove(protocol);
         if (protocol instanceof EventListening) {
             this.client.getEventManager().unregisterEventListener(((EventListening) protocol).getEventListener());
