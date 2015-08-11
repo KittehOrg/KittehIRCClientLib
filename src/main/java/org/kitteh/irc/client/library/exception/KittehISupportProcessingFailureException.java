@@ -44,7 +44,7 @@ public class KittehISupportProcessingFailureException extends Exception {
     /**
      * Gets the ISUPPORT argument which could not be processed.
      *
-     * @return the unprocessed argument which may be null
+     * @return the unprocessed argument
      */
     @Nonnull
     public String getArg() {

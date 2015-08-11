@@ -58,7 +58,7 @@ public enum CaseMapping {
      * Gets a CaseMapping by name. Case insensitive.
      *
      * @param name the name of the CaseMapping to get
-     * @return the matching CaseMapping or null if no match
+     * @return the matching CaseMapping if one exists
      */
     @Nonnull
     public static Optional<CaseMapping> getByName(@Nullable String name) {

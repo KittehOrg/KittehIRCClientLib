@@ -101,7 +101,7 @@ public interface ServerInfo {
     /**
      * Gets the server's MOTD.
      *
-     * @return motd or null if unknown
+     * @return motd if known
      */
     @Nonnull
     Optional<List<String>> getMOTD();

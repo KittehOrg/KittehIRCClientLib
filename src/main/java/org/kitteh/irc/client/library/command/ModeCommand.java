@@ -105,7 +105,7 @@ public class ModeCommand extends ChannelCommand {
      *
      * @param add true if adding, false if removing
      * @param mode the mode to be changed
-     * @param parameter user whose nick will be sent or null if not needed
+     * @param parameter user whose nick will be sent
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid or either mode or
      * user comes from a different client or parameter is null

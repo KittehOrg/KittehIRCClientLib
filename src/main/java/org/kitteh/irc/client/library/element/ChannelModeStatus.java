@@ -89,7 +89,7 @@ public class ChannelModeStatus {
     /**
      * Gets the parameter for the mode status, if applicable.
      *
-     * @return parameter or null if no parameter
+     * @return parameter if present
      */
     @Nonnull
     public Optional<String> getParameter() {

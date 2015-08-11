@@ -108,7 +108,7 @@ public class KickCommand extends ChannelCommand {
     /**
      * Sets the reason for this kick.
      *
-     * @param reason or null for no reason
+     * @param reason reason
      * @return this command
      * @throws IllegalArgumentException if reason is null or contains invalid characters
      */

@@ -58,7 +58,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
     /**
      * Gets the reply to be sent to the CTCP sender.
      *
-     * @return the reply, or null if no reply will be sent
+     * @return the reply if one is set
      */
     @Nonnull
     public Optional<String> getReply() {
@@ -73,7 +73,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
     }
 
     /**
-     * Sets the reply to send to the CTCP sender. Null for no reply.
+     * Sets the reply to send to the CTCP sender.
      *
      * @param reply message to send back
      */
