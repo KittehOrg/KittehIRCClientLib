@@ -38,11 +38,12 @@ public final class Sanity {
      *
      * @param object object to check
      * @param failMessage message to throw
+     * @param <Type> type of object checked
      * @return the sane object
      * @throws IllegalArgumentException if the object is null
      */
     @Nonnull
-    public static <T> T nullCheck(@Nullable T object, @Nonnull String failMessage) {
+    public static <Type> Type nullCheck(@Nullable Type object, @Nonnull String failMessage) {
         if (object == null) {
             throw new IllegalArgumentException(failMessage);
         }
@@ -54,11 +55,12 @@ public final class Sanity {
      *
      * @param array array to check
      * @param failMessage message to throw
+     * @param <Type> type of object checked
      * @return the sane object
      * @throws IllegalArgumentException if null or contains null elements
      */
     @Nonnull
-    public static <T> T[] nullCheck(@Nullable T[] array, @Nonnull String failMessage) {
+    public static <Type> Type[] nullCheck(@Nullable Type[] array, @Nonnull String failMessage) {
         Sanity.nullCheck((Object) array, failMessage);
         for (Object element : array) {
             Sanity.nullCheck(element, failMessage);

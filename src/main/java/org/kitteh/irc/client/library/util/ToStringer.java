@@ -46,6 +46,13 @@ public class ToStringer {
         this.name = object.getClass().getSimpleName();
     }
 
+    /**
+     * Adds an object.
+     *
+     * @param name name of the object
+     * @param object object to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, @Nullable Object object) {
         Sanity.nullCheck(name, "Name cannot be null");
@@ -53,48 +60,104 @@ public class ToStringer {
         return this;
     }
 
+    /**
+     * Adds a boolean.
+     *
+     * @param name name of the boolean
+     * @param b boolean to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, boolean b) {
         this.add(name, String.valueOf(b));
         return this;
     }
 
+    /**
+     * Adds a byte.
+     *
+     * @param name name of the byte
+     * @param b byte to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, byte b) {
         this.add(name, String.valueOf(b));
         return this;
     }
 
+    /**
+     * Adds a char.
+     *
+     * @param name name of the char
+     * @param c char to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, char c) {
         this.add(name, String.valueOf(c));
         return this;
     }
 
+    /**
+     * Adds a double.
+     *
+     * @param name name of the double
+     * @param d double to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, double d) {
         this.add(name, String.valueOf(d));
         return this;
     }
 
+    /**
+     * Adds a float.
+     *
+     * @param name name of the float
+     * @param f float to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, float f) {
         this.add(name, String.valueOf(f));
         return this;
     }
 
+    /**
+     * Adds an int.
+     *
+     * @param name name of the int
+     * @param i int to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, int i) {
         this.add(name, String.valueOf(i));
         return this;
     }
 
+    /**
+     * Adds a long.
+     *
+     * @param name name of the long
+     * @param l long to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, long l) {
         this.add(name, String.valueOf(l));
         return this;
     }
 
+    /**
+     * Adds a short.
+     *
+     * @param name name of the short
+     * @param s short to add
+     * @return this instance
+     */
     @Nonnull
     public ToStringer add(@Nonnull String name, short s) {
         this.add(name, String.valueOf(s));
@@ -102,6 +165,7 @@ public class ToStringer {
     }
 
     @Nonnull
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(this.name.length() + (this.list.size() * 10));
         builder.append(this.name).append(" (");
