@@ -1,12 +1,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <packaging>jar</packaging>
     <version>0.3.1-SNAPSHOT</version>
+
+    <packaging>jar</packaging>
+
     <name>Kitteh IRC Client Library</name>
     <url>http://github.com/KittehOrg/KittehIRCClientLib</url>
+    <inceptionYear>2013</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>MIT License (Expat)</name>
+            <url>https://github.com/KittehOrg/KittehIRCClientLib/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
+            <comments>See the LICENSE and NOTICE files</comments>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Kitteh</name>
+        <url>http://kitteh.org</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>mbaxter</id>
+            <name>Matt Baxter</name>
+            <email>matt@kitteh.org</email>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/KittehOrg/KittehIRCClientLib/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>TravisCI</system>
+        <url>https://travis-ci.org/KittehOrg/KittehIRCClientLib</url>
+    </ciManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugin.javadocs.version>2.10.3</plugin.javadocs.version>
