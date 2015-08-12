@@ -9,15 +9,15 @@
     <packaging>jar</packaging>
 
     <name>Kitteh IRC Client Library</name>
-    <url>http://github.com/KittehOrg/KittehIRCClientLib</url>
+    <description>An IRC client library for Java. KICL uses an event bus model to handle communication with an IRC server.</description>
+    <url>http://kitteh.org/irc-client-library/</url>
     <inceptionYear>2013</inceptionYear>
 
     <licenses>
         <license>
             <name>MIT License (Expat)</name>
-            <url>https://github.com/KittehOrg/KittehIRCClientLib/blob/master/LICENSE</url>
+            <url>http://opensource.org/licenses/mit-license.php</url>
             <distribution>repo</distribution>
-            <comments>See the LICENSE and NOTICE files</comments>
         </license>
     </licenses>
 
@@ -31,6 +31,9 @@
             <id>mbaxter</id>
             <name>Matt Baxter</name>
             <email>matt@kitteh.org</email>
+            <url>http://kitteh.org</url>
+            <organization>Kitteh</organization>
+            <organizationUrl>http://kitteh.org</organizationUrl>
         </developer>
     </developers>
 
@@ -43,6 +46,12 @@
         <system>TravisCI</system>
         <url>https://travis-ci.org/KittehOrg/KittehIRCClientLib</url>
     </ciManagement>
+
+    <scm>
+        <connection>scm:git:git@github.com:KittehOrg/KittehIRCClientLib.git</connection>
+        <developerConnection>scm:git:git@github.com:KittehOrg/KittehIRCClientLib.git</developerConnection>
+        <url>git@github.com:KittehOrg/KittehIRCClientLib.git</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
