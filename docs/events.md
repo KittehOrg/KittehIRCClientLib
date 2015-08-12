@@ -1,3 +1,5 @@
+## Basics
+
 KICL utilizes the [MBassador](https://github.com/bennidi/mbassador) event bus.
 
 Listening to an event is as simple as follows:
