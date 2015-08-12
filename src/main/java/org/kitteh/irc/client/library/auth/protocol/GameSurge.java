@@ -33,7 +33,7 @@ import org.kitteh.irc.client.library.util.NumericFilter;
 import javax.annotation.Nonnull;
 
 /**
- * GameSurge's AuthServ protocol.
+ * GameSurge's AuthServ protocol. Automatically attempts to identify upon connection.
  */
 public class GameSurge extends AbstractUserPassProtocol implements EventListening {
     private class Listener {

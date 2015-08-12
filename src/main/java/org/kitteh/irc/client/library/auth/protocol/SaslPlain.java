@@ -41,7 +41,7 @@ import javax.annotation.Nonnull;
 import java.util.Base64;
 
 /**
- * SASL PLAIN authentication.
+ * SASL PLAIN authentication. Automatically attempts auth during connection.
  */
 public class SaslPlain extends AbstractUserPassProtocol implements EventListening {
     private class Listener {

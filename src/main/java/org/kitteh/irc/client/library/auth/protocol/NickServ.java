@@ -36,7 +36,7 @@ import org.kitteh.irc.client.library.util.NumericFilter;
 import javax.annotation.Nonnull;
 
 /**
- * NickServ protocol.
+ * NickServ protocol. Automatically attempts to identify upon connection.
  */
 public class NickServ extends AbstractUserPassProtocol implements EventListening, NickReclamation {
     private class Listener {
