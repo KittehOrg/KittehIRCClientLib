@@ -1,7 +1,8 @@
 # Kitteh IRC Client Library Documentation
 
 The Kitteh IRC Client Library (KICL) is a powerful, modern Java IRC library built with NIO
-using the Netty library to maximize performance and scalability.
+using the Netty library to maximize performance and scalability. KICL is built with Java 8
+and utilizes Java 8's Optional to avoid returning null in the API.
 
 Some niceties about KICL include:
 
@@ -47,6 +48,8 @@ and adding the dependency with
 </dependency>
 ```
 
+It is planned to submit KICL to Maven Central for 1.0.0 release.
+
 ## Events
 
 KICL uses a simple event system driven by ```@Handler``` annotations.
@@ -58,7 +61,7 @@ public class FriendlyBot {
     private Client client;
 
     public void connect() {
-        ...;
+        ...; // Setting up this.client
 
         this.client.getEventManager().registerEventListener(this);
     }
@@ -75,4 +78,5 @@ public class FriendlyBot {
 
 Consult the [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/) to answer most questions.
 
-Check out the [Issue Tracker](https://github.com/KittehOrg/KittehIRCClientLib/issues) if you have trouble.
+Visit us in `#kitteh.org` on `irc.esper.net` for a chat, or check out the
+[Issue Tracker](https://github.com/KittehOrg/KittehIRCClientLib/issues) if you have trouble.
