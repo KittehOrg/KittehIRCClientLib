@@ -51,6 +51,7 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
+import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -74,18 +75,44 @@ final class NettyManager {
         private boolean reconnect = true;
         private ScheduledFuture<?> scheduledSending;
         private final Object scheduledSendingLock = new Object();
+        private final Object immediateSendingLock = new Object();
+        private boolean immediateSendingReady = false;
+        private final QueueProcessingThread<String> immediateSending;
 
-        private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture future) {
+        private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;
-            this.channel = future.channel();
+            this.channel = channelFuture.channel();
 
-            try {
-                future.sync();
-            } catch (InterruptedException e) {
-                this.client.getExceptionListener().queue(e);
-                return;
-            }
+            this.immediateSending = new QueueProcessingThread<String>("Kitteh IRC Client Immediate Sending Queue (" + client.getName() + ')') {
+                @Override
+                protected void processElement(String message) {
+                    synchronized (ClientConnection.this.immediateSendingLock) {
+                        if (!ClientConnection.this.immediateSendingReady) {
+                            try {
+                                ClientConnection.this.immediateSendingLock.wait();
+                            } catch (InterruptedException e) {
+                                return;
+                            }
+                        }
+                        ClientConnection.this.channel.writeAndFlush(message);
+                    }
+                }
+            };
 
+            channelFuture.addListener(future -> {
+                if (future.isSuccess()) {
+                    this.buildOurFutureTogether();
+                    synchronized (ClientConnection.this.immediateSendingLock) {
+                        this.immediateSendingReady = true;
+                        this.immediateSendingLock.notify();
+                    }
+                } else {
+                    this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), true));
+                }
+            });
+        }
+
+        private void buildOurFutureTogether() {
             // Outbound - Processed in pipeline back to front.
             this.channel.pipeline().addFirst("[OUTPUT] Output listener", new MessageToMessageEncoder<String>() {
                 @Override
@@ -165,6 +192,7 @@ final class NettyManager {
                 if (ClientConnection.this.reconnect) {
                     ClientConnection.this.channel.eventLoop().schedule(ClientConnection.this.client::connect, 5, TimeUnit.SECONDS);
                 }
+                this.immediateSending.interrupt();
                 ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
                 removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
             });
@@ -176,7 +204,7 @@ final class NettyManager {
 
         void sendMessage(@Nonnull String message, boolean priority, boolean avoidDuplicates) {
             if (priority) {
-                this.channel.writeAndFlush(message);
+                this.immediateSending.queue(message);
             } else if (!avoidDuplicates || !this.queue.contains(message)) {
                 this.queue.add(message);
             }
