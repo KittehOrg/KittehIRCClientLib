@@ -26,7 +26,6 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.EventManager;
 import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
@@ -115,18 +114,6 @@ final class IRCClient extends InternalClient {
             }
             this.channelsIntended.add(channelName);
             this.sendRawLine("JOIN :" + channelName);
-        }
-    }
-
-    @Override
-    public void addChannel(@Nonnull Channel... channels) {
-        Sanity.nullCheck(channels, "Channels cannot be null");
-        Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
-        for (Channel channel : channels) {
-            if (channel.getClient().equals(this) && (channel instanceof ActorProvider.IRCChannel)) {
-                this.channelsIntended.add(channel.getName());
-                this.sendRawLine("JOIN :" + channel.getName());
-            }
         }
     }
 
@@ -255,23 +242,11 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void sendCTCPMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        this.sendCTCPMessage(target.getMessagingName(), message);
-    }
-
-    @Override
     public void sendMessage(@Nonnull String target, @Nonnull String message) {
         Sanity.safeMessageCheck(message, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("PRIVMSG " + target + " :" + message);
-    }
-
-    @Override
-    public void sendMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        this.sendMessage(target.getMessagingName(), message);
     }
 
     @Override
@@ -283,39 +258,29 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void sendNotice(@Nonnull MessageReceiver target, @Nonnull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        this.sendNotice(target.getMessagingName(), message);
-    }
-
-    @Override
     public void sendRawLine(@Nonnull String message) {
-        Sanity.nullCheck(message, "Message cannot be null");
-        Sanity.safeMessageCheck(message);
-        if (this.connection == null) {
-            throw new IllegalStateException("Cannot send messages prior to connection");
-        }
+        this.sendRawLineCheck(message);
         this.connection.sendMessage(message, false);
     }
 
     @Override
     public void sendRawLineAvoidingDuplication(@Nonnull String message) {
-        Sanity.nullCheck(message, "Message cannot be null");
-        Sanity.safeMessageCheck(message);
-        if (this.connection == null) {
-            throw new IllegalStateException("Cannot send messages prior to connection");
-        }
+        this.sendRawLineCheck(message);
         this.connection.sendMessage(message, false, true);
     }
 
     @Override
     public void sendRawLineImmediately(@Nonnull String message) {
+
+        this.connection.sendMessage(message, true);
+    }
+
+    private void sendRawLineCheck(@Nonnull String message) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
         if (this.connection == null) {
             throw new IllegalStateException("Cannot send messages prior to connection");
         }
-        this.connection.sendMessage(message, true);
     }
 
     @Override

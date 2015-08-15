@@ -28,9 +28,11 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -60,20 +62,24 @@ public interface Client {
      * <p>
      * Joins the channel if already connected.
      *
-     * @param channel channel(s) to add
+     * @param channels channel(s) to add
      * @throws IllegalArgumentException if null
      */
-    void addChannel(@Nonnull String... channel);
+    void addChannel(@Nonnull String... channels);
 
     /**
      * Adds channels to this client.
      * <p>
      * Joins the channel if already connected.
      *
-     * @param channel channel(s) to add
+     * @param channels channel(s) to add
      * @throws IllegalArgumentException if null
      */
-    void addChannel(@Nonnull Channel... channel);
+    default void addChannel(@Nonnull Channel... channels) {
+        Sanity.nullCheck(channels, "Channels cannot be null");
+        Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
+        this.addChannel(Arrays.stream(channels).map(Channel::getName).toArray(String[]::new));
+    }
 
     /**
      * Gets the authentication manager.
@@ -244,7 +250,10 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendCTCPMessage(@Nonnull MessageReceiver target, @Nonnull String message);
+    default void sendCTCPMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendCTCPMessage(target.getMessagingName(), message);
+    }
 
     /**
      * Sends a message to a target user or channel.
@@ -262,7 +271,10 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendMessage(@Nonnull MessageReceiver target, @Nonnull String message);
+    default void sendMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendMessage(target.getMessagingName(), message);
+    }
 
     /**
      * Sends a notice to a target user or channel.
@@ -280,7 +292,10 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendNotice(@Nonnull MessageReceiver target, @Nonnull String message);
+    default void sendNotice(@Nonnull MessageReceiver target, @Nonnull String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendNotice(target.getMessagingName(), message);
+    }
 
     /**
      * Sends a raw IRC message.
