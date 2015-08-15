@@ -60,7 +60,7 @@ public class ChannelModeStatus {
      */
     public ChannelModeStatus(boolean setting, @Nonnull ChannelMode mode, @Nonnull String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
-        Sanity.nullCheck(parameter, "Parameter cannot be null");
+        Sanity.safeMessageCheck(parameter, "Parameter");
         this.mode = mode;
         this.parameter = Optional.of(parameter);
         this.setting = setting;

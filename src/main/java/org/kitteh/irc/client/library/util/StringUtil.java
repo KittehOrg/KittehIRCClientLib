@@ -106,7 +106,6 @@ public final class StringUtil {
      */
     @Nonnull
     public static String makeRainbow(@Nonnull String message, @Nonnull IRCFormat[] colorOrder) {
-        Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
         Sanity.nullCheck(colorOrder, "Color order cannot be null");
         for (IRCFormat format : colorOrder) {

@@ -223,7 +223,7 @@ final class IRCClient extends InternalClient {
 
     private void removeChannel(@Nonnull Channel channel, @Nonnull Optional<String> reason) {
         Sanity.nullCheck(channel, "Channel cannot be null");
-        reason.ifPresent(message -> Sanity.safeMessageCheck(message, "part reason"));
+        reason.ifPresent(message -> Sanity.safeMessageCheck(message, "Part reason"));
         String channelName = channel.getName();
         this.channelsIntended.remove(channelName);
         if (this.actorProvider.getTrackedChannelNames().contains(channel.getName())) {
@@ -248,9 +248,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendCTCPMessage(@Nonnull String target, @Nonnull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        Sanity.safeMessageCheck(message, "target");
-        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("PRIVMSG " + target + " :" + CTCPUtil.toCTCP(message));
@@ -264,9 +262,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendMessage(@Nonnull String target, @Nonnull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        Sanity.safeMessageCheck(message, "target");
-        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("PRIVMSG " + target + " :" + message);
@@ -280,9 +276,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendNotice(@Nonnull String target, @Nonnull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        Sanity.safeMessageCheck(message, "target");
-        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.safeMessageCheck(message, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("NOTICE " + target + " :" + message);
@@ -298,6 +292,9 @@ final class IRCClient extends InternalClient {
     public void sendRawLine(@Nonnull String message) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
+        if (this.connection == null) {
+            throw new IllegalStateException("Cannot send messages prior to connection");
+        }
         this.connection.sendMessage(message, false);
     }
 
@@ -305,6 +302,9 @@ final class IRCClient extends InternalClient {
     public void sendRawLineAvoidingDuplication(@Nonnull String message) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
+        if (this.connection == null) {
+            throw new IllegalStateException("Cannot send messages prior to connection");
+        }
         this.connection.sendMessage(message, false, true);
     }
 
@@ -312,6 +312,9 @@ final class IRCClient extends InternalClient {
     public void sendRawLineImmediately(@Nonnull String message) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
+        if (this.connection == null) {
+            throw new IllegalStateException("Cannot send messages prior to connection");
+        }
         this.connection.sendMessage(message, true);
     }
 
@@ -338,8 +341,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void setNick(@Nonnull String nick) {
-        Sanity.nullCheck(nick, "Nick cannot be null");
-        Sanity.safeMessageCheck(nick, "nick");
+        Sanity.safeMessageCheck(nick, "Nick");
         this.goalNick = nick.trim();
         this.sendNickChange(this.goalNick);
     }
@@ -357,15 +359,16 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void shutdown(@Nonnull String reason) {
-        Sanity.nullCheck(reason, "Reason cannot be null");
-        Sanity.safeMessageCheck(reason, "quit reason");
+        Sanity.safeMessageCheck(reason, "Quit reason");
         this.shutdownInternal(reason);
     }
 
     private void shutdownInternal(@Nullable String reason) {
         this.processor.interrupt();
 
-        this.connection.shutdown(reason);
+        if (this.connection != null) { // In case shutdown is called while building.
+            this.connection.shutdown(reason);
+        }
 
         // Shut these down last, so they get any last firings
         this.exceptionListener.shutdown();

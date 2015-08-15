@@ -60,7 +60,7 @@ public abstract class ChannelCommand extends Command {
      */
     protected ChannelCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client);
-        Sanity.nullCheck(channel, "Channel cannot be null");
+        Sanity.safeMessageCheck(channel, "Channel");
         Sanity.nullCheck(client.getChannel(channel), "Invalid channel name '" + channel + '\'');
         this.channel = channel;
     }

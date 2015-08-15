@@ -51,8 +51,7 @@ public class ChannelModeStatusList {
     @Nonnull
     public static ChannelModeStatusList from(@Nonnull Client client, @Nonnull String string) {
         Sanity.nullCheck(client, "Client cannot be null");
-        Sanity.nullCheck(client, "String cannot be null");
-        Sanity.safeMessageCheck(string, "string");
+        Sanity.safeMessageCheck(string, "String");
         Map<Character, ChannelMode> modes = new HashMap<>();
         client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
         client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));

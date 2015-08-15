@@ -122,7 +122,7 @@ public class ModeCommand extends ChannelCommand {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
-            Sanity.safeMessageCheck(parameter);
+            Sanity.safeMessageCheck(parameter, "Parameter");
             this.changes.add(new ChannelModeStatus(add, mode, parameter));
         } else {
             this.changes.add(new ChannelModeStatus(add, mode));

@@ -73,8 +73,7 @@ public class KickCommand extends ChannelCommand {
      */
     @Nonnull
     public KickCommand target(@Nonnull String target) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        Sanity.safeMessageCheck(target, "target");
+        Sanity.safeMessageCheck(target, "Target");
         this.target = target;
         return this;
     }
@@ -114,8 +113,7 @@ public class KickCommand extends ChannelCommand {
      */
     @Nonnull
     public KickCommand reason(@Nonnull String reason) {
-        Sanity.nullCheck(reason, "Reason cannot be null");
-        Sanity.safeMessageCheck(reason);
+        Sanity.safeMessageCheck(reason, "Reason");
         this.reason = reason;
         return this;
     }

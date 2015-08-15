@@ -81,9 +81,8 @@ public class NickRejectedEvent extends ClientEventBase {
      * or contains spaces
      */
     public void setNewNick(@Nonnull String newNick) {
-        Sanity.nullCheck(newNick, "Nickname cannot be null!");
+        Sanity.safeMessageCheck(newNick, "Nick");
         Sanity.truthiness(!newNick.equals(this.attemptedNick), "Cannot set new nick to the currently failing nick");
-        Sanity.safeMessageCheck(newNick, "nick");
         Sanity.truthiness(!newNick.contains(" "), "Nick cannot contain spaces");
         this.newNick = newNick;
     }

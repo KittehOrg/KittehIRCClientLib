@@ -30,6 +30,7 @@ import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import org.kitteh.irc.client.library.EventManager;
+import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -63,6 +64,9 @@ final class IRCEventManager implements EventManager {
     @Override
     public void callEvent(@Nonnull Object event) {
         Sanity.nullCheck(event, "Event cannot be null");
+        if (event instanceof ClientEvent) {
+            Sanity.truthiness(((ClientEvent) event).getClient() == this.client, "Event cannot be from another client!");
+        }
         this.bus.publish(event);
     }
 
@@ -74,12 +78,14 @@ final class IRCEventManager implements EventManager {
 
     @Override
     public synchronized void registerEventListener(@Nonnull Object listener) {
+        Sanity.nullCheck(listener, "Listener cannot be null");
         this.listeners.add(listener);
         this.bus.subscribe(listener);
     }
 
     @Override
     public synchronized void unregisterEventListener(@Nonnull Object listener) {
+        Sanity.nullCheck(listener, "Listener cannot be null");
         this.listeners.remove(listener);
         this.bus.unsubscribe(listener);
     }

@@ -190,7 +190,6 @@ public interface Channel extends MessageReceiver, Staleable {
      * @see Client#removeChannel(Channel, String)
      */
     default void part(@Nonnull String reason) {
-        Sanity.nullCheck(reason, "Reason cannot be null");
         this.getClient().removeChannel(this, reason);
     }
 }
