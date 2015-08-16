@@ -39,7 +39,7 @@ public interface NickReclamation extends AuthProtocol {
      */
     default void ghostNick(@Nonnull String nick) {
         Sanity.safeMessageCheck(nick, "Nick");
-        this.getClient().sendRawLineImmediately("NickServ :GHOST " + nick);
+        this.getClient().sendRawLine("NickServ :GHOST " + nick);
     }
 
     /**
@@ -49,6 +49,6 @@ public interface NickReclamation extends AuthProtocol {
      */
     default void regainNick(@Nonnull String nick) {
         Sanity.safeMessageCheck(nick, "Nick");
-        this.getClient().sendRawLineImmediately("NickServ :REGAIN " + nick);
+        this.getClient().sendRawLine("NickServ :REGAIN " + nick);
     }
 }
