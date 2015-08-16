@@ -422,13 +422,13 @@ class EventListener {
             throw new KittehServerMessageException(event.getOriginalMessage(), "ACCOUNT message of incorrect length");
         }
         String account = event.getArgs()[0];
-        this.client.getActorProvider().trackUserAccount(((User) event.getActor()).getNick(), "*".equals(account) ? null : account);
+        this.client.getActorProvider().setUserAccount(((User) event.getActor()).getNick(), "*".equals(account) ? null : account);
     }
 
     @CommandFilter("AWAY")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveCommandEvent event) {
-        this.client.getActorProvider().trackUserAway(((User) event.getActor()).getNick(), event.getArgs().length > 0);
+        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), event.getArgs().length > 0);
     }
 
     @CommandFilter("NOTICE")
@@ -526,7 +526,7 @@ class EventListener {
                 channel.trackUser(user, new HashSet<>());
                 ChannelJoinEvent joinEvent = null;
                 if (user.getNick().equals(this.client.getNick())) {
-                    this.client.getActorProvider().channelTrack(channel);
+                    this.client.getActorProvider().trackChannel(channel);
                     this.client.sendRawLine("MODE " + channel.getName());
                     this.client.sendRawLine("WHO " + channel.getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
                     if (this.client.getIntendedChannels().contains(channel.getName())) {
@@ -572,7 +572,7 @@ class EventListener {
                 this.client.getEventManager().callEvent(partEvent);
                 channel.trackUserPart(user.getNick());
                 if (isSelf) {
-                    this.client.getActorProvider().channelUntrack(channel);
+                    this.client.getActorProvider().unTrackChannel(channel);
                 }
             } else {
                 throw new KittehServerMessageException(event.getOriginalMessage(), "PART message sent for non-user");
@@ -614,7 +614,7 @@ class EventListener {
                 this.client.getEventManager().callEvent(kickEvent);
                 channel.trackUserPart(event.getArgs()[1]);
                 if (isSelf) {
-                    this.client.getActorProvider().channelUntrack(channel);
+                    this.client.getActorProvider().unTrackChannel(channel);
                 }
             } else {
                 throw new KittehServerMessageException(event.getOriginalMessage(), "KICK message sent for non-user");
@@ -639,7 +639,7 @@ class EventListener {
             if (user.getNick().equals(this.client.getNick())) {
                 this.client.setCurrentNick(event.getArgs()[0]);
             }
-            this.client.getActorProvider().trackUserNick(user.getNick(), event.getArgs()[0]);
+            this.client.getActorProvider().trackUserNickChange(user.getNick(), event.getArgs()[0]);
             User newUser = user.snapshot();
             this.client.getEventManager().callEvent(new UserNickChangeEvent(this.client, oldUser, newUser));
         } else {
