@@ -27,7 +27,6 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ModeCommand;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
-import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.util.List;

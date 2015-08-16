@@ -60,10 +60,20 @@ class FakeClient extends InternalClient {
         return this.listenerException;
     }
 
+    @Override
+    public void setExceptionListener(@Nullable Consumer<Exception> listener) {
+
+    }
+
     @Nonnull
     @Override
     Listener<String> getInputListener() {
         return this.listenerInput;
+    }
+
+    @Override
+    public void setInputListener(@Nullable Consumer<String> listener) {
+
     }
 
     @Nonnull
@@ -76,6 +86,11 @@ class FakeClient extends InternalClient {
     @Override
     Listener<String> getOutputListener() {
         return this.listenerOutput;
+    }
+
+    @Override
+    public void setOutputListener(@Nullable Consumer<String> listener) {
+
     }
 
     @Nonnull
@@ -151,6 +166,11 @@ class FakeClient extends InternalClient {
         return 0;
     }
 
+    @Override
+    public void setMessageDelay(int delay) {
+
+    }
+
     @Nonnull
     @Override
     public String getName() {
@@ -161,6 +181,11 @@ class FakeClient extends InternalClient {
     @Override
     public String getNick() {
         return this.config.getNotNull(Config.NICK);
+    }
+
+    @Override
+    public void setNick(@Nonnull String nick) {
+
     }
 
     @Nonnull
@@ -246,31 +271,6 @@ class FakeClient extends InternalClient {
 
     @Override
     public void sendRawLineImmediately(@Nonnull String message) {
-
-    }
-
-    @Override
-    public void setExceptionListener(@Nullable Consumer<Exception> listener) {
-
-    }
-
-    @Override
-    public void setInputListener(@Nullable Consumer<String> listener) {
-
-    }
-
-    @Override
-    public void setMessageDelay(int delay) {
-
-    }
-
-    @Override
-    public void setNick(@Nonnull String nick) {
-
-    }
-
-    @Override
-    public void setOutputListener(@Nullable Consumer<String> listener) {
 
     }
 
