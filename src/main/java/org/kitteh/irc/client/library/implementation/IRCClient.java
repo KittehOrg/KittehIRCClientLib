@@ -271,7 +271,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendRawLineImmediately(@Nonnull String message) {
-
+        this.sendRawLineCheck(message);
         this.connection.sendMessage(message, true);
     }
 
