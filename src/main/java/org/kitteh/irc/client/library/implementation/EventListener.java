@@ -631,17 +631,22 @@ class EventListener {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NICK message of incorrect length");
         }
         if (event.getActor() instanceof User) {
+            boolean isSelf = ((User) event.getActor()).getNick().equals(this.client.getNick());
             ActorProvider.IRCUser user = this.client.getActorProvider().getUser(((User) event.getActor()).getNick());
             if (user == null) {
+                if (isSelf) {
+                    this.client.setCurrentNick(event.getArgs()[0]);
+                    return; // Don't fail if NICK changes while not in a channel!
+                }
                 throw new KittehServerMessageException(event.getOriginalMessage(), "NICK message sent for user not in tracked channels");
             }
             User oldUser = user.snapshot();
-            if (user.getNick().equals(this.client.getNick())) {
-                this.client.setCurrentNick(event.getArgs()[0]);
-            }
             this.client.getActorProvider().trackUserNickChange(user.getNick(), event.getArgs()[0]);
             User newUser = user.snapshot();
             this.client.getEventManager().callEvent(new UserNickChangeEvent(this.client, oldUser, newUser));
+            if (isSelf) {
+                this.client.setCurrentNick(event.getArgs()[0]);
+            }
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NICK message sent for non-user");
         }
