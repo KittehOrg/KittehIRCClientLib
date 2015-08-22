@@ -32,6 +32,7 @@ import org.kitteh.irc.client.library.auth.protocol.element.NickReclamation;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.util.NumericFilter;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -55,6 +56,12 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
                     // TODO do something with this information
                 }
             }
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
         }
     }
 
@@ -81,5 +88,11 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
     @Override
     public Object getEventListener() {
         return this.listener;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
     }
 }

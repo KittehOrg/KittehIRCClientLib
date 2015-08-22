@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.util.NumericFilter;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -41,6 +42,12 @@ public class GameSurge extends AbstractUserPassProtocol implements EventListenin
         @Handler(filters = @Filter(NumericFilter.Filter.class))
         public void listenVersion(ClientReceiveNumericEvent event) {
             GameSurge.this.startAuthentication();
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
         }
     }
 
@@ -67,5 +74,11 @@ public class GameSurge extends AbstractUserPassProtocol implements EventListenin
     @Override
     public Object getEventListener() {
         return this.listener;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
     }
 }

@@ -36,6 +36,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 import org.kitteh.irc.client.library.util.CommandFilter;
 import org.kitteh.irc.client.library.util.NumericFilter;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.Base64;
@@ -111,6 +112,12 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
             SaslPlain.this.authenticating = false;
             SaslPlain.this.getClient().sendRawLineImmediately("CAP END"); // TODO event decision
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).toString();
+        }
     }
 
     private final Listener listener = new Listener();
@@ -137,5 +144,11 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
     @Override
     public Object getEventListener() {
         return this.listener;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
     }
 }
