@@ -32,10 +32,12 @@ import net.engio.mbassy.bus.error.PublicationError;
 import org.kitteh.irc.client.library.EventManager;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.exception.KittehEventException;
+import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +45,14 @@ final class IRCEventManager implements EventManager {
     private class Exceptional implements IPublicationErrorHandler {
         @Override
         public void handleError(@Nonnull PublicationError publicationError) {
-            IRCEventManager.this.client.getExceptionListener().queue(new KittehEventException(publicationError.getCause()));
+            Exception exceptional;
+            Throwable thrown = publicationError.getCause();
+            if (publicationError.getCause() instanceof InvocationTargetException && thrown.getCause() instanceof KittehServerMessageException) {
+                exceptional = (KittehServerMessageException) thrown.getCause();
+            } else {
+                exceptional = new KittehEventException(thrown);
+            }
+            IRCEventManager.this.client.getExceptionListener().queue(exceptional);
         }
 
         @Nonnull
