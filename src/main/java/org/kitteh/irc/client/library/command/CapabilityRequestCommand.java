@@ -59,7 +59,7 @@ public class CapabilityRequestCommand extends Command {
      */
     @Nonnull
     public synchronized CapabilityRequestCommand enable(@Nonnull String capability) {
-        Sanity.safeMessageCheck(capability, "Capability ");
+        Sanity.safeMessageCheck(capability, "Capability");
         this.requests.add(capability);
         return this;
     }
