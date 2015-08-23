@@ -377,7 +377,7 @@ class EventListener {
             throw new KittehServerMessageException(event.getOriginalMessage(), "CAP message of incorrect length");
         }
         CapabilityNegotiationResponseEventBase responseEvent = null;
-        List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs()[2].split(" ")).map(IRCCapabilityManager.IRCCapabilityState::new).collect(Collectors.toList());
+        List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs()[2].split(" ")).map(capability -> new IRCCapabilityManager.IRCCapabilityState(this.client, capability)).collect(Collectors.toList());
         switch (event.getArgs()[1].toLowerCase()) {
             case "ack":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);

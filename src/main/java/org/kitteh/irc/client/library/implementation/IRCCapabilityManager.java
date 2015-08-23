@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.CapabilityManager;
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -34,11 +35,13 @@ import java.util.stream.Collectors;
 
 final class IRCCapabilityManager implements CapabilityManager {
     static class IRCCapabilityState implements CapabilityState {
+        private final Client client;
         private final long creationTime;
         private final boolean disable;
         private final String name;
 
-        IRCCapabilityState(@Nonnull String capabilityListItem) {
+        IRCCapabilityState(@Nonnull Client client, @Nonnull String capabilityListItem) {
+            this.client = client;
             this.creationTime = System.currentTimeMillis();
             this.disable = capabilityListItem.charAt(0) == '-';
             this.name = this.disable ? capabilityListItem.substring(1) : capabilityListItem;
@@ -58,15 +61,21 @@ final class IRCCapabilityManager implements CapabilityManager {
             return this.disable;
         }
 
-        @Override
         @Nonnull
-        public String getName() {
-            return this.name;
+        @Override
+        public Client getClient() {
+            return this.client;
         }
 
         @Override
         public long getCreationTime() {
             return this.creationTime;
+        }
+
+        @Override
+        @Nonnull
+        public String getName() {
+            return this.name;
         }
 
         @Override
