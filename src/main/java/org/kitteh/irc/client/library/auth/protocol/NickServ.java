@@ -89,10 +89,4 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
     public Object getEventListener() {
         return this.listener;
     }
-
-    @Nonnull
-    @Override
-    public String toString() {
-        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
-    }
 }

@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.Password;
 import org.kitteh.irc.client.library.auth.protocol.element.Username;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -96,4 +97,10 @@ public abstract class AbstractUserPassProtocol implements Password, Username {
      */
     @Nonnull
     protected abstract String getAuthentication();
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
+    }
 }

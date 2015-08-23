@@ -145,10 +145,4 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
     public Object getEventListener() {
         return this.listener;
     }
-
-    @Nonnull
-    @Override
-    public String toString() {
-        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
-    }
 }
