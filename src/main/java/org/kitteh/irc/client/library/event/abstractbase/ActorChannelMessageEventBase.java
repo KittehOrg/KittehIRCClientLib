@@ -39,9 +39,9 @@ import javax.annotation.Nonnull;
  * either.
  *
  * @param <A> actor involved
- * @see ActorEvent for events involving actors
- * @see ChannelEvent for events involving channels
- * @see MessageEvent for events involving messages
+ * @see ActorEvent
+ * @see ChannelEvent
+ * @see MessageEvent
  */
 public abstract class ActorChannelMessageEventBase<A extends Actor> extends ActorChannelEventBase<A> implements MessageEvent {
     private final String message;

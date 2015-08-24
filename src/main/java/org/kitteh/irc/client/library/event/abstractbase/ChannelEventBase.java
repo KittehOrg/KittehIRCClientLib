@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
  * Abstract base class for events involving a Channel. Use the helper events
  * if you want to listen to such events.
  *
- * @see ChannelEvent for events involving channels
+ * @see ChannelEvent
  */
 public abstract class ChannelEventBase extends ClientEventBase implements ChannelEvent {
     private final Channel channel;

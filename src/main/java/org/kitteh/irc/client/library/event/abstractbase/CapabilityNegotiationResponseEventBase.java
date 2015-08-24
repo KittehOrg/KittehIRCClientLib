@@ -33,8 +33,8 @@ import javax.annotation.Nonnull;
  * Abstract base class for events involving capability negotiation (CAP) that
  * can have a response.
  *
- * @see CapabilityNegotiationResponseEvent for CAP messages needing reply
- * @see CapabilitiesListEvent for CAP LIST, which doesn't involve replies
+ * @see CapabilityNegotiationResponseEvent
+ * @see CapabilitiesListEvent
  */
 public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase implements CapabilityNegotiationResponseEvent {
     private boolean endNegotiation = true;

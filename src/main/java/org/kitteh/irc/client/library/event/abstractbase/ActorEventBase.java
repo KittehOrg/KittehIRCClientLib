@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
  * if you want to listen to such events.
  *
  * @param <A> actor involved
- * @see ActorEvent for events involving actors
+ * @see ActorEvent
  */
 public abstract class ActorEventBase<A extends Actor> extends ClientEventBase implements ActorEvent<A> {
     private final A actor;

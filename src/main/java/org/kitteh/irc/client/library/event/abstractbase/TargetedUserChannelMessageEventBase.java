@@ -40,9 +40,9 @@ import javax.annotation.Nonnull;
  * Channel. Use the helper events if you want to listen to events involving
  * either.
  *
- * @see ActorEvent for events involving actors
- * @see ChannelEvent for events involving channels
- * @see MessageEvent for events involving messages
+ * @see ActorEvent
+ * @see ChannelEvent
+ * @see MessageEvent
  */
 public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMessageEventBase<User> implements MessageEvent {
     private final ChannelUserMode prefix;

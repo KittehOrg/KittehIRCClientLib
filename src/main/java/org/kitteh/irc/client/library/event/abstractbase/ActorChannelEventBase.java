@@ -37,8 +37,8 @@ import javax.annotation.Nonnull;
  * helper events if you want to listen to events involving either.
  *
  * @param <A> actor involved
- * @see ActorEvent for events involving actors
- * @see ChannelEvent for events involving channels
+ * @see ActorEvent
+ * @see ChannelEvent
  */
 public abstract class ActorChannelEventBase<A extends Actor> extends ActorEventBase<A> implements ChannelEvent {
     private final Channel channel;

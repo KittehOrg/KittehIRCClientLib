@@ -36,8 +36,8 @@ import javax.annotation.Nonnull;
  * the helper events if you want to listen to events involving either.
  *
  * @param <A> actor involved
- * @see ActorEvent for events involving actors
- * @see MessageEvent for events involving messages
+ * @see ActorEvent
+ * @see MessageEvent
  */
 public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventBase<A> implements MessageEvent {
     private final String message;

@@ -37,8 +37,8 @@ import java.util.List;
 /**
  * Fired when a CAP NAK is received.
  *
- * @see CapabilityManager for information on capabilities at any time
- * @see CapabilityRequestCommand to request changes
+ * @see CapabilityManager
+ * @see CapabilityRequestCommand
  */
 public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEventBase {
     private final List<CapabilityState> rejectedCapabilitiesRequest;

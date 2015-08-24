@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.ServerInfo;
 
 import javax.annotation.Nonnull;
@@ -34,11 +35,13 @@ import java.util.Set;
  */
 public interface User extends MessageReceiver, Staleable {
     /**
-     * Gets the Services account this user is signed into. Only available if
-     * the server supports WHOX and the user and client share a channel.
+     * Gets the Services account this user is signed into. Only fully
+     * functional if the server supports the capabilities account-notify,
+     * extended-join, and WHOX and the user and client share a channel.
      *
      * @return the account name if known
-     * @see ServerInfo#hasWhoXSupport() for if this can return a value
+     * @see CapabilityManager#getCapabilities()
+     * @see ServerInfo#hasWhoXSupport()
      */
     @Nonnull
     Optional<String> getAccount();

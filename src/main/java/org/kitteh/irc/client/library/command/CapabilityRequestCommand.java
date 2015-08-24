@@ -54,8 +54,8 @@ public class CapabilityRequestCommand extends Command {
      * @param capability capability requested
      * @return this command
      * @throws IllegalArgumentException if capability is null
-     * @see CapabilityManager#getCapabilities() for current enabled list
-     * @see CapabilityManager#getSupportedCapabilities() for supported list
+     * @see CapabilityManager#getCapabilities()
+     * @see CapabilityManager#getSupportedCapabilities()
      */
     @Nonnull
     public synchronized CapabilityRequestCommand enable(@Nonnull String capability) {
@@ -70,7 +70,7 @@ public class CapabilityRequestCommand extends Command {
      * @param capability capability requested
      * @return this command
      * @throws IllegalArgumentException if capability is null
-     * @see CapabilityManager#getCapabilities() for current enabled list
+     * @see CapabilityManager#getCapabilities()
      */
     @Nonnull
     public synchronized CapabilityRequestCommand disable(@Nonnull String capability) {

@@ -36,7 +36,7 @@ public interface CapabilityManager {
      * Gets capabilities currently enabled.
      *
      * @return the capabilities currently enabled
-     * @see CapabilityRequestCommand to request changes to what is enabled
+     * @see CapabilityRequestCommand
      */
     @Nonnull
     List<String> getCapabilities();
@@ -45,7 +45,7 @@ public interface CapabilityManager {
      * Gets capabilities supported by the server.
      *
      * @return the capabilities supported
-     * @see CapabilityRequestCommand to request changes to what is enabled
+     * @see CapabilityRequestCommand
      */
     @Nonnull
     List<String> getSupportedCapabilities();

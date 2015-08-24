@@ -109,8 +109,8 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param nick user's nick
      * @return the user object, if known
      * @throws IllegalArgumentException if nick is null
-     * @see #hasCompleteUserData() for knowing if the User data is sent
-     * @see ChannelUsersUpdatedEvent for knowing when the User data is sent
+     * @see #hasCompleteUserData()
+     * @see ChannelUsersUpdatedEvent
      */
     @Nonnull
     Optional<User> getUser(@Nonnull String nick);
@@ -122,8 +122,8 @@ public interface Channel extends MessageReceiver, Staleable {
      * #getNicknames()}.
      *
      * @return users in the channel
-     * @see #hasCompleteUserData() for knowing if the User data is sent
-     * @see ChannelUsersUpdatedEvent for knowing when the User data is sent
+     * @see #hasCompleteUserData()
+     * @see ChannelUsersUpdatedEvent
      */
     @Nonnull
     List<User> getUsers();

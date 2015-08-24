@@ -37,7 +37,7 @@ import java.util.Arrays;
  * mBassador priority of Integer.MAX_VALUE - 1. If you wish to beat the
  * client to listening to a numeric, listen at priority INTEGER.MAX_VALUE.
  *
- * @see NumericFilter for filtering by numerics
+ * @see NumericFilter
  */
 public class ClientReceiveNumericEvent extends ClientEventBase {
     private final String[] args;

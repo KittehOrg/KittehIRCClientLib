@@ -37,8 +37,8 @@ import java.util.List;
 /**
  * Fired when a CAP LIST is received, listing the current capabilities
  *
- * @see CapabilityManager for information on capabilities at any time
- * @see CapabilityRequestCommand to request changes
+ * @see CapabilityManager
+ * @see CapabilityRequestCommand
  */
 public class CapabilitiesListEvent extends ClientEventBase {
     private final List<CapabilityState> capabilities;

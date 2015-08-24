@@ -37,7 +37,7 @@ import java.util.Arrays;
  * priority of Integer.MAX_VALUE - 1. If you wish to beat the client to
  * listening to a command, listen at priority INTEGER.MAX_VALUE.
  *
- * @see CommandFilter for filtering by commands
+ * @see CommandFilter
  */
 public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
     private final String[] args;

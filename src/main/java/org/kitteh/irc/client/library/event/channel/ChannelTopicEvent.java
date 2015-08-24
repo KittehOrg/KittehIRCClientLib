@@ -43,7 +43,7 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * @param client client for which this is occurring
      * @param channel channel the topic is about
      * @param updated if this is a new change
-     * @see Channel#getTopic() for the topic
+     * @see Channel#getTopic()
      */
     public ChannelTopicEvent(@Nonnull Client client, @Nonnull Channel channel, boolean updated) {
         super(client, channel);
@@ -54,7 +54,7 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * Gets the channel's topic.
      *
      * @return the channel topic
-     * @see Channel#getTopic() the method for which this is a shortcut
+     * @see Channel#getTopic()
      */
     @Nonnull
     public Channel.Topic getTopic() {
