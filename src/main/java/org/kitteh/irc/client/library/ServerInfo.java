@@ -69,6 +69,17 @@ public interface ServerInfo {
     Map<Character, Integer> getChannelLimits();
 
     /**
+     * Gets a channel mode by specified character.
+     *
+     * @param character character to match
+     * @return the found channel mode if present
+     */
+    @Nonnull
+    default Optional<ChannelMode> getChannelMode(char character) {
+        return this.getChannelModes().stream().filter(channelMode -> channelMode.getChar() == character).findFirst();
+    }
+
+    /**
      * Gets the channel modes available. If the server has not provided
      * information on channel modes, defaults are used and returned here.
      *
@@ -86,6 +97,17 @@ public interface ServerInfo {
      */
     @Nonnull
     List<Character> getChannelPrefixes();
+
+    /**
+     * Gets a channel user mode by specified character.
+     *
+     * @param character character to match
+     * @return the found channel user mode if present
+     */
+    @Nonnull
+    default Optional<ChannelUserMode> getChannelUserMode(char character) {
+        return this.getChannelUserModes().stream().filter(channelUserMode -> channelUserMode.getChar() == character).findFirst();
+    }
 
     /**
      * Gets the list of accepted channel user modes, such as op. Modes are
