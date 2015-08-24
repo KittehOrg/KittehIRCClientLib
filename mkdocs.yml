@@ -4,6 +4,7 @@ pages:
 - Home: index.md
 - Events: events.md
 - Advanced:
+  - Account Tracking: advanced/accounts.md
   - SSL: advanced/ssl.md
   - WEBIRC: advanced/webirc.md
 
