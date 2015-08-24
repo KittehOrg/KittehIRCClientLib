@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A list of channel mode statuses.
@@ -119,6 +120,29 @@ public class ChannelModeStatusList {
 
     private ChannelModeStatusList(List<ChannelModeStatus> statuses) {
         this.statuses = statuses;
+    }
+
+    /**
+     * Gets if the given mode is present in the list.
+     *
+     * @param mode mode to check
+     * @return true if present at least once
+     */
+    public boolean containsMode(@Nonnull ChannelMode mode) {
+        Sanity.nullCheck(mode, "Mode cannot be null");
+        return this.statuses.stream().filter(status -> status.getMode().equals(mode)).count() > 0;
+    }
+
+    /**
+     * Gets all mode statuses of a given mode.
+     *
+     * @param mode mode to check
+     * @return all matching modes or empty if none match
+     */
+    @Nonnull
+    public List<ChannelModeStatus> getStatusByMode(@Nonnull ChannelMode mode) {
+        Sanity.nullCheck(mode, "Mode cannot be null");
+        return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().equals(mode)).collect(Collectors.toList()));
     }
 
     /**
