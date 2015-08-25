@@ -58,7 +58,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Override
     @Nonnull
-    public ClientBuilder after(Consumer<Client> consumer) {
+    public ClientBuilder after(@Nonnull Consumer<Client> consumer) {
         Sanity.nullCheck(consumer, "Consumer cannot be null");
         this.after = consumer;
         return this;

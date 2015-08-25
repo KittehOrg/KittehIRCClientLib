@@ -48,7 +48,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder after(Consumer<Client> consumer);
+    ClientBuilder after(@Nonnull Consumer<Client> consumer);
 
     /**
      * Binds the client to no specific host.
