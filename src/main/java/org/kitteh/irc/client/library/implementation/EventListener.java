@@ -466,7 +466,7 @@ class EventListener {
 
     private void capReq(@Nullable CapabilityNegotiationResponseEvent responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
-        capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
+        capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "invite-notify", "multi-prefix"));
         capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
         if (!capabilities.isEmpty()) {
             if (responseEvent != null) {
