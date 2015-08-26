@@ -147,6 +147,14 @@ public interface Client {
     int getMessageDelay();
 
     /**
+     * Gets the message tag manager.
+     *
+     * @return message tag manager
+     */
+    @Nonnull
+    MessageTagManager getMessageTagManager();
+
+    /**
      * Gets the client name. This name is just an internal name for reference
      * and is not visible from IRC.
      *

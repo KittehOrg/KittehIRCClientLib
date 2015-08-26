@@ -1,6 +1,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.EventManager;
+import org.kitteh.irc.client.library.MessageTagManager;
 import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
@@ -21,6 +22,7 @@ class FakeClient extends InternalClient {
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
     private final Listener<String> listenerInput = new Listener<>("Test", null);
     private final Listener<String> listenerOutput = new Listener<>("Test", null);
+    private final MessageTagManager messageTagManager = new IRCMessageTagManager(this);
     private final IRCServerInfo serverInfo = new IRCServerInfo(this);
 
     @Override
@@ -169,6 +171,12 @@ class FakeClient extends InternalClient {
     @Override
     public void setMessageDelay(int delay) {
 
+    }
+
+    @Nonnull
+    @Override
+    public MessageTagManager getMessageTagManager() {
+        return this.messageTagManager;
     }
 
     @Nonnull
