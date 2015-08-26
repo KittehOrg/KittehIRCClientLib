@@ -78,6 +78,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -464,9 +465,11 @@ class EventListener {
         }
     }
 
+    static final List<String> CAPABILITIES_TO_REQUEST = Collections.unmodifiableList(Arrays.asList("account-notify", "away-notify", "extended-join", "invite-notify", "multi-prefix"));
+
     private void capReq(@Nullable CapabilityNegotiationResponseEvent responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
-        capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "invite-notify", "multi-prefix"));
+        capabilities.retainAll(CAPABILITIES_TO_REQUEST);
         capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
         if (!capabilities.isEmpty()) {
             if (responseEvent != null) {
