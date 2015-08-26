@@ -24,11 +24,14 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.EventManager;
+import org.kitteh.irc.client.library.MessageTagManager;
 import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
+import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -37,6 +40,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -80,6 +84,7 @@ final class IRCClient extends InternalClient {
     private final AuthManager authManager = new IRCAuthManager(this);
     private final IRCCapabilityManager capabilityManager = new IRCCapabilityManager(this);
     private final EventManager eventManager = new IRCEventManager(this);
+    private final IRCMessageTagManager messageTagManager = new IRCMessageTagManager(this);
 
     private final Listener<Exception> exceptionListener;
     private final Listener<String> inputListener;
@@ -158,6 +163,12 @@ final class IRCClient extends InternalClient {
     @Override
     public int getMessageDelay() {
         return this.config.getNotNull(Config.MESSAGE_DELAY);
+    }
+
+    @Nonnull
+    @Override
+    public MessageTagManager getMessageTagManager() {
+        return this.messageTagManager;
     }
 
     @Nonnull
@@ -475,18 +486,25 @@ final class IRCClient extends InternalClient {
 
         int index = 0;
 
+        List<MessageTag> tags;
         if (split[index].startsWith("@")) {
-            index++;
             if (split.length <= index) {
                 throw new KittehServerMessageException(line, "Server sent a message without a command");
             }
-            // TODO tags
+            String tagSection = split[index];
+            if (tagSection.length() < 2) {
+                throw new KittehServerMessageTagException(line, "Server sent an empty tag section");
+            }
+            tags = this.messageTagManager.getTags(tagSection.substring(1));
+            index++;
+        } else {
+            tags = Collections.unmodifiableList(new LinkedList<>());
         }
 
         final String actorName;
         if (split[index].startsWith(":")) {
+            actorName = split[index].substring(1);
             index++;
-            actorName = split[0].substring(1);
         } else {
             actorName = "";
         }
@@ -502,9 +520,9 @@ final class IRCClient extends InternalClient {
 
         try {
             int numeric = Integer.parseInt(commandString);
-            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, line, actor.snapshot(), numeric, args));
+            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, tags, line, actor.snapshot(), numeric, args));
         } catch (NumberFormatException exception) {
-            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, line, actor.snapshot(), commandString, args));
+            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, tags, line, actor.snapshot(), commandString, args));
         }
     }
 }

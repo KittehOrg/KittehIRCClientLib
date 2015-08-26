@@ -16,10 +16,10 @@ CAP | multi-prefix | sasl | account-notify | away-notify | extended-join | tls
 
 ### IRCv3.2
 
-CAP | Metadata | Monitor | account-tag | batch | cap-notify | chghost
-:-: | :------: | :-----: | :---------: | :---: | :--------: | :-----:
-✔   | ✘        | ✘       | ✘           | ✘     | ✔          | ✘
+CAP | Message Tags | Metadata | Monitor | account-tag | batch | cap-notify
+:-: | :----------: | :------: | :-----: | :---------: | :---: | :--------:
+✔   | ✔            |✘         | ✘       | ✘           | ✘     | ✔
 
-echo-message | invite-notify | sasl | server-time | userhost-in-names
-:----------: | :-----------: | :--: | :---------: | :---------------:
-✔            | ✔             | ✔    | ✘           | ✔
+chghost | echo-message | invite-notify | sasl | server-time | userhost-in-names
+:-----: | :----------: | :-----------: | :--: | :---------: | :---------------:
+✘       | ✔            | ✔             | ✔    | ✘           | ✔

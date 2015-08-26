@@ -25,11 +25,13 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
 import org.kitteh.irc.client.library.util.CommandFilter;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Fires when the client receives a command message. Note that the client
@@ -41,6 +43,7 @@ import java.util.Arrays;
  */
 public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
     private final String[] args;
+    private final List<MessageTag> messageTags;
     private final String command;
     private final String originalMessage;
 
@@ -48,14 +51,16 @@ public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
      * Constructs the event.
      *
      * @param client client
+     * @param messageTags message tags
      * @param originalMessage original message
      * @param actor actor
      * @param command command
      * @param args args
      */
-    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull String originalMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull String[] args) {
+    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull List<MessageTag> messageTags, @Nonnull String originalMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull String[] args) {
         super(client, actor);
         this.args = args;
+        this.messageTags = messageTags;
         this.command = command;
         this.originalMessage = originalMessage;
     }
@@ -68,6 +73,16 @@ public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
     @Nonnull
     public String[] getArgs() {
         return Arrays.copyOf(this.args, this.args.length);
+    }
+
+    /**
+     * Gets the message tags.
+     *
+     * @return message tags
+     */
+    @Nonnull
+    public List<MessageTag> getMessageTags() {
+        return this.messageTags;
     }
 
     /**
