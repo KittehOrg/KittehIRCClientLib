@@ -31,7 +31,8 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEvent
 import javax.annotation.Nonnull;
 
 /**
- * Fires when a message is sent to a channel.
+ * Fires when a message is sent to a channel. Note that the sender may be the
+ * client itself if the capability "echo-message" is enabled.
  */
 public class ChannelMessageEvent extends ActorChannelMessageEventBase<User> {
     /**

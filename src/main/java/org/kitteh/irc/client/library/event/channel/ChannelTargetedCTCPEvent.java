@@ -34,7 +34,8 @@ import javax.annotation.Nonnull;
 /**
  * Fires when a CTCP message is sent to a subset of users in a channel. The
  * method {@link #getMessage()} returns the message with the delimiter
- * character (1) removed.
+ * character (1) removed. Note that the sender may be the client itself if
+ * the capability "echo-message" is enabled.
  */
 public class ChannelTargetedCTCPEvent extends TargetedUserChannelMessageEventBase {
     /**

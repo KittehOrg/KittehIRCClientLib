@@ -32,7 +32,9 @@ import javax.annotation.Nonnull;
 
 /**
  * The client has received a CTCP message! The method {@link #getMessage()}
- * returns the message with the delimiter character (1) removed.
+ * returns the message with the delimiter character (1) removed. Note that
+ * the sender may be the client itself if the capability "echo-message" is
+ * enabled.
  */
 public class ChannelCTCPEvent extends ActorChannelMessageEventBase<User> {
     /**
