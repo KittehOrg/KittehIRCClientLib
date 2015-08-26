@@ -1,5 +1,6 @@
-The following IRCv3 features are supported out of the box. See the `CapabilityManager`
-and `CapabilityRequestCommand` for more details.
+The following IRCv3 features are supported out of the box.
+
+See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 
 ### IRCv3.1
 
