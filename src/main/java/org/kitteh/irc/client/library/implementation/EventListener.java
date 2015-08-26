@@ -247,7 +247,7 @@ class EventListener {
                 Set<ChannelUserMode> modes = new HashSet<>();
                 for (int i = 0; i < combo.length(); i++) {
                     char c = combo.charAt(i);
-                    Optional<ChannelUserMode> mode = channelUserModes.stream().filter(m -> m.getPrefix() == c).findFirst();
+                    Optional<ChannelUserMode> mode = channelUserModes.stream().filter(userMode -> userMode.getPrefix() == c).findFirst();
                     if (mode.isPresent()) {
                         modes.add(mode.get());
                     } else {
@@ -465,7 +465,7 @@ class EventListener {
         }
     }
 
-    static final List<String> CAPABILITIES_TO_REQUEST = Collections.unmodifiableList(Arrays.asList("account-notify", "away-notify", "echo-message", "extended-join", "invite-notify", "multi-prefix"));
+    static final List<String> CAPABILITIES_TO_REQUEST = Collections.unmodifiableList(Arrays.asList("account-notify", "away-notify", "echo-message", "extended-join", "invite-notify", "multi-prefix", "userhost-in-names"));
 
     private void capReq(@Nullable CapabilityNegotiationResponseEvent responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));

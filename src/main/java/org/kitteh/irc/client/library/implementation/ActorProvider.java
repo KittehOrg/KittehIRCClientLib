@@ -213,8 +213,20 @@ class ActorProvider {
 
         void trackNick(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
             this.markStale();
-            if (!this.modes.containsKey(nick) || this.modes.get(nick).isEmpty()) {
-                this.setModes(nick, modes);
+            String nickname = nick;
+            int index;
+            if ((index = nick.indexOf('!')) >= 0) { // userhost-in-names
+                nickname = nick.substring(0, index);
+                if (!ActorProvider.this.trackedUsers.containsKey(nick)) {
+                    IRCActor actor = ActorProvider.this.getActor(nick);
+                    if (actor instanceof IRCUser) {
+                        IRCUser user = (IRCUser) actor;
+                        ActorProvider.this.trackUser(user);
+                    }
+                }
+            }
+            if (!this.modes.containsKey(nickname) || this.modes.get(nickname).isEmpty()) {
+                this.setModes(nickname, modes);
             }
         }
 
