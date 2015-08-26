@@ -407,7 +407,7 @@ final class IRCClient extends InternalClient {
     void connect() {
         this.connection = NettyManager.connect(this);
 
-        this.sendRawLineImmediately("CAP LS");
+        this.sendRawLineImmediately("CAP LS 302");
 
         // If we have WebIRC information, send it before PASS, USER, and NICK.
         if (this.config.get(Config.WEBIRC_PASSWORD) != null) {
@@ -473,24 +473,32 @@ final class IRCClient extends InternalClient {
 
         final String[] split = line.split(" ");
 
-        int argsIndex = 1;
+        int index = 0;
+
+        if (split[index].startsWith("@")) {
+            index++;
+            if (split.length <= index) {
+                throw new KittehServerMessageException(line, "Server sent a message without a command");
+            }
+            // TODO tags
+        }
 
         final String actorName;
-        if (split[0].startsWith(":")) {
-            argsIndex++;
+        if (split[index].startsWith(":")) {
+            index++;
             actorName = split[0].substring(1);
         } else {
             actorName = "";
         }
         final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
 
-        if (split.length < (argsIndex - 1)) {
+        if (split.length <= index) {
             throw new KittehServerMessageException(line, "Server sent a message without a command");
         }
 
-        final String commandString = split[argsIndex - 1];
+        final String commandString = split[index++];
 
-        final String[] args = this.handleArgs(split, argsIndex);
+        final String[] args = this.handleArgs(split, index);
 
         try {
             int numeric = Integer.parseInt(commandString);

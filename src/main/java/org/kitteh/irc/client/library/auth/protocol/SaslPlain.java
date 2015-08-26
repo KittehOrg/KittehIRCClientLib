@@ -28,6 +28,7 @@ import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
+import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesRejectedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
@@ -39,7 +40,9 @@ import org.kitteh.irc.client.library.util.NumericFilter;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Optional;
 
 /**
  * SASL PLAIN authentication. Automatically attempts auth during connection.
@@ -48,7 +51,16 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
     private class Listener {
         @Handler(priority = 1)
         public void capList(CapabilitiesSupportedListEvent event) {
-            if (event.isNegotiating() && !SaslPlain.this.authenticating && (event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0)) {
+            if (event.isNegotiating() && !SaslPlain.this.authenticating) {
+                Optional<CapabilityState> state = event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).findFirst();
+                if (!state.isPresent()) {
+                    return;
+                }
+                if (state.get().getValue().isPresent()) {
+                    if (Arrays.stream(state.get().getValue().get().split(",")).filter(mechanism -> mechanism.equalsIgnoreCase("PLAIN")).count() == 0) {
+                        return; // Don't bother if it doesn't support PLAIN
+                    }
+                }
                 new CapabilityRequestCommand(SaslPlain.this.getClient()).enable("sasl").execute();
                 event.setEndingNegotiation(false);
                 SaslPlain.this.authenticating = true;

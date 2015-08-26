@@ -31,7 +31,9 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 final class IRCCapabilityManager implements CapabilityManager {
     static class IRCCapabilityState implements CapabilityState {
@@ -39,12 +41,21 @@ final class IRCCapabilityManager implements CapabilityManager {
         private final long creationTime;
         private final boolean disable;
         private final String name;
+        private final Optional<String> value;
 
         IRCCapabilityState(@Nonnull Client client, @Nonnull String capabilityListItem) {
             this.client = client;
             this.creationTime = System.currentTimeMillis();
             this.disable = capabilityListItem.charAt(0) == '-';
-            this.name = this.disable ? capabilityListItem.substring(1) : capabilityListItem;
+            String remaining = this.disable ? capabilityListItem.substring(1) : capabilityListItem;
+            int index = remaining.indexOf('=');
+            if (index > -1 && remaining.length() > (index + 1)) {
+                this.name = remaining.substring(0, index);
+                this.value = Optional.of(remaining.substring(index + 1));
+            } else {
+                this.name = index > -1 ? remaining.substring(0, index) : remaining;
+                this.value = Optional.empty();
+            }
         }
 
         @Override
@@ -72,10 +83,16 @@ final class IRCCapabilityManager implements CapabilityManager {
             return this.creationTime;
         }
 
-        @Override
         @Nonnull
+        @Override
         public String getName() {
             return this.name;
+        }
+
+        @Nonnull
+        @Override
+        public Optional<String> getValue() {
+            return this.value;
         }
 
         @Override
@@ -86,13 +103,13 @@ final class IRCCapabilityManager implements CapabilityManager {
         @Nonnull
         @Override
         public String toString() {
-            return new ToStringer(this).toString();
+            return new ToStringer(this).add("name", this.name).add("disabled", this.disable).add("value", this.value).toString();
         }
     }
 
     private final InternalClient client;
-    private final List<String> capabilities = new ArrayList<>();
-    private List<String> supportedCapabilities = new ArrayList<>();
+    private final Map<String, CapabilityState> capabilities = new ConcurrentHashMap<>();
+    private List<CapabilityState> supportedCapabilities = new ArrayList<>();
     private boolean negotiating = true;
 
     IRCCapabilityManager(InternalClient client) {
@@ -101,13 +118,13 @@ final class IRCCapabilityManager implements CapabilityManager {
 
     @Nonnull
     @Override
-    public List<String> getCapabilities() {
-        return new ArrayList<>(this.capabilities);
+    public List<CapabilityState> getCapabilities() {
+        return new ArrayList<>(this.capabilities.values());
     }
 
     @Nonnull
     @Override
-    public List<String> getSupportedCapabilities() {
+    public List<CapabilityState> getSupportedCapabilities() {
         return new ArrayList<>(this.supportedCapabilities);
     }
 
@@ -124,7 +141,7 @@ final class IRCCapabilityManager implements CapabilityManager {
             if (capabilityState.isDisabled()) {
                 this.capabilities.remove(capabilityState.getName());
             } else {
-                this.capabilities.add(capabilityState.getName());
+                this.capabilities.put(capabilityState.getName(), capabilityState);
             }
         }
     }
@@ -135,7 +152,7 @@ final class IRCCapabilityManager implements CapabilityManager {
     }
 
     void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
-        this.supportedCapabilities = capabilityStates.stream().map(CapabilityState::getName).collect(Collectors.toList());
+        this.supportedCapabilities = new ArrayList<>(capabilityStates);
     }
 
     @Nonnull

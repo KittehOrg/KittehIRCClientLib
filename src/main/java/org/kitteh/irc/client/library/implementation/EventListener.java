@@ -33,7 +33,9 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesDeletedSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesRejectedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
@@ -59,6 +61,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.client.RequestedChannelJoinCompleteEvent;
+import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
@@ -72,6 +75,7 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -370,6 +374,10 @@ class EventListener {
         }
     }
 
+    private List<CapabilityState> capList = new LinkedList<>();
+    private List<CapabilityState> capLs = new LinkedList<>();
+    private static final int CAPABILITY_LIST_INDEX_DEFAULT = 2;
+
     @CommandFilter("CAP")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void cap(ClientReceiveCommandEvent event) {
@@ -377,7 +385,16 @@ class EventListener {
             throw new KittehServerMessageException(event.getOriginalMessage(), "CAP message of incorrect length");
         }
         CapabilityNegotiationResponseEventBase responseEvent = null;
-        List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs()[2].split(" ")).map(capability -> new IRCCapabilityManager.IRCCapabilityState(this.client, capability)).collect(Collectors.toList());
+        int capabilityListIndex;
+        if (event.getArgs()[CAPABILITY_LIST_INDEX_DEFAULT].equals("*")) {
+            if (event.getArgs().length < 4) {
+                throw new KittehServerMessageException(event.getOriginalMessage(), "CAP message of incorrect length");
+            }
+            capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT + 1;
+        } else {
+            capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT;
+        }
+        List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs()[capabilityListIndex].split(" ")).map(capability -> new IRCCapabilityManager.IRCCapabilityState(this.client, capability)).collect(Collectors.toCollection(ArrayList::new));
         switch (event.getArgs()[1].toLowerCase()) {
             case "ack":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);
@@ -385,26 +402,57 @@ class EventListener {
                 this.client.getEventManager().callEvent(responseEvent);
                 break;
             case "list":
-                this.client.getCapabilityManager().setCapabilities(capabilityStateList);
-                this.client.getEventManager().callEvent(new CapabilitiesListEvent(this.client, capabilityStateList));
+                if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
+                    this.capList.addAll(capabilityStateList);
+                } else {
+                    List<CapabilityState> states;
+                    if (this.capList.isEmpty()) {
+                        states = capabilityStateList;
+                    } else {
+                        states = this.capList;
+                        states.addAll(capabilityStateList);
+                    }
+                    this.client.getCapabilityManager().setCapabilities(states);
+                    this.client.getEventManager().callEvent(new CapabilitiesListEvent(this.client, states));
+                    states.clear();
+                }
                 break;
             case "ls":
-                this.client.getCapabilityManager().setSupportedCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesSupportedListEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
-                Set<String> capabilities = capabilityStateList.stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
-                capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
-                capabilities.removeAll(this.client.getCapabilityManager().getCapabilities());
-                if (!capabilities.isEmpty()) {
-                    responseEvent.setEndingNegotiation(false);
-                    CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
-                    capabilities.forEach(capabilityRequestCommand::enable);
-                    capabilityRequestCommand.execute();
+                if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
+                    this.capList.addAll(capabilityStateList);
+                } else {
+                    List<CapabilityState> states;
+                    if (this.capLs.isEmpty()) {
+                        states = capabilityStateList;
+                    } else {
+                        states = this.capLs;
+                        states.addAll(capabilityStateList);
+                    }
+                    this.client.getCapabilityManager().setSupportedCapabilities(states);
+                    responseEvent = new CapabilitiesSupportedListEvent(this.client, this.client.getCapabilityManager().isNegotiating(), states);
+                    this.capReq(responseEvent);
+                    this.client.getEventManager().callEvent(responseEvent);
+                    states.clear();
                 }
-                this.client.getEventManager().callEvent(responseEvent);
                 break;
             case "nak":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);
                 responseEvent = new CapabilitiesRejectedEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                this.client.getEventManager().callEvent(responseEvent);
+                break;
+            case "new":
+                List<CapabilityState> statesAdded = new LinkedList<>(this.client.getCapabilityManager().getSupportedCapabilities());
+                statesAdded.addAll(capabilityStateList);
+                this.client.getCapabilityManager().setSupportedCapabilities(statesAdded);
+                responseEvent = new CapabilitiesNewSupportedEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                this.capReq(responseEvent);
+                this.client.getEventManager().callEvent(responseEvent);
+                break;
+            case "del":
+                List<CapabilityState> statesRemaining = new LinkedList<>(this.client.getCapabilityManager().getSupportedCapabilities());
+                statesRemaining.removeAll(capabilityStateList);
+                this.client.getCapabilityManager().setSupportedCapabilities(statesRemaining);
+                responseEvent = new CapabilitiesDeletedSupportedEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.client.getEventManager().callEvent(responseEvent);
                 break;
         }
@@ -413,6 +461,20 @@ class EventListener {
                 this.client.sendRawLineImmediately("CAP END");
                 this.client.getCapabilityManager().endNegotiation();
             }
+        }
+    }
+
+    private void capReq(@Nullable CapabilityNegotiationResponseEvent responseEvent) {
+        Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
+        capabilities.retainAll(Arrays.asList("account-notify", "away-notify", "extended-join", "multi-prefix"));
+        capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
+        if (!capabilities.isEmpty()) {
+            if (responseEvent != null) {
+                responseEvent.setEndingNegotiation(false);
+            }
+            CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
+            capabilities.forEach(capabilityRequestCommand::enable);
+            capabilityRequestCommand.execute();
         }
     }
 

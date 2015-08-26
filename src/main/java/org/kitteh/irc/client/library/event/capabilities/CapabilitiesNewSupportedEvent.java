@@ -27,7 +27,7 @@ import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
-import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -36,33 +36,34 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Fired when a CAP LIST is received, listing the current capabilities
+ * Fired when a CAP NEW is received.
  *
  * @see CapabilityManager
  * @see CapabilityRequestCommand
  */
-public class CapabilitiesListEvent extends ClientEventBase {
-    private final List<CapabilityState> capabilities;
+public class CapabilitiesNewSupportedEvent extends CapabilityNegotiationResponseEventBase {
+    private final List<CapabilityState> newCapabilities;
 
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param capabilities capabilities listed
+     * @param negotiating if we are negotiating right now
+     * @param newCapabilities supported capabilities
      */
-    public CapabilitiesListEvent(@Nonnull Client client, @Nonnull List<CapabilityState> capabilities) {
-        super(client);
-        Sanity.nullCheck(capabilities, "Capabilities list cannot be null");
-        this.capabilities = Collections.unmodifiableList(new ArrayList<>(capabilities));
+    public CapabilitiesNewSupportedEvent(@Nonnull Client client, boolean negotiating, @Nonnull List<CapabilityState> newCapabilities) {
+        super(client, negotiating);
+        Sanity.nullCheck(newCapabilities, "Capabilities list cannot be null");
+        this.newCapabilities = Collections.unmodifiableList(new ArrayList<>(newCapabilities));
     }
 
     /**
-     * Gets the currently enabled capabilities.
+     * Gets a list of capabilities the server now supports.
      *
-     * @return list of capabilities
+     * @return newly supported capabilities
      */
     @Nonnull
-    public List<CapabilityState> getCapabilities() {
-        return this.capabilities;
+    public List<CapabilityState> getNewCapabilities() {
+        return this.newCapabilities;
     }
 }

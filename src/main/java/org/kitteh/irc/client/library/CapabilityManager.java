@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
+import org.kitteh.irc.client.library.element.CapabilityState;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -39,7 +40,7 @@ public interface CapabilityManager {
      * @see CapabilityRequestCommand
      */
     @Nonnull
-    List<String> getCapabilities();
+    List<CapabilityState> getCapabilities();
 
     /**
      * Gets capabilities supported by the server.
@@ -48,5 +49,5 @@ public interface CapabilityManager {
      * @see CapabilityRequestCommand
      */
     @Nonnull
-    List<String> getSupportedCapabilities();
+    List<CapabilityState> getSupportedCapabilities();
 }

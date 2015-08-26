@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.element;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * Reflects a capability state as told by the server.
@@ -43,4 +44,12 @@ public interface CapabilityState extends Snapshot {
      */
     @Nonnull
     String getName();
+
+    /**
+     * Gets the value of the capability.
+     *
+     * @return capability value if set
+     */
+    @Nonnull
+    Optional<String> getValue();
 }
