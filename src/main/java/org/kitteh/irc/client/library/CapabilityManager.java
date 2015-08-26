@@ -25,9 +25,11 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Provides information on IRCv3 extensions available and in use.
@@ -43,6 +45,18 @@ public interface CapabilityManager {
     List<CapabilityState> getCapabilities();
 
     /**
+     * Gets an enabled capability by name.
+     *
+     * @param name capability name
+     * @return the named capability if enabled
+     */
+    @Nonnull
+    default Optional<CapabilityState> getCapability(@Nonnull String name) {
+        Sanity.nullCheck(name, "Name cannot be null");
+        return this.getCapabilities().stream().filter(capabilityState -> capabilityState.getName().equals(name)).findFirst();
+    }
+
+    /**
      * Gets capabilities supported by the server.
      *
      * @return the capabilities supported
@@ -50,4 +64,16 @@ public interface CapabilityManager {
      */
     @Nonnull
     List<CapabilityState> getSupportedCapabilities();
+
+    /**
+     * Gets a supported capability by name.
+     *
+     * @param name capability name
+     * @return the named capability if supported
+     */
+    @Nonnull
+    default Optional<CapabilityState> getSupportedCapability(@Nonnull String name) {
+        Sanity.nullCheck(name, "Name cannot be null");
+        return this.getSupportedCapabilities().stream().filter(capabilityState -> capabilityState.getName().equals(name)).findFirst();
+    }
 }
