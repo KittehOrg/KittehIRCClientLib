@@ -10,7 +10,8 @@ CAP | multi-prefix | sasl | account-notify | away-notify | extended-join | tls
 
 ##### Notes
 * SASL PLAIN is the only mechanism currently supported. See `SaslPlain` for more.
-* TLS will likely never be supported. It is horrible and evil and should be destroyed!
+* The TLS extension, which is a STARTTLS approach, will likely never be supported. It is horrible and evil and should be destroyed!
+    * Use the SSL support that KICL has built-in instead.
 
 
 ### IRCv3.2
