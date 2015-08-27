@@ -18,7 +18,7 @@ using the Netty library to maximize performance and scalability.
 Maven
 -----
 Repository URL: `http://repo.kitteh.org/content/groups/public`
-{% highlight xml %}
+```xml
 <groupId>org.kitteh.irc</groupId>
 <artifactId>client-lib</artifactId>
-{% endhighlight %}
+```
