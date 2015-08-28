@@ -4,7 +4,7 @@ This project, when built, includes the MBassador event bus and Netty framework.
 
 
 
-The license for MBassador's files, located in the folder org/kitteh/irc/lib/net/engio/mbassy/ is as follows:
+The license for MBassador's files, located (in the binary) in the folder org/kitteh/irc/lib/net/engio/mbassy/ is as follows:
 -----------------------
 MIT License
 
@@ -23,7 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 
 
-The license for the Netty framework, located in the folder org/kitteh/irc/lib/io/netty/ is as follows:
+The license for the Netty framework, located (in the binary) in the folder org/kitteh/irc/lib/io/netty/ is as follows:
 -----------------------
 Copyright 2011 The Netty Project
 
