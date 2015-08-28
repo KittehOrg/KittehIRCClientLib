@@ -461,7 +461,7 @@ final class IRCClient extends InternalClient {
         this.connection.startSending();
     }
 
-    private String[] handleArgs(@Nonnull String[] split, int start) {
+    private List<String> handleArgs(@Nonnull String[] split, int start) {
         final List<String> argsList = new LinkedList<>();
 
         int index = start;
@@ -474,7 +474,7 @@ final class IRCClient extends InternalClient {
             argsList.add(split[index]);
         }
 
-        return argsList.toArray(new String[argsList.size()]);
+        return argsList;
     }
 
     private void handleLine(@Nonnull final String line) {
@@ -516,7 +516,7 @@ final class IRCClient extends InternalClient {
 
         final String commandString = split[index++];
 
-        final String[] args = this.handleArgs(split, index);
+        final List<String> args = this.handleArgs(split, index);
 
         final IRCServerMessage serverMessage = new IRCServerMessage(line, tags);
 

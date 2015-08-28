@@ -38,7 +38,7 @@ public interface ClientReceiveServerMessageEvent {
      * @return arguments
      */
     @Nonnull
-    String[] getArgs();
+    List<String> getArgs();
 
     /**
      * Gets the command sent.

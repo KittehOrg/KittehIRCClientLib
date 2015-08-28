@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.List;
  * events if you want to listen to such an event.
  */
 public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> implements ClientReceiveServerMessageEvent {
-    private final String[] args;
+    private final List<String> args;
     private final String command;
     private final List<MessageTag> messageTags;
     private final String originalMessage;
@@ -53,9 +54,9 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * @param command command
      * @param args args
      */
-    public ClientReceiveServerMessageEventBase(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, @Nonnull String command, @Nonnull String[] args) {
+    public ClientReceiveServerMessageEventBase(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, @Nonnull String command, @Nonnull List<String> args) {
         super(client, Collections.singletonList(serverMessage), server);
-        this.args = args;
+        this.args = Collections.unmodifiableList(new ArrayList<>(args));
         this.messageTags = serverMessage.getTags();
         this.command = command;
         this.originalMessage = serverMessage.getMessage();
@@ -68,8 +69,8 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      */
     @Nonnull
     @Override
-    public String[] getArgs() {
-        return Arrays.copyOf(this.args, this.args.length);
+    public List<String> getArgs() {
+        return this.args;
     }
 
     @Nonnull

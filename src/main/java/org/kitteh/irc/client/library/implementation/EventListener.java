@@ -101,8 +101,8 @@ class EventListener {
     @NumericFilter(1)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void welcome(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length > 0) {
-            this.client.setCurrentNick(event.getArgs()[0]);
+        if (!event.getArgs().isEmpty()) {
+            this.client.setCurrentNick(event.getArgs().get(0));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Nickname unconfirmed.");
         }
@@ -112,10 +112,10 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void version(ClientReceiveNumericEvent event) {
         this.client.resetServerInfo();
-        if (event.getArgs().length > 1) {
-            this.client.getServerInfo().setAddress(event.getArgs()[1]);
-            if (event.getArgs().length > 2) {
-                this.client.getServerInfo().setVersion(event.getArgs()[2]);
+        if (event.getArgs().size() > 1) {
+            this.client.getServerInfo().setAddress(event.getArgs().get(1));
+            if (event.getArgs().size() > 2) {
+                this.client.getServerInfo().setVersion(event.getArgs().get(2));
             } else {
                 throw new KittehServerMessageException(event.getOriginalMessage(), "Server version missing.");
             }
@@ -129,8 +129,8 @@ class EventListener {
     @NumericFilter(5)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void iSupport(ClientReceiveNumericEvent event) {
-        for (int i = 1; i < event.getArgs().length; i++) {
-            ISupport.handle(event.getArgs()[i], this.client);
+        for (int i = 1; i < event.getArgs().size(); i++) {
+            ISupport.handle(event.getArgs().get(i), this.client);
         }
     }
 
@@ -140,28 +140,28 @@ class EventListener {
     @NumericFilter(354) // WHOX
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void who(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < ((event.getNumeric() == 352) ? 8 : 9)) {
+        if (event.getArgs().size() < ((event.getNumeric() == 352) ? 8 : 9)) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "WHO response of incorrect length");
         }
-        final ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        final ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(1));
         if (channel != null) {
-            final String ident = event.getArgs()[2];
-            final String host = event.getArgs()[3];
-            final String server = event.getArgs()[4];
-            final String nick = event.getArgs()[5];
+            final String ident = event.getArgs().get(2);
+            final String host = event.getArgs().get(3);
+            final String server = event.getArgs().get(4);
+            final String nick = event.getArgs().get(5);
             final ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(nick + '!' + ident + '@' + host);
             user.setServer(server);
-            final String status = event.getArgs()[6];
+            final String status = event.getArgs().get(6);
             String realName;
             switch (event.getNumeric()) {
                 case 352:
-                    realName = event.getArgs()[7];
+                    realName = event.getArgs().get(7);
                     break;
                 case 354:
                 default:
-                    String account = event.getArgs()[7];
+                    String account = event.getArgs().get(7);
                     user.setAccount("0".equals(account) ? null : account);
-                    realName = event.getArgs()[8];
+                    realName = event.getArgs().get(8);
                     break;
             }
             user.setRealName(realName);
@@ -186,10 +186,10 @@ class EventListener {
     @NumericFilter(315) // WHO completed
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void whoComplete(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "WHO response of incorrect length");
         }
-        ActorProvider.IRCChannel whoChannel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        ActorProvider.IRCChannel whoChannel = this.client.getActorProvider().getChannel(event.getArgs().get(1));
         if (whoChannel != null) {
             whoChannel.setListReceived();
             this.whoMessages.add(messageFromEvent(event));
@@ -201,12 +201,12 @@ class EventListener {
     @NumericFilter(324)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void channelMode(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < 3) {
+        if (event.getArgs().size() < 3) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Channel mode info message of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(1));
         if (channel != null) {
-            ChannelModeStatusList statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getArgs(), 2));
+            ChannelModeStatusList statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getArgs().toArray(new String[event.getArgs().size()]), 2));
             channel.updateChannelModes(statusList);
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Channel mode info message sent for invalid channel name");
@@ -216,12 +216,12 @@ class EventListener {
     @NumericFilter(332) // Topic
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Topic message of incorrect length");
         }
-        ActorProvider.IRCChannel topicChannel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        ActorProvider.IRCChannel topicChannel = this.client.getActorProvider().getChannel(event.getArgs().get(1));
         if (topicChannel != null) {
-            topicChannel.setTopic(event.getArgs()[2]);
+            topicChannel.setTopic(event.getArgs().get(2));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Topic message sent for invalid channel name");
         }
@@ -230,12 +230,12 @@ class EventListener {
     @NumericFilter(333) // Topic info
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void topicInfo(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < 4) {
+        if (event.getArgs().size() < 4) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Topic message of incorrect length");
         }
-        ActorProvider.IRCChannel topicSetChannel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        ActorProvider.IRCChannel topicSetChannel = this.client.getActorProvider().getChannel(event.getArgs().get(1));
         if (topicSetChannel != null) {
-            topicSetChannel.setTopic(Long.parseLong(event.getArgs()[3]) * 1000, this.client.getActorProvider().getActor(event.getArgs()[2]).snapshot());
+            topicSetChannel.setTopic(Long.parseLong(event.getArgs().get(3)) * 1000, this.client.getActorProvider().getActor(event.getArgs().get(2)).snapshot());
             this.client.getEventManager().callEvent(new ChannelTopicEvent(this.client, listFromEvent(event), topicSetChannel.snapshot(), false));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Topic message sent for invalid channel name");
@@ -247,13 +247,13 @@ class EventListener {
     @NumericFilter(353) // NAMES
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void names(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < 4) {
+        if (event.getArgs().size() < 4) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NAMES response of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[2]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(2));
         if (channel != null) {
             List<ChannelUserMode> channelUserModes = this.client.getServerInfo().getChannelUserModes();
-            for (String combo : event.getArgs()[3].split(" ")) {
+            for (String combo : event.getArgs().get(3).split(" ")) {
                 Set<ChannelUserMode> modes = new HashSet<>();
                 for (int i = 0; i < combo.length(); i++) {
                     char c = combo.charAt(i);
@@ -275,10 +275,10 @@ class EventListener {
     @NumericFilter(366) // End of NAMES
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void namesComplete(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NAMES response of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(1));
         if (channel != null) {
             this.namesMessages.add(messageFromEvent(event));
             this.client.getEventManager().callEvent(new ChannelNamesUpdatedEvent(this.client, this.namesMessages, channel.snapshot()));
@@ -301,10 +301,10 @@ class EventListener {
     @NumericFilter(372)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void motdContent(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "MOTD message of incorrect length");
         }
-        this.motd.add(event.getArgs()[1]);
+        this.motd.add(event.getArgs().get(1));
         this.motdMessages.add(messageFromEvent(event));
     }
 
@@ -329,12 +329,12 @@ class EventListener {
     @NumericFilter(710) // Knock
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void knock(ClientReceiveNumericEvent event) {
-        if (event.getArgs().length < 3) {
+        if (event.getArgs().size() < 3) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "KNOCK message of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(1));
         if (channel != null) {
-            ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getArgs()[2]);
+            ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getArgs().get(2));
             this.client.getEventManager().callEvent(new ChannelKnockEvent(this.client, listFromEvent(event), channel.snapshot(), user.snapshot()));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "KNOCK message sent for invalid channel name");
@@ -345,12 +345,12 @@ class EventListener {
     @CommandFilter("PRIVMSG")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void ctcp(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             return; // Nothing to do here, handle that issue in the individual methods
         }
-        if (CTCPUtil.isCTCP(event.getArgs()[1])) {
-            final String ctcpMessage = CTCPUtil.fromCTCP(event.getArgs()[1]);
-            final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs()[0]);
+        if (CTCPUtil.isCTCP(event.getArgs().get(1))) {
+            final String ctcpMessage = CTCPUtil.fromCTCP(event.getArgs().get(1));
+            final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs().get(0));
             User user = (User) event.getActor();
             switch (event.getCommand()) {
                 case "NOTICE":
@@ -401,21 +401,21 @@ class EventListener {
     @CommandFilter("CAP")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void cap(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 3) {
+        if (event.getArgs().size() < 3) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "CAP message of incorrect length");
         }
         CapabilityNegotiationResponseEventBase responseEvent = null;
         int capabilityListIndex;
-        if (event.getArgs()[CAPABILITY_LIST_INDEX_DEFAULT].equals("*")) {
-            if (event.getArgs().length < 4) {
+        if (event.getArgs().get(CAPABILITY_LIST_INDEX_DEFAULT).equals("*")) {
+            if (event.getArgs().size() < 4) {
                 throw new KittehServerMessageException(event.getOriginalMessage(), "CAP message of incorrect length");
             }
             capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT + 1;
         } else {
             capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT;
         }
-        List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs()[capabilityListIndex].split(" ")).map(capability -> new IRCCapabilityManager.IRCCapabilityState(this.client, capability)).collect(Collectors.toCollection(ArrayList::new));
-        switch (event.getArgs()[1].toLowerCase()) {
+        List<CapabilityState> capabilityStateList = Arrays.stream(event.getArgs().get(capabilityListIndex).split(" ")).map(capability -> new IRCCapabilityManager.IRCCapabilityState(this.client, capability)).collect(Collectors.toCollection(ArrayList::new));
+        switch (event.getArgs().get(1).toLowerCase()) {
             case "ack":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);
                 responseEvent = new CapabilitiesAcknowledgedEvent(this.client, listFromEvent(event), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
@@ -503,38 +503,38 @@ class EventListener {
     @CommandFilter("ACCOUNT")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void account(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 1) {
+        if (event.getArgs().size() < 1) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "ACCOUNT message of incorrect length");
         }
-        String account = event.getArgs()[0];
+        String account = event.getArgs().get(0);
         this.client.getActorProvider().setUserAccount(((User) event.getActor()).getNick(), "*".equals(account) ? null : account);
     }
 
     @CommandFilter("AWAY")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveCommandEvent event) {
-        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), event.getArgs().length > 0);
+        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), event.getArgs().size() > 0);
     }
 
     @CommandFilter("NOTICE")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void notice(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NOTICE message of incorrect length");
         }
         if (!(event.getActor() instanceof User)) {
             return; // TODO handle this
         }
         User user = (User) event.getActor();
-        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs()[0]);
+        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.client.getEventManager().callEvent(new PrivateNoticeEvent(this.client, listFromEvent(event), user, event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new PrivateNoticeEvent(this.client, listFromEvent(event), user, event.getArgs().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
-            this.client.getEventManager().callEvent(new ChannelNoticeEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new ChannelNoticeEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), event.getArgs().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.client.getEventManager().callEvent(new ChannelTargetedNoticeEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new ChannelTargetedNoticeEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getArgs().get(1)));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NOTICE message to improper target");
         }
@@ -543,25 +543,25 @@ class EventListener {
     @CommandFilter("PRIVMSG")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void privmsg(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PRIVMSG message of incorrect length");
         }
-        if (CTCPUtil.isCTCP(event.getArgs()[1])) {
+        if (CTCPUtil.isCTCP(event.getArgs().get(1))) {
             return;
         }
         if (!(event.getActor() instanceof User)) {
             return; // TODO handle this
         }
         User user = (User) event.getActor();
-        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs()[0]);
+        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.client.getEventManager().callEvent(new PrivateMessageEvent(this.client, listFromEvent(event), user, event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new PrivateMessageEvent(this.client, listFromEvent(event), user, event.getArgs().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
-            this.client.getEventManager().callEvent(new ChannelMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new ChannelMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), event.getArgs().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.client.getEventManager().callEvent(new ChannelTargetedMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new ChannelTargetedMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getArgs().get(1)));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PRIVMSG message to improper target");
         }
@@ -570,17 +570,17 @@ class EventListener {
     @CommandFilter("MODE")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void mode(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "MODE message of incorrect length");
         }
-        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs()[0]);
+        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
             // TODO listen to mode on self
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             ActorProvider.IRCChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
             ChannelModeStatusList statusList;
             try {
-                statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getArgs(), 1));
+                statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getArgs().toArray(new String[event.getArgs().size()]), 1));
             } catch (IllegalArgumentException e) {
                 throw new KittehServerMessageException(event.getOriginalMessage(), e.getMessage());
             }
@@ -601,10 +601,10 @@ class EventListener {
     @CommandFilter("JOIN")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void join(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 1) {
+        if (event.getArgs().size() < 1) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "JOIN message of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[0]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(0));
         if (channel != null) {
             if (event.getActor() instanceof User) {
                 ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getActor().getName());
@@ -618,11 +618,11 @@ class EventListener {
                         joinEvent = new RequestedChannelJoinCompleteEvent(this.client, listFromEvent(event), channel.snapshot(), user.snapshot());
                     }
                 }
-                if (event.getArgs().length > 2) {
-                    if (!"*".equals(event.getArgs()[1])) {
-                        user.setAccount(event.getArgs()[1]);
+                if (event.getArgs().size() > 2) {
+                    if (!"*".equals(event.getArgs().get(1))) {
+                        user.setAccount(event.getArgs().get(1));
                     }
-                    user.setRealName(event.getArgs()[2]);
+                    user.setRealName(event.getArgs().get(2));
                 }
                 if (joinEvent == null) {
                     joinEvent = new ChannelJoinEvent(this.client, listFromEvent(event), channel.snapshot(), user.snapshot());
@@ -639,15 +639,15 @@ class EventListener {
     @CommandFilter("PART")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void part(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 1) {
+        if (event.getArgs().size() < 1) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PART message of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[0]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(0));
         if (channel != null) {
             if (event.getActor() instanceof User) {
                 User user = (User) event.getActor();
                 boolean isSelf = user.getNick().equals(this.client.getNick());
-                String partReason = (event.getArgs().length > 1) ? event.getArgs()[1] : "";
+                String partReason = (event.getArgs().size() > 1) ? event.getArgs().get(1) : "";
                 ChannelPartEvent partEvent;
                 if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
                     partEvent = new RequestedChannelLeaveViaPartEvent(this.client, listFromEvent(event), channel.snapshot(), user, partReason);
@@ -671,7 +671,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void quit(ClientReceiveCommandEvent event) {
         if (event.getActor() instanceof User) {
-            this.client.getEventManager().callEvent(new UserQuitEvent(this.client, listFromEvent(event), (User) event.getActor(), (event.getArgs().length > 0) ? event.getArgs()[0] : ""));
+            this.client.getEventManager().callEvent(new UserQuitEvent(this.client, listFromEvent(event), (User) event.getActor(), (event.getArgs().size() > 0) ? event.getArgs().get(0) : ""));
             this.client.getActorProvider().trackUserQuit(((User) event.getActor()).getNick());
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "QUIT message sent for non-user");
@@ -681,23 +681,23 @@ class EventListener {
     @CommandFilter("KICK")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void kick(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "KICK message of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[0]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(0));
         if (channel != null) {
-            ActorProvider.IRCUser kickedUser = this.client.getActorProvider().getUser(event.getArgs()[1]);
+            ActorProvider.IRCUser kickedUser = this.client.getActorProvider().getUser(event.getArgs().get(1));
             if (kickedUser != null) {
-                boolean isSelf = event.getArgs()[1].equals(this.client.getNick());
+                boolean isSelf = event.getArgs().get(1).equals(this.client.getNick());
                 ChannelKickEvent kickEvent;
-                String kickReason = (event.getArgs().length > 2) ? event.getArgs()[2] : "";
+                String kickReason = (event.getArgs().size() > 2) ? event.getArgs().get(2) : "";
                 if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
                     kickEvent = new RequestedChannelLeaveViaKickEvent(this.client, listFromEvent(event), channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
                 } else {
                     kickEvent = new ChannelKickEvent(this.client, listFromEvent(event), channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
                 }
                 this.client.getEventManager().callEvent(kickEvent);
-                channel.trackUserPart(event.getArgs()[1]);
+                channel.trackUserPart(event.getArgs().get(1));
                 if (isSelf) {
                     this.client.getActorProvider().unTrackChannel(channel);
                 }
@@ -712,7 +712,7 @@ class EventListener {
     @CommandFilter("NICK")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void nick(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 1) {
+        if (event.getArgs().size() < 1) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NICK message of incorrect length");
         }
         if (event.getActor() instanceof User) {
@@ -720,17 +720,17 @@ class EventListener {
             ActorProvider.IRCUser user = this.client.getActorProvider().getUser(((User) event.getActor()).getNick());
             if (user == null) {
                 if (isSelf) {
-                    this.client.setCurrentNick(event.getArgs()[0]);
+                    this.client.setCurrentNick(event.getArgs().get(0));
                     return; // Don't fail if NICK changes while not in a channel!
                 }
                 throw new KittehServerMessageException(event.getOriginalMessage(), "NICK message sent for user not in tracked channels");
             }
             User oldUser = user.snapshot();
-            this.client.getActorProvider().trackUserNickChange(user.getNick(), event.getArgs()[0]);
+            this.client.getActorProvider().trackUserNickChange(user.getNick(), event.getArgs().get(0));
             User newUser = user.snapshot();
             this.client.getEventManager().callEvent(new UserNickChangeEvent(this.client, listFromEvent(event), oldUser, newUser));
             if (isSelf) {
-                this.client.setCurrentNick(event.getArgs()[0]);
+                this.client.setCurrentNick(event.getArgs().get(0));
             }
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NICK message sent for non-user");
@@ -740,15 +740,15 @@ class EventListener {
     @CommandFilter("INVITE")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void invite(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "INVITE message of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(1));
         if (channel != null) {
-            if (this.client.getNick().equalsIgnoreCase(event.getArgs()[0]) && this.client.getIntendedChannels().contains(channel.getName())) {
+            if (this.client.getNick().equalsIgnoreCase(event.getArgs().get(0)) && this.client.getIntendedChannels().contains(channel.getName())) {
                 this.client.sendRawLine("JOIN " + channel.getName());
             }
-            this.client.getEventManager().callEvent(new ChannelInviteEvent(this.client, listFromEvent(event), channel.snapshot(), event.getActor(), event.getArgs()[0]));
+            this.client.getEventManager().callEvent(new ChannelInviteEvent(this.client, listFromEvent(event), channel.snapshot(), event.getActor(), event.getArgs().get(0)));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "INVITE message sent for invalid channel name");
         }
@@ -757,12 +757,12 @@ class EventListener {
     @CommandFilter("TOPIC")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveCommandEvent event) {
-        if (event.getArgs().length < 2) {
+        if (event.getArgs().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "TOPIC message of incorrect length");
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[0]);
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs().get(0));
         if (channel != null) {
-            channel.setTopic(event.getArgs()[1]);
+            channel.setTopic(event.getArgs().get(1));
             channel.setTopic(System.currentTimeMillis(), event.getActor());
             this.client.getEventManager().callEvent(new ChannelTopicEvent(this.client, listFromEvent(event), channel.snapshot(), true));
         } else {

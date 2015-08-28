@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessa
 import org.kitteh.irc.client.library.util.CommandFilter;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Fires when the client receives a command message. Note that the client
@@ -49,7 +50,7 @@ public class ClientReceiveCommandEvent extends ClientReceiveServerMessageEventBa
      * @param command command
      * @param args args
      */
-    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull String[] args) {
+    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull List<String> args) {
         super(client, serverMessage, actor, command, args);
     }
 }

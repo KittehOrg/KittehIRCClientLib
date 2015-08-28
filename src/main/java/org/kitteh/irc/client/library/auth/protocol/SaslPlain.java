@@ -91,7 +91,7 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
         @CommandFilter("AUTHENTICATE")
         @Handler(filters = @Filter(CommandFilter.Filter.class))
         public void authenticate(ClientReceiveCommandEvent event) {
-            if (event.getArgs().length > 0) {
+            if (!event.getArgs().isEmpty()) {
                 String base64 = Base64.getEncoder().encodeToString((SaslPlain.this.getUsername() + '\u0000' + SaslPlain.this.getUsername() + '\u0000' + SaslPlain.this.getPassword()).getBytes());
                 SaslPlain.this.getClient().sendRawLineImmediately("AUTHENTICATE " + base64);
             }

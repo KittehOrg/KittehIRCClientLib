@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessa
 import org.kitteh.irc.client.library.util.NumericFilter;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Fires when the client receives a numeric coded message. Note that the
@@ -52,7 +53,7 @@ public class ClientReceiveNumericEvent extends ClientReceiveServerMessageEventBa
      * @param numeric numeric
      * @param args args
      */
-    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, String command, int numeric, @Nonnull String[] args) {
+    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, String command, int numeric, @Nonnull List<String> args) {
         super(client, serverMessage, server, command, args);
         this.numeric = numeric;
     }
