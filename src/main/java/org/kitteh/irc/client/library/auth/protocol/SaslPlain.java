@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.auth.protocol;
 
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
+import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
@@ -52,7 +53,7 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
         @Handler(priority = 1)
         public void capList(CapabilitiesSupportedListEvent event) {
             if (event.isNegotiating() && !SaslPlain.this.authenticating) {
-                Optional<CapabilityState> state = event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).findFirst();
+                Optional<CapabilityState> state = event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase(CapabilityManager.Defaults.SASL)).findFirst();
                 if (!state.isPresent()) {
                     return;
                 }
@@ -61,7 +62,7 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
                         return; // Don't bother if it doesn't support PLAIN
                     }
                 }
-                new CapabilityRequestCommand(SaslPlain.this.getClient()).enable("sasl").execute();
+                new CapabilityRequestCommand(SaslPlain.this.getClient()).enable(CapabilityManager.Defaults.SASL).execute();
                 event.setEndingNegotiation(false);
                 SaslPlain.this.authenticating = true;
             }
@@ -69,14 +70,14 @@ public class SaslPlain extends AbstractUserPassProtocol implements EventListenin
 
         @Handler(priority = 1)
         public void capAck(CapabilitiesAcknowledgedEvent event) {
-            if (event.getAcknowledgedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0) {
+            if (event.getAcknowledgedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase(CapabilityManager.Defaults.SASL)).count() > 0) {
                 SaslPlain.this.startAuthentication();
             }
         }
 
         @Handler(priority = 1)
         public void capNak(CapabilitiesRejectedEvent event) {
-            if (event.getRejectedCapabilitiesRequest().stream().filter(c -> c.getName().equalsIgnoreCase("sasl")).count() > 0) {
+            if (event.getRejectedCapabilitiesRequest().stream().filter(c -> c.getName().equalsIgnoreCase(CapabilityManager.Defaults.SASL)).count() > 0) {
                 SaslPlain.this.authenticating = false;
             }
         }

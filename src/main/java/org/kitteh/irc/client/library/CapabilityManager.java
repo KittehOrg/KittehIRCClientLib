@@ -49,7 +49,7 @@ public interface CapabilityManager {
      * transient are not requested unless additional functionality is
      * enabled, as documented here.
      */
-    class Defaults {
+    final class Defaults {
         /**
          * Account change notification.
          *
