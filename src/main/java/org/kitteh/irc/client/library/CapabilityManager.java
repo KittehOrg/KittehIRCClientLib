@@ -23,18 +23,116 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.auth.protocol.SaslPlain;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Provides information on IRCv3 extensions available and in use.
  */
 public interface CapabilityManager {
+    /**
+     * Contains the capabilities natively supported by KICL, which will be
+     * requested automatically upon availability. Defaults defined as
+     * transient are not requested unless additional functionality is
+     * enabled, as documented here.
+     */
+    class Defaults {
+        /**
+         * Account change notification.
+         *
+         * @see User#getAccount()
+         */
+        public static String ACCOUNT_NOTIFY = "account-notify";
+
+        /**
+         * Account message tags.
+         */
+        public static String ACCOUNT_TAG = "account-tag";
+
+        /**
+         * Away notification.
+         *
+         * @see User#isAway()
+         */
+        public static String AWAY_NOTIFY = "away-notify";
+
+        /**
+         * Self-sent message echoing.
+         */
+        public static String ECHO_MESSAGE = "echo-message";
+
+        /**
+         * Account listed in join message.
+         *
+         * @see User#getAccount()
+         */
+        public static String EXTENDED_JOIN = "extended-join";
+
+        /**
+         * Invite notification.
+         *
+         * @see ChannelInviteEvent
+         */
+        public static String INVITE_NOTIFY = "invite-notify";
+
+        /**
+         * Multiple prefixes sent in NAMES and WHO output.
+         */
+        public static String MULTI_PREFIX = "multi-prefix";
+
+        /**
+         * Server time message tag.
+         */
+        public static String SERVER_TIME = "server-time";
+
+        /**
+         * SASL authentication, not utilized unless a SASL authentication
+         * protocol is enabled.
+         *
+         * @see SaslPlain
+         */
+        public transient static String SASL = "sasl";
+
+        /**
+         * User hosts sent in NAMES, allowing User creation prior to WHO.
+         */
+        public static String USERHOST_IN_NAMES = "userhost-in-names";
+
+        private static List<String> ALL;
+
+        /**
+         * Gets all capabilities natively supported by KICL.
+         *
+         * @return all capability names
+         */
+        public static List<String> getAll() {
+            return ALL;
+        }
+
+        static {
+            ALL = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields()).filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())).map(field -> {
+                try {
+                    return (String) field.get(null);
+                } catch (IllegalAccessException e) {
+                    throw new AssertionError(e);
+                }
+            }).collect(Collectors.toCollection(ArrayList::new)));
+        }
+    }
+
     /**
      * Gets capabilities currently enabled.
      *

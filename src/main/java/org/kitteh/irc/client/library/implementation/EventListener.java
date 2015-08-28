@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.implementation;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
+import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;
@@ -78,7 +79,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -465,11 +465,9 @@ class EventListener {
         }
     }
 
-    static final List<String> CAPABILITIES_TO_REQUEST = Collections.unmodifiableList(Arrays.asList("account-notify", "account-tag", "away-notify", "echo-message", "extended-join", "invite-notify", "multi-prefix", "server-time", "userhost-in-names"));
-
     private void capReq(@Nullable CapabilityNegotiationResponseEvent responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
-        capabilities.retainAll(CAPABILITIES_TO_REQUEST);
+        capabilities.retainAll(CapabilityManager.Defaults.getAll());
         capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
         if (!capabilities.isEmpty()) {
             if (responseEvent != null) {
