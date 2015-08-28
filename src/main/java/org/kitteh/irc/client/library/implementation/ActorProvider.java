@@ -39,6 +39,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -153,10 +154,9 @@ class ActorProvider {
         private final Map<String, Set<ChannelUserMode>> modes;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
-        private String topic;
-        @Nullable
-        private Actor topicSetter;
-        private long topicTime;
+        private Optional<String> topic = Optional.empty();
+        private Optional<Actor> topicSetter = Optional.empty();
+        private Optional<Instant> topicTime = Optional.empty();
         private volatile boolean tracked;
 
         private IRCChannel(@Nonnull String channel) {
@@ -178,15 +178,15 @@ class ActorProvider {
 
         void setTopic(@Nonnull String topic) {
             this.markStale();
-            this.topic = topic;
-            this.topicTime = -1;
-            this.topicSetter = null;
+            this.topic = Optional.of(topic);
+            this.topicTime = Optional.empty();
+            this.topicSetter = Optional.empty();
         }
 
-        void setTopic(long time, @Nonnull Actor user) {
+        void setTopic(long time, @Nonnull Actor actor) {
             this.markStale();
-            this.topicTime = time;
-            this.topicSetter = user;
+            this.topicTime = Optional.of(Instant.ofEpochMilli(time));
+            this.topicSetter = Optional.of(actor);
         }
 
         @Override
@@ -201,7 +201,7 @@ class ActorProvider {
                     }
                 }
             }
-            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, Optional.ofNullable(IRCChannel.this.topic), Optional.ofNullable(IRCChannel.this.topicSetter))));
+            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter)));
         }
 
         void trackUser(@Nonnull IRCUser user, @Nonnull Set<ChannelUserMode> modes) {
@@ -290,10 +290,10 @@ class ActorProvider {
 
     class IRCChannelTopicSnapshot implements Channel.Topic {
         private final Optional<Actor> setter;
-        private final long time;
+        private final Optional<Instant> time;
         private final Optional<String> topic;
 
-        private IRCChannelTopicSnapshot(long time, @Nonnull Optional<String> topic, @Nonnull Optional<Actor> setter) {
+        private IRCChannelTopicSnapshot(@Nonnull Optional<Instant> time, @Nonnull Optional<String> topic, @Nonnull Optional<Actor> setter) {
             this.time = time;
             this.topic = topic;
             this.setter = setter;
@@ -306,7 +306,7 @@ class ActorProvider {
         }
 
         @Override
-        public long getTime() {
+        public Optional<Instant> getTime() {
             return this.time;
         }
 

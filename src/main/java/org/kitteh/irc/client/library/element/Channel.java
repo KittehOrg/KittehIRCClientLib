@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.command.ModeCommand;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,9 +53,9 @@ public interface Channel extends MessageReceiver, Staleable {
         /**
          * Gets the time the topic was set.
          *
-         * @return epoch time in milliseconds or -1 if unknown
+         * @return the time of setting if known
          */
-        long getTime();
+        Optional<Instant> getTime();
 
         /**
          * Gets the channel topic.
