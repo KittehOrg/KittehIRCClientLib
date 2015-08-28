@@ -25,10 +25,12 @@ package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Abstract base class for events involving a Channel. Use the helper events
@@ -36,7 +38,7 @@ import javax.annotation.Nonnull;
  *
  * @see ChannelEvent
  */
-public abstract class ChannelEventBase extends ClientEventBase implements ChannelEvent {
+public abstract class ChannelEventBase extends ServerMessageEventBase implements ChannelEvent {
     private final Channel channel;
 
     /**
@@ -45,8 +47,8 @@ public abstract class ChannelEventBase extends ClientEventBase implements Channe
      * @param client the client
      * @param channel the channel
      */
-    protected ChannelEventBase(@Nonnull Client client, @Nonnull Channel channel) {
-        super(client);
+    protected ChannelEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel) {
+        super(client, originalMessages);
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
         this.channel = channel;

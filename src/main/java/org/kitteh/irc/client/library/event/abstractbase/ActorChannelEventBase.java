@@ -26,11 +26,13 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Abstract base class for events involving an Actor and Channel. Use the
@@ -50,8 +52,8 @@ public abstract class ActorChannelEventBase<A extends Actor> extends ActorEventB
      * @param actor the actor
      * @param channel the channel
      */
-    protected ActorChannelEventBase(@Nonnull Client client, @Nonnull A actor, @Nonnull Channel channel) {
-        super(client, actor);
+    protected ActorChannelEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull Channel channel) {
+        super(client, originalMessages, actor);
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
         this.channel = channel;

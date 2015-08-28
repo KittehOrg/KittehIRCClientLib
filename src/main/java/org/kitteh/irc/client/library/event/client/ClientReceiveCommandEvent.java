@@ -26,11 +26,10 @@ package org.kitteh.irc.client.library.event.client;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.MessageTag;
-import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
 import org.kitteh.irc.client.library.util.CommandFilter;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,12 +40,7 @@ import java.util.List;
  *
  * @see CommandFilter
  */
-public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
-    private final String[] args;
-    private final List<MessageTag> messageTags;
-    private final String command;
-    private final String originalMessage;
-
+public class ClientReceiveCommandEvent extends ClientReceiveServerMessageEventBase {
     /**
      * Constructs the event.
      *
@@ -58,50 +52,6 @@ public class ClientReceiveCommandEvent extends ActorEventBase<Actor> {
      * @param args args
      */
     public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull List<MessageTag> messageTags, @Nonnull String originalMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull String[] args) {
-        super(client, actor);
-        this.args = args;
-        this.messageTags = messageTags;
-        this.command = command;
-        this.originalMessage = originalMessage;
-    }
-
-    /**
-     * Gets the subsequent arguments after the command.
-     *
-     * @return arguments
-     */
-    @Nonnull
-    public String[] getArgs() {
-        return Arrays.copyOf(this.args, this.args.length);
-    }
-
-    /**
-     * Gets the message tags.
-     *
-     * @return message tags
-     */
-    @Nonnull
-    public List<MessageTag> getMessageTags() {
-        return this.messageTags;
-    }
-
-    /**
-     * Gets the command sent.
-     *
-     * @return command, upper-case
-     */
-    @Nonnull
-    public String getCommand() {
-        return this.command;
-    }
-
-    /**
-     * Gets the original message received by the server.
-     *
-     * @return unprocessed, original message
-     */
-    @Nonnull
-    public String getOriginalMessage() {
-        return this.originalMessage;
+        super(client, messageTags, originalMessage, actor, command, args);
     }
 }

@@ -25,11 +25,13 @@ package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,8 +45,8 @@ public class UserQuitEvent extends ActorMessageEventBase<User> implements Channe
      * @param user user quitting
      * @param message message the user left
      */
-    public UserQuitEvent(@Nonnull Client client, @Nonnull User user, @Nonnull String message) {
-        super(client, user, message);
+    public UserQuitEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nonnull String message) {
+        super(client, originalMessages, user, message);
     }
 
     @Nonnull

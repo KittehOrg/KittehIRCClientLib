@@ -25,9 +25,11 @@ package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Called after completion of a NAMES command, or after joining a channel.
@@ -39,7 +41,7 @@ public class ChannelNamesUpdatedEvent extends ChannelEventBase {
      * @param client client for which this is occurring
      * @param channel channel with the updated users list
      */
-    public ChannelNamesUpdatedEvent(@Nonnull Client client, @Nonnull Channel channel) {
-        super(client, channel);
+    public ChannelNamesUpdatedEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel) {
+        super(client, originalMessages, channel);
     }
 }

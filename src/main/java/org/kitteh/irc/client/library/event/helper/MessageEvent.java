@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 /**
  * An event involving a message.
  */
-public interface MessageEvent extends ClientEvent {
+public interface MessageEvent extends ServerMessageEvent {
     /**
      * Gets the message.
      *

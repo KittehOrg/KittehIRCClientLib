@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.event.helper.ChannelEvent;
@@ -33,6 +34,7 @@ import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Abstract base class for events involving an Actor and Channel and have a
@@ -56,8 +58,8 @@ public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMe
      * @param prefix the targeted prefix
      * @param message the message
      */
-    protected TargetedUserChannelMessageEventBase(@Nonnull Client client, @Nonnull User user, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
-        super(client, user, channel, message);
+    protected TargetedUserChannelMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
+        super(client, originalMessages, user, channel, message);
         Sanity.nullCheck(prefix, "Prefix cannot be null");
         this.prefix = prefix;
     }

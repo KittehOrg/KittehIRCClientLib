@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Classes describing actors on an IRC network.
+ * Classes describing various elements of IRC communication.
  */
 package org.kitteh.irc.client.library.element;

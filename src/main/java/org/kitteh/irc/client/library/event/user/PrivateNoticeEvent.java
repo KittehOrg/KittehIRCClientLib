@@ -24,10 +24,12 @@
 package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Fires when a notice is sent to the client.
@@ -40,7 +42,7 @@ public class PrivateNoticeEvent extends ActorMessageEventBase<User> {
      * @param message message sent
      * @param sender who sent it
      */
-    public PrivateNoticeEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull String message) {
-        super(client, sender, message);
+    public PrivateNoticeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String message) {
+        super(client, originalMessages, sender, message);
     }
 }

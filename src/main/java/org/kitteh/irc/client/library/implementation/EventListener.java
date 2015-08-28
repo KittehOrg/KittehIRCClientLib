@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
@@ -63,6 +64,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.client.RequestedChannelJoinCompleteEvent;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
+import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
@@ -79,6 +81,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -119,7 +122,7 @@ class EventListener {
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Server address and version missing.");
         }
-        this.client.getEventManager().callEvent(new ClientConnectedEvent(this.client, event.getServer(), this.client.getServerInfo()));
+        this.client.getEventManager().callEvent(new ClientConnectedEvent(this.client, event.getActor(), this.client.getServerInfo()));
         this.client.startSending();
     }
 
@@ -130,6 +133,8 @@ class EventListener {
             ISupport.handle(event.getArgs()[i], this.client);
         }
     }
+
+    private final List<ServerMessage> whoMessages = new LinkedList<>();
 
     @NumericFilter(352) // WHO
     @NumericFilter(354) // WHOX
@@ -174,6 +179,7 @@ class EventListener {
                 }
             }
             channel.trackUser(user, modes);
+            this.whoMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
         } // No else, server might send other WHO information about non-channels.
     }
 
@@ -186,7 +192,9 @@ class EventListener {
         ActorProvider.IRCChannel whoChannel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
         if (whoChannel != null) {
             whoChannel.setListReceived();
-            this.client.getEventManager().callEvent(new ChannelUsersUpdatedEvent(this.client, whoChannel.snapshot()));
+            this.whoMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+            this.client.getEventManager().callEvent(new ChannelUsersUpdatedEvent(this.client, this.whoMessages, whoChannel.snapshot()));
+            this.whoMessages.clear();
         } // No else, server might send other WHO information about non-channels.
     }
 
@@ -228,11 +236,13 @@ class EventListener {
         ActorProvider.IRCChannel topicSetChannel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
         if (topicSetChannel != null) {
             topicSetChannel.setTopic(Long.parseLong(event.getArgs()[3]) * 1000, this.client.getActorProvider().getActor(event.getArgs()[2]).snapshot());
-            this.client.getEventManager().callEvent(new ChannelTopicEvent(this.client, topicSetChannel.snapshot(), false));
+            this.client.getEventManager().callEvent(new ChannelTopicEvent(this.client, listFromEvent(event), topicSetChannel.snapshot(), false));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "Topic message sent for invalid channel name");
         }
     }
+
+    private final List<ServerMessage> namesMessages = new LinkedList<>();
 
     @NumericFilter(353) // NAMES
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
@@ -256,6 +266,7 @@ class EventListener {
                     }
                 }
             }
+            this.namesMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NAMES response sent for invalid channel name");
         }
@@ -269,18 +280,22 @@ class EventListener {
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
         if (channel != null) {
-            this.client.getEventManager().callEvent(new ChannelNamesUpdatedEvent(this.client, channel.snapshot()));
+            this.namesMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+            this.client.getEventManager().callEvent(new ChannelNamesUpdatedEvent(this.client, this.namesMessages, channel.snapshot()));
+            this.namesMessages.clear();
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NAMES response sent for invalid channel name");
         }
     }
 
     private final List<String> motd = new LinkedList<>();
+    private final List<ServerMessage> motdMessages = new LinkedList<>();
 
     @NumericFilter(375)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void motdStart(ClientReceiveNumericEvent event) {
         this.motd.clear();
+        this.motdMessages.clear();
     }
 
     @NumericFilter(372)
@@ -290,13 +305,15 @@ class EventListener {
             throw new KittehServerMessageException(event.getOriginalMessage(), "MOTD message of incorrect length");
         }
         this.motd.add(event.getArgs()[1]);
+        this.motdMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
     }
 
     @NumericFilter(376)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void motdEnd(ClientReceiveNumericEvent event) {
+        this.motdMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
         this.client.getServerInfo().setMOTD(new ArrayList<>(this.motd));
-        this.client.getEventManager().callEvent(new ClientReceiveMOTDEvent(this.client));
+        this.client.getEventManager().callEvent(new ClientReceiveMOTDEvent(this.client, this.motdMessages));
     }
 
     @NumericFilter(431) // No nick given
@@ -304,7 +321,7 @@ class EventListener {
     @NumericFilter(433) // Nick in use
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void nickInUse(ClientReceiveNumericEvent event) {
-        NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.client, this.client.getRequestedNick(), this.client.getRequestedNick() + '`');
+        NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.client, listFromEvent(event), this.client.getRequestedNick(), this.client.getRequestedNick() + '`');
         this.client.getEventManager().callEvent(nickRejectedEvent);
         this.client.sendNickChange(nickRejectedEvent.getNewNick());
     }
@@ -318,7 +335,7 @@ class EventListener {
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
         if (channel != null) {
             ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getArgs()[2]);
-            this.client.getEventManager().callEvent(new ChannelKnockEvent(this.client, channel.snapshot(), user.snapshot()));
+            this.client.getEventManager().callEvent(new ChannelKnockEvent(this.client, listFromEvent(event), channel.snapshot(), user.snapshot()));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "KNOCK message sent for invalid channel name");
         }
@@ -338,7 +355,7 @@ class EventListener {
             switch (event.getCommand()) {
                 case "NOTICE":
                     if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                        this.client.getEventManager().callEvent(new PrivateCTCPReplyEvent(this.client, user, ctcpMessage));
+                        this.client.getEventManager().callEvent(new PrivateCTCPReplyEvent(this.client, listFromEvent(event), user, ctcpMessage));
                     }
                     break;
                 case "PRIVMSG":
@@ -358,17 +375,17 @@ class EventListener {
                         if (ctcpMessage.startsWith("PING ")) {
                             reply = ctcpMessage;
                         }
-                        PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, user, ctcpMessage, Optional.ofNullable(reply));
+                        PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, listFromEvent(event), user, ctcpMessage, Optional.ofNullable(reply));
                         this.client.getEventManager().callEvent(ctcpEvent);
                         if (ctcpEvent.getReply().isPresent()) {
                             this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(ctcpEvent.getReply().get()));
                         }
                     } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
                         MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
-                        this.client.getEventManager().callEvent(new ChannelCTCPEvent(this.client, user, channelInfo.getChannel().snapshot(), ctcpMessage));
+                        this.client.getEventManager().callEvent(new ChannelCTCPEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), ctcpMessage));
                     } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
                         MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-                        this.client.getEventManager().callEvent(new ChannelTargetedCTCPEvent(this.client, user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), ctcpMessage));
+                        this.client.getEventManager().callEvent(new ChannelTargetedCTCPEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), ctcpMessage));
                     }
                     break;
             }
@@ -376,7 +393,9 @@ class EventListener {
     }
 
     private List<CapabilityState> capList = new LinkedList<>();
+    private List<ServerMessage> capListMessages = new LinkedList<>();
     private List<CapabilityState> capLs = new LinkedList<>();
+    private List<ServerMessage> capLsMessages = new LinkedList<>();
     private static final int CAPABILITY_LIST_INDEX_DEFAULT = 2;
 
     @CommandFilter("CAP")
@@ -399,10 +418,11 @@ class EventListener {
         switch (event.getArgs()[1].toLowerCase()) {
             case "ack":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesAcknowledgedEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesAcknowledgedEvent(this.client, listFromEvent(event), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.client.getEventManager().callEvent(responseEvent);
                 break;
             case "list":
+                this.capListMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
                 if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
                     this.capList.addAll(capabilityStateList);
                 } else {
@@ -414,11 +434,12 @@ class EventListener {
                         states.addAll(capabilityStateList);
                     }
                     this.client.getCapabilityManager().setCapabilities(states);
-                    this.client.getEventManager().callEvent(new CapabilitiesListEvent(this.client, states));
+                    this.client.getEventManager().callEvent(new CapabilitiesListEvent(this.client, this.capListMessages, states));
                     states.clear();
                 }
                 break;
             case "ls":
+                this.capLsMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
                 if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
                     this.capList.addAll(capabilityStateList);
                 } else {
@@ -430,7 +451,7 @@ class EventListener {
                         states.addAll(capabilityStateList);
                     }
                     this.client.getCapabilityManager().setSupportedCapabilities(states);
-                    responseEvent = new CapabilitiesSupportedListEvent(this.client, this.client.getCapabilityManager().isNegotiating(), states);
+                    responseEvent = new CapabilitiesSupportedListEvent(this.client, this.capLsMessages, this.client.getCapabilityManager().isNegotiating(), states);
                     this.capReq(responseEvent);
                     this.client.getEventManager().callEvent(responseEvent);
                     states.clear();
@@ -438,14 +459,14 @@ class EventListener {
                 break;
             case "nak":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesRejectedEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesRejectedEvent(this.client, listFromEvent(event), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.client.getEventManager().callEvent(responseEvent);
                 break;
             case "new":
                 List<CapabilityState> statesAdded = new LinkedList<>(this.client.getCapabilityManager().getSupportedCapabilities());
                 statesAdded.addAll(capabilityStateList);
                 this.client.getCapabilityManager().setSupportedCapabilities(statesAdded);
-                responseEvent = new CapabilitiesNewSupportedEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesNewSupportedEvent(this.client, listFromEvent(event), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.capReq(responseEvent);
                 this.client.getEventManager().callEvent(responseEvent);
                 break;
@@ -453,7 +474,7 @@ class EventListener {
                 List<CapabilityState> statesRemaining = new LinkedList<>(this.client.getCapabilityManager().getSupportedCapabilities());
                 statesRemaining.removeAll(capabilityStateList);
                 this.client.getCapabilityManager().setSupportedCapabilities(statesRemaining);
-                responseEvent = new CapabilitiesDeletedSupportedEvent(this.client, this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesDeletedSupportedEvent(this.client, listFromEvent(event), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.client.getEventManager().callEvent(responseEvent);
                 break;
         }
@@ -507,13 +528,13 @@ class EventListener {
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs()[0]);
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.client.getEventManager().callEvent(new PrivateNoticeEvent(this.client, user, event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new PrivateNoticeEvent(this.client, listFromEvent(event), user, event.getArgs()[1]));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
-            this.client.getEventManager().callEvent(new ChannelNoticeEvent(this.client, user, channelInfo.getChannel().snapshot(), event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new ChannelNoticeEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), event.getArgs()[1]));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.client.getEventManager().callEvent(new ChannelTargetedNoticeEvent(this.client, user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new ChannelTargetedNoticeEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getArgs()[1]));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NOTICE message to improper target");
         }
@@ -534,13 +555,13 @@ class EventListener {
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getArgs()[0]);
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.client.getEventManager().callEvent(new PrivateMessageEvent(this.client, user, event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new PrivateMessageEvent(this.client, listFromEvent(event), user, event.getArgs()[1]));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
-            this.client.getEventManager().callEvent(new ChannelMessageEvent(this.client, user, channelInfo.getChannel().snapshot(), event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new ChannelMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), event.getArgs()[1]));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.client.getEventManager().callEvent(new ChannelTargetedMessageEvent(this.client, user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getArgs()[1]));
+            this.client.getEventManager().callEvent(new ChannelTargetedMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getArgs()[1]));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PRIVMSG message to improper target");
         }
@@ -563,7 +584,7 @@ class EventListener {
             } catch (IllegalArgumentException e) {
                 throw new KittehServerMessageException(event.getOriginalMessage(), e.getMessage());
             }
-            this.client.getEventManager().callEvent(new ChannelModeEvent(this.client, event.getActor(), channel.snapshot(), statusList));
+            this.client.getEventManager().callEvent(new ChannelModeEvent(this.client, listFromEvent(event), event.getActor(), channel.snapshot(), statusList));
             statusList.getStatuses().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter().isPresent())).forEach(status -> {
                 if (status.isSetting()) {
                     channel.trackUserModeAdd(status.getParameter().get(), (ChannelUserMode) status.getMode());
@@ -594,7 +615,7 @@ class EventListener {
                     this.client.sendRawLine("MODE " + channel.getName());
                     this.client.sendRawLine("WHO " + channel.getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
                     if (this.client.getIntendedChannels().contains(channel.getName())) {
-                        joinEvent = new RequestedChannelJoinCompleteEvent(this.client, channel.snapshot(), user.snapshot());
+                        joinEvent = new RequestedChannelJoinCompleteEvent(this.client, listFromEvent(event), channel.snapshot(), user.snapshot());
                     }
                 }
                 if (event.getArgs().length > 2) {
@@ -604,7 +625,7 @@ class EventListener {
                     user.setRealName(event.getArgs()[2]);
                 }
                 if (joinEvent == null) {
-                    joinEvent = new ChannelJoinEvent(this.client, channel.snapshot(), user.snapshot());
+                    joinEvent = new ChannelJoinEvent(this.client, listFromEvent(event), channel.snapshot(), user.snapshot());
                 }
                 this.client.getEventManager().callEvent(joinEvent);
             } else {
@@ -629,9 +650,9 @@ class EventListener {
                 String partReason = (event.getArgs().length > 1) ? event.getArgs()[1] : "";
                 ChannelPartEvent partEvent;
                 if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
-                    partEvent = new RequestedChannelLeaveViaPartEvent(this.client, channel.snapshot(), user, partReason);
+                    partEvent = new RequestedChannelLeaveViaPartEvent(this.client, listFromEvent(event), channel.snapshot(), user, partReason);
                 } else {
-                    partEvent = new ChannelPartEvent(this.client, channel.snapshot(), user, partReason);
+                    partEvent = new ChannelPartEvent(this.client, listFromEvent(event), channel.snapshot(), user, partReason);
                 }
                 this.client.getEventManager().callEvent(partEvent);
                 channel.trackUserPart(user.getNick());
@@ -650,7 +671,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void quit(ClientReceiveCommandEvent event) {
         if (event.getActor() instanceof User) {
-            this.client.getEventManager().callEvent(new UserQuitEvent(this.client, (User) event.getActor(), (event.getArgs().length > 0) ? event.getArgs()[0] : ""));
+            this.client.getEventManager().callEvent(new UserQuitEvent(this.client, listFromEvent(event), (User) event.getActor(), (event.getArgs().length > 0) ? event.getArgs()[0] : ""));
             this.client.getActorProvider().trackUserQuit(((User) event.getActor()).getNick());
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "QUIT message sent for non-user");
@@ -671,9 +692,9 @@ class EventListener {
                 ChannelKickEvent kickEvent;
                 String kickReason = (event.getArgs().length > 2) ? event.getArgs()[2] : "";
                 if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
-                    kickEvent = new RequestedChannelLeaveViaKickEvent(this.client, channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
+                    kickEvent = new RequestedChannelLeaveViaKickEvent(this.client, listFromEvent(event), channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
                 } else {
-                    kickEvent = new ChannelKickEvent(this.client, channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
+                    kickEvent = new ChannelKickEvent(this.client, listFromEvent(event), channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
                 }
                 this.client.getEventManager().callEvent(kickEvent);
                 channel.trackUserPart(event.getArgs()[1]);
@@ -707,7 +728,7 @@ class EventListener {
             User oldUser = user.snapshot();
             this.client.getActorProvider().trackUserNickChange(user.getNick(), event.getArgs()[0]);
             User newUser = user.snapshot();
-            this.client.getEventManager().callEvent(new UserNickChangeEvent(this.client, oldUser, newUser));
+            this.client.getEventManager().callEvent(new UserNickChangeEvent(this.client, listFromEvent(event), oldUser, newUser));
             if (isSelf) {
                 this.client.setCurrentNick(event.getArgs()[0]);
             }
@@ -727,7 +748,7 @@ class EventListener {
             if (this.client.getNick().equalsIgnoreCase(event.getArgs()[0]) && this.client.getIntendedChannels().contains(channel.getName())) {
                 this.client.sendRawLine("JOIN " + channel.getName());
             }
-            this.client.getEventManager().callEvent(new ChannelInviteEvent(this.client, channel.snapshot(), event.getActor(), event.getArgs()[0]));
+            this.client.getEventManager().callEvent(new ChannelInviteEvent(this.client, listFromEvent(event), channel.snapshot(), event.getActor(), event.getArgs()[0]));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "INVITE message sent for invalid channel name");
         }
@@ -743,7 +764,7 @@ class EventListener {
         if (channel != null) {
             channel.setTopic(event.getArgs()[1]);
             channel.setTopic(System.currentTimeMillis(), event.getActor());
-            this.client.getEventManager().callEvent(new ChannelTopicEvent(this.client, channel.snapshot(), true));
+            this.client.getEventManager().callEvent(new ChannelTopicEvent(this.client, listFromEvent(event), channel.snapshot(), true));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "TOPIC message sent for invalid channel name");
         }
@@ -832,5 +853,10 @@ class EventListener {
             }
         }
         return MessageTargetInfo.UNKNOWN;
+    }
+
+    @Nonnull
+    private static List<ServerMessage> listFromEvent(ClientReceiveServerMessageEvent event) {
+        return Collections.singletonList(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
     }
 }

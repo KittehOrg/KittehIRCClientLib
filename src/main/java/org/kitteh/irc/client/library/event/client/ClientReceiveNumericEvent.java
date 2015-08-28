@@ -26,11 +26,10 @@ package org.kitteh.irc.client.library.event.client;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.MessageTag;
-import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
 import org.kitteh.irc.client.library.util.NumericFilter;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,12 +40,8 @@ import java.util.List;
  *
  * @see NumericFilter
  */
-public class ClientReceiveNumericEvent extends ClientEventBase {
-    private final String[] args;
-    private final List<MessageTag> messageTags;
+public class ClientReceiveNumericEvent extends ClientReceiveServerMessageEventBase {
     private final int numeric;
-    private final String originalMessage;
-    private final Actor server;
 
     /**
      * Constructs the event.
@@ -58,33 +53,9 @@ public class ClientReceiveNumericEvent extends ClientEventBase {
      * @param numeric numeric
      * @param args args
      */
-    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull List<MessageTag> messageTags, @Nonnull String originalMessage, @Nonnull Actor server, int numeric, @Nonnull String[] args) {
-        super(client);
-        this.args = args;
-        this.messageTags = messageTags;
+    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull List<MessageTag> messageTags, @Nonnull String originalMessage, @Nonnull Actor server, String command, int numeric, @Nonnull String[] args) {
+        super(client, messageTags, originalMessage, server, command, args);
         this.numeric = numeric;
-        this.originalMessage = originalMessage;
-        this.server = server;
-    }
-
-    /**
-     * Gets the subsequent arguments after the numeric.
-     *
-     * @return arguments
-     */
-    @Nonnull
-    public String[] getArgs() {
-        return Arrays.copyOf(this.args, this.args.length);
-    }
-
-    /**
-     * Gets the message tags.
-     *
-     * @return message tags
-     */
-    @Nonnull
-    public List<MessageTag> getMessageTags() {
-        return this.messageTags;
     }
 
     /**
@@ -94,25 +65,5 @@ public class ClientReceiveNumericEvent extends ClientEventBase {
      */
     public int getNumeric() {
         return this.numeric;
-    }
-
-    /**
-     * Gets the original message received by the server.
-     *
-     * @return unprocessed, original message
-     */
-    @Nonnull
-    public String getOriginalMessage() {
-        return this.originalMessage;
-    }
-
-    /**
-     * Gets the server sending this message.
-     *
-     * @return server
-     */
-    @Nonnull
-    public Actor getServer() {
-        return this.server;
     }
 }

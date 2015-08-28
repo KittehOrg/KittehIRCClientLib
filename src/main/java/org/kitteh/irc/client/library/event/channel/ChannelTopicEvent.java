@@ -25,9 +25,11 @@ package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * The server has informed us of a channel's topic.
@@ -45,8 +47,8 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * @param updated if this is a new change
      * @see Channel#getTopic()
      */
-    public ChannelTopicEvent(@Nonnull Client client, @Nonnull Channel channel, boolean updated) {
-        super(client, channel);
+    public ChannelTopicEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, boolean updated) {
+        super(client, originalMessages, channel);
         this.updated = updated;
     }
 

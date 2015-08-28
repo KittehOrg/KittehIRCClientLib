@@ -23,19 +23,44 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.MessageTag;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
- * An event involving an {@link Actor}.
+ * An event for a raw server message from the server.
  */
-public interface ActorEvent<A extends Actor> extends ServerMessageEvent {
+public interface ClientReceiveServerMessageEvent {
     /**
-     * Gets the actor responsible for this event.
+     * Gets the subsequent parameters after the command.
      *
-     * @return the actor
+     * @return arguments
      */
     @Nonnull
-    A getActor();
+    public String[] getArgs();
+
+    /**
+     * Gets the command sent.
+     *
+     * @return command, upper-case
+     */
+    @Nonnull
+    public String getCommand();
+
+    /**
+     * Gets the message tags.
+     *
+     * @return message tags
+     */
+    @Nonnull
+    public List<MessageTag> getMessageTags();
+
+    /**
+     * Gets the original message received by the server.
+     *
+     * @return unprocessed, original message
+     */
+    @Nonnull
+    public String getOriginalMessage();
 }

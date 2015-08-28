@@ -27,9 +27,11 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Channel a la mode.
@@ -45,8 +47,8 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * @param channel the channel in which the change is occurring
      * @param statusList list of statuses
      */
-    public ChannelModeEvent(@Nonnull Client client, @Nonnull Actor actor, @Nonnull Channel channel, @Nonnull ChannelModeStatusList statusList) {
-        super(client, actor, channel);
+    public ChannelModeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Actor actor, @Nonnull Channel channel, @Nonnull ChannelModeStatusList statusList) {
+        super(client, originalMessages, actor, channel);
         this.statusList = statusList;
     }
 

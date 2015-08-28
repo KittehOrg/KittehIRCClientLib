@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -51,8 +52,8 @@ public class CapabilitiesDeletedSupportedEvent extends CapabilityNegotiationResp
      * @param negotiating if we are negotiating right now
      * @param deletedCapabilities no longer supported capabilities
      */
-    public CapabilitiesDeletedSupportedEvent(@Nonnull Client client, boolean negotiating, @Nonnull List<CapabilityState> deletedCapabilities) {
-        super(client, negotiating);
+    public CapabilitiesDeletedSupportedEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating, @Nonnull List<CapabilityState> deletedCapabilities) {
+        super(client, originalMessages, negotiating);
         Sanity.nullCheck(deletedCapabilities, "Capabilities list cannot be null");
         this.deletedCapabilities = Collections.unmodifiableList(new ArrayList<>(deletedCapabilities));
     }

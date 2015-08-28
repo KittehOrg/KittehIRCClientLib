@@ -25,10 +25,12 @@ package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * The client has received a CTCP message! The method {@link #getMessage()}
@@ -45,7 +47,7 @@ public class ChannelCTCPEvent extends ActorChannelMessageEventBase<User> {
      * @param channel channel in which it was sent
      * @param message message sent
      */
-    public ChannelCTCPEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull Channel channel, @Nonnull String message) {
-        super(client, sender, channel, message);
+    public ChannelCTCPEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull String message) {
+        super(client, originalMessages, sender, channel, message);
     }
 }

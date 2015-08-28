@@ -25,10 +25,12 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * I have successfully joined the channel I wanted! Will fire each time the
@@ -44,7 +46,7 @@ public class RequestedChannelJoinCompleteEvent extends ChannelJoinEvent {
      * @param channel the channel joined
      * @param user the client
      */
-    public RequestedChannelJoinCompleteEvent(@Nonnull Client client, @Nonnull Channel channel, @Nonnull User user) {
-        super(client, channel, user);
+    public RequestedChannelJoinCompleteEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull User user) {
+        super(client, originalMessages, channel, user);
     }
 }

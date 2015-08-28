@@ -25,7 +25,8 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ServerInfo;
-import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -34,14 +35,14 @@ import java.util.Optional;
 /**
  * Indicates the Client has received a complete MOTD from the server.
  */
-public class ClientReceiveMOTDEvent extends ClientEventBase {
+public class ClientReceiveMOTDEvent extends ServerMessageEventBase {
     /**
      * Constructs the event.
      *
      * @param client the client
      */
-    public ClientReceiveMOTDEvent(@Nonnull Client client) {
-        super(client);
+    public ClientReceiveMOTDEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
+        super(client, originalMessages);
     }
 
     /**

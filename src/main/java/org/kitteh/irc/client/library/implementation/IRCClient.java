@@ -520,7 +520,7 @@ final class IRCClient extends InternalClient {
 
         try {
             int numeric = Integer.parseInt(commandString);
-            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, tags, line, actor.snapshot(), numeric, args));
+            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, tags, line, actor.snapshot(), commandString, numeric, args));
         } catch (NumberFormatException exception) {
             this.eventManager.callEvent(new ClientReceiveCommandEvent(this, tags, line, actor.snapshot(), commandString, args));
         }

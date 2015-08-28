@@ -24,10 +24,12 @@
 package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Abstract base class for events involving capability negotiation (CAP) that
@@ -36,7 +38,7 @@ import javax.annotation.Nonnull;
  * @see CapabilityNegotiationResponseEvent
  * @see CapabilitiesListEvent
  */
-public abstract class CapabilityNegotiationResponseEventBase extends ClientEventBase implements CapabilityNegotiationResponseEvent {
+public abstract class CapabilityNegotiationResponseEventBase extends ServerMessageEventBase implements CapabilityNegotiationResponseEvent {
     private boolean endNegotiation = true;
     private final boolean negotiating;
 
@@ -46,8 +48,8 @@ public abstract class CapabilityNegotiationResponseEventBase extends ClientEvent
      * @param client the client
      * @param negotiating if we are negotiating right now
      */
-    protected CapabilityNegotiationResponseEventBase(@Nonnull Client client, boolean negotiating) {
-        super(client);
+    protected CapabilityNegotiationResponseEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating) {
+        super(client, originalMessages);
         this.negotiating = negotiating;
     }
 

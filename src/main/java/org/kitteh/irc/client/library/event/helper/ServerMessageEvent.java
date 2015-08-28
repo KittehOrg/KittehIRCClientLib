@@ -23,19 +23,18 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.ServerMessage;
 
-import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
- * An event involving an {@link Actor}.
+ * Represents an event triggered by the server.
  */
-public interface ActorEvent<A extends Actor> extends ServerMessageEvent {
+public interface ServerMessageEvent extends ClientEvent {
     /**
-     * Gets the actor responsible for this event.
+     * Gets the original messages that caused this event.
      *
-     * @return the actor
+     * @return at least one message that lead to this event
      */
-    @Nonnull
-    A getActor();
+    List<ServerMessage> getOriginalMessages();
 }

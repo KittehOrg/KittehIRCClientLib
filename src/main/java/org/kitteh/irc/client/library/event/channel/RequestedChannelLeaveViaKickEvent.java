@@ -25,10 +25,12 @@ package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.client.RequestedChannelLeaveEvent;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * I have left a channel I want to be in, via kick!
@@ -43,7 +45,7 @@ public class RequestedChannelLeaveViaKickEvent extends ChannelKickEvent implemen
      * @param target targeted user
      * @param message message the user left
      */
-    public RequestedChannelLeaveViaKickEvent(@Nonnull Client client, @Nonnull Channel channel, @Nonnull User user, @Nonnull User target, @Nonnull String message) {
-        super(client, channel, user, target, message);
+    public RequestedChannelLeaveViaKickEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull User user, @Nonnull User target, @Nonnull String message) {
+        super(client, originalMessages, channel, user, target, message);
     }
 }

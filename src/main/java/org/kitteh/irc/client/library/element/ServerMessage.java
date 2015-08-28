@@ -21,46 +21,47 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.channel;
+package org.kitteh.irc.client.library.element;
 
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link User} has invited somebody to a {@link Channel}!
+ * Represents a message sent by the server.
  */
-public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
-    private final String target;
+public final class ServerMessage {
+    private final String message;
+    private final List<MessageTag> tags;
 
-    /**
-     * Creates the event.
-     *
-     * @param client client for which this is occurring
-     * @param channel the channel
-     * @param actor the actor inviting another
-     * @param target the nick invited
-     */
-    public ChannelInviteEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull Actor actor, @Nonnull String target) {
-        super(client, originalMessages, actor, channel);
-        Sanity.nullCheck(target, "Target cannot be null");
-        this.target = target;
+    public ServerMessage(@Nonnull String message, @Nonnull List<MessageTag> tags) {
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.nullCheck(tags, "Tags cannot be null");
+        this.message = message;
+        this.tags = Collections.unmodifiableList(new ArrayList<>(tags));
     }
 
     /**
-     * Gets the invited nick.
+     * Gets the full content of the line sent by the server, minus linebreak
+     * characters \r and \n.
      *
-     * @return the nickname of the invited user
+     * @return full message content
      */
     @Nonnull
-    public String getTarget() {
-        return this.target;
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
+     * Gets the processed message tags, if any, contained in the message.
+     *
+     * @return message tags or empty if none sent.
+     */
+    @Nonnull
+    public List<MessageTag> getTags() {
+        return this.tags;
     }
 }

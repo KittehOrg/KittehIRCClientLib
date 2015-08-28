@@ -24,15 +24,17 @@
 package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * The server has rejected your nick choice.
  */
-public class NickRejectedEvent extends ClientEventBase {
+public class NickRejectedEvent extends ServerMessageEventBase {
     private final String attemptedNick;
     private String newNick;
 
@@ -43,8 +45,8 @@ public class NickRejectedEvent extends ClientEventBase {
      * @param attemptedNick the nick that failed
      * @param newNick the new nick to attempt
      */
-    public NickRejectedEvent(@Nonnull Client client, @Nonnull String attemptedNick, @Nonnull String newNick) {
-        super(client);
+    public NickRejectedEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull String attemptedNick, @Nonnull String newNick) {
+        super(client, originalMessages);
         Sanity.nullCheck(attemptedNick, "Attempted nick cannot be null");
         Sanity.nullCheck(newNick, "New nick cannot be null");
         this.attemptedNick = attemptedNick;

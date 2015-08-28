@@ -24,11 +24,13 @@
 package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -50,8 +52,8 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull String message, @Nonnull Optional<String> reply) {
-        super(client, sender, message);
+    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String message, @Nonnull Optional<String> reply) {
+        super(client, originalMessages, sender, message);
         this.reply = reply;
     }
 

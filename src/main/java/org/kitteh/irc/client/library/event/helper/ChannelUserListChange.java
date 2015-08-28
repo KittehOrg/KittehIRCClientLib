@@ -32,7 +32,7 @@ import java.util.Optional;
 /**
  * A {@link Channel} is gaining or losing a {@link User}
  */
-public interface ChannelUserListChange extends ClientEvent {
+public interface ChannelUserListChange extends ServerMessageEvent {
     /**
      * Describes the change occurring.
      */

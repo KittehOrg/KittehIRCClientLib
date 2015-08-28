@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.CapabilityManager;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -50,8 +51,8 @@ public class CapabilitiesAcknowledgedEvent extends CapabilityNegotiationResponse
      * @param negotiating if we are negotiating right now
      * @param acknowledgedCapabilities capabilities acknowledged
      */
-    public CapabilitiesAcknowledgedEvent(@Nonnull Client client, boolean negotiating, @Nonnull List<CapabilityState> acknowledgedCapabilities) {
-        super(client, negotiating);
+    public CapabilitiesAcknowledgedEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating, @Nonnull List<CapabilityState> acknowledgedCapabilities) {
+        super(client, originalMessages, negotiating);
         Sanity.nullCheck(acknowledgedCapabilities, "Capabilities list cannot be null");
         this.acknowledgedCapabilities = Collections.unmodifiableList(acknowledgedCapabilities);
     }

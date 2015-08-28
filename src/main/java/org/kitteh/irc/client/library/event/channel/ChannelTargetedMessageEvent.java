@@ -26,10 +26,12 @@ package org.kitteh.irc.client.library.event.channel;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.TargetedUserChannelMessageEventBase;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Fires when a message is sent to a subset of users in a channel. Note that
@@ -46,7 +48,7 @@ public class ChannelTargetedMessageEvent extends TargetedUserChannelMessageEvent
      * @param prefix targeted prefix
      * @param message message sent
      */
-    public ChannelTargetedMessageEvent(@Nonnull Client client, @Nonnull User sender, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
-        super(client, sender, channel, prefix, message);
+    public ChannelTargetedMessageEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
+        super(client, originalMessages, sender, channel, prefix, message);
     }
 }

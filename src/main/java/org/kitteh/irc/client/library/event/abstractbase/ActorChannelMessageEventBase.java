@@ -26,12 +26,14 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Abstract base class for events involving an Actor and Channel and have a
@@ -54,8 +56,8 @@ public abstract class ActorChannelMessageEventBase<A extends Actor> extends Acto
      * @param channel the channel
      * @param message the message
      */
-    protected ActorChannelMessageEventBase(@Nonnull Client client, @Nonnull A actor, @Nonnull Channel channel, @Nonnull String message) {
-        super(client, actor, channel);
+    protected ActorChannelMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull Channel channel, @Nonnull String message) {
+        super(client, originalMessages, actor, channel);
         Sanity.nullCheck(message, "Message cannot be null");
         this.message = message;
     }
