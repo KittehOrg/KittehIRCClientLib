@@ -465,7 +465,7 @@ class EventListener {
         }
     }
 
-    static final List<String> CAPABILITIES_TO_REQUEST = Collections.unmodifiableList(Arrays.asList("account-notify", "away-notify", "echo-message", "extended-join", "invite-notify", "multi-prefix", "server-time", "userhost-in-names"));
+    static final List<String> CAPABILITIES_TO_REQUEST = Collections.unmodifiableList(Arrays.asList("account-notify", "account-tag", "away-notify", "echo-message", "extended-join", "invite-notify", "multi-prefix", "server-time", "userhost-in-names"));
 
     private void capReq(@Nullable CapabilityNegotiationResponseEvent responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
