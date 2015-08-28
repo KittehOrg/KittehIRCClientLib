@@ -42,6 +42,7 @@ public class ChannelPartEvent extends ActorChannelMessageEventBase<User> impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param channel channel being left
      * @param user user leaving
      * @param message message the user left

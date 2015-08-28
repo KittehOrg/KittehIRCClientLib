@@ -46,6 +46,7 @@ public abstract class ActorEventBase<A extends Actor> extends ServerMessageEvent
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param actor the actor
      */
     protected ActorEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor) {

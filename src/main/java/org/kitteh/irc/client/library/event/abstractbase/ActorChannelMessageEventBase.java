@@ -52,6 +52,7 @@ public abstract class ActorChannelMessageEventBase<A extends Actor> extends Acto
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param actor the actor
      * @param channel the channel
      * @param message the message

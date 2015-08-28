@@ -305,6 +305,7 @@ class ActorProvider {
             return this.setter;
         }
 
+        @Nonnull
         @Override
         public Optional<Instant> getTime() {
             return this.time;

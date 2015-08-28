@@ -40,6 +40,7 @@ public class PrivateCTCPReplyEvent extends ActorMessageEventBase<User> {
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param sender sender of the reply
      * @param message message sent
      */

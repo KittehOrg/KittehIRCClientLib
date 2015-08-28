@@ -39,6 +39,7 @@ public class ChannelUsersUpdatedEvent extends ChannelEventBase {
      * Constructs the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param channel channel with the updated users list
      */
     public ChannelUsersUpdatedEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel) {

@@ -48,18 +48,17 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * Constructs the event.
      *
      * @param client client
-     * @param messageTags message tags
-     * @param originalMessage original message
+     * @param serverMessage server message
      * @param server server
      * @param command command
      * @param args args
      */
-    public ClientReceiveServerMessageEventBase(@Nonnull Client client, @Nonnull List<MessageTag> messageTags, @Nonnull String originalMessage, @Nonnull Actor server, @Nonnull String command, @Nonnull String[] args) {
-        super(client, Collections.singletonList(new ServerMessage(originalMessage, messageTags)), server);
+    public ClientReceiveServerMessageEventBase(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, @Nonnull String command, @Nonnull String[] args) {
+        super(client, Collections.singletonList(serverMessage), server);
         this.args = args;
-        this.messageTags = messageTags;
+        this.messageTags = serverMessage.getTags();
         this.command = command;
-        this.originalMessage = originalMessage;
+        this.originalMessage = serverMessage.getMessage();
     }
 
     /**
@@ -68,6 +67,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * @return arguments
      */
     @Nonnull
+    @Override
     public String[] getArgs() {
         return Arrays.copyOf(this.args, this.args.length);
     }
@@ -84,6 +84,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * @return message tags
      */
     @Nonnull
+    @Override
     public List<MessageTag> getMessageTags() {
         return this.messageTags;
     }
@@ -94,6 +95,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * @return unprocessed, original message
      */
     @Nonnull
+    @Override
     public String getOriginalMessage() {
         return this.originalMessage;
     }

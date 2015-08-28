@@ -55,6 +55,7 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return the time of setting if known
          */
+        @Nonnull
         Optional<Instant> getTime();
 
         /**

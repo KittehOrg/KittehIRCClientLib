@@ -49,6 +49,7 @@ public class CapabilitiesListEvent extends ServerMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param capabilities capabilities listed
      */
     public CapabilitiesListEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull List<CapabilityState> capabilities) {

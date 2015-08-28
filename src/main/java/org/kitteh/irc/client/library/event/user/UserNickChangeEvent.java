@@ -45,6 +45,7 @@ public class UserNickChangeEvent extends ActorEventBase<User> implements Channel
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param user user changing name
      * @param newUser the new nickname
      */

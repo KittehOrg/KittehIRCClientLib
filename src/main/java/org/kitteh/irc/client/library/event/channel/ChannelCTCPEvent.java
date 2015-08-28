@@ -43,6 +43,7 @@ public class ChannelCTCPEvent extends ActorChannelMessageEventBase<User> {
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param sender sender of the message
      * @param channel channel in which it was sent
      * @param message message sent

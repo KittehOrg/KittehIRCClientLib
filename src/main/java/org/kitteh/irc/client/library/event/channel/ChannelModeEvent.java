@@ -43,6 +43,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param actor the mode setter
      * @param channel the channel in which the change is occurring
      * @param statusList list of statuses

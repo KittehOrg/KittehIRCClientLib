@@ -49,6 +49,7 @@ public abstract class ActorChannelEventBase<A extends Actor> extends ActorEventB
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param actor the actor
      * @param channel the channel
      */

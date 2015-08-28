@@ -23,27 +23,13 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import org.kitteh.irc.client.library.util.Sanity;
-
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Represents a message sent by the server.
  */
-public final class ServerMessage {
-    private final String message;
-    private final List<MessageTag> tags;
-
-    public ServerMessage(@Nonnull String message, @Nonnull List<MessageTag> tags) {
-        Sanity.nullCheck(message, "Message cannot be null");
-        Sanity.nullCheck(tags, "Tags cannot be null");
-        this.message = message;
-        this.tags = Collections.unmodifiableList(new ArrayList<>(tags));
-    }
-
+public interface ServerMessage {
     /**
      * Gets the full content of the line sent by the server, minus linebreak
      * characters \r and \n.
@@ -51,9 +37,7 @@ public final class ServerMessage {
      * @return full message content
      */
     @Nonnull
-    public String getMessage() {
-        return this.message;
-    }
+    String getMessage();
 
     /**
      * Gets the processed message tags, if any, contained in the message.
@@ -61,7 +45,5 @@ public final class ServerMessage {
      * @return message tags or empty if none sent.
      */
     @Nonnull
-    public List<MessageTag> getTags() {
-        return this.tags;
-    }
+    List<MessageTag> getTags();
 }

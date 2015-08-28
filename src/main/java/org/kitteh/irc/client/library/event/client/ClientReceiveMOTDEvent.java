@@ -40,6 +40,7 @@ public class ClientReceiveMOTDEvent extends ServerMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      */
     public ClientReceiveMOTDEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
         super(client, originalMessages);

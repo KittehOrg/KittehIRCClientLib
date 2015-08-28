@@ -55,48 +55,48 @@ public interface CapabilityManager {
          *
          * @see User#getAccount()
          */
-        public static String ACCOUNT_NOTIFY = "account-notify";
+        public static final String ACCOUNT_NOTIFY = "account-notify";
 
         /**
          * Account message tags.
          */
-        public static String ACCOUNT_TAG = "account-tag";
+        public static final String ACCOUNT_TAG = "account-tag";
 
         /**
          * Away notification.
          *
          * @see User#isAway()
          */
-        public static String AWAY_NOTIFY = "away-notify";
+        public static final String AWAY_NOTIFY = "away-notify";
 
         /**
          * Self-sent message echoing.
          */
-        public static String ECHO_MESSAGE = "echo-message";
+        public static final String ECHO_MESSAGE = "echo-message";
 
         /**
          * Account listed in join message.
          *
          * @see User#getAccount()
          */
-        public static String EXTENDED_JOIN = "extended-join";
+        public static final String EXTENDED_JOIN = "extended-join";
 
         /**
          * Invite notification.
          *
          * @see ChannelInviteEvent
          */
-        public static String INVITE_NOTIFY = "invite-notify";
+        public static final String INVITE_NOTIFY = "invite-notify";
 
         /**
          * Multiple prefixes sent in NAMES and WHO output.
          */
-        public static String MULTI_PREFIX = "multi-prefix";
+        public static final String MULTI_PREFIX = "multi-prefix";
 
         /**
          * Server time message tag.
          */
-        public static String SERVER_TIME = "server-time";
+        public static final String SERVER_TIME = "server-time";
 
         /**
          * SASL authentication, not utilized unless a SASL authentication
@@ -104,14 +104,17 @@ public interface CapabilityManager {
          *
          * @see SaslPlain
          */
-        public transient static String SASL = "sasl";
+        public static final transient String SASL = "sasl";
 
         /**
          * User hosts sent in NAMES, allowing User creation prior to WHO.
          */
-        public static String USERHOST_IN_NAMES = "userhost-in-names";
+        public static final String USERHOST_IN_NAMES = "userhost-in-names";
 
-        private static List<String> ALL;
+        private static final List<String> ALL;
+
+        private Defaults() {
+        }
 
         /**
          * Gets all capabilities natively supported by KICL.

@@ -43,6 +43,7 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param channel channel the topic is about
      * @param updated if this is a new change
      * @see Channel#getTopic()

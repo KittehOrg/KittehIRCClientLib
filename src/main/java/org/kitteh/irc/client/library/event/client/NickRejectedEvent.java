@@ -42,6 +42,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param attemptedNick the nick that failed
      * @param newNick the new nick to attempt
      */

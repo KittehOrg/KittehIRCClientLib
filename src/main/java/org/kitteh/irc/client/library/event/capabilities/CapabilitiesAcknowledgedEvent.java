@@ -48,6 +48,7 @@ public class CapabilitiesAcknowledgedEvent extends CapabilityNegotiationResponse
      * Constructs this event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param negotiating if we are negotiating right now
      * @param acknowledgedCapabilities capabilities acknowledged
      */

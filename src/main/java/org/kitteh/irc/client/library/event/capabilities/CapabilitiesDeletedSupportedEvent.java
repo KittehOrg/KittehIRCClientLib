@@ -49,6 +49,7 @@ public class CapabilitiesDeletedSupportedEvent extends CapabilityNegotiationResp
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param negotiating if we are negotiating right now
      * @param deletedCapabilities no longer supported capabilities
      */

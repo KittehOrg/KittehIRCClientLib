@@ -21,43 +21,57 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.abstractbase;
+package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Abstract base class for events involving a Channel. Use the helper events
- * if you want to listen to such events.
- *
- * @see ChannelEvent
+ * Represents a message sent by the server.
  */
-public abstract class ChannelEventBase extends ServerMessageEventBase implements ChannelEvent {
-    private final Channel channel;
+final class IRCServerMessage implements ServerMessage {
+    private final String message;
+    private final List<MessageTag> tags;
 
     /**
-     * Constructs the event.
+     * Constructs a server message.
      *
-     * @param client the client
-     * @param originalMessages original messages
-     * @param channel the channel
+     * @param message full message sent
+     * @param tags processed tags
      */
-    protected ChannelEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel) {
-        super(client, originalMessages);
-        Sanity.nullCheck(channel, "Channel cannot be null");
-        Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
-        this.channel = channel;
+    IRCServerMessage(@Nonnull String message, @Nonnull List<MessageTag> tags) {
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.nullCheck(tags, "Tags cannot be null");
+        this.message = message;
+        this.tags = Collections.unmodifiableList(new ArrayList<>(tags));
     }
 
-    @Override
+    /**
+     * Gets the full content of the line sent by the server, minus linebreak
+     * characters \r and \n.
+     *
+     * @return full message content
+     */
     @Nonnull
-    public final Channel getChannel() {
-        return this.channel;
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
+     * Gets the processed message tags, if any, contained in the message.
+     *
+     * @return message tags or empty if none sent.
+     */
+    @Nonnull
+    @Override
+    public List<MessageTag> getTags() {
+        return this.tags;
     }
 }

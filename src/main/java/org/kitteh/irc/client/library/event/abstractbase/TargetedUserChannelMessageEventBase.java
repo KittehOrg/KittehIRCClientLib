@@ -53,6 +53,7 @@ public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMe
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param user the user
      * @param channel the channel
      * @param prefix the targeted prefix

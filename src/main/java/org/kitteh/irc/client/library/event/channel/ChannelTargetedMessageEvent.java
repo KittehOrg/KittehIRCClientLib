@@ -43,6 +43,7 @@ public class ChannelTargetedMessageEvent extends TargetedUserChannelMessageEvent
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param sender who sent it
      * @param channel channel receiving
      * @param prefix targeted prefix

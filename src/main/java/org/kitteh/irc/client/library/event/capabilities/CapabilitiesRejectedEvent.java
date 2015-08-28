@@ -48,6 +48,7 @@ public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEven
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param negotiating if we are negotiating right now
      * @param rejectedCapabilitiesRequest capabilities rejected
      */

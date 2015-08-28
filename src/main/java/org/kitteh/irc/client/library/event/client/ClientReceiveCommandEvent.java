@@ -25,12 +25,11 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
-import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
 import org.kitteh.irc.client.library.util.CommandFilter;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * Fires when the client receives a command message. Note that the client
@@ -45,13 +44,12 @@ public class ClientReceiveCommandEvent extends ClientReceiveServerMessageEventBa
      * Constructs the event.
      *
      * @param client client
-     * @param messageTags message tags
-     * @param originalMessage original message
+     * @param serverMessage server message
      * @param actor actor
      * @param command command
      * @param args args
      */
-    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull List<MessageTag> messageTags, @Nonnull String originalMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull String[] args) {
-        super(client, messageTags, originalMessage, actor, command, args);
+    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull String[] args) {
+        super(client, serverMessage, actor, command, args);
     }
 }

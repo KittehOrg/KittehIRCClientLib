@@ -48,6 +48,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      * Creates the event
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param sender sender of the query
      * @param message message sent
      * @param reply reply to be sent, if any

@@ -46,6 +46,7 @@ public abstract class CapabilityNegotiationResponseEventBase extends ServerMessa
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      * @param negotiating if we are negotiating right now
      */
     protected CapabilityNegotiationResponseEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating) {

@@ -38,7 +38,7 @@ public interface ClientReceiveServerMessageEvent {
      * @return arguments
      */
     @Nonnull
-    public String[] getArgs();
+    String[] getArgs();
 
     /**
      * Gets the command sent.
@@ -46,7 +46,7 @@ public interface ClientReceiveServerMessageEvent {
      * @return command, upper-case
      */
     @Nonnull
-    public String getCommand();
+    String getCommand();
 
     /**
      * Gets the message tags.
@@ -54,7 +54,7 @@ public interface ClientReceiveServerMessageEvent {
      * @return message tags
      */
     @Nonnull
-    public List<MessageTag> getMessageTags();
+    List<MessageTag> getMessageTags();
 
     /**
      * Gets the original message received by the server.
@@ -62,5 +62,5 @@ public interface ClientReceiveServerMessageEvent {
      * @return unprocessed, original message
      */
     @Nonnull
-    public String getOriginalMessage();
+    String getOriginalMessage();
 }

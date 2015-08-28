@@ -44,6 +44,7 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param channel the channel
      * @param actor the actor inviting another
      * @param target the nick invited

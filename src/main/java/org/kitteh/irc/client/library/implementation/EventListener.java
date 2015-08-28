@@ -179,7 +179,7 @@ class EventListener {
                 }
             }
             channel.trackUser(user, modes);
-            this.whoMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+            this.whoMessages.add(messageFromEvent(event));
         } // No else, server might send other WHO information about non-channels.
     }
 
@@ -192,7 +192,7 @@ class EventListener {
         ActorProvider.IRCChannel whoChannel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
         if (whoChannel != null) {
             whoChannel.setListReceived();
-            this.whoMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+            this.whoMessages.add(messageFromEvent(event));
             this.client.getEventManager().callEvent(new ChannelUsersUpdatedEvent(this.client, this.whoMessages, whoChannel.snapshot()));
             this.whoMessages.clear();
         } // No else, server might send other WHO information about non-channels.
@@ -266,7 +266,7 @@ class EventListener {
                     }
                 }
             }
-            this.namesMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+            this.namesMessages.add(messageFromEvent(event));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NAMES response sent for invalid channel name");
         }
@@ -280,7 +280,7 @@ class EventListener {
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getArgs()[1]);
         if (channel != null) {
-            this.namesMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+            this.namesMessages.add(messageFromEvent(event));
             this.client.getEventManager().callEvent(new ChannelNamesUpdatedEvent(this.client, this.namesMessages, channel.snapshot()));
             this.namesMessages.clear();
         } else {
@@ -305,13 +305,13 @@ class EventListener {
             throw new KittehServerMessageException(event.getOriginalMessage(), "MOTD message of incorrect length");
         }
         this.motd.add(event.getArgs()[1]);
-        this.motdMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+        this.motdMessages.add(messageFromEvent(event));
     }
 
     @NumericFilter(376)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void motdEnd(ClientReceiveNumericEvent event) {
-        this.motdMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+        this.motdMessages.add(messageFromEvent(event));
         this.client.getServerInfo().setMOTD(new ArrayList<>(this.motd));
         this.client.getEventManager().callEvent(new ClientReceiveMOTDEvent(this.client, this.motdMessages));
     }
@@ -392,10 +392,10 @@ class EventListener {
         }
     }
 
-    private List<CapabilityState> capList = new LinkedList<>();
-    private List<ServerMessage> capListMessages = new LinkedList<>();
-    private List<CapabilityState> capLs = new LinkedList<>();
-    private List<ServerMessage> capLsMessages = new LinkedList<>();
+    private final List<CapabilityState> capList = new LinkedList<>();
+    private final List<ServerMessage> capListMessages = new LinkedList<>();
+    private final List<CapabilityState> capLs = new LinkedList<>();
+    private final List<ServerMessage> capLsMessages = new LinkedList<>();
     private static final int CAPABILITY_LIST_INDEX_DEFAULT = 2;
 
     @CommandFilter("CAP")
@@ -422,7 +422,7 @@ class EventListener {
                 this.client.getEventManager().callEvent(responseEvent);
                 break;
             case "list":
-                this.capListMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+                this.capListMessages.add(messageFromEvent(event));
                 if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
                     this.capList.addAll(capabilityStateList);
                 } else {
@@ -439,7 +439,7 @@ class EventListener {
                 }
                 break;
             case "ls":
-                this.capLsMessages.add(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+                this.capLsMessages.add(messageFromEvent(event));
                 if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
                     this.capList.addAll(capabilityStateList);
                 } else {
@@ -856,7 +856,12 @@ class EventListener {
     }
 
     @Nonnull
-    private static List<ServerMessage> listFromEvent(ClientReceiveServerMessageEvent event) {
-        return Collections.singletonList(new ServerMessage(event.getOriginalMessage(), event.getMessageTags()));
+    private static List<ServerMessage> listFromEvent(@Nonnull ClientReceiveServerMessageEvent event) {
+        return Collections.singletonList(messageFromEvent(event));
+    }
+
+    @Nonnull
+    private static ServerMessage messageFromEvent(@Nonnull ClientReceiveServerMessageEvent event) {
+        return new IRCServerMessage(event.getOriginalMessage(), event.getMessageTags());
     }
 }

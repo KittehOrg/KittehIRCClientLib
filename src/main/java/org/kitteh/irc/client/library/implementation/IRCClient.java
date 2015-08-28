@@ -518,11 +518,13 @@ final class IRCClient extends InternalClient {
 
         final String[] args = this.handleArgs(split, index);
 
+        final IRCServerMessage serverMessage = new IRCServerMessage(line, tags);
+
         try {
             int numeric = Integer.parseInt(commandString);
-            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, tags, line, actor.snapshot(), commandString, numeric, args));
+            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, serverMessage, actor.snapshot(), commandString, numeric, args));
         } catch (NumberFormatException exception) {
-            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, tags, line, actor.snapshot(), commandString, args));
+            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, serverMessage, actor.snapshot(), commandString, args));
         }
     }
 }

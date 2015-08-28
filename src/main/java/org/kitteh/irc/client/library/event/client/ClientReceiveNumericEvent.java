@@ -25,12 +25,11 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
-import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
 import org.kitteh.irc.client.library.util.NumericFilter;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * Fires when the client receives a numeric coded message. Note that the
@@ -47,14 +46,14 @@ public class ClientReceiveNumericEvent extends ClientReceiveServerMessageEventBa
      * Constructs the event.
      *
      * @param client client
-     * @param messageTags message tags
-     * @param originalMessage original message
+     * @param serverMessage server message
      * @param server server
+     * @param command command
      * @param numeric numeric
      * @param args args
      */
-    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull List<MessageTag> messageTags, @Nonnull String originalMessage, @Nonnull Actor server, String command, int numeric, @Nonnull String[] args) {
-        super(client, messageTags, originalMessage, server, command, args);
+    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, String command, int numeric, @Nonnull String[] args) {
+        super(client, serverMessage, server, command, args);
         this.numeric = numeric;
     }
 

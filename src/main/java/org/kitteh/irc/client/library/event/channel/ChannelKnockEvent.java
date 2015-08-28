@@ -40,6 +40,7 @@ public class ChannelKnockEvent extends ActorChannelEventBase<User> {
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param channel the channel being knocked upon
      * @param user user nick knocking
      */

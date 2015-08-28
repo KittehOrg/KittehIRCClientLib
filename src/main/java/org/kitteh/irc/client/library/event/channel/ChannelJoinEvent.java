@@ -42,6 +42,7 @@ public class ChannelJoinEvent extends ActorChannelEventBase<User> implements Cha
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param channel the channel joined
      * @param user the user joining
      */

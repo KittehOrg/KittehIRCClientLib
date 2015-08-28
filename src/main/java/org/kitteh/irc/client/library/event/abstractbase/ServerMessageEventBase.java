@@ -45,6 +45,7 @@ public abstract class ServerMessageEventBase extends ClientEventBase implements 
      * Constructs the event.
      *
      * @param client the client
+     * @param originalMessages original messages
      */
     protected ServerMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
         super(client);
@@ -54,6 +55,6 @@ public abstract class ServerMessageEventBase extends ClientEventBase implements 
     @Nonnull
     @Override
     public List<ServerMessage> getOriginalMessages() {
-        return originalMessages;
+        return this.originalMessages;
     }
 }

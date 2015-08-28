@@ -49,11 +49,11 @@ final class IRCCapabilityManager implements CapabilityManager {
             this.disable = capabilityListItem.charAt(0) == '-';
             String remaining = this.disable ? capabilityListItem.substring(1) : capabilityListItem;
             int index = remaining.indexOf('=');
-            if (index > -1 && remaining.length() > (index + 1)) {
+            if ((index > -1) && (remaining.length() > (index + 1))) {
                 this.name = remaining.substring(0, index);
                 this.value = Optional.of(remaining.substring(index + 1));
             } else {
-                this.name = index > -1 ? remaining.substring(0, index) : remaining;
+                this.name = (index > -1) ? remaining.substring(0, index) : remaining;
                 this.value = Optional.empty();
             }
         }

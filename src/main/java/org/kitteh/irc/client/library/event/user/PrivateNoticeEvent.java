@@ -39,6 +39,7 @@ public class PrivateNoticeEvent extends ActorMessageEventBase<User> {
      * Creates the event.
      *
      * @param client client for which this is occurring
+     * @param originalMessages original messages
      * @param message message sent
      * @param sender who sent it
      */

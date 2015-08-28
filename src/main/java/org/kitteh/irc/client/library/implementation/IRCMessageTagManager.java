@@ -74,7 +74,7 @@ class IRCMessageTagManager implements MessageTagManager {
     private static class IRCMessageTagTime extends IRCMessageTag implements MessageTag.Time {
         private static final BiFunction<String, Optional<String>, IRCMessageTagTime> FUNCTION = (name, value) -> new IRCMessageTagTime(name, value, Instant.parse(value.get()));
 
-        private Instant time;
+        private final Instant time;
 
         private IRCMessageTagTime(@Nonnull String name, @Nonnull Optional<String> value, @Nonnull Instant time) {
             super(name, value);
