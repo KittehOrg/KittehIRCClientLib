@@ -22,7 +22,7 @@ class FakeClient extends InternalClient {
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
     private final Listener<String> listenerInput = new Listener<>("Test", null);
     private final Listener<String> listenerOutput = new Listener<>("Test", null);
-    private final MessageTagManager messageTagManager = new IRCMessageTagManager(this);
+    private final IRCMessageTagManager messageTagManager = new IRCMessageTagManager(this);
     private final IRCServerInfo serverInfo = new IRCServerInfo(this);
 
     @Override
@@ -175,7 +175,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public MessageTagManager getMessageTagManager() {
+    public IRCMessageTagManager getMessageTagManager() {
         return this.messageTagManager;
     }
 
