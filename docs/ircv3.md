@@ -22,4 +22,4 @@ CAP | Message Tags | Metadata | Monitor | account-tag | batch | cap-notify
 
 chghost | echo-message | invite-notify | sasl | server-time | userhost-in-names
 :-----: | :----------: | :-----------: | :--: | :---------: | :---------------:
-✘       | ✔            | ✔             | ✔    | ✘           | ✔
+✘       | ✔            | ✔             | ✔    | ✔           | ✔

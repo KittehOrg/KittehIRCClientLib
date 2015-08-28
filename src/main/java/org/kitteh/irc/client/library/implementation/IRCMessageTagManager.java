@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +43,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 class IRCMessageTagManager implements MessageTagManager {
-    private class IRCMessageTag implements MessageTag {
+    private static class IRCMessageTag implements MessageTag {
         private final String name;
         private final Optional<String> value;
 
@@ -70,7 +71,24 @@ class IRCMessageTagManager implements MessageTagManager {
         }
     }
 
-    private class TagCreator {
+    private static class IRCMessageTagTime extends IRCMessageTag implements MessageTag.Time {
+        private static final BiFunction<String, Optional<String>, IRCMessageTagTime> FUNCTION = (name, value) -> new IRCMessageTagTime(name, value, Instant.parse(value.get()));
+
+        private Instant time;
+
+        private IRCMessageTagTime(@Nonnull String name, @Nonnull Optional<String> value, @Nonnull Instant time) {
+            super(name, value);
+            this.time = time;
+        }
+
+        @Nonnull
+        @Override
+        public Instant getTime() {
+            return this.time;
+        }
+    }
+
+    private static class TagCreator {
         private final String capability;
         private final BiFunction<String, Optional<String>, ? extends MessageTag> function;
 
@@ -103,6 +121,7 @@ class IRCMessageTagManager implements MessageTagManager {
 
     IRCMessageTagManager(InternalClient client) {
         this.client = client;
+        this.registerTagCreator("server-time", "time", IRCMessageTagTime.FUNCTION);
     }
 
     @Nonnull
