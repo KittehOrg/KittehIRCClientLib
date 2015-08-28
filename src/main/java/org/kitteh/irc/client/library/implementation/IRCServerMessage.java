@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -73,5 +74,11 @@ final class IRCServerMessage implements ServerMessage {
     @Override
     public List<MessageTag> getTags() {
         return this.tags;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("message", this.message).add("tags", this.tags).toString();
     }
 }
