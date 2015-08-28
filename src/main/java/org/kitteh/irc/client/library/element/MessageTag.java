@@ -24,12 +24,26 @@
 package org.kitteh.irc.client.library.element;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 import java.util.Optional;
 
 /**
  * Reflects a message tag
  */
 public interface MessageTag {
+    /**
+     * Represents the 'time' tag as specified by the 'server-time' extension.
+     */
+    interface Time {
+        /**
+         * Gets the instant in time specified by this tag.
+         *
+         * @return instant in time
+         */
+        @Nonnull
+        Instant getTime();
+    }
+
     /**
      * Gets the name of the tag.
      *
@@ -39,7 +53,7 @@ public interface MessageTag {
     String getName();
 
     /**
-     * Gets the value of the tag.
+     * Gets the unescaped, but otherwise unprocessed, value of the tag.
      *
      * @return tag value if set
      */
