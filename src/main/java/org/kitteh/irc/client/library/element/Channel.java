@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.element;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ModeCommand;
+import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 
 import javax.annotation.Nonnull;
@@ -192,5 +193,14 @@ public interface Channel extends MessageReceiver, Staleable {
      */
     default void part(@Nonnull String reason) {
         this.getClient().removeChannel(this, reason);
+    }
+
+    /**
+     * Attempts to set the topic of the channel.
+     *
+     * @param topic new topic
+     */
+    default void setTopic(@Nonnull String topic) {
+        new TopicCommand(this.getClient(), this).topic(topic).execute();
     }
 }
