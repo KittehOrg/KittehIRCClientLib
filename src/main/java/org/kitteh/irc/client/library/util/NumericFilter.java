@@ -43,7 +43,7 @@ import java.lang.annotation.Target;
  *     {@code @NumericFilter(1)}
  *     {@code @Handler(filters = @Filter(NumericFilter.Filter.class))}
  *     public void numeric1(ClientReceiveNumericEvent event) {
- *         this.currentNick = event.getArgs()[0];
+ *         this.currentNick = event.getParameters()[0];
  *     }
  * </pre>
  */

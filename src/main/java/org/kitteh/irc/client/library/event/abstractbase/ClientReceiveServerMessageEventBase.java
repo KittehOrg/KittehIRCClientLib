@@ -69,7 +69,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      */
     @Nonnull
     @Override
-    public List<String> getArgs() {
+    public List<String> getParameters() {
         return this.args;
     }
 

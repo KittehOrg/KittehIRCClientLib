@@ -33,14 +33,6 @@ import java.util.List;
  */
 public interface ClientReceiveServerMessageEvent {
     /**
-     * Gets the subsequent parameters after the command.
-     *
-     * @return arguments
-     */
-    @Nonnull
-    List<String> getArgs();
-
-    /**
      * Gets the command sent.
      *
      * @return command, upper-case
@@ -63,4 +55,12 @@ public interface ClientReceiveServerMessageEvent {
      */
     @Nonnull
     String getOriginalMessage();
+
+    /**
+     * Gets the subsequent parameters after the command.
+     *
+     * @return arguments
+     */
+    @Nonnull
+    List<String> getParameters();
 }
