@@ -69,6 +69,8 @@ import java.util.concurrent.TimeUnit;
 
 final class NettyManager {
     static final class ClientConnection {
+        private static final int MAX_LINE_LENGTH = 2048;
+
         private final InternalClient client;
         private final Channel channel;
         private final Queue<String> queue = new ConcurrentLinkedQueue<>();
@@ -148,7 +150,7 @@ final class NettyManager {
             });
 
             // Inbound
-            this.channel.pipeline().addLast("[INPUT] Line splitter", new DelimiterBasedFrameDecoder(512, Unpooled.wrappedBuffer(new byte[]{(byte) '\r', (byte) '\n'})));
+            this.channel.pipeline().addLast("[INPUT] Line splitter", new DelimiterBasedFrameDecoder(MAX_LINE_LENGTH, Unpooled.wrappedBuffer(new byte[]{(byte) '\r', (byte) '\n'})));
             this.channel.pipeline().addLast("[INPUT] String decoder", new StringDecoder(CharsetUtil.UTF_8));
             this.channel.pipeline().addLast("[INPUT] Send to client", new SimpleChannelInboundHandler<String>() {
                 @Override
