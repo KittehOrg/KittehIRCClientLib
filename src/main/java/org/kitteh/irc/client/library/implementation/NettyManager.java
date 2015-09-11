@@ -107,7 +107,9 @@ final class NettyManager {
                         this.immediateSendingLock.notify();
                     }
                 } else {
-                    this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), true));
+                    this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), false));
+                    this.scheduleReconnect();
+                    removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
                 }
             });
         }
@@ -190,12 +192,16 @@ final class NettyManager {
             // Clean up on disconnect
             this.channel.closeFuture().addListener(futureListener -> {
                 if (ClientConnection.this.reconnect) {
-                    ClientConnection.this.channel.eventLoop().schedule(ClientConnection.this.client::connect, 5, TimeUnit.SECONDS);
+                    this.scheduleReconnect();
                 }
                 this.immediateSending.interrupt();
                 ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
                 removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
             });
+        }
+
+        private void scheduleReconnect() {
+            ClientConnection.this.channel.eventLoop().schedule(ClientConnection.this.client::connect, 5, TimeUnit.SECONDS);
         }
 
         void sendMessage(@Nonnull String message, boolean priority) {
