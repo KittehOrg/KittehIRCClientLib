@@ -406,7 +406,7 @@ class EventListener {
         }
         CapabilityNegotiationResponseEventBase responseEvent = null;
         int capabilityListIndex;
-        if (event.getParameters().get(CAPABILITY_LIST_INDEX_DEFAULT).equals("*")) {
+        if ("*".equals(event.getParameters().get(CAPABILITY_LIST_INDEX_DEFAULT))) {
             if (event.getParameters().size() < 4) {
                 throw new KittehServerMessageException(event.getOriginalMessage(), "CAP message of incorrect length");
             }
@@ -513,7 +513,7 @@ class EventListener {
     @CommandFilter("AWAY")
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveCommandEvent event) {
-        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), event.getParameters().size() > 0);
+        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), !event.getParameters().isEmpty());
     }
 
     @CommandFilter("NOTICE")
@@ -671,7 +671,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void quit(ClientReceiveCommandEvent event) {
         if (event.getActor() instanceof User) {
-            this.client.getEventManager().callEvent(new UserQuitEvent(this.client, listFromEvent(event), (User) event.getActor(), (event.getParameters().size() > 0) ? event.getParameters().get(0) : ""));
+            this.client.getEventManager().callEvent(new UserQuitEvent(this.client, listFromEvent(event), (User) event.getActor(), (event.getParameters().isEmpty()) ? "" : event.getParameters().get(0)));
             this.client.getActorProvider().trackUserQuit(((User) event.getActor()).getNick());
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "QUIT message sent for non-user");

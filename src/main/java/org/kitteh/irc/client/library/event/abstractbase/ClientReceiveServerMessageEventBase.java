@@ -31,7 +31,6 @@ import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEven
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

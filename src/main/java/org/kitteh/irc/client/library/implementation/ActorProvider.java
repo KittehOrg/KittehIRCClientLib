@@ -128,20 +128,20 @@ class ActorProvider {
         @Nullable
         private T snapshot;
 
-        protected IRCStaleable(@Nonnull String name) {
+        IRCStaleable(@Nonnull String name) {
             super(name);
         }
 
-        protected boolean isStale(@Nonnull T potentiallyStale) {
+        boolean isStale(@Nonnull T potentiallyStale) {
             return this.snapshot != potentiallyStale;
         }
 
-        protected void markStale() {
+        void markStale() {
             this.snapshot = null;
         }
 
         @Nonnull
-        protected synchronized T snapshot(@Nonnull Supplier<T> supplier) {
+        synchronized T snapshot(@Nonnull Supplier<T> supplier) {
             if (this.snapshot != null) {
                 return this.snapshot;
             }

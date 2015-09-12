@@ -11,6 +11,9 @@ import java.util.List;
  * Test out message tag processing
  */
 public class MessageTagTest {
+    /**
+     * Tests a multi-tag environment.
+     */
     @Test
     public void multiTag() {
         List<MessageTag> tags = new FakeClient().getMessageTagManager().getTags("aaa=bbb;ccc;example.com/ddd=eee");
@@ -25,6 +28,9 @@ public class MessageTagTest {
 
     private static final String TIME = "2012-06-30T23:59:60.419Z";
 
+    /**
+     * Tests processing of the time tag.
+     */
     @Test
     public void timeTag() {
         List<MessageTag> tags = new FakeClient().getMessageTagManager().getTags("time=" + TIME);
