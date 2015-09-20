@@ -38,7 +38,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder after();
+    ClientBuilder afterBuildConsumer();
 
     /**
      * Sets up a Consumer to fire on the newly created client after it is
@@ -48,7 +48,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder after(@Nonnull Consumer<Client> consumer);
+    ClientBuilder afterBuildConsumer(@Nonnull Consumer<Client> consumer);
 
     /**
      * Binds the client to no specific host.
