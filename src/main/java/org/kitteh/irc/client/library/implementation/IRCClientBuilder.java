@@ -188,6 +188,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
     @Nonnull
     @Override
     public IRCClientBuilder secureKeyCertChain(@Nonnull File keyCertChainFile) {
+        Sanity.nullCheck(keyCertChainFile, "Key certificate chain file cannot be null");
         this.config.set(Config.SSL_KEY_CERT_CHAIN, keyCertChainFile);
         return this;
     }
@@ -202,6 +203,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
     @Nonnull
     @Override
     public IRCClientBuilder secureKey(@Nonnull File keyFile) {
+        Sanity.nullCheck(keyFile, "Key file cannot be null");
         this.config.set(Config.SSL_KEY, keyFile);
         return this;
     }
@@ -216,6 +218,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
     @Nonnull
     @Override
     public IRCClientBuilder secureKeyPassword(@Nonnull String password) {
+        Sanity.nullCheck(password, "Password cannot be null");
         this.config.set(Config.SSL_KEY_PASSWORD, password);
         return this;
     }
