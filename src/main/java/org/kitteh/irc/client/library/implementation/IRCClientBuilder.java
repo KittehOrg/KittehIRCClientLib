@@ -66,14 +66,14 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder bind() {
+    public IRCClientBuilder bindHost() {
         this.bindHost = null;
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder bind(@Nonnull String host) {
+    public IRCClientBuilder bindHost(@Nonnull String host) {
         Sanity.nullCheck(host, "Host cannot be null");
         this.bindHost = host;
         return this;
@@ -81,7 +81,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder bind(int port) {
+    public IRCClientBuilder bindPort(int port) {
         this.bindPort = this.validPort(port);
         return this;
     }

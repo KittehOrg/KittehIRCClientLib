@@ -56,7 +56,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder bind();
+    ClientBuilder bindHost();
 
     /**
      * Binds the client to a host or IP locally.
@@ -67,7 +67,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder bind(@Nonnull String host);
+    ClientBuilder bindHost(@Nonnull String host);
 
     /**
      * Binds the client to the specified port. Invalid ports are set to 0.
@@ -78,7 +78,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder bind(int port);
+    ClientBuilder bindPort(int port);
 
     /**
      * Removes the exception listener from this builder.
