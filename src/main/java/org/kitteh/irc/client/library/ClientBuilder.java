@@ -38,7 +38,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder afterBuildConsumer();
+    ClientBuilder afterBuildConsumerRemove();
 
     /**
      * Sets up a Consumer to fire on the newly created client after it is
@@ -56,7 +56,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder bindHost();
+    ClientBuilder bindHostRemove();
 
     /**
      * Binds the client to a host or IP locally.
@@ -86,7 +86,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder listenException();
+    ClientBuilder listenExceptionRemove();
 
     /**
      * Sets a listener for all thrown exceptions on this client.
@@ -105,7 +105,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder listenInput();
+    ClientBuilder listenInputRemove();
 
     /**
      * Sets a listener for all incoming messages from the server.
@@ -124,7 +124,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder listenOutput();
+    ClientBuilder listenOutputRemove();
 
     /**
      * Sets a listener for all outgoing messages to the server.
@@ -167,7 +167,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder serverPassword();
+    ClientBuilder serverPasswordRemove();
 
     /**
      * Sets the server password.
@@ -207,7 +207,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder secureKeyCertChain();
+    ClientBuilder secureKeyCertChainRemove();
 
     /**
      * Sets the key for SSL connection.
@@ -225,7 +225,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder secureKey();
+    ClientBuilder secureKeyRemove();
 
     /**
      * Sets the private key for SSL connection.
@@ -243,7 +243,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder secureKeyPassword();
+    ClientBuilder secureKeyPasswordRemove();
 
     /**
      * Sets the private key password for SSL connection.
@@ -310,19 +310,19 @@ public interface ClientBuilder extends Cloneable {
      * @param ip client's IP address
      * @return this builder
      * @throws IllegalArgumentException for any null parameters
-     * @see #webircDisable()
+     * @see #webircRemove()
      */
     @Nonnull
     ClientBuilder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip);
 
     /**
-     * Disables WebIRC.
+     * Removes WEBIRC settings from this builder.
      *
      * @return this builder
      * @see #webirc(String, String, String, InetAddress)
      */
     @Nonnull
-    ClientBuilder webircDisable();
+    ClientBuilder webircRemove();
 
     /**
      * Clientmaker, clientmaker, make me a client!

@@ -51,7 +51,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Override
     @Nonnull
-    public ClientBuilder afterBuildConsumer() {
+    public ClientBuilder afterBuildConsumerRemove() {
         this.after = null;
         return this;
     }
@@ -66,7 +66,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder bindHost() {
+    public IRCClientBuilder bindHostRemove() {
         this.bindHost = null;
         return this;
     }
@@ -88,7 +88,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenException() {
+    public IRCClientBuilder listenExceptionRemove() {
         this.config.set(Config.LISTENER_EXCEPTION, null);
         return this;
     }
@@ -103,7 +103,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenInput() {
+    public IRCClientBuilder listenInputRemove() {
         this.config.set(Config.LISTENER_INPUT, null);
         return this;
     }
@@ -118,7 +118,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenOutput() {
+    public IRCClientBuilder listenOutputRemove() {
         this.config.set(Config.LISTENER_OUTPUT, null);
         return this;
     }
@@ -150,7 +150,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder serverPassword() {
+    public IRCClientBuilder serverPasswordRemove() {
         this.config.set(Config.SERVER_PASSWORD, null);
         return this;
     }
@@ -180,7 +180,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKeyCertChain() {
+    public IRCClientBuilder secureKeyCertChainRemove() {
         this.config.set(Config.SSL_KEY_CERT_CHAIN, null);
         return this;
     }
@@ -194,7 +194,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKey() {
+    public IRCClientBuilder secureKeyRemove() {
         this.config.set(Config.SSL_KEY, null);
         return this;
     }
@@ -208,7 +208,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKeyPassword() {
+    public IRCClientBuilder secureKeyPasswordRemove() {
         this.config.set(Config.SSL_KEY_PASSWORD, null);
         return this;
     }
@@ -274,7 +274,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder webircDisable() {
+    public IRCClientBuilder webircRemove() {
         this.config.set(Config.WEBIRC_PASSWORD, null);
         this.config.set(Config.WEBIRC_USER, null);
         this.config.set(Config.WEBIRC_HOST, null);

@@ -99,7 +99,7 @@ public class KickCommand extends ChannelCommand {
      * @return this command
      */
     @Nonnull
-    public KickCommand reason() {
+    public KickCommand reasonRemove() {
         this.reason = null;
         return this;
     }

@@ -68,7 +68,7 @@ public class TopicCommand extends ChannelCommand {
      * @return this TopicCommand
      */
     @Nonnull
-    public TopicCommand topic() {
+    public TopicCommand topicRemove() {
         this.topic = null;
         return this;
     }
