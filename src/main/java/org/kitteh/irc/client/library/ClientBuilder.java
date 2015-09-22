@@ -263,7 +263,7 @@ public interface ClientBuilder extends Cloneable {
      * @return this builder
      */
     @Nonnull
-    ClientBuilder secureTrustManagerSupplierRemove();
+    ClientBuilder secureTrustManagerFactoryRemove();
 
     /**
      * Sets the {@link TrustManagerFactory} for SSL connection.
@@ -273,7 +273,7 @@ public interface ClientBuilder extends Cloneable {
      * @see #secure(boolean)
      */
     @Nonnull
-    ClientBuilder secureTrustManagerSupplier(@Nonnull TrustManagerFactory factory);
+    ClientBuilder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory);
 
     /**
      * Sets the delay between messages being sent to the server

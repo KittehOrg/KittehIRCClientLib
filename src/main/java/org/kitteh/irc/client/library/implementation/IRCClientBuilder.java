@@ -226,14 +226,14 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder secureTrustManagerSupplierRemove() {
+    public ClientBuilder secureTrustManagerFactoryRemove() {
         this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureTrustManagerSupplier(@Nonnull TrustManagerFactory factory) {
+    public ClientBuilder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory) {
         Sanity.nullCheck(factory, "Factory cannot be null");
         this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, factory);
         return this;
