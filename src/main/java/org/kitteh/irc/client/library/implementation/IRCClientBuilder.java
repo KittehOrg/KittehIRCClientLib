@@ -44,7 +44,7 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
     private String bindHost;
     private int bindPort;
     private String serverHost;
-    private int serverPort = 6667;
+    private int serverPort = 6697;
 
     IRCClientBuilder() {
         this.config = new Config();

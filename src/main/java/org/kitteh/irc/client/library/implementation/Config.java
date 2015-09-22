@@ -128,9 +128,9 @@ final class Config {
     static final Entry<Integer> MESSAGE_DELAY = new Entry<>(1200, Integer.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);
-    static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6667), InetSocketAddress.class);
+    static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6697), InetSocketAddress.class);
     static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class);
-    static final Entry<Boolean> SSL = new Entry<>(false, Boolean.class);
+    static final Entry<Boolean> SSL = new Entry<>(true, Boolean.class);
     static final Entry<File> SSL_KEY_CERT_CHAIN = new Entry<>(null, File.class);
     static final Entry<File> SSL_KEY = new Entry<>(null, File.class);
     static final Entry<String> SSL_KEY_PASSWORD = new Entry<>(null, String.class);
