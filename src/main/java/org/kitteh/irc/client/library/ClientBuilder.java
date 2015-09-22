@@ -195,6 +195,11 @@ public interface ClientBuilder extends Cloneable {
 
     /**
      * Sets whether the client connects via SSL.
+     * <p>
+     * Note that by default the TrustManager used does not accept the
+     * certificates of many popular networks. You must use {@link
+     * #secureTrustManagerFactory(TrustManagerFactory)} to set your own
+     * TrustManagerFactory.
      *
      * @param ssl true for ssl
      * @return this builder
