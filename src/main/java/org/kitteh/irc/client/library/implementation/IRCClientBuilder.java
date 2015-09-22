@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -220,6 +221,21 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
     public IRCClientBuilder secureKeyPassword(@Nonnull String password) {
         Sanity.nullCheck(password, "Password cannot be null");
         this.config.set(Config.SSL_KEY_PASSWORD, password);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public ClientBuilder secureTrustManagerSupplierRemove() {
+        this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, null);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public ClientBuilder secureTrustManagerSupplier(@Nonnull TrustManagerFactory factory) {
+        Sanity.nullCheck(factory, "Factory cannot be null");
+        this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, factory);
         return this;
     }
 

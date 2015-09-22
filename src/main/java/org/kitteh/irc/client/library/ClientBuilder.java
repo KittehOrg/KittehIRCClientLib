@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library;
 
 import javax.annotation.Nonnull;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.net.InetAddress;
 import java.util.function.Consumer;
@@ -254,6 +255,25 @@ public interface ClientBuilder extends Cloneable {
      */
     @Nonnull
     ClientBuilder secureKeyPassword(@Nonnull String password);
+
+    /**
+     * Removes the {@link TrustManagerFactory} for SSL connection, defaulting
+     * to the JRE factory.
+     *
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder secureTrustManagerSupplierRemove();
+
+    /**
+     * Sets the {@link TrustManagerFactory} for SSL connection.
+     *
+     * @param factory trust manager supplier
+     * @return this builder
+     * @see #secure(boolean)
+     */
+    @Nonnull
+    ClientBuilder secureTrustManagerSupplier(@Nonnull TrustManagerFactory factory);
 
     /**
      * Sets the delay between messages being sent to the server

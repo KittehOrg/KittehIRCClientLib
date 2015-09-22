@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -133,6 +134,7 @@ final class Config {
     static final Entry<File> SSL_KEY_CERT_CHAIN = new Entry<>(null, File.class);
     static final Entry<File> SSL_KEY = new Entry<>(null, File.class);
     static final Entry<String> SSL_KEY_PASSWORD = new Entry<>(null, String.class);
+    static final Entry<TrustManagerFactory> SSL_TRUST_MANAGER_FACTORY = new Entry<>(null, TrustManagerFactory.class);
     static final Entry<String> USER = new Entry<>("Kitteh", String.class);
     static final Entry<String> WEBIRC_HOST = new Entry<>(null, String.class);
     static final Entry<InetAddress> WEBIRC_IP = new Entry<>(null, InetAddress.class);

@@ -21,13 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.util;
 
 import io.netty.handler.ssl.util.SimpleTrustManagerFactory;
 import io.netty.util.internal.EmptyArrays;
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.client.SSLCertificateAcceptEvent;
-import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.net.ssl.ManagerFactoryParameters;
@@ -37,8 +34,11 @@ import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
-    private class EventTrustManager implements X509TrustManager {
+/**
+ * A very friendly, accepting trust manager factory. Allows anything through.
+ */
+public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactory {
+    private class TrustingManager implements X509TrustManager {
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String s) {
             // NOOP
@@ -46,12 +46,10 @@ final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
 
         @Override
         public void checkServerTrusted(@Nonnull X509Certificate[] chain, @Nonnull String authType) throws CertificateException {
-            SSLCertificateAcceptEvent event = new SSLCertificateAcceptEvent(NettyTrustManagerFactory.this.client, authType, chain);
-            NettyTrustManagerFactory.this.client.getEventManager().callEvent(event);
-            if (event.isDenied()) {
-                throw new CertificateException("Certificate denied via SSLCertificateAcceptEvent");
-            }
+            // NOOP
+            // Allow ALL the things!
         }
+
 
         @Nonnull
         @Override
@@ -66,13 +64,7 @@ final class NettyTrustManagerFactory extends SimpleTrustManagerFactory {
         }
     }
 
-    private final Client client;
-    private final TrustManager trustManager;
-
-    NettyTrustManagerFactory(@Nonnull Client client) {
-        this.client = client;
-        this.trustManager = new EventTrustManager();
-    }
+    private final TrustManager trustManager = new TrustingManager();
 
     @Nonnull
     @Override

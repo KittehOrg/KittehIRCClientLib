@@ -57,9 +57,13 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
@@ -169,9 +173,14 @@ final class NettyManager {
                     File keyCertChainFile = this.client.getConfig().get(Config.SSL_KEY_CERT_CHAIN);
                     File keyFile = this.client.getConfig().get(Config.SSL_KEY);
                     String keyPassword = this.client.getConfig().get(Config.SSL_KEY_PASSWORD);
-                    SslContext sslContext = SslContextBuilder.forClient().trustManager(new NettyTrustManagerFactory(this.client)).keyManager(keyCertChainFile, keyFile, keyPassword).build();
+                    TrustManagerFactory factory = this.client.getConfig().get(Config.SSL_TRUST_MANAGER_FACTORY);
+                    if (factory == null) {
+                        factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                        factory.init((KeyStore) null);
+                    }
+                    SslContext sslContext = SslContextBuilder.forClient().trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();
                     this.channel.pipeline().addFirst(sslContext.newHandler(this.channel.alloc()));
-                } catch (SSLException e) {
+                } catch (SSLException | NoSuchAlgorithmException | KeyStoreException e) {
                     this.client.getExceptionListener().queue(new KittehConnectionException(e, true));
                     return;
                 }
