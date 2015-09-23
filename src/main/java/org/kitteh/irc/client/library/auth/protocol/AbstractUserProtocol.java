@@ -25,37 +25,66 @@ package org.kitteh.irc.client.library.auth.protocol;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.Password;
+import org.kitteh.irc.client.library.auth.protocol.element.Username;
+import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
 /**
- * SASL PLAIN authentication. Automatically attempts auth during connection.
+ * Abstract general username/password protocol.
  */
-public class SaslPlain extends AbstractSaslProtocol<String> implements Password {
+public abstract class AbstractUserProtocol implements Username {
+    private final Client client;
+    private String username;
+
     /**
      * Creates an instance.
      *
      * @param client client
      * @param username username
-     * @param password password
      */
-    public SaslPlain(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-        super(client, username, password, "PLAIN");
-    }
-
-    @Override
-    protected String getAuthLine() {
-        return this.getUsername() + '\u0000' + this.getUsername() + '\u0000' + this.getPassword();
+    protected AbstractUserProtocol(@Nonnull Client client, @Nonnull String username) {
+        Sanity.nullCheck(client, "Client cannot be null");
+        Sanity.safeMessageCheck(username, "Username");
+        this.client = client;
+        this.username = username;
     }
 
     @Nonnull
     @Override
-    public String getPassword() {
-        return this.getAuthValue();
+    public Client getClient() {
+        return this.client;
+    }
+
+    @Nonnull
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
     @Override
-    public void setPassword(@Nonnull String password) {
-        this.setAuthValue(password);
+    public void setUsername(@Nonnull String username) {
+        Sanity.safeMessageCheck(username, "Username");
+        this.username = username;
+    }
+
+    @Override
+    public final void startAuthentication() {
+        this.client.sendRawLineImmediately(this.getAuthentication());
+    }
+
+    /**
+     * Gets a String for {@link #startAuthentication()}.
+     *
+     * @return auth string
+     */
+    @Nonnull
+    protected abstract String getAuthentication();
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("user", this.getUsername()).toString();
     }
 }

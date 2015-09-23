@@ -34,10 +34,8 @@ import javax.annotation.Nonnull;
 /**
  * Abstract general username/password protocol.
  */
-public abstract class AbstractUserPassProtocol implements Password, Username {
-    private final Client client;
+public abstract class AbstractUserPassProtocol extends AbstractUserProtocol implements Password {
     private String password;
-    private String username;
 
     /**
      * Creates an instance.
@@ -47,18 +45,9 @@ public abstract class AbstractUserPassProtocol implements Password, Username {
      * @param password password
      */
     protected AbstractUserPassProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-        Sanity.nullCheck(client, "Client cannot be null");
-        Sanity.safeMessageCheck(username, "Username");
+        super(client, username);
         Sanity.safeMessageCheck(password, "Password");
-        this.client = client;
-        this.username = username;
         this.password = password;
-    }
-
-    @Nonnull
-    @Override
-    public Client getClient() {
-        return this.client;
     }
 
     @Nonnull
@@ -67,36 +56,11 @@ public abstract class AbstractUserPassProtocol implements Password, Username {
         return this.password;
     }
 
-    @Nonnull
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
     @Override
     public void setPassword(@Nonnull String password) {
         Sanity.safeMessageCheck(password, "Password");
         this.password = password;
     }
-
-    @Override
-    public void setUsername(@Nonnull String username) {
-        Sanity.safeMessageCheck(username, "Username");
-        this.username = username;
-    }
-
-    @Override
-    public final void startAuthentication() {
-        this.client.sendRawLineImmediately(this.getAuthentication());
-    }
-
-    /**
-     * Gets a String for {@link #startAuthentication()}.
-     *
-     * @return auth string
-     */
-    @Nonnull
-    protected abstract String getAuthentication();
 
     @Nonnull
     @Override
