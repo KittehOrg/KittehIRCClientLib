@@ -34,37 +34,57 @@ import javax.annotation.Nonnull;
 /**
  * Abstract general username/password protocol.
  */
-public abstract class AbstractUserPassProtocol extends AbstractUserProtocol implements Password {
-    private String password;
+public abstract class AbstractUserProtocol implements Username {
+    private final Client client;
+    private String username;
 
     /**
      * Creates an instance.
      *
      * @param client client
      * @param username username
-     * @param password password
      */
-    protected AbstractUserPassProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-        super(client, username);
-        Sanity.safeMessageCheck(password, "Password");
-        this.password = password;
+    protected AbstractUserProtocol(@Nonnull Client client, @Nonnull String username) {
+        Sanity.nullCheck(client, "Client cannot be null");
+        Sanity.safeMessageCheck(username, "Username");
+        this.client = client;
+        this.username = username;
     }
 
     @Nonnull
     @Override
-    public String getPassword() {
-        return this.password;
+    public Client getClient() {
+        return this.client;
+    }
+
+    @Nonnull
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
     @Override
-    public void setPassword(@Nonnull String password) {
-        Sanity.safeMessageCheck(password, "Password");
-        this.password = password;
+    public void setUsername(@Nonnull String username) {
+        Sanity.safeMessageCheck(username, "Username");
+        this.username = username;
     }
+
+    @Override
+    public final void startAuthentication() {
+        this.client.sendRawLineImmediately(this.getAuthentication());
+    }
+
+    /**
+     * Gets a String for {@link #startAuthentication()}.
+     *
+     * @return auth string
+     */
+    @Nonnull
+    protected abstract String getAuthentication();
 
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
+        return new ToStringer(this).add("user", this.getUsername()).toString();
     }
 }
