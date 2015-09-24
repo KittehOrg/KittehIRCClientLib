@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -112,6 +113,7 @@ public interface CapabilityManager {
         public static final String USERHOST_IN_NAMES = "userhost-in-names";
 
         private static final List<String> ALL;
+        private static final Supplier<List<String>> SUPPLIER = ArrayList::new;
 
         private Defaults() {
         }
@@ -132,7 +134,7 @@ public interface CapabilityManager {
                 } catch (IllegalAccessException e) {
                     throw new AssertionError(e);
                 }
-            }).collect(Collectors.toCollection(ArrayList::new)));
+            }).collect(Collectors.toCollection(SUPPLIER)));
         }
     }
 
