@@ -296,7 +296,7 @@ public interface ClientBuilder extends Cloneable {
     ClientBuilder messageDelay(int delay);
 
     /**
-     * Sets the server IP to which the client will connect.
+     * Sets the server port to which the client will connect.
      * <p>
      * By default, the port is 6667.
      *
