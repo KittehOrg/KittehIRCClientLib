@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ModeCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;
@@ -139,6 +140,17 @@ public interface Channel extends MessageReceiver, Staleable {
      */
     @Nonnull
     Optional<Set<ChannelUserMode>> getUserModes(@Nonnull String nick);
+
+    /**
+     * Gets the user modes of a given user in the channel.
+     *
+     * @param user user
+     * @return a set of modes the user is known to have, if the user is known
+     */
+    @Nonnull
+    default Optional<Set<ChannelUserMode>> getUserModes(@Nonnull User user) {
+        return this.getUserModes(Sanity.nullCheck(user, "User cannot be null").getNick());
+    }
 
     /**
      * Gets if this Channel has complete user data available, only possible
