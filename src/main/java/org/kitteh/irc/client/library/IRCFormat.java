@@ -70,6 +70,10 @@ public enum IRCFormat {
      */
     GREEN(9),
     /**
+     * Italic.
+     */
+    ITALIC('\u001d'),
+    /**
      * Light gray.
      */
     LIGHT_GRAY(15),
