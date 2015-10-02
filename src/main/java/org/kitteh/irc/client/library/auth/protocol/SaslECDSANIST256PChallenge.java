@@ -27,7 +27,6 @@ import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
-import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.util.CommandFilter;
 
 import javax.annotation.Nonnull;
@@ -90,7 +89,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
 
     @Override
     protected String getAuthLine() {
-        return this.getUsername()+'\0'+this.getUsername();
+        return this.getUsername() + "\0" + this.getUsername() + "\0";
     }
 
     @Nonnull
