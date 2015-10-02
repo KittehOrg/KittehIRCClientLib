@@ -119,7 +119,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
     }
 
     public static String sign(PrivateKey privateKey, String base64Challenge) throws SignatureException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
-        Signature signature = Signature.getInstance("SHA256withECDSA");
+        Signature signature = Signature.getInstance("NONEwithECDSA");
         signature.initSign(privateKey);
         signature.update(Base64.getDecoder().decode(base64Challenge));
         return Base64.getEncoder().encodeToString(signature.sign());
@@ -134,11 +134,11 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
 
     // TODO UNIT TEST BELOW
     public static void signAndVerify(PrivateKey privateKey, String challenge, PublicKey publicKey) throws SignatureException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
-        Signature signature = Signature.getInstance("SHA256withECDSA");
+        Signature signature = Signature.getInstance("NONEwithECDSA");
         signature.initSign(privateKey);
         signature.update(Base64.getDecoder().decode(challenge));
         byte[] signed = signature.sign();
-        Signature ver = Signature.getInstance("SHA256withECDSA");
+        Signature ver = Signature.getInstance("NONEwithECDSA");
         ver.initVerify(publicKey);
         ver.update(Base64.getDecoder().decode(challenge));
         System.out.println("Verified: " + ver.verify(signed));
