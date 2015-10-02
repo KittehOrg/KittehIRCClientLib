@@ -98,33 +98,81 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
         return this.listener == null ? this.listener = new Listener() : this.listener;
     }
 
+    /**
+     * Encodes a given {@link PrivateKey} to base64.
+     *
+     * @param privateKey key to encode
+     * @return encoded key
+     * @see #getPrivateKey(String)
+     */
     public static String base64Encode(PrivateKey privateKey) {
         return Base64.getEncoder().encodeToString(privateKey.getEncoded());
     }
 
+    /**
+     * Encodes a given {@link PublicKey} to base64.
+     *
+     * @param publicKey key to encode
+     * @return encoded key
+     * @see #getPublicKey(String)
+     */
     public static String base64Encode(PublicKey publicKey) {
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
 
+    /**
+     * Gets a {@link PrivateKey} from a base64 encoded String.
+     *
+     * @param base64Encoded encoded string
+     * @return the key
+     * @throws NoSuchAlgorithmException if the JVM doesn't support EC
+     * @throws InvalidKeySpecException if the encoded key is invalid
+     * @see #base64Encode(PrivateKey)
+     */
     public static PrivateKey getPrivateKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
         return keyFactory.generatePrivate(keySpec);
     }
 
+    /**
+     * Gets a {@link PublicKey} from a base64 encoded String.
+     *
+     * @param base64Encoded encoded string
+     * @return the key
+     * @throws NoSuchAlgorithmException if the JVM doesn't support EC
+     * @throws InvalidKeySpecException if the encoded key is invalid
+     * @see #base64Encode(PublicKey)
+     */
     public static PublicKey getPublicKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
         return keyFactory.generatePublic(keySpec);
     }
 
-    public static String sign(PrivateKey privateKey, String base64Challenge) throws SignatureException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    /**
+     * Signs a given base64'd challenge via ECDSA.
+     *
+     * @param privateKey private key for signing
+     * @param base64Challenge challenge to sign
+     * @return base64 encoded challenge
+     * @throws SignatureException if signing fails
+     * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
+     * @throws InvalidKeyException if the key is invalid
+     */
+    public static String sign(PrivateKey privateKey, String base64Challenge) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         Signature signature = Signature.getInstance("NONEwithECDSA");
         signature.initSign(privateKey);
         signature.update(Base64.getDecoder().decode(base64Challenge));
         return Base64.getEncoder().encodeToString(signature.sign());
     }
 
+    /**
+     * Generates a new EC {@link KeyPair} for use with this SASL protocol.
+     *
+     * @return a shiny new key pair
+     * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
+     */
     public static KeyPair getNewKey() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
