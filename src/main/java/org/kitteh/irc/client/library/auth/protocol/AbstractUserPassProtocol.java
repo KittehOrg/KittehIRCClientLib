@@ -25,7 +25,6 @@ package org.kitteh.irc.client.library.auth.protocol;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.auth.protocol.element.Password;
-import org.kitteh.irc.client.library.auth.protocol.element.Username;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 

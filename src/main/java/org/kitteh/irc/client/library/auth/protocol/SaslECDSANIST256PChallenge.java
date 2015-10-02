@@ -181,7 +181,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
     }
 
     // TODO UNIT TEST BELOW
-    public static void signAndVerify(PrivateKey privateKey, String challenge, PublicKey publicKey) throws SignatureException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static void signAndVerify(PrivateKey privateKey, String challenge, PublicKey publicKey) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         Signature signature = Signature.getInstance("NONEwithECDSA");
         signature.initSign(privateKey);
         signature.update(Base64.getDecoder().decode(challenge));
