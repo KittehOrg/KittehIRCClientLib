@@ -30,7 +30,6 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.util.CommandFilter;
 
 import javax.annotation.Nonnull;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -155,7 +154,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
      *
      * @param privateKey private key for signing
      * @param base64Challenge challenge to sign
-     * @return base64 encoded challenge
+     * @return base64 encoded signature
      * @throws SignatureException if signing fails
      * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
      * @throws InvalidKeyException if the key is invalid
@@ -180,40 +179,22 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
         return keyPairGenerator.generateKeyPair();
     }
 
-    // TODO UNIT TEST BELOW
-    public static void signAndVerify(PrivateKey privateKey, String challenge, PublicKey publicKey) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
-        Signature signature = Signature.getInstance("NONEwithECDSA");
-        signature.initSign(privateKey);
-        signature.update(Base64.getDecoder().decode(challenge));
-        byte[] signed = signature.sign();
+    /**
+     * Verifies a signature.
+     *
+     * @param publicKey public key to use in verification
+     * @param base64Challenge the challenge that was signed
+     * @param signature signature
+     * @return true if verified
+     * @throws SignatureException if something has gone horribly wrong
+     * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
+     * @throws InvalidKeyException if the key is invalid
+     */
+    public static boolean verify(PublicKey publicKey, String base64Challenge, String signature) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         Signature ver = Signature.getInstance("NONEwithECDSA");
         ver.initVerify(publicKey);
-        ver.update(Base64.getDecoder().decode(challenge));
-        System.out.println("Verified: " + ver.verify(signed));
+        Base64.Decoder decoder = Base64.getDecoder();
+        ver.update(decoder.decode(base64Challenge));
+        return ver.verify(decoder.decode(signature));
     }
-
-    public static void main(String[] args) throws Throwable {
-        KeyPair keyPair = getNewKey();
-        PublicKey publicKeyO = keyPair.getPublic();
-        PrivateKey privateKeyO = keyPair.getPrivate();
-        System.out.println(((ECPrivateKey) privateKeyO).getParams());
-
-        signAndVerify(privateKeyO, "MwRW+/KpEiEWcA+d5d19t9imD4h+DJbLXORcHSSSwl0=", publicKeyO);
-
-        String publicKeyS = base64Encode(publicKeyO);
-        String privateKeyS = base64Encode(privateKeyO);
-        System.out.println();
-        System.out.println(publicKeyS);
-        System.out.println();
-        System.out.println(privateKeyS);
-        System.out.println();
-
-        PublicKey publicKeyN = getPublicKey(publicKeyS);
-        PrivateKey privateKeyN = getPrivateKey(privateKeyS);
-
-        signAndVerify(privateKeyN, "MwRW+/KpEiEWcA+d5d19t9imD4h+DJbLXORcHSSSwl0=", publicKeyO);
-        signAndVerify(privateKeyN, "MwRW+/KpEiEWcA+d5d19t9imD4h+DJbLXORcHSSSwl0=", publicKeyN);
-        signAndVerify(privateKeyO, "MwRW+/KpEiEWcA+d5d19t9imD4h+DJbLXORcHSSSwl0=", publicKeyN);
-    }
-    // TODO UNIT TEST ABOVE
 }
