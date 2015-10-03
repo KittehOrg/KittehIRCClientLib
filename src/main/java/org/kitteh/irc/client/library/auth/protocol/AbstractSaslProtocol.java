@@ -48,6 +48,8 @@ import java.util.Optional;
 
 /**
  * SASL authentication. Automatically attempts auth during connection.
+ *
+ * @param <AuthValue> authentication value type
  */
 public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtocol implements EventListening {
     protected class Listener {
@@ -147,7 +149,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
      * @param authValue authentication value
      * @param saslType type of SASL auth
      */
-    public AbstractSaslProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull AuthValue authValue, @Nonnull String saslType) {
+    protected AbstractSaslProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull AuthValue authValue, @Nonnull String saslType) {
         super(client, username);
         this.saslType = saslType;
         this.authValue = authValue;
@@ -162,13 +164,24 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
     @Nonnull
     @Override
     public Object getEventListener() {
-        return this.listener == null ? this.listener = new Listener() : this.listener;
+        return (this.listener == null) ? (this.listener = new Listener()) : this.listener;
     }
 
+    /**
+     * Gets the authentication value, be it a password or key.
+     *
+     * @return the authentication value
+     */
     protected final AuthValue getAuthValue() {
         return this.authValue;
     }
 
+    /**
+     * Sets the authentication value.
+     *
+     * @param authValue the authentication value
+     * @throws IllegalArgumentException if the value is null
+     */
     protected final void setAuthValue(@Nonnull AuthValue authValue) {
         Sanity.nullCheck(authValue, "Auth value cannot be null");
         this.authValue = authValue;

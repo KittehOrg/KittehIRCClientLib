@@ -40,7 +40,6 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.interfaces.ECPrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -51,7 +50,7 @@ import java.util.Base64;
  * during connection.
  */
 public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey> {
-    private class Listener extends AbstractSaslProtocol.Listener {
+    private class Listener extends AbstractSaslProtocol<PrivateKey>.Listener {
         @CommandFilter("AUTHENTICATE")
         @Handler(filters = @Filter(CommandFilter.Filter.class))
         @Override
@@ -88,13 +87,13 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
 
     @Override
     protected String getAuthLine() {
-        return this.getUsername() + "\0" + this.getUsername() + "\0";
+        return this.getUsername() + '\0' + this.getUsername() + '\0';
     }
 
     @Nonnull
     @Override
     public Object getEventListener() {
-        return this.listener == null ? this.listener = new Listener() : this.listener;
+        return (this.listener == null) ? (this.listener = new Listener()) : this.listener;
     }
 
     /**
