@@ -95,13 +95,6 @@
         </dependency>
     </dependencies>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>kitteh-repo</id>
-            <url>http://repo.kitteh.org/content/groups/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <distributionManagement>
         <repository>
             <id>kittehReleases</id>
@@ -262,23 +255,6 @@
                         <include>src/main/java/org/kitteh/**</include>
                     </includes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.kitteh</groupId>
-                <artifactId>kitteh-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <configuration>
-                    <packageName>org.kitteh.irc.client.library</packageName>
-                    <toStringRequired>false</toStringRequired>
-                    <toStringIgnoreUtilities>true</toStringIgnoreUtilities>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>tostring</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
