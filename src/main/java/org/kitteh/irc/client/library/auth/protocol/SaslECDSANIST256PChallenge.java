@@ -40,6 +40,8 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECPoint;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -146,6 +148,29 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
         return keyFactory.generatePublic(keySpec);
+    }
+
+    /**
+     * Applies point compression to a public key and returns the result,
+     * encoded with base64.
+     *
+     * See http://www.secg.org/sec1-v2.pdf section 2.3.3 for more info.
+     *
+     * @param publicKey the public key to get the compressed X9.62
+     * representation for
+     * @return base64 encoded compressed public key
+     */
+    public static String getCompressedBase64PublicKey(ECPublicKey publicKey) {
+        ECPoint ecPoint = publicKey.getW();
+        byte[] xBytes = ecPoint.getAffineX().toByteArray();
+        int overflow = xBytes.length - 32;
+        byte[] yBytes = ecPoint.getAffineY().toByteArray();
+        byte finalYByte = yBytes[yBytes.length - 1];
+        byte header = (byte) ((finalYByte & 0x01) | 0x02);
+        byte[] result = new byte[(xBytes.length + 1) - overflow];
+        System.arraycopy(xBytes, overflow, result, 1, 32);
+        result[0] = header;
+        return Base64.getEncoder().encodeToString(result);
     }
 
     /**
