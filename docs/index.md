@@ -9,7 +9,7 @@ Some niceties about KICL include:
 * [Full SSL support](advanced/ssl.md)
 * [WEBIRC authentication](advanced/webirc.md)
 * Fully featured CTCP support
-* IRCv3.1 support
+* [IRCv3.1 and IRCv3.2 support](ircv3.md)
     * CAP negotiation
     * SASL authentication
     * Account tracking with account-notify, extended-join, and WHOX
