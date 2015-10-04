@@ -141,6 +141,8 @@ public enum IRCFormat {
      * Character indicating color.
      */
     public static final char COLOR_CHAR = '\u0003';
+    private static final String COLOR_REGEX = COLOR_CHAR + "[0-9]{1,2}";
+    private static final String FORMATS_REGEX = "[" + BOLD + RESET + REVERSE + UNDERLINE + ']';
 
     /**
      * Strips color from a given input.
@@ -151,7 +153,7 @@ public enum IRCFormat {
     @Nonnull
     public static String stripColor(@Nonnull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
-        return input.replaceAll(COLOR_CHAR + "[0-9]{1,2}", "");
+        return input.replaceAll(COLOR_REGEX, "");
     }
 
     /**
@@ -163,7 +165,7 @@ public enum IRCFormat {
     @Nonnull
     public static String stripFormatting(@Nonnull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
-        return input.replaceAll("[" + BOLD + RESET + REVERSE + UNDERLINE + ']', "");
+        return input.replaceAll(FORMATS_REGEX, "");
     }
 
     /**

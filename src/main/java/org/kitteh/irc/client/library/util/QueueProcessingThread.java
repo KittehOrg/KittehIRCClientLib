@@ -28,6 +28,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Self starting processor of queued items on its own thread.
+ *
+ * @param <Type> type of items queued
  */
 public abstract class QueueProcessingThread<Type> extends Thread {
     private final Queue<Type> queue = new ConcurrentLinkedQueue<>();

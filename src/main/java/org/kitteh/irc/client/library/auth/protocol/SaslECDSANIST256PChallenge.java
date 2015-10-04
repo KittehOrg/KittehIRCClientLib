@@ -28,6 +28,7 @@ import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.util.CommandFilter;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.security.InvalidKeyException;
@@ -79,6 +80,12 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
          */
         public ECPublicKey getPublic() {
             return this.publicKey;
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("privateKey", this.privateKey).add("publicKey", this.publicKey).toString();
         }
     }
 
