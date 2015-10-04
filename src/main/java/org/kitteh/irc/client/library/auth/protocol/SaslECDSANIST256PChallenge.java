@@ -35,11 +35,10 @@ import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECPoint;
 import java.security.spec.InvalidKeySpecException;
@@ -51,8 +50,39 @@ import java.util.Base64;
  * SASL ECDSA-NIST256P-CHALLENGE authentication. Automatically attempts auth
  * during connection.
  */
-public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey> {
-    private class Listener extends AbstractSaslProtocol<PrivateKey>.Listener {
+public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKey> {
+    /**
+     * Holds a private and public key.
+     */
+    public static final class ECKeyPair {
+        private final ECPrivateKey privateKey;
+        private final ECPublicKey publicKey;
+
+        private ECKeyPair(ECPrivateKey privateKey, ECPublicKey publicKey) {
+            this.privateKey = privateKey;
+            this.publicKey = publicKey;
+        }
+
+        /**
+         * Returns a reference to the private key component of this key pair.
+         *
+         * @return a reference to the private key
+         */
+        public ECPrivateKey getPrivate() {
+            return this.privateKey;
+        }
+
+        /**
+         * Returns a reference to the public key component of this key pair.
+         *
+         * @return a reference to the public key
+         */
+        public ECPublicKey getPublic() {
+            return this.publicKey;
+        }
+    }
+
+    private class Listener extends AbstractSaslProtocol<ECPrivateKey>.Listener {
         @CommandFilter("AUTHENTICATE")
         @Handler(filters = @Filter(CommandFilter.Filter.class))
         @Override
@@ -83,7 +113,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
      * @param username username
      * @param privateKey private key
      */
-    public SaslECDSANIST256PChallenge(@Nonnull Client client, @Nonnull String username, @Nonnull PrivateKey privateKey) {
+    public SaslECDSANIST256PChallenge(@Nonnull Client client, @Nonnull String username, @Nonnull ECPrivateKey privateKey) {
         super(client, username, privateKey, "ECDSA-NIST256P-CHALLENGE");
     }
 
@@ -99,55 +129,55 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
     }
 
     /**
-     * Encodes a given {@link PrivateKey} to base64.
+     * Encodes a given {@link ECPrivateKey} to base64.
      *
      * @param privateKey key to encode
      * @return encoded key
      * @see #getPrivateKey(String)
      */
-    public static String base64Encode(PrivateKey privateKey) {
+    public static String base64Encode(ECPrivateKey privateKey) {
         return Base64.getEncoder().encodeToString(privateKey.getEncoded());
     }
 
     /**
-     * Encodes a given {@link PublicKey} to base64.
+     * Encodes a given {@link ECPublicKey} to base64.
      *
      * @param publicKey key to encode
      * @return encoded key
      * @see #getPublicKey(String)
      */
-    public static String base64Encode(PublicKey publicKey) {
+    public static String base64Encode(ECPublicKey publicKey) {
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
 
     /**
-     * Gets a {@link PrivateKey} from a base64 encoded String.
+     * Gets a {@link ECPrivateKey} from a base64 encoded String.
      *
      * @param base64Encoded encoded string
      * @return the key
      * @throws NoSuchAlgorithmException if the JVM doesn't support EC
      * @throws InvalidKeySpecException if the encoded key is invalid
-     * @see #base64Encode(PrivateKey)
+     * @see #base64Encode(ECPrivateKey)
      */
-    public static PrivateKey getPrivateKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static ECPrivateKey getPrivateKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
-        return keyFactory.generatePrivate(keySpec);
+        return (ECPrivateKey) keyFactory.generatePrivate(keySpec);
     }
 
     /**
-     * Gets a {@link PublicKey} from a base64 encoded String.
+     * Gets a {@link ECPublicKey} from a base64 encoded String.
      *
      * @param base64Encoded encoded string
      * @return the key
      * @throws NoSuchAlgorithmException if the JVM doesn't support EC
      * @throws InvalidKeySpecException if the encoded key is invalid
-     * @see #base64Encode(PublicKey)
+     * @see #base64Encode(ECPublicKey)
      */
-    public static PublicKey getPublicKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static ECPublicKey getPublicKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
-        return keyFactory.generatePublic(keySpec);
+        return (ECPublicKey) keyFactory.generatePublic(keySpec);
     }
 
     /**
@@ -183,7 +213,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
      * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
      * @throws InvalidKeyException if the key is invalid
      */
-    public static String sign(PrivateKey privateKey, String base64Challenge) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+    public static String sign(ECPrivateKey privateKey, String base64Challenge) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         Signature signature = Signature.getInstance("NONEwithECDSA");
         signature.initSign(privateKey);
         signature.update(Base64.getDecoder().decode(base64Challenge));
@@ -191,16 +221,17 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
     }
 
     /**
-     * Generates a new EC {@link KeyPair} for use with this SASL protocol.
+     * Generates a new {@link ECKeyPair} for use with this SASL protocol.
      *
      * @return a shiny new key pair
      * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
      */
-    public static KeyPair getNewKey() throws NoSuchAlgorithmException {
+    public static ECKeyPair getNewKey() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
         keyPairGenerator.initialize(256, secureRandom);
-        return keyPairGenerator.generateKeyPair();
+        KeyPair pair = keyPairGenerator.generateKeyPair();
+        return new ECKeyPair((ECPrivateKey) pair.getPrivate(), (ECPublicKey) pair.getPublic());
     }
 
     /**
@@ -214,7 +245,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<PrivateKey>
      * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
      * @throws InvalidKeyException if the key is invalid
      */
-    public static boolean verify(PublicKey publicKey, String base64Challenge, String signature) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+    public static boolean verify(ECPublicKey publicKey, String base64Challenge, String signature) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         Signature ver = Signature.getInstance("NONEwithECDSA");
         ver.initVerify(publicKey);
         Base64.Decoder decoder = Base64.getDecoder();

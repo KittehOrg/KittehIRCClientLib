@@ -4,11 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.security.InvalidKeyException;
-import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SignatureException;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 /**
@@ -26,9 +25,9 @@ public class SaslECDSANIST256PChallengeTest {
      */
     @Test
     public void signAndVerify() throws InvalidKeyException, NoSuchAlgorithmException, SignatureException {
-        KeyPair keyPair = SaslECDSANIST256PChallenge.getNewKey();
-        PublicKey publicKeyO = keyPair.getPublic();
-        PrivateKey privateKeyO = keyPair.getPrivate();
+        SaslECDSANIST256PChallenge.ECKeyPair keyPair = SaslECDSANIST256PChallenge.getNewKey();
+        ECPublicKey publicKeyO = keyPair.getPublic();
+        ECPrivateKey privateKeyO = keyPair.getPrivate();
         String signature = SaslECDSANIST256PChallenge.sign(privateKeyO, CHALLENGE);
         Assert.assertTrue("Failed to verify signed challenge", SaslECDSANIST256PChallenge.verify(publicKeyO, CHALLENGE, signature));
     }
@@ -44,9 +43,9 @@ public class SaslECDSANIST256PChallengeTest {
      */
     @Test
     public void encodePrivateKey() throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, SignatureException {
-        KeyPair keyPair = SaslECDSANIST256PChallenge.getNewKey();
+        SaslECDSANIST256PChallenge.ECKeyPair keyPair = SaslECDSANIST256PChallenge.getNewKey();
         String encodedPrivateKey = SaslECDSANIST256PChallenge.base64Encode(keyPair.getPrivate());
-        PrivateKey recreatedPrivateKey = SaslECDSANIST256PChallenge.getPrivateKey(encodedPrivateKey);
+        ECPrivateKey recreatedPrivateKey = SaslECDSANIST256PChallenge.getPrivateKey(encodedPrivateKey);
         String signature = SaslECDSANIST256PChallenge.sign(recreatedPrivateKey, CHALLENGE);
         Assert.assertTrue("Failed to verify signed challenge", SaslECDSANIST256PChallenge.verify(keyPair.getPublic(), CHALLENGE, signature));
     }
@@ -62,10 +61,10 @@ public class SaslECDSANIST256PChallengeTest {
      */
     @Test
     public void encodePublicKey() throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, SignatureException {
-        KeyPair keyPair = SaslECDSANIST256PChallenge.getNewKey();
+        SaslECDSANIST256PChallenge.ECKeyPair keyPair = SaslECDSANIST256PChallenge.getNewKey();
         String signature = SaslECDSANIST256PChallenge.sign(keyPair.getPrivate(), CHALLENGE);
         String encodedPublicKey = SaslECDSANIST256PChallenge.base64Encode(keyPair.getPublic());
-        PublicKey recreatedPublicKey = SaslECDSANIST256PChallenge.getPublicKey(encodedPublicKey);
+        ECPublicKey recreatedPublicKey = SaslECDSANIST256PChallenge.getPublicKey(encodedPublicKey);
         Assert.assertTrue("Failed to verify signed challenge", SaslECDSANIST256PChallenge.verify(recreatedPublicKey, CHALLENGE, signature));
     }
 }
