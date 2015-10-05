@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Commands to be executed!
+ * Helper classes for executing a subset of commands.
  */
 package org.kitteh.irc.client.library.command;
