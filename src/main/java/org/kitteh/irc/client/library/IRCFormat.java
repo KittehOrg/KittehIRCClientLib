@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.regex.Pattern;
 
 /**
  * Represents various formatting available in IRC.
@@ -141,8 +142,8 @@ public enum IRCFormat {
      * Character indicating color.
      */
     public static final char COLOR_CHAR = '\u0003';
-    private static final String COLOR_REGEX = COLOR_CHAR + "[0-9]{1,2}";
-    private static final String FORMATS_REGEX = "[" + BOLD + RESET + REVERSE + UNDERLINE + ']';
+    private static final Pattern COLOR_REGEX = Pattern.compile(COLOR_CHAR + "[0-9]{1,2}");
+    private static final Pattern FORMAT_REGEX = Pattern.compile("[" + BOLD + RESET + REVERSE + UNDERLINE + ']');
 
     /**
      * Strips color from a given input.
@@ -153,7 +154,7 @@ public enum IRCFormat {
     @Nonnull
     public static String stripColor(@Nonnull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
-        return input.replaceAll(COLOR_REGEX, "");
+        return COLOR_REGEX.matcher(input).replaceAll("");
     }
 
     /**
@@ -165,7 +166,7 @@ public enum IRCFormat {
     @Nonnull
     public static String stripFormatting(@Nonnull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
-        return input.replaceAll(FORMATS_REGEX, "");
+        return FORMAT_REGEX.matcher(input).replaceAll("");
     }
 
     /**
