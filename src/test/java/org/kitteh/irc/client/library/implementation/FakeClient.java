@@ -4,6 +4,7 @@ import org.kitteh.irc.client.library.EventManager;
 import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
+import org.kitteh.irc.client.library.element.User;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -199,6 +200,12 @@ class FakeClient extends InternalClient {
     @Override
     public IRCServerInfo getServerInfo() {
         return this.serverInfo;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<User> getUser() {
+        return Optional.empty();
     }
 
     @Override

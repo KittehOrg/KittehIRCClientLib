@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.MessageTagManager;
 import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
@@ -187,6 +188,17 @@ final class IRCClient extends InternalClient {
     @Override
     public IRCServerInfo getServerInfo() {
         return this.serverInfo;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<User> getUser() {
+        final ActorProvider.IRCUser user = this.actorProvider.getUser(this.getNick());
+        // TODO always have a User once we know our details via the server
+        if (user == null) {
+            return Optional.empty();
+        }
+        return Optional.of(user.snapshot());
     }
 
     @Override
