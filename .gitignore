@@ -1,0 +1,12 @@
+# IntelliJ IDEA
+.idea
+*.iml
+
+# OS X filesystem
+.DS_Store
+
+# .gitignore, for your modification pleasure
+.gitignore
+
+# Maven
+/target
