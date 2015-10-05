@@ -8,6 +8,7 @@ pages:
   - Account Tracking: advanced/accounts.md
   - SSL: advanced/ssl.md
   - WEBIRC: advanced/webirc.md
+  - ECDSA: advanced/ecdsa.md
 
 markdown_extensions: [fenced_code]
 theme: readthedocs
