@@ -171,6 +171,25 @@ public interface Channel extends MessageReceiver, Staleable {
     }
 
     /**
+     * Kicks the given user from this channel for the given reason.
+     *
+     * @param user user to kick
+     * @param reason reason for the kick
+     */
+    default void kick(@Nonnull User user, @Nonnull String reason) {
+        this.newKickCommand().target(user).reason(reason).execute();
+    }
+
+    /**
+     * Kicks the given user from this channel without a reason.
+     *
+     * @param user user to kick
+     */
+    default void kick(@Nonnull User user) {
+        this.newKickCommand().target(user).execute();
+    }
+
+    /**
      * Provides a new KICK command.
      *
      * @return new kick command
