@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -182,6 +183,30 @@ public interface Client {
      */
     @Nonnull
     ServerInfo getServerInfo();
+
+    /**
+     * Gets the User that the client is represented by. Will return {@link
+     * Optional#EMPTY} if the User is not currently known, such as during
+     * connection and registration.
+     *
+     * @return the user of this client if known
+     */
+    @Nonnull
+    Optional<User> getUser();
+
+    /**
+     * Checks to see if this client is the same as the given user. Note that
+     * the Client is not any User during connection and registration.
+     *
+     * @param user user to check this client against
+     * @return true if this client is the user, false if not
+     * @throws IllegalArgumentException if user null or from different Client
+     */
+    default boolean isUser(@Nonnull User user) {
+        Sanity.nullCheck(user, "User cannot be null");
+        Sanity.truthiness(user.getClient() == this, "User cannot come from a different Client");
+        return user.equals(this.getUser().orElse(null));
+    }
 
     /**
      * Removes a channel from the client, leaving as necessary.
