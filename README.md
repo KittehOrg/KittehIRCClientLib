@@ -1,14 +1,17 @@
 Kitteh IRC Client Library
 =========================
-The little lib that could
--------------------------
 
 The Kitteh IRC Client Library (KICL) is a powerful, modern Java IRC library built with NIO
 using the Netty library to maximize performance and scalability.
 
 [![Build Status](https://travis-ci.org/KittehOrg/KittehIRCClientLib.svg?branch=master)](https://travis-ci.org/KittehOrg/KittehIRCClientLib)
 
-[Docs](http://kicl.kitteh.org/)
+The little lib that could
+-------------------------
+
+[Project News](http://kitteh.org/)
+
+[Documentation on using KICL](http://kicl.kitteh.org/)
 
 [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/)
 
