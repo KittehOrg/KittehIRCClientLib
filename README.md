@@ -11,7 +11,7 @@ The little lib that could
 
 [Project News](http://kitteh.org/)
 
-[Documentation on using KICL](http://kicl.kitteh.org/)
+[Documentation](http://kicl.kitteh.org/)
 
 [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/)
 
