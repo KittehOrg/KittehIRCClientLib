@@ -249,16 +249,16 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder server(int port) {
-        this.serverPort = this.validPort(port);
+    public IRCClientBuilder serverHost(@Nonnull String host) {
+        Sanity.nullCheck(host, "Host cannot be null");
+        this.serverHost = host;
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder server(@Nonnull String host) {
-        Sanity.nullCheck(host, "Host cannot be null");
-        this.serverHost = host;
+    public IRCClientBuilder serverPort(int port) {
+        this.serverPort = this.validPort(port);
         return this;
     }
 

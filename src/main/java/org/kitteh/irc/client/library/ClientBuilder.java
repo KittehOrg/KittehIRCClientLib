@@ -296,17 +296,6 @@ public interface ClientBuilder extends Cloneable {
     ClientBuilder messageDelay(int delay);
 
     /**
-     * Sets the server port to which the client will connect.
-     * <p>
-     * By default, the port is 6667.
-     *
-     * @param port IRC server port
-     * @return this builder
-     */
-    @Nonnull
-    ClientBuilder server(int port);
-
-    /**
      * Sets the server host to which the client will connect.
      * <p>
      * By default, the host is localhost.
@@ -316,7 +305,18 @@ public interface ClientBuilder extends Cloneable {
      * @throws IllegalArgumentException for null host
      */
     @Nonnull
-    ClientBuilder server(@Nonnull String host);
+    ClientBuilder serverHost(@Nonnull String host);
+
+    /**
+     * Sets the server port to which the client will connect.
+     * <p>
+     * By default, the port is 6667.
+     *
+     * @param port IRC server port
+     * @return this builder
+     */
+    @Nonnull
+    ClientBuilder serverPort(int port);
 
     /**
      * Sets the user the client connects as.
