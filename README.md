@@ -25,3 +25,5 @@ Repository URL: `http://repo.kitteh.org/content/groups/public`
 <groupId>org.kitteh.irc</groupId>
 <artifactId>client-lib</artifactId>
 ```
+
+![KICL HAS A BAD LOGO](http://i.imgur.com/KCUNexy.png)
