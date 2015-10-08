@@ -1,0 +1,8 @@
+# This is a simple .gitignore for simple needs.
+
+# To ignore files system-wide, use the global git setting core.excludesfile
+# For repo-specific ignoring, use .git/info/exclude
+# To ignore the opinions of others, cover your ears and scream "LA LA LA!"
+
+# Maven makes this!
+/target
