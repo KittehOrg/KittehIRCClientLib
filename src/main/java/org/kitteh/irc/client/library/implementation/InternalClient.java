@@ -50,6 +50,10 @@ abstract class InternalClient implements Client {
     @Nonnull
     abstract Set<String> getIntendedChannels();
 
+    @Override
+    @Nonnull
+    public abstract IRCISupportManager getISupportManager();
+
     @Nonnull
     abstract Listener<String> getOutputListener();
 

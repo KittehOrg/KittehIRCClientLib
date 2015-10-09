@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.CaseMapping;
 import org.kitteh.irc.client.library.ServerInfo;
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -35,26 +35,21 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 final class IRCServerInfo implements ServerInfo {
     private final InternalClient client;
-    private CaseMapping caseMapping = CaseMapping.RFC1459;
-    private int channelLengthLimit = -1;
-    private Map<Character, Integer> channelLimits = new HashMap<>();
-    private List<ChannelMode> channelModes;
-    private List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
-    private List<ChannelUserMode> channelUserModes;
+    private final Map<String, ISupportParameter> iSupportParameterMap = new ConcurrentHashMap<>();
+    private final List<ChannelMode> channelModes;
+    private final List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
+    private final List<ChannelUserMode> channelUserModes;
     private Optional<List<String>> motd;
-    private Optional<String> networkName;
-    private int nickLengthLimit = -1;
     private Optional<String> address;
     private Optional<String> version;
-    private boolean supportsWhoX;
 
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
@@ -90,61 +85,34 @@ final class IRCServerInfo implements ServerInfo {
 
     @Nonnull
     @Override
-    public CaseMapping getCaseMapping() {
-        return this.caseMapping;
-    }
-
-    void setCaseMapping(@Nonnull CaseMapping caseMapping) {
-        this.caseMapping = caseMapping;
-    }
-
-    @Override
-    public int getChannelLengthLimit() {
-        return this.channelLengthLimit;
-    }
-
-    void setChannelLengthLimit(int channelLengthLimit) {
-        this.channelLengthLimit = channelLengthLimit;
-    }
-
-    @Nonnull
-    @Override
-    public Map<Character, Integer> getChannelLimits() {
-        return new HashMap<>(this.channelLimits);
-    }
-
-    void setChannelLimits(Map<Character, Integer> channelLimits) {
-        this.channelLimits = channelLimits;
-    }
-
-    @Nonnull
-    @Override
     public List<ChannelMode> getChannelModes() {
-        return new ArrayList<>(this.channelModes);
-    }
-
-    void setChannelModes(List<ChannelMode> channelModes) {
-        this.channelModes = channelModes;
+        Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter(ISupportParameter.ChanModes.NAME, ISupportParameter.ChanModes.class);
+        return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.channelModes);
     }
 
     @Nonnull
     @Override
     public List<Character> getChannelPrefixes() {
-        return new ArrayList<>(this.channelPrefixes);
-    }
-
-    void setChannelPrefixes(@Nonnull List<Character> channelPrefixes) {
-        this.channelPrefixes = channelPrefixes;
+        Optional<ISupportParameter.ChanTypes> optional = this.getISupportParameter(ISupportParameter.ChanTypes.NAME, ISupportParameter.ChanTypes.class);
+        return new ArrayList<>(optional.isPresent() ? optional.get().getTypes() : this.channelPrefixes);
     }
 
     @Nonnull
     @Override
     public List<ChannelUserMode> getChannelUserModes() {
-        return new ArrayList<>(this.channelUserModes);
+        Optional<ISupportParameter.Prefix> optional = this.getISupportParameter(ISupportParameter.Prefix.NAME, ISupportParameter.Prefix.class);
+        return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.channelUserModes);
     }
 
-    void setChannelUserModes(@Nonnull List<ChannelUserMode> channelUserModes) {
-        this.channelUserModes = channelUserModes;
+    @Nonnull
+    @Override
+    public Optional<ISupportParameter> getISupportParameter(@Nonnull String name) {
+        Sanity.nullCheck(name, "Name cannot be null");
+        return Optional.ofNullable(this.iSupportParameterMap.get(name.toUpperCase()));
+    }
+
+    void addISupportParameter(@Nonnull ISupportParameter parameter) {
+        this.iSupportParameterMap.put(parameter.getName().toUpperCase(), parameter);
     }
 
     @Nonnull
@@ -159,25 +127,6 @@ final class IRCServerInfo implements ServerInfo {
 
     @Nonnull
     @Override
-    public Optional<String> getNetworkName() {
-        return this.networkName;
-    }
-
-    void setNetworkName(@Nonnull String networkName) {
-        this.networkName = Optional.of(networkName);
-    }
-
-    @Override
-    public int getNickLengthLimit() {
-        return this.nickLengthLimit;
-    }
-
-    void setNickLengthLimit(int nickLengthLimit) {
-        this.nickLengthLimit = nickLengthLimit;
-    }
-
-    @Nonnull
-    @Override
     public Optional<String> getVersion() {
         return this.version;
     }
@@ -186,20 +135,12 @@ final class IRCServerInfo implements ServerInfo {
         this.version = Optional.of(version);
     }
 
-    @Override
-    public boolean hasWhoXSupport() {
-        return this.supportsWhoX;
-    }
-
-    void setWhoXSupport() {
-        this.supportsWhoX = true;
-    }
-
     // Util stuffs
     @Override
     public boolean isValidChannel(@Nonnull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
-        return (name.length() > 1) && ((this.channelLengthLimit < 0) || (name.length() <= this.channelLengthLimit)) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
+        int channelLengthLimit = this.getChannelLengthLimit();
+        return (name.length() > 1) && ((channelLengthLimit < 0) || (name.length() <= channelLengthLimit)) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
     }
 
     @Nullable
