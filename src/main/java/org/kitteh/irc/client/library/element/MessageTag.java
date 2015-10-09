@@ -28,7 +28,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 /**
- * Reflects a message tag
+ * Reflects a message tag.
  */
 public interface MessageTag {
     /**
