@@ -40,11 +40,11 @@ public enum CaseMapping {
     /**
      * A-Z become a-z, [\]^ become {\}~
      */
-    RFC1459(']'),
+    RFC1459('^'),
     /**
      * A-Z become a-z, [\] become {\}
      */
-    STRICT_RFC1459('^');
+    STRICT_RFC1459(']');
 
     private static final Map<String, CaseMapping> nameMap = new HashMap<>();
 
