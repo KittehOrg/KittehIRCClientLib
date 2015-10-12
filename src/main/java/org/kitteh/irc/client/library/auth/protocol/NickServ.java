@@ -81,7 +81,7 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
     @Nonnull
     @Override
     protected String getAuthentication() {
-        return "NickServ :IDENTIFY " + this.getUsername() + ' ' + this.getPassword();
+        return "PRIVMSG NickServ :IDENTIFY " + this.getUsername() + ' ' + this.getPassword();
     }
 
     @Nonnull
