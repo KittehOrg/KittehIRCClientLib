@@ -61,9 +61,7 @@ public final class StringUtil {
         for (int x = start; (x < split.length) && (x < (start + length)); x++) {
             builder.append(split[x]).append(delimiter);
         }
-        if (builder.length() > 0) {
-            builder.setLength(builder.length() - delimiter.length());
-        }
+        builder.setLength(builder.length() - delimiter.length());
         return builder.toString();
     }
 
