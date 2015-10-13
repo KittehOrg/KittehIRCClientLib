@@ -130,9 +130,6 @@ public enum IRCFormat {
     }
 
     IRCFormat(int color) {
-        if ((color & 15) != color) {
-            throw new AssertionError("Impossible color id: " + color);
-        }
         this.color = color;
         this.isColor = true;
         this.toString = COLOR_CHAR + ((color < 10) ? "0" : "") + color;
@@ -206,6 +203,6 @@ public enum IRCFormat {
         Sanity.nullCheck(background, "Background cannot be null");
         Sanity.truthiness(this.isColor, "Cannot use non-color foreground.");
         Sanity.truthiness(background.isColor, "Cannot use non-color background");
-        return this.toString() + ',' + background.color;
+        return this.toString() + ',' + background.toString().substring(1);
     }
 }
