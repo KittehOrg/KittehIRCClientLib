@@ -19,6 +19,7 @@ public class CaseMappingTest {
             Assert.assertTrue("Failed to acquire mapping for " + caseMapping.name(), acquired.isPresent());
             Assert.assertEquals(caseMapping, acquired.get());
         }
+        Assert.assertEquals(Optional.empty(), CaseMapping.getByName(null));
     }
 
     @Test
@@ -33,7 +34,7 @@ public class CaseMappingTest {
         for (CaseMapping caseMapping : CaseMapping.values()) {
             Assert.assertTrue("Missing CaseMapping " + caseMapping.name(), test.containsKey(caseMapping));
         }
-        for(Map.Entry<CaseMapping, Pair<String, String>> entry : test.entrySet()) {
+        for (Map.Entry<CaseMapping, Pair<String, String>> entry : test.entrySet()) {
             Assert.assertEquals("", entry.getKey().toLowerCase(entry.getValue().getLeft()), entry.getValue().getRight());
         }
     }
