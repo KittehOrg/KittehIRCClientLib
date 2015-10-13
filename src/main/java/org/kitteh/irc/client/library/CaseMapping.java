@@ -38,11 +38,11 @@ public enum CaseMapping {
      */
     ASCII('Z'),
     /**
-     * A-Z become a-z, [\]^ become {\}~
+     * A-Z become a-z, []^ become {}~
      */
     RFC1459('^'),
     /**
-     * A-Z become a-z, [\] become {\}
+     * A-Z become a-z, [] become {}
      */
     STRICT_RFC1459(']');
 
@@ -62,7 +62,7 @@ public enum CaseMapping {
      */
     @Nonnull
     public static Optional<CaseMapping> getByName(@Nullable String name) {
-        return (name == null) ? Optional.empty() : Optional.of(nameMap.get(name.toUpperCase()));
+        return (name == null) ? Optional.empty() : Optional.ofNullable(nameMap.get(name.toUpperCase()));
     }
 
     private final char upperbound;
