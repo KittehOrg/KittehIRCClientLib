@@ -23,6 +23,7 @@ public class ToStringerTest {
                 .add("object", new Object())
                 .add("array", new String[]{"arr", "I'm a pirate"})
                 .add("short", (short) 5)
+                .add("null", null)
                 .toString());
     }
 
