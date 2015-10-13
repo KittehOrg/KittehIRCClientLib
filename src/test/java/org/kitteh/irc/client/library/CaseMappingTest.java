@@ -12,6 +12,9 @@ import java.util.Optional;
  * Tests case mappings.
  */
 public class CaseMappingTest {
+    /**
+     * Verifies all casemapping enums match names.
+     */
     @Test
     public void verifyMatch() {
         for (CaseMapping caseMapping : CaseMapping.values()) {
@@ -22,6 +25,9 @@ public class CaseMappingTest {
         Assert.assertEquals(Optional.empty(), CaseMapping.getByName(null));
     }
 
+    /**
+     * Tests casemapping lowercasing.
+     */
     @Test
     public void lowerCase() {
         Map<CaseMapping, Pair<String, String>> test = new HashMap<CaseMapping, Pair<String, String>>() {
