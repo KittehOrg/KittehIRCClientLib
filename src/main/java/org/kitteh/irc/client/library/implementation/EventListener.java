@@ -66,6 +66,11 @@ import org.kitteh.irc.client.library.event.client.RequestedChannelJoinCompleteEv
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
+import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
+import org.kitteh.irc.client.library.event.user.MonitoredNickListEvent;
+import org.kitteh.irc.client.library.event.user.MonitoredNickListFullEvent;
+import org.kitteh.irc.client.library.event.user.MonitoredNickOfflineEvent;
+import org.kitteh.irc.client.library.event.user.MonitoredNickOnlineEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
@@ -340,6 +345,61 @@ class EventListener {
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "KNOCK message sent for invalid channel name");
         }
+    }
+
+    @NumericFilter(730) // Monitor online
+    @NumericFilter(731) // Monitor offline
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void monitorOnline(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "MONITOR status message of incorrect length");
+        }
+        List<ServerMessage> originalMessages = listFromEvent(event);
+        for (String nick : event.getParameters().get(1).split(",")) {
+            MonitoredNickStatusEvent monitorEvent;
+            if (event.getNumeric() == 730) {
+                monitorEvent = new MonitoredNickOnlineEvent(this.client, originalMessages, nick);
+            } else {
+                monitorEvent = new MonitoredNickOfflineEvent(this.client, originalMessages, nick);
+            }
+            this.fire(monitorEvent);
+        }
+    }
+
+    private final List<String> monitorList = new LinkedList<>();
+    private final List<ServerMessage> monitorListMessages = new LinkedList<>();
+
+    @NumericFilter(732) // Monitor list
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void monitorList(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "MONITOR list message of incorrect length");
+        }
+        Collections.addAll(this.monitorList, event.getParameters().get(1).split(","));
+        this.monitorListMessages.add(messageFromEvent(event));
+    }
+
+    @NumericFilter(733) // Monitor list end
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void monitorListEnd(ClientReceiveNumericEvent event) {
+        this.fire(new MonitoredNickListEvent(this.client, this.monitorListMessages, this.monitorList));
+        this.monitorList.clear();
+        this.monitorListMessages.clear();
+    }
+
+    @NumericFilter(734) // Monitor list full
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void monitorListFull(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "MONITOR list full message of incorrect length");
+        }
+        int limit;
+        try {
+            limit = Integer.parseInt(event.getParameters().get(1));
+        } catch (NumberFormatException e) {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "MONITOR list full message using non-int limit");
+        }
+        this.fire(new MonitoredNickListFullEvent(this.client, listFromEvent(event), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
     }
 
     private final List<CapabilityState> capList = new LinkedList<>();
