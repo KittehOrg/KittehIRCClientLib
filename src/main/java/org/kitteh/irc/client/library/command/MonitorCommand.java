@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -115,14 +116,7 @@ public class MonitorCommand extends Command {
     @Nonnull
     public MonitorCommand target(@Nonnull String... targets) {
         Sanity.nullCheck(targets, "Targets cannot be null");
-        Set<String> targetSet = new LinkedHashSet<>();
-        for (String target : targets) {
-            Sanity.safeMessageCheck(target, "target");
-            Sanity.truthiness(target.indexOf(',') == -1, "Target cannot contain a comma");
-            targetSet.add(target);
-        }
-        this.targets = targetSet;
-        return this;
+        return this.target(Arrays.asList(targets));
     }
 
     /**

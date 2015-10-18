@@ -15,11 +15,6 @@ import java.util.List;
  */
 public class MonitorCommandTest {
     /**
-     * Wrapping to a new message occurs after this length.
-     */
-    public static final int CAPABILITY_REQUEST_SOFT_LIMIT = 200;
-
-    /**
      * Tests adding targets by array.
      */
     @Test
@@ -50,7 +45,7 @@ public class MonitorCommandTest {
     }
 
     /**
-     * Tests removing targets by collection.
+     * Tests removing targets.
      */
     @Test
     public void testRemove() {
@@ -58,7 +53,7 @@ public class MonitorCommandTest {
         MonitorCommand command = new MonitorCommand(ircClient);
 
         command.action(MonitorCommand.Action.REMOVE_TARGET);
-        command.target(Arrays.asList("meow", "purr"));
+        command.target("meow", "purr");
         command.execute();
 
         Mockito.verify(ircClient).sendRawLine("MONITOR - meow,purr");
@@ -85,7 +80,7 @@ public class MonitorCommandTest {
         Client ircClient = getClientMock();
         MonitorCommand command = new MonitorCommand(ircClient);
 
-        command.target(Arrays.asList("meow,", "purr"));
+        command.target("meow,", "purr");
     }
 
     /**
@@ -96,7 +91,7 @@ public class MonitorCommandTest {
         Client ircClient = getClientMock();
         MonitorCommand command = new MonitorCommand(ircClient);
 
-        command.target(Arrays.asList("meow", "purr"));
+        command.target("meow", "purr");
 
         command.execute();
     }
