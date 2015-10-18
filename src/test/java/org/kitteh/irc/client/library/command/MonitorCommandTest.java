@@ -73,6 +73,20 @@ public class MonitorCommandTest {
     }
 
     /**
+     * Tests a targetless failure.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testAddNoTarget2() {
+        Client ircClient = getClientMock();
+        MonitorCommand command = new MonitorCommand(ircClient);
+
+        command.action(MonitorCommand.Action.ADD_TARGET);
+        command.target();
+
+        command.execute();
+    }
+
+    /**
      * Tests invalid target input.
      */
     @Test(expected = IllegalArgumentException.class)
