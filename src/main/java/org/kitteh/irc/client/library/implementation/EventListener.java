@@ -489,6 +489,8 @@ class EventListener {
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
             this.fire(new ChannelTargetedNoticeEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
+        } else if (this.client.isUser(user)) {
+            // TODO handle messages sent by self
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NOTICE message to improper target");
         }
@@ -517,6 +519,8 @@ class EventListener {
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
             this.fire(new ChannelTargetedMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
+        } else if (this.client.isUser(user)) {
+            // TODO handle messages sent by self
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PRIVMSG message to improper target");
         }
