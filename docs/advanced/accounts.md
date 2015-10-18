@@ -1,6 +1,6 @@
 It is possible to use KICL to track when a user is logged into a server account.
 
-The method `User#getAcccount()` provides the account if known.
+The method `User#getAccount()` provides the account if known.
 
 ### Requirements
 
