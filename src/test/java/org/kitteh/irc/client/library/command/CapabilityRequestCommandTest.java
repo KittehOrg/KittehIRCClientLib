@@ -87,6 +87,7 @@ public class CapabilityRequestCommandTest {
 
     /**
      * Gets the mock for the Client interface.
+     *
      * @return Client mock.
      */
     private static Client getClientMock() {
