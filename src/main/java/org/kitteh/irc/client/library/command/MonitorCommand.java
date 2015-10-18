@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -94,9 +94,11 @@ public class MonitorCommand extends Command {
      *
      * @param action action to take
      * @return this command
+     * @throws IllegalArgumentException for null action
      */
     @Nonnull
-    private MonitorCommand action(@Nonnull Action action) {
+    public MonitorCommand action(@Nonnull Action action) {
+        Sanity.nullCheck(action, "Action cannot be null");
         this.action = action;
         return this;
     }
@@ -107,13 +109,16 @@ public class MonitorCommand extends Command {
      *
      * @param targets targets to add/remove
      * @return this command
+     * @throws IllegalArgumentException for \n, \r, \0, or comma in target or
+     * null target
      */
     @Nonnull
     public MonitorCommand target(@Nonnull String... targets) {
         Sanity.nullCheck(targets, "Targets cannot be null");
-        HashSet<String> targetSet = new HashSet<>();
+        Set<String> targetSet = new LinkedHashSet<>();
         for (String target : targets) {
             Sanity.safeMessageCheck(target, "target");
+            Sanity.truthiness(target.indexOf(',') == -1, "Target cannot contain a comma");
             targetSet.add(target);
         }
         this.targets = targetSet;
@@ -126,13 +131,16 @@ public class MonitorCommand extends Command {
      *
      * @param targets targets to add/remove
      * @return this command
+     * @throws IllegalArgumentException for \n, \r, \0, or comma in target or
+     * null target
      */
     @Nonnull
     public MonitorCommand target(@Nonnull Collection<String> targets) {
         Sanity.nullCheck(targets, "Targets cannot be null");
-        HashSet<String> targetSet = new HashSet<>();
+        Set<String> targetSet = new LinkedHashSet<>();
         for (String target : targets) {
             Sanity.safeMessageCheck(target, "target");
+            Sanity.truthiness(target.indexOf(',') == -1, "Target cannot contain a comma");
             targetSet.add(target);
         }
         this.targets = targetSet;
