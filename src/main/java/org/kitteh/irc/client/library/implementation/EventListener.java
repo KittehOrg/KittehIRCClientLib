@@ -342,57 +342,6 @@ class EventListener {
         }
     }
 
-    @CommandFilter("NOTICE")
-    @CommandFilter("PRIVMSG")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
-    public void ctcp(ClientReceiveCommandEvent event) {
-        if (event.getParameters().size() < 2) {
-            return; // Nothing to do here, handle that issue in the individual methods
-        }
-        if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
-            final String ctcpMessage = CTCPUtil.fromCTCP(event.getParameters().get(1));
-            final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
-            User user = (User) event.getActor();
-            switch (event.getCommand()) {
-                case "NOTICE":
-                    if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                        this.fire(new PrivateCTCPReplyEvent(this.client, listFromEvent(event), user, ctcpMessage));
-                    }
-                    break;
-                case "PRIVMSG":
-                    if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                        String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
-                        switch (ctcpMessage) {
-                            case "VERSION":
-                                reply = "VERSION I am Kitteh!";
-                                break;
-                            case "TIME":
-                                reply = "TIME " + new Date().toString();
-                                break;
-                            case "FINGER":
-                                reply = "FINGER om nom nom tasty finger";
-                                break;
-                        }
-                        if (ctcpMessage.startsWith("PING ")) {
-                            reply = ctcpMessage;
-                        }
-                        PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, listFromEvent(event), user, ctcpMessage, Optional.ofNullable(reply));
-                        this.fire(ctcpEvent);
-                        if (ctcpEvent.getReply().isPresent()) {
-                            this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(ctcpEvent.getReply().get()));
-                        }
-                    } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
-                        MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
-                        this.fire(new ChannelCTCPEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), ctcpMessage));
-                    } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
-                        MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-                        this.fire(new ChannelTargetedCTCPEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), ctcpMessage));
-                    }
-                    break;
-            }
-        }
-    }
-
     private final List<CapabilityState> capList = new LinkedList<>();
     private final List<ServerMessage> capListMessages = new LinkedList<>();
     private final List<CapabilityState> capLs = new LinkedList<>();
@@ -526,6 +475,10 @@ class EventListener {
         if (!(event.getActor() instanceof User)) {
             return; // TODO handle this
         }
+        if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
+            this.ctcp(event);
+            return;
+        }
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
@@ -547,11 +500,12 @@ class EventListener {
         if (event.getParameters().size() < 2) {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PRIVMSG message of incorrect length");
         }
-        if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
-            return;
-        }
         if (!(event.getActor() instanceof User)) {
             return; // TODO handle this
+        }
+        if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
+            this.ctcp(event);
+            return;
         }
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
@@ -565,6 +519,49 @@ class EventListener {
             this.fire(new ChannelTargetedMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PRIVMSG message to improper target");
+        }
+    }
+
+    public void ctcp(ClientReceiveCommandEvent event) {
+        final String ctcpMessage = CTCPUtil.fromCTCP(event.getParameters().get(1));
+        final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
+        User user = (User) event.getActor();
+        switch (event.getCommand()) {
+            case "NOTICE":
+                if (messageTargetInfo instanceof MessageTargetInfo.Private) {
+                    this.fire(new PrivateCTCPReplyEvent(this.client, listFromEvent(event), user, ctcpMessage));
+                }
+                break;
+            case "PRIVMSG":
+                if (messageTargetInfo instanceof MessageTargetInfo.Private) {
+                    String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
+                    switch (ctcpMessage) {
+                        case "VERSION":
+                            reply = "VERSION I am Kitteh!";
+                            break;
+                        case "TIME":
+                            reply = "TIME " + new Date().toString();
+                            break;
+                        case "FINGER":
+                            reply = "FINGER om nom nom tasty finger";
+                            break;
+                    }
+                    if (ctcpMessage.startsWith("PING ")) {
+                        reply = ctcpMessage;
+                    }
+                    PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, listFromEvent(event), user, ctcpMessage, Optional.ofNullable(reply));
+                    this.fire(ctcpEvent);
+                    if (ctcpEvent.getReply().isPresent()) {
+                        this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(ctcpEvent.getReply().get()));
+                    }
+                } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
+                    MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
+                    this.fire(new ChannelCTCPEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), ctcpMessage));
+                } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
+                    MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
+                    this.fire(new ChannelTargetedCTCPEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), ctcpMessage));
+                }
+                break;
         }
     }
 
