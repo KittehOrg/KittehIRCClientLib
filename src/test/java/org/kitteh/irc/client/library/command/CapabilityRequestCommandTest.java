@@ -16,6 +16,34 @@ public class CapabilityRequestCommandTest {
     public static final int CAPABILITY_REQUEST_SOFT_LIMIT = 200;
 
     /**
+     * Tests enabling a capability.
+     */
+    @Test
+    public void testEnable() {
+        Client ircClient = getClientMock();
+        CapabilityRequestCommand command = new CapabilityRequestCommand(ircClient);
+
+        command.enable("meow");
+        command.execute();
+
+        Mockito.verify(ircClient).sendRawLineImmediately("CAP REQ :meow ");
+    }
+
+    /**
+     * Tests enabling a capability.
+     */
+    @Test
+    public void testDisable() {
+        Client ircClient = getClientMock();
+        CapabilityRequestCommand command = new CapabilityRequestCommand(ircClient);
+
+        command.disable("meow");
+        command.execute();
+
+        Mockito.verify(ircClient).sendRawLineImmediately("CAP REQ :-meow ");
+    }
+
+    /**
      * Ensure if we request more capabilities than fit in the maximum
      * message length that the request is split up.
      */
