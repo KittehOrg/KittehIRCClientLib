@@ -43,7 +43,7 @@ Repository URL: `http://repo.kitteh.org/content/groups/public`
 ```xml
 <groupId>org.kitteh.irc</groupId>
 <artifactId>client-lib</artifactId>
-<version>0.3.5</version>
+<version>0.3.6</version>
 ```
 
 ![KICL HAS A BAD LOGO](http://i.imgur.com/KCUNexy.png)
