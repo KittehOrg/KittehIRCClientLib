@@ -21,7 +21,7 @@ public class Example {
         @Handler
         public void onUserJoinChannel(ChannelJoinEvent event) {
             if (event.getClient().isUser(event.getUser())) { // It's me!
-                event.getChannel().sendMessage("Hello world! Kitteh's here to demand cuddles.");
+                event.getChannel().sendMessage("Hello world! Kitteh's here for cuddles.");
                 return;
             }
             // It's not me!
