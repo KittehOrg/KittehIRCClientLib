@@ -49,7 +49,7 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
 
         @Handler
         public void listenSuccess(PrivateNoticeEvent event) {
-            if (event.getActor().getNick().equals("NickServ")) {
+            if (event.getActor().getNick().equals(NickServ.this.getNickServNick())) {
                 if (event.getMessage().startsWith("You are now identified")) {
                     int first;
                     String username = event.getMessage().substring((first = event.getMessage().indexOf(IRCFormat.BOLD.toString()) + 1), event.getMessage().indexOf(IRCFormat.BOLD.toString(), first));
@@ -81,12 +81,22 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
     @Nonnull
     @Override
     protected String getAuthentication() {
-        return "PRIVMSG NickServ :IDENTIFY " + this.getUsername() + ' ' + this.getPassword();
+        return "PRIVMSG " + this.getNickServNick() + " :IDENTIFY " + this.getUsername() + ' ' + this.getPassword();
     }
 
     @Nonnull
     @Override
     public Object getEventListener() {
         return this.listener;
+    }
+
+    /**
+     * Gets the expected NickServ nickname.
+     *
+     * @return nick of NickServ
+     */
+    @Nonnull
+    protected String getNickServNick() {
+        return "NickServ";
     }
 }
