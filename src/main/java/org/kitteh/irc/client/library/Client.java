@@ -186,8 +186,8 @@ public interface Client {
 
     /**
      * Gets the User that the client is represented by. Will return {@link
-     * Optional#EMPTY} if the User is not currently known, such as during
-     * connection and registration.
+     * Optional#EMPTY} until the Client is in a Channel for which joining has
+     * completed, meaning full user info is available.
      *
      * @return the user of this client if known
      */
@@ -195,8 +195,7 @@ public interface Client {
     Optional<User> getUser();
 
     /**
-     * Checks to see if this client is the same as the given user. Note that
-     * the Client is not any User during connection and registration.
+     * Checks to see if this client is the same as the given user.
      *
      * @param user user to check this client against
      * @return true if this client is the user, false if not
