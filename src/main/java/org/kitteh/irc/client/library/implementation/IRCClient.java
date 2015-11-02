@@ -61,8 +61,6 @@ final class IRCClient extends InternalClient {
                 IRCClient.this.handleLine(element);
             } catch (final Exception thrown) {
                 IRCClient.this.exceptionListener.queue(thrown);
-            } catch (final Throwable ignored) {
-                // TODO do something!
             }
         }
     }

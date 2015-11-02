@@ -190,13 +190,17 @@ final class NettyManager {
             this.channel.pipeline().addLast("[INPUT] Exception handler", new ChannelInboundHandlerAdapter() {
                 @Override
                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                    ClientConnection.this.handleException(cause);
+                    if (cause instanceof Exception) {
+                        ClientConnection.this.handleException((Exception) cause);
+                    }
                 }
             });
             this.channel.pipeline().addFirst("[OUTPUT] Exception handler", new ChannelOutboundHandlerAdapter() {
                 @Override
                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                    ClientConnection.this.handleException(cause);
+                    if (cause instanceof Exception) {
+                        ClientConnection.this.handleException((Exception) cause);
+                    }
                 }
             });
 
@@ -239,10 +243,8 @@ final class NettyManager {
             this.schedule(false);
         }
 
-        private void handleException(Throwable thrown) {
-            if (thrown instanceof Exception) { // TODO handle non-exceptions
-                this.client.getExceptionListener().queue((Exception) thrown);
-            }
+        private void handleException(Exception thrown) {
+            this.client.getExceptionListener().queue(thrown);
             if (thrown instanceof IOException) {
                 this.shutdown("IO Error. Reconnecting...", true);
             }
