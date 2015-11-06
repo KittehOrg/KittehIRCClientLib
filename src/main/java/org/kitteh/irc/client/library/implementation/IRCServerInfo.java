@@ -56,7 +56,6 @@ final class IRCServerInfo implements ServerInfo {
     private Optional<String> version;
     private boolean supportsWhoX;
 
-    // TODO adapt for changes
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
     // New pattern: ([#!&\+][^ ,\07\r\n]+)

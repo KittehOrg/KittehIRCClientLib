@@ -533,7 +533,7 @@ class EventListener {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NOTICE message of incorrect length");
         }
         if (!(event.getActor() instanceof User)) {
-            return; // TODO handle this
+            return; // TODO event for server-sent notices
         }
         if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
             this.ctcp(event);
@@ -550,7 +550,7 @@ class EventListener {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
             this.fire(new ChannelTargetedNoticeEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
         } else if (this.client.isUser(user)) {
-            // TODO handle messages sent by self
+            // TODO event for self-sent private notices
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "NOTICE message to improper target");
         }
@@ -563,7 +563,7 @@ class EventListener {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PRIVMSG message of incorrect length");
         }
         if (!(event.getActor() instanceof User)) {
-            return; // TODO handle this
+            return; // TODO event for server-sent messages
         }
         if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
             this.ctcp(event);
@@ -580,7 +580,7 @@ class EventListener {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
             this.fire(new ChannelTargetedMessageEvent(this.client, listFromEvent(event), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
         } else if (this.client.isUser(user)) {
-            // TODO handle messages sent by self
+            // TODO event for self-sent private messages
         } else {
             throw new KittehServerMessageException(event.getOriginalMessage(), "PRIVMSG message to improper target");
         }
@@ -637,7 +637,7 @@ class EventListener {
         }
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            // TODO listen to mode on self
+            // TODO event for user modes
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             ActorProvider.IRCChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
             ChannelModeStatusList statusList;
