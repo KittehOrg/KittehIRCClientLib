@@ -23,11 +23,16 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.auth.protocol.SaslECDSANIST256PChallenge;
 import org.kitteh.irc.client.library.auth.protocol.SaslPlain;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
+import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
+import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -96,11 +101,18 @@ public interface CapabilityManager {
 
         /**
          * Server time message tag.
+         *
+         * @see ServerMessage#getTags()
+         * @see MessageTag.Time
          */
         public static final String SERVER_TIME = "server-time";
 
         /**
-         * The chghost extension, allows users to change user string/hostname.
+         * The chghost extension, allows users to change user string or
+         * hostname.
+         *
+         * @see UserHostnameChangeEvent
+         * @see UserUserStringChangeEvent
          */
         public static final String CHGHOST = "chghost";
 
@@ -109,6 +121,7 @@ public interface CapabilityManager {
          * protocol is enabled.
          *
          * @see SaslPlain
+         * @see SaslECDSANIST256PChallenge
          */
         public static final transient String SASL = "sasl";
 
