@@ -23,52 +23,47 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
- * A {@link Channel} is gaining or losing a {@link User}
+ * Generic class used to track a piece of information changing.
+ *
+ * @param <Type> type of data changing
  */
-public interface ChannelUserListChange extends ServerMessageEvent {
+public class Change<Type> {
+    private final Type oldData;
+    private final Type newData;
+
     /**
-     * Describes the change occurring.
+     * Constructs the change.
+     *
+     * @param oldData the old data prior to the change taking place
+     * @param newData the new data following the change taking place
      */
-    enum Change {
-        /**
-         * A user is joining.
-         */
-        JOIN,
-        /**
-         * A user is leaving.
-         */
-        LEAVE
+    public Change(@Nonnull Type oldData, @Nonnull Type newData) {
+        this.oldData = Sanity.nullCheck(oldData, "old data cannot be null");
+        this.newData = Sanity.nullCheck(newData, "new data cannot be null");
     }
 
     /**
-     * Gets the channel affected or empty if affecting all channels the user
-     * is present in.
+     * Gets the old data prior to the change taking place.
      *
-     * @return channel or empty if all channels affected
+     * @return the old data
      */
     @Nonnull
-    Optional<Channel> getAffectedChannel();
+    public Type getOld() {
+        return this.oldData;
+    }
 
     /**
-     * Gets the type of change occurring.
+     * Gets the new data following the change taking place.
      *
-     * @return type of change
+     * @return the new data
      */
     @Nonnull
-    Change getChange();
-
-    /**
-     * Gets the current user affected.
-     *
-     * @return user
-     */
-    @Nonnull
-    User getUser();
+    public Type getNew() {
+        return this.newData;
+    }
 }

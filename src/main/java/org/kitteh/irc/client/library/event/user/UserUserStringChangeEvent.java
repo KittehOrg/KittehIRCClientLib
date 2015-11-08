@@ -35,9 +35,9 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * A {@link User} has changed nickname!
+ * A {@link User} has changed user string.
  */
-public class UserNickChangeEvent extends ActorEventBase<User> implements UserInfoChange<String> {
+public class UserUserStringChangeEvent extends ActorEventBase<User> implements UserInfoChange<String> {
     private final User newUser;
     private final Change<String> change;
 
@@ -46,46 +46,31 @@ public class UserNickChangeEvent extends ActorEventBase<User> implements UserInf
      *
      * @param client client for which this is occurring
      * @param originalMessages original messages
-     * @param oldUser oldUser changing name
-     * @param newUser the new nickname
+     * @param oldUser user changing username
+     * @param newUser the new user instance
      */
-    public UserNickChangeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User oldUser, @Nonnull User newUser) {
+    public UserUserStringChangeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User oldUser, @Nonnull User newUser) {
         super(client, originalMessages, oldUser);
         Sanity.nullCheck(newUser, "User cannot be null");
-        this.change = new Change<>(oldUser.getNick(), newUser.getNick());
         this.newUser = newUser;
+        this.change = new Change<>(oldUser.getUserString(), newUser.getUserString());
     }
 
-    /**
-     * Gets the new user with the new nickname.
-     *
-     * @return the user with new nickname
-     */
+    @Nonnull
+    @Override
+    public User getOldUser() {
+        return this.getActor();
+    }
+
     @Nonnull
     @Override
     public User getNewUser() {
         return this.newUser;
     }
 
-    /**
-     * Gets the changed nick.
-     *
-     * @return the change class allowing easy retrieval of old/new nick
-     */
     @Nonnull
     @Override
     public Change<String> getChange() {
         return this.change;
-    }
-
-    /**
-     * Gets the old user with the old nickname.
-     *
-     * @return the user with old nickname
-     */
-    @Nonnull
-    @Override
-    public User getOldUser() {
-        return this.getActor();
     }
 }

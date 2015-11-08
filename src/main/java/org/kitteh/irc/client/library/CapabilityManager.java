@@ -100,6 +100,11 @@ public interface CapabilityManager {
         public static final String SERVER_TIME = "server-time";
 
         /**
+         * The chghost extension, allows users to change user string/hostname.
+         */
+        public static final String CHGHOST = "chghost";
+
+        /**
          * SASL authentication, not utilized unless a SASL authentication
          * protocol is enabled.
          *

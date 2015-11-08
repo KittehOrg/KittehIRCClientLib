@@ -422,9 +422,9 @@ class ActorProvider {
 
     class IRCUser extends IRCStaleable<IRCUserSnapshot> {
         private String account;
-        private final String host;
+        private String host;
         private String nick;
-        private final String user;
+        private String user;
         private boolean isAway;
         private String realName;
         private String server;
@@ -442,9 +442,8 @@ class ActorProvider {
         }
 
         private void setNick(@Nonnull String newNick) {
-            this.markStale();
             this.nick = newNick;
-            this.setName(this.nick + '!' + this.user + '@' + this.host);
+            this.updateName();
         }
 
         void setAccount(@Nullable String account) {
@@ -462,9 +461,24 @@ class ActorProvider {
             this.realName = realName;
         }
 
+        void setHost(@Nonnull String host) {
+            this.host = host;
+            this.updateName();
+        }
+
+        void setUser(@Nonnull String user) {
+            this.user = user;
+            this.updateName();
+        }
+
         void setServer(@Nonnull String server) {
             this.markStale();
             this.server = server;
+        }
+
+        private void updateName() {
+            this.setName(this.nick + '!' + this.user + '@' + this.host);
+            this.markStale();
         }
 
         @Override
@@ -679,6 +693,16 @@ class ActorProvider {
         user.setNick(newNick);
         this.trackedUsers.put(newNick, user);
         this.trackedChannels.values().forEach(channel -> channel.trackUserNick(oldNick, newNick));
+    }
+
+    void trackUserHostnameChange(@Nonnull String nick, @Nonnull String newHostname) {
+        IRCUser user = this.trackedUsers.get(nick);
+        user.setHost(newHostname);
+    }
+
+    void trackUserUserStringChange(@Nonnull String nick, @Nonnull String newUserString) {
+        IRCUser user = this.trackedUsers.get(nick);
+        user.setUser(newUserString);
     }
 
     void trackUserQuit(@Nonnull String nick) {

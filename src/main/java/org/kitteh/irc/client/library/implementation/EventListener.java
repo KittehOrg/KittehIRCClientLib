@@ -67,16 +67,7 @@ import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseE
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
-import org.kitteh.irc.client.library.event.user.MonitoredNickListEvent;
-import org.kitteh.irc.client.library.event.user.MonitoredNickListFullEvent;
-import org.kitteh.irc.client.library.event.user.MonitoredNickOfflineEvent;
-import org.kitteh.irc.client.library.event.user.MonitoredNickOnlineEvent;
-import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
-import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
-import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
-import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
-import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
-import org.kitteh.irc.client.library.event.user.UserQuitEvent;
+import org.kitteh.irc.client.library.event.user.*;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.CommandFilter;
 import org.kitteh.irc.client.library.util.NumericFilter;
@@ -507,6 +498,42 @@ class EventListener {
             CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
             capabilities.forEach(capabilityRequestCommand::enable);
             capabilityRequestCommand.execute();
+        }
+    }
+
+    @CommandFilter("CHGHOST")
+    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void chghost(ClientReceiveCommandEvent event) {
+        if (event.getParameters().size() != 2) {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "Invalid number of parameters for CHGHOST message");
+        }
+
+        if (!(event.getActor() instanceof User)) {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "Invalid actor for CHGHOST message");
+        }
+
+        User user = (User) event.getActor();
+        ActorProvider.IRCUser ircUser = this.client.getActorProvider().getUser(user.getNick());
+
+        if (ircUser == null) {
+            throw new KittehServerMessageException(event.getOriginalMessage(), "Null old user for nick.");
+        }
+
+        User oldUser = ircUser.snapshot();
+
+        String newUserString = event.getParameters().get(0);
+        String newHostString = event.getParameters().get(1);
+
+        if (!user.getHost().equals(newHostString)) {
+            this.client.getActorProvider().trackUserHostnameChange(user.getNick(), newHostString);
+            user = ircUser.snapshot();
+            this.fire(new UserHostnameChangeEvent(this.client, event.getOriginalMessages(), oldUser, user));
+        }
+
+        if (!user.getUserString().equals(newUserString)) {
+            this.client.getActorProvider().trackUserUserStringChange(user.getNick(), newUserString);
+            user = ircUser.snapshot();
+            this.fire(new UserUserStringChangeEvent(this.client, event.getOriginalMessages(), oldUser, user));
         }
     }
 

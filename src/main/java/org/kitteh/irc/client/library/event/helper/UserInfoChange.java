@@ -23,52 +23,37 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
- * A {@link Channel} is gaining or losing a {@link User}
+ * A {@link User} is having their information changed.
+ *
+ * @param <Type> type of data changing
  */
-public interface ChannelUserListChange extends ServerMessageEvent {
+public interface UserInfoChange<Type> {
     /**
-     * Describes the change occurring.
-     */
-    enum Change {
-        /**
-         * A user is joining.
-         */
-        JOIN,
-        /**
-         * A user is leaving.
-         */
-        LEAVE
-    }
-
-    /**
-     * Gets the channel affected or empty if affecting all channels the user
-     * is present in.
+     * Gets the old user instance before the change took place.
      *
-     * @return channel or empty if all channels affected
+     * @return the User instance
      */
     @Nonnull
-    Optional<Channel> getAffectedChannel();
+    User getOldUser();
 
     /**
-     * Gets the type of change occurring.
+     * Gets the new user instance after the change took place.
      *
-     * @return type of change
+     * @return the User instance
      */
     @Nonnull
-    Change getChange();
+    User getNewUser();
 
     /**
-     * Gets the current user affected.
+     * Gets the changed information.
      *
-     * @return user
+     * @return the Change instance
      */
     @Nonnull
-    User getUser();
+    Change<Type> getChange();
 }
