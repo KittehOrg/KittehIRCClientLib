@@ -26,10 +26,7 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
-import org.kitteh.irc.client.library.event.helper.Change;
-import org.kitteh.irc.client.library.event.helper.UserInfoChange;
-import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.event.abstractbase.UserInfoChangeEventBase;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -37,10 +34,7 @@ import java.util.List;
 /**
  * A {@link User} has changed nickname!
  */
-public class UserNickChangeEvent extends ActorEventBase<User> implements UserInfoChange<String> {
-    private final User newUser;
-    private final Change<String> change;
-
+public class UserNickChangeEvent extends UserInfoChangeEventBase<String> {
     /**
      * Creates the event.
      *
@@ -50,42 +44,6 @@ public class UserNickChangeEvent extends ActorEventBase<User> implements UserInf
      * @param newUser the new nickname
      */
     public UserNickChangeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User oldUser, @Nonnull User newUser) {
-        super(client, originalMessages, oldUser);
-        Sanity.nullCheck(newUser, "User cannot be null");
-        this.change = new Change<>(oldUser.getNick(), newUser.getNick());
-        this.newUser = newUser;
-    }
-
-    /**
-     * Gets the new user with the new nickname.
-     *
-     * @return the user with new nickname
-     */
-    @Nonnull
-    @Override
-    public User getNewUser() {
-        return this.newUser;
-    }
-
-    /**
-     * Gets the changed nick.
-     *
-     * @return the change class allowing easy retrieval of old/new nick
-     */
-    @Nonnull
-    @Override
-    public Change<String> getChange() {
-        return this.change;
-    }
-
-    /**
-     * Gets the old user with the old nickname.
-     *
-     * @return the user with old nickname
-     */
-    @Nonnull
-    @Override
-    public User getOldUser() {
-        return this.getActor();
+        super(client, originalMessages, oldUser, newUser, User::getNick);
     }
 }

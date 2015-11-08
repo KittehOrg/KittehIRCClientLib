@@ -26,10 +26,7 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
-import org.kitteh.irc.client.library.event.helper.Change;
-import org.kitteh.irc.client.library.event.helper.UserInfoChange;
-import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.event.abstractbase.UserInfoChangeEventBase;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -37,10 +34,7 @@ import java.util.List;
 /**
  * A {@link User} has changed hostname.
  */
-public class UserHostnameChangeEvent extends ActorEventBase<User> implements UserInfoChange<String> {
-    private final User newUser;
-    private final Change<String> change;
-
+public class UserHostnameChangeEvent extends UserInfoChangeEventBase<String> {
     /**
      * Creates the event.
      *
@@ -50,27 +44,6 @@ public class UserHostnameChangeEvent extends ActorEventBase<User> implements Use
      * @param newUser the new user instance
      */
     public UserHostnameChangeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User oldUser, @Nonnull User newUser) {
-        super(client, originalMessages, oldUser);
-        Sanity.nullCheck(newUser, "User cannot be null");
-        this.newUser = newUser;
-        this.change = new Change<>(oldUser.getHost(), newUser.getHost());
-    }
-
-    @Nonnull
-    @Override
-    public User getOldUser() {
-        return this.getActor();
-    }
-
-    @Nonnull
-    @Override
-    public User getNewUser() {
-        return this.newUser;
-    }
-
-    @Nonnull
-    @Override
-    public Change<String> getChange() {
-        return this.change;
+        super(client, originalMessages, oldUser, newUser, User::getHost);
     }
 }

@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
  *
  * @param <Type> type of data changing
  */
-public interface UserInfoChange<Type> {
+public interface UserInfoChangeEvent<Type> {
     /**
      * Gets the old user instance before the change took place.
      *
