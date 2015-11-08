@@ -82,7 +82,8 @@ client.getAuthManager().addProtocol(new SaslECDSANIST256PChallenge(client, "Serv
 
 This section of the document describes the inner workings of the ECDSA SASL authentication
 mechanism. If you're just looking to use KICL to do this authentication and aren't too
-concerned about how it works under the hood, you can ignore this section.
+concerned about how it works under the hood, you can ignore this section. From here on in
+the description of the authentication mechanism is not specific to KICL.
 
 "ecdsa-nist256p-challenge" is a SASL authentication mechanism which is supported by KICL
 and some other IRC clients (e.g. weechat). In order to use this mechanism, SASL must be
@@ -100,11 +101,10 @@ Atheme is the only IRC services software that appears to implement this authenti
 * Users make use of the `/msg NickServ SET PUBKEY <pubkey>` command to tell the services
 package their public key
     * `<pubkey>` in this case is the **point compressed** X9.62 representation of the public
-     key after it has been base64 encoded. Please see section 2.3.3 of the [SEC1](http://www.secg.org/sec1-v2.pdf)
+     key which is then base64 encoded. Please see section 2.3.3 of the [SEC1](http://www.secg.org/sec1-v2.pdf)
      spec for more information. Public keys making use of the uncompressed or hybrid forms will
-     **not work**. Java users may wish to implement their
-     [own method](https://github.com/KittehOrg/KittehIRCClientLib/commit/448ae6bf18956b5a38e0da8f87486c5db85db880)
-     for applying point compression since it is unavailable in the standard library.
+     **not work**. Java users may wish to implement their own method for applying point compression
+     since it is unavailable in the standard library. See the implementation in [KICL]((https://github.com/KittehOrg/KittehIRCClientLib/commit/448ae6bf18956b5a38e0da8f87486c5db85db880)).
 
 #### Step 1 - Begin authentication
 
@@ -122,7 +122,7 @@ Once this message has been seen, the client can begin sending the user informati
 The username to authenticate with, along with the identity to impersonate are concatenated
  and joined together by \0 (NUL byte, U+0000) characters. For example, logging in as user Example and impersonating Test:
 
-`Example\0Test\0'
+`Example\0Test\0`
 
 In the vast majority of cases, the identity to impersonate will be identical to the
 identity used to authenticate:
