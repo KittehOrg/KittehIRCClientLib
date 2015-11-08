@@ -166,27 +166,27 @@ class ActorProvider {
         }
 
         void setListReceived() {
-            this.markStale();
             this.fullListReceived = true;
+            this.markStale();
         }
 
         private void setTracked(boolean tracked) {
-            this.markStale();
             this.tracked = tracked;
             this.modes.keySet().forEach(ActorProvider.this::staleUser);
+            this.markStale();
         }
 
         void setTopic(@Nonnull String topic) {
-            this.markStale();
             this.topic = Optional.of(topic);
             this.topicTime = Optional.empty();
             this.topicSetter = Optional.empty();
+            this.markStale();
         }
 
         void setTopic(long time, @Nonnull Actor actor) {
-            this.markStale();
             this.topicTime = Optional.of(Instant.ofEpochMilli(time));
             this.topicSetter = Optional.of(actor);
+            this.markStale();
         }
 
         @Override
@@ -205,14 +205,13 @@ class ActorProvider {
         }
 
         void trackUser(@Nonnull IRCUser user, @Nonnull Set<ChannelUserMode> modes) {
-            this.markStale();
-            user.markStale();
             ActorProvider.this.trackUser(user);
             this.setModes(user.getNick(), modes);
+            this.markStale();
+            user.markStale();
         }
 
         void trackNick(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
-            this.markStale();
             String nickname = nick;
             int index;
             if ((index = nick.indexOf('!')) >= 0) { // userhost-in-names
@@ -228,31 +227,32 @@ class ActorProvider {
             if (!this.modes.containsKey(nickname) || this.modes.get(nickname).isEmpty()) {
                 this.setModes(nickname, modes);
             }
+            this.markStale();
         }
 
         void trackUserModeAdd(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
-            this.markStale();
             this.getModes(nick).add(mode);
+            this.markStale();
         }
 
         void trackUserModeRemove(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
-            this.markStale();
             this.getModes(nick).remove(mode);
+            this.markStale();
         }
 
         private void trackUserNick(@Nonnull String oldNick, @Nonnull String newNick) {
-            this.markStale();
             Set<ChannelUserMode> modes = this.modes.remove(oldNick);
             if (modes != null) {
                 this.setModes(newNick, modes);
             }
+            this.markStale();
         }
 
         void trackUserPart(@Nonnull String nick) {
-            this.markStale();
             this.modes.remove(nick);
             ActorProvider.this.checkUserForTracking(nick);
             ActorProvider.this.staleUser(nick);
+            this.markStale();
         }
 
         @Nonnull
@@ -266,12 +266,11 @@ class ActorProvider {
         }
 
         private void setModes(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
-            this.markStale();
             this.modes.put(nick, new HashSet<>(modes));
+            this.markStale();
         }
 
         void updateChannelModes(ChannelModeStatusList statusList) {
-            this.markStale();
             statusList.getStatuses().stream().filter(status -> !(status.getMode() instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
                 if (status.isSetting()) {
                     this.channelModes.put(status.getMode().getChar(), status);
@@ -279,6 +278,7 @@ class ActorProvider {
                     this.channelModes.remove(status.getMode().getChar());
                 }
             });
+            this.markStale();
         }
 
         @Nonnull
@@ -447,18 +447,18 @@ class ActorProvider {
         }
 
         void setAccount(@Nullable String account) {
-            this.markStale();
             this.account = account;
+            this.markStale();
         }
 
         void setAway(boolean isAway) {
-            this.markStale();
             this.isAway = isAway;
+            this.markStale();
         }
 
         void setRealName(@Nonnull String realName) {
-            this.markStale();
             this.realName = realName;
+            this.markStale();
         }
 
         void setHost(@Nonnull String host) {
@@ -472,8 +472,8 @@ class ActorProvider {
         }
 
         void setServer(@Nonnull String server) {
-            this.markStale();
             this.server = server;
+            this.markStale();
         }
 
         private void updateName() {
