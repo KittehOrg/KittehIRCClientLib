@@ -4,9 +4,9 @@ on [port 6697](https://tools.ietf.org/html/rfc7194).
 ### Client Certificates
 You can set the public and private key utilized in the connection using the following methods:
 
-`ClientBuilder#secureKeyCertChain(File) // public key`
+`ClientBuilder#secureKeyCertChain(File) // X.509 certificate chain file in PEM format`
 
-`ClientBuilder#secureKey(File) // private key`
+`ClientBuilder#secureKey(File) // PKCS#8 private key file in PEM format`
 
 `ClientBuilder#secureKeyPassword(String) // private key password`
 
