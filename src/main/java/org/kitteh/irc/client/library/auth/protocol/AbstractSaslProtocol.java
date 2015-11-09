@@ -172,6 +172,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
      *
      * @return the authentication value
      */
+    @Nonnull
     protected final AuthValue getAuthValue() {
         return this.authValue;
     }
@@ -192,5 +193,6 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
      *
      * @return value to encode
      */
+    @Nonnull
     protected abstract String getAuthLine();
 }

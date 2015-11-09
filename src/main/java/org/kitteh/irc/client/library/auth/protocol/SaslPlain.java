@@ -43,6 +43,7 @@ public class SaslPlain extends AbstractSaslProtocol<String> implements Password 
         super(client, username, password, "PLAIN");
     }
 
+    @Nonnull
     @Override
     protected String getAuthLine() {
         return this.getUsername() + '\u0000' + this.getUsername() + '\u0000' + this.getPassword();

@@ -34,8 +34,8 @@ import javax.annotation.Nonnull;
 /**
  * SASL EXTERNAL authentication. Automatically attempts auth during connection.
  */
-public class SaslExternal extends AbstractSaslProtocol<Void> {
-    private class Listener extends AbstractSaslProtocol<Void>.Listener {
+public class SaslExternal extends AbstractSaslProtocol<Object> {
+    private class Listener extends AbstractSaslProtocol<Object>.Listener {
         @CommandFilter("AUTHENTICATE")
         @Handler(filters = @Filter(CommandFilter.Filter.class))
         @Override
@@ -52,9 +52,10 @@ public class SaslExternal extends AbstractSaslProtocol<Void> {
      * @param client client
      */
     public SaslExternal(@Nonnull Client client) {
-        super(client, "", null, "EXTERNAL"); // TODO cleanup abstraction
+        super(client, "", new Object(), "EXTERNAL"); // hacky?
     }
 
+    @Nonnull
     @Override
     protected String getAuthLine() {
         return "";

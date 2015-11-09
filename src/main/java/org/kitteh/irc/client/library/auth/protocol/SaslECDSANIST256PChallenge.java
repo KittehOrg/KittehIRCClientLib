@@ -28,6 +28,7 @@ import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.util.CommandFilter;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -124,6 +125,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
         super(client, username, privateKey, "ECDSA-NIST256P-CHALLENGE");
     }
 
+    @Nonnull
     @Override
     protected String getAuthLine() {
         return this.getUsername() + '\0' + this.getUsername() + '\0';
@@ -140,9 +142,12 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      *
      * @param privateKey key to encode
      * @return encoded key
+     * @throws IllegalArgumentException if privateKey is null
      * @see #getPrivateKey(String)
      */
-    public static String base64Encode(ECPrivateKey privateKey) {
+    @Nonnull
+    public static String base64Encode(@Nonnull ECPrivateKey privateKey) {
+        Sanity.nullCheck(privateKey, "Private key cannot be null");
         return Base64.getEncoder().encodeToString(privateKey.getEncoded());
     }
 
@@ -151,9 +156,12 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      *
      * @param publicKey key to encode
      * @return encoded key
+     * @throws IllegalArgumentException if publicKey is null
      * @see #getPublicKey(String)
      */
-    public static String base64Encode(ECPublicKey publicKey) {
+    @Nonnull
+    public static String base64Encode(@Nonnull ECPublicKey publicKey) {
+        Sanity.nullCheck(publicKey, "Public key cannot be null");
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
 
@@ -164,9 +172,12 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * @return the key
      * @throws NoSuchAlgorithmException if the JVM doesn't support EC
      * @throws InvalidKeySpecException if the encoded key is invalid
+     * @throws IllegalArgumentException if base64Encoded is null
      * @see #base64Encode(ECPrivateKey)
      */
-    public static ECPrivateKey getPrivateKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    @Nonnull
+    public static ECPrivateKey getPrivateKey(@Nonnull String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        Sanity.nullCheck(base64Encoded, "Base64 encoded string cannot be null");
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
         return (ECPrivateKey) keyFactory.generatePrivate(keySpec);
@@ -179,9 +190,12 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * @return the key
      * @throws NoSuchAlgorithmException if the JVM doesn't support EC
      * @throws InvalidKeySpecException if the encoded key is invalid
+     * @throws IllegalArgumentException if base64Encoded is null
      * @see #base64Encode(ECPublicKey)
      */
-    public static ECPublicKey getPublicKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    @Nonnull
+    public static ECPublicKey getPublicKey(@Nonnull String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        Sanity.nullCheck(base64Encoded, "Base64 encoded string cannot be null");
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
         return (ECPublicKey) keyFactory.generatePublic(keySpec);
@@ -196,8 +210,11 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * @param publicKey the public key to get the compressed X9.62
      * representation for
      * @return base64 encoded compressed public key
+     * @throws IllegalArgumentException if publicKey is null
      */
-    public static String getCompressedBase64PublicKey(ECPublicKey publicKey) {
+    @Nonnull
+    public static String getCompressedBase64PublicKey(@Nonnull ECPublicKey publicKey) {
+        Sanity.nullCheck(publicKey, "Public ke cannot be null");
         ECPoint ecPoint = publicKey.getW();
         byte[] xBytes = ecPoint.getAffineX().toByteArray();
         int overflow = xBytes.length - 32;
@@ -219,8 +236,12 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * @throws SignatureException if signing fails
      * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
      * @throws InvalidKeyException if the key is invalid
+     * @throws IllegalArgumentException if either parameter is null
      */
-    public static String sign(ECPrivateKey privateKey, String base64Challenge) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+    @Nonnull
+    public static String sign(@Nonnull ECPrivateKey privateKey, @Nonnull String base64Challenge) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+        Sanity.nullCheck(privateKey, "Private key cannot be null");
+        Sanity.nullCheck(base64Challenge, "Base64 encoded challenge cannot be null");
         Signature signature = Signature.getInstance("NONEwithECDSA");
         signature.initSign(privateKey);
         signature.update(Base64.getDecoder().decode(base64Challenge));
@@ -233,6 +254,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * @return a shiny new key pair
      * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
      */
+    @Nonnull
     public static ECKeyPair getNewKey() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
@@ -251,8 +273,12 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * @throws SignatureException if something has gone horribly wrong
      * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
      * @throws InvalidKeyException if the key is invalid
+     * @throws IllegalArgumentException if any parameter is null
      */
-    public static boolean verify(ECPublicKey publicKey, String base64Challenge, String signature) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+    public static boolean verify(@Nonnull ECPublicKey publicKey, @Nonnull String base64Challenge, @Nonnull String signature) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+        Sanity.nullCheck(publicKey, "Public key cannot be null");
+        Sanity.nullCheck(base64Challenge, "Base64 encoded challenge cannot be null");
+        Sanity.nullCheck(signature, "Signature cannot be null");
         Signature ver = Signature.getInstance("NONEwithECDSA");
         ver.initVerify(publicKey);
         Base64.Decoder decoder = Base64.getDecoder();
