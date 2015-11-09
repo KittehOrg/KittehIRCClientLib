@@ -39,7 +39,7 @@ public class Example {
 ```
 
 ### Maven
-Repository URL: `http://repo.kitteh.org/content/groups/public`
+Repository URL: `http://repo.kitteh.org/content/groups/public/`
 ```xml
 <groupId>org.kitteh.irc</groupId>
 <artifactId>client-lib</artifactId>
