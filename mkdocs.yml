@@ -10,6 +10,7 @@ pages:
   - WEBIRC: advanced/webirc.md
   - SASL: advanced/sasl.md
   - ECDSA: advanced/ecdsa.md
+  - Alternative Authentication: advanced/alt_auth.md
 
 markdown_extensions: [fenced_code]
 theme: readthedocs

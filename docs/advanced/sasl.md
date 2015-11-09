@@ -7,7 +7,9 @@ KICL's SASL support can be configured by calling the `Client#getAuthManager` met
 [AuthManager](http://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/auth/AuthManager.html). The
 manager can be used to manage authentication protocols. For SASL, there are currently three available authentication
 protocols which [extend](http://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/auth/protocol/class-use/AbstractSaslProtocol.html)
-the `AbstractSaslProtocol` class. Protocols can be added by calling the `AuthManager#addProtocol` method, for example:
+the `AbstractSaslProtocol` class. It's also possible to add [non-SASL](alt_auth.md) authentication protocols.
+
+Protocols can be added by calling the `AuthManager#addProtocol` method, for example:
 
 ```java
 client.getAuthManager().addProtocol(new SaslPlain(client, "username", "password"))
