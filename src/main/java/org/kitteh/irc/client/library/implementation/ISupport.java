@@ -40,55 +40,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 enum ISupport {
-    CASEMAPPING {
-        @Override
-        boolean process(@Nullable String value, @Nonnull InternalClient client) {
-            Optional<CaseMapping> caseMapping = CaseMapping.getByName(value);
-            if (caseMapping.isPresent()) {
-                client.getServerInfo().setCaseMapping(caseMapping.get());
-                return true;
-            }
-            return false;
-        }
-    },
-    CHANNELLEN {
-        @Override
-        boolean process(@Nullable String value, @Nonnull InternalClient client) {
-            try {
-                client.getServerInfo().setChannelLengthLimit(Integer.parseInt(value));
-                return true;
-            } catch (NumberFormatException ignored) {
-                return false;
-            }
-        }
-    },
-    CHANLIMIT {
-        @Override
-        boolean process(@Nullable String value, @Nonnull InternalClient client) {
-            String[] pairs = value.split(",");
-            Map<Character, Integer> limits = new HashMap<>();
-            for (String p : pairs) {
-                String[] pair = p.split(":");
-                if (pair.length != 2) {
-                    return false;
-                }
-                int limit;
-                try {
-                    limit = Integer.parseInt(pair[1]);
-                } catch (Exception e) {
-                    return false;
-                }
-                for (char prefix : pair[0].toCharArray()) {
-                    limits.put(prefix, limit);
-                }
-            }
-            if (limits.isEmpty()) {
-                return false;
-            }
-            client.getServerInfo().setChannelLimits(limits);
-            return true;
-        }
-    },
     CHANMODES {
         @Override
         boolean process(@Nullable String value, @Nonnull InternalClient client) {

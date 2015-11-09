@@ -29,20 +29,18 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-class IRCMessageTagManager implements MessageTagManager {
+class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
     private static class IRCMessageTag implements MessageTag {
         private final String name;
         private final Optional<String> value;
@@ -88,69 +86,55 @@ class IRCMessageTagManager implements MessageTagManager {
         }
     }
 
-    private static class TagCreator {
+    protected static class TagCreator extends Creator<MessageTag> {
         private final String capability;
-        private final BiFunction<String, Optional<String>, ? extends MessageTag> function;
 
         private TagCreator(@Nonnull String capability, @Nonnull BiFunction<String, Optional<String>, ? extends MessageTag> function) {
+            super(function);
             this.capability = capability;
-            this.function = function;
         }
 
         @Nonnull
-        private String getCapability() {
+        protected String getCapability() {
             return this.capability;
-        }
-
-        @Nonnull
-        private BiFunction<String, Optional<String>, ? extends MessageTag> getFunction() {
-            return this.function;
         }
 
         @Nonnull
         @Override
         public String toString() {
-            return new ToStringer(this).add("capability", this.capability).add("function", this.function).toString();
+            return new ToStringer(this).add("capability", this.capability).add("function", this.getFunction()).toString();
         }
     }
 
     private static final Pattern TAG_ESCAPE = Pattern.compile("\\\\([\\\\s:])");
 
-    private final InternalClient client;
-    private final Map<String, TagCreator> tags = new ConcurrentHashMap<>();
-
     IRCMessageTagManager(InternalClient client) {
-        this.client = client;
+        super(client);
         this.registerTagCreator("server-time", "time", IRCMessageTagTime.FUNCTION);
     }
 
     @Nonnull
     @Override
     public Map<String, BiFunction<String, Optional<String>, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability) {
-        return Collections.unmodifiableMap(this.tags.entrySet().stream().filter(e -> e.getValue().getCapability().equals(capability)).collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFunction())));
+        return Collections.unmodifiableMap(this.getRegistrations().entrySet().stream().filter(e -> ((TagCreator) e.getValue()).getCapability().equals(capability)).collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFunction())));
     }
 
     @Nonnull
     @Override
     public Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> getTagCreator(@Nonnull String tagName) {
-        return this.optional(this.tags.get(tagName));
+        return this.getCreatorByName(tagName);
     }
 
     @Nonnull
     @Override
-    public Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull BiFunction<String, Optional<String>, ? extends MessageTag> tagCreator) {
-        return this.optional(this.tags.put(tagName, new TagCreator(capability, tagCreator)));
+    public Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull BiFunction<String, Optional<String>, ? extends MessageTag> function) {
+        return this.registerCreator(tagName, new TagCreator(capability, function));
     }
 
     @Nonnull
     @Override
     public Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> unregisterTag(@Nonnull String tagName) {
-        return this.optional(this.tags.remove(tagName));
-    }
-
-    @Nonnull
-    private Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> optional(@Nullable TagCreator creator) {
-        return (creator == null) ? Optional.empty() : Optional.of(creator.getFunction());
+        return this.unregisterCreator(tagName);
     }
 
     @Nonnull
@@ -172,11 +156,11 @@ class IRCMessageTagManager implements MessageTagManager {
             }
             MessageTag messageTag = null;
             // Attempt creating from registered creator, fall back on default
-            if ((tagCreator = this.tags.get(tagName)) != null) {
+            if ((tagCreator = (TagCreator) this.getRegistrations().get(tagName)) != null) {
                 try {
                     messageTag = tagCreator.getFunction().apply(tagName, value);
                 } catch (Throwable thrown) {
-                    this.client.getExceptionListener().queue(new KittehServerMessageTagException(tag, "Tag creator failed", thrown));
+                    this.getClient().getExceptionListener().queue(new KittehServerMessageTagException(tag, "Tag creator failed", thrown));
                 }
             }
             if (messageTag == null) {
