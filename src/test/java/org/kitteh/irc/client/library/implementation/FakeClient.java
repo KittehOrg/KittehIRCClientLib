@@ -209,6 +209,11 @@ class FakeClient extends InternalClient {
     }
 
     @Override
+    public void knockChannel(@Nonnull String channelName) {
+
+    }
+
+    @Override
     public void removeChannel(@Nonnull String channel) {
 
     }

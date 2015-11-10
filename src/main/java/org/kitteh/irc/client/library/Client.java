@@ -208,6 +208,13 @@ public interface Client {
     }
 
     /**
+     * KNOCKs on a +i (but not +p) channel, requesting an INVITE.
+     *
+     * @param channelName The channel to send the KNOCK for.
+     */
+    void knockChannel(@Nonnull String channelName);
+
+    /**
      * Removes a channel from the client, leaving as necessary.
      *
      * @param channel channel to leave

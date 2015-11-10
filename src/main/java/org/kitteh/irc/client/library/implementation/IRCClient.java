@@ -200,6 +200,12 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
+    public void knockChannel(@Nonnull String channelName) {
+        Sanity.nullCheck(channelName, "Channel cannot be null");
+        this.sendRawLine("KNOCK " + channelName);
+    }
+
+    @Override
     public void removeChannel(@Nonnull String channelName) {
         this.removeChannel(channelName, Optional.empty());
     }
