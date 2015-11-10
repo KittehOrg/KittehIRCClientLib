@@ -4,6 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.IRCFormat;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+
 /**
  * Tests the StringUtil class.
  */
@@ -71,5 +74,16 @@ public class StringUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void rainbowNotAColor() {
         StringUtil.makeRainbow("Someday we'll find it, the rainbow test coverage, the coders, the users, and me.", new IRCFormat[]{IRCFormat.UNDERLINE});
+    }
+
+    /**
+     * Test the private constructor.
+     */
+    @Test
+    public void testConstructorIsPrivate() throws Exception {
+        Constructor constructor = StringUtil.class.getDeclaredConstructor();
+        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        constructor.setAccessible(true);
+        constructor.newInstance();
     }
 }
