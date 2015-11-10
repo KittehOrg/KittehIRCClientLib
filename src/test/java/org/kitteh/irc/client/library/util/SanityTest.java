@@ -1,6 +1,10 @@
 package org.kitteh.irc.client.library.util;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 
 /**
  * Do you know the definition of testing?
@@ -100,5 +104,16 @@ public class SanityTest {
     @Test(expected = IllegalArgumentException.class)
     public void safeMessageFailNul() {
         Sanity.safeMessageCheck("Me\0ow");
+    }
+
+    /**
+     * Test the private constructor.
+     */
+    @Test
+    public void testConstructorIsPrivate() throws Exception {
+        Constructor constructor = Sanity.class.getDeclaredConstructor();
+        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        constructor.setAccessible(true);
+        constructor.newInstance();
     }
 }
