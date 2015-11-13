@@ -16,11 +16,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Tests CISet.
+ */
 public class CISetTest {
-
+    /**
+     * Tests ascii fun.
+     */
     @Test
     public void testWithAscii() {
-        Client client = getMockClientWithCaseMapping(CaseMapping.ASCII);
+        Client client = this.getMockClientWithCaseMapping(CaseMapping.ASCII);
         CISet sut = new CISet(client);
         Assert.assertTrue(sut.isEmpty());
         Assert.assertTrue(sut.add("CAT"));
@@ -50,34 +55,45 @@ public class CISetTest {
 
         Assert.assertFalse(foobar[0].isEmpty());
         Assert.assertTrue(sut.containsAll(list));
-        list = Arrays.asList("cat", "magpie", "rhino", "kangaroo");
-        Assert.assertFalse(sut.containsAll(list));
+        List<String> listlist = Arrays.asList("cat", "magpie", "rhino", "kangaroo");
+        Assert.assertFalse(sut.containsAll(listlist));
         Assert.assertFalse(sut.toString().isEmpty());
 
         sut.retainAll(Collections.singletonList("cat"));
         Assert.assertEquals(1, sut.size());
 
-        sut.removeAll(list);
+        sut.removeAll(listlist);
         Assert.assertTrue(sut.isEmpty());
     }
 
+    /**
+     * Tests the RFCstuff.
+     */
     @Test
     public void testWithRfc1459() {
-        Client client = getMockClientWithCaseMapping(CaseMapping.RFC1459);
+        Client client = this.getMockClientWithCaseMapping(CaseMapping.RFC1459);
         CISet sut = new CISet(client);
         sut.add("[cat]^");
         Assert.assertTrue(sut.contains("{cat}~"));
     }
 
+    /**
+     * Tests the RFCstuff, but stricter.
+     */
     @Test
     public void testWithRfc1459Strict() {
-        Client client = getMockClientWithCaseMapping(CaseMapping.STRICT_RFC1459);
+        Client client = this.getMockClientWithCaseMapping(CaseMapping.STRICT_RFC1459);
         CISet sut = new CISet(client);
         sut.add("[cat]");
         Assert.assertTrue(sut.contains("{cat}"));
     }
 
-
+    /**
+     * Gets a mock client with a certain casemapping.
+     *
+     * @param mapping case mapping requested
+     * @return requested client
+     */
     public Client getMockClientWithCaseMapping(CaseMapping mapping) {
         Client clientMock = Mockito.mock(Client.class);
         Mockito.when(clientMock.getServerInfo()).thenReturn(new StubServerInfo(mapping));
@@ -85,9 +101,9 @@ public class CISetTest {
     }
 
     class StubServerInfo implements ServerInfo {
-        private CaseMapping caseMapping;
+        private final CaseMapping caseMapping;
 
-        public StubServerInfo(CaseMapping caseMapping) {
+        StubServerInfo(CaseMapping caseMapping) {
             this.caseMapping = caseMapping;
         }
 

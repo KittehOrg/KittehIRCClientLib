@@ -77,11 +77,13 @@ public class StringUtilTest {
     }
 
     /**
-     * Test the private constructor.
+     * Tests the private constructor.
+     *
+     * @throws Exception when it goes bad
      */
     @Test
     public void testConstructorIsPrivate() throws Exception {
-        Constructor constructor = StringUtil.class.getDeclaredConstructor();
+        Constructor<StringUtil> constructor = StringUtil.class.getDeclaredConstructor();
         Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();

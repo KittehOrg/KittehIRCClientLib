@@ -10,15 +10,23 @@ import org.mockito.Mockito;
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
+/**
+ * Tests the auth manager implementation.
+ */
 public class IRCAuthManagerTest {
-
-    @Test(expected=IllegalArgumentException.class)
+    /**
+     * Tests a null protocol failure.
+     */
+    @Test(expected = IllegalArgumentException.class)
     public void testFailureWithNullProtocol() {
         Client client = new FakeClient();
         IRCAuthManager sut = new IRCAuthManager(client);
         sut.addProtocol(null);
     }
 
+    /**
+     * Tests protocol adding.
+     */
     @Test
     public void testAddProtocolManagementMethods() {
         final Client client = new FakeClient();
@@ -44,6 +52,9 @@ public class IRCAuthManagerTest {
         Assert.assertFalse(sut.getProtocols().iterator().hasNext());
     }
 
+    /**
+     * Tests protocol adding multiple.
+     */
     @Test
     public void testAddProtocolOfSameTypeMethods() {
         final Client client = new FakeClient();
@@ -69,6 +80,9 @@ public class IRCAuthManagerTest {
         Assert.assertFalse(removed.isPresent());
     }
 
+    /**
+     * Tests listener addition.
+     */
     @Test
     public void testEventListeningAuthProtocol() {
         final Client client = new FakeClient();
@@ -79,11 +93,11 @@ public class IRCAuthManagerTest {
         Assert.assertTrue(stub.wasTripped());
     }
 
-    public class StubAuthProtocol implements AuthProtocol, EventListening {
-        private InternalClient client;
+    private class StubAuthProtocol implements AuthProtocol, EventListening {
+        private final InternalClient client;
         private boolean tripped = false;
 
-        public StubAuthProtocol() {
+        StubAuthProtocol() {
             this.client = Mockito.mock(InternalClient.class);
         }
 
@@ -106,7 +120,7 @@ public class IRCAuthManagerTest {
         }
 
         public boolean wasTripped() {
-            return tripped;
+            return this.tripped;
         }
     }
 }

@@ -19,75 +19,102 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Tests CHGHOST support.
+ */
 public class CHGHOSTTest {
+    /**
+     * Expected!
+     */
     @Rule
-    public ExpectedException expectedEx = ExpectedException.none();
+    public final ExpectedException expectedEx = ExpectedException.none();
 
+    /**
+     * Tests invalid actor.
+     */
     @Test
     public void testChghostWithInvalidActorThrowsException() {
         this.expectedEx.expect(KittehServerMessageException.class);
         this.expectedEx.expectMessage(CoreMatchers.containsString("Invalid actor for CHGHOST message"));
 
-        EventListener sut = getEventListener();
+        EventListener sut = this.getEventListener();
         final Client clientMock = Mockito.mock(Client.class);
         final Actor actorMock = Mockito.mock(Actor.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
         sut.chghost(new ClientReceiveCommandEvent(clientMock, Mockito.mock(ServerMessage.class), actorMock, "CHGHOST", Arrays.asList("foo", "bar")));
     }
 
+    /**
+     * Tests parameter overload.
+     */
     @Test
     public void testChghostWithTooManyParameters() {
         this.expectedEx.expect(KittehServerMessageException.class);
         this.expectedEx.expectMessage(CoreMatchers.containsString("Invalid number of parameters for CHGHOST message"));
 
-        testChghostWithParameters(Arrays.asList("foo", "bar", "kitten"));
+        this.testChghostWithParameters(Arrays.asList("foo", "bar", "kitten"));
     }
 
+    /**
+     * Tests parameter underload.
+     */
     @Test
     public void testChghostWithTooFewParameters() {
         this.expectedEx.expect(KittehServerMessageException.class);
         this.expectedEx.expectMessage(CoreMatchers.containsString("Invalid number of parameters for CHGHOST message"));
 
-        testChghostWithParameters(Collections.singletonList("foo"));
+        this.testChghostWithParameters(Collections.singletonList("foo"));
     }
 
+    /**
+     * Tests hostname update.
+     */
     @Test
     public void testChghostCallsActorProviderToUpdateHostname() {
         final InternalClient internalClient = Mockito.mock(InternalClient.class);
         Mockito.when(internalClient.getEventManager()).thenReturn(Mockito.mock(EventManager.class));
 
-        final ActorProvider actorProviderMock = testChghostWithMockUserAndParameters(internalClient, Arrays.asList("~meow", "test.kitteh.org"));
+        final ActorProvider actorProviderMock = this.testChghostWithMockUserAndParameters(internalClient, Arrays.asList("~meow", "test.kitteh.org"));
         Mockito.verify(actorProviderMock).trackUserHostnameChange("Kitteh", "test.kitteh.org");
     }
 
+    /**
+     * Tests userstring update.
+     */
     @Test
     public void testChghostCallsActorProviderToUpdateUserString() {
         final InternalClient internalClient = Mockito.mock(InternalClient.class);
         Mockito.when(internalClient.getEventManager()).thenReturn(Mockito.mock(EventManager.class));
 
-        final ActorProvider actorProviderMock = testChghostWithMockUserAndParameters(internalClient, Arrays.asList("~purr", "kitteh.org"));
+        final ActorProvider actorProviderMock = this.testChghostWithMockUserAndParameters(internalClient, Arrays.asList("~purr", "kitteh.org"));
         Mockito.verify(actorProviderMock).trackUserUserStringChange("Kitteh", "~purr");
     }
 
+    /**
+     * Tests simultaneous update.
+     */
     @Test
     public void testChghostCallsActorProviderToUpdateUserStringAndHostnameAtOnce() {
         final InternalClient internalClient = Mockito.mock(InternalClient.class);
         Mockito.when(internalClient.getEventManager()).thenReturn(Mockito.mock(EventManager.class));
 
-        final ActorProvider actorProviderMock = testChghostWithMockUserAndParameters(internalClient, Arrays.asList("~purr", "test.kitteh.org"));
+        final ActorProvider actorProviderMock = this.testChghostWithMockUserAndParameters(internalClient, Arrays.asList("~purr", "test.kitteh.org"));
         Mockito.verify(actorProviderMock).trackUserUserStringChange("Kitteh", "~purr");
         Mockito.verify(actorProviderMock).trackUserHostnameChange("Kitteh", "test.kitteh.org");
     }
 
+    /**
+     * Tests event firing.
+     */
     @Test
     public void testChghostFiresEventsAsExpected() {
         final InternalClient internalClient = Mockito.mock(InternalClient.class);
         final EventManager eventManager = Mockito.mock(EventManager.class);
         Mockito.when(internalClient.getEventManager()).thenReturn(eventManager);
 
-        testChghostWithMockUserAndParameters(internalClient, Arrays.asList("~purr", "test.kitteh.org"));
+        this.testChghostWithMockUserAndParameters(internalClient, Arrays.asList("~purr", "test.kitteh.org"));
         Mockito.verify(eventManager, Mockito.times(2)).callEvent(Mockito.argThat(
-                o -> o instanceof UserHostnameChangeEvent || o instanceof UserUserStringChangeEvent
+                o -> (o instanceof UserHostnameChangeEvent) || (o instanceof UserUserStringChangeEvent)
         ));
     }
 
@@ -124,7 +151,7 @@ public class CHGHOSTTest {
     }
 
     private void testChghostWithParameters(List<String> list) {
-        EventListener sut = getEventListener();
+        EventListener sut = this.getEventListener();
         final Client clientMock = Mockito.mock(Client.class);
         final Actor actorMock = Mockito.mock(User.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
@@ -132,7 +159,7 @@ public class CHGHOSTTest {
     }
 
     private EventListener getEventListener() {
-        return getEventListener(null);
+        return this.getEventListener(null);
     }
 
     private EventListener getEventListener(ActorProvider provider) {

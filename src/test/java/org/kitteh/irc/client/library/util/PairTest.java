@@ -3,8 +3,13 @@ package org.kitteh.irc.client.library.util;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * It's a pair test.
+ */
 public class PairTest {
-
+    /**
+     * Tests pairstuff.
+     */
     @Test
     public void testPair() {
         Pair<String, Integer> sut = new Pair<>("Cats", 4);

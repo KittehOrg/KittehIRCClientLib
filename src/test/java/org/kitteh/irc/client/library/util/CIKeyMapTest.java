@@ -10,13 +10,22 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.mockito.Mockito;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+/**
+ * Tests the CIKeyMap.
+ */
 public class CIKeyMapTest {
-
+    /**
+     * Tests with ascii.
+     */
     @Test
     public void testWithAscii() {
-        Client client = getMockClientWithCaseMapping(CaseMapping.ASCII);
+        Client client = this.getMockClientWithCaseMapping(CaseMapping.ASCII);
         CIKeyMap<String> sut = new CIKeyMap<>(client);
         Assert.assertTrue(sut.isEmpty());
         sut.put("KITTEN", "foobar");
@@ -53,9 +62,12 @@ public class CIKeyMapTest {
         Assert.assertTrue(sut.containsValue(null));
     }
 
+    /**
+     * Tests with RFC.
+     */
     @Test
     public void testWithRfc1459() {
-        Client client = getMockClientWithCaseMapping(CaseMapping.RFC1459);
+        Client client = this.getMockClientWithCaseMapping(CaseMapping.RFC1459);
         CIKeyMap<String> sut = new CIKeyMap<>(client);
 
         sut.put("[cat]", "kitten");
@@ -73,9 +85,12 @@ public class CIKeyMapTest {
         Assert.assertEquals(1, sut.size());
     }
 
+    /**
+     * Tests with RFC... strictly speaking.
+     */
     @Test
     public void testWithRfc1459Strict() {
-        Client client = getMockClientWithCaseMapping(CaseMapping.STRICT_RFC1459);
+        Client client = this.getMockClientWithCaseMapping(CaseMapping.STRICT_RFC1459);
         CIKeyMap<String> sut = new CIKeyMap<>(client);
 
         sut.put("[cat]^", "kitteh");
@@ -89,6 +104,12 @@ public class CIKeyMapTest {
         Assert.assertEquals(1, sut.size());
     }
 
+    /**
+     * Gets a mock client with a certain casemapping.
+     *
+     * @param mapping case mapping requested
+     * @return requested client
+     */
     public Client getMockClientWithCaseMapping(CaseMapping mapping) {
         Client clientMock = Mockito.mock(Client.class);
         Mockito.when(clientMock.getServerInfo()).thenReturn(new StubServerInfo(mapping));
@@ -96,9 +117,9 @@ public class CIKeyMapTest {
     }
 
     class StubServerInfo implements ServerInfo {
-        private CaseMapping caseMapping;
+        private final CaseMapping caseMapping;
 
-        public StubServerInfo(CaseMapping caseMapping) {
+        StubServerInfo(CaseMapping caseMapping) {
             this.caseMapping = caseMapping;
         }
 

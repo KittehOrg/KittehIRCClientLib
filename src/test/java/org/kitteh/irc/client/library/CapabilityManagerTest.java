@@ -12,8 +12,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Tests the CapabilityManager.
+ */
 public class CapabilityManagerTest {
-
+    /**
+     * Test default getters.
+     */
     @Test
     public void testDefaultGetCapabilityMethodsInCapabilityManager() {
         StubCapabilityManager sut = new StubCapabilityManager();
@@ -24,24 +29,33 @@ public class CapabilityManagerTest {
         Assert.assertFalse(sut.getCapability("Cats").isPresent());
     }
 
+    /**
+     * Tests ability to acquire natively supported capabilities.
+     */
     @Test
     public void testNativeCapabilityRetrieval() {
-        StubCapabilityManager sut = new StubCapabilityManager();
         List<String> caps = CapabilityManager.Defaults.getAll();
         Assert.assertFalse(caps.isEmpty());
         Assert.assertTrue(caps.contains(CapabilityManager.Defaults.ACCOUNT_NOTIFY));
     }
 
+    /**
+     * Tests the constructor's ability to construct.
+     *
+     * @throws Exception if horrible things happen
+     */
     @Test
     public void testConstructorIsPrivate() throws Exception {
-        Constructor constructor = CapabilityManager.Defaults.class.getDeclaredConstructor();
+        Constructor<CapabilityManager.Defaults> constructor = CapabilityManager.Defaults.class.getDeclaredConstructor();
         Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }
 
+    /**
+     * Stubby manager.
+     */
     public class StubCapabilityManager implements CapabilityManager {
-
         @Nonnull
         @Override
         public List<CapabilityState> getCapabilities() {

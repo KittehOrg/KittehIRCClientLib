@@ -107,11 +107,13 @@ public class SanityTest {
     }
 
     /**
-     * Test the private constructor.
+     * Tests the private constructor.
+     *
+     * @throws Exception if oops
      */
     @Test
     public void testConstructorIsPrivate() throws Exception {
-        Constructor constructor = Sanity.class.getDeclaredConstructor();
+        Constructor<Sanity> constructor = Sanity.class.getDeclaredConstructor();
         Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
