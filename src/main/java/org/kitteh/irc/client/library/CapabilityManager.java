@@ -36,6 +36,7 @@ import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,13 +147,22 @@ public interface CapabilityManager {
         }
 
         static {
-            ALL = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields()).filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())).map(field -> {
-                try {
-                    return (String) field.get(null);
-                } catch (IllegalAccessException e) {
-                    throw new AssertionError(e);
-                }
-            }).collect(Collectors.toCollection(SUPPLIER)));
+            ALL = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields()).filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())).map(Defaults::getStringForCapabilityField).collect(Collectors.toCollection(SUPPLIER)));
+        }
+
+        /**
+         * Tries to get the String value of a capability field, provided
+         * it's accessible.
+         *
+         * @param field the field to try and get the value for
+         * @return the capability extension name
+         */
+        private static String getStringForCapabilityField(Field field) {
+            try {
+                return (String) field.get(null);
+            } catch (IllegalAccessException e) {
+                throw new AssertionError(e);
+            }
         }
     }
 
