@@ -2,6 +2,9 @@ language: java
 jdk:
   - oraclejdk8
 sudo: false
+cache:
+  directories:
+    - $HOME/.m2
 notifications:
   email: false
 script: "if [ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'master' ]; then mvn deploy -P duckswithsauce --settings .travis_settings.xml; else mvn test -B; fi"
