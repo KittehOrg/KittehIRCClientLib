@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
+import org.kitteh.irc.client.library.util.RiskyBusiness;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -158,11 +159,7 @@ public interface CapabilityManager {
          * @return the capability extension name
          */
         private static String getStringForCapabilityField(Field field) {
-            try {
-                return (String) field.get(null);
-            } catch (IllegalAccessException e) {
-                throw new AssertionError(e);
-            }
+            return RiskyBusiness.assertSafe(f -> (String) f.get(null), field);
         }
     }
 
