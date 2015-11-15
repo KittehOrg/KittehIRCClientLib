@@ -32,8 +32,10 @@ public class CISetTest {
         Assert.assertTrue(sut.contains("cat"));
         Assert.assertTrue(sut.contains("CAT"));
         Assert.assertTrue(sut.contains("CAt"));
+        Assert.assertFalse(sut.contains(null));
         Assert.assertTrue(sut.remove("cat"));
         Assert.assertFalse(sut.remove("cat"));
+        Assert.assertFalse(sut.remove(null));
         Assert.assertFalse(sut.iterator().hasNext());
 
         sut.add("dog");
