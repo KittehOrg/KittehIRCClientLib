@@ -84,6 +84,31 @@ public class KickCommandTest {
     }
 
     /**
+     * Tests a wrong-Client attempt.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void wrongClientChannel() {
+        Client client = Mockito.mock(Client.class);
+        Channel channel = Mockito.mock(Channel.class);
+        Mockito.when(channel.getClient()).thenReturn(Mockito.mock(Client.class));
+
+        new KickCommand(client, channel);
+    }
+
+    /**
+     * Tests a wrong-Client attempt.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void wrongClientUser() {
+        Client client = Mockito.mock(Client.class);
+        User user = Mockito.mock(User.class);
+        Mockito.when(user.getClient()).thenReturn(Mockito.mock(Client.class));
+
+        KickCommand command = new KickCommand(client, CHANNEL);
+        command.target(user);
+    }
+
+    /**
      * Confirms toString fires, has info in it.
      */
     @Test
