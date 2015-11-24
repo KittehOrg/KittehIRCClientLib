@@ -24,11 +24,11 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 /**
  * Manages message tags.
@@ -41,7 +41,7 @@ public interface MessageTagManager {
      * @return mapping of tags to their creators for the given capability
      */
     @Nonnull
-    Map<String, BiFunction<String, Optional<String>, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability);
+    Map<String, TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability);
 
     /**
      * Gets the registered tag creator for a given tag name.
@@ -50,7 +50,7 @@ public interface MessageTagManager {
      * @return registered creator if present
      */
     @Nonnull
-    Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> getTagCreator(@Nonnull String tagName);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getTagCreator(@Nonnull String tagName);
 
     /**
      * Registers a function that creates a tag from given tag name and tag
@@ -62,7 +62,7 @@ public interface MessageTagManager {
      * @return displaced tag creator if one existed for the given tag name
      */
     @Nonnull
-    Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull BiFunction<String, Optional<String>, ? extends MessageTag> tagCreator);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, Optional<String>, ? extends MessageTag> tagCreator);
 
     /**
      * Removes the registered tag creator for a given tag name.
@@ -71,5 +71,5 @@ public interface MessageTagManager {
      * @return registered creator if present
      */
     @Nonnull
-    Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> unregisterTag(@Nonnull String tagName);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> unregisterTag(@Nonnull String tagName);
 }

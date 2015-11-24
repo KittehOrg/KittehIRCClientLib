@@ -23,25 +23,26 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 
 abstract class AbstractNameValueProcessor<NameValue> {
     protected static class Creator<NameValue> {
-        private final BiFunction<String, Optional<String>, ? extends NameValue> function;
+        private final TriFunction<Client, String, Optional<String>, ? extends NameValue> function;
 
-        protected Creator(@Nonnull BiFunction<String, Optional<String>, ? extends NameValue> function) {
+        protected Creator(@Nonnull TriFunction<Client, String, Optional<String>, ? extends NameValue> function) {
             this.function = function;
         }
 
         @Nonnull
-        protected BiFunction<String, Optional<String>, ? extends NameValue> getFunction() {
+        protected TriFunction<Client, String, Optional<String>, ? extends NameValue> getFunction() {
             return this.function;
         }
 
@@ -68,22 +69,22 @@ abstract class AbstractNameValueProcessor<NameValue> {
     }
 
     @Nonnull
-    protected Optional<BiFunction<String, Optional<String>, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
+    protected Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
         return this.optional(this.registeredNames.get(name));
     }
 
     @Nonnull
-    protected Optional<BiFunction<String, Optional<String>, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
+    protected Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
         return this.optional(this.registeredNames.put(name, creator));
     }
 
     @Nonnull
-    protected Optional<BiFunction<String, Optional<String>, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
+    protected Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
         return this.optional(this.registeredNames.remove(name));
     }
 
     @Nonnull
-    private Optional<BiFunction<String, Optional<String>, ? extends NameValue>> optional(@Nullable Creator<NameValue> creator) {
+    private Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> optional(@Nullable Creator<NameValue> creator) {
         return (creator == null) ? Optional.empty() : Optional.of(creator.getFunction());
     }
 

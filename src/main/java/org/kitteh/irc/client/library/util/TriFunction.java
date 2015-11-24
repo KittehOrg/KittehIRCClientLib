@@ -21,14 +21,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nonnull;
-
-enum ISupport {
-    ;
-
-    static void handle(@Nonnull String arg, @Nonnull InternalClient client) {
-        throw new AssertionError("This shouldn't happen anymore!");
-    }
+/**
+ * Represents a function that accepts three arguments and produces a result.
+ *
+ * @param <First> the type of the first argument to the function
+ * @param <Second> the type of the second argument to the function
+ * @param <Third> the type of the second argument to the function
+ * @param <Result> the type of the result of the function
+ */
+@FunctionalInterface
+public interface TriFunction<First, Second, Third, Result> {
+    /**
+     * Applies this function to the given arguments.
+     *
+     * @param first the first function argument
+     * @param second the second function argument
+     * @param third the third function argument
+     * @return the function result
+     */
+    Result apply(First first, Second second, Third third);
 }

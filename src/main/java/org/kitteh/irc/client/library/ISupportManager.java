@@ -24,10 +24,10 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 /**
  * Manages message tags.
@@ -40,7 +40,7 @@ public interface ISupportManager {
      * @return registered creator if present
      */
     @Nonnull
-    Optional<BiFunction<String, Optional<String>, ? extends ISupportParameter>> getCreator(@Nonnull String parameter);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> getCreator(@Nonnull String parameter);
 
     /**
      * Registers a function that creates an {@link ISupportParameter} from a
@@ -51,7 +51,7 @@ public interface ISupportManager {
      * @return displaced creator if one existed for the given parameter
      */
     @Nonnull
-    Optional<BiFunction<String, Optional<String>, ? extends ISupportParameter>> registerParameter(@Nonnull String parameter, @Nonnull BiFunction<String, Optional<String>, ? extends ISupportParameter> creator);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> registerParameter(@Nonnull String parameter, @Nonnull TriFunction<Client, String, Optional<String>, ? extends ISupportParameter> creator);
 
     /**
      * Removes the registered creator for a given parameter.
@@ -60,5 +60,5 @@ public interface ISupportManager {
      * @return registered creator if present
      */
     @Nonnull
-    Optional<BiFunction<String, Optional<String>, ? extends ISupportParameter>> unregisterParameter(@Nonnull String parameter);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> unregisterParameter(@Nonnull String parameter);
 }

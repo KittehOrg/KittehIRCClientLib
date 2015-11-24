@@ -90,6 +90,19 @@ public interface ISupportParameter {
     }
 
     /**
+     * Represents the channel prefixes supported.
+     */
+    interface ChanTypes extends ISupportParameter {
+        /**
+         * Gets the channel types.
+         *
+         * @return supported prefixes
+         */
+        @Nonnull
+        List<Character> getTypes();
+    }
+
+    /**
      * Represents the network name.
      */
     interface Network extends ISupportParameter {

@@ -23,10 +23,12 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.MessageTagManager;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;
@@ -70,7 +72,7 @@ class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implem
     }
 
     private static class IRCMessageTagTime extends IRCMessageTag implements MessageTag.Time {
-        private static final BiFunction<String, Optional<String>, IRCMessageTagTime> FUNCTION = (name, value) -> new IRCMessageTagTime(name, value, Instant.parse(value.get()));
+        private static final TriFunction<Client, String, Optional<String>, IRCMessageTagTime> FUNCTION = (client, name, value) -> new IRCMessageTagTime(name, value, Instant.parse(value.get()));
 
         private final Instant time;
 
@@ -89,7 +91,7 @@ class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implem
     protected static class TagCreator extends Creator<MessageTag> {
         private final String capability;
 
-        private TagCreator(@Nonnull String capability, @Nonnull BiFunction<String, Optional<String>, ? extends MessageTag> function) {
+        private TagCreator(@Nonnull String capability, @Nonnull TriFunction<Client, String, Optional<String>, ? extends MessageTag> function) {
             super(function);
             this.capability = capability;
         }
@@ -115,25 +117,25 @@ class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implem
 
     @Nonnull
     @Override
-    public Map<String, BiFunction<String, Optional<String>, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability) {
+    public Map<String, TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability) {
         return Collections.unmodifiableMap(this.getRegistrations().entrySet().stream().filter(e -> ((TagCreator) e.getValue()).getCapability().equals(capability)).collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFunction())));
     }
 
     @Nonnull
     @Override
-    public Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> getTagCreator(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getTagCreator(@Nonnull String tagName) {
         return this.getCreatorByName(tagName);
     }
 
     @Nonnull
     @Override
-    public Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull BiFunction<String, Optional<String>, ? extends MessageTag> function) {
+    public Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, Optional<String>, ? extends MessageTag> function) {
         return this.registerCreator(tagName, new TagCreator(capability, function));
     }
 
     @Nonnull
     @Override
-    public Optional<BiFunction<String, Optional<String>, ? extends MessageTag>> unregisterTag(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> unregisterTag(@Nonnull String tagName) {
         return this.unregisterCreator(tagName);
     }
 
@@ -158,7 +160,7 @@ class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implem
             // Attempt creating from registered creator, fall back on default
             if ((tagCreator = (TagCreator) this.getRegistrations().get(tagName)) != null) {
                 try {
-                    messageTag = tagCreator.getFunction().apply(tagName, value);
+                    messageTag = tagCreator.getFunction().apply(this.getClient(), tagName, value);
                 } catch (Throwable thrown) {
                     this.getClient().getExceptionListener().queue(new KittehServerMessageTagException(tag, "Tag creator failed", thrown));
                 }
