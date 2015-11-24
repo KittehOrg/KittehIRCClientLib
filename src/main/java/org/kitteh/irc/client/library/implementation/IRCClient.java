@@ -160,6 +160,12 @@ final class IRCClient extends InternalClient {
         return this.goalNick;
     }
 
+    @Nonnull
+    @Override
+    public IRCISupportManager getISupportManager() {
+        return this.iSupportManager;
+    }
+
     @Override
     public int getMessageDelay() {
         return this.config.getNotNull(Config.MESSAGE_DELAY);
@@ -417,11 +423,6 @@ final class IRCClient extends InternalClient {
     @Override
     Set<String> getIntendedChannels() {
         return this.channelsIntended;
-    }
-
-    @Nonnull
-    IRCISupportManager getISupportManager() {
-        return this.iSupportManager;
     }
 
     @Nonnull
