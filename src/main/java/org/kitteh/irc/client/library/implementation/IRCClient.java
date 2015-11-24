@@ -83,6 +83,7 @@ final class IRCClient extends InternalClient {
     private final AuthManager authManager = new IRCAuthManager(this);
     private final IRCCapabilityManager capabilityManager = new IRCCapabilityManager(this);
     private final EventManager eventManager = new IRCEventManager(this);
+    private final IRCISupportManager iSupportManager = new IRCISupportManager(this);
     private final IRCMessageTagManager messageTagManager = new IRCMessageTagManager(this);
 
     private final Listener<Exception> exceptionListener;
@@ -157,6 +158,12 @@ final class IRCClient extends InternalClient {
     @Override
     public String getIntendedNick() {
         return this.goalNick;
+    }
+
+    @Nonnull
+    @Override
+    public IRCISupportManager getISupportManager() {
+        return this.iSupportManager;
     }
 
     @Override

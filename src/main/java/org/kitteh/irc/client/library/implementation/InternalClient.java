@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.ISupportManager;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -49,6 +50,9 @@ abstract class InternalClient implements Client {
 
     @Nonnull
     abstract Set<String> getIntendedChannels();
+
+    @Nonnull
+    public abstract IRCISupportManager getISupportManager();
 
     @Nonnull
     abstract Listener<String> getOutputListener();

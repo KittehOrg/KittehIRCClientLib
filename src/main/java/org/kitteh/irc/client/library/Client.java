@@ -139,6 +139,14 @@ public interface Client {
     String getIntendedNick();
 
     /**
+     * Gets the manager of ISUPPORT info.
+     *
+     * @return the ISUPPORT manager
+     */
+    @Nonnull
+    ISupportManager getISupportManager();
+
+    /**
      * Gets the delay between messages sent to the server.
      * <p>
      * Default is 1200ms.

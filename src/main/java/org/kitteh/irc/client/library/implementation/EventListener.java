@@ -67,7 +67,18 @@ import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseE
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
-import org.kitteh.irc.client.library.event.user.*;
+import org.kitteh.irc.client.library.event.user.MonitoredNickListEvent;
+import org.kitteh.irc.client.library.event.user.MonitoredNickListFullEvent;
+import org.kitteh.irc.client.library.event.user.MonitoredNickOfflineEvent;
+import org.kitteh.irc.client.library.event.user.MonitoredNickOnlineEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
+import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
+import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
+import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
+import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
+import org.kitteh.irc.client.library.event.user.UserQuitEvent;
+import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.CommandFilter;
 import org.kitteh.irc.client.library.util.NumericFilter;
@@ -127,7 +138,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void iSupport(ClientReceiveNumericEvent event) {
         for (int i = 1; i < event.getParameters().size(); i++) {
-            ISupport.handle(event.getParameters().get(i), this.client);
+            this.client.getServerInfo().addISupportParameter(this.client.getISupportManager().getTag(event.getParameters().get(i)));
         }
     }
 

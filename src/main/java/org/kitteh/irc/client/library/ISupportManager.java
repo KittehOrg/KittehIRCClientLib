@@ -23,53 +23,42 @@
  */
 package org.kitteh.irc.client.library;
 
-import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.Optional;
 
 /**
  * Manages message tags.
  */
-public interface MessageTagManager {
+public interface ISupportManager {
     /**
-     * Gets the registered tag creators for a given capability.
+     * Gets the registered ISUPPORT creator for a given parameter name.
      *
-     * @param capability capability name
-     * @return mapping of tags to their creators for the given capability
-     */
-    @Nonnull
-    Map<String, TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability);
-
-    /**
-     * Gets the registered tag creator for a given tag name.
-     *
-     * @param tagName tag name
+     * @param parameter parameter
      * @return registered creator if present
      */
     @Nonnull
-    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getTagCreator(@Nonnull String tagName);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> getCreator(@Nonnull String parameter);
 
     /**
-     * Registers a function that creates a tag from given tag name and tag
-     * value, only to run if the given capability is enabled.
+     * Registers a function that creates an {@link ISupportParameter} from a
+     * given parameter and value.
      *
-     * @param capability capability for which this tag exists
-     * @param tagName name of the tag to register
-     * @param tagCreator function that creates tags
-     * @return displaced tag creator if one existed for the given tag name
+     * @param parameter name of the parameter to register
+     * @param creator function that creates tags
+     * @return displaced creator if one existed for the given parameter
      */
     @Nonnull
-    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, Optional<String>, ? extends MessageTag> tagCreator);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> registerParameter(@Nonnull String parameter, @Nonnull TriFunction<Client, String, Optional<String>, ? extends ISupportParameter> creator);
 
     /**
-     * Removes the registered tag creator for a given tag name.
+     * Removes the registered creator for a given parameter.
      *
-     * @param tagName tag name
+     * @param parameter parameter
      * @return registered creator if present
      */
     @Nonnull
-    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> unregisterTag(@Nonnull String tagName);
+    Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> unregisterParameter(@Nonnull String parameter);
 }

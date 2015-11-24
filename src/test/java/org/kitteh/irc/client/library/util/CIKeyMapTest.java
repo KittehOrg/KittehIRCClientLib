@@ -7,6 +7,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.ServerInfo;
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.mockito.Mockito;
 
 import javax.annotation.Nonnull;
@@ -166,6 +167,12 @@ public class CIKeyMapTest {
 
         @Nonnull
         @Override
+        public Optional<ISupportParameter> getISupportParameter(@Nonnull String name) {
+            return Optional.empty();
+        }
+
+        @Nonnull
+        @Override
         public Optional<List<String>> getMOTD() {
             return Optional.empty();
         }
@@ -184,7 +191,7 @@ public class CIKeyMapTest {
         @Nonnull
         @Override
         public Optional<String> getVersion() {
-            return null;
+            return Optional.empty();
         }
 
         @Override

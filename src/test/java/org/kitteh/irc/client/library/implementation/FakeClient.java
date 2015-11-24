@@ -86,6 +86,12 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
+    public IRCISupportManager getISupportManager() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     Listener<String> getOutputListener() {
         return this.listenerOutput;
     }
