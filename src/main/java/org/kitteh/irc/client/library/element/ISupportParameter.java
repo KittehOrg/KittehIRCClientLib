@@ -51,6 +51,11 @@ public interface ISupportParameter {
      */
     interface CaseMapping extends ISupportParameter {
         /**
+         * Parameter name.
+         */
+        String NAME = "CASEMAPPING";
+
+        /**
          * Gets the casemapping specified.
          *
          * @return casemapping
@@ -63,12 +68,21 @@ public interface ISupportParameter {
      * Represents the length limit of channels.
      */
     interface ChannelLen extends IntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "CHANNELLEN";
     }
 
     /**
      * Represents the join limit of channels by prefix.
      */
     interface ChanLimit extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "CHANLIMIT";
+
         /**
          * Gets the channel limits.
          *
@@ -83,6 +97,11 @@ public interface ISupportParameter {
      */
     interface ChanModes extends ISupportParameter {
         /**
+         * Parameter name.
+         */
+        String NAME = "CHANMODES";
+
+        /**
          * Gets the channel modes.
          *
          * @return channel modes
@@ -95,6 +114,11 @@ public interface ISupportParameter {
      * Represents the channel prefixes supported.
      */
     interface ChanTypes extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "CHANTYPES";
+
         /**
          * Gets the channel types.
          *
@@ -109,6 +133,11 @@ public interface ISupportParameter {
      */
     interface Network extends ISupportParameter {
         /**
+         * Parameter name.
+         */
+        String NAME = "NETWORK";
+
+        /**
          * Gets the network name.
          *
          * @return network name
@@ -121,12 +150,21 @@ public interface ISupportParameter {
      * Represents the limit to nickname length.
      */
     interface NickLen extends IntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "NICKLEN";
     }
 
     /**
      * Represents channel user modes (which define nick prefix).
      */
     interface Prefix extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "PREFIX";
+
         /**
          * Gets the modes granting prefixes.
          *
@@ -140,6 +178,10 @@ public interface ISupportParameter {
      * Represents support for WHOX.
      */
     interface WHOX extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "WHOX";
     }
 
     /**

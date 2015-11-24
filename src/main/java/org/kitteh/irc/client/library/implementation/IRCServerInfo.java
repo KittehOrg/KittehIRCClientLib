@@ -86,21 +86,21 @@ final class IRCServerInfo implements ServerInfo {
     @Nonnull
     @Override
     public List<ChannelMode> getChannelModes() {
-        Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter("CHANMODES", ISupportParameter.ChanModes.class);
+        Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter(ISupportParameter.ChanModes.NAME, ISupportParameter.ChanModes.class);
         return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.channelModes);
     }
 
     @Nonnull
     @Override
     public List<Character> getChannelPrefixes() {
-        Optional<ISupportParameter.ChanTypes> optional = this.getISupportParameter("CHANTYPES", ISupportParameter.ChanTypes.class);
+        Optional<ISupportParameter.ChanTypes> optional = this.getISupportParameter(ISupportParameter.ChanTypes.NAME, ISupportParameter.ChanTypes.class);
         return new ArrayList<>(optional.isPresent() ? optional.get().getTypes() : this.channelPrefixes);
     }
 
     @Nonnull
     @Override
     public List<ChannelUserMode> getChannelUserModes() {
-        Optional<ISupportParameter.Prefix> optional = this.getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
+        Optional<ISupportParameter.Prefix> optional = this.getISupportParameter(ISupportParameter.Prefix.NAME, ISupportParameter.Prefix.class);
         return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.channelUserModes);
     }
 

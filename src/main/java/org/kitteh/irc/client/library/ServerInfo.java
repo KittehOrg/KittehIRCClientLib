@@ -54,7 +54,7 @@ public interface ServerInfo {
      */
     @Nonnull
     default CaseMapping getCaseMapping() {
-        Optional<ISupportParameter.CaseMapping> optional = this.getISupportParameter("CASEMAPPING", ISupportParameter.CaseMapping.class);
+        Optional<ISupportParameter.CaseMapping> optional = this.getISupportParameter(ISupportParameter.CaseMapping.NAME, ISupportParameter.CaseMapping.class);
         return optional.isPresent() ? optional.get().getCaseMapping() : CaseMapping.RFC1459;
     }
 
@@ -64,7 +64,7 @@ public interface ServerInfo {
      * @return channel length limit or -1 if unknown
      */
     default int getChannelLengthLimit() {
-        Optional<ISupportParameter.ChannelLen> optional = this.getISupportParameter("CHANNELLEN", ISupportParameter.ChannelLen.class);
+        Optional<ISupportParameter.ChannelLen> optional = this.getISupportParameter(ISupportParameter.ChannelLen.NAME, ISupportParameter.ChannelLen.class);
         return optional.isPresent() ? optional.get().getInteger() : -1;
     }
 
@@ -75,7 +75,7 @@ public interface ServerInfo {
      */
     @Nonnull
     default Map<Character, Integer> getChannelLimits() {
-        Optional<ISupportParameter.ChanLimit> optional = this.getISupportParameter("CHANLIMIT", ISupportParameter.ChanLimit.class);
+        Optional<ISupportParameter.ChanLimit> optional = this.getISupportParameter(ISupportParameter.ChanLimit.NAME, ISupportParameter.ChanLimit.class);
         return optional.isPresent() ? optional.get().getLimits() : Collections.emptyMap();
     }
 
@@ -173,7 +173,7 @@ public interface ServerInfo {
      */
     @Nonnull
     default Optional<String> getNetworkName() {
-        Optional<ISupportParameter.Network> optional = this.getISupportParameter("NETWORK", ISupportParameter.Network.class);
+        Optional<ISupportParameter.Network> optional = this.getISupportParameter(ISupportParameter.Network.NAME, ISupportParameter.Network.class);
         return optional.isPresent() ? Optional.of(optional.get().getNetworkName()) : Optional.empty();
     }
 
@@ -183,7 +183,7 @@ public interface ServerInfo {
      * @return nickname length limit or -1 if unknown
      */
     default int getNickLengthLimit() {
-        Optional<ISupportParameter.NickLen> optional = this.getISupportParameter("NICKLEN", ISupportParameter.NickLen.class);
+        Optional<ISupportParameter.NickLen> optional = this.getISupportParameter(ISupportParameter.NickLen.NAME, ISupportParameter.NickLen.class);
         return optional.isPresent() ? optional.get().getInteger() : -1;
     }
 
@@ -201,7 +201,7 @@ public interface ServerInfo {
      * @return true if WHOX is supported
      */
     default boolean hasWhoXSupport() {
-        return this.getISupportParameter("WHOX").isPresent();
+        return this.getISupportParameter(ISupportParameter.WHOX.NAME).isPresent();
     }
 
     /**

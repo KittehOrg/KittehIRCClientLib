@@ -278,15 +278,15 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
 
     IRCISupportManager(InternalClient client) {
         super(client);
-        this.registerParameter("CASEMAPPING", ISupportCaseMapping::new);
-        this.registerParameter("CHANNELLEN", ISupportChannelLen::new);
-        this.registerParameter("CHANLIMIT", ISupportChanLimit::new);
-        this.registerParameter("CHANMODES", ISupportChanModes::new);
-        this.registerParameter("CHANTYPES", ISupportChanTypes::new);
-        this.registerParameter("NETWORK", ISupportNetwork::new);
-        this.registerParameter("NICKLEN", ISupportNickLen::new);
-        this.registerParameter("PREFIX", ISupportPrefix::new);
-        this.registerParameter("WHOX", ISupportWHOX::new);
+        this.registerParameter(ISupportParameter.CaseMapping.NAME, ISupportCaseMapping::new);
+        this.registerParameter(ISupportParameter.ChannelLen.NAME, ISupportChannelLen::new);
+        this.registerParameter(ISupportParameter.ChanLimit.NAME, ISupportChanLimit::new);
+        this.registerParameter(ISupportParameter.ChanModes.NAME, ISupportChanModes::new);
+        this.registerParameter(ISupportParameter.ChanTypes.NAME, ISupportChanTypes::new);
+        this.registerParameter(ISupportParameter.Network.NAME, ISupportNetwork::new);
+        this.registerParameter(ISupportParameter.NickLen.NAME, ISupportNickLen::new);
+        this.registerParameter(ISupportParameter.Prefix.NAME, ISupportPrefix::new);
+        this.registerParameter(ISupportParameter.WHOX.NAME, ISupportWHOX::new);
     }
 
     private static KittehServerISupportException valueUndefined(@Nonnull String parameter) {
