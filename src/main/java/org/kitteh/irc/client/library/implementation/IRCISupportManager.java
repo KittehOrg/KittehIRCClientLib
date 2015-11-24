@@ -44,12 +44,20 @@ import java.util.regex.Pattern;
 
 class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> implements ISupportManager {
     private static class IRCISupportParameter implements ISupportParameter {
+        private final Client client;
         private final String name;
         private final Optional<String> value;
 
         private IRCISupportParameter(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+            this.client = client;
             this.name = name;
             this.value = value;
+        }
+
+        @Nonnull
+        @Override
+        public Client getClient() {
+            return this.client;
         }
 
         @Nonnull
@@ -158,7 +166,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
             List<ChannelMode> modesList = new ArrayList<>();
             for (int typeId = 0; typeId < modes.length && typeId < 4; typeId++) {
                 for (char mode : modes[typeId].toCharArray()) {
-                    ChannelMode.Type type = null;
+                    ChannelMode.Type type;
                     switch (typeId) {
                         case 0:
                             type = ChannelMode.Type.A_MASK;
@@ -170,6 +178,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
                             type = ChannelMode.Type.C_PARAMETER_ON_SET;
                             break;
                         case 3:
+                        default:
                             type = ChannelMode.Type.D_PARAMETER_NEVER;
                     }
                     modesList.add(new ModeData.IRCChannelMode(client, mode, type));
@@ -267,8 +276,6 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static final Pattern TAG_ESCAPE = Pattern.compile("\\\\([\\\\s:])");
-
     IRCISupportManager(InternalClient client) {
         super(client);
         this.registerParameter("CASEMAPPING", ISupportCaseMapping::new);
@@ -305,73 +312,32 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
     }
 
     @Nonnull
-    List<ISupportParameter> getTags(@Nonnull String tagList) {
-        String[] tags = tagList.split(";"); // Split up by semicolon
-        List<ISupportParameter> list = new ArrayList<>();
+    ISupportParameter getTag(@Nonnull String tag) {
         int index;
         Creator<ISupportParameter> creator;
-        for (String tag : tags) {
-            String tagName;
-            Optional<String> value;
-            // Split out value if present
-            if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
-                tagName = tag.substring(0, index);
-                value = Optional.of(this.getTagValue(tag.substring(index + 1)));
-            } else {
-                tagName = tag;
-                value = Optional.empty();
-            }
-            ISupportParameter ISupportParameter = null;
-            // Attempt creating from registered creator, fall back on default
-            if ((creator = this.getRegistrations().get(tagName)) != null) {
-                try {
-                    ISupportParameter = creator.getFunction().apply(this.getClient(), tagName, value);
-                } catch (Throwable thrown) {
-                    this.getClient().getExceptionListener().queue(new KittehServerISupportException(tag, "Creator failed", thrown));
-                }
-            }
-            if (ISupportParameter == null) {
-                ISupportParameter = new IRCISupportParameter(this.getClient(), tagName, value);
-            }
-            list.add(ISupportParameter);
+        String tagName;
+        Optional<String> value;
+        // Split out value if present
+        if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
+            tagName = tag.substring(0, index);
+            value = Optional.of(tag.substring(index + 1));
+        } else {
+            tagName = tag;
+            value = Optional.empty();
         }
-        return Collections.unmodifiableList(list);
-    }
-
-    @Nonnull
-    private String getTagValue(@Nonnull String tag) {
-        StringBuilder builder = new StringBuilder(tag.length());
-        int currentIndex = 0;
-        Matcher matcher = TAG_ESCAPE.matcher(tag);
-        while (matcher.find()) {
-            if (matcher.start() > currentIndex) {
-                builder.append(tag.substring(currentIndex, matcher.start()));
+        ISupportParameter iSupportParameter = null;
+        // Attempt creating from registered creator, fall back on default
+        if ((creator = this.getRegistrations().get(tagName)) != null) {
+            try {
+                iSupportParameter = creator.getFunction().apply(this.getClient(), tagName, value);
+            } catch (Throwable thrown) {
+                this.getClient().getExceptionListener().queue(new KittehServerISupportException(tag, "Creator failed", thrown));
             }
-            switch (matcher.group(1)) {
-                case ":":
-                    builder.append(';');
-                    break;
-                case "s":
-                    builder.append(' ');
-                    break;
-                case "\\":
-                    builder.append('\\');
-                    break;
-                case "r":
-                    builder.append('\r');
-                    break;
-                case "n":
-                    builder.append('\n');
-                    break;
-                default:
-                    // Ignore it? Technically not specified since the format MUST reflect documentation.
-            }
-            currentIndex = matcher.end();
         }
-        if (currentIndex < tag.length()) {
-            builder.append(tag.substring(currentIndex));
+        if (iSupportParameter == null) {
+            iSupportParameter = new IRCISupportParameter(this.getClient(), tagName, value);
         }
-        return builder.toString();
+        return iSupportParameter;
     }
 
     @Nonnull

@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.kitteh.irc.client.library.Client;
+
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,7 @@ public interface ISupportParameter {
     /**
      * Represents a parameter which always has an integer value.
      */
-    interface IntegerParameter {
+    interface IntegerParameter extends ISupportParameter {
         /**
          * Gets the value of this parameter.
          *
@@ -139,6 +141,14 @@ public interface ISupportParameter {
      */
     interface WHOX extends ISupportParameter {
     }
+
+    /**
+     * Gets the Client this is parameter is on.
+     *
+     * @return the client
+     */
+    @Nonnull
+    Client getClient();
 
     /**
      * Gets the name of the parameter.

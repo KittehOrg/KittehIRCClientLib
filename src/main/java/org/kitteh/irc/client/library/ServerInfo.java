@@ -25,8 +25,10 @@ package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,14 +53,20 @@ public interface ServerInfo {
      * @return the casemapping
      */
     @Nonnull
-    CaseMapping getCaseMapping();
+    default CaseMapping getCaseMapping() {
+        Optional<ISupportParameter.CaseMapping> optional = this.getISupportParameter("CASEMAPPING", ISupportParameter.CaseMapping.class);
+        return optional.isPresent() ? optional.get().getCaseMapping() : CaseMapping.RFC1459;
+    }
 
     /**
      * Gets the maximum length of channel names.
      *
      * @return channel length limit or -1 if unknown
      */
-    int getChannelLengthLimit();
+    default int getChannelLengthLimit() {
+        Optional<ISupportParameter.ChannelLen> optional = this.getISupportParameter("CHANNELLEN", ISupportParameter.ChannelLen.class);
+        return optional.isPresent() ? optional.get().getInteger() : -1;
+    }
 
     /**
      * Gets the channel join limits.
@@ -66,7 +74,10 @@ public interface ServerInfo {
      * @return a map of channel prefixes to limits
      */
     @Nonnull
-    Map<Character, Integer> getChannelLimits();
+    default Map<Character, Integer> getChannelLimits() {
+        Optional<ISupportParameter.ChanLimit> optional = this.getISupportParameter("CHANLIMIT", ISupportParameter.ChanLimit.class);
+        return optional.isPresent() ? optional.get().getLimits() : Collections.emptyMap();
+    }
 
     /**
      * Gets a channel mode by specified character.
@@ -121,6 +132,33 @@ public interface ServerInfo {
     List<ChannelUserMode> getChannelUserModes();
 
     /**
+     * Gets the named ISUPPORT parameter if present.
+     *
+     * @param name parameter name, case insensitive
+     * @return parameter if present
+     */
+    @Nonnull
+    Optional<ISupportParameter> getISupportParameter(@Nonnull String name);
+
+    /**
+     * Gets the named ISUPPORT parameter if present and if of the specified
+     * type.
+     *
+     * @param name parameter name, case insensitive
+     * @param clazz parameter type
+     * @param <ISupport> parameter type
+     * @return parameter if present
+     */
+    @Nonnull
+    default <ISupport extends ISupportParameter> Optional<ISupport> getISupportParameter(@Nonnull String name, @Nonnull Class<ISupport> clazz) {
+        Optional<ISupportParameter> optional = this.getISupportParameter(name);
+        if (optional.isPresent() && optional.get().getClass().equals(clazz)) {
+            return (Optional<ISupport>) optional;
+        }
+        return Optional.empty();
+    }
+
+    /**
      * Gets the server's MOTD.
      *
      * @return motd if known
@@ -134,14 +172,20 @@ public interface ServerInfo {
      * @return network name if known
      */
     @Nonnull
-    Optional<String> getNetworkName();
+    default Optional<String> getNetworkName() {
+        Optional<ISupportParameter.Network> optional = this.getISupportParameter("NETWORK", ISupportParameter.Network.class);
+        return optional.isPresent() ? Optional.of(optional.get().getNetworkName()) : Optional.empty();
+    }
 
     /**
      * Gets the maximum length of nicknames.
      *
      * @return nickname length limit or -1 if unknown
      */
-    int getNickLengthLimit();
+    default int getNickLengthLimit() {
+        Optional<ISupportParameter.NickLen> optional = this.getISupportParameter("NICKLEN", ISupportParameter.NickLen.class);
+        return optional.isPresent() ? optional.get().getInteger() : -1;
+    }
 
     /**
      * Gets the version of the IRCd.
@@ -156,7 +200,9 @@ public interface ServerInfo {
      *
      * @return true if WHOX is supported
      */
-    boolean hasWhoXSupport();
+    default boolean hasWhoXSupport() {
+        return this.getISupportParameter("WHOX").isPresent();
+    }
 
     /**
      * Gets if a given string is a valid channel name according to the
