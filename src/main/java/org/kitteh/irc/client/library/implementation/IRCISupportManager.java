@@ -105,8 +105,9 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
             Optional<org.kitteh.irc.client.library.CaseMapping> caseMapping = org.kitteh.irc.client.library.CaseMapping.getByName(value.get());
             if (caseMapping.isPresent()) {
                 this.caseMapping = caseMapping.get();
+            } else {
+                throw valueUndefined(name);
             }
-            throw valueUndefined(name);
         }
 
         @Nonnull
