@@ -24,7 +24,6 @@
 package org.kitteh.irc.client.library.implementation;
 
 import net.engio.mbassy.bus.SyncMessageBus;
-import net.engio.mbassy.bus.common.Properties;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
@@ -62,7 +61,7 @@ final class IRCEventManager implements EventManager {
         }
     }
 
-    private final SyncMessageBus<Object> bus = new SyncMessageBus<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).setProperty(Properties.Handler.PublicationError, new Exceptional()));
+    private final SyncMessageBus<Object> bus = new SyncMessageBus<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default()).addPublicationErrorHandler(new Exceptional()));
     private final InternalClient client;
     private final Set<Object> listeners = new HashSet<>();
 
