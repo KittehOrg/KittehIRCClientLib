@@ -173,6 +173,12 @@ public class CIKeyMapTest {
 
         @Nonnull
         @Override
+        public Map<String, ISupportParameter> getISupportParameters() {
+            return null;
+        }
+
+        @Nonnull
+        @Override
         public Optional<List<String>> getMOTD() {
             return Optional.empty();
         }
