@@ -310,9 +310,8 @@ final class IRCClient extends InternalClient {
     }
 
     private void sendRawLineCheck(@Nonnull String message) {
-        Sanity.nullCheck(message, "Message cannot be null");
         Sanity.safeMessageCheck(message);
-        if (message.length() > 0 && message.length() > (message.charAt(0) == '@' ? 1022 : 510)) {
+        if (!message.isEmpty() && (message.length() > ((message.charAt(0) == '@') ? 1022 : 510))) {
             throw new IllegalArgumentException("Message too long: " + message.length());
         }
         if (this.connection == null) {

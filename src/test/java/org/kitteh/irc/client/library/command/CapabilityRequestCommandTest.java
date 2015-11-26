@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 
 /**
  * Tests the CapabilityRequestCommand class using mocks.
+ *
  * @see CapabilityRequestCommand
  */
 public class CapabilityRequestCommandTest {
