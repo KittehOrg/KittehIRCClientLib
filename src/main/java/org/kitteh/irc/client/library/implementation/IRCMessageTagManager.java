@@ -41,7 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
+final class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
     private static class IRCMessageTag implements MessageTag {
         private final String name;
         private final Optional<String> value;
@@ -206,11 +206,5 @@ class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implem
             builder.append(tag.substring(currentIndex));
         }
         return builder.toString();
-    }
-
-    @Nonnull
-    @Override
-    public String toString() {
-        return new ToStringer(this).toString();
     }
 }

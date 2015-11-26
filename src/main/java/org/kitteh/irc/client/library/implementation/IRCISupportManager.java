@@ -42,7 +42,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> implements ISupportManager {
+final class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> implements ISupportManager {
     private static class IRCISupportParameter implements ISupportParameter {
         private final Client client;
         private final String name;
@@ -106,7 +106,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportCaseMapping extends IRCISupportParameterValueRequired implements ISupportParameter.CaseMapping {
+    private static final class ISupportCaseMapping extends IRCISupportParameterValueRequired implements ISupportParameter.CaseMapping {
         private final org.kitteh.irc.client.library.CaseMapping caseMapping;
 
         private ISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
@@ -126,13 +126,13 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportChannelLen extends IRCISupportParameterInteger implements ISupportParameter.ChannelLen {
+    private static final class ISupportChannelLen extends IRCISupportParameterInteger implements ISupportParameter.ChannelLen {
         private ISupportChannelLen(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
         }
     }
 
-    private static class ISupportChanLimit extends IRCISupportParameterValueRequired implements ISupportParameter.ChanLimit {
+    private static final class ISupportChanLimit extends IRCISupportParameterValueRequired implements ISupportParameter.ChanLimit {
         private final Map<Character, Integer> limits;
 
         private ISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
@@ -164,7 +164,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportChanModes extends IRCISupportParameterValueRequired implements ISupportParameter.ChanModes {
+    private static final class ISupportChanModes extends IRCISupportParameterValueRequired implements ISupportParameter.ChanModes {
         private final List<ChannelMode> modes;
 
         private ISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
@@ -201,7 +201,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportChanTypes extends IRCISupportParameterValueRequired implements ISupportParameter.ChanTypes {
+    private static final class ISupportChanTypes extends IRCISupportParameterValueRequired implements ISupportParameter.ChanTypes {
         private final List<Character> prefixes;
 
         private ISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
@@ -220,7 +220,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportNetwork extends IRCISupportParameterValueRequired implements ISupportParameter.Network {
+    private static final class ISupportNetwork extends IRCISupportParameterValueRequired implements ISupportParameter.Network {
         private ISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
         }
@@ -232,13 +232,13 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportNickLen extends IRCISupportParameterInteger implements ISupportParameter.NickLen {
+    private static final class ISupportNickLen extends IRCISupportParameterInteger implements ISupportParameter.NickLen {
         private ISupportNickLen(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
         }
     }
 
-    private static class ISupportPrefix extends IRCISupportParameterValueRequired implements ISupportParameter.Prefix {
+    private static final class ISupportPrefix extends IRCISupportParameterValueRequired implements ISupportParameter.Prefix {
         private final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
         private final List<ChannelUserMode> modes;
@@ -268,7 +268,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportWHOX extends IRCISupportParameter implements ISupportParameter.WHOX {
+    private static final class ISupportWHOX extends IRCISupportParameter implements ISupportParameter.WHOX {
         private ISupportWHOX(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
         }
@@ -334,11 +334,5 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
             iSupportParameter = new IRCISupportParameter(this.getClient(), tagName, value);
         }
         return iSupportParameter;
-    }
-
-    @Nonnull
-    @Override
-    public String toString() {
-        return new ToStringer(this).toString();
     }
 }

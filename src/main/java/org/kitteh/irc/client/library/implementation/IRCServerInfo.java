@@ -35,6 +35,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -109,6 +110,12 @@ final class IRCServerInfo implements ServerInfo {
     public Optional<ISupportParameter> getISupportParameter(@Nonnull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
         return Optional.ofNullable(this.iSupportParameterMap.get(name.toUpperCase()));
+    }
+
+    @Nonnull
+    @Override
+    public Map<String, ISupportParameter> getISupportParameters() {
+        return Collections.unmodifiableMap(new HashMap<>(this.iSupportParameterMap));
     }
 
     void addISupportParameter(@Nonnull ISupportParameter parameter) {

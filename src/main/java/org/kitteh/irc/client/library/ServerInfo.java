@@ -159,6 +159,14 @@ public interface ServerInfo {
     }
 
     /**
+     * Gets the ISUPPORT parameters sent to the client.
+     *
+     * @return all parameters stored
+     */
+    @Nonnull
+    Map<String, ISupportParameter> getISupportParameters();
+
+    /**
      * Gets the server's MOTD.
      *
      * @return motd if known

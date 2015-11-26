@@ -64,22 +64,22 @@ abstract class AbstractNameValueProcessor<NameValue> {
         return this.client;
     }
 
-    protected Map<String, Creator<NameValue>> getRegistrations() {
+    protected final Map<String, Creator<NameValue>> getRegistrations() {
         return this.registeredNames;
     }
 
     @Nonnull
-    protected Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
+    protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
         return this.optional(this.registeredNames.get(name));
     }
 
     @Nonnull
-    protected Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
+    protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
         return this.optional(this.registeredNames.put(name, creator));
     }
 
     @Nonnull
-    protected Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
+    protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
         return this.optional(this.registeredNames.remove(name));
     }
 
