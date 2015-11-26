@@ -138,7 +138,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void iSupport(ClientReceiveNumericEvent event) {
         for (int i = 1; i < event.getParameters().size(); i++) {
-            this.client.getServerInfo().addISupportParameter(this.client.getISupportManager().getTag(event.getParameters().get(i)));
+            this.client.getServerInfo().addISupportParameter(this.client.getISupportManager().getParameter(event.getParameters().get(i)));
         }
     }
 

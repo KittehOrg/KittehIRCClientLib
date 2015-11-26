@@ -79,7 +79,16 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private abstract static class IRCISupportParameterInteger extends IRCISupportParameter implements ISupportParameter.IntegerParameter {
+    private abstract static class IRCISupportParameterValueRequired extends IRCISupportParameter {
+        private IRCISupportParameterValueRequired(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+            super(client, name, value);
+            if (!value.isPresent()) {
+                throw new KittehServerISupportException(name, "Value is required");
+            }
+        }
+    }
+
+    private abstract static class IRCISupportParameterInteger extends IRCISupportParameterValueRequired implements ISupportParameter.IntegerParameter {
         private final int integer;
 
         private IRCISupportParameterInteger(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
@@ -97,7 +106,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportCaseMapping extends IRCISupportParameter implements ISupportParameter.CaseMapping {
+    private static class ISupportCaseMapping extends IRCISupportParameterValueRequired implements ISupportParameter.CaseMapping {
         private final org.kitteh.irc.client.library.CaseMapping caseMapping;
 
         private ISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
@@ -106,7 +115,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
             if (caseMapping.isPresent()) {
                 this.caseMapping = caseMapping.get();
             } else {
-                throw valueUndefined(name);
+                throw new KittehServerISupportException(name, "Undefined casemapping");
             }
         }
 
@@ -123,7 +132,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportChanLimit extends IRCISupportParameter implements ISupportParameter.ChanLimit {
+    private static class ISupportChanLimit extends IRCISupportParameterValueRequired implements ISupportParameter.ChanLimit {
         private final Map<Character, Integer> limits;
 
         private ISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
@@ -145,9 +154,6 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
                     limits.put(prefix, limit);
                 }
             }
-            if (limits.isEmpty()) {
-                throw new KittehServerISupportException(name, "Found no limits!");
-            }
             this.limits = Collections.unmodifiableMap(limits);
         }
 
@@ -158,7 +164,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportChanModes extends IRCISupportParameter implements ISupportParameter.ChanModes {
+    private static class ISupportChanModes extends IRCISupportParameterValueRequired implements ISupportParameter.ChanModes {
         private final List<ChannelMode> modes;
 
         private ISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
@@ -195,14 +201,11 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportChanTypes extends IRCISupportParameter implements ISupportParameter.ChanTypes {
+    private static class ISupportChanTypes extends IRCISupportParameterValueRequired implements ISupportParameter.ChanTypes {
         private final List<Character> prefixes;
 
         private ISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
-            if (!value.isPresent()) {
-                throw new KittehServerISupportException(name, "No channel types defined");
-            }
             List<Character> prefixes = new ArrayList<>();
             for (char c : value.get().toCharArray()) {
                 prefixes.add(c);
@@ -217,12 +220,9 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportNetwork extends IRCISupportParameter implements ISupportParameter.Network {
+    private static class ISupportNetwork extends IRCISupportParameterValueRequired implements ISupportParameter.Network {
         private ISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
-            if (!value.isPresent()) {
-                throw new KittehServerISupportException(name, "No network name");
-            }
         }
 
         @Nonnull
@@ -238,16 +238,13 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         }
     }
 
-    private static class ISupportPrefix extends IRCISupportParameter implements ISupportParameter.Prefix {
+    private static class ISupportPrefix extends IRCISupportParameterValueRequired implements ISupportParameter.Prefix {
         private final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
         private final List<ChannelUserMode> modes;
 
         private ISupportPrefix(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
-            if (!value.isPresent()) {
-                throw new KittehServerISupportException(name, "No prefix data");
-            }
             Matcher matcher = this.PATTERN.matcher(value.get());
             if (!matcher.find()) {
                 throw new KittehServerISupportException(name, "Data does not match expected pattern");
@@ -290,10 +287,6 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         this.registerParameter(ISupportParameter.WHOX.NAME, ISupportWHOX::new);
     }
 
-    private static KittehServerISupportException valueUndefined(@Nonnull String parameter) {
-        return new KittehServerISupportException(parameter, "Value not defined when mandatory");
-    }
-
     @Nonnull
     @Override
     public Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> getCreator(@Nonnull String tagName) {
@@ -313,7 +306,7 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
     }
 
     @Nonnull
-    ISupportParameter getTag(@Nonnull String tag) {
+    ISupportParameter getParameter(@Nonnull String tag) {
         int index;
         Creator<ISupportParameter> creator;
         String tagName;
@@ -331,7 +324,9 @@ class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> i
         if ((creator = this.getRegistrations().get(tagName)) != null) {
             try {
                 iSupportParameter = creator.getFunction().apply(this.getClient(), tagName, value);
-            } catch (Throwable thrown) {
+            } catch (KittehServerISupportException thrown) {
+                this.getClient().getExceptionListener().queue(new KittehServerISupportException(tag, "Creator failed: " + thrown.getMessage()));
+            } catch (Exception thrown) {
                 this.getClient().getExceptionListener().queue(new KittehServerISupportException(tag, "Creator failed", thrown));
             }
         }
