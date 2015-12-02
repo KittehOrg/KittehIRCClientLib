@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Pattern;
 
 /**
  * How meta.
@@ -79,7 +80,9 @@ public abstract class MetadataCommand extends Command {
          */
         @Nonnull
         public Get key(@Nonnull String key) {
-            this.keys.add(Sanity.safeMessageCheck(key, "key"));
+            Sanity.safeMessageCheck(key, "key");
+            Sanity.truthiness(METADATA_KEY_PATTERN.matcher(key).matches(), "Invalid key [" + key + ']');
+            this.keys.add(key);
             return this;
         }
 
@@ -153,7 +156,9 @@ public abstract class MetadataCommand extends Command {
          */
         @Nonnull
         public Set set(@Nonnull String key, @Nonnull String value) {
-            this.metadata.add(Sanity.safeMessageCheck(key, "key") + ' ' + Sanity.safeMessageCheck(value, "value"));
+            Sanity.safeMessageCheck(key, "key");
+            Sanity.truthiness(METADATA_KEY_PATTERN.matcher(key).matches(), "Invalid key [" + key + ']');
+            this.metadata.add(key + ' ' + Sanity.safeMessageCheck(value, "value"));
             return this;
         }
 
@@ -165,7 +170,9 @@ public abstract class MetadataCommand extends Command {
          */
         @Nonnull
         public Set unSet(@Nonnull String key) {
-            this.metadata.add(Sanity.safeMessageCheck(key, "key"));
+            Sanity.safeMessageCheck(key, "key");
+            Sanity.truthiness(METADATA_KEY_PATTERN.matcher(key).matches(), "Invalid key [" + key + ']');
+            this.metadata.add(key);
             return this;
         }
 
@@ -180,6 +187,11 @@ public abstract class MetadataCommand extends Command {
         }
     }
 
+    /**
+     * Pattern checking for valid key characters (alphanumeric, period,
+     * underscore, and colon).
+     */
+    public static final Pattern METADATA_KEY_PATTERN = Pattern.compile("[A-Za-z0-9_\\.:]+");
     private static final String METADATA_START = "METADATA";
 
     private final String target;
