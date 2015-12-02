@@ -169,7 +169,7 @@ public abstract class MetadataCommand extends Command {
          * @return this command
          */
         @Nonnull
-        public Set unSet(@Nonnull String key) {
+        public Set unset(@Nonnull String key) {
             Sanity.safeMessageCheck(key, "key");
             Sanity.truthiness(METADATA_KEY_PATTERN.matcher(key).matches(), "Invalid key [" + key + ']');
             this.metadata.add(key);
