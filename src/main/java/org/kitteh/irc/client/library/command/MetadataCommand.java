@@ -205,7 +205,9 @@ public abstract class MetadataCommand extends Command {
      */
     protected MetadataCommand(@Nonnull Client client, @Nonnull String target) {
         super(client);
-        this.target = Sanity.safeMessageCheck(target);
+        Sanity.safeMessageCheck(target);
+        Sanity.truthiness(!target.contains(" "), "Target cannot contain spaces");
+        this.target = target;
     }
 
     /**
