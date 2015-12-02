@@ -211,7 +211,7 @@ public abstract class MetadataCommand extends Command {
     /**
      * Gets the start to the METADATA command.
      *
-     * @return "METADATA TARGET "
+     * @return the following without quotes: "METADATA TARGET ".
      */
     @Nonnull
     protected String getStart() {
