@@ -76,7 +76,7 @@ public class ChannelModeStatusList {
                     default:
                         ChannelMode mode = modes.get(modeChar);
                         if (mode == null) {
-                            throw new IllegalArgumentException("Contains non-registered mode");
+                            throw new IllegalArgumentException("Contains non-registered mode: " + modeChar);
                         }
                         String target = null;
                         if ((mode instanceof ChannelUserMode) || (add ? mode.getType().isParameterRequiredOnSetting() : mode.getType().isParameterRequiredOnRemoval())) {
