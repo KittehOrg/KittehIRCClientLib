@@ -152,7 +152,7 @@ public interface ServerInfo {
     @Nonnull
     default <ISupport extends ISupportParameter> Optional<ISupport> getISupportParameter(@Nonnull String name, @Nonnull Class<ISupport> clazz) {
         Optional<ISupportParameter> optional = this.getISupportParameter(name);
-        if (optional.isPresent() && optional.get().getClass().equals(clazz)) {
+        if (optional.isPresent() && clazz.isInstance(optional.get())) {
             return (Optional<ISupport>) optional;
         }
         return Optional.empty();
