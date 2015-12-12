@@ -949,12 +949,10 @@ class EventListener {
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(target);
         ChannelUserMode prefix = this.client.getServerInfo().getTargetedChannelInfo(target);
-        if (channel != null) {
-            if (prefix != null) {
-                return new MessageTargetInfo.TargetedChannel(channel, prefix);
-            } else {
-                return new MessageTargetInfo.Channel(channel);
-            }
+        if (prefix != null) {
+            return new MessageTargetInfo.TargetedChannel(this.client.getActorProvider().getChannel(target.substring(1)), prefix);
+        } else if (channel != null) {
+            return new MessageTargetInfo.Channel(channel);
         }
         return MessageTargetInfo.UNKNOWN;
     }

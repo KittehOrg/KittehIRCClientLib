@@ -157,8 +157,8 @@ final class IRCServerInfo implements ServerInfo {
         }
         final char first = name.charAt(0);
         final String shorter = name.substring(1);
-        if (!this.channelPrefixes.contains(first) && this.isValidChannel(shorter)) {
-            for (ChannelUserMode mode : this.channelUserModes) {
+        if (!this.getChannelPrefixes().contains(first) && this.isValidChannel(shorter)) {
+            for (ChannelUserMode mode : this.getChannelUserModes()) {
                 if (mode.getPrefix() == first) {
                     return mode;
                 }
