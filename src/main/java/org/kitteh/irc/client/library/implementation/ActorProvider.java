@@ -685,7 +685,10 @@ class ActorProvider {
     }
 
     void setUserAway(@Nonnull String nick, boolean away) {
-        this.trackedUsers.get(nick).setAway(away);
+        IRCUser user = this.trackedUsers.get(nick);
+        if (user != null) {
+            user.setAway(away);
+        }
     }
 
     void trackUserNickChange(@Nonnull String oldNick, @Nonnull String newNick) {
