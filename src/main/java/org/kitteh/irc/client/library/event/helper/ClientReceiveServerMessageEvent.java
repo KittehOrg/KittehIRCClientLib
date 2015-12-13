@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.MessageTag;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,7 @@ import java.util.List;
 /**
  * An event for a raw server message from the server.
  */
-public interface ClientReceiveServerMessageEvent {
+public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
     /**
      * Gets the command sent.
      *
