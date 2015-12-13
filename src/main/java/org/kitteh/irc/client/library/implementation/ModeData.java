@@ -59,7 +59,7 @@ final class ModeData {
         }
 
         @Override
-        public char getPrefix() {
+        public char getNickPrefix() {
             return this.prefix;
         }
 

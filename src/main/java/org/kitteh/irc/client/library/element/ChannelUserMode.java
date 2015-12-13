@@ -34,7 +34,7 @@ public interface ChannelUserMode extends ChannelMode {
      *
      * @return the character displayed in front of a nickname
      */
-    char getPrefix();
+    char getNickPrefix();
 
     @Nonnull
     @Override

@@ -199,9 +199,9 @@ public class IRCISupportManagerTest {
         ISupportParameter.Prefix prefix = (ISupportParameter.Prefix) param;
         Assert.assertEquals(2, prefix.getModes().size());
         Assert.assertEquals('o', prefix.getModes().get(0).getChar());
-        Assert.assertEquals('@', prefix.getModes().get(0).getPrefix());
+        Assert.assertEquals('@', prefix.getModes().get(0).getNickPrefix());
         Assert.assertEquals('v', prefix.getModes().get(1).getChar());
-        Assert.assertEquals('+', prefix.getModes().get(1).getPrefix());
+        Assert.assertEquals('+', prefix.getModes().get(1).getNickPrefix());
     }
 
     /**

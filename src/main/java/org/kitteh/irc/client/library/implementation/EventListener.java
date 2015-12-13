@@ -180,7 +180,7 @@ class EventListener {
                     continue;
                 }
                 for (ChannelUserMode mode : this.client.getServerInfo().getChannelUserModes()) {
-                    if (mode.getPrefix() == prefix) {
+                    if (mode.getNickPrefix() == prefix) {
                         modes.add(mode);
                         break;
                     }
@@ -265,7 +265,7 @@ class EventListener {
                 Set<ChannelUserMode> modes = new HashSet<>();
                 for (int i = 0; i < combo.length(); i++) {
                     char c = combo.charAt(i);
-                    Optional<ChannelUserMode> mode = channelUserModes.stream().filter(userMode -> userMode.getPrefix() == c).findFirst();
+                    Optional<ChannelUserMode> mode = channelUserModes.stream().filter(userMode -> userMode.getNickPrefix() == c).findFirst();
                     if (mode.isPresent()) {
                         modes.add(mode.get());
                     } else {
