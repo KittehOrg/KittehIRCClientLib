@@ -32,9 +32,9 @@ import javax.annotation.Nonnull;
  */
 public interface Snapshot {
     /**
-     * Gets the Client to which this Actor belongs.
+     * Gets the Client to which this snapshot belongs.
      *
-     * @return the actor's client
+     * @return the snapshot's client
      */
     @Nonnull
     Client getClient();
