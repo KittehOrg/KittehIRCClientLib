@@ -34,7 +34,7 @@ public interface MessageTag {
     /**
      * Represents the 'time' tag as specified by the 'server-time' extension.
      */
-    interface Time {
+    interface Time extends MessageTag {
         /**
          * Gets the instant in time specified by this tag.
          *
