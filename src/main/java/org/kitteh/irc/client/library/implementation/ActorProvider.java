@@ -56,7 +56,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-class ActorProvider implements Resetable {
+class ActorProvider implements Resettable {
     class IRCActor {
         private String name;
 

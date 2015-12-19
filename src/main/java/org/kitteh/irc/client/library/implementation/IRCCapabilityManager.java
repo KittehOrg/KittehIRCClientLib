@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-final class IRCCapabilityManager implements CapabilityManager, Resetable {
+final class IRCCapabilityManager implements CapabilityManager, Resettable {
     static class IRCCapabilityState implements CapabilityState {
         private final Client client;
         private final long creationTime;

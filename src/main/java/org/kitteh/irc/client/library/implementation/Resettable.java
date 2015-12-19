@@ -23,6 +23,6 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-interface Resetable {
+interface Resettable {
     void reset();
 }

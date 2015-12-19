@@ -42,7 +42,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-final class IRCServerInfo implements Resetable, ServerInfo {
+final class IRCServerInfo implements Resettable, ServerInfo {
     private final InternalClient client;
     private final Map<String, ISupportParameter> iSupportParameterMap = new ConcurrentHashMap<>();
     private final List<ChannelMode> channelModes;
