@@ -56,7 +56,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-class ActorProvider {
+class ActorProvider implements Resetable {
     class IRCActor {
         private String name;
 
@@ -608,6 +608,12 @@ class ActorProvider {
         this.client = client;
         this.trackedChannels = new CIKeyMap<>(this.client);
         this.trackedUsers = new CIKeyMap<>(this.client);
+    }
+
+    @Override
+    public void reset() {
+        this.trackedChannels.forEach((name, channel) -> channel.markStale());
+        this.trackedUsers.forEach((name, user) -> user.markStale());
     }
 
     void trackChannel(@Nonnull IRCChannel channel) {
