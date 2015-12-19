@@ -86,7 +86,6 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -498,14 +497,12 @@ class EventListener {
         }
     }
 
-    private void capReq(@Nullable CapabilityNegotiationResponseEvent responseEvent) {
+    private void capReq(@Nonnull CapabilityNegotiationResponseEvent responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
         capabilities.retainAll(CapabilityManager.Defaults.getAll());
         capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
         if (!capabilities.isEmpty()) {
-            if (responseEvent != null) {
-                responseEvent.setEndingNegotiation(false);
-            }
+            responseEvent.setEndingNegotiation(false);
             CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
             capabilities.forEach(capabilityRequestCommand::enable);
             capabilityRequestCommand.execute();

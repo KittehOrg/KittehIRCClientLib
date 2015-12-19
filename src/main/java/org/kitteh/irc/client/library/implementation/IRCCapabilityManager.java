@@ -119,6 +119,7 @@ final class IRCCapabilityManager implements CapabilityManager, Resettable {
     @Override
     public void reset() {
         this.capabilities.clear();
+        this.negotiating = true;
     }
 
     @Nonnull
