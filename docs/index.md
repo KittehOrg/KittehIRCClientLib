@@ -33,6 +33,8 @@ client.addChannel("#kitteh.org");
 client.sendMessage("#kitteh.org", "Hello World!");
 ```
 
+*Note: By default KICL connects over [SSL, which requires additional setup on certain networks](advanced/ssl.md).*
+
 
 ## Using KICL in your maven project
 
