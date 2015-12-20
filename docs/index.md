@@ -35,6 +35,19 @@ client.sendMessage("#kitteh.org", "Hello World!");
 
 *Note: By default KICL connects over [SSL, which requires additional setup on certain networks](advanced/ssl.md).*
 
+### Debugging
+
+It can be useful to see input, output, and exceptions thrown while developing.
+
+Use the `ClientBuilder` methods `listenInput`, `listenOutput`, and `listenException` to catch these little surprises.
+Here is a simple example, printing all of the info to console.
+
+```java
+SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+builder.listenInput(line -> System.out.println(sdf.format(new Date()) + ' ' + "[I] " + line));
+builder.listenOutput(line -> System.out.println(sdf.format(new Date()) + ' ' + "[O] " + line));
+builder.listenException(Throwable::printStackTrace);
+```
 
 ## Using KICL in your maven project
 
