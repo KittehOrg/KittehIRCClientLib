@@ -392,7 +392,7 @@ final class IRCClient extends InternalClient {
     void processLine(@Nonnull String line) {
         if (line.startsWith("PING ")) {
             this.sendRawLineImmediately("PONG " + line.substring(5));
-        } else {
+        } else if (!line.isEmpty()) {
             this.processor.queue(line);
         }
     }
@@ -442,7 +442,7 @@ final class IRCClient extends InternalClient {
     @Override
     void connect() {
         this.connection = NettyManager.connect(this);
-        this.processLine("\n\n"); // TODO not so hacky
+        this.processor.queue("");
 
         this.sendRawLineImmediately("CAP LS 302");
 
@@ -505,10 +505,6 @@ final class IRCClient extends InternalClient {
 
     private void handleLine(@Nonnull final String line) {
         if (line.isEmpty()) {
-            return;
-        }
-
-        if ("\n\n".equals(line)) { // TODO not so hacky
             this.actorProvider.reset();
             this.capabilityManager.reset();
             this.serverInfo.reset();
