@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.util.CISet;
+import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
@@ -79,6 +80,8 @@ final class IRCClient extends InternalClient {
     private final Set<String> channelsIntended = new CISet(this);
 
     private NettyManager.ClientConnection connection;
+
+    private Cutter messageCutter = new Cutter.DefaultWordCutter();
 
     private final AuthManager authManager = new IRCAuthManager(this);
     private final IRCCapabilityManager capabilityManager = new IRCCapabilityManager(this);
@@ -164,6 +167,12 @@ final class IRCClient extends InternalClient {
     @Override
     public IRCISupportManager getISupportManager() {
         return this.iSupportManager;
+    }
+
+    @Nonnull
+    @Override
+    public Cutter getMessageCutter() {
+        return this.messageCutter;
     }
 
     @Override
@@ -329,6 +338,11 @@ final class IRCClient extends InternalClient {
     public void setInputListener(@Nonnull Consumer<String> listener) {
         Sanity.nullCheck(listener, "Listener cannot be null");
         this.inputListener.setConsumer(listener);
+    }
+
+    @Override
+    public void setMessageCutter(@Nonnull Cutter cutter) {
+        this.messageCutter = Sanity.nullCheck(cutter, "Cutter cannot be null");
     }
 
     @Override

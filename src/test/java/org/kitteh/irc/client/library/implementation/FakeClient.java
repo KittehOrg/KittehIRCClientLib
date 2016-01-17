@@ -5,6 +5,7 @@ import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.util.Cutter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +23,7 @@ class FakeClient extends InternalClient {
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
     private final Listener<String> listenerInput = new Listener<>("Test", null);
     private final Listener<String> listenerOutput = new Listener<>("Test", null);
+    private Cutter messageCutter = new Cutter.DefaultWordCutter();
     private final IRCMessageTagManager messageTagManager = new IRCMessageTagManager(this);
     private final IRCServerInfo serverInfo = new IRCServerInfo(this);
 
@@ -78,6 +80,11 @@ class FakeClient extends InternalClient {
 
     }
 
+    @Override
+    public void setMessageCutter(@Nonnull Cutter cutter) {
+        this.messageCutter = cutter;
+    }
+
     @Nonnull
     @Override
     Set<String> getIntendedChannels() {
@@ -88,6 +95,12 @@ class FakeClient extends InternalClient {
     @Override
     public IRCISupportManager getISupportManager() {
         return null;
+    }
+
+    @Nonnull
+    @Override
+    public Cutter getMessageCutter() {
+        return this.messageCutter;
     }
 
     @Nonnull

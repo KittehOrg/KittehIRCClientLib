@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.util.Cutter;
 
 import javax.annotation.Nonnull;
 
@@ -60,12 +61,58 @@ public interface MessageReceiver extends Actor {
     }
 
     /**
-     * Sends this actor a message
+     * Sends this actor a potentially multi-line message using the client's
+     * default message cutter.
+     *
+     * @param message message to send
+     * @see Client#sendMultiLineMessage(MessageReceiver, String)
+     */
+    default void sendMultiLineMessage(@Nonnull String message) {
+        this.getClient().sendMultiLineMessage(this, message);
+    }
+
+    /**
+     * Sends this actor a potentially multi-line message using a specified
+     * message cutter.
+     *
+     * @param message message to send
+     * @param cutter cutter to utilize
+     * @see Client#sendMultiLineMessage(MessageReceiver, String, Cutter)
+     */
+    default void sendMultiLineMessage(@Nonnull String message, @Nonnull Cutter cutter) {
+        this.getClient().sendMultiLineMessage(this, message, cutter);
+    }
+
+    /**
+     * Sends this actor a notice.
      *
      * @param message the message to send
      * @see Client#sendNotice(MessageReceiver, String)
      */
     default void sendNotice(@Nonnull String message) {
         this.getClient().sendNotice(this, message);
+    }
+
+    /**
+     * Sends this actor a potentially multi-line notice using the client's
+     * default message cutter.
+     *
+     * @param message message to send
+     * @see Client#sendMultiLineNotice(MessageReceiver, String)
+     */
+    default void sendMultiLineNotice(@Nonnull String message) {
+        this.getClient().sendMultiLineNotice(this, message);
+    }
+
+    /**
+     * Sends this actor a potentially multi-line notice using a specified
+     * message cutter.
+     *
+     * @param message message to send
+     * @param cutter cutter to utilize
+     * @see Client#sendMultiLineNotice(MessageReceiver, String, Cutter)
+     */
+    default void sendMultiLineNotice(@Nonnull String message, @Nonnull Cutter cutter) {
+        this.getClient().sendMultiLineNotice(this, message, cutter);
     }
 }

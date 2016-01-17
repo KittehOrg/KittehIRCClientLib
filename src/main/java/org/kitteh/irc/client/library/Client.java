@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
+import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -145,6 +146,14 @@ public interface Client {
      */
     @Nonnull
     ISupportManager getISupportManager();
+
+    /**
+     * Gets the current message cutter for multi-line messages.
+     *
+     * @return message cutter
+     */
+    @Nonnull
+    Cutter getMessageCutter();
 
     /**
      * Gets the delay between messages sent to the server.
@@ -345,6 +354,106 @@ public interface Client {
     }
 
     /**
+     * Sends a potentially multi-line message to a target user or channel
+     * using the client's current {@link Cutter}.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendMultiLineMessage(@Nonnull String target, @Nonnull String message) {
+        this.sendMultiLineMessage(target, message, this.getMessageCutter());
+    }
+
+    /**
+     * Sends a potentially multi-line message to a target user or channel
+     * using the defined {@link Cutter}.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @param cutter cutter to utilize
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+        cutter.split(message, 510 - ("PRIVMSG " + target + " :").length()).forEach(line -> this.sendMessage(target, line));
+    }
+
+    /**
+     * Sends a potentially multi-line message to a target user or channel
+     * using the client's current {@link Cutter}.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendMultiLineMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+        this.sendMultiLineMessage(target, message, this.getMessageCutter());
+    }
+
+    /**
+     * Sends a potentially multi-line message to a target user or channel
+     * using the defined {@link Cutter}.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @param cutter cutter to utilize
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendMultiLineMessage(@Nonnull MessageReceiver target, @Nonnull String message, @Nonnull Cutter cutter) {
+        cutter.split(message, 510 - ("PRIVMSG " + target.getMessagingName() + " :").length()).forEach(line -> this.sendMessage(target, line));
+    }
+
+    /**
+     * Sends a potentially multi-line notice to a target user or channel
+     * using the client's current {@link Cutter}.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendMultiLineNotice(@Nonnull String target, @Nonnull String message) {
+        this.sendMultiLineNotice(target, message, this.getMessageCutter());
+    }
+
+    /**
+     * Sends a potentially multi-line notice to a target user or channel
+     * using the defined {@link Cutter}.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @param cutter cutter to utilize
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+        cutter.split(message, 510 - ("NOTICE " + target + " :").length()).forEach(line -> this.sendNotice(target, line));
+    }
+
+    /**
+     * Sends a potentially multi-line notice to a target user or channel
+     * using the client's current {@link Cutter}.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendMultiLineNotice(@Nonnull MessageReceiver target, @Nonnull String message) {
+        this.sendMultiLineNotice(target, message, this.getMessageCutter());
+    }
+
+    /**
+     * Sends a potentially multi-line notice to a target user or channel
+     * using the defined {@link Cutter}.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @param cutter cutter to utilize
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendMultiLineNotice(@Nonnull MessageReceiver target, @Nonnull String message, @Nonnull Cutter cutter) {
+        cutter.split(message, 510 - ("NOTICE " + target.getMessagingName() + " :").length()).forEach(line -> this.sendNotice(target, line));
+    }
+
+    /**
      * Sends a raw IRC message.
      *
      * @param message message to send
@@ -388,6 +497,13 @@ public interface Client {
      * @param listener input listener
      */
     void setInputListener(@Nonnull Consumer<String> listener);
+
+    /**
+     * Sets the default message cutter to use for multi-line messages.
+     *
+     * @param cutter cutter to set
+     */
+    void setMessageCutter(@Nonnull Cutter cutter);
 
     /**
      * Sets the delay between messages sent to the server.
