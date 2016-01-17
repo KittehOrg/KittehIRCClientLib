@@ -269,7 +269,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendCTCPMessage(@Nonnull String target, @Nonnull String message) {
-        Sanity.safeMessageCheck(message, "Target");
+        Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("PRIVMSG " + target + " :" + CTCPUtil.toCTCP(message));
@@ -277,7 +277,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendMessage(@Nonnull String target, @Nonnull String message) {
-        Sanity.safeMessageCheck(message, "Target");
+        Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("PRIVMSG " + target + " :" + message);
@@ -285,7 +285,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendNotice(@Nonnull String target, @Nonnull String message) {
-        Sanity.safeMessageCheck(message, "Target");
+        Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
         this.sendRawLine("NOTICE " + target + " :" + message);
