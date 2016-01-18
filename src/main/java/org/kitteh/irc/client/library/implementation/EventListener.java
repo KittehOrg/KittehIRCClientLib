@@ -702,6 +702,7 @@ class EventListener {
                 statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
             } catch (IllegalArgumentException e) {
                 this.throwException(event, e.getMessage());
+                return;
             }
             this.fire(new ChannelModeEvent(this.client, event.getOriginalMessages(), event.getActor(), channel.snapshot(), statusList));
             statusList.getStatuses().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter().isPresent())).forEach(status -> {
