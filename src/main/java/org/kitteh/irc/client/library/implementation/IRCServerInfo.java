@@ -48,9 +48,9 @@ final class IRCServerInfo implements Resettable, ServerInfo {
     private final List<ChannelMode> channelModes;
     private final List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
     private final List<ChannelUserMode> channelUserModes;
-    private Optional<List<String>> motd;
-    private Optional<String> address;
-    private Optional<String> version;
+    private Optional<List<String>> motd = Optional.empty();
+    private Optional<String> address = Optional.empty();
+    private Optional<String> version = Optional.empty();
 
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
