@@ -72,6 +72,18 @@ public enum CaseMapping {
     }
 
     /**
+     * Gets if two given strings are equal, case insensitive, using this
+     * case mapping.
+     *
+     * @param one one string
+     * @param two two string, red string, blue string
+     * @return true if equal ignoring case using this case mapping
+     */
+    public boolean areEqualIgnoringCase(@Nonnull String one, @Nonnull String two) {
+        return this.toLowerCase(one).equals(this.toLowerCase(two));
+    }
+
+    /**
      * Converts a given String to lowercase per spec.
      *
      * @param input string to be lowercased

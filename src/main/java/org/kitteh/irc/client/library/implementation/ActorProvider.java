@@ -721,7 +721,8 @@ class ActorProvider implements Resettable {
     }
 
     private void checkUserForTracking(@Nonnull String nick) {
-        if (this.trackedChannels.values().stream().noneMatch(channel -> channel.modes.containsKey(nick))) {
+        if (!this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(nick, this.client.getNick())
+                && this.trackedChannels.values().stream().noneMatch(channel -> channel.modes.containsKey(nick))) {
             IRCUser removed = this.trackedUsers.remove(nick);
             if (removed != null) {
                 removed.markStale();
