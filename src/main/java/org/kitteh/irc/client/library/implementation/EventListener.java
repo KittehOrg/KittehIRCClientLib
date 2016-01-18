@@ -111,7 +111,7 @@ class EventListener {
         if (!event.getParameters().isEmpty()) {
             this.client.setCurrentNick(event.getParameters().get(0));
         } else {
-            this.throwException(event, "Nickname unconfirmed.");
+            this.trackException(event, "Nickname unconfirmed.");
         }
     }
 
@@ -124,10 +124,10 @@ class EventListener {
             if (event.getParameters().size() > 2) {
                 this.client.getServerInfo().setVersion(event.getParameters().get(2));
             } else {
-                this.throwException(event, "Server version missing.");
+                this.trackException(event, "Server version missing.");
             }
         } else {
-            this.throwException(event, "Server address and version missing.");
+            this.trackException(event, "Server address and version missing.");
         }
         this.fire(new ClientConnectedEvent(this.client, event.getActor(), this.client.getServerInfo()));
         this.client.startSending();
@@ -148,7 +148,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void who(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < ((event.getNumeric() == 352) ? 8 : 9)) {
-            this.throwException(event, "WHO response of incorrect length");
+            this.trackException(event, "WHO response of incorrect length");
             return;
         }
         final ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -195,7 +195,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void whoComplete(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "WHO response of incorrect length");
+            this.trackException(event, "WHO response of incorrect length");
             return;
         }
         ActorProvider.IRCChannel whoChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -211,7 +211,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void channelMode(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.throwException(event, "Channel mode info message of incorrect length");
+            this.trackException(event, "Channel mode info message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -219,7 +219,7 @@ class EventListener {
             ChannelModeStatusList statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
             channel.updateChannelModes(statusList);
         } else {
-            this.throwException(event, "Channel mode info message sent for invalid channel name");
+            this.trackException(event, "Channel mode info message sent for invalid channel name");
         }
     }
 
@@ -227,14 +227,14 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "Topic message of incorrect length");
+            this.trackException(event, "Topic message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel topicChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (topicChannel != null) {
             topicChannel.setTopic(event.getParameters().get(2));
         } else {
-            this.throwException(event, "Topic message sent for invalid channel name");
+            this.trackException(event, "Topic message sent for invalid channel name");
         }
     }
 
@@ -242,7 +242,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void topicInfo(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 4) {
-            this.throwException(event, "Topic message of incorrect length");
+            this.trackException(event, "Topic message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel topicSetChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -250,7 +250,7 @@ class EventListener {
             topicSetChannel.setTopic(Long.parseLong(event.getParameters().get(3)) * 1000, this.client.getActorProvider().getActor(event.getParameters().get(2)).snapshot());
             this.fire(new ChannelTopicEvent(this.client, event.getOriginalMessages(), topicSetChannel.snapshot(), false));
         } else {
-            this.throwException(event, "Topic message sent for invalid channel name");
+            this.trackException(event, "Topic message sent for invalid channel name");
         }
     }
 
@@ -260,7 +260,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void names(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 4) {
-            this.throwException(event, "NAMES response of incorrect length");
+            this.trackException(event, "NAMES response of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(2));
@@ -281,7 +281,7 @@ class EventListener {
             }
             this.namesMessages.add(messageFromEvent(event));
         } else {
-            this.throwException(event, "NAMES response sent for invalid channel name");
+            this.trackException(event, "NAMES response sent for invalid channel name");
         }
     }
 
@@ -289,7 +289,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void namesComplete(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "NAMES response of incorrect length");
+            this.trackException(event, "NAMES response of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -298,7 +298,7 @@ class EventListener {
             this.fire(new ChannelNamesUpdatedEvent(this.client, this.namesMessages, channel.snapshot()));
             this.namesMessages.clear();
         } else {
-            this.throwException(event, "NAMES response sent for invalid channel name");
+            this.trackException(event, "NAMES response sent for invalid channel name");
         }
     }
 
@@ -316,7 +316,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void motdContent(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "MOTD message of incorrect length");
+            this.trackException(event, "MOTD message of incorrect length");
             return;
         }
         this.motd.add(event.getParameters().get(1));
@@ -345,7 +345,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void knock(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.throwException(event, "KNOCK message of incorrect length");
+            this.trackException(event, "KNOCK message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -353,7 +353,7 @@ class EventListener {
             ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getParameters().get(2));
             this.fire(new ChannelKnockEvent(this.client, event.getOriginalMessages(), channel.snapshot(), user.snapshot()));
         } else {
-            this.throwException(event, "KNOCK message sent for invalid channel name");
+            this.trackException(event, "KNOCK message sent for invalid channel name");
         }
     }
 
@@ -362,7 +362,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void monitorOnline(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "MONITOR status message of incorrect length");
+            this.trackException(event, "MONITOR status message of incorrect length");
             return;
         }
         List<ServerMessage> originalMessages = event.getOriginalMessages();
@@ -384,7 +384,7 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void monitorList(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "MONITOR list message of incorrect length");
+            this.trackException(event, "MONITOR list message of incorrect length");
             return;
         }
         Collections.addAll(this.monitorList, event.getParameters().get(1).split(","));
@@ -403,14 +403,14 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void monitorListFull(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.throwException(event, "MONITOR list full message of incorrect length");
+            this.trackException(event, "MONITOR list full message of incorrect length");
             return;
         }
         int limit;
         try {
             limit = Integer.parseInt(event.getParameters().get(1));
         } catch (NumberFormatException e) {
-            this.throwException(event, "MONITOR list full message using non-int limit");
+            this.trackException(event, "MONITOR list full message using non-int limit");
             return;
         }
         this.fire(new MonitoredNickListFullEvent(this.client, event.getOriginalMessages(), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
@@ -426,14 +426,14 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void cap(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 3) {
-            this.throwException(event, "CAP message of incorrect length");
+            this.trackException(event, "CAP message of incorrect length");
             return;
         }
         CapabilityNegotiationResponseEventBase responseEvent = null;
         int capabilityListIndex;
         if ("*".equals(event.getParameters().get(CAPABILITY_LIST_INDEX_DEFAULT))) {
             if (event.getParameters().size() < 4) {
-                this.throwException(event, "CAP message of incorrect length");
+                this.trackException(event, "CAP message of incorrect length");
                 return;
             }
             capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT + 1;
@@ -528,12 +528,12 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void chghost(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() != 2) {
-            this.throwException(event, "Invalid number of parameters for CHGHOST message");
+            this.trackException(event, "Invalid number of parameters for CHGHOST message");
             return;
         }
 
         if (!(event.getActor() instanceof User)) {
-            this.throwException(event, "Invalid actor for CHGHOST message");
+            this.trackException(event, "Invalid actor for CHGHOST message");
             return;
         }
 
@@ -541,7 +541,7 @@ class EventListener {
         ActorProvider.IRCUser ircUser = this.client.getActorProvider().getUser(user.getNick());
 
         if (ircUser == null) {
-            this.throwException(event, "Null old user for nick.");
+            this.trackException(event, "Null old user for nick.");
             return;
         }
 
@@ -567,7 +567,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void account(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.throwException(event, "ACCOUNT message of incorrect length");
+            this.trackException(event, "ACCOUNT message of incorrect length");
             return;
         }
         String account = event.getParameters().get(0);
@@ -584,7 +584,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void notice(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "NOTICE message of incorrect length");
+            this.trackException(event, "NOTICE message of incorrect length");
             return;
         }
         if (!(event.getActor() instanceof User)) {
@@ -607,7 +607,7 @@ class EventListener {
         } else if (this.client.isUser(user)) {
             // TODO event for self-sent private notices
         } else {
-            this.throwException(event, "NOTICE message to improper target");
+            this.trackException(event, "NOTICE message to improper target");
         }
     }
 
@@ -615,7 +615,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void privmsg(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "PRIVMSG message of incorrect length");
+            this.trackException(event, "PRIVMSG message of incorrect length");
             return;
         }
         if (!(event.getActor() instanceof User)) {
@@ -638,7 +638,7 @@ class EventListener {
         } else if (this.client.isUser(user)) {
             // TODO event for self-sent private messages
         } else {
-            this.throwException(event, "PRIVMSG message to improper target");
+            this.trackException(event, "PRIVMSG message to improper target");
         }
     }
 
@@ -689,7 +689,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void mode(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "MODE message of incorrect length");
+            this.trackException(event, "MODE message of incorrect length");
             return;
         }
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
@@ -701,7 +701,7 @@ class EventListener {
             try {
                 statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
             } catch (IllegalArgumentException e) {
-                this.throwException(event, e.getMessage());
+                this.trackException(event, e.getMessage());
                 return;
             }
             this.fire(new ChannelModeEvent(this.client, event.getOriginalMessages(), event.getActor(), channel.snapshot(), statusList));
@@ -714,7 +714,7 @@ class EventListener {
             });
             channel.updateChannelModes(statusList);
         } else {
-            this.throwException(event, "MODE message sent for invalid target");
+            this.trackException(event, "MODE message sent for invalid target");
         }
     }
 
@@ -722,7 +722,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void join(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.throwException(event, "JOIN message of incorrect length");
+            this.trackException(event, "JOIN message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
@@ -750,10 +750,10 @@ class EventListener {
                 }
                 this.fire(joinEvent);
             } else {
-                this.throwException(event, "JOIN message sent for non-user");
+                this.trackException(event, "JOIN message sent for non-user");
             }
         } else {
-            this.throwException(event, "JOIN message sent for invalid channel name");
+            this.trackException(event, "JOIN message sent for invalid channel name");
         }
     }
 
@@ -761,7 +761,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void part(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.throwException(event, "PART message of incorrect length");
+            this.trackException(event, "PART message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
@@ -782,10 +782,10 @@ class EventListener {
                     this.client.getActorProvider().unTrackChannel(channel);
                 }
             } else {
-                this.throwException(event, "PART message sent for non-user");
+                this.trackException(event, "PART message sent for non-user");
             }
         } else {
-            this.throwException(event, "PART message sent for invalid channel name");
+            this.trackException(event, "PART message sent for invalid channel name");
         }
     }
 
@@ -796,7 +796,7 @@ class EventListener {
             this.fire(new UserQuitEvent(this.client, event.getOriginalMessages(), (User) event.getActor(), (event.getParameters().isEmpty()) ? "" : event.getParameters().get(0)));
             this.client.getActorProvider().trackUserQuit(((User) event.getActor()).getNick());
         } else {
-            this.throwException(event, "QUIT message sent for non-user");
+            this.trackException(event, "QUIT message sent for non-user");
         }
     }
 
@@ -804,7 +804,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void kick(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "KICK message of incorrect length");
+            this.trackException(event, "KICK message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
@@ -825,10 +825,10 @@ class EventListener {
                     this.client.getActorProvider().unTrackChannel(channel);
                 }
             } else {
-                this.throwException(event, "KICK message sent for non-user");
+                this.trackException(event, "KICK message sent for non-user");
             }
         } else {
-            this.throwException(event, "KICK message sent for invalid channel name");
+            this.trackException(event, "KICK message sent for invalid channel name");
         }
     }
 
@@ -836,7 +836,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void nick(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.throwException(event, "NICK message of incorrect length");
+            this.trackException(event, "NICK message of incorrect length");
             return;
         }
         if (event.getActor() instanceof User) {
@@ -847,7 +847,7 @@ class EventListener {
                     this.client.setCurrentNick(event.getParameters().get(0));
                     return; // Don't fail if NICK changes while not in a channel!
                 }
-                this.throwException(event, "NICK message sent for user not in tracked channels");
+                this.trackException(event, "NICK message sent for user not in tracked channels");
                 return;
             }
             User oldUser = user.snapshot();
@@ -858,7 +858,7 @@ class EventListener {
                 this.client.setCurrentNick(event.getParameters().get(0));
             }
         } else {
-            this.throwException(event, "NICK message sent for non-user");
+            this.trackException(event, "NICK message sent for non-user");
         }
     }
 
@@ -866,7 +866,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void invite(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "INVITE message of incorrect length");
+            this.trackException(event, "INVITE message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -876,7 +876,7 @@ class EventListener {
             }
             this.fire(new ChannelInviteEvent(this.client, event.getOriginalMessages(), channel.snapshot(), event.getActor(), event.getParameters().get(0)));
         } else {
-            this.throwException(event, "INVITE message sent for invalid channel name");
+            this.trackException(event, "INVITE message sent for invalid channel name");
         }
     }
 
@@ -884,7 +884,7 @@ class EventListener {
     @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.throwException(event, "TOPIC message of incorrect length");
+            this.trackException(event, "TOPIC message of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
@@ -893,7 +893,7 @@ class EventListener {
             channel.setTopic(System.currentTimeMillis(), event.getActor());
             this.fire(new ChannelTopicEvent(this.client, event.getOriginalMessages(), channel.snapshot(), true));
         } else {
-            this.throwException(event, "TOPIC message sent for invalid channel name");
+            this.trackException(event, "TOPIC message sent for invalid channel name");
         }
     }
 
@@ -989,7 +989,7 @@ class EventListener {
         return event.getOriginalMessages().get(0);
     }
 
-    private void throwException(ClientReceiveServerMessageEvent event, String reason) {
+    private void trackException(ClientReceiveServerMessageEvent event, String reason) {
         this.client.getExceptionListener().queue(new KittehServerMessageException(event.getOriginalMessage(), reason));
     }
 }
