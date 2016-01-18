@@ -63,6 +63,9 @@ public interface MessageReceiver extends Actor {
     /**
      * Sends this actor a potentially multi-line message using the client's
      * default message cutter.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param message message to send
      * @see Client#sendMultiLineMessage(MessageReceiver, String)
@@ -74,6 +77,9 @@ public interface MessageReceiver extends Actor {
     /**
      * Sends this actor a potentially multi-line message using a specified
      * message cutter.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param message message to send
      * @param cutter cutter to utilize
@@ -96,6 +102,9 @@ public interface MessageReceiver extends Actor {
     /**
      * Sends this actor a potentially multi-line notice using the client's
      * default message cutter.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param message message to send
      * @see Client#sendMultiLineNotice(MessageReceiver, String)
@@ -107,6 +116,9 @@ public interface MessageReceiver extends Actor {
     /**
      * Sends this actor a potentially multi-line notice using a specified
      * message cutter.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param message message to send
      * @param cutter cutter to utilize

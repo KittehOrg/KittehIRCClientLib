@@ -356,6 +356,9 @@ public interface Client {
     /**
      * Sends a potentially multi-line message to a target user or channel
      * using the client's current {@link Cutter}.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -368,6 +371,9 @@ public interface Client {
     /**
      * Sends a potentially multi-line message to a target user or channel
      * using the defined {@link Cutter}.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -381,6 +387,9 @@ public interface Client {
     /**
      * Sends a potentially multi-line message to a target user or channel
      * using the client's current {@link Cutter}.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -393,6 +402,9 @@ public interface Client {
     /**
      * Sends a potentially multi-line message to a target user or channel
      * using the defined {@link Cutter}.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -406,6 +418,9 @@ public interface Client {
     /**
      * Sends a potentially multi-line notice to a target user or channel
      * using the client's current {@link Cutter}.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -418,6 +433,9 @@ public interface Client {
     /**
      * Sends a potentially multi-line notice to a target user or channel
      * using the defined {@link Cutter}.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -431,6 +449,9 @@ public interface Client {
     /**
      * Sends a potentially multi-line notice to a target user or channel
      * using the client's current {@link Cutter}.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -443,6 +464,9 @@ public interface Client {
     /**
      * Sends a potentially multi-line notice to a target user or channel
      * using the defined {@link Cutter}.
+     * <p>
+     * Note that bots may not react appropriately to a message split across
+     * multiple lines.
      *
      * @param target the destination of the message
      * @param message the message to send
