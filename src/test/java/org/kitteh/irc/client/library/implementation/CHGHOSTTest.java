@@ -1,6 +1,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,10 +14,12 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,24 +27,19 @@ import java.util.List;
  */
 public class CHGHOSTTest {
     /**
-     * Expected!
-     */
-    @Rule
-    public final ExpectedException expectedEx = ExpectedException.none();
-
-    /**
      * Tests invalid actor.
      */
     @Test
     public void testChghostWithInvalidActorThrowsException() {
-        this.expectedEx.expect(KittehServerMessageException.class);
-        this.expectedEx.expectMessage(CoreMatchers.containsString("Invalid actor for CHGHOST message"));
-
-        EventListener sut = this.getEventListener();
+        List<Exception> exceptions = new LinkedList<>();
+        EventListener sut = this.getEventListener(exceptions);
         final Client clientMock = Mockito.mock(Client.class);
         final Actor actorMock = Mockito.mock(Actor.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
         sut.chghost(new ClientReceiveCommandEvent(clientMock, Mockito.mock(ServerMessage.class), actorMock, "CHGHOST", Arrays.asList("foo", "bar")));
+        Assert.assertTrue("No exception fired", exceptions.size() == 1);
+        Assert.assertEquals("Wrong exception type", KittehServerMessageException.class, exceptions.get(0).getClass());
+        Assert.assertThat("Wrong exception fired", exceptions.get(0).getMessage(), CoreMatchers.containsString("Invalid actor for CHGHOST message"));
     }
 
     /**
@@ -49,10 +47,15 @@ public class CHGHOSTTest {
      */
     @Test
     public void testChghostWithTooManyParameters() {
-        this.expectedEx.expect(KittehServerMessageException.class);
-        this.expectedEx.expectMessage(CoreMatchers.containsString("Invalid number of parameters for CHGHOST message"));
-
-        this.testChghostWithParameters(Arrays.asList("foo", "bar", "kitten"));
+        List<Exception> exceptions = new LinkedList<>();
+        EventListener sut = this.getEventListener(exceptions);
+        final Client clientMock = Mockito.mock(Client.class);
+        final Actor actorMock = Mockito.mock(User.class);
+        Mockito.when(actorMock.getClient()).thenReturn(clientMock);
+        sut.chghost(new ClientReceiveCommandEvent(clientMock, Mockito.mock(ServerMessage.class), actorMock, "CHGHOST", Arrays.asList("foo", "bar", "kitten")));
+        Assert.assertTrue("No exception fired", exceptions.size() == 1);
+        Assert.assertEquals("Wrong exception type", KittehServerMessageException.class, exceptions.get(0).getClass());
+        Assert.assertThat("Wrong exception fired", exceptions.get(0).getMessage(), CoreMatchers.containsString("Invalid number of parameters for CHGHOST message"));
     }
 
     /**
@@ -60,10 +63,15 @@ public class CHGHOSTTest {
      */
     @Test
     public void testChghostWithTooFewParameters() {
-        this.expectedEx.expect(KittehServerMessageException.class);
-        this.expectedEx.expectMessage(CoreMatchers.containsString("Invalid number of parameters for CHGHOST message"));
-
-        this.testChghostWithParameters(Collections.singletonList("foo"));
+        List<Exception> exceptions = new LinkedList<>();
+        EventListener sut = this.getEventListener(exceptions);
+        final Client clientMock = Mockito.mock(Client.class);
+        final Actor actorMock = Mockito.mock(User.class);
+        Mockito.when(actorMock.getClient()).thenReturn(clientMock);
+        sut.chghost(new ClientReceiveCommandEvent(clientMock, Mockito.mock(ServerMessage.class), actorMock, "CHGHOST", Collections.singletonList("foo")));
+        Assert.assertTrue("No exception fired", exceptions.size() == 1);
+        Assert.assertEquals("Wrong exception type", KittehServerMessageException.class, exceptions.get(0).getClass());
+        Assert.assertThat("Wrong exception fired", exceptions.get(0).getMessage(), CoreMatchers.containsString("Invalid number of parameters for CHGHOST message"));
     }
 
     /**
@@ -150,21 +158,16 @@ public class CHGHOSTTest {
         return actorProviderMock;
     }
 
-    private void testChghostWithParameters(List<String> list) {
-        EventListener sut = this.getEventListener();
-        final Client clientMock = Mockito.mock(Client.class);
-        final Actor actorMock = Mockito.mock(User.class);
-        Mockito.when(actorMock.getClient()).thenReturn(clientMock);
-        sut.chghost(new ClientReceiveCommandEvent(clientMock, Mockito.mock(ServerMessage.class), actorMock, "CHGHOST", list));
+    private EventListener getEventListener(List<Exception> exceptionList) {
+        return this.getEventListener(null, exceptionList);
     }
 
-    private EventListener getEventListener() {
-        return this.getEventListener(null);
-    }
-
-    private EventListener getEventListener(ActorProvider provider) {
+    private EventListener getEventListener(ActorProvider provider, List<Exception> exceptionList) {
         final InternalClient client = Mockito.mock(InternalClient.class);
+        final Listener<Exception> exceptionListener = Mockito.mock(Listener.class);
         Mockito.when(client.getActorProvider()).thenReturn(provider);
+        Mockito.when(client.getExceptionListener()).thenReturn(exceptionListener);
+        Mockito.doAnswer(invocationOnMock -> exceptionList.add((Exception) invocationOnMock.getArguments()[0])).when(exceptionListener).queue(Matchers.any());
         return new EventListener(client);
     }
 }

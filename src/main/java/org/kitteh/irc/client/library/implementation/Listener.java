@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import java.util.Queue;
 import java.util.function.Consumer;
 
-final class Listener<Type> {
+class Listener<Type> {
     private final class ListenerThread extends QueueProcessingThread<Type> {
         private volatile Consumer<Type> consumer;
 
