@@ -220,6 +220,28 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         }
     }
 
+    private static final class ISupportMetadata extends IRCISupportParameter implements ISupportParameter.Metadata {
+        private Optional<Integer> limit;
+
+        private ISupportMetadata(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+            super(client, name, value);
+            if (value.isPresent()) {
+                try {
+                    this.limit = Optional.of(Integer.parseInt(value.get()));
+                } catch (NumberFormatException ignored) {
+                    this.limit = Optional.empty();
+                }
+            }
+            this.limit = Optional.empty();
+        }
+
+        @Nonnull
+        @Override
+        public Optional<Integer> getKeyLimit() {
+            return this.limit;
+        }
+    }
+
     private static final class ISupportNetwork extends IRCISupportParameterValueRequired implements ISupportParameter.Network {
         private ISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
@@ -287,6 +309,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         this.registerParameter(ISupportParameter.ChanLimit.NAME, ISupportChanLimit::new);
         this.registerParameter(ISupportParameter.ChanModes.NAME, ISupportChanModes::new);
         this.registerParameter(ISupportParameter.ChanTypes.NAME, ISupportChanTypes::new);
+        this.registerParameter(ISupportParameter.Metadata.NAME, ISupportMetadata::new);
         this.registerParameter(ISupportParameter.Network.NAME, ISupportNetwork::new);
         this.registerParameter(ISupportParameter.NickLen.NAME, ISupportNickLen::new);
         this.registerParameter(ISupportParameter.Prefix.NAME, ISupportPrefix::new);
