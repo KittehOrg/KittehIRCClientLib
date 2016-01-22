@@ -298,6 +298,16 @@ class FakeClient extends InternalClient {
     }
 
     @Override
+    public void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+
+    }
+
+    @Override
+    public void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+
+    }
+
+    @Override
     public void sendRawLine(@Nonnull String message) {
 
     }

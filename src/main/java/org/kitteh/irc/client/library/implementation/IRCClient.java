@@ -293,6 +293,27 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
+    public void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+        cutter.split(message, this.getRemainingLength("PRIVMSG", target)).forEach(line -> this.sendMessage(target, line));
+    }
+
+    @Override
+    public void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+        cutter.split(message, this.getRemainingLength("NOTICE", target)).forEach(line -> this.sendNotice(target, line));
+    }
+
+    private int getRemainingLength(@Nonnull String type, @Nonnull String target) {
+        // :nick!name@host PRIVMSG/NOTICE TARGET :MESSAGE\r\n
+        // So that's two colons, three spaces, CR, and LF. 7 chars.
+        // 512 - 7 = 505
+        // Then, drop the user's full name (nick!name@host) and target
+        // If self name is unknown, let's just do 100 for now
+        // TODO arbitrary
+        // Lastly drop the PRIVMSG or NOTICE length
+        return 505 - this.getUser().map(user -> user.getName().length()).orElse(100) - target.length() - type.length();
+    }
+
+    @Override
     public void sendNotice(@Nonnull String target, @Nonnull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);

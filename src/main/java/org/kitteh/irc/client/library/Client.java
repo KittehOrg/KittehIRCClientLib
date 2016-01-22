@@ -380,9 +380,7 @@ public interface Client {
      * @param cutter cutter to utilize
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
-        cutter.split(message, 510 - ("PRIVMSG " + target + " :").length()).forEach(line -> this.sendMessage(target, line));
-    }
+    void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter);
 
     /**
      * Sends a potentially multi-line message to a target user or channel
@@ -412,7 +410,8 @@ public interface Client {
      * @throws IllegalArgumentException for null parameters
      */
     default void sendMultiLineMessage(@Nonnull MessageReceiver target, @Nonnull String message, @Nonnull Cutter cutter) {
-        cutter.split(message, 510 - ("PRIVMSG " + target.getMessagingName() + " :").length()).forEach(line -> this.sendMessage(target, line));
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendMultiLineMessage(target.getName(), message, cutter);
     }
 
     /**
@@ -442,9 +441,7 @@ public interface Client {
      * @param cutter cutter to utilize
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
-        cutter.split(message, 510 - ("NOTICE " + target + " :").length()).forEach(line -> this.sendNotice(target, line));
-    }
+    void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter);
 
     /**
      * Sends a potentially multi-line notice to a target user or channel
@@ -474,7 +471,8 @@ public interface Client {
      * @throws IllegalArgumentException for null parameters
      */
     default void sendMultiLineNotice(@Nonnull MessageReceiver target, @Nonnull String message, @Nonnull Cutter cutter) {
-        cutter.split(message, 510 - ("NOTICE " + target.getMessagingName() + " :").length()).forEach(line -> this.sendNotice(target, line));
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendMultiLineNotice(target.getName(), message, cutter);
     }
 
     /**
