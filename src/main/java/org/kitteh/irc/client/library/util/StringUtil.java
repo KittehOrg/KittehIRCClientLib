@@ -57,7 +57,7 @@ public final class StringUtil {
         Sanity.truthiness(start >= 0, "Negative array indexes are not valid");
         Sanity.truthiness(length > 0, "Cannot combine less than one element of an array");
 
-        final StringBuilder builder = new StringBuilder(delimiter.length() * (length + 5));
+        final StringBuilder builder = new StringBuilder((5 + delimiter.length()) * length);
         for (int x = start; (x < split.length) && (x < (start + length)); x++) {
             builder.append(split[x]).append(delimiter);
         }
