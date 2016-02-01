@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.auth.protocol;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.IRCFormat;
+import org.kitteh.irc.client.library.Format;
 import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
 import org.kitteh.irc.client.library.auth.protocol.element.NickReclamation;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
@@ -52,7 +52,7 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
             if (event.getActor().getNick().equals(NickServ.this.getNickServNick())) {
                 if (event.getMessage().startsWith("You are now identified")) {
                     int first;
-                    String username = event.getMessage().substring((first = event.getMessage().indexOf(IRCFormat.BOLD.toString()) + 1), event.getMessage().indexOf(IRCFormat.BOLD.toString(), first));
+                    String username = event.getMessage().substring((first = event.getMessage().indexOf(Format.BOLD.toString()) + 1), event.getMessage().indexOf(Format.BOLD.toString(), first));
                     // TODO do something with this information
                 }
             }

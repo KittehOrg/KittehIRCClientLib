@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.kitteh.irc.client.library.IRCFormat;
+import org.kitteh.irc.client.library.Format;
 
 import javax.annotation.Nonnull;
 
@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
  * String tools!
  */
 public final class StringUtil {
-    private static final IRCFormat[] DEFAULT_RAINBOW = {IRCFormat.RED, IRCFormat.BROWN, IRCFormat.OLIVE, IRCFormat.YELLOW, IRCFormat.DARK_GREEN, IRCFormat.GREEN, IRCFormat.TEAL, IRCFormat.BLUE, IRCFormat.MAGENTA, IRCFormat.PURPLE};
+    private static final Format[] DEFAULT_RAINBOW = {Format.RED, Format.BROWN, Format.OLIVE, Format.YELLOW, Format.DARK_GREEN, Format.GREEN, Format.TEAL, Format.BLUE, Format.MAGENTA, Format.PURPLE};
 
     private StringUtil() {
     }
@@ -103,10 +103,10 @@ public final class StringUtil {
      * array, or non-color entries in array
      */
     @Nonnull
-    public static String makeRainbow(@Nonnull String message, @Nonnull IRCFormat[] colorOrder) {
+    public static String makeRainbow(@Nonnull String message, @Nonnull Format[] colorOrder) {
         Sanity.safeMessageCheck(message);
         Sanity.nullCheck(colorOrder, "Color order cannot be null");
-        for (IRCFormat format : colorOrder) {
+        for (Format format : colorOrder) {
             if (!format.isColor()) {
                 throw new IllegalArgumentException("Color order must contain only colors");
             }

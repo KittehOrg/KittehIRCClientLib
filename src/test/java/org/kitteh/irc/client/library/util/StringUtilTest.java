@@ -2,7 +2,7 @@ package org.kitteh.irc.client.library.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kitteh.irc.client.library.IRCFormat;
+import org.kitteh.irc.client.library.Format;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -73,7 +73,7 @@ public class StringUtilTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void rainbowNotAColor() {
-        StringUtil.makeRainbow("Someday we'll find it, the rainbow test coverage, the coders, the users, and me.", new IRCFormat[]{IRCFormat.UNDERLINE});
+        StringUtil.makeRainbow("Someday we'll find it, the rainbow test coverage, the coders, the users, and me.", new Format[]{Format.UNDERLINE});
     }
 
     /**
