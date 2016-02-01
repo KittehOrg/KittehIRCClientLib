@@ -61,8 +61,8 @@ public final class RiskyBusiness {
     public static <Input, Output> Output assertSafe(CheckedFunction<Input, Output> function, Input input) {
         try {
             return function.apply(input);
-        } catch (Exception e) {
-            throw new AssertionError(e);
+        } catch (Exception everythingYouKnowIsWrong) {
+            throw new AssertionError(everythingYouKnowIsWrong);
         }
     }
 }

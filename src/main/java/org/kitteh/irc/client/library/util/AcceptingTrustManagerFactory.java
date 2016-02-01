@@ -25,10 +25,12 @@ package org.kitteh.irc.client.library.util;
 
 import io.netty.handler.ssl.util.SimpleTrustManagerFactory;
 import io.netty.util.internal.EmptyArrays;
+import org.kitteh.irc.client.library.ClientBuilder;
 
 import javax.annotation.Nonnull;
 import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -36,6 +38,8 @@ import java.security.cert.X509Certificate;
 
 /**
  * A very friendly, accepting trust manager factory. Allows anything through.
+ *
+ * @see ClientBuilder#secureTrustManagerFactory(TrustManagerFactory)
  */
 public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactory {
     private class TrustingManager implements X509TrustManager {
@@ -49,7 +53,6 @@ public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactor
             // NOOP
             // Allow ALL the things!
         }
-
 
         @Nonnull
         @Override
