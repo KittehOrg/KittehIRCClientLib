@@ -6,13 +6,13 @@ import org.junit.Test;
 /**
  * Make sure nothing has gone horribly wrong at the format factory.
  */
-public class IRCFormatTest {
+public class FormatTest {
     /**
      * Tests valid background input.
      */
     @Test
     public void background() {
-        Assert.assertEquals("\u000309,01", IRCFormat.GREEN.withBackground(IRCFormat.BLACK));
+        Assert.assertEquals("\u000309,01", Format.GREEN.withBackground(Format.BLACK));
     }
 
     /**
@@ -20,7 +20,7 @@ public class IRCFormatTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void backgroundNonColorBackground() {
-        IRCFormat.GREEN.withBackground(IRCFormat.BOLD);
+        Format.GREEN.withBackground(Format.BOLD);
     }
 
     /**
@@ -28,7 +28,7 @@ public class IRCFormatTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void backgroundNonColorForeground() {
-        IRCFormat.BOLD.withBackground(IRCFormat.GREEN);
+        Format.BOLD.withBackground(Format.GREEN);
     }
 
     /**
@@ -36,7 +36,7 @@ public class IRCFormatTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void backgroundNull() {
-        IRCFormat.GREEN.withBackground(null);
+        Format.GREEN.withBackground(null);
     }
 
     /**
@@ -44,8 +44,8 @@ public class IRCFormatTest {
      */
     @Test
     public void format() {
-        String colorChar = IRCFormat.COLOR_CHAR + "";
-        for (IRCFormat format : IRCFormat.values()) {
+        String colorChar = Format.COLOR_CHAR + "";
+        for (Format format : Format.values()) {
             Assert.assertTrue("Color format with wrong length: " + format.name(), !format.toString().startsWith(colorChar) || (format.toString().length() == 3));
         }
     }
@@ -55,8 +55,8 @@ public class IRCFormatTest {
      */
     @Test
     public void stripColor() {
-        Assert.assertEquals(IRCFormat.stripColor(IRCFormat.GREEN + "meow"), "meow");
-        Assert.assertEquals(IRCFormat.stripColor(IRCFormat.BOLD + "purr"), IRCFormat.BOLD + "purr");
+        Assert.assertEquals(Format.stripColor(Format.GREEN + "meow"), "meow");
+        Assert.assertEquals(Format.stripColor(Format.BOLD + "purr"), Format.BOLD + "purr");
     }
 
     /**
@@ -64,8 +64,8 @@ public class IRCFormatTest {
      */
     @Test
     public void stripFormat() {
-        Assert.assertEquals(IRCFormat.stripFormatting(IRCFormat.GREEN + "meow"), IRCFormat.GREEN + "meow");
-        Assert.assertEquals(IRCFormat.stripFormatting(IRCFormat.BOLD + "purr"), "purr");
+        Assert.assertEquals(Format.stripFormatting(Format.GREEN + "meow"), Format.GREEN + "meow");
+        Assert.assertEquals(Format.stripFormatting(Format.BOLD + "purr"), "purr");
     }
 
     /**
@@ -73,7 +73,7 @@ public class IRCFormatTest {
      */
     @Test
     public void validColors() {
-        for (IRCFormat format : IRCFormat.values()) {
+        for (Format format : Format.values()) {
             if (format.isColor()) {
                 Assert.assertTrue("Invalid IRCFormat color char " + format.name(), (format.getColorChar() & 15) == format.getColorChar());
             } else {

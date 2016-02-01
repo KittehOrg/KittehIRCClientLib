@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * <p>
  * The {@link #toString} method provides the String you need.
  */
-public enum IRCFormat {
+public enum Format {
     /**
      * Black.
      */
@@ -123,13 +123,13 @@ public enum IRCFormat {
     private final boolean isColor;
     private final String toString;
 
-    IRCFormat(char ch) {
+    Format(char ch) {
         this.color = -1;
         this.isColor = false;
         this.toString = String.valueOf(ch);
     }
 
-    IRCFormat(int color) {
+    Format(int color) {
         this.color = color;
         this.isColor = true;
         this.toString = COLOR_CHAR + ((color < 10) ? "0" : "") + color;
@@ -199,7 +199,7 @@ public enum IRCFormat {
      * @throws IllegalArgumentException if using or providing a non-color
      */
     @Nonnull
-    public String withBackground(@Nonnull IRCFormat background) {
+    public String withBackground(@Nonnull Format background) {
         Sanity.nullCheck(background, "Background cannot be null");
         Sanity.truthiness(this.isColor, "Cannot use non-color foreground.");
         Sanity.truthiness(background.isColor, "Cannot use non-color background");
