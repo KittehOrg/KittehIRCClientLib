@@ -97,7 +97,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
         public void authenticate(ClientReceiveCommandEvent event) {
             if (!event.getParameters().isEmpty()) {
                 String base64;
-                if (event.getParameters().get(0).equals("+")) {
+                if ("+".equals(event.getParameters().get(0))) {
                     base64 = Base64.getEncoder().encodeToString(SaslECDSANIST256PChallenge.this.getAuthLine().getBytes());
                 } else {
                     String challenge = event.getParameters().get(0);

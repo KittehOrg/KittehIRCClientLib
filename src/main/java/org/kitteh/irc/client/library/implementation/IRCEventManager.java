@@ -46,7 +46,7 @@ final class IRCEventManager implements EventManager {
         public void handleError(@Nonnull PublicationError publicationError) {
             Exception exceptional;
             Throwable thrown = publicationError.getCause();
-            if ((publicationError.getCause() instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehServerMessageException)) {
+            if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehServerMessageException)) {
                 exceptional = (KittehServerMessageException) thrown.getCause();
             } else {
                 exceptional = new KittehEventException(thrown);

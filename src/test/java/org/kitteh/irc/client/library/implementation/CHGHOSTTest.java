@@ -2,9 +2,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.EventManager;
 import org.kitteh.irc.client.library.element.Actor;
