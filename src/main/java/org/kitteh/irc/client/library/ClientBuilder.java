@@ -33,10 +33,11 @@ import java.util.function.Consumer;
  * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
  * <p>
  * The default built client connects securely via port 6697. See {@link
- * #secure(boolean)} to disable, or the other secure* methods in this builder
- * to fully utilize the feature. Note that the default TrustManagerFactory
- * does not support many certificate types (including StartCom) as Java does
- * not consider them valid and does not accept self-signed.
+ * #secure(boolean)} to disable, or the other secure-prefixed methods in this
+ * builder to fully utilize the feature. Note that the default
+ * TrustManagerFactory relies on your local trust store. The default Oracle
+ * trust store does not support many commonly used certificate authorities
+ * (including StartCom) and does not accept self-signed.
  */
 public interface ClientBuilder extends Cloneable {
     /**
