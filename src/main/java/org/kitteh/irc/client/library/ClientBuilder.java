@@ -357,7 +357,9 @@ public interface ClientBuilder extends Cloneable {
     ClientBuilder webircRemove();
 
     /**
-     * Clientmaker, clientmaker, make me a client!
+     * Clientmaker, clientmaker, make me a client, build me the client and
+     * begin connection, block me until {@link #afterBuildConsumer(Consumer)}
+     * is run!
      *
      * @return a client designed to your liking
      */
