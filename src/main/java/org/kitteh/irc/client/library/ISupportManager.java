@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
- * Manages message tags.
+ * Manages processing of ISUPPORT parameters.
  */
 public interface ISupportManager {
     /**
