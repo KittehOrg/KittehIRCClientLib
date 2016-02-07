@@ -47,7 +47,8 @@ public interface ISupportParameter {
     }
 
     /**
-     * Represents the 'time' tag as specified by the 'server-time' extension.
+     * Represents the {@link org.kitteh.irc.client.library.CaseMapping}
+     * supported by the server.
      */
     interface CaseMapping extends ISupportParameter {
         /**
