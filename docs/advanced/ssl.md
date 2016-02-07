@@ -15,7 +15,7 @@ You can set the public and private key utilized in the connection using the foll
 By default, when connecting securely, KICL will utilize the default `TrustManagerFactory`
 provided by the JRE you're using. This factory *does not* accept certificates issued by
 many common certificate authorities (such as StartCom, which is used by many IRC networks)
-and self-signed certificates.
+and self-signed certificates. If possible, you should consider [importing](ssl_import.md) the root certificates for these certificate authorities which will allow connections to be made.
 
 KICL lets you set your own `TrustManagerFactory` in the `ClientBuilder` so you may let KICL
 connect to the network you desire. There is also the `AcceptingTrustManagerFactory` which,
