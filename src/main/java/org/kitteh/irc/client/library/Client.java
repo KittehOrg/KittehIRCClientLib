@@ -411,7 +411,7 @@ public interface Client {
      */
     default void sendMultiLineMessage(@Nonnull MessageReceiver target, @Nonnull String message, @Nonnull Cutter cutter) {
         Sanity.nullCheck(target, "Target cannot be null");
-        this.sendMultiLineMessage(target.getName(), message, cutter);
+        this.sendMultiLineMessage(target.getMessagingName(), message, cutter);
     }
 
     /**
@@ -472,7 +472,7 @@ public interface Client {
      */
     default void sendMultiLineNotice(@Nonnull MessageReceiver target, @Nonnull String message, @Nonnull Cutter cutter) {
         Sanity.nullCheck(target, "Target cannot be null");
-        this.sendMultiLineNotice(target.getName(), message, cutter);
+        this.sendMultiLineNotice(target.getMessagingName(), message, cutter);
     }
 
     /**
