@@ -24,9 +24,9 @@
 package org.kitteh.irc.client.library.element;
 
 /**
- * An actor snapshot that can be noticeably stale.
+ * A snapshot that can be noticeably stale.
  */
-public interface Staleable extends Actor {
+public interface Staleable extends Snapshot {
     /**
      * Gets if the current snapshot is stale.
      *
