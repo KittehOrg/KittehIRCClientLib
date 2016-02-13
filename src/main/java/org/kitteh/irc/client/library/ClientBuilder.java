@@ -97,7 +97,9 @@ public interface ClientBuilder extends Cloneable {
     ClientBuilder listenExceptionRemove();
 
     /**
-     * Sets a listener for all thrown exceptions on this client.
+     * Sets a listener for all thrown exceptions on this client. By default,
+     * a consumer exists which calls Throwable#printStackTrace() on all
+     * received exceptions.
      * <p>
      * All exceptions are passed from a single, separate thread.
      *

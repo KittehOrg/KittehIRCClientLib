@@ -122,7 +122,7 @@ final class Config {
 
     static final Entry<String> NAME = new Entry<>("Unnamed", String.class);
     static final Entry<InetSocketAddress> BIND_ADDRESS = new Entry<>(null, InetSocketAddress.class);
-    static final Entry<ExceptionConsumerWrapper> LISTENER_EXCEPTION = new Entry<>(null, ExceptionConsumerWrapper.class);
+    static final Entry<ExceptionConsumerWrapper> LISTENER_EXCEPTION = new Entry<>(new ExceptionConsumerWrapper(Throwable::printStackTrace), ExceptionConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_INPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_OUTPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<Integer> MESSAGE_DELAY = new Entry<>(1200, Integer.class);
