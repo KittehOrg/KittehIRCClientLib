@@ -71,14 +71,14 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec</artifactId>
-            <version>4.0.33.Final</version>
+            <version>4.0.34.Final</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>4.0.33.Final</version>
+            <version>4.0.34.Final</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
