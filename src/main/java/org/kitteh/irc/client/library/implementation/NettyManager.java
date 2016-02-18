@@ -80,6 +80,7 @@ final class NettyManager {
         private final Queue<String> queue = new ConcurrentLinkedQueue<>();
         private boolean reconnect = true;
         private ScheduledFuture<?> scheduledSending;
+        private ScheduledFuture<?> scheduledPing;
         private final Object scheduledSendingLock = new Object();
         private final Object immediateSendingLock = new Object();
         private boolean immediateSendingReady = false;
@@ -138,7 +139,7 @@ final class NettyManager {
             this.channel.pipeline().addFirst("[OUTPUT] String encoder", new StringEncoder(CharsetUtil.UTF_8));
 
             // Handle timeout
-            this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 60));
+            this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 0));
             this.channel.pipeline().addLast("[INPUT] Catch idle", new ChannelDuplexHandler() {
                 @Override
                 public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -146,8 +147,6 @@ final class NettyManager {
                         IdleStateEvent e = (IdleStateEvent) evt;
                         if ((e.state() == IdleState.READER_IDLE) && e.isFirst()) {
                             ClientConnection.this.shutdown("Reconnecting...", true);
-                        } else if ((e.state() == IdleState.ALL_IDLE) && e.isFirst()) {
-                            ClientConnection.this.client.ping();
                         }
                     }
                 }
@@ -260,12 +259,16 @@ final class NettyManager {
                     delay = this.scheduledSending.getDelay(TimeUnit.MILLISECONDS); // Negligible added delay processing this
                     this.scheduledSending.cancel(false);
                 }
+                if (this.scheduledPing != null) {
+                    this.scheduledPing.cancel(false);
+                }
                 this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(() -> {
                     String message = ClientConnection.this.queue.poll();
                     if (message != null) {
                         ClientConnection.this.channel.writeAndFlush(message);
                     }
                 }, delay, this.client.getMessageDelay(), TimeUnit.MILLISECONDS);
+                this.scheduledPing = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
             }
         }
 
