@@ -34,5 +34,5 @@ PRIVMSG AuthServ@services.gamesurge.net :auth username password
 To use the GameServ protocol with KICL:
 
 ```java
-client.getAuthManager().addProtocol(new NickServ(client, "username", "password"));
+client.getAuthManager().addProtocol(new GameSurge(client, "username", "password"));
 ```
