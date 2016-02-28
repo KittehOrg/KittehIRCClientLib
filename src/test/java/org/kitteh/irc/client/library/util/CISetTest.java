@@ -97,7 +97,7 @@ public class CISetTest {
      * @param mapping case mapping requested
      * @return requested client
      */
-    public Client getMockClientWithCaseMapping(CaseMapping mapping) {
+    private Client getMockClientWithCaseMapping(CaseMapping mapping) {
         Client clientMock = Mockito.mock(Client.class);
         Mockito.when(clientMock.getServerInfo()).thenReturn(new StubServerInfo(mapping));
         return clientMock;

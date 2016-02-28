@@ -20,7 +20,7 @@ public class ModeCommandTest {
     public void testWithNoModeChanges() {
         Client clientMock = Mockito.mock(Client.class);
 
-        ModeCommand sut = new ModeCommand(clientMock, getMockedClient(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, this.getMockedClient(clientMock, "#test"));
         sut.execute();
         Mockito.verify(clientMock, Mockito.never()).sendRawLine(Mockito.anyString());
 
@@ -31,7 +31,7 @@ public class ModeCommandTest {
     public void testWithOneSimpleModeChange() {
         Client clientMock = Mockito.mock(Client.class);
 
-        ModeCommand sut = new ModeCommand(clientMock, getMockedClient(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, this.getMockedClient(clientMock, "#test"));
         ChannelMode mode = new ChannelMode() {
             @Override
             public char getChar() {
@@ -59,7 +59,7 @@ public class ModeCommandTest {
     public void testWithAddAndRemove() {
         Client clientMock = Mockito.mock(Client.class);
 
-        ModeCommand sut = new ModeCommand(clientMock, getMockedClient(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, this.getMockedClient(clientMock, "#test"));
         ChannelMode modeA = new ChannelMode() {
             @Override
             public char getChar() {
@@ -106,7 +106,7 @@ public class ModeCommandTest {
     public void testWithAddParameterisedAndSimpleMode() {
         Client clientMock = Mockito.mock(Client.class);
 
-        ModeCommand sut = new ModeCommand(clientMock, getMockedClient(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, this.getMockedClient(clientMock, "#test"));
         ChannelMode modeA = new ChannelMode() {
             @Override
             public char getChar() {
@@ -153,7 +153,7 @@ public class ModeCommandTest {
     public void testAddModeWithParameter() {
         Client clientMock = Mockito.mock(Client.class);
 
-        ModeCommand sut = new ModeCommand(clientMock, getMockedClient(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, this.getMockedClient(clientMock, "#test"));
         ChannelMode mode = new ChannelMode() {
             @Override
             public char getChar() {
@@ -183,7 +183,7 @@ public class ModeCommandTest {
         User userMock = Mockito.mock(User.class);
         Mockito.when(userMock.getClient()).thenReturn(clientMock);
         Mockito.when(userMock.getNick()).thenReturn("kitteh");
-        ModeCommand sut = new ModeCommand(clientMock, getMockedClient(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, this.getMockedClient(clientMock, "#test"));
         ChannelUserMode mode = new ChannelUserMode() {
             @Override
             public char getChar() {
@@ -221,7 +221,7 @@ public class ModeCommandTest {
     public void testRemoveModeWithParameter() {
         Client clientMock = Mockito.mock(Client.class);
 
-        ModeCommand sut = new ModeCommand(clientMock, getMockedClient(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, this.getMockedClient(clientMock, "#test"));
         ChannelMode mode = new ChannelMode() {
             @Override
             public char getChar() {
