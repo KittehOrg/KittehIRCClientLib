@@ -24,7 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.ISupportManager;
+import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
@@ -107,11 +107,11 @@ final class IRCISupportManager extends AbstractNameValueProcessor<ISupportParame
     }
 
     private static final class ISupportCaseMapping extends IRCISupportParameterValueRequired implements ISupportParameter.CaseMapping {
-        private final org.kitteh.irc.client.library.CaseMapping caseMapping;
+        private final org.kitteh.irc.client.library.feature.CaseMapping caseMapping;
 
         private ISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
-            Optional<org.kitteh.irc.client.library.CaseMapping> caseMapping = org.kitteh.irc.client.library.CaseMapping.getByName(value.get());
+            Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value.get());
             if (caseMapping.isPresent()) {
                 this.caseMapping = caseMapping.get();
             } else {
@@ -121,7 +121,7 @@ final class IRCISupportManager extends AbstractNameValueProcessor<ISupportParame
 
         @Nonnull
         @Override
-        public org.kitteh.irc.client.library.CaseMapping getCaseMapping() {
+        public org.kitteh.irc.client.library.feature.CaseMapping getCaseMapping() {
             return this.caseMapping;
         }
     }

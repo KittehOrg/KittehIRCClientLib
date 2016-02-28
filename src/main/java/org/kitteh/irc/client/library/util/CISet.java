@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.kitteh.irc.client.library.CaseMapping;
+import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.Client;
 
 import javax.annotation.Nonnull;

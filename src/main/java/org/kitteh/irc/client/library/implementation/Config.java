@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.ClientBuilder;
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
- * Stores a Client's configured data from the {@link ClientBuilder}.
+ * Stores a Client's configured data from the {@link Client.Builder}.
  * <p>
  * This class is for internal use only.
  */

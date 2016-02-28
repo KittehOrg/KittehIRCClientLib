@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.ServerInfo;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;

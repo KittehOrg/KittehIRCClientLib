@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.EventManager;
-import org.kitteh.irc.client.library.MessageTagManager;
+import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.auth.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;

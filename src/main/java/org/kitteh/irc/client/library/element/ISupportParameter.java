@@ -47,7 +47,7 @@ public interface ISupportParameter {
     }
 
     /**
-     * Represents the {@link org.kitteh.irc.client.library.CaseMapping}
+     * Represents the {@link org.kitteh.irc.client.library.feature.CaseMapping}
      * supported by the server.
      */
     interface CaseMapping extends ISupportParameter {
@@ -62,7 +62,7 @@ public interface ISupportParameter {
          * @return casemapping
          */
         @Nonnull
-        org.kitteh.irc.client.library.CaseMapping getCaseMapping();
+        org.kitteh.irc.client.library.feature.CaseMapping getCaseMapping();
     }
 
     /**

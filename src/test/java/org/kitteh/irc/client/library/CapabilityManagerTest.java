@@ -3,6 +3,7 @@ package org.kitteh.irc.client.library;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;

@@ -21,9 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.feature;
 
 import net.engio.mbassy.listener.Handler;
+import org.kitteh.irc.client.library.Client;
 
 import javax.annotation.Nonnull;
 import java.util.Set;

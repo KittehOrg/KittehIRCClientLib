@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.capabilities;
 
-import org.kitteh.irc.client.library.CapabilityManager;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;

@@ -24,7 +24,6 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.ClientBuilder;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -36,7 +35,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
-final class IRCClientBuilder implements ClientBuilder, Cloneable {
+final class IRCClientBuilder implements Client.Builder, Cloneable {
     private Config config;
     @Nullable
     private Consumer<Client> after;
@@ -52,14 +51,14 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Override
     @Nonnull
-    public ClientBuilder afterBuildConsumerRemove() {
+    public Client.Builder afterBuildConsumerRemove() {
         this.after = null;
         return this;
     }
 
     @Override
     @Nonnull
-    public ClientBuilder afterBuildConsumer(@Nonnull Consumer<Client> consumer) {
+    public Client.Builder afterBuildConsumer(@Nonnull Consumer<Client> consumer) {
         Sanity.nullCheck(consumer, "Consumer cannot be null");
         this.after = consumer;
         return this;
@@ -226,14 +225,14 @@ final class IRCClientBuilder implements ClientBuilder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder secureTrustManagerFactoryRemove() {
+    public IRCClientBuilder secureTrustManagerFactoryRemove() {
         this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory) {
+    public IRCClientBuilder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory) {
         Sanity.nullCheck(factory, "Factory cannot be null");
         this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, factory);
         return this;

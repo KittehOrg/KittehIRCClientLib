@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import org.kitteh.irc.client.library.CapabilityManager;
-import org.kitteh.irc.client.library.ServerInfo;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;

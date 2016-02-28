@@ -4,7 +4,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.EventManager;
+import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;

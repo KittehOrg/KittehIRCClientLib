@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.command;
 
-import org.kitteh.irc.client.library.CapabilityManager;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;

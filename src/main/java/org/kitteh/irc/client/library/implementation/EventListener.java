@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.implementation;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
-import org.kitteh.irc.client.library.CapabilityManager;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;

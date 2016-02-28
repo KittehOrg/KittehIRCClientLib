@@ -24,7 +24,7 @@
 package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.ServerInfo;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.util.Sanity;

@@ -2,6 +2,7 @@ package org.kitteh.irc.client.library;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.EnumMap;

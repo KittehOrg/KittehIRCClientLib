@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library;
+package org.kitteh.irc.client.library.feature;
 
 import org.kitteh.irc.client.library.auth.protocol.SaslECDSANIST256PChallenge;
 import org.kitteh.irc.client.library.auth.protocol.SaslPlain;

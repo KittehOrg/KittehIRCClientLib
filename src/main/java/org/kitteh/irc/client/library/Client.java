@@ -29,11 +29,19 @@ import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
+import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.ISupportManager;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.File;
 import java.lang.reflect.Constructor;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
@@ -44,18 +52,358 @@ import java.util.function.Consumer;
  */
 public interface Client {
     /**
-     * Creates a {@link ClientBuilder} to build clients.
+     * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
+     * <p>
+     * The default built client connects securely via port 6697. See {@link
+     * #secure(boolean)} to disable, or the other secure-prefixed methods in this
+     * builder to fully utilize the feature. Note that the default
+     * TrustManagerFactory relies on your local trust store. The default Oracle
+     * trust store does not support many commonly used certificate authorities
+     * (including StartCom) and does not accept self-signed.
+     */
+    interface Builder extends Cloneable {
+        /**
+         * Removes the Consumer set to fire after the client is built.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder afterBuildConsumerRemove();
+
+        /**
+         * Sets up a Consumer to fire on the newly created client after it is
+         * built, prior to connection.
+         *
+         * @param consumer consumer
+         * @return this builder
+         */
+        @Nonnull
+        Builder afterBuildConsumer(@Nonnull Consumer<Client> consumer);
+
+        /**
+         * Binds the client to no specific host.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder bindHostRemove();
+
+        /**
+         * Binds the client to a host or IP locally.
+         * <p>
+         * By default, the host is not set which results in wildcard binding.
+         *
+         * @param host host to bind to
+         * @return this builder
+         */
+        @Nonnull
+        Builder bindHost(@Nonnull String host);
+
+        /**
+         * Binds the client to the specified port. Invalid ports are set to 0.
+         * <p>
+         * By default, the port is 0.
+         *
+         * @param port port to bind to
+         * @return this builder
+         */
+        @Nonnull
+        Builder bindPort(int port);
+
+        /**
+         * Removes the exception listener from this builder.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder listenExceptionRemove();
+
+        /**
+         * Sets a listener for all thrown exceptions on this client. By default,
+         * a consumer exists which calls Throwable#printStackTrace() on all
+         * received exceptions.
+         * <p>
+         * All exceptions are passed from a single, separate thread.
+         *
+         * @param listener catcher of throwable objects
+         * @return this builder
+         */
+        @Nonnull
+        Builder listenException(@Nonnull Consumer<Exception> listener);
+
+        /**
+         * Removes the input listener from this builder.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder listenInputRemove();
+
+        /**
+         * Sets a listener for all incoming messages from the server.
+         * <p>
+         * All messages are passed from a single, separate thread.
+         *
+         * @param listener input listener
+         * @return this builder
+         */
+        @Nonnull
+        Builder listenInput(@Nonnull Consumer<String> listener);
+
+        /**
+         * Removes the output listener from this builder.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder listenOutputRemove();
+
+        /**
+         * Sets a listener for all outgoing messages to the server.
+         * <p>
+         * All messages are passed from a single, separate thread.
+         *
+         * @param listener output listener
+         * @return this builder
+         */
+        @Nonnull
+        Builder listenOutput(@Nonnull Consumer<String> listener);
+
+        /**
+         * Names the client, for internal labeling.
+         *
+         * @param name a name to label the client internally
+         * @return this builder
+         * @throws IllegalArgumentException if name is null
+         */
+        @Nonnull
+        Builder name(@Nonnull String name);
+
+        /**
+         * Sets the client's nick.
+         * <p>
+         * By default, the nick is Kitteh.
+         *
+         * @param nick nick for the client to use
+         * @return this builder
+         * @throws IllegalArgumentException if nick is null
+         */
+        @Nonnull
+        Builder nick(@Nonnull String nick);
+
+        /**
+         * Removes the server password.
+         * <p>
+         * If not set, no password is sent
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder serverPasswordRemove();
+
+        /**
+         * Sets the server password.
+         * <p>
+         * If not set, no password is sent
+         *
+         * @param password server password
+         * @return this builder
+         */
+        @Nonnull
+        Builder serverPassword(@Nonnull String password);
+
+        /**
+         * Sets the realname the client uses.
+         * <p>
+         * By default, the realname is Kitteh.
+         *
+         * @param name realname to use
+         * @return this builder
+         * @throws IllegalArgumentException for null realname
+         */
+        @Nonnull
+        Builder realName(@Nonnull String name);
+
+        /**
+         * Sets whether the client connects via SSL.
+         * <p>
+         * Note that by default the TrustManager used does not accept the
+         * certificates of many popular networks. You must use {@link
+         * #secureTrustManagerFactory(TrustManagerFactory)} to set your own
+         * TrustManagerFactory.
+         *
+         * @param ssl true for ssl
+         * @return this builder
+         */
+        @Nonnull
+        Builder secure(boolean ssl);
+
+        /**
+         * Removes the key for SSL connection.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder secureKeyCertChainRemove();
+
+        /**
+         * Sets the key for SSL connection.
+         *
+         * @param keyCertChainFile X.509 certificate chain file in PEM format
+         * @return this builder
+         * @see #secure(boolean)
+         */
+        @Nonnull
+        Builder secureKeyCertChain(@Nonnull File keyCertChainFile);
+
+        /**
+         * Removes the private key for SSL connection.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder secureKeyRemove();
+
+        /**
+         * Sets the private key for SSL connection.
+         *
+         * @param keyFile PKCS#8 private key file in PEM format
+         * @return this builder
+         * @see #secure(boolean)
+         */
+        @Nonnull
+        Builder secureKey(@Nonnull File keyFile);
+
+        /**
+         * Removes the private key password for SSL connection.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder secureKeyPasswordRemove();
+
+        /**
+         * Sets the private key password for SSL connection.
+         *
+         * @param password password for private key
+         * @return this builder
+         * @see #secure(boolean)
+         */
+        @Nonnull
+        Builder secureKeyPassword(@Nonnull String password);
+
+        /**
+         * Removes the {@link TrustManagerFactory} for SSL connection, defaulting
+         * to the JRE factory.
+         *
+         * @return this builder
+         */
+        @Nonnull
+        Builder secureTrustManagerFactoryRemove();
+
+        /**
+         * Sets the {@link TrustManagerFactory} for SSL connection.
+         *
+         * @param factory trust manager supplier
+         * @return this builder
+         * @see #secure(boolean)
+         */
+        @Nonnull
+        Builder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory);
+
+        /**
+         * Sets the delay between messages being sent to the server
+         *
+         * @param delay the delay in milliseconds
+         * @return this builder
+         */
+        @Nonnull
+        Builder messageDelay(int delay);
+
+        /**
+         * Sets the server host to which the client will connect.
+         * <p>
+         * By default, the host is localhost.
+         *
+         * @param host IRC server host
+         * @return this builder
+         * @throws IllegalArgumentException for null host
+         */
+        @Nonnull
+        Builder serverHost(@Nonnull String host);
+
+        /**
+         * Sets the server port to which the client will connect.
+         * <p>
+         * By default, the port is 6667.
+         *
+         * @param port IRC server port
+         * @return this builder
+         */
+        @Nonnull
+        Builder serverPort(int port);
+
+        /**
+         * Sets the user the client connects as.
+         * <p>
+         * By default, the user is Kitteh.
+         *
+         * @param user user to connect as
+         * @return this builder
+         * @throws IllegalArgumentException for null user
+         */
+        @Nonnull
+        Builder user(@Nonnull String user);
+
+        /**
+         * Sets all the information for, and enables, WebIRC.
+         * <p>
+         * By default, WebIRC is disabled.
+         *
+         * @param password password as defined in the IRCd config
+         * @param user username part of the client's address
+         * @param host hostname part of the client's address
+         * @param ip client's IP address
+         * @return this builder
+         * @throws IllegalArgumentException for any null parameters
+         * @see #webircRemove()
+         */
+        @Nonnull
+        Builder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip);
+
+        /**
+         * Removes WEBIRC settings from this builder.
+         *
+         * @return this builder
+         * @see #webirc(String, String, String, InetAddress)
+         */
+        @Nonnull
+        Builder webircRemove();
+
+        /**
+         * Clientmaker, clientmaker, make me a client, build me the client and
+         * begin connection, block me until {@link #afterBuildConsumer(Consumer)}
+         * is run!
+         *
+         * @return a client designed to your liking
+         */
+        @Nonnull
+        Client build();
+    }
+
+    /**
+     * Creates a {@link Builder} to build clients.
      *
      * @return a client builder
      */
     @Nonnull
-    static ClientBuilder builder() {
+    static Builder builder() {
         try {
             Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".implementation.IRCClientBuilder").getDeclaredConstructor();
             constructor.setAccessible(true);
-            return (ClientBuilder) constructor.newInstance();
+            return (Builder) constructor.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Kitteh IRC Client Library cannot create a ClientBuilder.", e);
+            throw new RuntimeException("Kitteh IRC Client Library cannot create a Client builder.", e);
         }
     }
 
