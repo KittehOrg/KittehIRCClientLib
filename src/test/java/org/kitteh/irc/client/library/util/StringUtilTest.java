@@ -2,7 +2,6 @@ package org.kitteh.irc.client.library.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kitteh.irc.client.library.feature.Format;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;

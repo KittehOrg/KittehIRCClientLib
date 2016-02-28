@@ -2,7 +2,7 @@ package org.kitteh.irc.client.library;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kitteh.irc.client.library.feature.Format;
+import org.kitteh.irc.client.library.util.Format;
 
 /**
  * Make sure nothing has gone horribly wrong at the format factory.

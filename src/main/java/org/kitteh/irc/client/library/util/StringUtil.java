@@ -23,8 +23,6 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.kitteh.irc.client.library.feature.Format;
-
 import javax.annotation.Nonnull;
 
 /**

@@ -21,9 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature;
-
-import org.kitteh.irc.client.library.util.Sanity;
+package org.kitteh.irc.client.library.util;
 
 import javax.annotation.Nonnull;
 import java.util.regex.Pattern;
