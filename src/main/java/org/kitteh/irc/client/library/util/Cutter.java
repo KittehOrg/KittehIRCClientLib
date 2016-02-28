@@ -51,11 +51,14 @@ public interface Cutter {
             for (String word : message.split(" ")) {
                 if ((builder.length() + word.length() + ((builder.length() == 0) ? 0 : 1)) > size) {
                     if ((word.length() > size) && ((builder.length() + 1) < size)) {
+                        if (builder.length() > 0) {
+                            builder.append(' ');
+                        }
                         int cut = size - 1 - builder.length();
                         builder.append(word.substring(0, cut));
                         word = word.substring(cut);
                     }
-                    list.add(builder.toString());
+                    list.add(builder.toString().trim());
                     builder.setLength(0);
                     while (word.length() > size) {
                         list.add(word.substring(0, size));
@@ -68,7 +71,7 @@ public interface Cutter {
                 builder.append(word);
             }
             if (builder.length() > 0) {
-                list.add(builder.toString());
+                list.add(builder.toString().trim());
             }
             return list;
         }
