@@ -54,7 +54,7 @@ public interface Cutter {
                         if (builder.length() > 0) {
                             builder.append(' ');
                         }
-                        int cut = size - 1 - builder.length();
+                        int cut = size - builder.length();
                         builder.append(word.substring(0, cut));
                         word = word.substring(cut);
                     }
