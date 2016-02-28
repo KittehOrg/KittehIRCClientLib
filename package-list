@@ -12,4 +12,5 @@ org.kitteh.irc.client.library.event.client
 org.kitteh.irc.client.library.event.helper
 org.kitteh.irc.client.library.event.user
 org.kitteh.irc.client.library.exception
+org.kitteh.irc.client.library.feature
 org.kitteh.irc.client.library.util
