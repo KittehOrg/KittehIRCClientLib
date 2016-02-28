@@ -14,9 +14,9 @@ public class CutterTest {
      */
     @Test
     public void cut() {
-        List<String> output = new Cutter.DefaultWordCutter().split("purrrrrrr 1 1 1 Meow meow mreow hisssssssss", 5);
+        List<String> output = new Cutter.DefaultWordCutter().split("0 purrrrr 1 1 1 Meow meow mreow hisssssssss", 5);
         Assert.assertEquals(9, output.size());
-        Assert.assertEquals("purrr", output.get(0));
+        Assert.assertEquals("0 pur", output.get(0));
         Assert.assertEquals("rrrr", output.get(1));
         Assert.assertEquals("1 1 1", output.get(2));
         Assert.assertEquals("Meow", output.get(3));
