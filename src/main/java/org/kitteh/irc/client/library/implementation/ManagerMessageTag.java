@@ -41,7 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-final class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
+final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
     private static class IRCMessageTag implements MessageTag {
         private final String name;
         private final Optional<String> value;
@@ -109,7 +109,7 @@ final class IRCMessageTagManager extends AbstractNameValueProcessor<MessageTag> 
 
     private static final Pattern TAG_ESCAPE = Pattern.compile("\\\\([\\\\s:])");
 
-    IRCMessageTagManager(InternalClient client) {
+    ManagerMessageTag(InternalClient client) {
         super(client);
         this.registerTagCreator("server-time", "time", IRCMessageTagTime.FUNCTION);
     }

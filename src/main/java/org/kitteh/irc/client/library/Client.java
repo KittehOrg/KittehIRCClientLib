@@ -399,7 +399,7 @@ public interface Client {
     @Nonnull
     static Builder builder() {
         try {
-            Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".implementation.IRCClientBuilder").getDeclaredConstructor();
+            Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".implementation.ClientBuilder").getDeclaredConstructor();
             constructor.setAccessible(true);
             return (Builder) constructor.newInstance();
         } catch (Exception e) {

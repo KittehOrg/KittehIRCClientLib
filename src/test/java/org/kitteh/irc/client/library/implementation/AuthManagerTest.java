@@ -13,14 +13,14 @@ import java.util.Optional;
 /**
  * Tests the auth manager implementation.
  */
-public class IRCAuthManagerTest {
+public class AuthManagerTest {
     /**
      * Tests a null protocol failure.
      */
     @Test(expected = IllegalArgumentException.class)
     public void testFailureWithNullProtocol() {
         Client client = new FakeClient();
-        IRCAuthManager sut = new IRCAuthManager(client);
+        ManagerAuth sut = new ManagerAuth(client);
         sut.addProtocol(null);
     }
 
@@ -30,7 +30,7 @@ public class IRCAuthManagerTest {
     @Test
     public void testAddProtocolManagementMethods() {
         final Client client = new FakeClient();
-        IRCAuthManager sut = new IRCAuthManager(client);
+        ManagerAuth sut = new ManagerAuth(client);
         final AuthProtocol ap = new AuthProtocol() {
             @Nonnull
             @Override
@@ -58,7 +58,7 @@ public class IRCAuthManagerTest {
     @Test
     public void testAddProtocolOfSameTypeMethods() {
         final Client client = new FakeClient();
-        IRCAuthManager sut = new IRCAuthManager(client);
+        ManagerAuth sut = new ManagerAuth(client);
         StubAuthProtocol stub1 = new StubAuthProtocol();
         sut.addProtocol(stub1);
         StubAuthProtocol stub2 = new StubAuthProtocol();
@@ -86,7 +86,7 @@ public class IRCAuthManagerTest {
     @Test
     public void testEventListeningAuthProtocol() {
         final Client client = new FakeClient();
-        IRCAuthManager sut = new IRCAuthManager(client);
+        ManagerAuth sut = new ManagerAuth(client);
         final StubAuthProtocol stub = new StubAuthProtocol();
         sut.addProtocol(stub);
         sut.removeProtocol(stub);

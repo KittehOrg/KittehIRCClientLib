@@ -35,7 +35,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
-final class IRCClientBuilder implements Client.Builder, Cloneable {
+final class ClientBuilder implements Client.Builder, Cloneable {
     private Config config;
     @Nullable
     private Consumer<Client> after;
@@ -45,7 +45,7 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
     private String serverHost;
     private int serverPort = 6697;
 
-    IRCClientBuilder() {
+    ClientBuilder() {
         this.config = new Config();
     }
 
@@ -66,14 +66,14 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder bindHostRemove() {
+    public ClientBuilder bindHostRemove() {
         this.bindHost = null;
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder bindHost(@Nonnull String host) {
+    public ClientBuilder bindHost(@Nonnull String host) {
         Sanity.nullCheck(host, "Host cannot be null");
         this.bindHost = host;
         return this;
@@ -81,21 +81,21 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder bindPort(int port) {
+    public ClientBuilder bindPort(int port) {
         this.bindPort = this.validPort(port);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenExceptionRemove() {
+    public ClientBuilder listenExceptionRemove() {
         this.config.set(Config.LISTENER_EXCEPTION, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenException(@Nonnull Consumer<Exception> listener) {
+    public ClientBuilder listenException(@Nonnull Consumer<Exception> listener) {
         Sanity.nullCheck(listener, "Listener cannot be null");
         this.config.set(Config.LISTENER_EXCEPTION, new Config.ExceptionConsumerWrapper(listener));
         return this;
@@ -103,14 +103,14 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenInputRemove() {
+    public ClientBuilder listenInputRemove() {
         this.config.set(Config.LISTENER_INPUT, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenInput(@Nonnull Consumer<String> listener) {
+    public ClientBuilder listenInput(@Nonnull Consumer<String> listener) {
         Sanity.nullCheck(listener, "Listener cannot be null");
         this.config.set(Config.LISTENER_INPUT, new Config.StringConsumerWrapper(listener));
         return this;
@@ -118,14 +118,14 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenOutputRemove() {
+    public ClientBuilder listenOutputRemove() {
         this.config.set(Config.LISTENER_OUTPUT, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder listenOutput(@Nonnull Consumer<String> listener) {
+    public ClientBuilder listenOutput(@Nonnull Consumer<String> listener) {
         Sanity.nullCheck(listener, "Listener cannot be null");
         this.config.set(Config.LISTENER_OUTPUT, new Config.StringConsumerWrapper(listener));
         return this;
@@ -133,7 +133,7 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder name(@Nonnull String name) {
+    public ClientBuilder name(@Nonnull String name) {
         Sanity.safeMessageCheck(name, "Name");
         this.config.set(Config.NAME, name);
         return this;
@@ -141,7 +141,7 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder nick(@Nonnull String nick) {
+    public ClientBuilder nick(@Nonnull String nick) {
         Sanity.safeMessageCheck(nick, "Nick");
         Sanity.truthiness(!nick.contains(" "), "Nick cannot contain spaces");
         this.config.set(Config.NICK, nick);
@@ -150,14 +150,14 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder serverPasswordRemove() {
+    public ClientBuilder serverPasswordRemove() {
         this.config.set(Config.SERVER_PASSWORD, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder serverPassword(@Nonnull String password) {
+    public ClientBuilder serverPassword(@Nonnull String password) {
         Sanity.safeMessageCheck(password, "Server password");
         this.config.set(Config.SERVER_PASSWORD, password);
         return this;
@@ -165,7 +165,7 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder realName(@Nonnull String name) {
+    public ClientBuilder realName(@Nonnull String name) {
         Sanity.safeMessageCheck(name, "Real name");
         this.config.set(Config.REAL_NAME, name);
         return this;
@@ -173,21 +173,21 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder secure(boolean ssl) {
+    public ClientBuilder secure(boolean ssl) {
         this.config.set(Config.SSL, ssl);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKeyCertChainRemove() {
+    public ClientBuilder secureKeyCertChainRemove() {
         this.config.set(Config.SSL_KEY_CERT_CHAIN, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKeyCertChain(@Nonnull File keyCertChainFile) {
+    public ClientBuilder secureKeyCertChain(@Nonnull File keyCertChainFile) {
         Sanity.nullCheck(keyCertChainFile, "Key certificate chain file cannot be null");
         this.config.set(Config.SSL_KEY_CERT_CHAIN, keyCertChainFile);
         return this;
@@ -195,14 +195,14 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKeyRemove() {
+    public ClientBuilder secureKeyRemove() {
         this.config.set(Config.SSL_KEY, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKey(@Nonnull File keyFile) {
+    public ClientBuilder secureKey(@Nonnull File keyFile) {
         Sanity.nullCheck(keyFile, "Key file cannot be null");
         this.config.set(Config.SSL_KEY, keyFile);
         return this;
@@ -210,14 +210,14 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKeyPasswordRemove() {
+    public ClientBuilder secureKeyPasswordRemove() {
         this.config.set(Config.SSL_KEY_PASSWORD, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureKeyPassword(@Nonnull String password) {
+    public ClientBuilder secureKeyPassword(@Nonnull String password) {
         Sanity.nullCheck(password, "Password cannot be null");
         this.config.set(Config.SSL_KEY_PASSWORD, password);
         return this;
@@ -225,14 +225,14 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureTrustManagerFactoryRemove() {
+    public ClientBuilder secureTrustManagerFactoryRemove() {
         this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, null);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory) {
+    public ClientBuilder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory) {
         Sanity.nullCheck(factory, "Factory cannot be null");
         this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, factory);
         return this;
@@ -240,7 +240,7 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder messageDelay(int delay) {
+    public ClientBuilder messageDelay(int delay) {
         Sanity.truthiness(delay > 0, "Delay must be at least 1");
         this.config.set(Config.MESSAGE_DELAY, delay);
         return this;
@@ -248,7 +248,7 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder serverHost(@Nonnull String host) {
+    public ClientBuilder serverHost(@Nonnull String host) {
         Sanity.nullCheck(host, "Host cannot be null");
         this.serverHost = host;
         return this;
@@ -256,14 +256,14 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder serverPort(int port) {
+    public ClientBuilder serverPort(int port) {
         this.serverPort = this.validPort(port);
         return this;
     }
 
     @Nonnull
     @Override
-    public IRCClientBuilder user(@Nonnull String user) {
+    public ClientBuilder user(@Nonnull String user) {
         Sanity.safeMessageCheck(user, "User");
         Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
         this.config.set(Config.USER, user);
@@ -272,7 +272,7 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip) {
+    public ClientBuilder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip) {
         Sanity.safeMessageCheck(password, "Password");
         Sanity.safeMessageCheck(user, "User");
         Sanity.safeMessageCheck(host, "Host");
@@ -292,7 +292,7 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder webircRemove() {
+    public ClientBuilder webircRemove() {
         this.config.set(Config.WEBIRC_PASSWORD, null);
         this.config.set(Config.WEBIRC_USER, null);
         this.config.set(Config.WEBIRC_HOST, null);
@@ -315,9 +315,9 @@ final class IRCClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public IRCClientBuilder clone() {
+    public ClientBuilder clone() {
         try {
-            IRCClientBuilder clientBuilder = (IRCClientBuilder) super.clone();
+            ClientBuilder clientBuilder = (ClientBuilder) super.clone();
             clientBuilder.config = this.config.clone();
             return clientBuilder;
         } catch (CloneNotSupportedException ignored) {

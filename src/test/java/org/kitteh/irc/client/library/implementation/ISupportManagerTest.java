@@ -15,13 +15,13 @@ import java.util.Optional;
 /**
  * Tests the ISupportManager implementation
  */
-public class IRCISupportManagerTest {
+public class ISupportManagerTest {
     /**
      * Tests generally.
      */
     @Test
     public void testParam() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter("MEOW=PURR");
         Assert.assertEquals(manager.getClient(), param.getClient());
         Assert.assertEquals("MEOW", param.getName());
@@ -35,7 +35,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void casemapping() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter(ISupportParameter.CaseMapping.NAME + '=' + CaseMapping.RFC1459.name());
         Assert.assertTrue(ISupportParameter.CaseMapping.class.isAssignableFrom(param.getClass()));
         Assert.assertEquals(CaseMapping.RFC1459, ((ISupportParameter.CaseMapping) param).getCaseMapping());
@@ -46,7 +46,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void casemappingFailName() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         Assert.assertFalse(ISupportParameter.CaseMapping.class.isAssignableFrom(manager.getParameter(ISupportParameter.CaseMapping.NAME + "=MEOW").getClass()));
         this.verifyException(manager);
     }
@@ -56,7 +56,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void casemappingFailEmpty() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         Assert.assertFalse(ISupportParameter.CaseMapping.class.isAssignableFrom(manager.getParameter(ISupportParameter.CaseMapping.NAME).getClass()));
         this.verifyException(manager);
     }
@@ -66,7 +66,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void channellen() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter(ISupportParameter.ChannelLen.NAME + "=15");
         Assert.assertTrue(ISupportParameter.ChannelLen.class.isAssignableFrom(param.getClass()));
         Assert.assertEquals(15, ((ISupportParameter.ChannelLen) param).getInteger());
@@ -77,7 +77,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void channellenFailValue() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         Assert.assertFalse(ISupportParameter.ChannelLen.class.isAssignableFrom(manager.getParameter(ISupportParameter.ChannelLen.NAME + "=MEOW").getClass()));
         this.verifyException(manager);
     }
@@ -87,7 +87,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void channelLimit() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter(ISupportParameter.ChanLimit.NAME + "=#:5,!:3");
         Assert.assertTrue(ISupportParameter.ChanLimit.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanLimit limit = (ISupportParameter.ChanLimit) param;
@@ -103,7 +103,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void chanlimitFailValueSplit() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         Assert.assertFalse(ISupportParameter.ChanLimit.class.isAssignableFrom(manager.getParameter(ISupportParameter.ChanLimit.NAME + "=MEOW").getClass()));
         this.verifyException(manager);
     }
@@ -113,7 +113,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void chanlimitFailValueInt() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         Assert.assertFalse(ISupportParameter.ChanLimit.class.isAssignableFrom(manager.getParameter(ISupportParameter.ChanLimit.NAME + "=#:MEOW").getClass()));
         this.verifyException(manager);
     }
@@ -123,7 +123,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void channellenFailEmpty() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         Assert.assertFalse(ISupportParameter.ChannelLen.class.isAssignableFrom(manager.getParameter(ISupportParameter.ChannelLen.NAME).getClass()));
         this.verifyException(manager);
     }
@@ -133,7 +133,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void chanmodes() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter(ISupportParameter.ChanModes.NAME + "=ME,O,W,CA,T");
         Assert.assertTrue(ISupportParameter.ChanModes.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanModes modes = (ISupportParameter.ChanModes) param;
@@ -157,7 +157,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void chantypes() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter(ISupportParameter.ChanTypes.NAME + "=#!");
         Assert.assertTrue(ISupportParameter.ChanTypes.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanTypes types = (ISupportParameter.ChanTypes) param;
@@ -171,7 +171,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void network() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter(ISupportParameter.Network.NAME + "=Meow");
         Assert.assertTrue(ISupportParameter.Network.class.isAssignableFrom(param.getClass()));
         Assert.assertEquals("Meow", ((ISupportParameter.Network) param).getNetworkName());
@@ -182,7 +182,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void nicklen() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter(ISupportParameter.NickLen.NAME + "=4");
         Assert.assertTrue(ISupportParameter.NickLen.class.isAssignableFrom(param.getClass()));
         Assert.assertEquals(4, ((ISupportParameter.NickLen) param).getInteger());
@@ -193,7 +193,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void prefix() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         ISupportParameter param = manager.getParameter(ISupportParameter.Prefix.NAME + "=(ov)@+");
         Assert.assertTrue(ISupportParameter.Prefix.class.isAssignableFrom(param.getClass()));
         ISupportParameter.Prefix prefix = (ISupportParameter.Prefix) param;
@@ -209,7 +209,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void prefixFailPattern() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         Assert.assertFalse(ISupportParameter.Prefix.class.isAssignableFrom(manager.getParameter(ISupportParameter.Prefix.NAME + "=(ov@+").getClass()));
         this.verifyException(manager);
     }
@@ -219,7 +219,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void prefixFailSize() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         Assert.assertFalse(ISupportParameter.Prefix.class.isAssignableFrom(manager.getParameter(ISupportParameter.Prefix.NAME + "=(ov)@").getClass()));
         this.verifyException(manager);
     }
@@ -264,7 +264,7 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void registrationAndRun() {
-        IRCISupportManager manager = this.getManager();
+        ManagerISupport manager = this.getManager();
         TriFunction<Client, String, Optional<String>, ? extends ISupportParameter> kitten = (client, name, value) -> new KittenParameter(false);
         TriFunction<Client, String, Optional<String>, ? extends ISupportParameter> naughtyKitten = (client, name, value) -> new KittenParameter(true);
 
@@ -299,16 +299,16 @@ public class IRCISupportManagerTest {
      */
     @Test
     public void stringTo() {
-        Assert.assertEquals(IRCISupportManager.class.getSimpleName() + " ()", this.getManager().toString());
+        Assert.assertEquals(ManagerISupport.class.getSimpleName() + " ()", this.getManager().toString());
     }
 
-    private void verifyException(@Nonnull IRCISupportManager manager) {
+    private void verifyException(@Nonnull ManagerISupport manager) {
         Mockito.verify(manager.getClient()).getExceptionListener();
     }
 
-    private IRCISupportManager getManager() {
+    private ManagerISupport getManager() {
         InternalClient client = Mockito.mock(InternalClient.class);
         Mockito.when(client.getExceptionListener()).thenReturn(new Listener<>("Client", null));
-        return new IRCISupportManager(client);
+        return new ManagerISupport(client);
     }
 }

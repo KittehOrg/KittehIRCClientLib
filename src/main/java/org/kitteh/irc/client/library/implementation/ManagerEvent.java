@@ -40,7 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-final class IRCEventManager implements EventManager {
+final class ManagerEvent implements EventManager {
     private class Exceptional implements IPublicationErrorHandler {
         @Override
         public void handleError(@Nonnull PublicationError publicationError) {
@@ -51,7 +51,7 @@ final class IRCEventManager implements EventManager {
             } else {
                 exceptional = new KittehEventException(thrown);
             }
-            IRCEventManager.this.client.getExceptionListener().queue(exceptional);
+            ManagerEvent.this.client.getExceptionListener().queue(exceptional);
         }
 
         @Nonnull
@@ -65,7 +65,7 @@ final class IRCEventManager implements EventManager {
     private final InternalClient client;
     private final Set<Object> listeners = new HashSet<>();
 
-    IRCEventManager(@Nonnull InternalClient client) {
+    ManagerEvent(@Nonnull InternalClient client) {
         this.client = client;
     }
 

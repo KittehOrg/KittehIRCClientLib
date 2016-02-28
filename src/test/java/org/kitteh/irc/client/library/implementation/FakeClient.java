@@ -16,15 +16,15 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 class FakeClient extends InternalClient {
-    private final AuthManager authManager = new IRCAuthManager(this);
-    private final IRCCapabilityManager capabilityManager = new IRCCapabilityManager(this);
+    private final AuthManager authManager = new ManagerAuth(this);
+    private final ManagerCapability capabilityManager = new ManagerCapability(this);
     private final Config config = new Config();
-    private final EventManager eventManager = new IRCEventManager(this);
+    private final EventManager eventManager = new ManagerEvent(this);
     private final Listener<Exception> listenerException = new Listener<>("Test", null);
     private final Listener<String> listenerInput = new Listener<>("Test", null);
     private final Listener<String> listenerOutput = new Listener<>("Test", null);
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
-    private final IRCMessageTagManager messageTagManager = new IRCMessageTagManager(this);
+    private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
     private final IRCServerInfo serverInfo = new IRCServerInfo(this);
 
     @Override
@@ -93,7 +93,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public IRCISupportManager getISupportManager() {
+    public ManagerISupport getISupportManager() {
         return null;
     }
 
@@ -154,7 +154,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public IRCCapabilityManager getCapabilityManager() {
+    public ManagerCapability getCapabilityManager() {
         return this.capabilityManager;
     }
 
@@ -194,7 +194,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public IRCMessageTagManager getMessageTagManager() {
+    public ManagerMessageTag getMessageTagManager() {
         return this.messageTagManager;
     }
 

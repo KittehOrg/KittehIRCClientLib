@@ -42,7 +42,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final class IRCISupportManager extends AbstractNameValueProcessor<ISupportParameter> implements ISupportManager {
+final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter> implements ISupportManager {
     private static class IRCISupportParameter implements ISupportParameter {
         private final Client client;
         private final String name;
@@ -274,7 +274,7 @@ final class IRCISupportManager extends AbstractNameValueProcessor<ISupportParame
         }
     }
 
-    IRCISupportManager(InternalClient client) {
+    ManagerISupport(InternalClient client) {
         super(client);
         this.registerParameter(ISupportParameter.CaseMapping.NAME, ISupportCaseMapping::new);
         this.registerParameter(ISupportParameter.ChannelLen.NAME, ISupportChannelLen::new);

@@ -38,11 +38,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-final class IRCAuthManager implements AuthManager {
+final class ManagerAuth implements AuthManager {
     private final Client client;
     private final Set<AuthProtocol> protocols = new HashSet<>();
 
-    IRCAuthManager(@Nonnull Client client) {
+    ManagerAuth(@Nonnull Client client) {
         this.client = client;
     }
 

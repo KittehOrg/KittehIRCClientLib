@@ -440,7 +440,7 @@ class EventListener {
         } else {
             capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT;
         }
-        List<CapabilityState> capabilityStateList = Arrays.stream(event.getParameters().get(capabilityListIndex).split(" ")).map(capability -> new IRCCapabilityManager.IRCCapabilityState(this.client, capability)).collect(Collectors.toCollection(ArrayList::new));
+        List<CapabilityState> capabilityStateList = Arrays.stream(event.getParameters().get(capabilityListIndex).split(" ")).map(capability -> new ManagerCapability.IRCCapabilityState(this.client, capability)).collect(Collectors.toCollection(ArrayList::new));
         switch (event.getParameters().get(1).toLowerCase()) {
             case "ack":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);

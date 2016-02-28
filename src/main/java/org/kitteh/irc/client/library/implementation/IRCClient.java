@@ -83,11 +83,11 @@ final class IRCClient extends InternalClient {
 
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
 
-    private final AuthManager authManager = new IRCAuthManager(this);
-    private final IRCCapabilityManager capabilityManager = new IRCCapabilityManager(this);
-    private final EventManager eventManager = new IRCEventManager(this);
-    private final IRCISupportManager iSupportManager = new IRCISupportManager(this);
-    private final IRCMessageTagManager messageTagManager = new IRCMessageTagManager(this);
+    private final AuthManager authManager = new ManagerAuth(this);
+    private final ManagerCapability capabilityManager = new ManagerCapability(this);
+    private final EventManager eventManager = new ManagerEvent(this);
+    private final ManagerISupport iSupportManager = new ManagerISupport(this);
+    private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
 
     private final Listener<Exception> exceptionListener;
     private final Listener<String> inputListener;
@@ -133,7 +133,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     @Nonnull
-    public IRCCapabilityManager getCapabilityManager() {
+    public ManagerCapability getCapabilityManager() {
         return this.capabilityManager;
     }
 
@@ -165,7 +165,7 @@ final class IRCClient extends InternalClient {
 
     @Nonnull
     @Override
-    public IRCISupportManager getISupportManager() {
+    public ManagerISupport getISupportManager() {
         return this.iSupportManager;
     }
 

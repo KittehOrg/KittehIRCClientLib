@@ -36,7 +36,7 @@ abstract class InternalClient implements Client {
 
     @Nonnull
     @Override
-    public abstract IRCCapabilityManager getCapabilityManager();
+    public abstract ManagerCapability getCapabilityManager();
 
     @Nonnull
     abstract Config getConfig();
@@ -52,7 +52,7 @@ abstract class InternalClient implements Client {
 
     @Override
     @Nonnull
-    public abstract IRCISupportManager getISupportManager();
+    public abstract ManagerISupport getISupportManager();
 
     @Nonnull
     abstract Listener<String> getOutputListener();
