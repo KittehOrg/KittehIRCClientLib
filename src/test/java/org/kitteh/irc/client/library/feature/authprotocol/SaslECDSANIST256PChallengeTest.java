@@ -1,4 +1,4 @@
-package org.kitteh.irc.client.library.feature.auth;
+package org.kitteh.irc.client.library.feature.authprotocol;
 
 import org.junit.Assert;
 import org.junit.Test;

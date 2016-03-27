@@ -21,17 +21,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.auth;
+package org.kitteh.irc.client.library.feature.authprotocol;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.auth.element.Password;
+import org.kitteh.irc.client.library.feature.authprotocol.element.Password;
+import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
 /**
- * SASL PLAIN authentication. Automatically attempts auth during connection.
+ * Abstract general username/password protocol.
  */
-public class SaslPlain extends AbstractSaslProtocol<String> implements Password {
+public abstract class AbstractUserPassProtocol extends AbstractUserProtocol implements Password {
+    private String password;
+
     /**
      * Creates an instance.
      *
@@ -39,24 +43,27 @@ public class SaslPlain extends AbstractSaslProtocol<String> implements Password 
      * @param username username
      * @param password password
      */
-    public SaslPlain(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-        super(client, username, password, "PLAIN");
-    }
-
-    @Nonnull
-    @Override
-    protected String getAuthLine() {
-        return this.getUsername() + '\u0000' + this.getUsername() + '\u0000' + this.getPassword();
+    protected AbstractUserPassProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+        super(client, username);
+        Sanity.safeMessageCheck(password, "Password");
+        this.password = password;
     }
 
     @Nonnull
     @Override
     public String getPassword() {
-        return this.getAuthValue();
+        return this.password;
     }
 
     @Override
     public void setPassword(@Nonnull String password) {
-        this.setAuthValue(password);
+        Sanity.safeMessageCheck(password, "Password");
+        this.password = password;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
     }
 }

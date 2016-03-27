@@ -24,8 +24,8 @@
 package org.kitteh.irc.client.library.feature;
 
 
-import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
-import org.kitteh.irc.client.library.feature.auth.element.EventListening;
+import org.kitteh.irc.client.library.feature.authprotocol.AuthProtocol;
+import org.kitteh.irc.client.library.feature.authprotocol.element.EventListening;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;

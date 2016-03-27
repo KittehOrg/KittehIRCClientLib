@@ -21,34 +21,42 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.auth.element;
+package org.kitteh.irc.client.library.feature.authprotocol;
 
-import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
-import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.authprotocol.element.Password;
 
 import javax.annotation.Nonnull;
 
 /**
- * Support for reclaiming a nickname.
+ * SASL PLAIN authentication. Automatically attempts auth during connection.
  */
-public interface NickReclamation extends AuthProtocol {
+public class SaslPlain extends AbstractSaslProtocol<String> implements Password {
     /**
-     * Forcibly taking back a nickname.
+     * Creates an instance.
      *
-     * @param nick nickname to ghost
+     * @param client client
+     * @param username username
+     * @param password password
      */
-    default void ghostNick(@Nonnull String nick) {
-        Sanity.safeMessageCheck(nick, "Nick");
-        this.getClient().sendRawLine("NickServ :GHOST " + nick);
+    public SaslPlain(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+        super(client, username, password, "PLAIN");
     }
 
-    /**
-     * Regaining a nickname.
-     *
-     * @param nick nickname to regain
-     */
-    default void regainNick(@Nonnull String nick) {
-        Sanity.safeMessageCheck(nick, "Nick");
-        this.getClient().sendRawLine("NickServ :REGAIN " + nick);
+    @Nonnull
+    @Override
+    protected String getAuthLine() {
+        return this.getUsername() + '\u0000' + this.getUsername() + '\u0000' + this.getPassword();
+    }
+
+    @Nonnull
+    @Override
+    public String getPassword() {
+        return this.getAuthValue();
+    }
+
+    @Override
+    public void setPassword(@Nonnull String password) {
+        this.setAuthValue(password);
     }
 }
