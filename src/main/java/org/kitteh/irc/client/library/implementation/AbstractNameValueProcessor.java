@@ -45,12 +45,6 @@ abstract class AbstractNameValueProcessor<NameValue> {
         protected TriFunction<Client, String, Optional<String>, ? extends NameValue> getFunction() {
             return this.function;
         }
-
-        @Nonnull
-        @Override
-        public String toString() {
-            return new ToStringer(this).add("function", this.function).toString();
-        }
     }
 
     private final InternalClient client;
