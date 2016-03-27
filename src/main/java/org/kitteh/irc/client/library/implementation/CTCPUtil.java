@@ -111,6 +111,9 @@ final class CTCPUtil {
                         default:
                             builder.append(matcher.group(2)); // If not one of the above, disregard the \. If \, it's covered here anyway.
                     }
+                default:
+                    // NOOP
+                    break;
             }
             currentIndex = matcher.end();
         }
@@ -164,6 +167,9 @@ final class CTCPUtil {
                     break;
                 case "\\":
                     builder.append("\\\\");
+                    break;
+                default:
+                    // NOOP
                     break;
             }
             currentIndex = matcher.end();
