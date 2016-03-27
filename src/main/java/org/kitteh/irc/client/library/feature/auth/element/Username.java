@@ -21,44 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.auth;
+package org.kitteh.irc.client.library.feature.auth.element;
 
-import org.kitteh.irc.client.library.auth.protocol.AuthProtocol;
-import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
+import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
-import java.util.Set;
 
 /**
- * Manages Authentication
+ * Utilizing a password for authentication.
  */
-public interface AuthManager {
+public interface Username extends AuthProtocol {
     /**
-     * Adds a protocol to be handled by this manager. Event handlers will be
-     * registered if it implements {@link EventListening} and if a previously
-     * set protocol of same class exists it will be removed.
+     * Gets the username.
      *
-     * @param protocol protocol to add
-     * @return displaced protocol of same class
-     * @throws IllegalArgumentException if the protocol is for another Client
+     * @return username
      */
     @Nonnull
-    Optional<AuthProtocol> addProtocol(@Nonnull AuthProtocol protocol);
+    String getUsername();
 
     /**
-     * Gets all protocols currently registered to the manager.
+     * Sets the username to use.
      *
-     * @return all protocols
+     * @param username username
      */
-    @Nonnull
-    Set<AuthProtocol> getProtocols();
-
-    /**
-     * Removes a protocol if it was registered, unregistering event handlers
-     * on it if registered.
-     *
-     * @param protocol protocol to remove
-     */
-    void removeProtocol(@Nonnull AuthProtocol protocol);
+    void setUsername(@Nonnull String username);
 }

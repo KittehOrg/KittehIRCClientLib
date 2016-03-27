@@ -21,26 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.auth.protocol;
-
-import org.kitteh.irc.client.library.Client;
-
-import javax.annotation.Nonnull;
-
 /**
- * An authentication protocol.
+ * Protocols used for authentication.
  */
-public interface AuthProtocol {
-    /**
-     * Gets the client for which this instance is used.
-     *
-     * @return client
-     */
-    @Nonnull
-    Client getClient();
-
-    /**
-     * Starts the authentication process.
-     */
-    void startAuthentication();
-}
+package org.kitteh.irc.client.library.feature.auth;

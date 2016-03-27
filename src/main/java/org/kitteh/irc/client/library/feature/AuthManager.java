@@ -21,19 +21,45 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.auth.protocol.element;
+package org.kitteh.irc.client.library.feature;
+
+
+import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
+import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
+import java.util.Set;
 
 /**
- * Listens to events
+ * Manages Authentication
  */
-public interface EventListening {
+public interface AuthManager {
     /**
-     * Gets the object for listening.
+     * Adds a protocol to be handled by this manager. Event handlers will be
+     * registered if it implements {@link EventListening} and if a previously
+     * set protocol of same class exists it will be removed.
      *
-     * @return listener
+     * @param protocol protocol to add
+     * @return displaced protocol of same class
+     * @throws IllegalArgumentException if the protocol is for another Client
      */
     @Nonnull
-    Object getEventListener();
+    Optional<AuthProtocol> addProtocol(@Nonnull AuthProtocol protocol);
+
+    /**
+     * Gets all protocols currently registered to the manager.
+     *
+     * @return all protocols
+     */
+    @Nonnull
+    Set<AuthProtocol> getProtocols();
+
+    /**
+     * Removes a protocol if it was registered, unregistering event handlers
+     * on it if registered.
+     *
+     * @param protocol protocol to remove
+     */
+    void removeProtocol(@Nonnull AuthProtocol protocol);
 }

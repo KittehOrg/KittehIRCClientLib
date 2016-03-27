@@ -3,8 +3,8 @@ package org.kitteh.irc.client.library.implementation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.auth.protocol.AuthProtocol;
-import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
+import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
+import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 import org.mockito.Mockito;
 
 import javax.annotation.Nonnull;

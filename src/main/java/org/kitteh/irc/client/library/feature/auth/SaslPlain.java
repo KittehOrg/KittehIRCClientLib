@@ -21,28 +21,42 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.auth.protocol.element;
+package org.kitteh.irc.client.library.feature.auth;
 
-import org.kitteh.irc.client.library.auth.protocol.AuthProtocol;
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.auth.element.Password;
 
 import javax.annotation.Nonnull;
 
 /**
- * Utilizing a password for authentication.
+ * SASL PLAIN authentication. Automatically attempts auth during connection.
  */
-public interface Username extends AuthProtocol {
+public class SaslPlain extends AbstractSaslProtocol<String> implements Password {
     /**
-     * Gets the username.
+     * Creates an instance.
      *
-     * @return username
-     */
-    @Nonnull
-    String getUsername();
-
-    /**
-     * Sets the username to use.
-     *
+     * @param client client
      * @param username username
+     * @param password password
      */
-    void setUsername(@Nonnull String username);
+    public SaslPlain(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+        super(client, username, password, "PLAIN");
+    }
+
+    @Nonnull
+    @Override
+    protected String getAuthLine() {
+        return this.getUsername() + '\u0000' + this.getUsername() + '\u0000' + this.getPassword();
+    }
+
+    @Nonnull
+    @Override
+    public String getPassword() {
+        return this.getAuthValue();
+    }
+
+    @Override
+    public void setPassword(@Nonnull String password) {
+        this.setAuthValue(password);
+    }
 }

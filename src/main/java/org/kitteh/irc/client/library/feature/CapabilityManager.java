@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library.feature;
 
-import org.kitteh.irc.client.library.auth.protocol.SaslECDSANIST256PChallenge;
-import org.kitteh.irc.client.library.auth.protocol.SaslPlain;
+import org.kitteh.irc.client.library.feature.auth.SaslECDSANIST256PChallenge;
+import org.kitteh.irc.client.library.feature.auth.SaslPlain;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.MessageTag;

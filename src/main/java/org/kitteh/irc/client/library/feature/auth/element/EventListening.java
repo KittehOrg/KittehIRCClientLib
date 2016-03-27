@@ -21,28 +21,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.auth.protocol.element;
-
-import org.kitteh.irc.client.library.auth.protocol.AuthProtocol;
+package org.kitteh.irc.client.library.feature.auth.element;
 
 import javax.annotation.Nonnull;
 
 /**
- * Utilizing a password for authentication.
+ * Listens to events
  */
-public interface Password extends AuthProtocol {
+public interface EventListening {
     /**
-     * Gets the password.
+     * Gets the object for listening.
      *
-     * @return password
+     * @return listener
      */
     @Nonnull
-    String getPassword();
-
-    /**
-     * Sets the password to use.
-     *
-     * @param password password
-     */
-    void setPassword(@Nonnull String password);
+    Object getEventListener();
 }

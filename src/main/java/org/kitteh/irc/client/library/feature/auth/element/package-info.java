@@ -21,34 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.auth.protocol.element;
-
-import org.kitteh.irc.client.library.auth.protocol.AuthProtocol;
-import org.kitteh.irc.client.library.util.Sanity;
-
-import javax.annotation.Nonnull;
-
 /**
- * Support for reclaiming a nickname.
+ * Potential elements of an authentication protocol.
  */
-public interface NickReclamation extends AuthProtocol {
-    /**
-     * Forcibly taking back a nickname.
-     *
-     * @param nick nickname to ghost
-     */
-    default void ghostNick(@Nonnull String nick) {
-        Sanity.safeMessageCheck(nick, "Nick");
-        this.getClient().sendRawLine("NickServ :GHOST " + nick);
-    }
-
-    /**
-     * Regaining a nickname.
-     *
-     * @param nick nickname to regain
-     */
-    default void regainNick(@Nonnull String nick) {
-        Sanity.safeMessageCheck(nick, "Nick");
-        this.getClient().sendRawLine("NickServ :REGAIN " + nick);
-    }
-}
+package org.kitteh.irc.client.library.feature.auth.element;

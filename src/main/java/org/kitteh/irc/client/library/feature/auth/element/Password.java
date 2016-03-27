@@ -21,7 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.kitteh.irc.client.library.feature.auth.element;
+
+import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
+
+import javax.annotation.Nonnull;
+
 /**
- * Protocols used for authentication.
+ * Utilizing a password for authentication.
  */
-package org.kitteh.irc.client.library.auth.protocol;
+public interface Password extends AuthProtocol {
+    /**
+     * Gets the password.
+     *
+     * @return password
+     */
+    @Nonnull
+    String getPassword();
+
+    /**
+     * Sets the password to use.
+     *
+     * @param password password
+     */
+    void setPassword(@Nonnull String password);
+}

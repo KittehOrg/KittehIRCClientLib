@@ -21,41 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.auth.protocol;
+package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.util.Format;
-import org.kitteh.irc.client.library.auth.protocol.element.EventListening;
-import org.kitteh.irc.client.library.auth.protocol.element.NickReclamation;
+import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.util.NumericFilter;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
 /**
- * NickServ protocol. Automatically attempts to identify upon connection.
+ * GameSurge's AuthServ protocol. Automatically attempts to identify upon connection.
  */
-public class NickServ extends AbstractUserPassProtocol implements EventListening, NickReclamation {
+public class GameSurge extends AbstractUserPassProtocol implements EventListening {
     private class Listener {
         @NumericFilter(4)
         @Handler(filters = @Filter(NumericFilter.Filter.class))
         public void listenVersion(ClientReceiveNumericEvent event) {
-            NickServ.this.startAuthentication();
-        }
-
-        @Handler
-        public void listenSuccess(PrivateNoticeEvent event) {
-            if (event.getActor().getNick().equals(NickServ.this.getNickServNick())) {
-                if (event.getMessage().startsWith("You are now identified")) {
-                    int first;
-                    String username = event.getMessage().substring((first = event.getMessage().indexOf(Format.BOLD.toString()) + 1), event.getMessage().indexOf(Format.BOLD.toString(), first));
-                    // TODO do something with this information
-                }
-            }
+            GameSurge.this.startAuthentication();
         }
 
         @Nonnull
@@ -68,35 +54,25 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
     private final Listener listener = new Listener();
 
     /**
-     * Creates a NickServ authentication protocol instance.
+     * Creates a GameSurge authentication protocol instance.
      *
      * @param client client for which this will be used
      * @param username username
      * @param password password
      */
-    public NickServ(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+    public GameSurge(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
         super(client, username, password);
     }
 
     @Nonnull
     @Override
     protected String getAuthentication() {
-        return "PRIVMSG " + this.getNickServNick() + " :IDENTIFY " + this.getUsername() + ' ' + this.getPassword();
+        return "PRIVMSG AuthServ@services.gamesurge.net :auth " + this.getUsername() + ' ' + this.getPassword();
     }
 
     @Nonnull
     @Override
     public Object getEventListener() {
         return this.listener;
-    }
-
-    /**
-     * Gets the expected NickServ nickname.
-     *
-     * @return nick of NickServ
-     */
-    @Nonnull
-    protected String getNickServNick() {
-        return "NickServ";
     }
 }

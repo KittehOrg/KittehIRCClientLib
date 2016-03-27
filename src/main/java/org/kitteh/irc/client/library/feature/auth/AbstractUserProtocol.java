@@ -21,10 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.auth.protocol;
+package org.kitteh.irc.client.library.feature.auth;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.auth.protocol.element.Username;
+import org.kitteh.irc.client.library.feature.auth.element.Username;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
