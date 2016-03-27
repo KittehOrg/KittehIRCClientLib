@@ -30,6 +30,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -209,6 +211,16 @@ final class Config {
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).toString();
+        ToStringer toStringer = new ToStringer(this);
+        for (Field field : Config.class.getDeclaredFields()) {
+            if (field.getType().equals(Config.Entry.class) && ((field.getModifiers() & (Modifier.PRIVATE | Modifier.PROTECTED | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.STATIC)) {
+                try {
+                    toStringer.add(field.getName(), this.get((Entry<?>) field.get(null)));
+                } catch (IllegalAccessException e) {
+                    toStringer.add(field.getName(), "EXCEPTION PREVENTED ACQUISITION");
+                }
+            }
+        }
+        return toStringer.toString();
     }
 }

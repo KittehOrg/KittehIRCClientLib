@@ -303,8 +303,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public Client build() {
-        this.inetSet(Config.BIND_ADDRESS, this.bindHost, this.bindPort);
-        this.inetSet(Config.SERVER_ADDRESS, this.serverHost, this.serverPort);
+        this.updateInetEntries();
         IRCClient client = new IRCClient(this.config);
         if (this.after != null) {
             this.after.accept(client);
@@ -328,7 +327,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).add("question", "Why would you toString this?").toString();
+        this.updateInetEntries();
+        return new ToStringer(this).add("afterBuildConsumer", this.after).add("config", this.config).toString();
+    }
+
+    private void updateInetEntries() {
+        this.inetSet(Config.BIND_ADDRESS, this.bindHost, this.bindPort);
+        this.inetSet(Config.SERVER_ADDRESS, this.serverHost, this.serverPort);
     }
 
     private void inetSet(@Nonnull Config.Entry<InetSocketAddress> entry, @Nullable String host, int port) {
