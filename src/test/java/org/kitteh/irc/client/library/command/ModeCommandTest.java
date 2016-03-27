@@ -254,7 +254,7 @@ public class ModeCommandTest {
     public void testAddModeWithParameterViaUserButWrongClient() {
         Client clientMock = Mockito.mock(Client.class);
         User userMock = Mockito.mock(User.class);
-        Mockito.when(userMock.getClient()).thenReturn(clientMock);
+        Mockito.when(userMock.getClient()).thenReturn(Mockito.mock(Client.class));
         Mockito.when(userMock.getNick()).thenReturn("kitteh");
         ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
         ChannelUserMode mode = new ChannelUserMode() {
@@ -266,7 +266,7 @@ public class ModeCommandTest {
             @Nonnull
             @Override
             public Client getClient() {
-                return Mockito.mock(Client.class);
+                return clientMock;
             }
 
             @Override
