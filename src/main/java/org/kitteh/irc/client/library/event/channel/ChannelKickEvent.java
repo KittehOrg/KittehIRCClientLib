@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
-import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
+import org.kitteh.irc.client.library.event.helper.ChannelUserListChangeEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -38,7 +38,7 @@ import java.util.Optional;
 /**
  * A {@link User} has kicked another User!
  */
-public class ChannelKickEvent extends ActorChannelMessageEventBase<User> implements ChannelUserListChange {
+public class ChannelKickEvent extends ActorChannelMessageEventBase<User> implements ChannelUserListChangeEvent {
     private final User target;
 
     /**

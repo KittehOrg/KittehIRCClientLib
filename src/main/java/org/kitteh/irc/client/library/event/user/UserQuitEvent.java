@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
-import org.kitteh.irc.client.library.event.helper.ChannelUserListChange;
+import org.kitteh.irc.client.library.event.helper.ChannelUserListChangeEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -37,7 +37,7 @@ import java.util.Optional;
 /**
  * A {@link User} has quit the server!
  */
-public class UserQuitEvent extends ActorMessageEventBase<User> implements ChannelUserListChange {
+public class UserQuitEvent extends ActorMessageEventBase<User> implements ChannelUserListChangeEvent {
     /**
      * Creates the event.
      *
