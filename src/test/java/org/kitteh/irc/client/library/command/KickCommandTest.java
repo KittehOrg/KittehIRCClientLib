@@ -103,6 +103,7 @@ public class KickCommandTest {
         Client client = Mockito.mock(Client.class);
         User user = Mockito.mock(User.class);
         Mockito.when(user.getClient()).thenReturn(Mockito.mock(Client.class));
+        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
         KickCommand command = new KickCommand(client, CHANNEL);
         command.target(user);
