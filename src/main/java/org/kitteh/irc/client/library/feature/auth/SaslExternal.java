@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.authprotocol;
+package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;

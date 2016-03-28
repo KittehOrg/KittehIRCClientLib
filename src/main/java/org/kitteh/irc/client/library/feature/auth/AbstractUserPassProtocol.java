@@ -21,10 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.authprotocol;
+package org.kitteh.irc.client.library.feature.auth;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.authprotocol.element.Username;
+import org.kitteh.irc.client.library.feature.auth.element.Password;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -33,57 +33,37 @@ import javax.annotation.Nonnull;
 /**
  * Abstract general username/password protocol.
  */
-public abstract class AbstractUserProtocol implements Username {
-    private final Client client;
-    private String username;
+public abstract class AbstractUserPassProtocol extends AbstractUserProtocol implements Password {
+    private String password;
 
     /**
      * Creates an instance.
      *
      * @param client client
      * @param username username
+     * @param password password
      */
-    protected AbstractUserProtocol(@Nonnull Client client, @Nonnull String username) {
-        Sanity.nullCheck(client, "Client cannot be null");
-        Sanity.safeMessageCheck(username, "Username");
-        this.client = client;
-        this.username = username;
+    protected AbstractUserPassProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
+        super(client, username);
+        Sanity.safeMessageCheck(password, "Password");
+        this.password = password;
     }
 
     @Nonnull
     @Override
-    public Client getClient() {
-        return this.client;
-    }
-
-    @Nonnull
-    @Override
-    public String getUsername() {
-        return this.username;
+    public String getPassword() {
+        return this.password;
     }
 
     @Override
-    public void setUsername(@Nonnull String username) {
-        Sanity.safeMessageCheck(username, "Username");
-        this.username = username;
+    public void setPassword(@Nonnull String password) {
+        Sanity.safeMessageCheck(password, "Password");
+        this.password = password;
     }
-
-    @Override
-    public final void startAuthentication() {
-        this.client.sendRawLineImmediately(this.getAuthentication());
-    }
-
-    /**
-     * Gets a String for {@link #startAuthentication()}.
-     *
-     * @return auth string
-     */
-    @Nonnull
-    protected abstract String getAuthentication();
 
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).add("user", this.getUsername()).toString();
+        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
     }
 }

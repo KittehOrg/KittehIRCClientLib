@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.authprotocol.element;
+package org.kitteh.irc.client.library.feature.auth.element;
 
 import javax.annotation.Nonnull;
 
