@@ -186,6 +186,16 @@ public interface ISupportParameter {
     }
 
     /**
+     * Represents the length limit of topics.
+     */
+    interface TopicLen extends IntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "TOPICLEN";
+    }
+
+    /**
      * Gets the Client this is parameter is on.
      *
      * @return the client

@@ -274,6 +274,12 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         }
     }
 
+    private static final class ISupportTopicLen extends IRCISupportParameterInteger implements ISupportParameter.TopicLen {
+        private ISupportTopicLen(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+            super(client, name, value);
+        }
+    }
+
     ManagerISupport(InternalClient client) {
         super(client);
         this.registerParameter(ISupportParameter.CaseMapping.NAME, ISupportCaseMapping::new);
@@ -285,6 +291,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         this.registerParameter(ISupportParameter.NickLen.NAME, ISupportNickLen::new);
         this.registerParameter(ISupportParameter.Prefix.NAME, ISupportPrefix::new);
         this.registerParameter(ISupportParameter.WHOX.NAME, ISupportWHOX::new);
+        this.registerParameter(ISupportParameter.TopicLen.NAME, ISupportTopicLen::new);
     }
 
     @Nonnull
