@@ -66,7 +66,7 @@ final class IRCClient extends InternalClient {
         }
     }
 
-    private final String[] pingPurr = new String[]{"MEOW", "MEOW!", "PURR", "PURRRRRRR", "MEOWMEOW", ":3"};
+    private final String[] pingPurr = new String[]{"MEOW", "MEOW!", "PURR", "PURRRRRRR", "MEOWMEOW", ":3", "HISS"};
     private int pingPurrCount;
 
     private final Config config;
