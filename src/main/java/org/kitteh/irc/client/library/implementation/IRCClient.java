@@ -253,30 +253,27 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void removeChannel(@Nonnull String channelName) {
-        this.removeChannel(channelName, Optional.empty());
+        this.removeChannelPlease(channelName, null);
     }
 
     @Override
     public void removeChannel(@Nonnull String channelName, @Nonnull String reason) {
         Sanity.nullCheck(reason, "Reason cannot be null");
-        this.removeChannel(channelName, Optional.of(reason));
+        this.removeChannelPlease(channelName, reason);
     }
 
-    private void removeChannel(@Nonnull String channelName, @Nonnull Optional<String> reason) {
+    private void removeChannelPlease(@Nonnull String channelName, @Nullable String reason) {
         Sanity.nullCheck(channelName, "Channel cannot be null");
         ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
         if (channel != null) {
-            this.removeChannel(channel.snapshot(), reason);
-        }
-    }
-
-    private void removeChannel(@Nonnull Channel channel, @Nonnull Optional<String> reason) {
-        Sanity.nullCheck(channel, "Channel cannot be null");
-        reason.ifPresent(message -> Sanity.safeMessageCheck(message, "Part reason"));
-        String channelName = channel.getName();
-        this.channelsIntended.remove(channelName);
-        if (this.actorProvider.getTrackedChannelNames().contains(channel.getName())) {
-            this.sendRawLine("PART " + channelName + (reason.isPresent() ? (" :" + reason) : ""));
+            if (reason != null) {
+                Sanity.safeMessageCheck(reason, "Part reason");
+            }
+            String name = channel.getName();
+            this.channelsIntended.remove(name);
+            if (this.actorProvider.getTrackedChannelNames().contains(channel.getName())) {
+                this.sendRawLine("PART " + name + (reason != null ? (" :" + reason) : ""));
+            }
         }
     }
 
