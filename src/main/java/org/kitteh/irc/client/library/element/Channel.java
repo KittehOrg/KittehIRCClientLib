@@ -176,7 +176,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param key channel key
      * @see Client#addKeyProtectedChannel(String, String)
      */
-    default void join(String key) {
+    default void join(@Nonnull String key) {
         this.getClient().addKeyProtectedChannel(this.getName(), key);
     }
 
