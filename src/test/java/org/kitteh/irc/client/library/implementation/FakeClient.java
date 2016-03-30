@@ -143,11 +143,6 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    public void addChannel(@Nonnull Channel... channel) {
-
-    }
-
-    @Override
     public void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key) {
 
     }
@@ -249,17 +244,7 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    public void removeChannel(@Nonnull Channel channel) {
-
-    }
-
-    @Override
     public void removeChannel(@Nonnull String channel, @Nullable String reason) {
-
-    }
-
-    @Override
-    public void removeChannel(@Nonnull Channel channel, @Nullable String reason) {
 
     }
 

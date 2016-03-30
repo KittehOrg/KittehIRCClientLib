@@ -55,18 +55,6 @@ public class ModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if null parameters or Channel is from
      * another Client
      */
-    public ModeCommand(@Nonnull Client client, @Nonnull Channel channel) {
-        super(client, channel);
-    }
-
-    /**
-     * Constructs a MODE command for a given channel.
-     *
-     * @param client the client on which this command is executing
-     * @param channel channel targeted
-     * @throws IllegalArgumentException if null parameters or Channel is from
-     * another Client
-     */
     public ModeCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client, channel);
     }

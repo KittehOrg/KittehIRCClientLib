@@ -17,23 +17,14 @@ import java.util.Optional;
  * @see ModeCommand
  */
 public class ModeCommandTest {
+    private static final String CHANNEL = "#targetchannel";
+
     @Test
     public void testWithNoModeChanges() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
-        sut.execute();
-        Mockito.verify(clientMock, Mockito.never()).sendRawLine(Mockito.anyString());
-
-        Assert.assertFalse(sut.toString().isEmpty());
-    }
-
-    @Test
-    public void testWithNoModeChangesWithStringChannel() {
-        Client clientMock = Mockito.mock(Client.class);
-        Mockito.when(clientMock.getChannel("#test")).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-
-        ModeCommand sut = new ModeCommand(clientMock, "#test");
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         sut.execute();
         Mockito.verify(clientMock, Mockito.never()).sendRawLine(Mockito.anyString());
 
@@ -43,34 +34,37 @@ public class ModeCommandTest {
     @Test
     public void testWithOneSimpleModeChange() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         ChannelMode mode = this.getChannelMode('A', clientMock, ChannelMode.Type.A_MASK);
         sut.add(true, mode);
         sut.execute();
-        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE #test +A");
+        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +A");
     }
 
     @Test
     public void testWithFourSimpleModeChanges() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         sut.add(true, this.getChannelMode('A', clientMock, ChannelMode.Type.D_PARAMETER_NEVER));
         sut.add(true, this.getChannelMode('B', clientMock, ChannelMode.Type.D_PARAMETER_NEVER));
         sut.add(true, this.getChannelMode('C', clientMock, ChannelMode.Type.D_PARAMETER_NEVER));
         sut.add(true, this.getChannelMode('D', clientMock, ChannelMode.Type.D_PARAMETER_NEVER));
         sut.execute();
         InOrder inOrder = Mockito.inOrder(clientMock, clientMock);
-        inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE #test +ABC");
-        inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE #test +D");
+        inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +ABC");
+        inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +D");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWithOneSimpleModeChangeButWrongClient() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         ChannelMode mode = this.getChannelMode('A', Mockito.mock(Client.class), ChannelMode.Type.A_MASK);
         sut.add(true, mode);
     }
@@ -78,60 +72,67 @@ public class ModeCommandTest {
     @Test
     public void testWithAddAndRemove() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         ChannelMode modeA = this.getChannelMode('A', clientMock, ChannelMode.Type.A_MASK);
         ChannelMode modeB = this.getChannelMode('B', clientMock, ChannelMode.Type.A_MASK);
         sut.add(true, modeA);
         sut.add(false, modeB);
         sut.execute();
-        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE #test +A-B");
+        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +A-B");
     }
 
     @Test
     public void testWithAddParameterisedAndSimpleMode() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         ChannelMode modeA = this.getChannelMode('A', clientMock, ChannelMode.Type.A_MASK);
         ChannelMode modeB = this.getChannelMode('B', clientMock, ChannelMode.Type.B_PARAMETER_ALWAYS);
         sut.add(true, modeA);
         sut.add(true, modeB, "test");
         sut.execute();
-        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE #test +AB test");
+        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +AB test");
     }
 
     @Test
     public void testAddModeWithParameter() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         ChannelMode mode = this.getChannelMode('A', clientMock, ChannelMode.Type.B_PARAMETER_ALWAYS);
         sut.add(true, mode, "foo");
         sut.execute();
-        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE #test +A foo");
+        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +A foo");
     }
 
     @Test
     public void testAddModeWithParameterViaUser() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
         User userMock = Mockito.mock(User.class);
         Mockito.when(userMock.getClient()).thenReturn(clientMock);
         Mockito.when(userMock.getNick()).thenReturn("kitteh");
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
+
         ChannelUserMode mode = this.getChannelUserMode('A', clientMock, ChannelMode.Type.B_PARAMETER_ALWAYS);
         sut.add(true, mode, userMock);
         sut.execute();
-        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE #test +A kitteh");
+        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +A kitteh");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testAddModeWithParameterViaUserButWrongClient() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
         User userMock = Mockito.mock(User.class);
         Mockito.when(userMock.getClient()).thenReturn(Mockito.mock(Client.class));
         Mockito.when(userMock.getNick()).thenReturn("kitteh");
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         ChannelUserMode mode = this.getChannelUserMode('A', clientMock, ChannelMode.Type.B_PARAMETER_ALWAYS);
         sut.add(true, mode, userMock);
     }
@@ -139,19 +140,13 @@ public class ModeCommandTest {
     @Test
     public void testRemoveModeWithParameter() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
 
-        ModeCommand sut = new ModeCommand(clientMock, this.getMockedChannel(clientMock, "#test"));
+        ModeCommand sut = new ModeCommand(clientMock, CHANNEL);
         ChannelMode mode = this.getChannelMode('A', clientMock, ChannelMode.Type.B_PARAMETER_ALWAYS);
         sut.add(false, mode, "foo");
         sut.execute();
-        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE #test -A foo");
-    }
-
-    private Channel getMockedChannel(Client client, String name) {
-        Channel channel = Mockito.mock(Channel.class);
-        Mockito.when(channel.getClient()).thenReturn(client);
-        Mockito.when(channel.getName()).thenReturn(name);
-        return channel;
+        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " -A foo");
     }
 
     private ChannelMode getChannelMode(char c, Client client, ChannelMode.Type type) {

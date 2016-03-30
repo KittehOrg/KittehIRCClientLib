@@ -61,22 +61,6 @@ public class TopicCommandTest {
     }
 
     /**
-     * Tests a simple topic check using a Channel object.
-     */
-    @Test
-    public void testNoNewChannelObject() {
-        Client client = Mockito.mock(Client.class);
-        Channel channel = Mockito.mock(Channel.class);
-        Mockito.when(channel.getClient()).thenReturn(client);
-        Mockito.when(channel.getName()).thenReturn(CHANNEL);
-
-        TopicCommand topicCommand = new TopicCommand(client, channel);
-        topicCommand.execute();
-
-        Mockito.verify(client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
-    }
-
-    /**
      * Tests setting the topic.
      */
     @Test

@@ -419,20 +419,6 @@ public interface Client {
     void addChannel(@Nonnull String... channels);
 
     /**
-     * Adds channels to this client.
-     * <p>
-     * Joins the channels if already connected.
-     *
-     * @param channels channel(s) to add
-     * @throws IllegalArgumentException if null
-     */
-    default void addChannel(@Nonnull Channel... channels) {
-        Sanity.nullCheck(channels, "Channels cannot be null");
-        Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
-        this.addChannel(Arrays.stream(channels).map(Channel::getName).toArray(String[]::new));
-    }
-
-    /**
      * Adds a key-protected channel to this client.
      * <p>
      * Joins the channels if already connected.
@@ -611,27 +597,10 @@ public interface Client {
      * Removes a channel from the client, leaving as necessary.
      *
      * @param channel channel to leave
-     * @throws IllegalArgumentException if arguments are null
-     */
-    void removeChannel(@Nonnull Channel channel);
-
-    /**
-     * Removes a channel from the client, leaving as necessary.
-     *
-     * @param channel channel to leave
      * @param reason part reason
      * @throws IllegalArgumentException if arguments are null
      */
     void removeChannel(@Nonnull String channel, @Nonnull String reason);
-
-    /**
-     * Removes a channel from the client, leaving as necessary.
-     *
-     * @param channel channel to leave
-     * @param reason part reason
-     * @throws IllegalArgumentException if arguments are null
-     */
-    void removeChannel(@Nonnull Channel channel, @Nonnull String reason);
 
     /**
      * Removes the exception listener.

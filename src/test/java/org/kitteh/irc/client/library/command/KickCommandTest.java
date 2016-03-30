@@ -55,15 +55,12 @@ public class KickCommandTest {
     @Test
     public void reasonElements() {
         Client client = Mockito.mock(Client.class);
-        Channel channel = Mockito.mock(Channel.class);
         User user = Mockito.mock(User.class);
-        Mockito.when(channel.getName()).thenReturn(CHANNEL);
-        Mockito.when(channel.getClient()).thenReturn(client);
         Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
         Mockito.when(user.getNick()).thenReturn(USER);
         Mockito.when(user.getClient()).thenReturn(client);
 
-        KickCommand command = new KickCommand(client, channel);
+        KickCommand command = new KickCommand(client, CHANNEL);
         command.target(user);
         command.reason(REASON);
         command.execute();
@@ -81,18 +78,6 @@ public class KickCommandTest {
 
         KickCommand command = new KickCommand(client, CHANNEL);
         command.execute();
-    }
-
-    /**
-     * Tests a wrong-Client attempt.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void wrongClientChannel() {
-        Client client = Mockito.mock(Client.class);
-        Channel channel = Mockito.mock(Channel.class);
-        Mockito.when(channel.getClient()).thenReturn(Mockito.mock(Client.class));
-
-        new KickCommand(client, channel);
     }
 
     /**

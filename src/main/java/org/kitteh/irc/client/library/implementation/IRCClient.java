@@ -257,20 +257,9 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void removeChannel(@Nonnull Channel channel) {
-        this.removeChannel(channel, Optional.empty());
-    }
-
-    @Override
     public void removeChannel(@Nonnull String channelName, @Nonnull String reason) {
         Sanity.nullCheck(reason, "Reason cannot be null");
         this.removeChannel(channelName, Optional.of(reason));
-    }
-
-    @Override
-    public void removeChannel(@Nonnull Channel channel, @Nonnull String reason) {
-        Sanity.nullCheck(reason, "Reason cannot be null");
-        this.removeChannel(channel, Optional.of(reason));
     }
 
     private void removeChannel(@Nonnull String channelName, @Nonnull Optional<String> reason) {

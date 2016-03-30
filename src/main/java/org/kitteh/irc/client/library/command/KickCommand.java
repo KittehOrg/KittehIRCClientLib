@@ -47,18 +47,8 @@ public class KickCommand extends ChannelCommand {
      * @param channel channel targeted
      * @throws IllegalArgumentException if null parameters or Channel is from
      * another Client
-     */
-    public KickCommand(@Nonnull Client client, @Nonnull Channel channel) {
-        super(client, channel);
-    }
-
-    /**
-     * Constructs a KICK command for a given channel.
-     *
-     * @param client the client on which this command is executing
-     * @param channel channel targeted
-     * @throws IllegalArgumentException if null parameters or Channel is from
-     * another Client
+     * @see Channel#kick(User)
+     * @see Channel#kick(User, String)
      */
     public KickCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client, channel);

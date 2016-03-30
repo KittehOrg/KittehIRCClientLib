@@ -164,10 +164,10 @@ public interface Channel extends MessageReceiver, Staleable {
     /**
      * Joins the channel.
      *
-     * @see Client#addChannel(Channel...)
+     * @see Client#addChannel(String...)
      */
     default void join() {
-        this.getClient().addChannel(this);
+        this.getClient().addChannel(this.getName());
     }
 
     /**
@@ -206,7 +206,7 @@ public interface Channel extends MessageReceiver, Staleable {
      */
     @Nonnull
     default KickCommand newKickCommand() {
-        return new KickCommand(this.getClient(), this);
+        return new KickCommand(this.getClient(), this.getName());
     }
 
     /**
@@ -216,24 +216,26 @@ public interface Channel extends MessageReceiver, Staleable {
      */
     @Nonnull
     default ModeCommand newModeCommand() {
-        return new ModeCommand(this.getClient(), this);
+        return new ModeCommand(this.getClient(), this.getName());
     }
 
     /**
      * Parts the channel without stating a reason.
+     *
+     * @see Client#removeChannel(String)
      */
     default void part() {
-        this.getClient().removeChannel(this);
+        this.getClient().removeChannel(this.getName());
     }
 
     /**
      * Parts the channel.
      *
      * @param reason leaving reason
-     * @see Client#removeChannel(Channel, String)
+     * @see Client#removeChannel(String, String)
      */
     default void part(@Nonnull String reason) {
-        this.getClient().removeChannel(this, reason);
+        this.getClient().removeChannel(this.getName(), reason);
     }
 
     /**
@@ -242,6 +244,6 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param topic new topic
      */
     default void setTopic(@Nonnull String topic) {
-        new TopicCommand(this.getClient(), this).topic(topic).execute();
+        new TopicCommand(this.getClient(), this.getName()).topic(topic).execute();
     }
 }
