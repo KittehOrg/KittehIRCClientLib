@@ -23,9 +23,6 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.feature.EventManager;
-import org.kitteh.irc.client.library.feature.MessageTagManager;
-import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.User;
@@ -33,8 +30,12 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
+import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
@@ -122,6 +123,35 @@ final class IRCClient extends InternalClient {
             }
             this.channelsIntended.add(channelName);
             this.sendRawLine("JOIN :" + channelName);
+        }
+    }
+
+    @Override
+    public void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key) {
+        Sanity.nullCheck(channel, "Channel cannot be null");
+        Sanity.nullCheck(key, "Key cannot be null");
+        Sanity.truthiness(this.serverInfo.isValidChannel(channel), "Invalid channel name");
+        this.channelsIntended.add(channel);
+        this.sendRawLine("JOIN :" + channel + ' ' + key);
+    }
+
+    /**
+     * Adds key-protected channels to this client.
+     * <p>
+     * Joins the channels if already connected.
+     *
+     * @param channelsAndKeys pairs of channel, key
+     */
+    @Override
+    public void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys) {
+        Sanity.nullCheck(channelsAndKeys, "Channel/key pairs cannot be null");
+        Sanity.truthiness(channelsAndKeys.length > 0, "Channel/key pairs cannot be empty array");
+        for (Pair<String, String> channelAndKey : channelsAndKeys) {
+            if ((channelAndKey.getLeft() == null) || !this.serverInfo.isValidChannel(channelAndKey.getLeft())) {
+                continue;
+            }
+            this.channelsIntended.add(channelAndKey.getLeft());
+            this.sendRawLine("JOIN :" + channelAndKey.getLeft() + (channelAndKey.getRight() == null ? "" : (' ' + channelAndKey.getRight())));
         }
     }
 

@@ -171,6 +171,16 @@ public interface Channel extends MessageReceiver, Staleable {
     }
 
     /**
+     * Joins the channel with a key.
+     *
+     * @param key channel key
+     * @see Client#addKeyProtectedChannel(String, String)
+     */
+    default void join(String key) {
+        this.getClient().addKeyProtectedChannel(this.getName(), key);
+    }
+
+    /**
      * Kicks the given user from this channel for the given reason.
      *
      * @param user user to kick

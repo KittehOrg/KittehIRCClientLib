@@ -6,6 +6,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -143,6 +144,16 @@ class FakeClient extends InternalClient {
 
     @Override
     public void addChannel(@Nonnull Channel... channel) {
+
+    }
+
+    @Override
+    public void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key) {
+
+    }
+
+    @Override
+    public void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys) {
 
     }
 

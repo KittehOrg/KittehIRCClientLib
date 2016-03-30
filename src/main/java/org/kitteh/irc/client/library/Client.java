@@ -35,6 +35,7 @@ import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -410,7 +411,7 @@ public interface Client {
     /**
      * Adds channels to this client.
      * <p>
-     * Joins the channel if already connected.
+     * Joins the channels if already connected.
      *
      * @param channels channel(s) to add
      * @throws IllegalArgumentException if null
@@ -420,7 +421,7 @@ public interface Client {
     /**
      * Adds channels to this client.
      * <p>
-     * Joins the channel if already connected.
+     * Joins the channels if already connected.
      *
      * @param channels channel(s) to add
      * @throws IllegalArgumentException if null
@@ -430,6 +431,25 @@ public interface Client {
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         this.addChannel(Arrays.stream(channels).map(Channel::getName).toArray(String[]::new));
     }
+
+    /**
+     * Adds a key-protected channel to this client.
+     * <p>
+     * Joins the channels if already connected.
+     *
+     * @param channel channel to add
+     * @param key channel key
+     */
+    void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key);
+
+    /**
+     * Adds key-protected channels to this client.
+     * <p>
+     * Joins the channels if already connected.
+     *
+     * @param channelsAndKeys pairs of channel, key
+     */
+    void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys);
 
     /**
      * Gets the authentication manager.
