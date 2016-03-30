@@ -37,6 +37,19 @@ public final class Pair<Left, Right> {
     private final Right right;
 
     /**
+     * Creates a Pair from given objects.
+     *
+     * @param left first object
+     * @param right second object
+     * @param <Left> type of the first object
+     * @param <Right> type of the second object
+     * @return pair of the objects
+     */
+    public static <Left, Right> Pair<Left, Right> of(Left left, Right right) {
+        return new Pair<>(left, right);
+    }
+
+    /**
      * Constructs a pair of objects
      *
      * @param left first object
