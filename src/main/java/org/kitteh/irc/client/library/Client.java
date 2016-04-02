@@ -39,11 +39,11 @@ import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.net.InetAddress;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -570,12 +570,9 @@ public interface Client {
      *
      * @param user user to check this client against
      * @return true if this client is the user, false if not
-     * @throws IllegalArgumentException if user null or from different Client
      */
-    default boolean isUser(@Nonnull User user) {
-        Sanity.nullCheck(user, "User cannot be null");
-        Sanity.truthiness(user.getClient() == this, "User cannot come from a different Client");
-        return user.equals(this.getUser().orElse(null));
+    default boolean isUser(@Nullable User user) {
+        return (user != null) && user.equals(this.getUser().orElse(null));
     }
 
     /**
