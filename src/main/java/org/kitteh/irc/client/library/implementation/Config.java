@@ -215,6 +215,15 @@ final class Config {
         this.map.clear();
     }
 
+    /**
+     * Resets an entry.
+     *
+     * @param entry entry to reset
+     */
+    void reset(Entry<?> entry) {
+        this.map.remove(entry);
+    }
+
     @Nonnull
     @Override
     public String toString() {

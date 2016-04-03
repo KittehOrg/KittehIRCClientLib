@@ -90,7 +90,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder listenExceptionRemove() {
-        this.config.set(Config.LISTENER_EXCEPTION, null);
+        this.config.reset(Config.LISTENER_EXCEPTION);
         return this;
     }
 
@@ -105,7 +105,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder listenInputRemove() {
-        this.config.set(Config.LISTENER_INPUT, null);
+        this.config.reset(Config.LISTENER_INPUT);
         return this;
     }
 
@@ -120,7 +120,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder listenOutputRemove() {
-        this.config.set(Config.LISTENER_OUTPUT, null);
+        this.config.reset(Config.LISTENER_OUTPUT);
         return this;
     }
 
@@ -152,7 +152,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder serverPasswordRemove() {
-        this.config.set(Config.SERVER_PASSWORD, null);
+        this.config.reset(Config.SERVER_PASSWORD);
         return this;
     }
 
@@ -182,7 +182,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder secureKeyCertChainRemove() {
-        this.config.set(Config.SSL_KEY_CERT_CHAIN, null);
+        this.config.reset(Config.SSL_KEY_CERT_CHAIN);
         return this;
     }
 
@@ -197,7 +197,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder secureKeyRemove() {
-        this.config.set(Config.SSL_KEY, null);
+        this.config.reset(Config.SSL_KEY);
         return this;
     }
 
@@ -212,7 +212,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder secureKeyPasswordRemove() {
-        this.config.set(Config.SSL_KEY_PASSWORD, null);
+        this.config.reset(Config.SSL_KEY_PASSWORD);
         return this;
     }
 
@@ -227,7 +227,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder secureTrustManagerFactoryRemove() {
-        this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, null);
+        this.config.reset(Config.SSL_TRUST_MANAGER_FACTORY);
         return this;
     }
 
@@ -294,10 +294,10 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder webircRemove() {
-        this.config.set(Config.WEBIRC_PASSWORD, null);
-        this.config.set(Config.WEBIRC_USER, null);
-        this.config.set(Config.WEBIRC_HOST, null);
-        this.config.set(Config.WEBIRC_IP, null);
+        this.config.reset(Config.WEBIRC_PASSWORD);
+        this.config.reset(Config.WEBIRC_USER);
+        this.config.reset(Config.WEBIRC_HOST);
+        this.config.reset(Config.WEBIRC_IP);
         return this;
     }
 
