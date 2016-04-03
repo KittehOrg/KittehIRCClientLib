@@ -316,7 +316,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public Client build() {
         this.updateInetEntries();
-        IRCClient client = new IRCClient(this.config);
+        IRCClient client = new IRCClient(this.config.clone());
         if (this.after != null) {
             this.after.accept(client);
         }
