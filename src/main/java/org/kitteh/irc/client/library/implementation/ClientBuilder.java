@@ -36,6 +36,7 @@ import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
 final class ClientBuilder implements Client.Builder, Cloneable {
+    private static final int DEFAULT_SERVER_PORT = 6697;
     private Config config;
     @Nullable
     private Consumer<Client> after;
@@ -43,7 +44,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     private String bindHost;
     private int bindPort;
     private String serverHost;
-    private int serverPort = 6697;
+    private int serverPort = DEFAULT_SERVER_PORT;
 
     ClientBuilder() {
         this.config = new Config();
@@ -297,6 +298,34 @@ final class ClientBuilder implements Client.Builder, Cloneable {
         this.config.set(Config.WEBIRC_USER, null);
         this.config.set(Config.WEBIRC_HOST, null);
         this.config.set(Config.WEBIRC_IP, null);
+        return this;
+    }
+
+    @Override
+    public ClientBuilder reset() {
+        this.after = null;
+        this.bindHost = null;
+        this.bindPort = 0;
+        this.config.reset(Config.LISTENER_EXCEPTION);
+        this.config.reset(Config.LISTENER_INPUT);
+        this.config.reset(Config.LISTENER_OUTPUT);
+        this.config.reset(Config.NAME);
+        this.config.reset(Config.NICK);
+        this.config.reset(Config.SERVER_PASSWORD);
+        this.config.reset(Config.REAL_NAME);
+        this.config.reset(Config.SSL);
+        this.config.reset(Config.SSL_KEY_CERT_CHAIN);
+        this.config.reset(Config.SSL_KEY);
+        this.config.reset(Config.SSL_KEY_PASSWORD);
+        this.config.reset(Config.SSL_TRUST_MANAGER_FACTORY);
+        this.config.reset(Config.MESSAGE_DELAY);
+        this.serverHost = null;
+        this.serverPort = DEFAULT_SERVER_PORT;
+        this.config.reset(Config.USER);
+        this.config.reset(Config.WEBIRC_PASSWORD);
+        this.config.reset(Config.WEBIRC_USER);
+        this.config.reset(Config.WEBIRC_HOST);
+        this.config.reset(Config.WEBIRC_IP);
         return this;
     }
 

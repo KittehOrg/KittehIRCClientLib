@@ -208,6 +208,18 @@ final class Config {
         this.map.put(entry, (value != null) ? value : NULL);
     }
 
+    /**
+     * Resets a stored configuration entry.
+     *
+     * @param entry entry to reset
+     * @param <Type> entry type
+     */
+    <Type> void reset(@Nonnull Entry<Type> entry) {
+        if (this.map.containsKey(entry)) {
+            this.map.put(entry, entry.getDefault());
+        }
+    }
+
     @Nonnull
     @Override
     public String toString() {
