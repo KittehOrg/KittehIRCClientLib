@@ -393,6 +393,14 @@ public interface Client {
     }
 
     /**
+     * The default message delay, in milliseconds.
+     *
+     * @see #getMessageDelay()
+     * @see #setMessageDelay(int)
+     */
+    int DEFAULT_MESSAGE_DELAY = 1200;
+
+    /**
      * Creates a {@link Builder} to build clients.
      *
      * @return a client builder
