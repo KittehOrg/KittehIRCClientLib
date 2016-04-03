@@ -382,6 +382,13 @@ public interface Client {
         Builder webircRemove();
 
         /**
+         * Resets this builder to the default values.
+         *
+         * @return this builder
+         */
+        Builder reset();
+
+        /**
          * Clientmaker, clientmaker, make me a client, build me the client and
          * begin connection, block me until {@link #afterBuildConsumer(Consumer)}
          * is run!

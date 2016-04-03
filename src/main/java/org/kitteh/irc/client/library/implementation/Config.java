@@ -208,6 +208,13 @@ final class Config {
         this.map.put(entry, (value != null) ? value : NULL);
     }
 
+    /**
+     * Resets the config.
+     */
+    void reset() {
+        this.map.clear();
+    }
+
     @Nonnull
     @Override
     public String toString() {
