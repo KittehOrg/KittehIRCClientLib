@@ -21,46 +21,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.abstractbase;
+package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.helper.ActorEvent;
-import org.kitteh.irc.client.library.event.helper.MessageEvent;
-import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Abstract base class for events involving an Actor and have a message. Use
- * the helper events if you want to listen to events involving either.
- *
- * @param <A> actor involved
- * @see ActorEvent
- * @see MessageEvent
+ * The Client's away status has changed.
  */
-public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventBase<A> implements MessageEvent {
-    private final String message;
+public class ClientAwayStatusChangeEvent extends ServerMessageEventBase {
+    private final boolean isNowAway;
 
     /**
      * Constructs the event.
      *
      * @param client the client
      * @param originalMessages original messages
-     * @param actor the actor
-     * @param message the message
+     * @param isNowAway true if now away, false if now back
      */
-    protected ActorMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull String message) {
-        super(client, originalMessages, actor);
-        Sanity.nullCheck(message, "Message cannot be null");
-        this.message = message;
+    public ClientAwayStatusChangeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean isNowAway) {
+        super(client, originalMessages);
+        this.isNowAway = isNowAway;
     }
 
-    @Override
-    @Nonnull
-    public final String getMessage() {
-        return this.message;
+    /**
+     * Gets if the Client is now away.
+     *
+     * @return true if now away, false if no longer away
+     */
+    public boolean isNowAway() {
+        return this.isNowAway;
     }
 }

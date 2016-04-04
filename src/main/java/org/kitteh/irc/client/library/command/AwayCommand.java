@@ -21,46 +21,66 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.abstractbase;
+package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.helper.ActorEvent;
-import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
- * Abstract base class for events involving an Actor and have a message. Use
- * the helper events if you want to listen to events involving either.
- *
- * @param <A> actor involved
- * @see ActorEvent
- * @see MessageEvent
+ * Sends an AWAY request to the server.
  */
-public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventBase<A> implements MessageEvent {
-    private final String message;
+public class AwayCommand extends Command {
+    private String message;
 
     /**
-     * Constructs the event.
+     * Constructs the command.
      *
      * @param client the client
-     * @param originalMessages original messages
-     * @param actor the actor
-     * @param message the message
+     * @throws IllegalArgumentException if client is null
      */
-    protected ActorMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull String message) {
-        super(client, originalMessages, actor);
-        Sanity.nullCheck(message, "Message cannot be null");
-        this.message = message;
+    public AwayCommand(@Nonnull Client client) {
+        super(client);
+    }
+
+    /**
+     * Sets the away message for the command.
+     *
+     * @param message away message
+     * @return this command
+     * @throws IllegalArgumentException for null message
+     */
+    @Nonnull
+    public AwayCommand message(@Nonnull String message) {
+        this.message = Sanity.nullCheck(message, "Action cannot be null");
+        return this;
+    }
+
+    /**
+     * Removes the away message, meaning the command will set the Client as
+     * not away.
+     *
+     * @return this command
+     */
+    @Nonnull
+    public AwayCommand messageRemove() {
+        this.message = null;
+        return this;
     }
 
     @Override
-    @Nonnull
-    public final String getMessage() {
-        return this.message;
+    public void execute() {
+        String exec = "AWAY";
+        if (this.message != null) {
+            exec += " :" + this.message;
+        }
+        this.getClient().sendRawLine(exec);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("message", this.message).toString();
     }
 }

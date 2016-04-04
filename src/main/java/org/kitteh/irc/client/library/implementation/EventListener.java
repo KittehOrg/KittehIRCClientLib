@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.implementation;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
+import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
@@ -139,6 +140,13 @@ class EventListener {
         for (int i = 1; i < event.getParameters().size(); i++) {
             this.client.getServerInfo().addISupportParameter(this.client.getISupportManager().getParameter(event.getParameters().get(i)));
         }
+    }
+
+    @NumericFilter(305) // UNAWAY
+    @NumericFilter(306) // NOWAWAY
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void away(ClientReceiveNumericEvent event) {
+        this.fire(new ClientAwayStatusChangeEvent(this.client, event.getOriginalMessages(), event.getNumeric() == 306));
     }
 
     private final List<ServerMessage> whoMessages = new LinkedList<>();
