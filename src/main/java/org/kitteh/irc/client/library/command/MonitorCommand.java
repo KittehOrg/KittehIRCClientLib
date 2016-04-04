@@ -129,7 +129,7 @@ public class MonitorCommand extends Command {
      * null target
      */
     @Nonnull
-    public MonitorCommand target(@Nonnull Collection<String> targets) {
+    public synchronized MonitorCommand target(@Nonnull Collection<String> targets) {
         Sanity.nullCheck(targets, "Targets cannot be null");
         Set<String> targetSet = new LinkedHashSet<>();
         for (String target : targets) {
@@ -142,7 +142,7 @@ public class MonitorCommand extends Command {
     }
 
     @Override
-    public void execute() {
+    public synchronized void execute() {
         if (this.action == null) {
             throw new IllegalStateException("Action not defined");
         }
