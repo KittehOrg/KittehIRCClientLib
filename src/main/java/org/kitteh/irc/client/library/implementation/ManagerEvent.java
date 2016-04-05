@@ -40,7 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-final class ManagerEvent implements EventManager {
+class ManagerEvent implements EventManager {
     private class Exceptional implements IPublicationErrorHandler {
         @Override
         public void handleError(@Nonnull PublicationError publicationError) {
