@@ -113,7 +113,7 @@ class WhoisBuilder {
 
         @Override
         public boolean isAway() {
-            return false; // TODO not trackable by WHOIS
+            return false;
         }
 
         @Nonnull

@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 /**
  * The server has sent WHOIS data on a user.
  */
-public class WhoisEvent extends ClientEventBase{
+public class WhoisEvent extends ClientEventBase {
     private final WhoisData whoisData;
 
     /**
