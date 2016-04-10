@@ -2,12 +2,12 @@ package org.kitteh.irc.client.library.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.feature.CaseMapping;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.mockito.Mockito;
 
 import javax.annotation.Nonnull;
