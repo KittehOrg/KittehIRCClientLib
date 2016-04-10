@@ -48,6 +48,10 @@ public class WhoisCommand extends Command {
 
     /**
      * Sets the server to query.
+     * <p>
+     * It's commonly possible to specify the user's nick here instead of a server,
+     * which will cause the IRC daemon to automatically send it to the user's
+     * current server.
      *
      * @param server server to query
      * @return this command
