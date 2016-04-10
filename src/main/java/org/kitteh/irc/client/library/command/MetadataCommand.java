@@ -37,7 +37,7 @@ public abstract class MetadataCommand extends Command {
     /**
      * Clears all metadata for a given target.
      */
-    public class Clear extends MetadataCommand {
+    public static class Clear extends MetadataCommand {
         /**
          * Constructs the command.
          *
@@ -58,7 +58,7 @@ public abstract class MetadataCommand extends Command {
     /**
      * Gets the requested metadata for a given target.
      */
-    public class Get extends MetadataCommand {
+    public static class Get extends MetadataCommand {
         private final java.util.List<String> keys = new CopyOnWriteArrayList<>();
 
         /**
@@ -112,7 +112,7 @@ public abstract class MetadataCommand extends Command {
     /**
      * Lists the metadata for a given target.
      */
-    public class List extends MetadataCommand {
+    public static class List extends MetadataCommand {
         /**
          * Constructs the command.
          *
@@ -133,7 +133,7 @@ public abstract class MetadataCommand extends Command {
     /**
      * Sets the metadata for a given target.
      */
-    public class Set extends MetadataCommand {
+    public static class Set extends MetadataCommand {
         private final java.util.List<String> metadata = new CopyOnWriteArrayList<>();
 
         /**
