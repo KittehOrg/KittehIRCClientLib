@@ -39,13 +39,13 @@ public interface WhoisData extends User {
     Optional<Long> getIdleTime();
 
     /**
-     * Gets a user's operator privileges.
+     * Gets a user's operator information, if they have any privileges.
      * <p>
      * Example: "is an Operator".
      *
      * @return privileges, or empty if none
      */
-    Optional<String> getOperatorPrivileges();
+    Optional<String> getOperatorInformation();
 
     /**
      * Gets the description of the server the user is on.

@@ -208,7 +208,7 @@ class EventListener {
             this.trackException(event, "WHOIS OPERATOR response of incorrect length");
             return;
         }
-        this.getWhoisBuilder(event.getParameters().get(1)).setOperatorPrivileges(event.getParameters().get(2));
+        this.getWhoisBuilder(event.getParameters().get(1)).setOperatorInformation(event.getParameters().get(2));
     }
 
     @NumericFilter(317) // WHOISIDLE

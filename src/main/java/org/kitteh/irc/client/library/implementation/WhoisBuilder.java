@@ -48,12 +48,12 @@ class WhoisBuilder {
         private final Optional<Long> idleTime;
         private final Optional<String> serverDescription;
         private final boolean secureConnection;
-        private final Optional<String> operatorPrivileges;
+        private final Optional<String> operatorInformation;
         private final Optional<Long> signOnTime;
         private final boolean away;
         private final Optional<String> awayMessage;
 
-        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secureConnection, String operatorPrivileges, Long idleTime, Long signOnTime, String awayMessage) {
+        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secureConnection, String operatorInformation, Long idleTime, Long signOnTime, String awayMessage) {
             this.client = client;
             this.account = Optional.ofNullable(account);
             this.channels = Collections.unmodifiableSet(new HashSet<>(channels));
@@ -64,7 +64,7 @@ class WhoisBuilder {
             this.realName = Optional.ofNullable(realName);
             this.server = Optional.ofNullable(server);
             this.serverDescription = Optional.ofNullable(serverDescription);
-            this.operatorPrivileges = Optional.ofNullable(operatorPrivileges);
+            this.operatorInformation = Optional.ofNullable(operatorInformation);
             this.secureConnection = secureConnection;
             this.idleTime = Optional.ofNullable(idleTime);
             this.signOnTime = Optional.ofNullable(signOnTime);
@@ -150,8 +150,8 @@ class WhoisBuilder {
 
         @Nonnull
         @Override
-        public Optional<String> getOperatorPrivileges() {
-            return this.operatorPrivileges;
+        public Optional<String> getOperatorInformation() {
+            return this.operatorInformation;
         }
 
         @Nonnull
@@ -183,7 +183,7 @@ class WhoisBuilder {
                     .add("server", this.server)
                     .add("serverDescription", this.serverDescription)
                     .add("secureConnection", this.secureConnection)
-                    .add("operatorPrivileges", this.operatorPrivileges)
+                    .add("operatorInformation", this.operatorInformation)
                     .add("idleTime", this.idleTime)
                     .add("signOnTime", this.signOnTime)
                     .add("awayMessage", this.awayMessage)
@@ -201,7 +201,7 @@ class WhoisBuilder {
     private String server;
     private String serverDescription;
     private boolean secure;
-    private String operatorPrivileges;
+    private String operatorInformation;
     private Long idleTime;
     private Long signOnTime;
     private String awayMessage;
@@ -254,8 +254,8 @@ class WhoisBuilder {
         this.secure = true;
     }
 
-    void setOperatorPrivileges(@Nonnull String operatorPrivileges) {
-        this.operatorPrivileges = operatorPrivileges;
+    void setOperatorInformation(@Nonnull String operatorInformation) {
+        this.operatorInformation = operatorInformation;
     }
 
     void setIdleTime(long idleTime) {
@@ -267,6 +267,6 @@ class WhoisBuilder {
     }
 
     WhoisData build() {
-        return new Whois(this.client, this.account, this.channels, this.nick, this.userString, this.host, this.realName, this.server, this.serverDescription, this.secure, this.operatorPrivileges, this.idleTime, this.signOnTime, this.awayMessage);
+        return new Whois(this.client, this.account, this.channels, this.nick, this.userString, this.host, this.realName, this.server, this.serverDescription, this.secure, this.operatorInformation, this.idleTime, this.signOnTime, this.awayMessage);
     }
 }
