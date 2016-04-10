@@ -26,8 +26,6 @@ package org.kitteh.irc.client.library.implementation;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
-import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
-import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;
@@ -58,6 +56,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelLeaveViaKickEvent;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelLeaveViaPartEvent;
+import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
@@ -80,7 +79,9 @@ import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
+import org.kitteh.irc.client.library.event.user.WhoisEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.CommandFilter;
 import org.kitteh.irc.client.library.util.NumericFilter;
 import org.kitteh.irc.client.library.util.StringUtil;
@@ -147,6 +148,98 @@ class EventListener {
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveNumericEvent event) {
         this.fire(new ClientAwayStatusChangeEvent(this.client, event.getOriginalMessages(), event.getNumeric() == 306));
+    }
+
+    private WhoisBuilder whoisBuilder;
+
+    private WhoisBuilder getWhoisBuilder(String nick) {
+        if ((this.whoisBuilder == null) || !this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(this.whoisBuilder.getNick(), nick)) {
+            this.whoisBuilder = new WhoisBuilder(this.client, nick);
+        }
+        return this.whoisBuilder;
+    }
+
+    @NumericFilter(311) // WHOISUSER
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisUser(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.trackException(event, "WHOIS USER response of incorrect length");
+            return;
+        }
+        WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        switch (event.getParameters().size()) {
+            case 6:
+                whoisBuilder.setRealName(event.getParameters().get(5));
+            case 4:
+                whoisBuilder.setHost(event.getParameters().get(3));
+            case 3:
+                whoisBuilder.setUserString(event.getParameters().get(2));
+        }
+    }
+
+    @NumericFilter(312) // WHOISSERVER
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisServer(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            this.trackException(event, "WHOIS SERVER response of incorrect length");
+            return;
+        }
+        WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        whoisBuilder.setServer(event.getParameters().get(2));
+        if (event.getParameters().size() > 3) {
+            whoisBuilder.setServerDescription(event.getParameters().get(3));
+        }
+    }
+
+    @NumericFilter(313) // WHOISOPERATOR
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisOperator(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            this.trackException(event, "WHOIS OPERATOR response of incorrect length");
+            return;
+        }
+        this.getWhoisBuilder(event.getParameters().get(1)).setOperatorPrivileges(event.getParameters().get(2));
+    }
+
+    @NumericFilter(330) // WHOISACCOUNT
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisAccount(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            this.trackException(event, "WHOIS ACCOUNT response of incorrect length");
+            return;
+        }
+        this.getWhoisBuilder(event.getParameters().get(1)).setAccount(event.getParameters().get(2));
+    }
+
+    @NumericFilter(319) // WHOISCHANNELS
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisChannels(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            this.trackException(event, "WHOIS CHANNELS response of incorrect length");
+            return;
+        }
+        this.getWhoisBuilder(event.getParameters().get(1)).addChannels(event.getParameters().get(2));;
+    }
+
+    @NumericFilter(671) // WHOISSECURE
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisSecure(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.trackException(event, "WHOIS SECURE response of incorrect length");
+            return;
+        }
+        this.getWhoisBuilder(event.getParameters().get(1)).setSecure();
+    }
+
+    @NumericFilter(318) // ENDOFWHOIS
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisEnd(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.trackException(event, "WHOIS END response of incorrect length");
+            return;
+        }
+        this.fire(new WhoisEvent(this.client, this.getWhoisBuilder(event.getParameters().get(1)).build()));
+        this.whoisBuilder = null;
     }
 
     private final List<ServerMessage> whoMessages = new LinkedList<>();
