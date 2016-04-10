@@ -32,6 +32,13 @@ import java.util.Optional;
  */
 public interface WhoisData extends User {
     /**
+     * Gets how long the user has been idle.
+     *
+     * @return idle time, in seconds
+     */
+    Optional<Long> getIdleTime();
+
+    /**
      * Gets a user's operator privileges.
      * <p>
      * Example: "is an Operator".
@@ -46,6 +53,13 @@ public interface WhoisData extends User {
      * @return description or empty if none present
      */
     Optional<String> getServerDescription();
+
+    /**
+     * Gets the time at which this user signed on to the server.
+     *
+     * @return time of arrival
+     */
+    Optional<Long> getSignOnTime();
 
     /**
      * Gets if the user is connected securely.

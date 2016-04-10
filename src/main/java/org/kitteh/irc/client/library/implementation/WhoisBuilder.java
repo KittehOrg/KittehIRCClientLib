@@ -45,11 +45,13 @@ class WhoisBuilder {
         private final long creationTime;
         private final Optional<String> realName;
         private final Optional<String> server;
+        private final Optional<Long> idleTime;
         private final Optional<String> serverDescription;
         private final boolean secure;
         private final Optional<String> operatorPrivileges;
+        private final Optional<Long> signOnTime;
 
-        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secure, String operatorPrivileges) {
+        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secure, String operatorPrivileges, Long idleTime, Long signOnTime) {
             this.client = client;
             this.account = Optional.ofNullable(account);
             this.channels = Collections.unmodifiableSet(new HashSet<>(channels));
@@ -62,6 +64,8 @@ class WhoisBuilder {
             this.serverDescription = Optional.ofNullable(serverDescription);
             this.operatorPrivileges = Optional.ofNullable(operatorPrivileges);
             this.secure = secure;
+            this.idleTime = Optional.ofNullable(idleTime);
+            this.signOnTime = Optional.ofNullable(signOnTime);
             this.creationTime = System.currentTimeMillis();
         }
 
@@ -141,6 +145,11 @@ class WhoisBuilder {
             return this.creationTime;
         }
 
+        @Override
+        public Optional<Long> getIdleTime() {
+            return this.idleTime;
+        }
+
         @Nonnull
         @Override
         public Optional<String> getOperatorPrivileges() {
@@ -154,6 +163,11 @@ class WhoisBuilder {
         }
 
         @Override
+        public Optional<Long> getSignOnTime() {
+            return this.signOnTime;
+        }
+
+        @Override
         public boolean isSecure() {
             return this.secure;
         }
@@ -161,7 +175,20 @@ class WhoisBuilder {
         @Nonnull
         @Override
         public String toString() {
-            return new ToStringer(this).add("client", this.client).add("account", this.account).add("channels", this.channels).add("name", this.name).add("creationTime", this.creationTime).add("realName", this.realName).add("server", this.server).add("serverDescription", this.serverDescription).add("secure", this.secure).add("operatorPrivileges", this.operatorPrivileges).toString();
+            return new ToStringer(this)
+                    .add("client", this.client)
+                    .add("account", this.account)
+                    .add("channels", this.channels)
+                    .add("name", this.name)
+                    .add("creationTime", this.creationTime)
+                    .add("realName", this.realName)
+                    .add("server", this.server)
+                    .add("serverDescription", this.serverDescription)
+                    .add("secure", this.secure)
+                    .add("operatorPrivileges", this.operatorPrivileges)
+                    .add("idleTime", this.idleTime)
+                    .add("signOnTime", this.signOnTime)
+                    .toString();
         }
     }
 
@@ -176,6 +203,8 @@ class WhoisBuilder {
     private String serverDescription;
     private boolean secure;
     private String operatorPrivileges;
+    private Long idleTime;
+    private Long signOnTime;
 
     WhoisBuilder(Client client, String nick) {
         this.client = client;
@@ -225,7 +254,15 @@ class WhoisBuilder {
         this.operatorPrivileges = operatorPrivileges;
     }
 
+    void setIdleTime(long idleTime) {
+        this.idleTime = idleTime;
+    }
+
+    void setSignOnTime(long signOnTime) {
+        this.signOnTime = signOnTime;
+    }
+
     WhoisData build() {
-        return new Whois(this.client, this.account, this.channels, this.nick, this.userString, this.host, this.realName, this.server, this.serverDescription, this.secure, this.operatorPrivileges);
+        return new Whois(this.client, this.account, this.channels, this.nick, this.userString, this.host, this.realName, this.server, this.serverDescription, this.secure, this.operatorPrivileges, this.idleTime, this.signOnTime);
     }
 }

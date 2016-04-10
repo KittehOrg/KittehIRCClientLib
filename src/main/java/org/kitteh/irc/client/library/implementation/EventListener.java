@@ -201,6 +201,34 @@ class EventListener {
         this.getWhoisBuilder(event.getParameters().get(1)).setOperatorPrivileges(event.getParameters().get(2));
     }
 
+    @NumericFilter(317) // WHOISIDLE
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisIdle(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 4) {
+            this.trackException(event, "WHOIS IDLE response of incorrect length");
+            return;
+        }
+        WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        long idleTime;
+        try {
+            idleTime = Long.parseLong(event.getParameters().get(2));
+        } catch (NumberFormatException e) {
+            this.trackException(event, "WHOIS IDLE idle time not a number");
+            return;
+        }
+        whoisBuilder.setIdleTime(idleTime);
+        if (event.getParameters().size() > 4) {
+            long signOnTime;
+            try {
+                signOnTime = Long.parseLong(event.getParameters().get(3));
+            } catch (NumberFormatException e) {
+                this.trackException(event, "WHOIS IDLE sign on time not a number");
+                return;
+            }
+            whoisBuilder.setSignOnTime(signOnTime);
+        }
+    }
+
     @NumericFilter(330) // WHOISACCOUNT
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void whoisAccount(ClientReceiveNumericEvent event) {
@@ -218,7 +246,7 @@ class EventListener {
             this.trackException(event, "WHOIS CHANNELS response of incorrect length");
             return;
         }
-        this.getWhoisBuilder(event.getParameters().get(1)).addChannels(event.getParameters().get(2));;
+        this.getWhoisBuilder(event.getParameters().get(1)).addChannels(event.getParameters().get(2));
     }
 
     @NumericFilter(671) // WHOISSECURE
