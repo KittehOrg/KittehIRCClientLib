@@ -50,8 +50,10 @@ class WhoisBuilder {
         private final boolean secure;
         private final Optional<String> operatorPrivileges;
         private final Optional<Long> signOnTime;
+        private final boolean away;
+        private final Optional<String> awayMessage;
 
-        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secure, String operatorPrivileges, Long idleTime, Long signOnTime) {
+        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secure, String operatorPrivileges, Long idleTime, Long signOnTime, String awayMessage) {
             this.client = client;
             this.account = Optional.ofNullable(account);
             this.channels = Collections.unmodifiableSet(new HashSet<>(channels));
@@ -66,6 +68,8 @@ class WhoisBuilder {
             this.secure = secure;
             this.idleTime = Optional.ofNullable(idleTime);
             this.signOnTime = Optional.ofNullable(signOnTime);
+            this.away = awayMessage != null;
+            this.awayMessage = Optional.ofNullable(awayMessage);
             this.creationTime = System.currentTimeMillis();
         }
 
@@ -111,6 +115,11 @@ class WhoisBuilder {
             return this.userString;
         }
 
+        @Override
+        public boolean isAway() {
+            return this.away;
+        }
+
         @Nonnull
         @Override
         public String getMessagingName() {
@@ -121,12 +130,6 @@ class WhoisBuilder {
         @Override
         public String getName() {
             return this.name;
-        }
-
-        @Nonnull
-        @Override
-        public boolean isStale() {
-            return true; // Instantly stale
         }
 
         @Nonnull
@@ -183,6 +186,7 @@ class WhoisBuilder {
                     .add("operatorPrivileges", this.operatorPrivileges)
                     .add("idleTime", this.idleTime)
                     .add("signOnTime", this.signOnTime)
+                    .add("awayMessage", this.awayMessage)
                     .toString();
         }
     }
@@ -200,6 +204,7 @@ class WhoisBuilder {
     private String operatorPrivileges;
     private Long idleTime;
     private Long signOnTime;
+    private String awayMessage;
 
     WhoisBuilder(Client client, String nick) {
         this.client = client;
@@ -219,6 +224,10 @@ class WhoisBuilder {
         for (String channel : channels.split(" ")) {
             this.channels.add(channel);
         }
+    }
+
+    void setAway(@Nonnull String awayMessage) {
+        this.awayMessage = awayMessage;
     }
 
     void setUserString(@Nonnull String userString) {
@@ -258,6 +267,6 @@ class WhoisBuilder {
     }
 
     WhoisData build() {
-        return new Whois(this.client, this.account, this.channels, this.nick, this.userString, this.host, this.realName, this.server, this.serverDescription, this.secure, this.operatorPrivileges, this.idleTime, this.signOnTime);
+        return new Whois(this.client, this.account, this.channels, this.nick, this.userString, this.host, this.realName, this.server, this.serverDescription, this.secure, this.operatorPrivileges, this.idleTime, this.signOnTime, this.awayMessage);
     }
 }

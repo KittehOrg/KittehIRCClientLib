@@ -159,6 +159,16 @@ class EventListener {
         return this.whoisBuilder;
     }
 
+    @NumericFilter(301) // WHOISAWAY
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void whoisAway(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            this.trackException(event, "WHOIS AWAY response of incorrect length");
+            return;
+        }
+        this.getWhoisBuilder(event.getParameters().get(1)).setAway(event.getParameters().get((event.getParameters().size() == 3) ? 2 : 3));
+    }
+
     @NumericFilter(311) // WHOISUSER
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
     public void whoisUser(ClientReceiveNumericEvent event) {

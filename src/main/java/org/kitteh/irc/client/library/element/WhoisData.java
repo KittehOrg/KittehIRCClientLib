@@ -62,19 +62,19 @@ public interface WhoisData extends User {
     Optional<Long> getSignOnTime();
 
     /**
-     * Gets the value 'false' because WHOIS does not reply with away status.
-     *
-     * @return false
-     */
-    @Override
-    default boolean isAway() {
-        return false;
-    }
-
-    /**
      * Gets if the user is connected securely.
      *
      * @return true if secure connection
      */
     boolean isSecure();
+
+    /**
+     * Gets the value 'true' because this information is instantly outdated.
+     *
+     * @return true
+     */
+    @Override
+    default boolean isStale() {
+        return true;
+    }
 }
