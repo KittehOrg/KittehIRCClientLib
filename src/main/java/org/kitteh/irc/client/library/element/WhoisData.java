@@ -26,11 +26,15 @@ package org.kitteh.irc.client.library.element;
 import java.util.Optional;
 
 /**
- * Describes WHOIS data received.
+ * Describes WHOIS data received. Note that away status is unknown, so
+ * {@link User#isAway()} always returns false. This information also is
+ * always {@link User#isStale()}.
  */
 public interface WhoisData extends User {
     /**
      * Gets a user's operator privileges.
+     * <p>
+     * Example: "is an Operator".
      *
      * @return privileges, or empty if none
      */
