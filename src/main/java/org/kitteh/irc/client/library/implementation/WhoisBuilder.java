@@ -111,11 +111,6 @@ class WhoisBuilder {
             return this.userString;
         }
 
-        @Override
-        public boolean isAway() {
-            return false;
-        }
-
         @Nonnull
         @Override
         public String getMessagingName() {
