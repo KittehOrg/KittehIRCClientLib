@@ -33,6 +33,7 @@ import javax.annotation.Nonnull;
  * Sends a WHOIS request to the server.
  */
 public class WhoisCommand extends Command {
+    private String server;
     private String target;
 
     /**
@@ -43,6 +44,29 @@ public class WhoisCommand extends Command {
      */
     public WhoisCommand(@Nonnull Client client) {
         super(client);
+    }
+
+    /**
+     * Sets the server to query.
+     *
+     * @param server server to query
+     * @return this command
+     */
+    @Nonnull
+    public WhoisCommand server(@Nonnull String server) {
+        this.server = Sanity.safeMessageCheck(server, "server");
+        return this;
+    }
+
+    /**
+     * Removes any specification of target server for the query.
+     *
+     * @return this command
+     */
+    @Nonnull
+    public WhoisCommand serverRemove() {
+        this.server = null;
+        return this;
     }
 
     /**
@@ -63,7 +87,13 @@ public class WhoisCommand extends Command {
         if (this.target == null) {
             throw new IllegalStateException("Target not defined");
         }
-        this.getClient().sendRawLine("WHOIS " + this.target);
+        StringBuilder builder = new StringBuilder(5 + this.target.length() + ((this.server == null) ? 1 : (2 + this.server.length())));
+        builder.append("WHOIS ");
+        if (this.server != null) {
+            builder.append(this.server).append(' ');
+        }
+        builder.append(this.target);
+        this.getClient().sendRawLine(builder.toString());
     }
 
     @Override
