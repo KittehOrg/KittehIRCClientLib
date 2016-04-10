@@ -66,7 +66,7 @@ public interface WhoisData extends User {
      *
      * @return true if secure connection
      */
-    boolean isSecure();
+    boolean isSecureConnection();
 
     /**
      * Gets the value 'true' because this information is instantly outdated.

@@ -47,13 +47,13 @@ class WhoisBuilder {
         private final Optional<String> server;
         private final Optional<Long> idleTime;
         private final Optional<String> serverDescription;
-        private final boolean secure;
+        private final boolean secureConnection;
         private final Optional<String> operatorPrivileges;
         private final Optional<Long> signOnTime;
         private final boolean away;
         private final Optional<String> awayMessage;
 
-        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secure, String operatorPrivileges, Long idleTime, Long signOnTime, String awayMessage) {
+        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secureConnection, String operatorPrivileges, Long idleTime, Long signOnTime, String awayMessage) {
             this.client = client;
             this.account = Optional.ofNullable(account);
             this.channels = Collections.unmodifiableSet(new HashSet<>(channels));
@@ -65,7 +65,7 @@ class WhoisBuilder {
             this.server = Optional.ofNullable(server);
             this.serverDescription = Optional.ofNullable(serverDescription);
             this.operatorPrivileges = Optional.ofNullable(operatorPrivileges);
-            this.secure = secure;
+            this.secureConnection = secureConnection;
             this.idleTime = Optional.ofNullable(idleTime);
             this.signOnTime = Optional.ofNullable(signOnTime);
             this.away = awayMessage != null;
@@ -166,8 +166,8 @@ class WhoisBuilder {
         }
 
         @Override
-        public boolean isSecure() {
-            return this.secure;
+        public boolean isSecureConnection() {
+            return this.secureConnection;
         }
 
         @Nonnull
@@ -182,7 +182,7 @@ class WhoisBuilder {
                     .add("realName", this.realName)
                     .add("server", this.server)
                     .add("serverDescription", this.serverDescription)
-                    .add("secure", this.secure)
+                    .add("secureConnection", this.secureConnection)
                     .add("operatorPrivileges", this.operatorPrivileges)
                     .add("idleTime", this.idleTime)
                     .add("signOnTime", this.signOnTime)
