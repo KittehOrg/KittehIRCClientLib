@@ -2,7 +2,6 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
@@ -51,7 +50,6 @@ public class EventListenerTest {
 
         int index = 0;
 
-        List<MessageTag> tags;
         if (split[index].startsWith("@")) {
             index++;
         }

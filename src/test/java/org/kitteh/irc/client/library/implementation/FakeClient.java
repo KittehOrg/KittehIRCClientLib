@@ -1,10 +1,10 @@
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.feature.EventManager;
-import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
 

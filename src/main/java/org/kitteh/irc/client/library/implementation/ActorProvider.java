@@ -154,9 +154,9 @@ class ActorProvider implements Resettable {
         private final Map<String, Set<ChannelUserMode>> modes;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
-        private Optional<String> topic = Optional.empty();
-        private Optional<Actor> topicSetter = Optional.empty();
-        private Optional<Instant> topicTime = Optional.empty();
+        private String topic;
+        private Actor topicSetter;
+        private Instant topicTime;
         private volatile boolean tracked;
 
         private IRCChannel(@Nonnull String channel) {
@@ -177,15 +177,15 @@ class ActorProvider implements Resettable {
         }
 
         void setTopic(@Nonnull String topic) {
-            this.topic = Optional.of(topic);
-            this.topicTime = Optional.empty();
-            this.topicSetter = Optional.empty();
+            this.topic = topic;
+            this.topicTime = null;
+            this.topicSetter = null;
             this.markStale();
         }
 
         void setTopic(long time, @Nonnull Actor actor) {
-            this.topicTime = Optional.of(Instant.ofEpochMilli(time));
-            this.topicSetter = Optional.of(actor);
+            this.topicTime = Instant.ofEpochMilli(time);
+            this.topicSetter = actor;
             this.markStale();
         }
 
@@ -293,10 +293,10 @@ class ActorProvider implements Resettable {
         private final Optional<Instant> time;
         private final Optional<String> topic;
 
-        private IRCChannelTopicSnapshot(@Nonnull Optional<Instant> time, @Nonnull Optional<String> topic, @Nonnull Optional<Actor> setter) {
-            this.time = time;
-            this.topic = topic;
-            this.setter = setter;
+        private IRCChannelTopicSnapshot(@Nullable Instant time, @Nullable String topic, @Nullable Actor setter) {
+            this.time = Optional.ofNullable(time);
+            this.topic = Optional.ofNullable(topic);
+            this.setter = Optional.ofNullable(setter);
         }
 
         @Nonnull

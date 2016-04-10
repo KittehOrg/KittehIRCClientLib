@@ -24,7 +24,6 @@
 package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelModeStatus;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;

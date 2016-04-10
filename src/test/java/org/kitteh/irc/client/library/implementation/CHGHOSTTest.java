@@ -4,7 +4,6 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
@@ -12,6 +11,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
+import org.kitteh.irc.client.library.feature.EventManager;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 

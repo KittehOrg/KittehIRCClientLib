@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ import java.util.Optional;
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
 public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
-    private Optional<String> reply;
+    private String reply;
 
     /**
      * Creates the event
@@ -53,7 +54,7 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String message, @Nonnull Optional<String> reply) {
+    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String message, @Nullable String reply) {
         super(client, originalMessages, sender, message);
         this.reply = reply;
     }
@@ -65,14 +66,14 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      */
     @Nonnull
     public Optional<String> getReply() {
-        return this.reply;
+        return Optional.ofNullable(this.reply);
     }
 
     /**
      * Removes the reply to be sent back.
      */
     public void removeReply() {
-        this.reply = Optional.empty();
+        this.reply = null;
     }
 
     /**
@@ -81,7 +82,6 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      * @param reply message to send back
      */
     public void setReply(@Nonnull String reply) {
-        Sanity.nullCheck(reply, "Reply cannot be null");
-        this.reply = Optional.of(reply);
+        this.reply = Sanity.safeMessageCheck(reply, "Reply");
     }
 }

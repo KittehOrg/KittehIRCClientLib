@@ -808,11 +808,10 @@ class EventListener {
                     if (ctcpMessage.startsWith("PING ")) {
                         reply = ctcpMessage;
                     }
-                    PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, ctcpMessage, Optional.ofNullable(reply));
+                    PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, ctcpMessage, reply);
                     this.fire(ctcpEvent);
-                    if (ctcpEvent.getReply().isPresent()) {
-                        this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(ctcpEvent.getReply().get()));
-                    }
+                    Optional<String> replyMessage = ctcpEvent.getReply();
+                    replyMessage.ifPresent(message -> this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(message)));
                 } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
                     MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
                     this.fire(new ChannelCTCPEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), ctcpMessage));
