@@ -1,7 +1,4 @@
 org.kitteh.irc.client.library
-org.kitteh.irc.client.library.auth
-org.kitteh.irc.client.library.auth.protocol
-org.kitteh.irc.client.library.auth.protocol.element
 org.kitteh.irc.client.library.command
 org.kitteh.irc.client.library.element
 org.kitteh.irc.client.library.event
@@ -13,4 +10,6 @@ org.kitteh.irc.client.library.event.helper
 org.kitteh.irc.client.library.event.user
 org.kitteh.irc.client.library.exception
 org.kitteh.irc.client.library.feature
+org.kitteh.irc.client.library.feature.auth
+org.kitteh.irc.client.library.feature.auth.element
 org.kitteh.irc.client.library.util
