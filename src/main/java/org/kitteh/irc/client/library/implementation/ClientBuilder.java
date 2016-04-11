@@ -90,7 +90,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder listenExceptionRemove() {
-        this.config.reset(Config.LISTENER_EXCEPTION);
+        this.config.set(Config.LISTENER_EXCEPTION, null);
         return this;
     }
 
