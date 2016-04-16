@@ -43,7 +43,7 @@ public class KickCommandTest {
         KickCommand command = new KickCommand(client, CHANNEL);
         command.reason(REASON);
         command.target(USER);
-        command.reasonRemove();
+        command.reason(null);
         command.execute();
 
         Mockito.verify(client).sendRawLine("KICK " + CHANNEL + ' ' + USER);

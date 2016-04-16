@@ -249,21 +249,6 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    public void removeExceptionListener() {
-
-    }
-
-    @Override
-    public void removeInputListener() {
-
-    }
-
-    @Override
-    public void removeOutputListener() {
-
-    }
-
-    @Override
     public void sendCTCPMessage(@Nonnull String target, @Nonnull String message) {
 
     }

@@ -64,41 +64,25 @@ public interface Client {
      */
     interface Builder extends Cloneable {
         /**
-         * Removes the Consumer set to fire after the client is built.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder afterBuildConsumerRemove();
-
-        /**
          * Sets up a Consumer to fire on the newly created client after it is
          * built, prior to connection.
          *
-         * @param consumer consumer
+         * @param consumer consumer or null to have no consumer
          * @return this builder
          */
         @Nonnull
-        Builder afterBuildConsumer(@Nonnull Consumer<Client> consumer);
-
-        /**
-         * Binds the client to no specific host.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder bindHostRemove();
+        Builder afterBuildConsumer(@Nullable Consumer<Client> consumer);
 
         /**
          * Binds the client to a host or IP locally.
          * <p>
          * By default, the host is not set which results in wildcard binding.
          *
-         * @param host host to bind to
+         * @param host host to bind to, or null for wildcard binding
          * @return this builder
          */
         @Nonnull
-        Builder bindHost(@Nonnull String host);
+        Builder bindHost(@Nullable String host);
 
         /**
          * Binds the client to the specified port. Invalid ports are set to 0.
@@ -112,63 +96,39 @@ public interface Client {
         Builder bindPort(int port);
 
         /**
-         * Removes the exception listener from this builder.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder listenExceptionRemove();
-
-        /**
          * Sets a listener for all thrown exceptions on this client. By default,
          * a consumer exists which calls Throwable#printStackTrace() on all
          * received exceptions.
          * <p>
          * All exceptions are passed from a single, separate thread.
          *
-         * @param listener catcher of throwable objects
+         * @param listener catcher of throwable objects or null to not listen
          * @return this builder
          */
         @Nonnull
-        Builder listenException(@Nonnull Consumer<Exception> listener);
-
-        /**
-         * Removes the input listener from this builder.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder listenInputRemove();
+        Builder listenException(@Nullable Consumer<Exception> listener);
 
         /**
          * Sets a listener for all incoming messages from the server.
          * <p>
          * All messages are passed from a single, separate thread.
          *
-         * @param listener input listener
+         * @param listener input listener or null to not listen
          * @return this builder
          */
         @Nonnull
-        Builder listenInput(@Nonnull Consumer<String> listener);
-
-        /**
-         * Removes the output listener from this builder.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder listenOutputRemove();
+        Builder listenInput(@Nullable Consumer<String> listener);
 
         /**
          * Sets a listener for all outgoing messages to the server.
          * <p>
          * All messages are passed from a single, separate thread.
          *
-         * @param listener output listener
+         * @param listener output listener or null to not listen
          * @return this builder
          */
         @Nonnull
-        Builder listenOutput(@Nonnull Consumer<String> listener);
+        Builder listenOutput(@Nullable Consumer<String> listener);
 
         /**
          * Names the client, for internal labeling.
@@ -193,25 +153,15 @@ public interface Client {
         Builder nick(@Nonnull String nick);
 
         /**
-         * Removes the server password.
-         * <p>
-         * If not set, no password is sent
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder serverPasswordRemove();
-
-        /**
          * Sets the server password.
          * <p>
          * If not set, no password is sent
          *
-         * @param password server password
+         * @param password server password or null to not send one
          * @return this builder
          */
         @Nonnull
-        Builder serverPassword(@Nonnull String password);
+        Builder serverPassword(@Nullable String password);
 
         /**
          * Sets the realname the client uses.
@@ -240,14 +190,6 @@ public interface Client {
         Builder secure(boolean ssl);
 
         /**
-         * Removes the key for SSL connection.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder secureKeyCertChainRemove();
-
-        /**
          * Sets the key for SSL connection.
          *
          * @param keyCertChainFile X.509 certificate chain file in PEM format
@@ -255,15 +197,7 @@ public interface Client {
          * @see #secure(boolean)
          */
         @Nonnull
-        Builder secureKeyCertChain(@Nonnull File keyCertChainFile);
-
-        /**
-         * Removes the private key for SSL connection.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder secureKeyRemove();
+        Builder secureKeyCertChain(@Nullable File keyCertChainFile);
 
         /**
          * Sets the private key for SSL connection.
@@ -273,15 +207,7 @@ public interface Client {
          * @see #secure(boolean)
          */
         @Nonnull
-        Builder secureKey(@Nonnull File keyFile);
-
-        /**
-         * Removes the private key password for SSL connection.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder secureKeyPasswordRemove();
+        Builder secureKey(@Nullable File keyFile);
 
         /**
          * Sets the private key password for SSL connection.
@@ -291,16 +217,7 @@ public interface Client {
          * @see #secure(boolean)
          */
         @Nonnull
-        Builder secureKeyPassword(@Nonnull String password);
-
-        /**
-         * Removes the {@link TrustManagerFactory} for SSL connection, defaulting
-         * to the JRE factory.
-         *
-         * @return this builder
-         */
-        @Nonnull
-        Builder secureTrustManagerFactoryRemove();
+        Builder secureKeyPassword(@Nullable String password);
 
         /**
          * Sets the {@link TrustManagerFactory} for SSL connection.
@@ -310,7 +227,7 @@ public interface Client {
          * @see #secure(boolean)
          */
         @Nonnull
-        Builder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory);
+        Builder secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
 
         /**
          * Sets the delay between messages being sent to the server
@@ -615,21 +532,6 @@ public interface Client {
     void removeChannel(@Nonnull String channel, @Nonnull String reason);
 
     /**
-     * Removes the exception listener.
-     */
-    void removeExceptionListener();
-
-    /**
-     * Removes the input listener.
-     */
-    void removeInputListener();
-
-    /**
-     * Removes the output listener.
-     */
-    void removeOutputListener();
-
-    /**
      * Sends a CTCP message to a target user or channel. Automagically adds
      * the CTCP delimiter around the message and escapes the characters that
      * need escaping when sending a CTCP message.
@@ -858,7 +760,7 @@ public interface Client {
      *
      * @param listener catcher of throwable objects
      */
-    void setExceptionListener(@Nonnull Consumer<Exception> listener);
+    void setExceptionListener(@Nullable Consumer<Exception> listener);
 
     /**
      * Sets a listener for all incoming messages from the server.
@@ -867,7 +769,7 @@ public interface Client {
      *
      * @param listener input listener
      */
-    void setInputListener(@Nonnull Consumer<String> listener);
+    void setInputListener(@Nullable Consumer<String> listener);
 
     /**
      * Sets the default message cutter to use for multi-line messages.
@@ -900,7 +802,7 @@ public interface Client {
      *
      * @param listener output listener
      */
-    void setOutputListener(@Nonnull Consumer<String> listener);
+    void setOutputListener(@Nullable Consumer<String> listener);
 
     /**
      * Shuts down the client without a quit message.

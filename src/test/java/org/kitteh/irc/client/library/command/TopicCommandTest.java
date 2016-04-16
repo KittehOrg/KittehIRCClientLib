@@ -39,7 +39,7 @@ public class TopicCommandTest {
 
         TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
         topicCommand.topic(TOPIC);
-        topicCommand.topicRemove();
+        topicCommand.query();
         topicCommand.execute();
 
         Mockito.verify(client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
