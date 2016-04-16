@@ -52,30 +52,14 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Override
     @Nonnull
-    public Client.Builder afterBuildConsumerRemove() {
-        this.after = null;
-        return this;
-    }
-
-    @Override
-    @Nonnull
-    public Client.Builder afterBuildConsumer(@Nonnull Consumer<Client> consumer) {
-        Sanity.nullCheck(consumer, "Consumer cannot be null");
+    public Client.Builder afterBuildConsumer(@Nullable Consumer<Client> consumer) {
         this.after = consumer;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder bindHostRemove() {
-        this.bindHost = null;
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder bindHost(@Nonnull String host) {
-        Sanity.nullCheck(host, "Host cannot be null");
+    public ClientBuilder bindHost(@Nullable String host) {
         this.bindHost = host;
         return this;
     }
@@ -89,46 +73,22 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder listenExceptionRemove() {
-        this.config.set(Config.LISTENER_EXCEPTION, null);
+    public ClientBuilder listenException(@Nullable Consumer<Exception> listener) {
+        this.config.set(Config.LISTENER_EXCEPTION, (listener == null) ? null : new Config.ExceptionConsumerWrapper(listener));
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder listenException(@Nonnull Consumer<Exception> listener) {
-        Sanity.nullCheck(listener, "Listener cannot be null");
-        this.config.set(Config.LISTENER_EXCEPTION, new Config.ExceptionConsumerWrapper(listener));
+    public ClientBuilder listenInput(@Nullable Consumer<String> listener) {
+        this.config.set(Config.LISTENER_INPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder listenInputRemove() {
-        this.config.reset(Config.LISTENER_INPUT);
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder listenInput(@Nonnull Consumer<String> listener) {
-        Sanity.nullCheck(listener, "Listener cannot be null");
-        this.config.set(Config.LISTENER_INPUT, new Config.StringConsumerWrapper(listener));
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder listenOutputRemove() {
-        this.config.reset(Config.LISTENER_OUTPUT);
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder listenOutput(@Nonnull Consumer<String> listener) {
-        Sanity.nullCheck(listener, "Listener cannot be null");
-        this.config.set(Config.LISTENER_OUTPUT, new Config.StringConsumerWrapper(listener));
+    public ClientBuilder listenOutput(@Nullable Consumer<String> listener) {
+        this.config.set(Config.LISTENER_OUTPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
         return this;
     }
 
@@ -151,15 +111,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder serverPasswordRemove() {
-        this.config.reset(Config.SERVER_PASSWORD);
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder serverPassword(@Nonnull String password) {
-        Sanity.safeMessageCheck(password, "Server password");
+    public ClientBuilder serverPassword(@Nullable String password) {
         this.config.set(Config.SERVER_PASSWORD, password);
         return this;
     }
@@ -181,60 +133,28 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder secureKeyCertChainRemove() {
-        this.config.reset(Config.SSL_KEY_CERT_CHAIN);
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder secureKeyCertChain(@Nonnull File keyCertChainFile) {
-        Sanity.nullCheck(keyCertChainFile, "Key certificate chain file cannot be null");
+    public ClientBuilder secureKeyCertChain(@Nullable File keyCertChainFile) {
         this.config.set(Config.SSL_KEY_CERT_CHAIN, keyCertChainFile);
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureKeyRemove() {
-        this.config.reset(Config.SSL_KEY);
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder secureKey(@Nonnull File keyFile) {
-        Sanity.nullCheck(keyFile, "Key file cannot be null");
+    public ClientBuilder secureKey(@Nullable File keyFile) {
         this.config.set(Config.SSL_KEY, keyFile);
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureKeyPasswordRemove() {
-        this.config.reset(Config.SSL_KEY_PASSWORD);
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder secureKeyPassword(@Nonnull String password) {
-        Sanity.nullCheck(password, "Password cannot be null");
+    public ClientBuilder secureKeyPassword(@Nullable String password) {
         this.config.set(Config.SSL_KEY_PASSWORD, password);
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureTrustManagerFactoryRemove() {
-        this.config.reset(Config.SSL_TRUST_MANAGER_FACTORY);
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder secureTrustManagerFactory(@Nonnull TrustManagerFactory factory) {
-        Sanity.nullCheck(factory, "Factory cannot be null");
+    public ClientBuilder secureTrustManagerFactory(@Nullable TrustManagerFactory factory) {
         this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, factory);
         return this;
     }
