@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Sends an AWAY request to the server.
@@ -48,13 +49,13 @@ public class AwayCommand extends Command {
     /**
      * Sets the away message for the command.
      *
-     * @param message away message
+     * @param message away message or null to set as not away
      * @return this command
-     * @throws IllegalArgumentException for null message
+     * @throws IllegalArgumentException for invalid message
      */
     @Nonnull
-    public AwayCommand message(@Nonnull String message) {
-        this.message = Sanity.nullCheck(message, "Action cannot be null");
+    public AwayCommand message(@Nullable String message) {
+        this.message = (message == null) ? null : Sanity.safeMessageCheck(message);
         return this;
     }
 
@@ -65,7 +66,7 @@ public class AwayCommand extends Command {
      * @return this command
      */
     @Nonnull
-    public AwayCommand messageRemove() {
+    public AwayCommand notAway() {
         this.message = null;
         return this;
     }

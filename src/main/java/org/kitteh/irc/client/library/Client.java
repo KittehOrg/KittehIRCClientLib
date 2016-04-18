@@ -532,21 +532,6 @@ public interface Client {
     void removeChannel(@Nonnull String channel, @Nonnull String reason);
 
     /**
-     * Removes the exception listener.
-     */
-    void removeExceptionListener();
-
-    /**
-     * Removes the input listener.
-     */
-    void removeInputListener();
-
-    /**
-     * Removes the output listener.
-     */
-    void removeOutputListener();
-
-    /**
      * Sends a CTCP message to a target user or channel. Automagically adds
      * the CTCP delimiter around the message and escapes the characters that
      * need escaping when sending a CTCP message.
@@ -775,7 +760,7 @@ public interface Client {
      *
      * @param listener catcher of throwable objects
      */
-    void setExceptionListener(@Nonnull Consumer<Exception> listener);
+    void setExceptionListener(@Nullable Consumer<Exception> listener);
 
     /**
      * Sets a listener for all incoming messages from the server.
@@ -784,7 +769,7 @@ public interface Client {
      *
      * @param listener input listener
      */
-    void setInputListener(@Nonnull Consumer<String> listener);
+    void setInputListener(@Nullable Consumer<String> listener);
 
     /**
      * Sets the default message cutter to use for multi-line messages.
@@ -817,7 +802,7 @@ public interface Client {
      *
      * @param listener output listener
      */
-    void setOutputListener(@Nonnull Consumer<String> listener);
+    void setOutputListener(@Nullable Consumer<String> listener);
 
     /**
      * Shuts down the client without a quit message.

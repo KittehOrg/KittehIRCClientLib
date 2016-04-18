@@ -84,27 +84,15 @@ public class KickCommand extends ChannelCommand {
     }
 
     /**
-     * Removes the reason for this kick, if previously set.
-     *
-     * @return this command
-     */
-    @Nonnull
-    public KickCommand reasonRemove() {
-        this.reason = null;
-        return this;
-    }
-
-    /**
      * Sets the reason for this kick.
      *
-     * @param reason reason
+     * @param reason reason or null to provide no reason
      * @return this command
-     * @throws IllegalArgumentException if reason is null or contains invalid characters
+     * @throws IllegalArgumentException if reason contains invalid characters
      */
     @Nonnull
-    public KickCommand reason(@Nonnull String reason) {
-        Sanity.safeMessageCheck(reason, "Reason");
-        this.reason = reason;
+    public KickCommand reason(@Nullable String reason) {
+        this.reason = (reason == null) ? null : Sanity.safeMessageCheck(reason, "Reason");;
         return this;
     }
 

@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Sends a WHOIS request to the server.
@@ -53,23 +54,12 @@ public class WhoisCommand extends Command {
      * which will cause the IRC daemon to automatically send it to the user's
      * current server.
      *
-     * @param server server to query
+     * @param server server to query or null to not specify one
      * @return this command
      */
     @Nonnull
-    public WhoisCommand server(@Nonnull String server) {
-        this.server = Sanity.safeMessageCheck(server, "server");
-        return this;
-    }
-
-    /**
-     * Removes any specification of target server for the query.
-     *
-     * @return this command
-     */
-    @Nonnull
-    public WhoisCommand serverRemove() {
-        this.server = null;
+    public WhoisCommand server(@Nullable String server) {
+        this.server = (server == null) ? null : Sanity.safeMessageCheck(server, "server");
         return this;
     }
 

@@ -278,21 +278,6 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void removeExceptionListener() {
-        this.exceptionListener.removeConsumer();
-    }
-
-    @Override
-    public void removeInputListener() {
-        this.inputListener.removeConsumer();
-    }
-
-    @Override
-    public void removeOutputListener() {
-        this.outputListener.removeConsumer();
-    }
-
-    @Override
     public void sendCTCPMessage(@Nonnull String target, @Nonnull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
@@ -366,15 +351,21 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void setExceptionListener(@Nonnull Consumer<Exception> listener) {
-        Sanity.nullCheck(listener, "Listener cannot be null");
-        this.exceptionListener.setConsumer(listener);
+    public void setExceptionListener(@Nullable Consumer<Exception> listener) {
+        if (listener == null) {
+            this.exceptionListener.removeConsumer();
+        } else {
+            this.exceptionListener.setConsumer(listener);
+        }
     }
 
     @Override
-    public void setInputListener(@Nonnull Consumer<String> listener) {
-        Sanity.nullCheck(listener, "Listener cannot be null");
-        this.inputListener.setConsumer(listener);
+    public void setInputListener(@Nullable Consumer<String> listener) {
+        if (listener == null) {
+            this.inputListener.removeConsumer();
+        } else {
+            this.inputListener.setConsumer(listener);
+        }
     }
 
     @Override
@@ -399,9 +390,12 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void setOutputListener(@Nonnull Consumer<String> listener) {
-        Sanity.nullCheck(listener, "Listener cannot be null");
-        this.outputListener.setConsumer(listener);
+    public void setOutputListener(@Nullable Consumer<String> listener) {
+        if (listener == null) {
+            this.outputListener.removeConsumer();
+        } else {
+            this.outputListener.setConsumer(listener);
+        }
     }
 
     @Override

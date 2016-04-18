@@ -50,26 +50,26 @@ public class TopicCommand extends ChannelCommand {
     }
 
     /**
-     * Removes the topic, for a TOPIC query.
-     *
-     * @return this TopicCommand
-     */
-    @Nonnull
-    public TopicCommand topicRemove() {
-        this.topic = null;
-        return this;
-    }
-
-    /**
      * Sets the topic.
      *
-     * @param topic new topic
+     * @param topic new topic or null to query the current topic
      * @return this TopicCommand
      * @throws IllegalArgumentException if topic invalid
      */
     @Nonnull
-    public TopicCommand topic(@Nonnull String topic) {
-        this.topic = Sanity.safeMessageCheck(topic, "Topic");
+    public TopicCommand topic(@Nullable String topic) {
+        this.topic = (topic == null) ? null : Sanity.safeMessageCheck(topic, "Topic");
+        return this;
+    }
+
+    /**
+     * Sets this command to query the channel's current topic.
+     *
+     * @return this TopicCommand
+     */
+    @Nonnull
+    public TopicCommand query() {
+        this.topic = null;
         return this;
     }
 

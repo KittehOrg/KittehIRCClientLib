@@ -70,18 +70,11 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
     }
 
     /**
-     * Removes the reply to be sent back.
-     */
-    public void removeReply() {
-        this.reply = null;
-    }
-
-    /**
      * Sets the reply to send to the CTCP sender.
      *
      * @param reply message to send back
      */
-    public void setReply(@Nonnull String reply) {
-        this.reply = Sanity.safeMessageCheck(reply, "Reply");
+    public void setReply(@Nullable String reply) {
+        this.reply = (reply == null) ? null : Sanity.safeMessageCheck(reply, "Reply");
     }
 }
