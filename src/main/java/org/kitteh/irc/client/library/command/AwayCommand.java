@@ -66,7 +66,7 @@ public class AwayCommand extends Command {
      * @return this command
      */
     @Nonnull
-    public AwayCommand notAway() {
+    public AwayCommand messageRemove() {
         this.message = null;
         return this;
     }
