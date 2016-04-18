@@ -33,7 +33,7 @@ public class AwayCommandTest {
 
         AwayCommand awayCommand = new AwayCommand(client);
         awayCommand.message(MESSAGE);
-        awayCommand.notAway();
+        awayCommand.messageRemove();
         awayCommand.execute();
 
         Mockito.verify(client, Mockito.times(1)).sendRawLine("AWAY");
