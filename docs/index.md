@@ -51,17 +51,7 @@ builder.listenException(Throwable::printStackTrace);
 
 ## Using KICL in your maven project
 
-KICL is built and deployed using maven, adding it as a dependency is simple as
-including the Kitteh repo with
-
-```xml
-<repository>
-    <id>kitteh-repo</id>
-    <url>http://repo.kitteh.org/content/groups/public/</url>
-</repository>
-```
-
-and adding the dependency with
+KICL is built and deployed using Maven. Adding it as a dependency is simple as
 
 ```xml
 <dependency>
@@ -71,8 +61,6 @@ and adding the dependency with
     <scope>...</scope>
 </dependency>
 ```
-
-It is planned to submit KICL to Maven Central for 1.0.0 release.
 
 ## Events
 

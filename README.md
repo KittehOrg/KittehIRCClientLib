@@ -39,11 +39,14 @@ public class Example {
 ```
 
 ### Maven
-Repository URL: `http://repo.kitteh.org/content/groups/public/`
 ```xml
 <groupId>org.kitteh.irc</groupId>
 <artifactId>client-lib</artifactId>
-<version>0.4.0</version>
+<version>1.0.0</version>
 ```
+
+Releases are available on Maven Central.
+
+Snapshots are available on the Sonatype OSSRH: https://oss.sonatype.org/content/repositories/snapshots
 
 ![KICL HAS A BAD LOGO](http://i.imgur.com/KCUNexy.png)
