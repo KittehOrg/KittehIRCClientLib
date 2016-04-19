@@ -51,7 +51,7 @@ builder.listenException(Throwable::printStackTrace);
 
 ## Using KICL in your maven project
 
-KICL is built and deployed using Maven. Adding it as a dependency is simple as
+KICL is built and deployed using Maven. Releases are available on Maven Central. Adding it as a dependency is simple as adding the lines below to your pom.xml file:
 
 ```xml
 <dependency>
