@@ -40,9 +40,11 @@ public class Example {
 
 ### Maven
 ```xml
-<groupId>org.kitteh.irc</groupId>
-<artifactId>client-lib</artifactId>
-<version>1.0.0</version>
+<dependency>
+    <groupId>org.kitteh.irc</groupId>
+    <artifactId>client-lib</artifactId>
+    <version>1.0.0</version>
+</dependency>
 ```
 
 Releases are available on Maven Central.
