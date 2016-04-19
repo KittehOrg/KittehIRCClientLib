@@ -105,15 +105,9 @@
     </dependencies>
 
     <distributionManagement>
-        <repository>
-            <id>kittehReleases</id>
-            <name>Kitteh Releases</name>
-            <url>http://repo.kitteh.org/content/repositories/releases</url>
-        </repository>
         <snapshotRepository>
-            <id>kittehSnapshots</id>
-            <name>Kitteh Snapshots</name>
-            <url>http://repo.kitteh.org/content/repositories/snapshots</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
