@@ -12,6 +12,7 @@ CAP | multi-prefix | sasl | account-notify | away-notify | extended-join | tls
 * SASL mechanisms supported and the classes for using them:
     * PLAIN - `SaslPlain`
     * [ECDSA-NIST256P-CHALLENGE](advanced/ecdsa.md) - `SaslECDSANIST256PChallenge`
+    * EXTERNAL - `SaslExternal`
 * The TLS extension, which is a STARTTLS approach, will likely never be supported. It is horrible and evil and should be destroyed!
     * Use the [SSL](advanced/ssl.md) support that KICL has built-in instead.
 
