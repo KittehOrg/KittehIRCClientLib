@@ -57,7 +57,7 @@ KICL is built and deployed using Maven. Releases are available on Maven Central.
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>...</version>
+    <version>1.0.0</version>
     <scope>...</scope>
 </dependency>
 ```
@@ -90,5 +90,6 @@ public class FriendlyBot {
 
 Consult the [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/) to answer most questions.
 
-Visit us in `#kitteh.org` on `irc.esper.net` for a chat, or check out the
+Visit us in `#kitteh.org` on `irc.esper.net` for a chat (click
+[here](http://webchat.esper.net/?nick=kicl_...&channels=kitteh.org&prompt=1) to join), or check out the
 [Issue Tracker](https://github.com/KittehOrg/KittehIRCClientLib/issues) if you have trouble.
