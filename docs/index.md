@@ -81,7 +81,7 @@ public class FriendlyBot {
     @Handler
     public void onJoin(ChannelJoinEvent event) {
         Channel channel = event.getChannel();
-        this.client.sendMessage(channel, "Hi " + event.getUser().getNick() + "!");
+        channel.sendMessage("Hi " + event.getUser().getNick() + "!");
     }
 }
 ```
