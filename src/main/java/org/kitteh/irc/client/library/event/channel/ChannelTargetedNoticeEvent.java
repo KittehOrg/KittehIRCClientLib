@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.TargetedUserChannelMessageEventBase;
+import org.kitteh.irc.client.library.event.helper.Replyable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -38,7 +39,7 @@ import java.util.List;
  * the sender may be the client itself if the capability "echo-message" is
  * enabled.
  */
-public class ChannelTargetedNoticeEvent extends TargetedUserChannelMessageEventBase {
+public class ChannelTargetedNoticeEvent extends TargetedUserChannelMessageEventBase implements Replyable {
     /**
      * Creates the event.
      *
@@ -51,5 +52,10 @@ public class ChannelTargetedNoticeEvent extends TargetedUserChannelMessageEventB
      */
     public ChannelTargetedNoticeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
         super(client, originalMessages, sender, channel, prefix, message);
+    }
+
+    @Override
+    public void sendReply(@Nonnull String message) {
+        this.getClient().sendNotice(this.getTargetedName(), message);
     }
 }
