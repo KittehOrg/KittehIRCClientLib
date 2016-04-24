@@ -21,38 +21,32 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.channel;
+package org.kitteh.irc.client.library.event.helper;
 
-import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
-import org.kitteh.irc.client.library.event.helper.Replyable;
+import org.kitteh.irc.client.library.element.ChannelUserMode;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
- * Fires when a message is sent to a channel. Note that the sender may be the
- * client itself if the capability "echo-message" is enabled.
+ * An event involving a {@link Channel}, targeted at specific users by mode.
  */
-public class ChannelMessageEvent extends ActorChannelMessageEventBase<User> implements Replyable {
+public interface ChannelTargetedEvent extends ChannelEvent {
     /**
-     * Creates the event.
+     * Gets the prefix to which the message was sent.
      *
-     * @param client client for which this is occurring
-     * @param originalMessages original messages
-     * @param sender who sent it
-     * @param channel channel receiving
-     * @param message message sent
+     * @return the prefix targeted
      */
-    public ChannelMessageEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull String message) {
-        super(client, originalMessages, sender, channel, message);
-    }
+    @Nonnull
+    ChannelUserMode getPrefix();
 
-    @Override
-    public void sendReply(@Nonnull String message) {
-        this.getChannel().sendMessage(message);
+    /**
+     * Gets the full targeted name, such as "+#channel".
+     *
+     * @return targeted name
+     */
+    @Nonnull
+    default String getTargetedName() {
+        return this.getPrefix().getNickPrefix() + this.getChannel().getMessagingName();
     }
 }

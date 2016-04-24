@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.event.helper.ChannelEvent;
+import org.kitteh.irc.client.library.event.helper.ChannelTargetedEvent;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -46,7 +47,7 @@ import java.util.List;
  * @see ChannelEvent
  * @see MessageEvent
  */
-public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMessageEventBase<User> implements MessageEvent {
+public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMessageEventBase<User> implements ChannelTargetedEvent, MessageEvent {
     private final ChannelUserMode prefix;
 
     /**
@@ -71,6 +72,7 @@ public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMe
      * @return the prefix targeted
      */
     @Nonnull
+    @Override
     public final ChannelUserMode getPrefix() {
         return this.prefix;
     }
