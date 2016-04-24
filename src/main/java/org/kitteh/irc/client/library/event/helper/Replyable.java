@@ -21,35 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.user;
-
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
-import org.kitteh.irc.client.library.event.helper.Replyable;
+package org.kitteh.irc.client.library.event.helper;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
- * Fires when a notice is sent to the client.
+ * An event that can be replied to.
  */
-public class PrivateNoticeEvent extends ActorMessageEventBase<User> implements Replyable {
+public interface Replyable extends MessageEvent {
     /**
-     * Creates the event.
+     * Sends a reply to this message.
      *
-     * @param client client for which this is occurring
-     * @param originalMessages original messages
-     * @param message message sent
-     * @param sender who sent it
+     * @param message message to send back
      */
-    public PrivateNoticeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String message) {
-        super(client, originalMessages, sender, message);
-    }
-
-    @Override
-    public void sendReply(@Nonnull String message) {
-        this.getActor().sendNotice(message);
-    }
+    void sendReply(@Nonnull String message);
 }
