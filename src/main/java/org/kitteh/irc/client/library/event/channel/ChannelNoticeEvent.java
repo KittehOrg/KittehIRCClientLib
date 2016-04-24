@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
-import org.kitteh.irc.client.library.event.helper.Replyable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -37,7 +36,7 @@ import java.util.List;
  * Fires when a notice is sent to a channel. Note that the sender may be the
  * client itself if the capability "echo-message" is enabled.
  */
-public class ChannelNoticeEvent extends ActorChannelMessageEventBase<User> implements Replyable {
+public class ChannelNoticeEvent extends ActorChannelMessageEventBase<User> {
     /**
      * Creates the event.
      *
@@ -49,10 +48,5 @@ public class ChannelNoticeEvent extends ActorChannelMessageEventBase<User> imple
      */
     public ChannelNoticeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull String message) {
         super(client, originalMessages, sender, channel, message);
-    }
-
-    @Override
-    public void sendReply(@Nonnull String message) {
-        this.getChannel().sendNotice(message);
     }
 }
