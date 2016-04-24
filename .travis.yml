@@ -13,6 +13,6 @@ branches:
 before_install:
   - pip install --user codecov
 install: true
-script: "if [ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'master' ]; then mvn deploy -P duckswithsauce --settings .travis_settings.xml; else mvn test -B; fi"
+script: "if [ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'master' -o ${TRAVIS_BRANCH} = 'next' ]; then mvn deploy -P duckswithsauce --settings .travis_settings.xml; else mvn test -B; fi"
 after_success:
   - codecov
