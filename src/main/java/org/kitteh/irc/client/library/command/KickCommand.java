@@ -92,7 +92,7 @@ public class KickCommand extends ChannelCommand {
      */
     @Nonnull
     public KickCommand reason(@Nullable String reason) {
-        this.reason = (reason == null) ? null : Sanity.safeMessageCheck(reason, "Reason");;
+        this.reason = (reason == null) ? null : Sanity.safeMessageCheck(reason, "Reason");
         return this;
     }
 
