@@ -46,6 +46,22 @@ public class TopicCommandTest {
     }
 
     /**
+     * Tests a simple topic check after a topic's been removed.
+     */
+    @Test
+    public void testNoNewAnymoreNull() {
+        Client client = Mockito.mock(Client.class);
+        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+
+        TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
+        topicCommand.topic(TOPIC);
+        topicCommand.topic(null);
+        topicCommand.execute();
+
+        Mockito.verify(client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
+    }
+
+    /**
      * Tests a simple topic set's toString.
      */
     @Test
