@@ -17,4 +17,15 @@ public class PairTest {
         Assert.assertEquals(4, sut.getRight().intValue());
         Assert.assertTrue(sut.toString().contains("Cats"));
     }
+
+    /**
+     * Tests more pairstuff.
+     */
+    @Test
+    public void testPairMore() {
+        Pair<String, Integer> sut = Pair.of("Cats", 4);
+        Assert.assertEquals("Cats", sut.getLeft());
+        Assert.assertEquals(4, sut.getRight().intValue());
+        Assert.assertTrue(sut.toString().contains("Cats"));
+    }
 }
