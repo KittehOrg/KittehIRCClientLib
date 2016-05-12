@@ -25,6 +25,21 @@ public class AwayCommandTest {
     }
 
     /**
+     * Tests a less simple away removal.
+     */
+    @Test
+    public void testRemoveNull() {
+        Client client = Mockito.mock(Client.class);
+
+        AwayCommand awayCommand = new AwayCommand(client);
+        awayCommand.message("meow");
+        awayCommand.message(null);
+        awayCommand.execute();
+
+        Mockito.verify(client, Mockito.times(1)).sendRawLine("AWAY");
+    }
+
+    /**
      * Tests a simple away removal after a message has been removed.
      */
     @Test
