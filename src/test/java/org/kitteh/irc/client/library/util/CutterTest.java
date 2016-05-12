@@ -28,6 +28,17 @@ public class CutterTest {
     }
 
     /**
+     * Tests a loooong start.
+     */
+    @Test
+    public void cutLong() {
+        List<String> output = new Cutter.DefaultWordCutter().split("meoooow", 5);
+        Assert.assertEquals(2, output.size());
+        Assert.assertEquals("meooo", output.get(0));
+        Assert.assertEquals("ow", output.get(1));
+    }
+
+    /**
      * Tests cutting when not necessary.
      */
     @Test
