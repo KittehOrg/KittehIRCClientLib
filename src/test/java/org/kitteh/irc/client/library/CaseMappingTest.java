@@ -40,7 +40,8 @@ public class CaseMappingTest {
             Assert.assertTrue("Missing CaseMapping " + caseMapping.name(), test.containsKey(caseMapping));
         }
         for (Map.Entry<CaseMapping, Pair<String, String>> entry : test.entrySet()) {
-            Assert.assertEquals("", entry.getKey().toLowerCase(entry.getValue().getLeft()), entry.getValue().getRight());
+            Assert.assertEquals("Incorrect lowercasing", entry.getKey().toLowerCase(entry.getValue().getLeft()), entry.getValue().getRight());
+            Assert.assertTrue("Incorrect equalsIgnoreCase", entry.getKey().areEqualIgnoringCase(entry.getValue().getLeft(), entry.getValue().getRight()));
         }
     }
 }
