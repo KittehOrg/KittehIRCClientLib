@@ -2,6 +2,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
@@ -41,6 +42,7 @@ public class EventListenerTest {
         Mockito.when(this.client.getEventManager()).thenReturn(this.eventManager);
         Mockito.when(this.client.getExceptionListener()).thenReturn(this.exceptionListener);
         Mockito.when(this.serverInfo.getCaseMapping()).thenReturn(CaseMapping.ASCII);
+        Mockito.when(this.client.getISupportManager()).thenReturn(new ManagerISupport(this.client));
     }
 
     // BEGIN TODO - not have this be stolen from IRCClient
@@ -101,6 +103,10 @@ public class EventListenerTest {
 
     private ArgumentMatcher<Exception> exception(Class<? extends Exception> clazz, String message) {
         return o -> (o != null) && clazz.isAssignableFrom(o.getClass()) && ((message == null) ? (((Exception) o).getMessage() == null) : ((Exception) o).getMessage().contains(message));
+    }
+
+    private ArgumentMatcher<ISupportParameter> iSupportParameter(@Nonnull String name) {
+        return o -> (o != null) && ((ISupportParameter) o).getName().equals(name);
     }
 
     private <T> ArgumentMatcher<T> match(Class<T> clazz, Function<T, Boolean>... functions) {
@@ -171,10 +177,31 @@ public class EventListenerTest {
     public void test4VersionNoAddressOrVersion() {
         this.fireLine(":irc.network 004 Kitteh");
         Mockito.verify(this.client, Mockito.times(1)).resetServerInfo();
-        Mockito.verify(this.serverInfo, Mockito.times(0)).setAddress("Mockito.anyString()");
+        Mockito.verify(this.serverInfo, Mockito.times(0)).setAddress(Mockito.anyString());
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();
         Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class)));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server address and version missing.")));
+    }
+
+    @Test
+    public void test5ISUPPORT() {
+        this.fireLine(":irc.network 005 Kitteh SAFELIST ELIST=CTU CHANTYPES=# EXCEPTS INVEX");
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("SAFELIST")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("ELIST")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("CHANTYPES")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("EXCEPTS")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("INVEX")));
+        Mockito.verify(this.serverInfo, Mockito.times(5)).addISupportParameter(Mockito.any());
+    }
+
+    @Test
+    public void testMOTD() {
+        this.fireLine(":irc.network 375 Kitteh :- irc.network Message of the Day -");
+        this.fireLine(":irc.network 372 Kitteh :-   Hello                         ");
+        this.fireLine(":irc.network 372 Kitteh");
+        this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
+        Mockito.verify(this.serverInfo, Mockito.times(1)).setMOTD(Mockito.argThat(o -> o != null && ((List<String>) o).size() == 1 && ((List<String>) o).get(0).contains("Hello")));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message of incorrect length")));
     }
 }
