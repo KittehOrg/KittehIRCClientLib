@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.element.ChannelMode;
 import org.kitteh.irc.client.library.element.ChannelModeStatus;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.Staleable;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.CIKeyMap;
@@ -43,6 +44,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +52,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -339,7 +342,13 @@ class ActorProvider implements Resettable {
             this.channelModes = ChannelModeStatusList.of(channel.channelModes.values());
             this.topic = topic;
             Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(ActorProvider.this.client);
-            newModes.putAll(channel.modes);
+            Optional<ISupportParameter.Prefix> prefix = ActorProvider.this.client.getServerInfo().getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
+            Comparator<ChannelUserMode> comparator = prefix.isPresent() ? Comparator.comparingInt(prefix.get().getModes()::indexOf) : null;
+            for (Map.Entry<String, Set<ChannelUserMode>> entry : channel.modes.entrySet()) {
+                Set<ChannelUserMode> newSet = comparator == null ? new TreeSet<>() : new TreeSet<>(comparator);
+                newSet.addAll(entry.getValue());
+                newModes.put(entry.getKey(), newSet);
+            }
             this.modes = Collections.unmodifiableMap(newModes);
             this.names = Collections.unmodifiableList(new ArrayList<>(this.modes.keySet()));
             this.nickMap = Collections.unmodifiableMap(channel.modes.keySet().stream().map(ActorProvider.this.trackedUsers::get).filter(Objects::nonNull).map(IRCUser::snapshot).collect(Collectors.toMap(User::getNick, Function.identity())));
