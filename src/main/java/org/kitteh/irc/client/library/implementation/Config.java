@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.UserTracker;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -138,6 +139,7 @@ final class Config {
     static final Entry<String> SSL_KEY_PASSWORD = new Entry<>(null, String.class);
     static final Entry<TrustManagerFactory> SSL_TRUST_MANAGER_FACTORY = new Entry<>(null, TrustManagerFactory.class);
     static final Entry<String> USER = new Entry<>("Kitteh", String.class);
+    static final Entry<UserTracker> USER_TRACKER = new Entry<>(new UserTracker.Default(), UserTracker.class);
     static final Entry<String> WEBIRC_HOST = new Entry<>(null, String.class);
     static final Entry<InetAddress> WEBIRC_IP = new Entry<>(null, InetAddress.class);
     static final Entry<String> WEBIRC_PASSWORD = new Entry<>(null, String.class);

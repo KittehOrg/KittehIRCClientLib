@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
+import org.kitteh.irc.client.library.feature.UserTracker;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -274,6 +275,16 @@ public interface Client {
         Builder user(@Nonnull String user);
 
         /**
+         * Sets the {@link UserTracker} for this Client.
+         *
+         * @param userTracker user tracker to utilize
+         * @return this builder
+         * @throws IllegalArgumentException for null user tracker
+         */
+        @Nonnull
+        Builder userTracker(@Nonnull UserTracker userTracker);
+
+        /**
          * Sets all the information for, and enables, WebIRC.
          * <p>
          * By default, WebIRC is disabled.
@@ -496,6 +507,14 @@ public interface Client {
      */
     @Nonnull
     Optional<User> getUser();
+
+    /**
+     * Gets the user tracker.
+     *
+     * @return the user tracker
+     */
+    @Nonnull
+    UserTracker getUserTracker();
 
     /**
      * Checks to see if this client is the same as the given user.

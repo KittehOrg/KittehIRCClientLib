@@ -5,6 +5,7 @@ import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.UserTracker;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
 
@@ -231,6 +232,12 @@ class FakeClient extends InternalClient {
     @Override
     public Optional<User> getUser() {
         return Optional.empty();
+    }
+
+    @Nonnull
+    @Override
+    public UserTracker getUserTracker() {
+        return null;
     }
 
     @Override

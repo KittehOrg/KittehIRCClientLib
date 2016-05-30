@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.UserTracker;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -188,6 +189,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
         Sanity.safeMessageCheck(user, "User");
         Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
         this.config.set(Config.USER, user);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public ClientBuilder userTracker(@Nonnull UserTracker userTracker) {
+        this.config.set(Config.USER_TRACKER, Sanity.nullCheck(userTracker, "User tracker cannot be null"));
         return this;
     }
 

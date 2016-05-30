@@ -28,6 +28,7 @@ import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ChannelModeStatusList;
 import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -872,7 +873,6 @@ class EventListener {
                 if (user.getNick().equals(this.client.getNick())) {
                     this.client.getActorProvider().trackChannel(channel);
                     this.client.sendRawLine("MODE " + channel.getName());
-                    this.client.sendRawLine("WHO " + channel.getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
                     if (this.client.getIntendedChannels().contains(channel.getName())) {
                         joinEvent = new RequestedChannelJoinCompleteEvent(this.client, event.getOriginalMessages(), channel.snapshot(), user.snapshot());
                     }

@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.feature.UserTracker;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
@@ -89,6 +90,7 @@ final class IRCClient extends InternalClient {
     private final EventManager eventManager = new ManagerEvent(this);
     private final ManagerISupport iSupportManager = new ManagerISupport(this);
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
+    private final UserTracker userTracker;
 
     private final Listener<Exception> exceptionListener;
     private final Listener<String> inputListener;
@@ -111,6 +113,8 @@ final class IRCClient extends InternalClient {
 
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
+        this.userTracker = config.getNotNull(Config.USER_TRACKER);
+        this.eventManager.registerEventListener(this.userTracker);
     }
 
     @Override
@@ -243,6 +247,12 @@ final class IRCClient extends InternalClient {
             return Optional.empty();
         }
         return Optional.of(user.snapshot());
+    }
+
+    @Nonnull
+    @Override
+    public UserTracker getUserTracker() {
+        return this.userTracker;
     }
 
     @Override
