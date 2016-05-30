@@ -192,6 +192,23 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-verifier-plugin</artifactId>
+                        <version>1.1</version>
+                        <configuration>
+                            <verificationFile>${project.build.directory}/verifications-test.xml</verificationFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>main</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.6</version>
                         <executions>
@@ -230,6 +247,14 @@
                     <include>LICENSE</include>
                     <include>NOTICE</include>
                 </includes>
+            </resource>
+            <resource>
+                <targetPath>${project.build.directory}</targetPath>
+                <directory>${basedir}/src/test/verifier/</directory>
+                <includes>
+                    <include>verifications-test.xml</include>
+                </includes>
+                <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
