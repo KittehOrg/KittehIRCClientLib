@@ -79,6 +79,7 @@ import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
+import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.event.user.WhoisEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
@@ -1033,6 +1034,16 @@ class EventListener {
         } else {
             this.trackException(event, "TOPIC message sent for invalid channel name");
         }
+    }
+
+    @CommandFilter("WALLOPS")
+    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void wallops(ClientReceiveCommandEvent event) {
+        if (event.getParameters().size() < 1) {
+            this.trackException(event, "WALLOPS message of incorrect length");
+            return;
+        }
+        this.fire(new WallopsEvent(this.client, event.getOriginalMessages(), event.getActor(), event.getParameters().get(0)));
     }
 
     private static class MessageTargetInfo {
