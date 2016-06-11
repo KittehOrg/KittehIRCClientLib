@@ -52,10 +52,16 @@ final class Config {
     static final class Entry<Type> {
         private final Type defaultValue;
         private final Class<Type> type;
+        private final boolean noToString;
 
         private Entry(@Nullable Type defaultValue, @Nonnull Class<Type> type) {
+            this(defaultValue, type, false);
+        }
+
+        private Entry(@Nullable Type defaultValue, @Nonnull Class<Type> type, boolean noToString) {
             this.defaultValue = defaultValue;
             this.type = type;
+            this.noToString = noToString;
         }
 
         /**
@@ -131,16 +137,16 @@ final class Config {
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);
     static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6697), InetSocketAddress.class);
-    static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class);
+    static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class, true);
     static final Entry<Boolean> SSL = new Entry<>(true, Boolean.class);
-    static final Entry<File> SSL_KEY_CERT_CHAIN = new Entry<>(null, File.class);
-    static final Entry<File> SSL_KEY = new Entry<>(null, File.class);
-    static final Entry<String> SSL_KEY_PASSWORD = new Entry<>(null, String.class);
+    static final Entry<File> SSL_KEY_CERT_CHAIN = new Entry<>(null, File.class, true);
+    static final Entry<File> SSL_KEY = new Entry<>(null, File.class, true);
+    static final Entry<String> SSL_KEY_PASSWORD = new Entry<>(null, String.class, true);
     static final Entry<TrustManagerFactory> SSL_TRUST_MANAGER_FACTORY = new Entry<>(null, TrustManagerFactory.class);
     static final Entry<String> USER = new Entry<>("Kitteh", String.class);
     static final Entry<String> WEBIRC_HOST = new Entry<>(null, String.class);
     static final Entry<InetAddress> WEBIRC_IP = new Entry<>(null, InetAddress.class);
-    static final Entry<String> WEBIRC_PASSWORD = new Entry<>(null, String.class);
+    static final Entry<String> WEBIRC_PASSWORD = new Entry<>(null, String.class, true);
     static final Entry<String> WEBIRC_USER = new Entry<>(null, String.class);
 
     /**
@@ -231,9 +237,17 @@ final class Config {
         for (Field field : Config.class.getDeclaredFields()) {
             if (field.getType().equals(Config.Entry.class) && ((field.getModifiers() & (Modifier.PRIVATE | Modifier.PROTECTED | Modifier.PUBLIC | Modifier.STATIC)) == Modifier.STATIC)) {
                 try {
-                    toStringer.add(field.getName(), this.get((Entry<?>) field.get(null)));
+                    Entry<?> entry = (Entry<?>) field.get(null);
+                    Object setEntry = this.get(entry);
+                    String info;
+                    if (entry.noToString) {
+                        info = setEntry == null ? null : "[[ENTRY NOT NULL BUT SENSITIVE DATA]]";
+                    } else {
+                        info = setEntry.toString();
+                    }
+                    toStringer.add(field.getName(), info);
                 } catch (IllegalAccessException e) {
-                    toStringer.add(field.getName(), "EXCEPTION PREVENTED ACQUISITION");
+                    toStringer.add(field.getName(), "[[EXCEPTION PREVENTED ACQUISITION]]");
                 }
             }
         }
