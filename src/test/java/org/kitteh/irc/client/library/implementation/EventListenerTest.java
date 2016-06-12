@@ -6,6 +6,7 @@ import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.util.StringUtil;
@@ -203,5 +204,17 @@ public class EventListenerTest {
         this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setMOTD(Mockito.argThat(o -> o != null && ((List<String>) o).size() == 1 && ((List<String>) o).get(0).contains("Hello")));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message of incorrect length")));
+    }
+
+    @Test
+    public void testWALLOPS() {
+        this.fireLine(":irc.network WALLOPS :Meow meow");
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(WallopsEvent.class))); // TODO test message and sender
+    }
+
+    @Test
+    public void testWALLOPSFail() {
+        this.fireLine(":irc.network WALLOPS");
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "WALLOPS message of incorrect length")));
     }
 }

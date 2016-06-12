@@ -63,7 +63,7 @@ public class WallopsCommand extends Command {
         if (this.message == null) {
             throw new IllegalStateException("Message not defined");
         }
-        this.getClient().sendRawLine("WALLOPS " + this.message);
+        this.getClient().sendRawLine("WALLOPS :" + this.message);
     }
 
     @Override
