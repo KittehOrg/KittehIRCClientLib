@@ -47,18 +47,6 @@ public class OperCommand extends Command {
     }
 
     /**
-     * Sets the password for the command.
-     *
-     * @param password password for the user
-     * @return this command
-     */
-    @Nonnull
-    public OperCommand password(@Nonnull String password) {
-        this.password = Sanity.safeMessageCheck(password, "password");
-        return this;
-    }
-
-    /**
      * Sets user for the command.
      *
      * @param user target nick
@@ -71,13 +59,25 @@ public class OperCommand extends Command {
         return this;
     }
 
+    /**
+     * Sets the password for the command.
+     *
+     * @param password password for the user
+     * @return this command
+     */
+    @Nonnull
+    public OperCommand password(@Nonnull String password) {
+        this.password = Sanity.safeMessageCheck(password, "password");
+        return this;
+    }
+
     @Override
     public void execute() {
-        if (this.password == null) {
-            throw new IllegalStateException("Password not defined");
-        }
         if (this.user == null) {
             throw new IllegalStateException("User not defined");
+        }
+        if (this.password == null) {
+            throw new IllegalStateException("Password not defined");
         }
         this.getClient().sendRawLine("OPER " + this.user + ' ' + this.password);
     }
