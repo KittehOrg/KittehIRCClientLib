@@ -84,6 +84,6 @@ public class OperCommand extends Command {
 
     @Override
     public String toString() {
-        return new ToStringer(this).add("user", "AzureDiamond").add("password", "hunter2").toString();
+        return new ToStringer(this).add("user", this.user == null ? null : "AzureDiamond").add("password", this.password == null ? null : "hunter2").toString();
     }
 }
