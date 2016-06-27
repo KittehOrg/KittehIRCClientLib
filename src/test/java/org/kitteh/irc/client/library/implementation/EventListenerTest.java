@@ -111,7 +111,7 @@ public class EventListenerTest {
 
     private <T> ArgumentMatcher<T> match(Class<T> clazz, Function<T, Boolean>... functions) {
         return o -> {
-            if ((o == null) || clazz.isAssignableFrom(o.getClass())) {
+            if ((o == null) || !clazz.isAssignableFrom(o.getClass())) {
                 return false;
             }
             for (Function<T, Boolean> function : functions) {
@@ -152,7 +152,7 @@ public class EventListenerTest {
         Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setVersion("kittydis-1.3.3.7-dev");
         Mockito.verify(this.client, Mockito.times(1)).startSending();
-        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class)));
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class, event -> event.getServer().getName().equals("irc.network") && event.getServerInfo().equals(this.serverInfo))));
     }
 
     /**
