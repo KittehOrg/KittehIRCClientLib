@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Commands a la MODE.
  */
-public class ModeCommand extends ChannelCommand {
+public class ChannelModeCommand extends ChannelCommand {
     private static final int MODES_PER_LINE = 3;
 
     private final List<ModeStatus<ChannelMode>> changes = new ArrayList<>();
@@ -54,7 +54,7 @@ public class ModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if null parameters or Channel is from
      * another Client
      */
-    public ModeCommand(@Nonnull Client client, @Nonnull String channel) {
+    public ChannelModeCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client, channel);
     }
 
@@ -67,7 +67,7 @@ public class ModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if mode invalid
      */
     @Nonnull
-    public ModeCommand add(boolean add, @Nonnull ChannelMode mode) {
+    public ChannelModeCommand add(boolean add, @Nonnull ChannelMode mode) {
         return this.addChange(add, mode, null);
     }
 
@@ -82,7 +82,7 @@ public class ModeCommand extends ChannelCommand {
      * different client or parameter is null
      */
     @Nonnull
-    public ModeCommand add(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
+    public ChannelModeCommand add(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
         Sanity.nullCheck(parameter, "Parameter cannot be null");
         return this.addChange(add, mode, parameter);
     }
@@ -98,14 +98,14 @@ public class ModeCommand extends ChannelCommand {
      * user comes from a different client or parameter is null
      */
     @Nonnull
-    public ModeCommand add(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
+    public ChannelModeCommand add(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
         Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
         return this.addChange(add, mode, parameter.getNick());
     }
 
     @Nonnull
-    private synchronized ModeCommand addChange(boolean add, @Nonnull ChannelMode mode, @Nullable String parameter) {
+    private synchronized ChannelModeCommand addChange(boolean add, @Nonnull ChannelMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {

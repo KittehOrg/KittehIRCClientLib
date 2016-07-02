@@ -25,7 +25,7 @@ package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.KickCommand;
-import org.kitteh.irc.client.library.command.ModeCommand;
+import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
@@ -217,8 +217,8 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return new mode command
      */
     @Nonnull
-    default ModeCommand newModeCommand() {
-        return new ModeCommand(this.getClient(), this.getName());
+    default ChannelModeCommand newModeCommand() {
+        return new ChannelModeCommand(this.getClient(), this.getName());
     }
 
     /**
