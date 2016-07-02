@@ -24,7 +24,7 @@
 package org.kitteh.irc.client.library.event.helper;
 
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 
 import javax.annotation.Nonnull;
 
