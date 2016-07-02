@@ -94,7 +94,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -281,7 +280,7 @@ class EventListener {
         this.whoisBuilder = null;
     }
 
-    private final List<ServerMessage> whoMessages = new LinkedList<>();
+    private final List<ServerMessage> whoMessages = new ArrayList<>();
 
     @NumericFilter(352) // WHO
     @NumericFilter(354) // WHOX
@@ -394,7 +393,7 @@ class EventListener {
         }
     }
 
-    private final List<ServerMessage> namesMessages = new LinkedList<>();
+    private final List<ServerMessage> namesMessages = new ArrayList<>();
 
     @NumericFilter(353) // NAMES
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
@@ -442,8 +441,8 @@ class EventListener {
         }
     }
 
-    private final List<String> motd = new LinkedList<>();
-    private final List<ServerMessage> motdMessages = new LinkedList<>();
+    private final List<String> motd = new ArrayList<>();
+    private final List<ServerMessage> motdMessages = new ArrayList<>();
 
     @NumericFilter(375)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
@@ -517,8 +516,8 @@ class EventListener {
         }
     }
 
-    private final List<String> monitorList = new LinkedList<>();
-    private final List<ServerMessage> monitorListMessages = new LinkedList<>();
+    private final List<String> monitorList = new ArrayList<>();
+    private final List<ServerMessage> monitorListMessages = new ArrayList<>();
 
     @NumericFilter(732) // Monitor list
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
@@ -556,10 +555,10 @@ class EventListener {
         this.fire(new MonitoredNickListFullEvent(this.client, event.getOriginalMessages(), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
     }
 
-    private final List<CapabilityState> capList = new LinkedList<>();
-    private final List<ServerMessage> capListMessages = new LinkedList<>();
-    private final List<CapabilityState> capLs = new LinkedList<>();
-    private final List<ServerMessage> capLsMessages = new LinkedList<>();
+    private final List<CapabilityState> capList = new ArrayList<>();
+    private final List<ServerMessage> capListMessages = new ArrayList<>();
+    private final List<CapabilityState> capLs = new ArrayList<>();
+    private final List<ServerMessage> capLsMessages = new ArrayList<>();
     private static final int CAPABILITY_LIST_INDEX_DEFAULT = 2;
 
     @CommandFilter("CAP")
@@ -629,7 +628,7 @@ class EventListener {
                 this.fire(responseEvent);
                 break;
             case "new":
-                List<CapabilityState> statesAdded = new LinkedList<>(this.client.getCapabilityManager().getSupportedCapabilities());
+                List<CapabilityState> statesAdded = new ArrayList<>(this.client.getCapabilityManager().getSupportedCapabilities());
                 statesAdded.addAll(capabilityStateList);
                 this.client.getCapabilityManager().setSupportedCapabilities(statesAdded);
                 responseEvent = new CapabilitiesNewSupportedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
@@ -637,7 +636,7 @@ class EventListener {
                 this.fire(responseEvent);
                 break;
             case "del":
-                List<CapabilityState> statesRemaining = new LinkedList<>(this.client.getCapabilityManager().getSupportedCapabilities());
+                List<CapabilityState> statesRemaining = new ArrayList<>(this.client.getCapabilityManager().getSupportedCapabilities());
                 statesRemaining.removeAll(capabilityStateList);
                 this.client.getCapabilityManager().setSupportedCapabilities(statesRemaining);
                 responseEvent = new CapabilitiesDeletedSupportedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);

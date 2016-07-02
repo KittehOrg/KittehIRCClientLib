@@ -43,8 +43,8 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -533,7 +533,7 @@ final class IRCClient extends InternalClient {
     }
 
     private List<String> handleArgs(@Nonnull String[] split, int start) {
-        final List<String> argsList = new LinkedList<>();
+        final List<String> argsList = new ArrayList<>();
 
         int index = start;
         for (; index < split.length; index++) {
@@ -571,7 +571,7 @@ final class IRCClient extends InternalClient {
             tags = this.messageTagManager.getTags(tagSection.substring(1));
             index++;
         } else {
-            tags = Collections.unmodifiableList(new LinkedList<>());
+            tags = Collections.unmodifiableList(new ArrayList<>());
         }
 
         final String actorName;

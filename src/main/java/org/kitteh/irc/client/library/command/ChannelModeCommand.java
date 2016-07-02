@@ -35,7 +35,6 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -119,7 +118,7 @@ public class ChannelModeCommand extends ChannelCommand {
 
     @Override
     public synchronized void execute() {
-        List<ModeStatus<ChannelMode>> queue = new LinkedList<>();
+        List<ModeStatus<ChannelMode>> queue = new ArrayList<>(MODES_PER_LINE);
         for (ModeStatus<ChannelMode> modeChange : this.changes) {
             queue.add(modeChange);
             if (queue.size() == MODES_PER_LINE) {

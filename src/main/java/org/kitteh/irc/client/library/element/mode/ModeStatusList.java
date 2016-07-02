@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,7 +55,7 @@ public class ModeStatusList<ModeType extends Mode> {
         Map<Character, ChannelMode> modes = new HashMap<>();
         client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
         client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));
-        List<ModeStatus<ChannelMode>> list = new LinkedList<>();
+        List<ModeStatus<ChannelMode>> list = new ArrayList<>();
         String[] args = string.split(" ");
         int currentArg = -1;
         while (++currentArg < args.length) {
