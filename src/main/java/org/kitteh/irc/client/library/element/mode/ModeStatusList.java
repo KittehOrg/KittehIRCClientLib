@@ -50,12 +50,16 @@ public class ModeStatusList<ModeType extends Mode> {
      */
     @Nonnull
     public static ModeStatusList<ChannelMode> fromChannel(@Nonnull Client client, @Nonnull String string) {
-        Sanity.nullCheck(client, "Client cannot be null");
-        Sanity.safeMessageCheck(string, "String");
         Map<Character, ChannelMode> modes = new HashMap<>();
         client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
         client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));
-        List<ModeStatus<ChannelMode>> list = new ArrayList<>();
+        return from(client, string, modes);
+    }
+
+    private static <ModeType extends Mode> ModeStatusList<ModeType> from(@Nonnull Client client, @Nonnull String string, @Nonnull Map<Character, ModeType> modes) {
+        Sanity.nullCheck(client, "Client cannot be null");
+        Sanity.safeMessageCheck(string, "String");
+        List<ModeStatus<ModeType>> list = new ArrayList<>();
         String[] args = string.split(" ");
         int currentArg = -1;
         while (++currentArg < args.length) {
@@ -73,12 +77,12 @@ public class ModeStatusList<ModeType extends Mode> {
                         add = false;
                         break;
                     default:
-                        ChannelMode mode = modes.get(modeChar);
+                        ModeType mode = modes.get(modeChar);
                         if (mode == null) {
                             throw new IllegalArgumentException("Contains non-registered mode: " + modeChar);
                         }
                         String target = null;
-                        if ((mode instanceof ChannelUserMode) || (add ? mode.getType().isParameterRequiredOnSetting() : mode.getType().isParameterRequiredOnRemoval())) {
+                        if (mode instanceof ChannelMode && ((mode instanceof ChannelUserMode) || (add ? ((ChannelMode)mode).getType().isParameterRequiredOnSetting() : ((ChannelMode)mode).getType().isParameterRequiredOnRemoval()))) {
                             target = args[++currentArg];
                         }
                         list.add((target == null) ? new ModeStatus<>(add, mode) : new ModeStatus<>(add, mode, target));
