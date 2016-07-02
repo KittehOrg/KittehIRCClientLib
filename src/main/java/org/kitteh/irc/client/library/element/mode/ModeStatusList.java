@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 /**
  * A list of channel mode statuses.
  */
-public class ChannelModeStatusList {
+public class ModeStatusList<ModeType extends Mode> {
     /**
      * Creates a list from a given string input such as "+o Kittens".
      *
@@ -50,13 +50,13 @@ public class ChannelModeStatusList {
      * @return list
      */
     @Nonnull
-    public static ChannelModeStatusList from(@Nonnull Client client, @Nonnull String string) {
+    public static ModeStatusList<ChannelMode> fromChannel(@Nonnull Client client, @Nonnull String string) {
         Sanity.nullCheck(client, "Client cannot be null");
         Sanity.safeMessageCheck(string, "String");
         Map<Character, ChannelMode> modes = new HashMap<>();
         client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
         client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));
-        List<ChannelModeStatus> list = new LinkedList<>();
+        List<ModeStatus<ChannelMode>> list = new LinkedList<>();
         String[] args = string.split(" ");
         int currentArg = -1;
         while (++currentArg < args.length) {
@@ -82,11 +82,11 @@ public class ChannelModeStatusList {
                         if ((mode instanceof ChannelUserMode) || (add ? mode.getType().isParameterRequiredOnSetting() : mode.getType().isParameterRequiredOnRemoval())) {
                             target = args[++currentArg];
                         }
-                        list.add((target == null) ? new ChannelModeStatus(add, mode) : new ChannelModeStatus(add, mode, target));
+                        list.add((target == null) ? new ModeStatus<>(add, mode) : new ModeStatus<>(add, mode, target));
                 }
             }
         }
-        return ChannelModeStatusList.of(list);
+        return ModeStatusList.of(list);
     }
 
     /**
@@ -96,10 +96,10 @@ public class ChannelModeStatusList {
      * @return list
      */
     @Nonnull
-    public static ChannelModeStatusList of(@Nonnull ChannelModeStatus... statuses) {
+    public static <ModeType extends Mode> ModeStatusList<ModeType> of(@Nonnull ModeStatus<ModeType>... statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
-        Sanity.truthiness((statuses.length <= 1) || (Arrays.stream(statuses).map(ChannelModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
-        return new ChannelModeStatusList(Arrays.asList(statuses));
+        Sanity.truthiness((statuses.length <= 1) || (Arrays.stream(statuses).map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
+        return new ModeStatusList<>(Arrays.asList(statuses));
     }
 
     /**
@@ -109,16 +109,16 @@ public class ChannelModeStatusList {
      * @return list
      */
     @Nonnull
-    public static ChannelModeStatusList of(@Nonnull Collection<ChannelModeStatus> statuses) {
+    public static <ModeType extends Mode> ModeStatusList<ModeType> of(@Nonnull Collection<ModeStatus<ModeType>> statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
-        List<ChannelModeStatus> list = new ArrayList<>(statuses);
-        Sanity.truthiness((list.size() <= 1) || (list.stream().map(ChannelModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
-        return new ChannelModeStatusList(list);
+        List<ModeStatus<ModeType>> list = new ArrayList<>(statuses);
+        Sanity.truthiness((list.size() <= 1) || (list.stream().map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
+        return new ModeStatusList<>(list);
     }
 
-    private final List<ChannelModeStatus> statuses;
+    private final List<ModeStatus<ModeType>> statuses;
 
-    private ChannelModeStatusList(List<ChannelModeStatus> statuses) {
+    private ModeStatusList(List<ModeStatus<ModeType>> statuses) {
         this.statuses = statuses;
     }
 
@@ -128,7 +128,7 @@ public class ChannelModeStatusList {
      * @param mode mode to check
      * @return true if present at least once
      */
-    public boolean containsMode(@Nonnull ChannelMode mode) {
+    public boolean containsMode(@Nonnull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         return this.statuses.stream().filter(status -> status.getMode().equals(mode)).count() > 0;
     }
@@ -140,7 +140,7 @@ public class ChannelModeStatusList {
      * @return all matching modes or empty if none match
      */
     @Nonnull
-    public List<ChannelModeStatus> getStatusByMode(@Nonnull ChannelMode mode) {
+    public List<ModeStatus> getStatusByMode(@Nonnull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().equals(mode)).collect(Collectors.toList()));
     }
@@ -151,7 +151,7 @@ public class ChannelModeStatusList {
      * @return status list
      */
     @Nonnull
-    public List<ChannelModeStatus> getStatuses() {
+    public List<ModeStatus<ModeType>> getStatuses() {
         return Collections.unmodifiableList(this.statuses);
     }
 
@@ -165,7 +165,7 @@ public class ChannelModeStatusList {
         StringBuilder modes = new StringBuilder(this.statuses.size() * 2);
         StringBuilder parameters = new StringBuilder(100); // Golly, that's arbitrary.
         Boolean add = null;
-        for (ChannelModeStatus change : this.statuses) {
+        for (ModeStatus change : this.statuses) {
             if ((add == null) || (add != change.isSetting())) {
                 add = change.isSetting();
                 modes.append(add ? '+' : '-');

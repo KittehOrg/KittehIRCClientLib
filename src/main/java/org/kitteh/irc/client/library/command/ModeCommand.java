@@ -25,8 +25,8 @@ package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
-import org.kitteh.irc.client.library.element.mode.ChannelModeStatus;
-import org.kitteh.irc.client.library.element.mode.ChannelModeStatusList;
+import org.kitteh.irc.client.library.element.mode.ModeStatus;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -44,7 +44,7 @@ import java.util.List;
 public class ModeCommand extends ChannelCommand {
     private static final int MODES_PER_LINE = 3;
 
-    private final List<ChannelModeStatus> changes = new ArrayList<>();
+    private final List<ModeStatus<ChannelMode>> changes = new ArrayList<>();
 
     /**
      * Constructs a MODE command for a given channel.
@@ -110,17 +110,17 @@ public class ModeCommand extends ChannelCommand {
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter, "Parameter");
-            this.changes.add(new ChannelModeStatus(add, mode, parameter));
+            this.changes.add(new ModeStatus<>(add, mode, parameter));
         } else {
-            this.changes.add(new ChannelModeStatus(add, mode));
+            this.changes.add(new ModeStatus<>(add, mode));
         }
         return this;
     }
 
     @Override
     public synchronized void execute() {
-        List<ChannelModeStatus> queue = new LinkedList<>();
-        for (ChannelModeStatus modeChange : this.changes) {
+        List<ModeStatus<ChannelMode>> queue = new LinkedList<>();
+        for (ModeStatus<ChannelMode> modeChange : this.changes) {
             queue.add(modeChange);
             if (queue.size() == MODES_PER_LINE) {
                 this.send(queue);
@@ -131,8 +131,8 @@ public class ModeCommand extends ChannelCommand {
         }
     }
 
-    private void send(@Nonnull List<ChannelModeStatus> queue) {
-        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + ChannelModeStatusList.of(new ArrayList<>(queue)).getStatusString());
+    private void send(@Nonnull List<ModeStatus<ChannelMode>> queue) {
+        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + ModeStatusList.of(new ArrayList<>(queue)).getStatusString());
         queue.clear();
     }
 

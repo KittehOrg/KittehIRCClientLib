@@ -31,10 +31,10 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
- * A particular status of a channel mode.
+ * A particular status of a mode.
  */
-public class ChannelModeStatus {
-    private final ChannelMode mode;
+public class ModeStatus<ModeType extends Mode> {
+    private final ModeType mode;
     private final Optional<String> parameter;
     private final boolean setting;
 
@@ -44,7 +44,7 @@ public class ChannelModeStatus {
      * @param setting true for setting mode, false for removing
      * @param mode mode to set
      */
-    public ChannelModeStatus(boolean setting, @Nonnull ChannelMode mode) {
+    public ModeStatus(boolean setting, @Nonnull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         this.mode = mode;
         this.parameter = Optional.empty();
@@ -58,7 +58,7 @@ public class ChannelModeStatus {
      * @param mode mode to set
      * @param parameter parameter
      */
-    public ChannelModeStatus(boolean setting, @Nonnull ChannelMode mode, @Nonnull String parameter) {
+    public ModeStatus(boolean setting, @Nonnull ModeType mode, @Nonnull String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.safeMessageCheck(parameter, "Parameter");
         this.mode = mode;
@@ -77,12 +77,12 @@ public class ChannelModeStatus {
     }
 
     /**
-     * Gets the {@link ChannelMode} describing this mode status.
+     * Gets the {@link Mode} describing this mode status.
      *
      * @return the mode
      */
     @Nonnull
-    public ChannelMode getMode() {
+    public ModeType getMode() {
         return this.mode;
     }
 

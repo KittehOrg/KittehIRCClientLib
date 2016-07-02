@@ -21,45 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.channel;
+package org.kitteh.irc.client.library.element.mode;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.mode.ModeStatusList;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
- * Channel a la mode.
+ * A base class defining information a mode would have.
  */
-public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
-    private final ModeStatusList statusList;
-
+public interface Mode {
     /**
-     * Creates the event.
+     * Gets the mode character.
      *
-     * @param client client for which this is occurring
-     * @param originalMessages original messages
-     * @param actor the mode setter
-     * @param channel the channel in which the change is occurring
-     * @param statusList list of statuses
+     * @return mode character
      */
-    public ChannelModeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Actor actor, @Nonnull Channel channel, @Nonnull ModeStatusList statusList) {
-        super(client, originalMessages, actor, channel);
-        this.statusList = statusList;
-    }
+    char getChar();
 
     /**
-     * Gets the list of statuses.
+     * Gets the client this mode is for.
      *
-     * @return status list
+     * @return client
      */
     @Nonnull
-    public ModeStatusList getStatusList() {
-        return this.statusList;
-    }
+    Client getClient();
 }
