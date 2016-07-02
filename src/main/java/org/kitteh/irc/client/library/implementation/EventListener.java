@@ -743,8 +743,6 @@ class EventListener {
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
             this.fire(new ChannelTargetedNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
-        } else if (this.client.isUser(user)) {
-            // TODO event for self-sent private notices
         } else {
             this.trackException(event, "NOTICE message to improper target");
         }
@@ -774,8 +772,6 @@ class EventListener {
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
             this.fire(new ChannelTargetedMessageEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
-        } else if (this.client.isUser(user)) {
-            // TODO event for self-sent private messages
         } else {
             this.trackException(event, "PRIVMSG message to improper target");
         }
