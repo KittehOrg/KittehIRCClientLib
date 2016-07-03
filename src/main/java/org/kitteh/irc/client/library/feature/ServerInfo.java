@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.feature;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -94,7 +95,7 @@ public interface ServerInfo {
      * Gets the channel modes available. If the server has not provided
      * information on channel modes, defaults are used and returned here.
      *
-     * @return a mapping of mode characters to their type
+     * @return available channel modes
      */
     @Nonnull
     List<ChannelMode> getChannelModes();
@@ -194,6 +195,15 @@ public interface ServerInfo {
         Optional<ISupportParameter.NickLen> optional = this.getISupportParameter(ISupportParameter.NickLen.NAME, ISupportParameter.NickLen.class);
         return optional.isPresent() ? optional.get().getInteger() : -1;
     }
+
+    /**
+     * Gets the user modes available. If the server has not provided
+     * information on user modes, defaults are used and returned here.
+     *
+     * @return a list of user modes
+     */
+    @Nonnull
+    List<UserMode> getUserModes();
 
     /**
      * Gets the version of the IRCd.

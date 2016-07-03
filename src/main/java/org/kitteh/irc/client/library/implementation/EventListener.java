@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesDeletedSupportedEvent;
@@ -125,6 +126,15 @@ class EventListener {
             this.client.getServerInfo().setAddress(event.getParameters().get(1));
             if (event.getParameters().size() > 2) {
                 this.client.getServerInfo().setVersion(event.getParameters().get(2));
+                if (event.getParameters().size() > 3) {
+                    List<UserMode> modes = new ArrayList<>(event.getParameters().get(3).length());
+                    for (char mode : event.getParameters().get(3).toCharArray()) {
+                        modes.add(new ModeData.IRCUserMode(this.client, mode));
+                    }
+                    this.client.getServerInfo().setUserModes(modes);
+                } else {
+                    this.trackException(event, "Server user modes missing.");
+                }
             } else {
                 this.trackException(event, "Server version missing.");
             }

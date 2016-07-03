@@ -6,6 +6,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.mockito.Mockito;
@@ -192,6 +193,12 @@ public class CIKeyMapTest {
         @Override
         public int getNickLengthLimit() {
             return 0;
+        }
+
+        @Nonnull
+        @Override
+        public List<UserMode> getUserModes() {
+            return null;
         }
 
         @Nonnull
