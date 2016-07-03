@@ -35,10 +35,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * A list of channel mode statuses.
+ * A list of mode statuses.
  */
 public class ModeStatusList<ModeType extends Mode> {
     /**
@@ -56,6 +57,19 @@ public class ModeStatusList<ModeType extends Mode> {
         return from(client, string, modes);
     }
 
+    /**
+     * Creates a list from a given string input such as "+iZ".
+     *
+     * @param client client for which this list exists
+     * @param string string to parse
+     * @return list
+     */
+    @Nonnull
+    public static ModeStatusList<UserMode> fromUser(@Nonnull Client client, @Nonnull String string) {
+        return from(client, string, client.getServerInfo().getUserModes().stream().collect(Collectors.toMap(UserMode::getChar, Function.identity())));
+    }
+
+    @Nonnull
     private static <ModeType extends Mode> ModeStatusList<ModeType> from(@Nonnull Client client, @Nonnull String string, @Nonnull Map<Character, ModeType> modes) {
         Sanity.nullCheck(client, "Client cannot be null");
         Sanity.safeMessageCheck(string, "String");

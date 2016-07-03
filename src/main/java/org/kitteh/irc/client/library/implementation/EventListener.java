@@ -78,6 +78,7 @@ import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
+import org.kitteh.irc.client.library.event.user.UserModeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
@@ -365,7 +366,13 @@ class EventListener {
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
-            ModeStatusList<ChannelMode> statusList = ModeStatusList.fromChannel(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+            ModeStatusList<ChannelMode> statusList;
+            try {
+                statusList = ModeStatusList.fromChannel(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+            } catch (IllegalArgumentException e) {
+                this.trackException(event, e.getMessage());
+                return;
+            }
             channel.updateChannelModes(statusList);
         } else {
             this.trackException(event, "Channel mode info message sent for invalid channel name");
@@ -838,7 +845,14 @@ class EventListener {
         }
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            // TODO event for user modes
+            ModeStatusList<UserMode> statusList;
+            try {
+                statusList = ModeStatusList.fromUser(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+            } catch (IllegalArgumentException e) {
+                this.trackException(event, e.getMessage());
+                return;
+            }
+            this.fire(new UserModeEvent(this.client, event.getOriginalMessages(), event.getActor(), event.getParameters().get(0), statusList));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             ActorProvider.IRCChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
             ModeStatusList<ChannelMode> statusList;
