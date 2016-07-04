@@ -62,24 +62,27 @@ class IRCServerInfo implements Resettable, ServerInfo {
     IRCServerInfo(@Nonnull InternalClient client) {
         this.client = client;
         // RFC 1459
-        this.channelModes = new ArrayList<>();
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER)); // Topic settable by channel operator only
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER)); // Secret
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER)); // Private
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER)); // No messages from outside
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER)); // Moderated
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER)); // Invite-only
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET)); // User limit
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS)); // Channel key
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'b', ChannelMode.Type.A_MASK)); // Ban mask
-        this.channelUserModes = new ArrayList<>();
-        this.channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'o', '@')); // OP
-        this.channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'v', '+')); // Voice
-        this.userModes = new ArrayList<>();
-        this.userModes.add(new ModeData.IRCUserMode(client, 'i')); // Invisible
-        this.userModes.add(new ModeData.IRCUserMode(client, 's')); // Can receive server notices
-        this.userModes.add(new ModeData.IRCUserMode(client, 'w')); // Can receive wallops
-        this.userModes.add(new ModeData.IRCUserMode(client, 'o')); // Operator
+        List<ChannelMode> channelModes = new ArrayList<>(9);
+        channelModes.add(new ModeData.IRCChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER)); // Topic settable by channel operator only
+        channelModes.add(new ModeData.IRCChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER)); // Secret
+        channelModes.add(new ModeData.IRCChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER)); // Private
+        channelModes.add(new ModeData.IRCChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER)); // No messages from outside
+        channelModes.add(new ModeData.IRCChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER)); // Moderated
+        channelModes.add(new ModeData.IRCChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER)); // Invite-only
+        channelModes.add(new ModeData.IRCChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET)); // User limit
+        channelModes.add(new ModeData.IRCChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS)); // Channel key
+        channelModes.add(new ModeData.IRCChannelMode(client, 'b', ChannelMode.Type.A_MASK)); // Ban mask
+        this.channelModes = Collections.unmodifiableList(channelModes);
+        List<ChannelUserMode> channelUserModes = new ArrayList<>(2);
+        channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'o', '@')); // OP
+        channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'v', '+')); // Voice
+        this.channelUserModes = Collections.unmodifiableList(channelUserModes);
+        List<UserMode> userModes = new ArrayList<>(4);
+        userModes.add(new ModeData.IRCUserMode(client, 'i')); // Invisible
+        userModes.add(new ModeData.IRCUserMode(client, 's')); // Can receive server notices
+        userModes.add(new ModeData.IRCUserMode(client, 'w')); // Can receive wallops
+        userModes.add(new ModeData.IRCUserMode(client, 'o')); // Operator
+        this.userModes = Collections.unmodifiableList(userModes);
     }
 
     @Override
