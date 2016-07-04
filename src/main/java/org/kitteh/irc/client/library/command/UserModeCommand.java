@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Commands a la User MODE.
+ * Commands a la User MODE, without modes added will just query self.
  */
 public class UserModeCommand extends Command {
     private static final int MODES_PER_LINE = 3;
