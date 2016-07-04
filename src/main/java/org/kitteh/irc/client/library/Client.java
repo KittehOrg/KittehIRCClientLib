@@ -26,6 +26,8 @@ package org.kitteh.irc.client.library;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.feature.AuthManager;
@@ -496,6 +498,16 @@ public interface Client {
      */
     @Nonnull
     Optional<User> getUser();
+
+    /**
+     * Gets the user's modes. Will return {@link Optional#EMPTY} until the
+     * Client has queried this information, which is requested after the
+     * connection registration has completed.
+     *
+     * @return user modes of this client if known
+     */
+    @Nonnull
+    Optional<ModeStatusList<UserMode>> getUserModes();
 
     /**
      * Checks to see if this client is the same as the given user.

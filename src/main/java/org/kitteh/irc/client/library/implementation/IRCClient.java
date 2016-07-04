@@ -26,6 +26,8 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
@@ -95,6 +97,8 @@ final class IRCClient extends InternalClient {
     private final Listener<String> outputListener;
 
     private final ActorProvider actorProvider = new ActorProvider(this);
+
+    private ModeStatusList<UserMode> userModes;
 
     IRCClient(@Nonnull Config config) {
         this.config = config;
@@ -243,6 +247,12 @@ final class IRCClient extends InternalClient {
             return Optional.empty();
         }
         return Optional.of(user.snapshot());
+    }
+
+    @Override
+    @Nonnull
+    public Optional<ModeStatusList<UserMode>> getUserModes() {
+        return Optional.ofNullable(this.userModes);
     }
 
     @Override
@@ -525,6 +535,11 @@ final class IRCClient extends InternalClient {
     @Override
     void setCurrentNick(@Nonnull String nick) {
         this.currentNick = nick;
+    }
+
+    @Override
+    void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+        this.userModes = userModes;
     }
 
     @Override

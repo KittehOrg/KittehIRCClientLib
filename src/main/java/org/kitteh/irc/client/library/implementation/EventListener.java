@@ -28,11 +28,11 @@ import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
-import org.kitteh.irc.client.library.element.mode.ChannelMode;
-import org.kitteh.irc.client.library.element.mode.ModeStatusList;
-import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
@@ -152,6 +152,28 @@ class EventListener {
         for (int i = 1; i < event.getParameters().size(); i++) {
             this.client.getServerInfo().addISupportParameter(this.client.getISupportManager().getParameter(event.getParameters().get(i)));
         }
+    }
+
+    @NumericFilter(221) // UMODEIS
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void umode(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.trackException(event, "UMODE response of incorrect length");
+            return;
+        }
+
+        if (!this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(event.getParameters().get(0), this.client.getNick())) {
+            this.trackException(event, "UMODE response for another user");
+            return;
+        }
+        ModeStatusList<UserMode> modes;
+        try {
+            modes = ModeStatusList.fromUser(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+        } catch (IllegalArgumentException e) {
+            this.trackException(event, e.getMessage());
+            return;
+        }
+        this.client.setUserModes(modes);
     }
 
     @NumericFilter(305) // UNAWAY

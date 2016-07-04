@@ -24,6 +24,8 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -73,6 +75,8 @@ abstract class InternalClient implements Client {
     abstract void sendNickChange(@Nonnull String newNick);
 
     abstract void setCurrentNick(@Nonnull String nick);
+
+    abstract void setUserModes(@Nonnull ModeStatusList<UserMode> userModes);
 
     abstract void startSending();
 }
