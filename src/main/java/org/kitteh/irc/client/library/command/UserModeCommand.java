@@ -100,6 +100,10 @@ public class UserModeCommand extends Command {
 
     @Override
     public synchronized void execute() {
+        if (this.changes.isEmpty()) {
+            this.getClient().sendRawLine("MODE " + this.target);
+            return;
+        }
         List<ModeStatus<UserMode>> queue = new ArrayList<>(MODES_PER_LINE);
         for (ModeStatus<UserMode> modeChange : this.changes) {
             queue.add(modeChange);

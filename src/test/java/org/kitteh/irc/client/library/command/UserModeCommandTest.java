@@ -23,7 +23,7 @@ public class UserModeCommandTest {
 
         UserModeCommand sut = new UserModeCommand(clientMock, USER);
         sut.execute();
-        Mockito.verify(clientMock, Mockito.never()).sendRawLine(Mockito.anyString());
+        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER);
 
         Assert.assertFalse(sut.toString().isEmpty());
     }

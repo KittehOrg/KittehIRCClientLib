@@ -26,7 +26,7 @@ public class ChannelModeCommandTest {
 
         ChannelModeCommand sut = new ChannelModeCommand(clientMock, CHANNEL);
         sut.execute();
-        Mockito.verify(clientMock, Mockito.never()).sendRawLine(Mockito.anyString());
+        Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + CHANNEL);
 
         Assert.assertFalse(sut.toString().isEmpty());
     }

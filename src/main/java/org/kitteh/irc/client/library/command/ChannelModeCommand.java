@@ -118,6 +118,10 @@ public class ChannelModeCommand extends ChannelCommand {
 
     @Override
     public synchronized void execute() {
+        if (this.changes.isEmpty()) {
+            this.getClient().sendRawLine("MODE " + this.getChannel());
+            return;
+        }
         List<ModeStatus<ChannelMode>> queue = new ArrayList<>(MODES_PER_LINE);
         for (ModeStatus<ChannelMode> modeChange : this.changes) {
             queue.add(modeChange);
