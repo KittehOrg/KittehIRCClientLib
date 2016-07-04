@@ -42,18 +42,15 @@ public class UserModeCommand extends Command {
     private static final int MODES_PER_LINE = 3;
 
     private final List<ModeStatus<UserMode>> changes = new ArrayList<>();
-    private final String target;
 
     /**
      * Constructs a MODE command for a given user.
      *
      * @param client the client on which this command is executing
-     * @param user user targeted
      * @throws IllegalArgumentException if null parameters
      */
-    public UserModeCommand(@Nonnull Client client, @Nonnull String user) {
+    public UserModeCommand(@Nonnull Client client) {
         super(client);
-        this.target = user;
     }
 
     /**
@@ -101,7 +98,7 @@ public class UserModeCommand extends Command {
     @Override
     public synchronized void execute() {
         if (this.changes.isEmpty()) {
-            this.getClient().sendRawLine("MODE " + this.target);
+            this.getClient().sendRawLine("MODE " + this.getClient().getNick());
             return;
         }
         List<ModeStatus<UserMode>> queue = new ArrayList<>(MODES_PER_LINE);
@@ -117,7 +114,7 @@ public class UserModeCommand extends Command {
     }
 
     private void send(@Nonnull List<ModeStatus<UserMode>> queue) {
-        this.getClient().sendRawLine("MODE " + this.target + ' ' + ModeStatusList.of(new ArrayList<>(queue)).getStatusString());
+        this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + ModeStatusList.of(new ArrayList<>(queue)).getStatusString());
         queue.clear();
     }
 

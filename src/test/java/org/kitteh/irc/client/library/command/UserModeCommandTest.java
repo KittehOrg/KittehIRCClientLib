@@ -3,13 +3,11 @@ package org.kitteh.irc.client.library.command;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * @see UserModeCommand
@@ -20,8 +18,9 @@ public class UserModeCommandTest {
     @Test
     public void testWithNoModeChanges() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getNick()).thenReturn(USER);
 
-        UserModeCommand sut = new UserModeCommand(clientMock, USER);
+        UserModeCommand sut = new UserModeCommand(clientMock);
         sut.execute();
         Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER);
 
@@ -31,8 +30,9 @@ public class UserModeCommandTest {
     @Test
     public void testWithOneSimpleModeChange() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getNick()).thenReturn(USER);
 
-        UserModeCommand sut = new UserModeCommand(clientMock, USER);
+        UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', clientMock);
         sut.add(true, mode);
         sut.execute();
@@ -42,8 +42,9 @@ public class UserModeCommandTest {
     @Test
     public void testWithFourSimpleModeChanges() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getNick()).thenReturn(USER);
 
-        UserModeCommand sut = new UserModeCommand(clientMock, USER);
+        UserModeCommand sut = new UserModeCommand(clientMock);
         sut.add(true, this.getUserMode('A', clientMock));
         sut.add(true, this.getUserMode('B', clientMock));
         sut.add(true, this.getUserMode('C', clientMock));
@@ -57,8 +58,9 @@ public class UserModeCommandTest {
     @Test(expected = IllegalArgumentException.class)
     public void testWithOneSimpleModeChangeButWrongClient() {
         Client clientMock = Mockito.mock(Client.class);
+        Mockito.when(clientMock.getNick()).thenReturn(USER);
 
-        UserModeCommand sut = new UserModeCommand(clientMock, USER);
+        UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', Mockito.mock(Client.class));
         sut.add(true, mode);
     }
@@ -66,9 +68,9 @@ public class UserModeCommandTest {
     @Test
     public void testWithAddAndRemove() {
         Client clientMock = Mockito.mock(Client.class);
-        Mockito.when(clientMock.getChannel(USER)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+        Mockito.when(clientMock.getNick()).thenReturn(USER);
 
-        UserModeCommand sut = new UserModeCommand(clientMock, USER);
+        UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode modeA = this.getUserMode('A', clientMock);
         UserMode modeB = this.getUserMode('B', clientMock);
         sut.add(true, modeA);
@@ -80,9 +82,9 @@ public class UserModeCommandTest {
     @Test
     public void testWithAddParameterisedAndSimpleMode() {
         Client clientMock = Mockito.mock(Client.class);
-        Mockito.when(clientMock.getChannel(USER)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+        Mockito.when(clientMock.getNick()).thenReturn(USER);
 
-        UserModeCommand sut = new UserModeCommand(clientMock, USER);
+        UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode modeA = this.getUserMode('A', clientMock);
         UserMode modeB = this.getUserMode('B', clientMock);
         sut.add(true, modeA);
@@ -94,9 +96,9 @@ public class UserModeCommandTest {
     @Test
     public void testAddModeWithParameter() {
         Client clientMock = Mockito.mock(Client.class);
-        Mockito.when(clientMock.getChannel(USER)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+        Mockito.when(clientMock.getNick()).thenReturn(USER);
 
-        UserModeCommand sut = new UserModeCommand(clientMock, USER);
+        UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', clientMock);
         sut.add(true, mode, "foo");
         sut.execute();
@@ -106,9 +108,9 @@ public class UserModeCommandTest {
     @Test
     public void testRemoveModeWithParameter() {
         Client clientMock = Mockito.mock(Client.class);
-        Mockito.when(clientMock.getChannel(USER)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+        Mockito.when(clientMock.getNick()).thenReturn(USER);
 
-        UserModeCommand sut = new UserModeCommand(clientMock, USER);
+        UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', clientMock);
         sut.add(false, mode, "foo");
         sut.execute();
