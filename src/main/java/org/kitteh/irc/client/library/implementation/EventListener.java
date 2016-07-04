@@ -28,10 +28,12 @@ import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
-import org.kitteh.irc.client.library.element.ChannelModeStatusList;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesDeletedSupportedEvent;
@@ -76,6 +78,7 @@ import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
+import org.kitteh.irc.client.library.event.user.UserModeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
@@ -93,7 +96,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -125,6 +127,15 @@ class EventListener {
             this.client.getServerInfo().setAddress(event.getParameters().get(1));
             if (event.getParameters().size() > 2) {
                 this.client.getServerInfo().setVersion(event.getParameters().get(2));
+                if (event.getParameters().size() > 3) {
+                    List<UserMode> modes = new ArrayList<>(event.getParameters().get(3).length());
+                    for (char mode : event.getParameters().get(3).toCharArray()) {
+                        modes.add(new ModeData.IRCUserMode(this.client, mode));
+                    }
+                    this.client.getServerInfo().setUserModes(modes);
+                } else {
+                    this.trackException(event, "Server user modes missing.");
+                }
             } else {
                 this.trackException(event, "Server version missing.");
             }
@@ -141,6 +152,28 @@ class EventListener {
         for (int i = 1; i < event.getParameters().size(); i++) {
             this.client.getServerInfo().addISupportParameter(this.client.getISupportManager().getParameter(event.getParameters().get(i)));
         }
+    }
+
+    @NumericFilter(221) // UMODEIS
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void umode(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.trackException(event, "UMODE response of incorrect length");
+            return;
+        }
+
+        if (!this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(event.getParameters().get(0), this.client.getNick())) {
+            this.trackException(event, "UMODE response for another user");
+            return;
+        }
+        ModeStatusList<UserMode> modes;
+        try {
+            modes = ModeStatusList.fromUser(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+        } catch (IllegalArgumentException e) {
+            this.trackException(event, e.getMessage());
+            return;
+        }
+        this.client.setUserModes(modes);
     }
 
     @NumericFilter(305) // UNAWAY
@@ -280,7 +313,7 @@ class EventListener {
         this.whoisBuilder = null;
     }
 
-    private final List<ServerMessage> whoMessages = new LinkedList<>();
+    private final List<ServerMessage> whoMessages = new ArrayList<>();
 
     @NumericFilter(352) // WHO
     @NumericFilter(354) // WHOX
@@ -355,7 +388,13 @@ class EventListener {
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
-            ChannelModeStatusList statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+            ModeStatusList<ChannelMode> statusList;
+            try {
+                statusList = ModeStatusList.fromChannel(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+            } catch (IllegalArgumentException e) {
+                this.trackException(event, e.getMessage());
+                return;
+            }
             channel.updateChannelModes(statusList);
         } else {
             this.trackException(event, "Channel mode info message sent for invalid channel name");
@@ -393,7 +432,7 @@ class EventListener {
         }
     }
 
-    private final List<ServerMessage> namesMessages = new LinkedList<>();
+    private final List<ServerMessage> namesMessages = new ArrayList<>();
 
     @NumericFilter(353) // NAMES
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
@@ -441,8 +480,8 @@ class EventListener {
         }
     }
 
-    private final List<String> motd = new LinkedList<>();
-    private final List<ServerMessage> motdMessages = new LinkedList<>();
+    private final List<String> motd = new ArrayList<>();
+    private final List<ServerMessage> motdMessages = new ArrayList<>();
 
     @NumericFilter(375)
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
@@ -516,8 +555,8 @@ class EventListener {
         }
     }
 
-    private final List<String> monitorList = new LinkedList<>();
-    private final List<ServerMessage> monitorListMessages = new LinkedList<>();
+    private final List<String> monitorList = new ArrayList<>();
+    private final List<ServerMessage> monitorListMessages = new ArrayList<>();
 
     @NumericFilter(732) // Monitor list
     @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
@@ -555,10 +594,10 @@ class EventListener {
         this.fire(new MonitoredNickListFullEvent(this.client, event.getOriginalMessages(), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
     }
 
-    private final List<CapabilityState> capList = new LinkedList<>();
-    private final List<ServerMessage> capListMessages = new LinkedList<>();
-    private final List<CapabilityState> capLs = new LinkedList<>();
-    private final List<ServerMessage> capLsMessages = new LinkedList<>();
+    private final List<CapabilityState> capList = new ArrayList<>();
+    private final List<ServerMessage> capListMessages = new ArrayList<>();
+    private final List<CapabilityState> capLs = new ArrayList<>();
+    private final List<ServerMessage> capLsMessages = new ArrayList<>();
     private static final int CAPABILITY_LIST_INDEX_DEFAULT = 2;
 
     @CommandFilter("CAP")
@@ -628,7 +667,7 @@ class EventListener {
                 this.fire(responseEvent);
                 break;
             case "new":
-                List<CapabilityState> statesAdded = new LinkedList<>(this.client.getCapabilityManager().getSupportedCapabilities());
+                List<CapabilityState> statesAdded = new ArrayList<>(this.client.getCapabilityManager().getSupportedCapabilities());
                 statesAdded.addAll(capabilityStateList);
                 this.client.getCapabilityManager().setSupportedCapabilities(statesAdded);
                 responseEvent = new CapabilitiesNewSupportedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
@@ -636,7 +675,7 @@ class EventListener {
                 this.fire(responseEvent);
                 break;
             case "del":
-                List<CapabilityState> statesRemaining = new LinkedList<>(this.client.getCapabilityManager().getSupportedCapabilities());
+                List<CapabilityState> statesRemaining = new ArrayList<>(this.client.getCapabilityManager().getSupportedCapabilities());
                 statesRemaining.removeAll(capabilityStateList);
                 this.client.getCapabilityManager().setSupportedCapabilities(statesRemaining);
                 responseEvent = new CapabilitiesDeletedSupportedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
@@ -828,12 +867,19 @@ class EventListener {
         }
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            // TODO event for user modes
+            ModeStatusList<UserMode> statusList;
+            try {
+                statusList = ModeStatusList.fromUser(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+            } catch (IllegalArgumentException e) {
+                this.trackException(event, e.getMessage());
+                return;
+            }
+            this.fire(new UserModeEvent(this.client, event.getOriginalMessages(), event.getActor(), event.getParameters().get(0), statusList));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             ActorProvider.IRCChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
-            ChannelModeStatusList statusList;
+            ModeStatusList<ChannelMode> statusList;
             try {
-                statusList = ChannelModeStatusList.from(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+                statusList = ModeStatusList.fromChannel(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;

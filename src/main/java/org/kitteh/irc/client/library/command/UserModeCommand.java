@@ -24,38 +24,33 @@
 package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ChannelMode;
-import org.kitteh.irc.client.library.element.ChannelModeStatus;
-import org.kitteh.irc.client.library.element.ChannelModeStatusList;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
-import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.mode.ModeStatus;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Commands a la MODE.
+ * Commands a la User MODE, without modes added will just query self.
  */
-public class ModeCommand extends ChannelCommand {
-    private static final int MODES_PER_LINE = 3;
-
-    private final List<ChannelModeStatus> changes = new ArrayList<>();
+public class UserModeCommand extends Command {
+    private final List<ModeStatus<UserMode>> changes = new ArrayList<>();
 
     /**
-     * Constructs a MODE command for a given channel.
+     * Constructs a MODE command for a given user.
      *
      * @param client the client on which this command is executing
-     * @param channel channel targeted
-     * @throws IllegalArgumentException if null parameters or Channel is from
-     * another Client
+     * @throws IllegalArgumentException if null parameters
      */
-    public ModeCommand(@Nonnull Client client, @Nonnull String channel) {
-        super(client, channel);
+    public UserModeCommand(@Nonnull Client client) {
+        super(client);
     }
 
     /**
@@ -67,7 +62,7 @@ public class ModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if mode invalid
      */
     @Nonnull
-    public ModeCommand add(boolean add, @Nonnull ChannelMode mode) {
+    public UserModeCommand add(boolean add, @Nonnull UserMode mode) {
         return this.addChange(add, mode, null);
     }
 
@@ -82,58 +77,31 @@ public class ModeCommand extends ChannelCommand {
      * different client or parameter is null
      */
     @Nonnull
-    public ModeCommand add(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
+    public UserModeCommand add(boolean add, @Nonnull UserMode mode, @Nonnull String parameter) {
         Sanity.nullCheck(parameter, "Parameter cannot be null");
         return this.addChange(add, mode, parameter);
     }
 
-    /**
-     * Adds a mode change.
-     *
-     * @param add true if adding, false if removing
-     * @param mode the mode to be changed
-     * @param parameter user whose nick will be sent
-     * @return this ModeCommand
-     * @throws IllegalArgumentException if mode invalid or either mode or
-     * user comes from a different client or parameter is null
-     */
     @Nonnull
-    public ModeCommand add(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
-        Sanity.nullCheck(parameter, "User cannot be null");
-        Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
-        return this.addChange(add, mode, parameter.getNick());
-    }
-
-    @Nonnull
-    private synchronized ModeCommand addChange(boolean add, @Nonnull ChannelMode mode, @Nullable String parameter) {
+    private synchronized UserModeCommand addChange(boolean add, @Nonnull UserMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter, "Parameter");
-            this.changes.add(new ChannelModeStatus(add, mode, parameter));
+            this.changes.add(new ModeStatus<>(add, mode, parameter));
         } else {
-            this.changes.add(new ChannelModeStatus(add, mode));
+            this.changes.add(new ModeStatus<>(add, mode));
         }
         return this;
     }
 
     @Override
     public synchronized void execute() {
-        List<ChannelModeStatus> queue = new LinkedList<>();
-        for (ChannelModeStatus modeChange : this.changes) {
-            queue.add(modeChange);
-            if (queue.size() == MODES_PER_LINE) {
-                this.send(queue);
-            }
+        if (this.changes.isEmpty()) {
+            this.getClient().sendRawLine("MODE " + this.getClient().getNick());
+            return;
         }
-        if (!queue.isEmpty()) {
-            this.send(queue);
-        }
-    }
-
-    private void send(@Nonnull List<ChannelModeStatus> queue) {
-        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + ChannelModeStatusList.of(new ArrayList<>(queue)).getStatusString());
-        queue.clear();
+        this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + ModeStatusList.of(new ArrayList<>(this.changes)).getStatusString());
     }
 
     @Nonnull

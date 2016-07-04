@@ -25,15 +25,15 @@ package org.kitteh.irc.client.library.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
  * A toString helper.
  */
 public class ToStringer {
-    private final List<Pair<String, Object>> list = new LinkedList<>();
+    private final List<Pair<String, Object>> list = new ArrayList<>();
     private final String name;
 
     /**

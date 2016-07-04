@@ -21,24 +21,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.channel;
+package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.mode.ChannelMode;
-import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Channel a la mode.
+ * User a la mode.
  */
-public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
-    private final ModeStatusList<ChannelMode> statusList;
+public class UserModeEvent extends ActorEventBase<Actor> {
+    private final ModeStatusList<UserMode> statusList;
+    private final String target;
 
     /**
      * Creates the event.
@@ -46,12 +47,13 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * @param client client for which this is occurring
      * @param originalMessages original messages
      * @param actor the mode setter
-     * @param channel the channel in which the change is occurring
+     * @param target the target for whom the change is occurring
      * @param statusList list of statuses
      */
-    public ChannelModeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Actor actor, @Nonnull Channel channel, @Nonnull ModeStatusList<ChannelMode> statusList) {
-        super(client, originalMessages, actor, channel);
+    public UserModeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Actor actor, @Nonnull String target, @Nonnull ModeStatusList<UserMode> statusList) {
+        super(client, originalMessages, actor);
         this.statusList = statusList;
+        this.target = target;
     }
 
     /**
@@ -60,7 +62,13 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * @return status list
      */
     @Nonnull
-    public ModeStatusList<ChannelMode> getStatusList() {
+    public ModeStatusList<UserMode> getStatusList() {
         return this.statusList;
+    }
+
+    @Override
+    @Nonnull
+    public String toString() {
+        return new ToStringer(this).add("client", this.getClient()).add("actor", this.getActor()).add("statusList", this.statusList).add("target", this.target).toString();
     }
 }

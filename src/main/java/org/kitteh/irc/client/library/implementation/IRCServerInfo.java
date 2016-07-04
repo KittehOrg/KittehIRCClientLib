@@ -23,9 +23,10 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.element.ChannelMode;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -51,6 +52,7 @@ class IRCServerInfo implements Resettable, ServerInfo {
     private Optional<List<String>> motd = Optional.empty();
     private Optional<String> address = Optional.empty();
     private Optional<String> version = Optional.empty();
+    private List<UserMode> userModes;
 
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
@@ -59,19 +61,28 @@ class IRCServerInfo implements Resettable, ServerInfo {
 
     IRCServerInfo(@Nonnull InternalClient client) {
         this.client = client;
-        this.channelModes = new ArrayList<>();
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER));
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER));
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER));
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER));
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER));
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER));
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET));
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS));
-        this.channelModes.add(new ModeData.IRCChannelMode(client, 'b', ChannelMode.Type.A_MASK));
-        this.channelUserModes = new ArrayList<>();
-        this.channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'o', '@'));
-        this.channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'v', '+'));
+        // RFC 1459
+        List<ChannelMode> channelModes = new ArrayList<>(9);
+        channelModes.add(new ModeData.IRCChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER)); // Topic settable by channel operator only
+        channelModes.add(new ModeData.IRCChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER)); // Secret
+        channelModes.add(new ModeData.IRCChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER)); // Private
+        channelModes.add(new ModeData.IRCChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER)); // No messages from outside
+        channelModes.add(new ModeData.IRCChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER)); // Moderated
+        channelModes.add(new ModeData.IRCChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER)); // Invite-only
+        channelModes.add(new ModeData.IRCChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET)); // User limit
+        channelModes.add(new ModeData.IRCChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS)); // Channel key
+        channelModes.add(new ModeData.IRCChannelMode(client, 'b', ChannelMode.Type.A_MASK)); // Ban mask
+        this.channelModes = Collections.unmodifiableList(channelModes);
+        List<ChannelUserMode> channelUserModes = new ArrayList<>(2);
+        channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'o', '@')); // OP
+        channelUserModes.add(new ModeData.IRCChannelUserMode(client, 'v', '+')); // Voice
+        this.channelUserModes = Collections.unmodifiableList(channelUserModes);
+        List<UserMode> userModes = new ArrayList<>(4);
+        userModes.add(new ModeData.IRCUserMode(client, 'i')); // Invisible
+        userModes.add(new ModeData.IRCUserMode(client, 's')); // Can receive server notices
+        userModes.add(new ModeData.IRCUserMode(client, 'w')); // Can receive wallops
+        userModes.add(new ModeData.IRCUserMode(client, 'o')); // Operator
+        this.userModes = Collections.unmodifiableList(userModes);
     }
 
     @Override
@@ -170,6 +181,15 @@ class IRCServerInfo implements Resettable, ServerInfo {
             }
         }
         return null;
+    }
+
+    @Nonnull
+    public List<UserMode> getUserModes() {
+        return this.userModes;
+    }
+
+    void setUserModes(@Nonnull List<UserMode> userModes) {
+        this.userModes = Collections.unmodifiableList(userModes);
     }
 
     @Nonnull

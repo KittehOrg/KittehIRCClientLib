@@ -3,6 +3,8 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.util.Cutter;
@@ -45,6 +47,11 @@ class FakeClient extends InternalClient {
 
     @Override
     void setCurrentNick(@Nonnull String nick) {
+
+    }
+
+    @Override
+    void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
 
     }
 
@@ -231,6 +238,12 @@ class FakeClient extends InternalClient {
     @Override
     public Optional<User> getUser() {
         return Optional.empty();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ModeStatusList<UserMode>> getUserModes() {
+        return null;
     }
 
     @Override

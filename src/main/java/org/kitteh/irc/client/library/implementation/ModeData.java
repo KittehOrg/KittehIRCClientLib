@@ -24,18 +24,19 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ChannelMode;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
 final class ModeData {
-    abstract static class IRCChannelModeBase {
+    abstract static class IRCModeBase {
         private final Client client;
         private final char mode;
 
-        IRCChannelModeBase(@Nonnull Client client, char mode) {
+        IRCModeBase(@Nonnull Client client, char mode) {
             this.client = client;
             this.mode = mode;
         }
@@ -50,7 +51,7 @@ final class ModeData {
         }
     }
 
-    static class IRCChannelUserMode extends IRCChannelModeBase implements ChannelUserMode {
+    static class IRCChannelUserMode extends IRCModeBase implements ChannelUserMode {
         private final char prefix;
 
         IRCChannelUserMode(@Nonnull Client client, char mode, char prefix) {
@@ -70,7 +71,7 @@ final class ModeData {
         }
     }
 
-    static class IRCChannelMode extends IRCChannelModeBase implements ChannelMode {
+    static class IRCChannelMode extends IRCModeBase implements ChannelMode {
         private final Type type;
 
         IRCChannelMode(@Nonnull Client client, char mode, @Nonnull Type type) {
@@ -88,6 +89,18 @@ final class ModeData {
         @Override
         public String toString() {
             return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar()).add("type", this.type).toString();
+        }
+    }
+
+    static class IRCUserMode extends IRCModeBase implements UserMode {
+        IRCUserMode(@Nonnull Client client, char mode) {
+            super(client, mode);
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar()).toString();
         }
     }
 }

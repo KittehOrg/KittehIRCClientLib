@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.element.mode;
 
 import org.kitteh.irc.client.library.Client;
 
@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 /**
  * A channel mode.
  */
-public interface ChannelMode {
+public interface ChannelMode extends Mode {
     /**
      * Channel mode types.
      */
@@ -78,21 +78,6 @@ public interface ChannelMode {
             return this.parameterRequiredOnSetting;
         }
     }
-
-    /**
-     * Gets the mode character.
-     *
-     * @return mode character
-     */
-    char getChar();
-
-    /**
-     * Gets the client this mode is for.
-     *
-     * @return client
-     */
-    @Nonnull
-    Client getClient();
 
     /**
      * Gets the type this mode is.

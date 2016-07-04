@@ -21,32 +21,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.helper;
-
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+package org.kitteh.irc.client.library.element.mode;
 
 import javax.annotation.Nonnull;
 
 /**
- * An event involving a {@link Channel}, targeted at specific users by mode.
+ * Describes a channel mode that a user can have, such as op.
  */
-public interface ChannelTargetedEvent extends ChannelEvent {
+public interface ChannelUserMode extends ChannelMode {
     /**
-     * Gets the prefix to which the message was sent.
+     * Gets the nickname prefix character.
      *
-     * @return the prefix targeted
+     * @return the character displayed in front of a nickname
      */
-    @Nonnull
-    ChannelUserMode getPrefix();
+    char getNickPrefix();
 
-    /**
-     * Gets the full targeted name, such as "+#channel".
-     *
-     * @return targeted name
-     */
     @Nonnull
-    default String getTargetedName() {
-        return this.getPrefix().getNickPrefix() + this.getChannel().getMessagingName();
+    @Override
+    default Type getType() {
+        return Type.B_PARAMETER_ALWAYS;
     }
 }

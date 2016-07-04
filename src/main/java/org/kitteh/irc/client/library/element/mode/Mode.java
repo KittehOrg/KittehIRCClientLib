@@ -21,24 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.element.mode;
+
+import org.kitteh.irc.client.library.Client;
 
 import javax.annotation.Nonnull;
 
 /**
- * Describes a channel mode that a user can have, such as op.
+ * A base class defining information a mode would have.
  */
-public interface ChannelUserMode extends ChannelMode {
+public interface Mode {
     /**
-     * Gets the nickname prefix character.
+     * Gets the mode character.
      *
-     * @return the character displayed in front of a nickname
+     * @return mode character
      */
-    char getNickPrefix();
+    char getChar();
 
+    /**
+     * Gets the client this mode is for.
+     *
+     * @return client
+     */
     @Nonnull
-    @Override
-    default Type getType() {
-        return Type.B_PARAMETER_ALWAYS;
-    }
+    Client getClient();
 }

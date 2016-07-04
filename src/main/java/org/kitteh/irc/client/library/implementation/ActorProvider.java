@@ -27,10 +27,10 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ChannelMode;
-import org.kitteh.irc.client.library.element.ChannelModeStatus;
-import org.kitteh.irc.client.library.element.ChannelModeStatusList;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ModeStatus;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.Staleable;
 import org.kitteh.irc.client.library.element.User;
@@ -153,7 +153,7 @@ class ActorProvider implements Resettable {
     }
 
     class IRCChannel extends IRCStaleable<IRCChannelSnapshot> {
-        private final Map<Character, ChannelModeStatus> channelModes = new HashMap<>();
+        private final Map<Character, ModeStatus<ChannelMode>> channelModes = new HashMap<>();
         private final Map<String, Set<ChannelUserMode>> modes;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
@@ -273,7 +273,7 @@ class ActorProvider implements Resettable {
             this.markStale();
         }
 
-        void updateChannelModes(ChannelModeStatusList statusList) {
+        void updateChannelModes(ModeStatusList<ChannelMode> statusList) {
             statusList.getStatuses().stream().filter(status -> !(status.getMode() instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
                 if (status.isSetting()) {
                     this.channelModes.put(status.getMode().getChar(), status);
@@ -328,7 +328,7 @@ class ActorProvider implements Resettable {
     }
 
     class IRCChannelSnapshot extends IRCActorSnapshot implements Channel {
-        private final ChannelModeStatusList channelModes;
+        private final ModeStatusList<ChannelMode> channelModes;
         private final Map<String, Set<ChannelUserMode>> modes;
         private final List<String> names;
         private final Map<String, User> nickMap;
@@ -339,7 +339,7 @@ class ActorProvider implements Resettable {
         private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic) {
             super(channel);
             this.complete = channel.fullListReceived;
-            this.channelModes = ChannelModeStatusList.of(channel.channelModes.values());
+            this.channelModes = ModeStatusList.of(channel.channelModes.values());
             this.topic = topic;
             Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(ActorProvider.this.client);
             Optional<ISupportParameter.Prefix> prefix = ActorProvider.this.client.getServerInfo().getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
@@ -369,7 +369,7 @@ class ActorProvider implements Resettable {
 
         @Override
         @Nonnull
-        public ChannelModeStatusList getModes() {
+        public ModeStatusList<ChannelMode> getModes() {
             return this.channelModes;
         }
 

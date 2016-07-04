@@ -3,7 +3,7 @@ package org.kitteh.irc.client.library.implementation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.util.TriFunction;

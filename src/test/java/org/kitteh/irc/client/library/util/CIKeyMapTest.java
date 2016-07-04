@@ -3,9 +3,10 @@ package org.kitteh.irc.client.library.util;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ChannelMode;
-import org.kitteh.irc.client.library.element.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.mockito.Mockito;
@@ -192,6 +193,12 @@ public class CIKeyMapTest {
         @Override
         public int getNickLengthLimit() {
             return 0;
+        }
+
+        @Nonnull
+        @Override
+        public List<UserMode> getUserModes() {
+            return null;
         }
 
         @Nonnull
