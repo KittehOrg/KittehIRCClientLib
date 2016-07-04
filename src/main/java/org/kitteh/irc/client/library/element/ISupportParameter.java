@@ -132,6 +132,16 @@ public interface ISupportParameter {
     }
 
     /**
+     * Represents the number of modes with parameters allowed per line.
+     */
+    interface Modes extends IntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "MODES";
+    }
+
+    /**
      * Represents the network name.
      */
     interface Network extends ISupportParameter {

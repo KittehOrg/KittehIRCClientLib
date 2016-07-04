@@ -51,8 +51,7 @@ public class UserModeCommandTest {
         sut.add(true, this.getUserMode('D', clientMock));
         sut.execute();
         InOrder inOrder = Mockito.inOrder(clientMock, clientMock);
-        inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +ABC");
-        inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +D");
+        inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +ABCD");
     }
 
     @Test(expected = IllegalArgumentException.class)

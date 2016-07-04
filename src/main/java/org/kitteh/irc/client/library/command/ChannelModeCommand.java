@@ -24,11 +24,12 @@
 package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
-import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
-import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -36,12 +37,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Commands a la MODE.
  */
 public class ChannelModeCommand extends ChannelCommand {
-    private static final int MODES_PER_LINE = 3;
+    private static final int PARAMETER_MODES_PER_LINE = 3;
 
     private final List<ModeStatus<ChannelMode>> changes = new ArrayList<>();
 
@@ -122,12 +124,24 @@ public class ChannelModeCommand extends ChannelCommand {
             this.getClient().sendRawLine("MODE " + this.getChannel());
             return;
         }
-        List<ModeStatus<ChannelMode>> queue = new ArrayList<>(MODES_PER_LINE);
+        int parameterModesPerLine = -1;
+        Optional<ISupportParameter.Modes> modes = this.getClient().getServerInfo().getISupportParameter("MODES", ISupportParameter.Modes.class);
+        if (modes.isPresent()) {
+            parameterModesPerLine = modes.get().getInteger();
+        }
+        if (parameterModesPerLine < 1) {
+            parameterModesPerLine = PARAMETER_MODES_PER_LINE;
+        }
+        List<ModeStatus<ChannelMode>> queue = new ArrayList<>();
+        int currentParamModes = 0;
         for (ModeStatus<ChannelMode> modeChange : this.changes) {
-            queue.add(modeChange);
-            if (queue.size() == MODES_PER_LINE) {
-                this.send(queue);
+            if (modeChange.getParameter().isPresent()) {
+                if (++currentParamModes > parameterModesPerLine) {
+                    this.send(queue);
+                    currentParamModes = 0;
+                }
             }
+            queue.add(modeChange);
         }
         if (!queue.isEmpty()) {
             this.send(queue);

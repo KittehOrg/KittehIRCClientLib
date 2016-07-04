@@ -24,9 +24,10 @@
 package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -34,13 +35,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Commands a la User MODE, without modes added will just query self.
  */
 public class UserModeCommand extends Command {
-    private static final int MODES_PER_LINE = 3;
-
     private final List<ModeStatus<UserMode>> changes = new ArrayList<>();
 
     /**
@@ -101,21 +101,7 @@ public class UserModeCommand extends Command {
             this.getClient().sendRawLine("MODE " + this.getClient().getNick());
             return;
         }
-        List<ModeStatus<UserMode>> queue = new ArrayList<>(MODES_PER_LINE);
-        for (ModeStatus<UserMode> modeChange : this.changes) {
-            queue.add(modeChange);
-            if (queue.size() == MODES_PER_LINE) {
-                this.send(queue);
-            }
-        }
-        if (!queue.isEmpty()) {
-            this.send(queue);
-        }
-    }
-
-    private void send(@Nonnull List<ModeStatus<UserMode>> queue) {
-        this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + ModeStatusList.of(new ArrayList<>(queue)).getStatusString());
-        queue.clear();
+        this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + ModeStatusList.of(new ArrayList<>(this.changes)).getStatusString());
     }
 
     @Nonnull

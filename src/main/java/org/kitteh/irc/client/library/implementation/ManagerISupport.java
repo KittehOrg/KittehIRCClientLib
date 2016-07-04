@@ -220,6 +220,12 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         }
     }
 
+    private static final class ISupportModes extends IRCISupportParameterInteger implements ISupportParameter.Modes {
+        private ISupportModes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+            super(client, name, value);
+        }
+    }
+
     private static final class ISupportNetwork extends IRCISupportParameterValueRequired implements ISupportParameter.Network {
         private ISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
@@ -287,6 +293,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         this.registerParameter(ISupportParameter.ChanLimit.NAME, ISupportChanLimit::new);
         this.registerParameter(ISupportParameter.ChanModes.NAME, ISupportChanModes::new);
         this.registerParameter(ISupportParameter.ChanTypes.NAME, ISupportChanTypes::new);
+        this.registerParameter(ISupportParameter.Modes.NAME, ISupportModes::new);
         this.registerParameter(ISupportParameter.Network.NAME, ISupportNetwork::new);
         this.registerParameter(ISupportParameter.NickLen.NAME, ISupportNickLen::new);
         this.registerParameter(ISupportParameter.Prefix.NAME, ISupportPrefix::new);
