@@ -28,6 +28,7 @@ import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
@@ -77,6 +78,7 @@ import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
+import org.kitteh.irc.client.library.event.user.ServerNoticeEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserModeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
@@ -766,23 +768,33 @@ class EventListener {
             this.trackException(event, "NOTICE message of incorrect length");
             return;
         }
+        String message = event.getParameters().get(1);
         if (!(event.getActor() instanceof User)) {
-            return; // TODO event for server-sent notices
+            if (event.getActor() instanceof Server) {
+                if (CTCPUtil.isCTCP(message)) {
+                    this.trackException(event, "Server sent a CTCP message and I panicked");
+                    return;
+                }
+                this.fire(new ServerNoticeEvent(this.client, event.getOriginalMessages(), (Server) event.getActor(), message));
+            } else {
+                this.trackException(event, "Message from neither server nor user");
+            }
+            return;
         }
-        if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
+        if (CTCPUtil.isCTCP(message)) {
             this.ctcp(event);
             return;
         }
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateNoticeEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(1)));
+            this.fire(new PrivateNoticeEvent(this.client, event.getOriginalMessages(), user, message));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
-            this.fire(new ChannelNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), event.getParameters().get(1)));
+            this.fire(new ChannelNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), message));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.fire(new ChannelTargetedNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
+            this.fire(new ChannelTargetedNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), message));
         } else {
             this.trackException(event, "NOTICE message to improper target");
         }
@@ -796,7 +808,8 @@ class EventListener {
             return;
         }
         if (!(event.getActor() instanceof User)) {
-            return; // TODO event for server-sent messages
+            this.trackException(event, "Message from something other than a user");
+            return;
         }
         if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
             this.ctcp(event);

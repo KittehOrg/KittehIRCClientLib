@@ -27,13 +27,14 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.mode.ChannelMode;
-import org.kitteh.irc.client.library.element.mode.ModeStatus;
-import org.kitteh.irc.client.library.element.mode.ModeStatusList;
-import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.Staleable;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ModeStatus;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -602,14 +603,39 @@ class ActorProvider implements Resettable {
         }
     }
 
-    private final InternalClient client;
+    class IRCServer extends IRCActor {
+        private IRCServer(@Nonnull String name) {
+            super(name);
+        }
+
+        @Override
+        @Nonnull
+        IRCServerSnapshot snapshot() {
+            return new IRCServerSnapshot(this);
+        }
+    }
+
+    class IRCServerSnapshot extends IRCActorSnapshot implements Server {
+        private IRCServerSnapshot(@Nonnull IRCServer actor) {
+            super(actor);
+        }
+
+        @Override
+        @Nonnull
+        public String toString() {
+            return new ToStringer(this).add("client", this.getClient()).add("name", this.getName()).toString();
+        }
+    }
 
     // Valid nick chars: \w\[]^`{}|-_
     // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
     // You know what? Screw it.
     // Let's just do it assuming no IRCD can handle following the rules.
     // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
-    private final Pattern nickPattern = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+    private static final Pattern NICK_PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+    private static final Pattern SERVER_PATTERN = Pattern.compile("(?!\\-)(?:[a-zA-Z\\d\\-]{0,62}[a-zA-Z\\d]\\.){1,126}(?!\\d+)[a-zA-Z\\d]{1,63}");
+
+    private final InternalClient client;
 
     private final Map<String, IRCChannel> trackedChannels;
     private final Map<String, IRCUser> trackedUsers;
@@ -638,7 +664,7 @@ class ActorProvider implements Resettable {
 
     @Nonnull
     IRCActor getActor(@Nonnull String name) {
-        Matcher nickMatcher = this.nickPattern.matcher(name);
+        Matcher nickMatcher = NICK_PATTERN.matcher(name);
         if (nickMatcher.matches()) {
             String nick = nickMatcher.group(1);
             IRCUser user = this.trackedUsers.get(nick);
@@ -650,6 +676,9 @@ class ActorProvider implements Resettable {
         IRCChannel channel = this.getChannel(name);
         if (channel != null) {
             return channel;
+        }
+        if (name.isEmpty() || SERVER_PATTERN.matcher(name).matches()) {
+            return new IRCServer(name);
         }
         return new IRCActor(name);
     }
