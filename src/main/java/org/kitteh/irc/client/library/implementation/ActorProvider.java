@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -329,7 +330,7 @@ class ActorProvider implements Resettable {
 
     class IRCChannelSnapshot extends IRCActorSnapshot implements Channel {
         private final ModeStatusList<ChannelMode> channelModes;
-        private final Map<String, Set<ChannelUserMode>> modes;
+        private final Map<String, SortedSet<ChannelUserMode>> modes;
         private final List<String> names;
         private final Map<String, User> nickMap;
         private final List<User> users;
@@ -341,11 +342,11 @@ class ActorProvider implements Resettable {
             this.complete = channel.fullListReceived;
             this.channelModes = ModeStatusList.of(channel.channelModes.values());
             this.topic = topic;
-            Map<String, Set<ChannelUserMode>> newModes = new CIKeyMap<>(ActorProvider.this.client);
+            Map<String, SortedSet<ChannelUserMode>> newModes = new CIKeyMap<>(ActorProvider.this.client);
             Optional<ISupportParameter.Prefix> prefix = ActorProvider.this.client.getServerInfo().getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
             Comparator<ChannelUserMode> comparator = prefix.isPresent() ? Comparator.comparingInt(prefix.get().getModes()::indexOf) : null;
             for (Map.Entry<String, Set<ChannelUserMode>> entry : channel.modes.entrySet()) {
-                Set<ChannelUserMode> newSet = comparator == null ? new TreeSet<>() : new TreeSet<>(comparator);
+                SortedSet<ChannelUserMode> newSet = comparator == null ? new TreeSet<>() : new TreeSet<>(comparator);
                 newSet.addAll(entry.getValue());
                 newModes.put(entry.getKey(), newSet);
             }
@@ -394,7 +395,7 @@ class ActorProvider implements Resettable {
 
         @Nonnull
         @Override
-        public Optional<Set<ChannelUserMode>> getUserModes(@Nonnull String nick) {
+        public Optional<SortedSet<ChannelUserMode>> getUserModes(@Nonnull String nick) {
             Sanity.nullCheck(nick, "Nick cannot be null");
             return Optional.ofNullable(this.modes.get(nick));
         }

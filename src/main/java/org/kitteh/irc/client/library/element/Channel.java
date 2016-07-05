@@ -37,6 +37,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Represents an IRC channel.
@@ -141,7 +142,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return a set of modes the user is known to have, if the user is known
      */
     @Nonnull
-    Optional<Set<ChannelUserMode>> getUserModes(@Nonnull String nick);
+    Optional<SortedSet<ChannelUserMode>> getUserModes(@Nonnull String nick);
 
     /**
      * Gets the user modes of a given user in the channel.
@@ -150,7 +151,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return a set of modes the user is known to have, if the user is known
      */
     @Nonnull
-    default Optional<Set<ChannelUserMode>> getUserModes(@Nonnull User user) {
+    default Optional<SortedSet<ChannelUserMode>> getUserModes(@Nonnull User user) {
         return this.getUserModes(Sanity.nullCheck(user, "User cannot be null").getNick());
     }
 
