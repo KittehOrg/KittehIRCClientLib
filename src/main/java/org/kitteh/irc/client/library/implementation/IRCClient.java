@@ -26,6 +26,8 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.Mode;
+import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
@@ -47,10 +49,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 final class IRCClient extends InternalClient {
@@ -98,7 +103,7 @@ final class IRCClient extends InternalClient {
 
     private final ActorProvider actorProvider = new ActorProvider(this);
 
-    private ModeStatusList<UserMode> userModes;
+    private Map<Character, ModeStatus<UserMode>> userModes;
 
     IRCClient(@Nonnull Config config) {
         this.config = config;
@@ -252,7 +257,7 @@ final class IRCClient extends InternalClient {
     @Override
     @Nonnull
     public Optional<ModeStatusList<UserMode>> getUserModes() {
-        return Optional.ofNullable(this.userModes);
+        return this.userModes == null ? Optional.empty() : Optional.of(ModeStatusList.of(this.userModes.values()));
     }
 
     @Override
@@ -539,12 +544,26 @@ final class IRCClient extends InternalClient {
 
     @Override
     void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
-        this.userModes = userModes;
+        this.userModes = new HashMap<>(userModes.getStatuses().stream().collect(Collectors.toMap(modeStatus -> modeStatus.getMode().getChar(), Function.identity())));
     }
 
     @Override
     void startSending() {
         this.connection.startSending();
+    }
+
+    @Override
+    public void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+        if (this.userModes == null) {
+            this.userModes = new HashMap<>();
+        }
+        for (ModeStatus<UserMode> status : userModes.getStatuses()) {
+            if (status.isSetting()) {
+                this.userModes.put(status.getMode().getChar(), status);
+            } else {
+                this.userModes.remove(status.getMode().getChar());
+            }
+        }
     }
 
     private List<String> handleArgs(@Nonnull String[] split, int start) {

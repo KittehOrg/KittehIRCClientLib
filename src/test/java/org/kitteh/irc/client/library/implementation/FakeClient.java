@@ -60,6 +60,11 @@ class FakeClient extends InternalClient {
 
     }
 
+    @Override
+    void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+
+    }
+
     @Nonnull
     @Override
     Config getConfig() {

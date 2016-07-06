@@ -889,6 +889,7 @@ class EventListener {
                 return;
             }
             this.fire(new UserModeEvent(this.client, event.getOriginalMessages(), event.getActor(), event.getParameters().get(0), statusList));
+            this.client.updateUserModes(statusList);
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             ActorProvider.IRCChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
             ModeStatusList<ChannelMode> statusList;
