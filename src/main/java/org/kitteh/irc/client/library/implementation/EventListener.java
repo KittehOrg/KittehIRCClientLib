@@ -27,12 +27,14 @@ import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.WhoisData;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
@@ -50,6 +52,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKnockEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelModeInfoListEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNamesUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelPartEvent;
@@ -94,6 +97,8 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import java.time.DateTimeException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -485,6 +490,63 @@ class EventListener {
             this.namesMessages.clear();
         } else {
             this.trackException(event, "NAMES response sent for invalid channel name");
+        }
+    }
+
+    private final List<ServerMessage> banMessages = new ArrayList<>();
+    private final List<ModeInfo> bans = new ArrayList<>();
+
+    @NumericFilter(367) // BANLIST
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void banList(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            this.trackException(event, "BANLIST response of incorrect length");
+            return;
+        }
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        if (channel != null) {
+            this.banMessages.add(messageFromEvent(event));
+            String creator = event.getParameters().size() > 3 ? event.getParameters().get(3) : null;
+            Instant creationTime = null;
+            if (event.getParameters().size() > 4) {
+                try {
+                    creationTime = Instant.ofEpochSecond(Integer.parseInt(event.getParameters().get(4)));
+                } catch (NumberFormatException | DateTimeException ignored) {
+                }
+            }
+            Optional<ChannelMode> ban = this.client.getServerInfo().getChannelMode('b');
+            if (ban.isPresent()) {
+                this.bans.add(new ModeData.IRCModeInfo(this.client, channel.snapshot(), ban.get(), event.getParameters().get(2), Optional.ofNullable(creator), Optional.ofNullable(creationTime)));
+            } else {
+                this.trackException(event, "BANLIST can't list bans if there's no 'b' mode");
+            }
+        } else {
+            this.trackException(event, "BANLIST response sent for invalid channel name");
+        }
+    }
+
+    @NumericFilter(368) // End of ban list
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void banListEnd(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.trackException(event, "BANLIST response of incorrect length");
+            return;
+        }
+        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        if (channel != null) {
+            this.banMessages.add(messageFromEvent(event));
+            Optional<ChannelMode> ban = this.client.getServerInfo().getChannelMode('b');
+            if (ban.isPresent()) {
+                List<ModeInfo> bans = new ArrayList<>(this.bans);
+                this.fire(new ChannelModeInfoListEvent(this.client, this.banMessages, channel.snapshot(), ban.get(), bans));
+                channel.setModeInfoList('b', bans);
+            } else {
+                this.trackException(event, "BANLIST can't list bans if there's no 'b' mode");
+            }
+            this.bans.clear();
+            this.banMessages.clear();
+        } else {
+            this.trackException(event, "BANLIST response sent for invalid channel name");
         }
     }
 
@@ -904,14 +966,9 @@ class EventListener {
                 this.trackException(event, e.getMessage());
                 return;
             }
-            this.fire(new ChannelModeEvent(this.client, event.getOriginalMessages(), event.getActor(), channel.snapshot(), statusList));
-            statusList.getStatuses().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter().isPresent())).forEach(status -> {
-                if (status.isSetting()) {
-                    channel.trackUserModeAdd(status.getParameter().get(), (ChannelUserMode) status.getMode());
-                } else {
-                    channel.trackUserModeRemove(status.getParameter().get(), (ChannelUserMode) status.getMode());
-                }
-            });
+            Channel channelSnapshot = channel.snapshot();
+            this.fire(new ChannelModeEvent(this.client, event.getOriginalMessages(), event.getActor(), channelSnapshot, statusList));
+            statusList.getStatuses().stream().filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK).forEach(status -> channel.trackModeInfo(status.isSetting(), new ModeData.IRCModeInfo(this.client, channelSnapshot, status.getMode(), status.getParameter().get(), Optional.of(event.getActor().getName()), Optional.of(Instant.now()))));
             channel.updateChannelModes(statusList);
         } else {
             this.trackException(event, "MODE message sent for invalid target");

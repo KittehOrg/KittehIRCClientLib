@@ -24,12 +24,17 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.util.Mask;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
+import java.util.Optional;
 
 final class ModeData {
     abstract static class IRCModeBase {
@@ -101,6 +106,66 @@ final class ModeData {
         @Override
         public String toString() {
             return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar()).toString();
+        }
+    }
+
+    static class IRCModeInfo implements ModeInfo {
+        private final Client client;
+        private final Optional<Instant> creationTime;
+        private final Optional<String> creator;
+        private final Channel channel;
+        private final Mask mask;
+        private final ChannelMode mode;
+
+        IRCModeInfo(@Nonnull Client client, @Nonnull Channel channel, @Nonnull ChannelMode mode, @Nonnull String mask, @Nonnull Optional<String> creator, @Nonnull Optional<Instant> creationTime) {
+            this.client = client;
+            this.creator = creator;
+            this.channel = channel;
+            this.mask = Mask.fromString(mask);
+            this.creationTime = creationTime;
+            this.mode = mode;
+        }
+
+        @Nonnull
+        @Override
+        public Optional<String> getCreator() {
+            return this.creator;
+        }
+
+        @Nonnull
+        @Override
+        public Channel getChannel() {
+            return this.channel;
+        }
+
+        @Nonnull
+        @Override
+        public Client getClient() {
+            return this.client;
+        }
+
+        @Nonnull
+        @Override
+        public Mask getMask() {
+            return this.mask;
+        }
+
+        @Nonnull
+        @Override
+        public ChannelMode getMode() {
+            return this.mode;
+        }
+
+        @Nonnull
+        @Override
+        public Optional<Instant> getCreationTime() {
+            return this.creationTime;
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("client", this.client).add("channel", this.channel).add("mode", this.mode).add("mask", this.mask).add("creator", this.creator).add("creationTime", this.creationTime).toString();
         }
     }
 }

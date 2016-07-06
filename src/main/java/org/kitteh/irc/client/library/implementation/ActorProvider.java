@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ISupportParameter;
@@ -33,6 +34,7 @@ import org.kitteh.irc.client.library.element.Staleable;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.util.CIKeyMap;
@@ -48,6 +50,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -156,6 +159,8 @@ class ActorProvider implements Resettable {
 
     class IRCChannel extends IRCStaleable<IRCChannelSnapshot> {
         private final Map<Character, ModeStatus<ChannelMode>> channelModes = new HashMap<>();
+        private final Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
+        private final Set<Character> trackedModes = new HashSet<>();
         private final Map<String, Set<ChannelUserMode>> modes;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
@@ -207,6 +212,35 @@ class ActorProvider implements Resettable {
                 }
             }
             return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter)));
+        }
+
+        void trackMode(@Nonnull ChannelMode mode, boolean track) {
+            if (track && this.trackedModes.add(mode.getChar())) {
+                new ChannelModeCommand(ActorProvider.this.client, this.getName()).add(true, mode).execute();
+            } else if (!track) {
+                this.trackedModes.remove(mode.getChar());
+            }
+        }
+
+        void setModeInfoList(char character, @Nonnull List<ModeInfo> modeInfoList) {
+            if (this.trackedModes.contains(character)) {
+                this.modeInfoLists.put(character, modeInfoList);
+            }
+            this.markStale();
+        }
+
+        void trackModeInfo(boolean add, @Nonnull ModeInfo modeInfo) {
+            if (add) {
+                this.modeInfoLists.get(modeInfo.getMode().getChar()).add(modeInfo);
+            } else {
+                Iterator<ModeInfo> iterator = this.modeInfoLists.get(modeInfo.getMode().getChar()).iterator();
+                while (iterator.hasNext()) {
+                    if (modeInfo.getMask().equals(iterator.next().getMask())) {
+                        iterator.remove();
+                        return;
+                    }
+                }
+            }
         }
 
         void trackUser(@Nonnull IRCUser user, @Nonnull Set<ChannelUserMode> modes) {
@@ -276,6 +310,13 @@ class ActorProvider implements Resettable {
         }
 
         void updateChannelModes(ModeStatusList<ChannelMode> statusList) {
+            statusList.getStatuses().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter().isPresent())).forEach(status -> {
+                if (status.isSetting()) {
+                    this.trackUserModeAdd(status.getParameter().get(), (ChannelUserMode) status.getMode());
+                } else {
+                    this.trackUserModeRemove(status.getParameter().get(), (ChannelUserMode) status.getMode());
+                }
+            });
             statusList.getStatuses().stream().filter(status -> !(status.getMode() instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
                 if (status.isSetting()) {
                     this.channelModes.put(status.getMode().getChar(), status);
@@ -331,6 +372,7 @@ class ActorProvider implements Resettable {
 
     class IRCChannelSnapshot extends IRCActorSnapshot implements Channel {
         private final ModeStatusList<ChannelMode> channelModes;
+        private final Map<Character, List<ModeInfo>> modeInfoLists;
         private final Map<String, SortedSet<ChannelUserMode>> modes;
         private final List<String> names;
         private final Map<String, User> nickMap;
@@ -343,6 +385,11 @@ class ActorProvider implements Resettable {
             this.complete = channel.fullListReceived;
             this.channelModes = ModeStatusList.of(channel.channelModes.values());
             this.topic = topic;
+            this.modeInfoLists = new HashMap<>();
+            for (Map.Entry<Character, List<ModeInfo>> entry : channel.modeInfoLists.entrySet()) {
+                this.modeInfoLists.put(entry.getKey(), Collections.unmodifiableList(new ArrayList<>(entry.getValue())));
+            }
+            channel.trackedModes.stream().filter(character -> !this.modeInfoLists.containsKey(character)).forEach(character -> this.modeInfoLists.put(character, Collections.unmodifiableList(new ArrayList<>())));
             Map<String, SortedSet<ChannelUserMode>> newModes = new CIKeyMap<>(ActorProvider.this.client);
             Optional<ISupportParameter.Prefix> prefix = ActorProvider.this.client.getServerInfo().getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
             Comparator<ChannelUserMode> comparator = prefix.isPresent() ? Comparator.comparingInt(prefix.get().getModes()::indexOf) : null;
@@ -367,6 +414,14 @@ class ActorProvider implements Resettable {
         @Override
         public String getMessagingName() {
             return this.getName();
+        }
+
+        @Nonnull
+        @Override
+        public Optional<List<ModeInfo>> getModeInfoList(@Nonnull ChannelMode mode) {
+            Sanity.nullCheck(mode, "Mode cannot be null");
+            Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
+            return Optional.ofNullable(this.modeInfoLists.get(mode.getChar()));
         }
 
         @Override
@@ -410,6 +465,17 @@ class ActorProvider implements Resettable {
         @Override
         public boolean hasCompleteUserData() {
             return this.complete;
+        }
+
+        @Override
+        public void setModeInfoTracking(@Nonnull ChannelMode mode, boolean track) {
+            Sanity.nullCheck(mode, "Mode cannot be null");
+            Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
+            IRCChannel channel = ActorProvider.this.getTrackedChannel(this.getName());
+            if (channel == null) {
+                throw new IllegalStateException("Not currently in channel " + this.getName());
+            }
+            channel.trackMode(mode, track);
         }
 
         @Override

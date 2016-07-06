@@ -29,7 +29,9 @@ import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
+import org.kitteh.irc.client.library.event.channel.ChannelModeInfoListEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -82,6 +84,16 @@ public interface Channel extends MessageReceiver, Staleable {
     default Optional<Channel> getLatest() {
         return this.getClient().getChannel(this.getName());
     }
+
+    /**
+     * Gets the tracked mode info for the channel, if tracked.
+     *
+     * @param mode type A mode to acquire
+     * @return list of mode info if tracked, empty if not tracked
+     * @throws IllegalArgumentException for null or non-type-A mode
+     */
+    @Nonnull
+    Optional<List<ModeInfo>> getModeInfoList(@Nonnull ChannelMode mode);
 
     /**
      * Gets the channel's current known modes.
@@ -240,6 +252,18 @@ public interface Channel extends MessageReceiver, Staleable {
     default void part(@Nonnull String reason) {
         this.getClient().removeChannel(this.getName(), reason);
     }
+
+    /**
+     * Sets whether a particular type A mode should be tracked for this
+     * channel, and sends a request for the full list.
+     *
+     * @param mode mode to track
+     * @param track true to track, false to stop tracking
+     * @throws IllegalArgumentException for null or non-type-A mode
+     * @throws IllegalStateException if not in channel
+     * @see ChannelModeInfoListEvent
+     */
+    void setModeInfoTracking(@Nonnull ChannelMode mode, boolean track);
 
     /**
      * Attempts to set the topic of the channel.
