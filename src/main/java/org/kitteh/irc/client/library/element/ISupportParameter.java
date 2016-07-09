@@ -130,6 +130,23 @@ public interface ISupportParameter {
     }
 
     /**
+     * Represents support for metadata.
+     */
+    interface Metadata extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "METADATA";
+
+        /**
+         * Gets the limit on the number of user-set keys, if defined.
+         *
+         * @return key count limit
+         */
+        Optional<Integer> getKeyLimit();
+    }
+
+    /**
      * Represents the network name.
      */
     interface Network extends ISupportParameter {

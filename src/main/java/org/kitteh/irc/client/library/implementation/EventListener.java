@@ -555,6 +555,60 @@ class EventListener {
         this.fire(new MonitoredNickListFullEvent(this.client, event.getOriginalMessages(), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
     }
 
+    @NumericFilter(760) // Metadata whois
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataWhois(ClientReceiveNumericEvent event) {
+        // TODO implement with WHOIS support
+    }
+
+    @NumericFilter(761) // Metadata key value
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataKeyValue(ClientReceiveNumericEvent event) {
+
+    }
+
+    @NumericFilter(762) // Metadata end
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataEnd(ClientReceiveNumericEvent event) {
+
+    }
+
+    @NumericFilter(764) // Metadata limit reached
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataLimitReached(ClientReceiveNumericEvent event) {
+
+    }
+
+    @NumericFilter(765) // Metadata invalid target
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataInvalidTarget(ClientReceiveNumericEvent event) {
+
+    }
+
+    @NumericFilter(766) // Metadata no matching key
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataNoMatchingKey(ClientReceiveNumericEvent event) {
+
+    }
+
+    @NumericFilter(767) // Metadata invalid key
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataInvalidKey(ClientReceiveNumericEvent event) {
+
+    }
+
+    @NumericFilter(768) // Metadata key not set
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataKeyNotSet(ClientReceiveNumericEvent event) {
+
+    }
+
+    @NumericFilter(769) // Metadata permission denied
+    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    public void metadataPermissionDenied(ClientReceiveNumericEvent event) {
+
+    }
+
     private final List<CapabilityState> capList = new LinkedList<>();
     private final List<ServerMessage> capListMessages = new LinkedList<>();
     private final List<CapabilityState> capLs = new LinkedList<>();
