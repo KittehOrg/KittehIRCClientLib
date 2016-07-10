@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 
 /**
  * A list of mode statuses.
+ *
+ * @param <ModeType> type of modes being listed
  */
 public class ModeStatusList<ModeType extends Mode> {
     /**
@@ -110,6 +112,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * Creates a list of the given statuses.
      *
      * @param statuses statuses
+     * @param <ModeType> type of modes being listed
      * @return list
      */
     @Nonnull
@@ -123,6 +126,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * Creates a list of the given statuses.
      *
      * @param statuses statuses
+     * @param <ModeType> type of modes being listed
      * @return list
      */
     @Nonnull

@@ -45,7 +45,7 @@ Below is an example from the JavaDocs:
 
 ```java
 @CommandFilter("PRIVMSG")
-@Handler(filters = @Filter(CommandFilter.Filter.class))
+@Handler
 public void privmsg(ClientReceiveCommandEvent event) {
     System.out.println("We get signal!");
 }
