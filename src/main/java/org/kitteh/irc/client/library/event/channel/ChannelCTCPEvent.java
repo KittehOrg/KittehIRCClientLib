@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
+import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -38,7 +39,7 @@ import java.util.List;
  * the sender may be the client itself if the capability "echo-message" is
  * enabled.
  */
-public class ChannelCTCPEvent extends ActorChannelMessageEventBase<User> {
+public class ChannelCTCPEvent extends ActorChannelMessageEventBase<User> implements ActorMessageEvent<User> {
     /**
      * Creates the event.
      *

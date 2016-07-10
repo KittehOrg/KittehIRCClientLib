@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
+import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -43,7 +44,7 @@ import java.util.Optional;
  * <p>
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
-public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> {
+public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User> {
     private String reply;
 
     /**

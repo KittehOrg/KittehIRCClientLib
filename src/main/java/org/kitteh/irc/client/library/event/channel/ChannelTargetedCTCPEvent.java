@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.TargetedUserChannelMessageEventBase;
+import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.List;
  * character (1) removed. Note that the sender may be the client itself if
  * the capability "echo-message" is enabled.
  */
-public class ChannelTargetedCTCPEvent extends TargetedUserChannelMessageEventBase {
+public class ChannelTargetedCTCPEvent extends TargetedUserChannelMessageEventBase implements ActorMessageEvent<User> {
     /**
      * Creates the event.
      *

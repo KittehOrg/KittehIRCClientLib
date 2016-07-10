@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
+import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.event.helper.Replyable;
 
 import javax.annotation.Nonnull;
@@ -37,7 +38,7 @@ import java.util.List;
  * Fires when a message is sent to a channel. Note that the sender may be the
  * client itself if the capability "echo-message" is enabled.
  */
-public class ChannelMessageEvent extends ActorChannelMessageEventBase<User> implements Replyable {
+public class ChannelMessageEvent extends ActorChannelMessageEventBase<User> implements ActorMessageEvent<User>, Replyable {
     /**
      * Creates the event.
      *
