@@ -41,6 +41,7 @@ import net.engio.mbassy.subscription.Subscription;
 import net.engio.mbassy.subscription.SubscriptionContext;
 import net.engio.mbassy.subscription.SubscriptionFactory;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
+import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.EventManager;
@@ -162,6 +163,7 @@ class ManagerEvent implements EventManager {
         // Defaults!
         this.registerAnnotationFilter(CommandFilter.class, new CommandFilter.Processor());
         this.registerAnnotationFilter(NumericFilter.class, new NumericFilter.Processor());
+        this.registerAnnotationFilter(PrivateEvent.ToSelfOnly.class, new PrivateEvent.ToSelfOnly.Processor());
     }
 
     @Override

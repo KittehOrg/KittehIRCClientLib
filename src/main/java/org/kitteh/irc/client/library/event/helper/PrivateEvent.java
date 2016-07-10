@@ -21,36 +21,44 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.user;
+package org.kitteh.irc.client.library.event.helper;
 
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
-import org.kitteh.irc.client.library.event.helper.Replyable;
+import org.kitteh.irc.client.library.util.FilterProcessor;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
- * Fires when a notice is sent to the client.
+ * An event representing a message sent privately.
  */
-public class PrivateNoticeEvent extends ActorPrivateMessageEventBase<User> implements Replyable {
+public interface PrivateEvent extends MessageEvent {
     /**
-     * Creates the event.
-     *
-     * @param client client for which this is occurring
-     * @param originalMessages original messages
-     * @param sender who sent it
-     * @param target target of the message
-     * @param message message sent
+     * Only get messages addressed to self.
      */
-    public PrivateNoticeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message) {
-        super(client, originalMessages, sender, target, message);
+    @interface ToSelfOnly {
+        /**
+         * {@inheritDoc}
+         */
+        class Processor implements FilterProcessor<PrivateEvent, ToSelfOnly> {
+            @Override
+            public boolean accepts(PrivateEvent privateEvent, ToSelfOnly[] annotations) {
+                return privateEvent.isToClient();
+            }
+        }
     }
 
-    @Override
-    public void sendReply(@Nonnull String message) {
-        this.getActor().sendNotice(message);
-    }
+    /**
+     * Gets the target of this message.
+     *
+     * @return the message target
+     */
+    @Nonnull
+    String getTarget();
+
+    /**
+     * Gets if the target of the message is this client.
+     *
+     * @return true if the target is this client
+     * @see PrivateEvent.ToSelfOnly annotation to filter only these events
+     */
+    boolean isToClient();
 }

@@ -787,15 +787,13 @@ class EventListener {
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateNoticeEvent(this.client, event.getOriginalMessages(), user, message));
+            this.fire(new PrivateNoticeEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), message));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
             this.fire(new ChannelNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), message));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
             this.fire(new ChannelTargetedNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), message));
-        } else {
-            this.trackException(event, "NOTICE message to improper target");
         }
     }
 
@@ -817,15 +815,13 @@ class EventListener {
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateMessageEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(1)));
+            this.fire(new PrivateMessageEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), event.getParameters().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
             MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
             this.fire(new ChannelMessageEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), event.getParameters().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
             this.fire(new ChannelTargetedMessageEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), event.getParameters().get(1)));
-        } else {
-            this.trackException(event, "PRIVMSG message to improper target");
         }
     }
 
@@ -836,7 +832,7 @@ class EventListener {
         switch (event.getCommand()) {
             case "NOTICE":
                 if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                    this.fire(new PrivateCTCPReplyEvent(this.client, event.getOriginalMessages(), user, ctcpMessage));
+                    this.fire(new PrivateCTCPReplyEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage));
                 }
                 break;
             case "PRIVMSG":
@@ -856,10 +852,12 @@ class EventListener {
                     if (ctcpMessage.startsWith("PING ")) {
                         reply = ctcpMessage;
                     }
-                    PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, ctcpMessage, reply);
+                    PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
                     this.fire(ctcpEvent);
                     Optional<String> replyMessage = ctcpEvent.getReply();
-                    replyMessage.ifPresent(message -> this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(message)));
+                    if (ctcpEvent.isToClient()){
+                        replyMessage.ifPresent(message -> this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(message)));
+                    }
                 } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
                     MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
                     this.fire(new ChannelCTCPEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), ctcpMessage));
@@ -1159,8 +1157,6 @@ class EventListener {
                 return new ToStringer(this).toString();
             }
         }
-
-        static final MessageTargetInfo UNKNOWN = new MessageTargetInfo();
     }
 
     @Nonnull
@@ -1175,9 +1171,6 @@ class EventListener {
 
     @Nonnull
     private MessageTargetInfo getTypeByTarget(@Nonnull String target) {
-        if (this.client.getNick().equalsIgnoreCase(target)) {
-            return MessageTargetInfo.Private.INSTANCE;
-        }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(target);
         ChannelUserMode prefix = this.client.getServerInfo().getTargetedChannelInfo(target);
         if (prefix != null) {
@@ -1185,7 +1178,7 @@ class EventListener {
         } else if (channel != null) {
             return new MessageTargetInfo.Channel(channel);
         }
-        return MessageTargetInfo.UNKNOWN;
+        return MessageTargetInfo.Private.INSTANCE;
     }
 
     @Nonnull

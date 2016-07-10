@@ -26,25 +26,27 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
  * The client has received a reply to a CTCP query! The method
- * {@link #getMessage()} returns the message with the delimiter (1) removed.
+ * {@link #getMessage()} returns the unescaped message with the delimiter
+ * removed.
  */
-public class PrivateCTCPReplyEvent extends ActorMessageEventBase<User> {
+public class PrivateCTCPReplyEvent extends ActorPrivateMessageEventBase<User> {
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
      * @param originalMessages original messages
      * @param sender sender of the reply
+     * @param target target of the reply
      * @param message message sent
      */
-    public PrivateCTCPReplyEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String message) {
-        super(client, originalMessages, sender, message);
+    public PrivateCTCPReplyEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message) {
+        super(client, originalMessages, sender, target, message);
     }
 }

@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -38,11 +38,12 @@ import java.util.Optional;
  * The client has received a CTCP message! There are a few (FINGER, PING,
  * TIME, VERSION) queries which have a default reply message. Others are
  * simply ignored by default. The method {@link #getMessage()} returns the
- * message with the delimiter character (1) removed.
+ * unescaped message with the delimiter removed. Note that the reply is not
+ * sent if the target is not the client.
  * <p>
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
-public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
+public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> {
     private String reply;
 
     /**
@@ -51,11 +52,12 @@ public class PrivateCTCPQueryEvent extends ActorMessageEventBase<User> {
      * @param client client for which this is occurring
      * @param originalMessages original messages
      * @param sender sender of the query
+     * @param target target of the query
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String message, @Nullable String reply) {
-        super(client, originalMessages, sender, message);
+    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message, @Nullable String reply) {
+        super(client, originalMessages, sender, target, message);
         this.reply = reply;
     }
 

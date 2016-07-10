@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.Replyable;
 
 import javax.annotation.Nonnull;
@@ -35,17 +35,18 @@ import java.util.List;
 /**
  * Fires when a message is sent to the client.
  */
-public class PrivateMessageEvent extends ActorMessageEventBase<User> implements Replyable {
+public class PrivateMessageEvent extends ActorPrivateMessageEventBase<User> implements Replyable {
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
      * @param originalMessages original messages
-     * @param message message sent
      * @param sender who sent it
+     * @param target who received it
+     * @param message message sent
      */
-    public PrivateMessageEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String message) {
-        super(client, originalMessages, sender, message);
+    public PrivateMessageEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message) {
+        super(client, originalMessages, sender, target, message);
     }
 
     @Override
