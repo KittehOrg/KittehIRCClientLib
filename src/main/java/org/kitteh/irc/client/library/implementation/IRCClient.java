@@ -26,7 +26,6 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.element.mode.Mode;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
@@ -323,7 +322,7 @@ final class IRCClient extends InternalClient {
         // 512 - 7 = 505
         // Then, drop the user's full name (nick!name@host) and target
         // If self name is unknown, let's just do 100 for now
-        // TODO arbitrary
+        // This will only happen for messages prior to getting a self WHOIS
         // Lastly drop the PRIVMSG or NOTICE length
         return 505 - this.getUser().map(user -> user.getName().length()).orElse(100) - target.length() - type.length();
     }

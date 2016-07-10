@@ -24,11 +24,11 @@
 package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
-import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -36,7 +36,6 @@ import javax.annotation.Nonnull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.SortedSet;
 
 /**

@@ -24,9 +24,9 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
-import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.util.ToStringer;

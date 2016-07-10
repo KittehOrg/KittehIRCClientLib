@@ -23,9 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature;
 
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
-import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 
 import javax.annotation.Nonnull;

@@ -96,7 +96,7 @@ public class ModeStatusList<ModeType extends Mode> {
                             throw new IllegalArgumentException("Contains non-registered mode: " + modeChar);
                         }
                         String target = null;
-                        if (mode instanceof ChannelMode && ((mode instanceof ChannelUserMode) || (add ? ((ChannelMode)mode).getType().isParameterRequiredOnSetting() : ((ChannelMode)mode).getType().isParameterRequiredOnRemoval()))) {
+                        if (mode instanceof ChannelMode && ((mode instanceof ChannelUserMode) || (add ? ((ChannelMode) mode).getType().isParameterRequiredOnSetting() : ((ChannelMode) mode).getType().isParameterRequiredOnRemoval()))) {
                             target = args[++currentArg];
                         }
                         list.add((target == null) ? new ModeStatus<>(add, mode) : new ModeStatus<>(add, mode, target));

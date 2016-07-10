@@ -29,8 +29,8 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 import org.kitteh.irc.client.library.feature.auth.element.NickReclamation;
-import org.kitteh.irc.client.library.util.Format;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
+import org.kitteh.irc.client.library.util.Format;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;

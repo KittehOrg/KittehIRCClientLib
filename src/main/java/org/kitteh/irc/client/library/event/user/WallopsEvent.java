@@ -24,8 +24,8 @@
 package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
 import javax.annotation.Nonnull;

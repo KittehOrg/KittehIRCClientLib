@@ -23,8 +23,6 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
-import org.kitteh.irc.client.library.Client;
-
 import javax.annotation.Nonnull;
 
 /**

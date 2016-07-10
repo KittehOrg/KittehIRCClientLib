@@ -861,7 +861,7 @@ class EventListener {
                     PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
                     this.fire(ctcpEvent);
                     Optional<String> replyMessage = ctcpEvent.getReply();
-                    if (ctcpEvent.isToClient()){
+                    if (ctcpEvent.isToClient()) {
                         replyMessage.ifPresent(message -> this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(message)));
                     }
                 } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
