@@ -25,8 +25,10 @@ package org.kitteh.irc.client.library.feature;
 
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.util.FilterProcessor;
 
 import javax.annotation.Nonnull;
+import java.lang.annotation.Annotation;
 import java.util.Set;
 
 /**
@@ -49,6 +51,18 @@ public interface EventManager {
      */
     @Nonnull
     Set<Object> getRegisteredEventListeners();
+
+    /**
+     * Registers an annotation to be used in filtering events if present on
+     * a handler method. Annotations are only processed on listeners
+     * registered after they are added, so add all annotations prior to
+     * registering any listeners.
+     *
+     * @param annotationClass annotation to register
+     * @param filterProcessor filter processor to process such annotations
+     * @param <A> annotation type
+     */
+    <A extends Annotation> void registerAnnotationFilter(Class<A> annotationClass, FilterProcessor<?, A> filterProcessor);
 
     /**
      * Registers annotated with {@link Handler} with sync invocation,

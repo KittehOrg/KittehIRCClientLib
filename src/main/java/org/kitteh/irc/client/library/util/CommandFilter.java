@@ -23,8 +23,6 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import net.engio.mbassy.listener.IMessageFilter;
-import net.engio.mbassy.subscription.SubscriptionContext;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 
 import javax.annotation.Nonnull;
@@ -41,7 +39,7 @@ import java.lang.annotation.Target;
  * The below code only listens to PRIVMSG:
  * <pre>
  *     {@code @CommandFilter("PRIVMSG")}
- *     {@code @Handler(filters = @Filter(CommandFilter.Filter.class))}
+ *     {@code @Handler)}
  *     public void privmsg(ClientReceiveCommandEvent event) {
  *         System.out.println("We get signal");
  *     }
@@ -52,24 +50,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface CommandFilter {
     /**
-     * A Filter of commands.
+     * Processes this annotation-based filter.
      */
-    class Filter implements IMessageFilter<ClientReceiveCommandEvent> {
+    class Processor implements FilterProcessor<ClientReceiveCommandEvent, CommandFilter> {
         @Override
-        public boolean accepts(ClientReceiveCommandEvent event, SubscriptionContext subscriptionContext) {
-            CommandFilter[] commandFilters = subscriptionContext.getHandler().getMethod().getAnnotationsByType(CommandFilter.class);
+        public boolean accepts(ClientReceiveCommandEvent event, CommandFilter[] commandFilters) {
             for (CommandFilter commandFilter : commandFilters) {
                 if (commandFilter.value().equalsIgnoreCase(event.getCommand())) {
                     return true;
                 }
             }
             return false;
-        }
-
-        @Nonnull
-        @Override
-        public String toString() {
-            return new ToStringer(this).toString();
         }
     }
 

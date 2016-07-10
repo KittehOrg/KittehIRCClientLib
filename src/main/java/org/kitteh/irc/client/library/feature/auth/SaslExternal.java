@@ -37,7 +37,7 @@ import javax.annotation.Nonnull;
 public class SaslExternal extends AbstractSaslProtocol<Object> {
     private class Listener extends AbstractSaslProtocol<Object>.Listener {
         @CommandFilter("AUTHENTICATE")
-        @Handler(filters = @Filter(CommandFilter.Filter.class))
+        @Handler
         @Override
         public void authenticate(ClientReceiveCommandEvent event) {
             SaslExternal.this.getClient().sendRawLineImmediately("AUTHENTICATE +");

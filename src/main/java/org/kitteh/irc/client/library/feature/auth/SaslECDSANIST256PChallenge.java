@@ -92,7 +92,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
 
     private class Listener extends AbstractSaslProtocol<ECPrivateKey>.Listener {
         @CommandFilter("AUTHENTICATE")
-        @Handler(filters = @Filter(CommandFilter.Filter.class))
+        @Handler
         @Override
         public void authenticate(ClientReceiveCommandEvent event) {
             if (!event.getParameters().isEmpty()) {

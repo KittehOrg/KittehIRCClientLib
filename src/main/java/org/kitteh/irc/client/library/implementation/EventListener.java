@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
@@ -113,7 +112,7 @@ class EventListener {
     }
 
     @NumericFilter(1)
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void welcome(ClientReceiveNumericEvent event) {
         if (!event.getParameters().isEmpty()) {
             this.client.setCurrentNick(event.getParameters().get(0));
@@ -123,7 +122,7 @@ class EventListener {
     }
 
     @NumericFilter(4)
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void version(ClientReceiveNumericEvent event) {
         this.client.resetServerInfo();
         if (event.getParameters().size() > 1) {
@@ -150,7 +149,7 @@ class EventListener {
     }
 
     @NumericFilter(5)
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void iSupport(ClientReceiveNumericEvent event) {
         for (int i = 1; i < event.getParameters().size(); i++) {
             this.client.getServerInfo().addISupportParameter(this.client.getISupportManager().getParameter(event.getParameters().get(i)));
@@ -158,7 +157,7 @@ class EventListener {
     }
 
     @NumericFilter(221) // UMODEIS
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void umode(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "UMODE response of incorrect length");
@@ -181,7 +180,7 @@ class EventListener {
 
     @NumericFilter(305) // UNAWAY
     @NumericFilter(306) // NOWAWAY
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveNumericEvent event) {
         this.fire(new ClientAwayStatusChangeEvent(this.client, event.getOriginalMessages(), event.getNumeric() == 306));
     }
@@ -196,7 +195,7 @@ class EventListener {
     }
 
     @NumericFilter(301) // WHOISAWAY
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisAway(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "WHOIS AWAY response of incorrect length");
@@ -206,7 +205,7 @@ class EventListener {
     }
 
     @NumericFilter(311) // WHOISUSER
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisUser(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "WHOIS USER response of incorrect length");
@@ -224,7 +223,7 @@ class EventListener {
     }
 
     @NumericFilter(312) // WHOISSERVER
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisServer(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "WHOIS SERVER response of incorrect length");
@@ -238,7 +237,7 @@ class EventListener {
     }
 
     @NumericFilter(313) // WHOISOPERATOR
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisOperator(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "WHOIS OPERATOR response of incorrect length");
@@ -248,7 +247,7 @@ class EventListener {
     }
 
     @NumericFilter(317) // WHOISIDLE
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisIdle(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 4) {
             this.trackException(event, "WHOIS IDLE response of incorrect length");
@@ -276,7 +275,7 @@ class EventListener {
     }
 
     @NumericFilter(330) // WHOISACCOUNT
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisAccount(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "WHOIS ACCOUNT response of incorrect length");
@@ -286,7 +285,7 @@ class EventListener {
     }
 
     @NumericFilter(319) // WHOISCHANNELS
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisChannels(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "WHOIS CHANNELS response of incorrect length");
@@ -296,7 +295,7 @@ class EventListener {
     }
 
     @NumericFilter(671) // WHOISSECURE
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisSecure(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "WHOIS SECURE response of incorrect length");
@@ -306,7 +305,7 @@ class EventListener {
     }
 
     @NumericFilter(318) // ENDOFWHOIS
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisEnd(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "WHOIS END response of incorrect length");
@@ -320,7 +319,7 @@ class EventListener {
 
     @NumericFilter(352) // WHO
     @NumericFilter(354) // WHOX
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void who(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < ((event.getNumeric() == 352) ? 8 : 9)) {
             this.trackException(event, "WHO response of incorrect length");
@@ -367,7 +366,7 @@ class EventListener {
     }
 
     @NumericFilter(315) // WHO completed
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoComplete(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "WHO response of incorrect length");
@@ -383,7 +382,7 @@ class EventListener {
     }
 
     @NumericFilter(324)
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void channelMode(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "Channel mode info message of incorrect length");
@@ -405,7 +404,7 @@ class EventListener {
     }
 
     @NumericFilter(332) // Topic
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "Topic message of incorrect length");
@@ -420,7 +419,7 @@ class EventListener {
     }
 
     @NumericFilter(333) // Topic info
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void topicInfo(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 4) {
             this.trackException(event, "Topic message of incorrect length");
@@ -438,7 +437,7 @@ class EventListener {
     private final List<ServerMessage> namesMessages = new ArrayList<>();
 
     @NumericFilter(353) // NAMES
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void names(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 4) {
             this.trackException(event, "NAMES response of incorrect length");
@@ -467,7 +466,7 @@ class EventListener {
     }
 
     @NumericFilter(366) // End of NAMES
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void namesComplete(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "NAMES response of incorrect length");
@@ -487,14 +486,14 @@ class EventListener {
     private final List<ServerMessage> motdMessages = new ArrayList<>();
 
     @NumericFilter(375)
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void motdStart(ClientReceiveNumericEvent event) {
         this.motd.clear();
         this.motdMessages.clear();
     }
 
     @NumericFilter(372)
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void motdContent(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "MOTD message of incorrect length");
@@ -505,7 +504,7 @@ class EventListener {
     }
 
     @NumericFilter(376)
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void motdEnd(ClientReceiveNumericEvent event) {
         this.motdMessages.add(messageFromEvent(event));
         this.client.getServerInfo().setMOTD(new ArrayList<>(this.motd));
@@ -515,7 +514,7 @@ class EventListener {
     @NumericFilter(431) // No nick given
     @NumericFilter(432) // Erroneous nickname
     @NumericFilter(433) // Nick in use
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void nickInUse(ClientReceiveNumericEvent event) {
         NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.client, event.getOriginalMessages(), this.client.getRequestedNick(), this.client.getRequestedNick() + '`');
         this.fire(nickRejectedEvent);
@@ -523,7 +522,7 @@ class EventListener {
     }
 
     @NumericFilter(710) // Knock
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void knock(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "KNOCK message of incorrect length");
@@ -540,7 +539,7 @@ class EventListener {
 
     @NumericFilter(730) // Monitor online
     @NumericFilter(731) // Monitor offline
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void monitorOnline(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "MONITOR status message of incorrect length");
@@ -562,7 +561,7 @@ class EventListener {
     private final List<ServerMessage> monitorListMessages = new ArrayList<>();
 
     @NumericFilter(732) // Monitor list
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void monitorList(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "MONITOR list message of incorrect length");
@@ -573,7 +572,7 @@ class EventListener {
     }
 
     @NumericFilter(733) // Monitor list end
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void monitorListEnd(ClientReceiveNumericEvent event) {
         this.fire(new MonitoredNickListEvent(this.client, this.monitorListMessages, this.monitorList));
         this.monitorList.clear();
@@ -581,7 +580,7 @@ class EventListener {
     }
 
     @NumericFilter(734) // Monitor list full
-    @Handler(filters = @Filter(NumericFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void monitorListFull(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "MONITOR list full message of incorrect length");
@@ -604,7 +603,7 @@ class EventListener {
     private static final int CAPABILITY_LIST_INDEX_DEFAULT = 2;
 
     @CommandFilter("CAP")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void cap(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 3) {
             this.trackException(event, "CAP message of incorrect length");
@@ -706,7 +705,7 @@ class EventListener {
     }
 
     @CommandFilter("CHGHOST")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void chghost(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() != 2) {
             this.trackException(event, "Invalid number of parameters for CHGHOST message");
@@ -745,7 +744,7 @@ class EventListener {
     }
 
     @CommandFilter("ACCOUNT")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void account(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
             this.trackException(event, "ACCOUNT message of incorrect length");
@@ -756,13 +755,13 @@ class EventListener {
     }
 
     @CommandFilter("AWAY")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveCommandEvent event) {
         this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), !event.getParameters().isEmpty());
     }
 
     @CommandFilter("NOTICE")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void notice(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "NOTICE message of incorrect length");
@@ -801,7 +800,7 @@ class EventListener {
     }
 
     @CommandFilter("PRIVMSG")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void privmsg(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "PRIVMSG message of incorrect length");
@@ -873,7 +872,7 @@ class EventListener {
     }
 
     @CommandFilter("MODE")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void mode(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "MODE message of incorrect length");
@@ -914,7 +913,7 @@ class EventListener {
     }
 
     @CommandFilter("JOIN")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void join(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
             this.trackException(event, "JOIN message of incorrect length");
@@ -953,7 +952,7 @@ class EventListener {
     }
 
     @CommandFilter("PART")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void part(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
             this.trackException(event, "PART message of incorrect length");
@@ -985,7 +984,7 @@ class EventListener {
     }
 
     @CommandFilter("QUIT")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void quit(ClientReceiveCommandEvent event) {
         if (event.getActor() instanceof User) {
             this.fire(new UserQuitEvent(this.client, event.getOriginalMessages(), (User) event.getActor(), (event.getParameters().isEmpty()) ? "" : event.getParameters().get(0)));
@@ -996,7 +995,7 @@ class EventListener {
     }
 
     @CommandFilter("KICK")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void kick(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "KICK message of incorrect length");
@@ -1028,7 +1027,7 @@ class EventListener {
     }
 
     @CommandFilter("NICK")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void nick(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
             this.trackException(event, "NICK message of incorrect length");
@@ -1058,7 +1057,7 @@ class EventListener {
     }
 
     @CommandFilter("INVITE")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void invite(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "INVITE message of incorrect length");
@@ -1076,7 +1075,7 @@ class EventListener {
     }
 
     @CommandFilter("TOPIC")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, "TOPIC message of incorrect length");
@@ -1093,7 +1092,7 @@ class EventListener {
     }
 
     @CommandFilter("WALLOPS")
-    @Handler(filters = @Filter(CommandFilter.Filter.class), priority = Integer.MAX_VALUE - 1)
+    @Handler(priority = Integer.MAX_VALUE - 1)
     public void wallops(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
             this.trackException(event, "WALLOPS message of incorrect length");

@@ -42,7 +42,7 @@ import javax.annotation.Nonnull;
 public class NickServ extends AbstractUserPassProtocol implements EventListening, NickReclamation {
     private class Listener {
         @NumericFilter(4)
-        @Handler(filters = @Filter(NumericFilter.Filter.class))
+        @Handler
         public void listenVersion(ClientReceiveNumericEvent event) {
             NickServ.this.startAuthentication();
         }

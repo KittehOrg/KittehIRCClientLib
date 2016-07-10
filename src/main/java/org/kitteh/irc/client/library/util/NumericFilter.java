@@ -23,8 +23,6 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import net.engio.mbassy.listener.IMessageFilter;
-import net.engio.mbassy.subscription.SubscriptionContext;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 
 import javax.annotation.Nonnull;
@@ -41,7 +39,7 @@ import java.lang.annotation.Target;
  * The below code only listens to numeric 1:
  * <pre>
  *     {@code @NumericFilter(1)}
- *     {@code @Handler(filters = @Filter(NumericFilter.Filter.class))}
+ *     {@code @Handler)}
  *     public void numeric1(ClientReceiveNumericEvent event) {
  *         this.currentNick = event.getParameters()[0];
  *     }
@@ -52,24 +50,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface NumericFilter {
     /**
-     * A Filter of numerics.
+     * Processes this annotation-based filter.
      */
-    class Filter implements IMessageFilter<ClientReceiveNumericEvent> {
+    class Processor implements FilterProcessor<ClientReceiveNumericEvent, NumericFilter> {
         @Override
-        public boolean accepts(ClientReceiveNumericEvent event, SubscriptionContext subscriptionContext) {
-            NumericFilter[] numericFilters = subscriptionContext.getHandler().getMethod().getAnnotationsByType(NumericFilter.class);
+        public boolean accepts(ClientReceiveNumericEvent event, NumericFilter[] numericFilters) {
             for (NumericFilter numericFilter : numericFilters) {
                 if (numericFilter.value() == event.getNumeric()) {
                     return true;
                 }
             }
             return false;
-        }
-
-        @Nonnull
-        @Override
-        public String toString() {
-            return new ToStringer(this).toString();
         }
     }
 

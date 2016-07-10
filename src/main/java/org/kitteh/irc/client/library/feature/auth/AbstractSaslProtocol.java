@@ -93,7 +93,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
         }
 
         @CommandFilter("AUTHENTICATE")
-        @Handler(filters = @Filter(CommandFilter.Filter.class))
+        @Handler
         public void authenticate(ClientReceiveCommandEvent event) {
             if (!event.getParameters().isEmpty()) {
                 String base64 = Base64.getEncoder().encodeToString(AbstractSaslProtocol.this.getAuthLine().getBytes());
@@ -102,13 +102,13 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
         }
 
         @NumericFilter(900)
-        @Handler(filters = @Filter(NumericFilter.Filter.class))
+        @Handler
         public void loggedIn(ClientReceiveNumericEvent event) {
             // TODO store account
         }
 
         @NumericFilter(903)
-        @Handler(filters = @Filter(NumericFilter.Filter.class))
+        @Handler
         public void success(ClientReceiveNumericEvent event) {
             this.finish();
         }
@@ -119,7 +119,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
         @NumericFilter(906)
         @NumericFilter(907)
         @NumericFilter(908)
-        @Handler(filters = @Filter(NumericFilter.Filter.class))
+        @Handler
         public void fail(ClientReceiveNumericEvent event) {
             this.finish();
         }

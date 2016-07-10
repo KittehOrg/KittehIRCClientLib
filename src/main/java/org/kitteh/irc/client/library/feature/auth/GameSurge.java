@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc.client.library.feature.auth;
 
-import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
@@ -39,7 +38,7 @@ import javax.annotation.Nonnull;
 public class GameSurge extends AbstractUserPassProtocol implements EventListening {
     private class Listener {
         @NumericFilter(4)
-        @Handler(filters = @Filter(NumericFilter.Filter.class))
+        @Handler
         public void listenVersion(ClientReceiveNumericEvent event) {
             GameSurge.this.startAuthentication();
         }
