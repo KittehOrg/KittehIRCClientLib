@@ -723,7 +723,7 @@ class ActorProvider implements Resettable {
         this.trackedUsers.get(nick).setAccount(account);
     }
 
-    private void trackUser(@Nonnull IRCUser user) {
+    void trackUser(@Nonnull IRCUser user) {
         if (!this.trackedUsers.containsKey(user.getNick())) {
             this.trackedUsers.put(user.getNick(), user);
         }

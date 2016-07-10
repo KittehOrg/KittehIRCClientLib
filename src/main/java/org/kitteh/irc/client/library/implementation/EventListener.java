@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.WhoisData;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
@@ -144,6 +145,7 @@ class EventListener {
         } else {
             this.trackException(event, "Server address and version missing.");
         }
+        this.client.sendRawLineImmediately("WHOIS " + this.client.getNick());
         this.fire(new ClientConnectedEvent(this.client, event.getActor(), this.client.getServerInfo()));
         this.client.startSending();
     }
@@ -311,7 +313,11 @@ class EventListener {
             this.trackException(event, "WHOIS END response of incorrect length");
             return;
         }
-        this.fire(new WhoisEvent(this.client, this.getWhoisBuilder(event.getParameters().get(1)).build()));
+        WhoisData whois = this.getWhoisBuilder(event.getParameters().get(1)).build();
+        if (this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(whois.getNick(), this.client.getNick()) && (this.client.getActorProvider().getUser(whois.getNick()) == null)) {
+            this.client.getActorProvider().trackUser((ActorProvider.IRCUser) this.client.getActorProvider().getActor(whois.getName()));
+        }
+        this.fire(new WhoisEvent(this.client, whois));
         this.whoisBuilder = null;
     }
 

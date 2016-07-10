@@ -247,7 +247,6 @@ final class IRCClient extends InternalClient {
     @Override
     public Optional<User> getUser() {
         final ActorProvider.IRCUser user = this.actorProvider.getUser(this.getNick());
-        // TODO whois self on connect
         if (user == null) {
             return Optional.empty();
         }
