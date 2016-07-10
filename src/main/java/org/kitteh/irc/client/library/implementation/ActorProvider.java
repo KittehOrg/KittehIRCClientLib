@@ -347,7 +347,7 @@ class ActorProvider implements Resettable {
             Optional<ISupportParameter.Prefix> prefix = ActorProvider.this.client.getServerInfo().getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
             Comparator<ChannelUserMode> comparator = prefix.isPresent() ? Comparator.comparingInt(prefix.get().getModes()::indexOf) : null;
             for (Map.Entry<String, Set<ChannelUserMode>> entry : channel.modes.entrySet()) {
-                SortedSet<ChannelUserMode> newSet = comparator == null ? new TreeSet<>() : new TreeSet<>(comparator);
+                SortedSet<ChannelUserMode> newSet = (comparator == null) ? new TreeSet<>() : new TreeSet<>(comparator);
                 newSet.addAll(entry.getValue());
                 newModes.put(entry.getKey(), newSet);
             }

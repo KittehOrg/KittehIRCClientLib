@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
+import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
@@ -88,7 +89,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return known modes
      */
     @Nonnull
-    ModeStatusList getModes();
+    ModeStatusList<ChannelMode> getModes();
 
     /**
      * Gets the nicknames of users in the channel, if the client is in the

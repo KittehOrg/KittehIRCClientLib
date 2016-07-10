@@ -153,7 +153,7 @@ public class EventListenerTest {
         Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setVersion("kittydis-1.3.3.7-dev");
         Mockito.verify(this.client, Mockito.times(1)).startSending();
-        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class, event -> event.getServer().getName().equals("irc.network") && event.getServerInfo().equals(this.serverInfo))));
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class, event -> "irc.network".equals(event.getServer().getName()) && event.getServerInfo().equals(this.serverInfo))));
     }
 
     /**
@@ -202,7 +202,7 @@ public class EventListenerTest {
         this.fireLine(":irc.network 372 Kitteh :-   Hello                         ");
         this.fireLine(":irc.network 372 Kitteh");
         this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
-        Mockito.verify(this.serverInfo, Mockito.times(1)).setMOTD(Mockito.argThat(o -> o != null && ((List<String>) o).size() == 1 && ((List<String>) o).get(0).contains("Hello")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).setMOTD(Mockito.argThat(o -> (o != null) && (((List<String>) o).size() == 1) && ((List<String>) o).get(0).contains("Hello")));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message of incorrect length")));
     }
 

@@ -255,7 +255,7 @@ final class IRCClient extends InternalClient {
     @Override
     @Nonnull
     public Optional<ModeStatusList<UserMode>> getUserModes() {
-        return this.userModes == null ? Optional.empty() : Optional.of(ModeStatusList.of(this.userModes.values()));
+        return (this.userModes == null) ? Optional.empty() : Optional.of(ModeStatusList.of(this.userModes.values()));
     }
 
     @Override

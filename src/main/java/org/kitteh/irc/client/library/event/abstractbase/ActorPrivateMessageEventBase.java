@@ -54,6 +54,7 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
      * @param client the client
      * @param originalMessages original messages
      * @param actor the actor
+     * @param target target of the message
      * @param message the message
      */
     protected ActorPrivateMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull String target, @Nonnull String message) {

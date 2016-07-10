@@ -96,7 +96,7 @@ public class ModeStatusList<ModeType extends Mode> {
                             throw new IllegalArgumentException("Contains non-registered mode: " + modeChar);
                         }
                         String target = null;
-                        if (mode instanceof ChannelMode && ((mode instanceof ChannelUserMode) || (add ? ((ChannelMode) mode).getType().isParameterRequiredOnSetting() : ((ChannelMode) mode).getType().isParameterRequiredOnRemoval()))) {
+                        if ((mode instanceof ChannelMode) && ((mode instanceof ChannelUserMode) || (add ? ((ChannelMode) mode).getType().isParameterRequiredOnSetting() : ((ChannelMode) mode).getType().isParameterRequiredOnRemoval()))) {
                             target = args[++currentArg];
                         }
                         list.add((target == null) ? new ModeStatus<>(add, mode) : new ModeStatus<>(add, mode, target));
@@ -157,7 +157,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @return all matching modes or empty if none match
      */
     @Nonnull
-    public List<ModeStatus> getStatusByMode(@Nonnull ModeType mode) {
+    public List<ModeStatus<ModeType>> getStatusByMode(@Nonnull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().equals(mode)).collect(Collectors.toList()));
     }
@@ -182,7 +182,7 @@ public class ModeStatusList<ModeType extends Mode> {
         StringBuilder modes = new StringBuilder(this.statuses.size() * 2);
         StringBuilder parameters = new StringBuilder(100); // Golly, that's arbitrary.
         Boolean add = null;
-        for (ModeStatus change : this.statuses) {
+        for (ModeStatus<ModeType> change : this.statuses) {
             if ((add == null) || (add != change.isSetting())) {
                 add = change.isSetting();
                 modes.append(add ? '+' : '-');

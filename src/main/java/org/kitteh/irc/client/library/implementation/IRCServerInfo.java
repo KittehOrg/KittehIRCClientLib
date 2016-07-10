@@ -183,6 +183,7 @@ class IRCServerInfo implements Resettable, ServerInfo {
         return null;
     }
 
+    @Override
     @Nonnull
     public List<UserMode> getUserModes() {
         return this.userModes;
