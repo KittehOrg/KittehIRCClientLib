@@ -21,29 +21,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.helper;
+package org.kitteh.irc.client.library.feature.filter;
 
-import org.kitteh.irc.client.library.feature.filter.ToSelfOnly;
-
-import javax.annotation.Nonnull;
+import java.lang.annotation.Annotation;
 
 /**
- * An event representing a message sent privately.
+ * Processes event filtering for custom-registered filter annotations.
  */
-public interface PrivateEvent extends MessageEvent {
+@FunctionalInterface
+public interface FilterProcessor<Event, A extends Annotation> {
     /**
-     * Gets the target of this message.
+     * Gets if this event should be accepted based on annotations.
      *
-     * @return the message target
+     * @param event the event
+     * @param annotations the annotations
+     * @return true if the event continues
      */
-    @Nonnull
-    String getTarget();
-
-    /**
-     * Gets if the target of the message is this client.
-     *
-     * @return true if the target is this client
-     * @see ToSelfOnly annotation to filter only these events
-     */
-    boolean isToClient();
+    boolean accepts(Event event, A[] annotations);
 }

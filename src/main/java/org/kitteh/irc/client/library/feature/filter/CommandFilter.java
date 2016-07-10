@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.util;
+package org.kitteh.irc.client.library.feature.filter;
 
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 

@@ -25,7 +25,7 @@ package org.kitteh.irc.client.library.feature;
 
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.util.FilterProcessor;
+import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;

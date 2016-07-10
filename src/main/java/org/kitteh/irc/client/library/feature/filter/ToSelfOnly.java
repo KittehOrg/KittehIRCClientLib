@@ -21,29 +21,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.helper;
+package org.kitteh.irc.client.library.feature.filter;
 
-import org.kitteh.irc.client.library.feature.filter.ToSelfOnly;
-
-import javax.annotation.Nonnull;
+import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 
 /**
- * An event representing a message sent privately.
+ * Only get messages addressed to self.
  */
-public interface PrivateEvent extends MessageEvent {
+public @interface ToSelfOnly {
     /**
-     * Gets the target of this message.
-     *
-     * @return the message target
+     * {@inheritDoc}
      */
-    @Nonnull
-    String getTarget();
-
-    /**
-     * Gets if the target of the message is this client.
-     *
-     * @return true if the target is this client
-     * @see ToSelfOnly annotation to filter only these events
-     */
-    boolean isToClient();
+    class Processor implements FilterProcessor<PrivateEvent, ToSelfOnly> {
+        @Override
+        public boolean accepts(PrivateEvent privateEvent, ToSelfOnly[] annotations) {
+            return privateEvent.isToClient();
+        }
+    }
 }

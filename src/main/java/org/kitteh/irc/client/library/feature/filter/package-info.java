@@ -21,21 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.util;
-
-import java.lang.annotation.Annotation;
-
 /**
- * Processes event filtering for custom-registered filter annotations.
+ * Event filters.
  */
-@FunctionalInterface
-public interface FilterProcessor<Event, A extends Annotation> {
-    /**
-     * Gets if this event should be accepted based on annotations.
-     *
-     * @param event the event
-     * @param annotations the annotations
-     * @return true if the event continues
-     */
-    boolean accepts(Event event, A[] annotations);
-}
+package org.kitteh.irc.client.library.feature.filter;

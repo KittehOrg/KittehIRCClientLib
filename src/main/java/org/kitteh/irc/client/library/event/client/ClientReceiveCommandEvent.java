@@ -27,7 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
-import org.kitteh.irc.client.library.util.CommandFilter;
+import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 
 import javax.annotation.Nonnull;
 import java.util.List;
