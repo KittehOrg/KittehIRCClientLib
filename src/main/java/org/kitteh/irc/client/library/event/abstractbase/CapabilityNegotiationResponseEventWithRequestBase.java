@@ -21,14 +21,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.capabilities;
+package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
-import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventWithRequestBase;
-import org.kitteh.irc.client.library.feature.CapabilityManager;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
+import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationRequestEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -37,13 +36,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Fired when a CAP LIST is received.
+ * Abstract base class for specific capability events
  *
- * @see CapabilityManager
- * @see CapabilityRequestCommand
+ * @see CapabilitiesNewSupportedEvent
+ * @see CapabilitiesListEvent
  */
-public class CapabilitiesSupportedListEvent extends CapabilityNegotiationResponseEventWithRequestBase {
-    private final List<CapabilityState> supportedCapabilities;
+public abstract class CapabilityNegotiationResponseEventWithRequestBase extends CapabilityNegotiationResponseEventBase implements CapabilityNegotiationRequestEvent {
+    private final List<String> requests = new ArrayList<>();
 
     /**
      * Constructs the event.
@@ -51,21 +50,19 @@ public class CapabilitiesSupportedListEvent extends CapabilityNegotiationRespons
      * @param client the client
      * @param originalMessages original messages
      * @param negotiating if we are negotiating right now
-     * @param supportedCapabilities supported capabilities
      */
-    public CapabilitiesSupportedListEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating, @Nonnull List<CapabilityState> supportedCapabilities) {
+    protected CapabilityNegotiationResponseEventWithRequestBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating) {
         super(client, originalMessages, negotiating);
-        Sanity.nullCheck(supportedCapabilities, "Capabilities list cannot be null");
-        this.supportedCapabilities = Collections.unmodifiableList(new ArrayList<>(supportedCapabilities));
     }
 
-    /**
-     * Gets a list of capabilities the server supports.
-     *
-     * @return supported capabilities
-     */
+    @Override
+    public void addRequest(@Nonnull String capability) {
+        this.requests.add(Sanity.safeMessageCheck(capability, "capability"));
+    }
+
     @Nonnull
-    public List<CapabilityState> getSupportedCapabilities() {
-        return this.supportedCapabilities;
+    @Override
+    public List<String> getRequests() {
+        return Collections.unmodifiableList(new ArrayList<>(this.requests));
     }
 }

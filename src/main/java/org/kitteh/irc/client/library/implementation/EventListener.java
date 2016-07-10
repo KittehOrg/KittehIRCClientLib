@@ -36,6 +36,7 @@ import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventWithRequestBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesDeletedSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
@@ -66,7 +67,6 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.client.RequestedChannelJoinCompleteEvent;
-import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
@@ -664,8 +664,11 @@ class EventListener {
                     }
                     this.client.getCapabilityManager().setSupportedCapabilities(states);
                     responseEvent = new CapabilitiesSupportedListEvent(this.client, this.capLsMessages, this.client.getCapabilityManager().isNegotiating(), states);
-                    this.capReq(responseEvent);
+                    this.capReq((CapabilitiesSupportedListEvent) responseEvent);
                     this.fire(responseEvent);
+                    CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
+                    ((CapabilitiesSupportedListEvent) responseEvent).getRequests().forEach(capabilityRequestCommand::enable);
+                    capabilityRequestCommand.execute();
                     states.clear();
                 }
                 break;
@@ -679,8 +682,11 @@ class EventListener {
                 statesAdded.addAll(capabilityStateList);
                 this.client.getCapabilityManager().setSupportedCapabilities(statesAdded);
                 responseEvent = new CapabilitiesNewSupportedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
-                this.capReq(responseEvent);
+                this.capReq((CapabilitiesNewSupportedEvent) responseEvent);
                 this.fire(responseEvent);
+                CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
+                ((CapabilitiesNewSupportedEvent) responseEvent).getRequests().forEach(capabilityRequestCommand::enable);
+                capabilityRequestCommand.execute();
                 break;
             case "del":
                 List<CapabilityState> statesRemaining = new ArrayList<>(this.client.getCapabilityManager().getSupportedCapabilities());
@@ -698,15 +704,13 @@ class EventListener {
         }
     }
 
-    private void capReq(@Nonnull CapabilityNegotiationResponseEvent responseEvent) {
+    private void capReq(@Nonnull CapabilityNegotiationResponseEventWithRequestBase responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
         capabilities.retainAll(CapabilityManager.Defaults.getDefaults());
         capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
         if (!capabilities.isEmpty()) {
             responseEvent.setEndingNegotiation(false);
-            CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
-            capabilities.forEach(capabilityRequestCommand::enable);
-            capabilityRequestCommand.execute();
+            capabilities.forEach(responseEvent::addRequest);
         }
     }
 

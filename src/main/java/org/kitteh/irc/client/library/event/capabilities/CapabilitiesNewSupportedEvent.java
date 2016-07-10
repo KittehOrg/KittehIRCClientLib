@@ -27,7 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventWithRequestBase;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -42,7 +42,7 @@ import java.util.List;
  * @see CapabilityManager
  * @see CapabilityRequestCommand
  */
-public class CapabilitiesNewSupportedEvent extends CapabilityNegotiationResponseEventBase {
+public class CapabilitiesNewSupportedEvent extends CapabilityNegotiationResponseEventWithRequestBase {
     private final List<CapabilityState> newCapabilities;
 
     /**
