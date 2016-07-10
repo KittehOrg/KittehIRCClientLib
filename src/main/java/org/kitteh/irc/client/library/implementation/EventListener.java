@@ -695,7 +695,7 @@ class EventListener {
 
     private void capReq(@Nonnull CapabilityNegotiationResponseEvent responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
-        capabilities.retainAll(CapabilityManager.Defaults.getAll());
+        capabilities.retainAll(CapabilityManager.Defaults.getDefaults());
         capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
         if (!capabilities.isEmpty()) {
             responseEvent.setEndingNegotiation(false);

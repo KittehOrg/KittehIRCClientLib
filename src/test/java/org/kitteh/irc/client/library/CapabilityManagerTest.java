@@ -35,7 +35,7 @@ public class CapabilityManagerTest {
      */
     @Test
     public void testNativeCapabilityRetrieval() {
-        List<String> caps = CapabilityManager.Defaults.getAll();
+        List<String> caps = CapabilityManager.Defaults.getDefaults();
         Assert.assertFalse(caps.isEmpty());
         Assert.assertTrue(caps.contains(CapabilityManager.Defaults.ACCOUNT_NOTIFY));
     }

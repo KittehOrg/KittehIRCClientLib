@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.feature;
 
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
@@ -67,6 +68,8 @@ public interface CapabilityManager {
 
         /**
          * Account message tags.
+         *
+         * @see User#getAccount()
          */
         public static final String ACCOUNT_TAG = "account-tag";
 
@@ -78,9 +81,9 @@ public interface CapabilityManager {
         public static final String AWAY_NOTIFY = "away-notify";
 
         /**
-         * Self-sent message echoing.
+         * Self-sent message echoing, not utilized unless requested.
          */
-        public static final String ECHO_MESSAGE = "echo-message";
+        public static final transient String ECHO_MESSAGE = "echo-message";
 
         /**
          * Account listed in join message.
@@ -90,14 +93,16 @@ public interface CapabilityManager {
         public static final String EXTENDED_JOIN = "extended-join";
 
         /**
-         * Invite notification.
+         * Invite notification, not utilized unless requested.
          *
          * @see ChannelInviteEvent
          */
-        public static final String INVITE_NOTIFY = "invite-notify";
+        public static final transient String INVITE_NOTIFY = "invite-notify";
 
         /**
          * Multiple prefixes sent in NAMES and WHO output.
+         *
+         * @see Channel#getUserModes
          */
         public static final String MULTI_PREFIX = "multi-prefix";
 
@@ -132,23 +137,23 @@ public interface CapabilityManager {
          */
         public static final String USERHOST_IN_NAMES = "userhost-in-names";
 
-        private static final List<String> ALL;
+        private static final List<String> DEFAULTS;
         private static final Supplier<List<String>> SUPPLIER = ArrayList::new;
 
         private Defaults() {
         }
 
         /**
-         * Gets all capabilities natively supported by KICL.
+         * Gets all capabilities requested by KICL by default.
          *
          * @return all capability names
          */
-        public static List<String> getAll() {
-            return ALL;
+        public static List<String> getDefaults() {
+            return DEFAULTS;
         }
 
         static {
-            ALL = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields()).filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())).map(Defaults::getStringForCapabilityField).collect(Collectors.toCollection(SUPPLIER)));
+            DEFAULTS = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields()).filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())).map(Defaults::getStringForCapabilityField).collect(Collectors.toCollection(SUPPLIER)));
         }
 
         /**
