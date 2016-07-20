@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -192,8 +193,9 @@ public class ModeStatusList<ModeType extends Mode> {
                 modes.append(add ? '+' : '-');
             }
             modes.append(change.getMode().getChar());
-            if (change.getParameter().isPresent()) {
-                parameters.append(' ').append(change.getParameter().get());
+            Optional<String> parameter = change.getParameter();
+            if (parameter.isPresent()) {
+                parameters.append(' ').append(parameter.get());
             }
         }
         return modes.toString() + parameters;

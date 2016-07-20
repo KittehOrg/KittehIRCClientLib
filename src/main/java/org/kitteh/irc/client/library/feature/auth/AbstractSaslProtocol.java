@@ -59,8 +59,9 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
                 if (!state.isPresent()) {
                     return;
                 }
-                if (state.get().getValue().isPresent()) {
-                    if (Arrays.stream(state.get().getValue().get().split(",")).filter(mechanism -> mechanism.equalsIgnoreCase(AbstractSaslProtocol.this.saslType)).count() == 0) {
+                Optional<String> stateValue = state.get().getValue();
+                if (stateValue.isPresent()) {
+                    if (Arrays.stream(stateValue.get().split(",")).filter(mechanism -> mechanism.equalsIgnoreCase(AbstractSaslProtocol.this.saslType)).count() == 0) {
                         return; // Don't bother if it doesn't support our type
                     }
                 }

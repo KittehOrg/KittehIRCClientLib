@@ -111,6 +111,9 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
 
         private ISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
+            if (!value.isPresent()) {
+                throw new KittehServerISupportException(name, "No casemapping value");
+            }
             Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value.get());
             if (caseMapping.isPresent()) {
                 this.caseMapping = caseMapping.get();
@@ -137,6 +140,9 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
 
         private ISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
+            if (!value.isPresent()) {
+                throw new KittehServerISupportException(name, "No limits defined");
+            }
             String[] pairs = value.get().split(",");
             Map<Character, Integer> limits = new HashMap<>();
             for (String p : pairs) {
@@ -169,6 +175,9 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
 
         private ISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
+            if (!value.isPresent()) {
+                throw new KittehServerISupportException(name, "No modes defined");
+            }
             String[] modes = value.get().split(",");
             List<ChannelMode> modesList = new ArrayList<>();
             for (int typeId = 0; (typeId < modes.length) && (typeId < 4); typeId++) {
@@ -206,6 +215,9 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
 
         private ISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
+            if (!value.isPresent()) {
+                throw new KittehServerISupportException(name, "No chantypes defined");
+            }
             List<Character> prefixes = new ArrayList<>();
             for (char c : value.get().toCharArray()) {
                 prefixes.add(c);
@@ -227,14 +239,20 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     }
 
     private static final class ISupportNetwork extends IRCISupportParameterValueRequired implements ISupportParameter.Network {
+        private final String networkName;
+
         private ISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
+            if (!value.isPresent()) {
+                throw new KittehServerISupportException(name, "No network name defined");
+            }
+            this.networkName = value.get();
         }
 
         @Nonnull
         @Override
         public String getNetworkName() {
-            return this.getValue().get();
+            return this.networkName;
         }
     }
 
@@ -251,6 +269,9 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
 
         private ISupportPrefix(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
+            if (!value.isPresent()) {
+                throw new KittehServerISupportException(name, "No prefixes defined");
+            }
             Matcher matcher = this.PATTERN.matcher(value.get());
             if (!matcher.find()) {
                 throw new KittehServerISupportException(name, "Data does not match expected pattern");
