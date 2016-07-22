@@ -664,12 +664,7 @@ class EventListener {
                     }
                     this.client.getCapabilityManager().setSupportedCapabilities(states);
                     responseEvent = new CapabilitiesSupportedListEvent(this.client, this.capLsMessages, this.client.getCapabilityManager().isNegotiating(), states);
-                    this.capReq((CapabilitiesSupportedListEvent) responseEvent);
-                    this.fire(responseEvent);
-                    CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
-                    ((CapabilitiesSupportedListEvent) responseEvent).getRequests().forEach(capabilityRequestCommand::enable);
-                    capabilityRequestCommand.execute();
-                    states.clear();
+                    this.fireAndCapReq((CapabilitiesSupportedListEvent) responseEvent);
                 }
                 break;
             case "nak":
@@ -682,11 +677,7 @@ class EventListener {
                 statesAdded.addAll(capabilityStateList);
                 this.client.getCapabilityManager().setSupportedCapabilities(statesAdded);
                 responseEvent = new CapabilitiesNewSupportedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
-                this.capReq((CapabilitiesNewSupportedEvent) responseEvent);
-                this.fire(responseEvent);
-                CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
-                ((CapabilitiesNewSupportedEvent) responseEvent).getRequests().forEach(capabilityRequestCommand::enable);
-                capabilityRequestCommand.execute();
+                this.fireAndCapReq((CapabilitiesNewSupportedEvent) responseEvent);
                 break;
             case "del":
                 List<CapabilityState> statesRemaining = new ArrayList<>(this.client.getCapabilityManager().getSupportedCapabilities());
@@ -704,13 +695,20 @@ class EventListener {
         }
     }
 
-    private void capReq(@Nonnull CapabilityNegotiationResponseEventWithRequestBase responseEvent) {
+    private void fireAndCapReq(@Nonnull CapabilityNegotiationResponseEventWithRequestBase responseEvent) {
         Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
         capabilities.retainAll(CapabilityManager.Defaults.getDefaults());
         capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
         if (!capabilities.isEmpty()) {
             responseEvent.setEndingNegotiation(false);
             capabilities.forEach(responseEvent::addRequest);
+        }
+        this.fire(responseEvent);
+        List<String> requests = responseEvent.getRequests();
+        if (!requests.isEmpty()) {
+            CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
+            requests.forEach(capabilityRequestCommand::enable);
+            capabilityRequestCommand.execute();
         }
     }
 
