@@ -141,6 +141,19 @@ public enum Format {
     private static final Pattern FORMAT_REGEX = Pattern.compile("[" + BOLD + RESET + REVERSE + UNDERLINE + ']');
 
     /**
+     * Strips color and formatting from a given input.
+     *
+     * @param input input to strip
+     * @return stripped input
+     * @see #stripColor(String)
+     * @see #stripFormatting(String)
+     */
+    @Nonnull
+    public static String stripAll(@Nonnull String input) {
+        return stripColor(stripFormatting(input));
+    }
+
+    /**
      * Strips color from a given input.
      *
      * @param input input to strip
