@@ -510,8 +510,9 @@ final class IRCClient extends InternalClient {
         }
 
         // If the server has a password, send that along before USER and NICK.
-        if (this.config.get(Config.SERVER_PASSWORD) != null) {
-            this.sendRawLineImmediately("PASS " + this.config.get(Config.SERVER_PASSWORD));
+        String password = this.config.get(Config.SERVER_PASSWORD);
+        if (password != null) {
+            this.sendRawLineImmediately("PASS " + (password.contains(" ") ? ":" : "") + password);
         }
 
         // Initial USER and NICK messages. Let's just assume we want +iw (send 8)
