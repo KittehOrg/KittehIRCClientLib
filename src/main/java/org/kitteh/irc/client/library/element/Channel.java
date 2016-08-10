@@ -255,11 +255,13 @@ public interface Channel extends MessageReceiver, Staleable {
 
     /**
      * Sets whether a particular type A mode should be tracked for this
-     * channel, and sends a request for the full list.
+     * channel, and sends a request for the full list. Currently supports
+     * modes b, e, and I.
      *
      * @param mode mode to track
      * @param track true to track, false to stop tracking
-     * @throws IllegalArgumentException for null or non-type-A mode
+     * @throws IllegalArgumentException for null or non-type-A mode or
+     * non-supported type A mode
      * @throws IllegalStateException if not in channel
      * @see ChannelModeInfoListEvent
      */
