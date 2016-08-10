@@ -223,13 +223,17 @@ class ActorProvider implements Resettable {
         }
 
         void setModeInfoList(char character, @Nonnull List<ModeInfo> modeInfoList) {
-            if (this.trackedModes.contains(character)) {
-                this.modeInfoLists.put(character, modeInfoList);
+            if (!this.trackedModes.contains(character)) {
+                return;
             }
+            this.modeInfoLists.put(character, modeInfoList);
             this.markStale();
         }
 
         void trackModeInfo(boolean add, @Nonnull ModeInfo modeInfo) {
+            if (!this.trackedModes.contains(modeInfo.getMode().getChar())) {
+                return;
+            }
             if (add) {
                 this.modeInfoLists.get(modeInfo.getMode().getChar()).add(modeInfo);
             } else {
