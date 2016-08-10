@@ -496,10 +496,28 @@ class EventListener {
     private final List<ServerMessage> banMessages = new ArrayList<>();
     private final List<ModeInfo> bans = new ArrayList<>();
 
+    private final List<ServerMessage> inviteMessages = new ArrayList<>();
+    private final List<ModeInfo> invites = new ArrayList<>();
+
+    private final List<ServerMessage> exceptMessages = new ArrayList<>();
+    private final List<ModeInfo> excepts = new ArrayList<>();
+
     @NumericFilter(367) // BANLIST
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void banList(ClientReceiveNumericEvent event) {
         this.modeInfoList(event, "BANLIST", 'b', this.banMessages, this.bans);
+    }
+
+    @NumericFilter(346) // INVITELIST
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void inviteList(ClientReceiveNumericEvent event) {
+        this.modeInfoList(event, "INVITELIST", 'I', this.inviteMessages, this.invites);
+    }
+
+    @NumericFilter(348) // EXCEPTLIST
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void exceptList(ClientReceiveNumericEvent event) {
+        this.modeInfoList(event, "EXCEPTLIST", 'e', this.exceptMessages, this.excepts);
     }
 
     private void modeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
@@ -533,6 +551,18 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void banListEnd(ClientReceiveNumericEvent event) {
         this.endModeInfoList(event, "BANLIST", 'b', this.banMessages, this.bans);
+    }
+
+    @NumericFilter(347) // End of invite list
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void inviteListEnd(ClientReceiveNumericEvent event) {
+        this.endModeInfoList(event, "INVITELIST", 'I', this.inviteMessages, this.invites);
+    }
+
+    @NumericFilter(349) // End of except list
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void exceptListEnd(ClientReceiveNumericEvent event) {
+        this.endModeInfoList(event, "EXCEPTLIST", 'e', this.exceptMessages, this.excepts);
     }
 
     private void endModeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
