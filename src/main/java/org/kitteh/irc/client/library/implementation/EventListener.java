@@ -499,14 +499,18 @@ class EventListener {
     @NumericFilter(367) // BANLIST
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void banList(ClientReceiveNumericEvent event) {
+        this.modeInfoList(event, "BANLIST", 'b', this.banMessages, this.bans);
+    }
+
+    private void modeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "BANLIST response of incorrect length");
+            this.trackException(event, name + " response of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
-            this.banMessages.add(messageFromEvent(event));
-            String creator = event.getParameters().size() > 3 ? event.getParameters().get(3) : null;
+            messageList.add(messageFromEvent(event));
+            String creator = (event.getParameters().size() > 3) ? event.getParameters().get(3) : null;
             Instant creationTime = null;
             if (event.getParameters().size() > 4) {
                 try {
@@ -514,39 +518,43 @@ class EventListener {
                 } catch (NumberFormatException | DateTimeException ignored) {
                 }
             }
-            Optional<ChannelMode> ban = this.client.getServerInfo().getChannelMode('b');
-            if (ban.isPresent()) {
-                this.bans.add(new ModeData.IRCModeInfo(this.client, channel.snapshot(), ban.get(), event.getParameters().get(2), Optional.ofNullable(creator), Optional.ofNullable(creationTime)));
+            Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
+            if (channelMode.isPresent()) {
+                infoList.add(new ModeData.IRCModeInfo(this.client, channel.snapshot(), channelMode.get(), event.getParameters().get(2), Optional.ofNullable(creator), Optional.ofNullable(creationTime)));
             } else {
-                this.trackException(event, "BANLIST can't list bans if there's no 'b' mode");
+                this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
             }
         } else {
-            this.trackException(event, "BANLIST response sent for invalid channel name");
+            this.trackException(event, name + " response sent for invalid channel name");
         }
     }
 
     @NumericFilter(368) // End of ban list
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void banListEnd(ClientReceiveNumericEvent event) {
+        this.endModeInfoList(event, "BANLIST", 'b', this.banMessages, this.bans);
+    }
+
+    private void endModeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "BANLIST response of incorrect length");
+            this.trackException(event, name + " response of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
-            this.banMessages.add(messageFromEvent(event));
-            Optional<ChannelMode> ban = this.client.getServerInfo().getChannelMode('b');
-            if (ban.isPresent()) {
-                List<ModeInfo> bans = new ArrayList<>(this.bans);
-                this.fire(new ChannelModeInfoListEvent(this.client, this.banMessages, channel.snapshot(), ban.get(), bans));
-                channel.setModeInfoList('b', bans);
+            messageList.add(messageFromEvent(event));
+            Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
+            if (channelMode.isPresent()) {
+                List<ModeInfo> modeInfos = new ArrayList<>(infoList);
+                this.fire(new ChannelModeInfoListEvent(this.client, messageList, channel.snapshot(), channelMode.get(), modeInfos));
+                channel.setModeInfoList(mode, modeInfos);
             } else {
-                this.trackException(event, "BANLIST can't list bans if there's no 'b' mode");
+                this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
             }
-            this.bans.clear();
-            this.banMessages.clear();
+            infoList.clear();
+            messageList.clear();
         } else {
-            this.trackException(event, "BANLIST response sent for invalid channel name");
+            this.trackException(event, name + " response sent for invalid channel name");
         }
     }
 
