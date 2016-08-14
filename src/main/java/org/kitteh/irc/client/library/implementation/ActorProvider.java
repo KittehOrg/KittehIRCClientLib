@@ -475,7 +475,7 @@ class ActorProvider implements Resettable {
         public void setModeInfoTracking(@Nonnull ChannelMode mode, boolean track) {
             Sanity.nullCheck(mode, "Mode cannot be null");
             Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
-            Sanity.truthiness((mode.getChar() == 'b') || (mode.getChar() == 'e') || (mode.getChar() == 'I'), "Only modes b, e, and I supported");
+            Sanity.truthiness((mode.getChar() == 'b') || (mode.getChar() == 'e') || (mode.getChar() == 'I') || (mode.getChar() == 'q'), "Only modes b, e, I, and q supported");
             IRCChannel channel = ActorProvider.this.getTrackedChannel(this.getName());
             if (channel == null) {
                 throw new IllegalStateException("Not currently in channel " + this.getName());

@@ -256,7 +256,7 @@ public interface Channel extends MessageReceiver, Staleable {
     /**
      * Sets whether a particular type A mode should be tracked for this
      * channel, and sends a request for the full list. Currently supports
-     * modes b, e, and I.
+     * modes b, e, I, and q.
      *
      * @param mode mode to track
      * @param track true to track, false to stop tracking

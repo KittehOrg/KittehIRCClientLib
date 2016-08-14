@@ -502,6 +502,9 @@ class EventListener {
     private final List<ServerMessage> exceptMessages = new ArrayList<>();
     private final List<ModeInfo> excepts = new ArrayList<>();
 
+    private final List<ServerMessage> quietMessages = new ArrayList<>();
+    private final List<ModeInfo> quiets = new ArrayList<>();
+
     @NumericFilter(367) // BANLIST
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void banList(ClientReceiveNumericEvent event) {
@@ -520,25 +523,36 @@ class EventListener {
         this.modeInfoList(event, "EXCEPTLIST", 'e', this.exceptMessages, this.excepts);
     }
 
+    @NumericFilter(344) // QUIETLIST
+    @NumericFilter(728) // QUIETLIST
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void quietList(ClientReceiveNumericEvent event) {
+        this.modeInfoList(event, "QUIETLIST", 'q', this.quietMessages, this.quiets, (event.getNumeric() == 344) ? 0 : 1);
+    }
+
     private void modeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
-        if (event.getParameters().size() < 3) {
+        this.modeInfoList(event, name, mode, messageList, infoList, 0);
+    }
+
+    private void modeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList, int offset) {
+        if (event.getParameters().size() < (3 + offset)) {
             this.trackException(event, name + " response of incorrect length");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
             messageList.add(messageFromEvent(event));
-            String creator = (event.getParameters().size() > 3) ? event.getParameters().get(3) : null;
+            String creator = (event.getParameters().size() > (3 + offset)) ? event.getParameters().get((3 + offset)) : null;
             Instant creationTime = null;
-            if (event.getParameters().size() > 4) {
+            if (event.getParameters().size() > (4 + offset)) {
                 try {
-                    creationTime = Instant.ofEpochSecond(Integer.parseInt(event.getParameters().get(4)));
+                    creationTime = Instant.ofEpochSecond(Integer.parseInt(event.getParameters().get((4 + offset))));
                 } catch (NumberFormatException | DateTimeException ignored) {
                 }
             }
             Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
             if (channelMode.isPresent()) {
-                infoList.add(new ModeData.IRCModeInfo(this.client, channel.snapshot(), channelMode.get(), event.getParameters().get(2), Optional.ofNullable(creator), Optional.ofNullable(creationTime)));
+                infoList.add(new ModeData.IRCModeInfo(this.client, channel.snapshot(), channelMode.get(), event.getParameters().get((2 + offset)), Optional.ofNullable(creator), Optional.ofNullable(creationTime)));
             } else {
                 this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
             }
@@ -563,6 +577,13 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void exceptListEnd(ClientReceiveNumericEvent event) {
         this.endModeInfoList(event, "EXCEPTLIST", 'e', this.exceptMessages, this.excepts);
+    }
+
+    @NumericFilter(345) // End of quiet list
+    @NumericFilter(729) // End of quiet list
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void quietListEnd(ClientReceiveNumericEvent event) {
+        this.endModeInfoList(event, "QUIETLIST", 'q', this.quietMessages, this.quiets);
     }
 
     private void endModeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
