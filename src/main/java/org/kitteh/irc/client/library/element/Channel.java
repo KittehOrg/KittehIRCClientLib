@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.event.channel.ChannelModeInfoListEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
+import org.kitteh.irc.client.library.event.client.RequestedChannelJoinCompleteEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -256,7 +257,8 @@ public interface Channel extends MessageReceiver, Staleable {
     /**
      * Sets whether a particular type A mode should be tracked for this
      * channel, and sends a request for the full list. Currently supports
-     * modes b, e, I, and q.
+     * modes b, e, I, and q. The best time to request this would be in
+     * {@link RequestedChannelJoinCompleteEvent} to ensure it's always set.
      *
      * @param mode mode to track
      * @param track true to track, false to stop tracking
