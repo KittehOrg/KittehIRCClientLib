@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -51,6 +52,14 @@ public interface EventManager {
      */
     @Nonnull
     Set<Object> getRegisteredEventListeners();
+
+    /**
+     * Gets a map of all registered annotation filters.
+     *
+     * @return a map of annotations to annotation filter processors
+     */
+    @Nonnull
+    Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters();
 
     /**
      * Registers an annotation to be used in filtering events if present on
