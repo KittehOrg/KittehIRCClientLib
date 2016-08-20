@@ -23,22 +23,14 @@
  */
 package org.kitteh.irc.client.library.feature.auth;
 
-import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ClientLinked;
 
 import javax.annotation.Nonnull;
 
 /**
  * An authentication protocol.
  */
-public interface AuthProtocol {
-    /**
-     * Gets the client for which this instance is used.
-     *
-     * @return client
-     */
-    @Nonnull
-    Client getClient();
-
+public interface AuthProtocol extends ClientLinked {
     /**
      * Starts the authentication process.
      */

@@ -23,9 +23,9 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
-import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.util.Mask;
 
 import javax.annotation.Nonnull;
@@ -35,7 +35,7 @@ import java.util.Optional;
 /**
  * Represents a type A mode information entry.
  */
-public interface ModeInfo {
+public interface ModeInfo extends ClientLinked {
     /**
      * Gets the name of the party listed as creating the entry. This may be a
      * nickname, a service name, a server name, etc.
@@ -52,14 +52,6 @@ public interface ModeInfo {
      */
     @Nonnull
     Channel getChannel();
-
-    /**
-     * Gets the client that received this information.
-     *
-     * @return the client
-     */
-    @Nonnull
-    Client getClient();
 
     /**
      * Gets the mask.

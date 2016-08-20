@@ -23,22 +23,12 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import org.kitteh.irc.client.library.Client;
-
 import javax.annotation.Nonnull;
 
 /**
  * Represents a snapshot of an element.
  */
-public interface Snapshot {
-    /**
-     * Gets the Client to which this snapshot belongs.
-     *
-     * @return the snapshot's client
-     */
-    @Nonnull
-    Client getClient();
-
+public interface Snapshot extends ClientLinked {
     /**
      * Gets the time this snapshot was created.
      *

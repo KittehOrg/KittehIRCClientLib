@@ -21,20 +21,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element.mode;
+package org.kitteh.irc.client.library.element;
 
-import org.kitteh.irc.client.library.element.ClientLinked;
+import org.kitteh.irc.client.library.Client;
 
 import javax.annotation.Nonnull;
 
 /**
- * A base class defining information a mode would have.
+ * Represents something which has a {@link Client}.
  */
-public interface Mode extends ClientLinked {
+public interface ClientLinked {
     /**
-     * Gets the mode character.
+     * Gets the Client to which this belongs.
      *
-     * @return mode character
+     * @return the client
      */
-    char getChar();
+    @Nonnull
+    Client getClient();
 }

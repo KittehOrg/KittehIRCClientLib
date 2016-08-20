@@ -23,6 +23,10 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.CaseMapping;
+import org.kitteh.irc.client.library.element.ClientLinked;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -119,5 +123,38 @@ public final class StringUtil {
             builder.append(c);
         }
         return builder.toString();
+    }
+
+    /**
+     * Converts a given String to lowercase per spec.
+     *
+     * @param linked the client provider
+     * @param input string to be lowercased
+     * @return lowercased string
+     * @throws IllegalArgumentException if client provider is null
+     * @throws IllegalArgumentException if input is null
+     * @see CaseMapping#toLowerCase
+     */
+    @Nonnull
+    public static String toLowerCase(@Nonnull ClientLinked linked, @Nonnull String input) {
+        Sanity.nullCheck(linked, "ClientLinked cannot be null");
+        return StringUtil.toLowerCase(linked.getClient(), input);
+    }
+
+    /**
+     * Converts a given String to lowercase per spec.
+     *
+     * @param client the client
+     * @param input string to be lowercased
+     * @return lowercased string
+     * @throws IllegalArgumentException if client is null
+     * @throws IllegalArgumentException if input is null
+     * @see CaseMapping#toLowerCase
+     */
+    @Nonnull
+    public static String toLowerCase(@Nonnull Client client, @Nonnull String input) {
+        Sanity.nullCheck(client, "Client cannot be null");
+        Sanity.nullCheck(input, "Input cannot be null");
+        return client.getServerInfo().getCaseMapping().toLowerCase(input);
     }
 }

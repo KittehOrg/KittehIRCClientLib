@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 
@@ -35,7 +34,7 @@ import java.util.Optional;
 /**
  * Represents an ISUPPORT parameter sent by the server.
  */
-public interface ISupportParameter {
+public interface ISupportParameter extends ClientLinked {
     /**
      * Represents a parameter which always has an integer value.
      */
@@ -206,14 +205,6 @@ public interface ISupportParameter {
          */
         String NAME = "TOPICLEN";
     }
-
-    /**
-     * Gets the Client this is parameter is on.
-     *
-     * @return the client
-     */
-    @Nonnull
-    Client getClient();
 
     /**
      * Gets the name of the parameter.
