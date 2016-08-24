@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.element.mode;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -33,7 +34,7 @@ import java.util.Optional;
 /**
  * A particular status of a mode.
  */
-public class ModeStatus<ModeType extends Mode> {
+public class ModeStatus<ModeType extends Mode> implements ClientLinked {
     private final ModeType mode;
     private final Optional<String> parameter;
     private final boolean setting;
@@ -66,11 +67,7 @@ public class ModeStatus<ModeType extends Mode> {
         this.setting = setting;
     }
 
-    /**
-     * Gets the client this status is for.
-     *
-     * @return client
-     */
+    @Override
     @Nonnull
     public Client getClient() {
         return this.getMode().getClient();

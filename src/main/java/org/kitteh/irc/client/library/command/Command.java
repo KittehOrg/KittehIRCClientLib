@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,7 @@ import javax.annotation.Nonnull;
 /**
  * Represents a command which is executable on the server by the client.
  */
-public abstract class Command {
+public abstract class Command implements ClientLinked {
     private final Client client;
 
     /**
@@ -50,6 +51,7 @@ public abstract class Command {
      *
      * @return the client
      */
+    @Override
     @Nonnull
     public Client getClient() {
         return this.client;
