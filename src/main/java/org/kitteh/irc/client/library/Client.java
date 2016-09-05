@@ -67,7 +67,9 @@ public interface Client {
     interface Builder extends Cloneable {
         /**
          * Sets up a Consumer to fire on the newly created client after it is
-         * built, prior to connection.
+         * built, prior to connection. Use this to register event listeners,
+         * but not any tasks requiring a connection such as sending a message
+         * or joining a channel.
          *
          * @param consumer consumer or null to have no consumer
          * @return this builder
