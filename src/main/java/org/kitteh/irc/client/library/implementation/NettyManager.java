@@ -60,6 +60,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -178,7 +179,8 @@ final class NettyManager {
                         factory.init((KeyStore) null);
                     }
                     SslContext sslContext = SslContextBuilder.forClient().trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();
-                    this.channel.pipeline().addFirst(sslContext.newHandler(this.channel.alloc()));
+                    InetSocketAddress addr = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS);
+                    this.channel.pipeline().addFirst(sslContext.newHandler(this.channel.alloc(), addr.getHostString(), addr.getPort()));
                 } catch (SSLException | NoSuchAlgorithmException | KeyStoreException e) {
                     this.client.getExceptionListener().queue(new KittehConnectionException(e, true));
                     return;
