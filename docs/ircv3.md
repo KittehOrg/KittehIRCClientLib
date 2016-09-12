@@ -19,10 +19,16 @@ chghost | echo-message | invite-notify | sasl | server-time | userhost-in-names
 :-----: | :----------: | :-----------: | :--: | :---------: | :---------------:
 ✔       | ✔            | ✔             | ✔    | ✔           | ✔
 
+### IRCv3.3 (specification not finalized)
+
+STS | message-tags | SNI
+:-: | :----------: | :-:
+✘   | ✘            |✔
+
 #### Notes
-* The following capabilities are supported in the code are not automatically requested:
+* The following capabilities are supported but are not automatically requested:
     * SASL
-        * This is requested if the below mechanism classes are used.
+        * This is requested if the below mechanism classes are used and given to the AuthManager.
     * echo-message
         * After requesting you can also use the annotation filter `@EchoMessage` on events to only receive echoed messages.
     * invite-notify
