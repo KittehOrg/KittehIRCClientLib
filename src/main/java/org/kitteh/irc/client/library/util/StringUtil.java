@@ -24,10 +24,11 @@
 package org.kitteh.irc.client.library.util;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.element.ClientLinked;
+import org.kitteh.irc.client.library.feature.CaseMapping;
 
 import javax.annotation.Nonnull;
+import java.util.regex.Pattern;
 
 /**
  * String tools!
@@ -156,5 +157,49 @@ public final class StringUtil {
         Sanity.nullCheck(client, "Client cannot be null");
         Sanity.nullCheck(input, "Input cannot be null");
         return client.getServerInfo().getCaseMapping().toLowerCase(input);
+    }
+
+    /**
+     * Converts an IRC wildcard (*, ?) to a regular expression pattern.
+     *
+     * @param wildcardExpression expression
+     * @return a pattern
+     */
+    @Nonnull
+    public static Pattern wildcardToPattern(@Nonnull String wildcardExpression) {
+        StringBuilder builder = new StringBuilder(wildcardExpression.length());
+        for (char character : wildcardExpression.toCharArray()) {
+            switch (character) {
+                case '*':
+                case '?':
+                    builder.append('.').append(character); // * to .* and ? to .?
+                    break;
+                case '<':
+                case '(':
+                case '[':
+                case '{':
+                case '\\':
+                case '^':
+                case '-':
+                case '=':
+                case '$':
+                case '!':
+                case '|':
+                case ']':
+                case '}':
+                case ')':
+                case '+':
+                case '.':
+                case '>':
+                    builder.append('\\');
+                    // Deliberately fall through!
+                default:
+                    builder.append(character);
+                    break;
+            }
+        }
+        builder.insert(0, '^');
+        builder.append('$');
+        return Pattern.compile(builder.toString());
     }
 }

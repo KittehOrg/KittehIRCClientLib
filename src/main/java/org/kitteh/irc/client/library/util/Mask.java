@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.util;
 import org.kitteh.irc.client.library.element.User;
 
 import javax.annotation.Nonnull;
+import java.util.regex.Pattern;
 
 /**
  * Represents a mask that can match a {@link User}.
@@ -43,9 +44,11 @@ public class Mask {
         return new Mask(string);
     }
 
+    private final Pattern pattern;
     private final String string;
 
     private Mask(@Nonnull String string) {
+        this.pattern = StringUtil.wildcardToPattern(string);
         this.string = string;
     }
 
@@ -67,6 +70,16 @@ public class Mask {
     @Override
     public boolean equals(Object o) {
         return (o instanceof Mask) && ((Mask) o).string.equals(this.string);
+    }
+
+    /**
+     * Gets if a string matches this mask.
+     *
+     * @param string string to test
+     * @return true if a match
+     */
+    public boolean matches(@Nonnull String string) {
+        return this.pattern.matcher(string).matches();
     }
 
     @Nonnull
