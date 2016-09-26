@@ -52,8 +52,7 @@ public class ChannelModeCommand extends ChannelCommand {
      *
      * @param client the client on which this command is executing
      * @param channel channel targeted
-     * @throws IllegalArgumentException if null parameters or Channel is from
-     * another Client
+     * @throws IllegalArgumentException if null parameters
      */
     public ChannelModeCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client, channel);

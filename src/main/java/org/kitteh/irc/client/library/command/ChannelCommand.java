@@ -39,8 +39,7 @@ public abstract class ChannelCommand extends Command {
      *
      * @param client the client on which this command is executing
      * @param channel channel targeted
-     * @throws IllegalArgumentException if null parameters or Channel is from
-     * another Client
+     * @throws IllegalArgumentException if null parameters
      */
     protected ChannelCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client);
