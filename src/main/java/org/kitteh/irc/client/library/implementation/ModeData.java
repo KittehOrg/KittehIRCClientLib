@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 final class ModeData {
@@ -65,8 +66,22 @@ final class ModeData {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof IRCChannelUserMode)) {
+                return false;
+            }
+            IRCChannelUserMode other = (IRCChannelUserMode) o;
+            return (other.getNickPrefix() == this.getNickPrefix()) && (other.getType() == this.getType()) && (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
+        }
+
+        @Override
         public char getNickPrefix() {
             return this.prefix;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.getClient(), this.getChar(), this.getType(), this.getNickPrefix());
         }
 
         @Nonnull
@@ -84,10 +99,24 @@ final class ModeData {
             this.type = type;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof IRCChannelMode)) {
+                return false;
+            }
+            IRCChannelMode other = (IRCChannelMode) o;
+            return (other.getType() == this.getType()) && (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
+        }
+
         @Nonnull
         @Override
         public Type getType() {
             return this.type;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.getClient(), this.getChar(), this.type);
         }
 
         @Nonnull
@@ -100,6 +129,20 @@ final class ModeData {
     static class IRCUserMode extends IRCModeBase implements UserMode {
         IRCUserMode(@Nonnull Client client, char mode) {
             super(client, mode);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof IRCUserMode)) {
+                return false;
+            }
+            IRCUserMode other = (IRCUserMode) o;
+            return (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.getClient(), this.getChar());
         }
 
         @Nonnull
