@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,18 @@ import javax.annotation.Nonnull;
  */
 public abstract class ChannelCommand extends Command {
     private final String channel;
+
+    /**
+     * Constructs a command for a given channel.
+     *
+     * @param channel channel targeted
+     * @throws IllegalArgumentException if null parameters or Channel is from
+     * another Client
+     */
+    protected ChannelCommand(@Nonnull Channel channel) {
+        super(Sanity.nullCheck(channel, "Channel").getClient());
+        this.channel = channel.getMessagingName();
+    }
 
     /**
      * Constructs a command for a given channel.

@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
@@ -46,6 +47,17 @@ public class ChannelModeCommand extends ChannelCommand {
     private static final int PARAMETER_MODES_PER_LINE = 3;
 
     private final List<ModeStatus<ChannelMode>> changes = new ArrayList<>();
+
+    /**
+     * Constructs a MODE command for a given channel.
+     *
+     * @param channel channel targeted
+     * @throws IllegalArgumentException if null parameters or Channel is from
+     * another Client
+     */
+    public ChannelModeCommand(@Nonnull Channel channel) {
+        super(channel);
+    }
 
     /**
      * Constructs a MODE command for a given channel.
