@@ -6,3 +6,7 @@
 
 # Maven makes this!
 /target
+
+#IntelliJ makes these!
+.idea/
+**/*.iml
