@@ -40,7 +40,7 @@ client.sendMessage("#kitteh.org", "Hello World!");
 It can be useful to see input, output, and exceptions thrown while developing.
 
 Use the `ClientBuilder` methods `listenInput`, `listenOutput`, and `listenException` to catch these little surprises.
-Here is a simple example, printing all of the info to console.
+Here is a simple example, printing all of the info to the console:
 
 ```java
 SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
@@ -49,7 +49,7 @@ builder.listenOutput(line -> System.out.println(sdf.format(new Date()) + ' ' + "
 builder.listenException(Throwable::printStackTrace);
 ```
 
-## Using KICL in your maven project
+## Using KICL in your Maven project
 
 KICL is built and deployed using Maven. Releases are available on Maven Central. Adding it as a dependency is simple as adding the lines below to your pom.xml file:
 
@@ -64,7 +64,7 @@ KICL is built and deployed using Maven. Releases are available on Maven Central.
 
 ## Events
 
-KICL uses a simple event system driven by ```@Handler``` annotations.
+KICL uses a simple event system driven by `@Handler` annotations.
 A simple event listener example is shown below.
 For more information on events, see the [Events](events.md) documentation.
 
@@ -91,5 +91,5 @@ public class FriendlyBot {
 Consult the [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/) to answer most questions.
 
 Visit us in `#kitteh.org` on `irc.esper.net` for a chat (click
-[here](http://webchat.esper.net/?nick=kicl_...&channels=kitteh.org&prompt=1) to join), or check out the
+[here](https://webchat.esper.net/?nick=kicl_...&channels=%23kitteh.org&prompt=1) to join), or check out the
 [Issue Tracker](https://github.com/KittehOrg/KittehIRCClientLib/issues) if you have trouble.
