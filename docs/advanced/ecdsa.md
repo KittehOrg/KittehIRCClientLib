@@ -51,6 +51,7 @@ openssl pkey -inform pem -outform der -in private_key.pem -out public_key.der -p
 ```sh
 openssl pkcs8 -topk8 -inform PEM -outform DER -in private_key.pem -out private_key.der -nocrypt
 ```
+
 Now, we base64 the two DER files so they can be used as arguments to the `getPublicKey`
 and `getPrivateKey` static methods on the `SaslECDSANIST256PChallenge` class:
 
@@ -110,7 +111,7 @@ package their public key
 
 The client sends `AUTHENTICATE ECDSA-NIST256P-CHALLENGE` to request that the authentication
 process be started. See the [SASL documentation](http://ircv3.net/specs/extensions/sasl-3.1.html)
- for more information on the SASL process.
+for more information on the SASL process.
 
 #### Step 2 - Wait for server acknowledgement
 
@@ -120,7 +121,7 @@ Once this message has been seen, the client can begin sending the user informati
 #### Step 3 - Send encapsulated username information
 
 The username to authenticate with, along with the identity to impersonate are concatenated
- and joined together by \0 (NUL byte, U+0000) characters. For example, logging in as user Example and impersonating Test:
+and joined together by \0 (NUL byte, U+0000) characters. For example, logging in as user Example and impersonating Test:
 
 `Example\0Test\0`
 
@@ -147,13 +148,13 @@ representation directly) and sign it, using the user's private key. The signatur
 This is a good approach for many usecases, especially when a lot of data is involved but it's
 important you **sign the provided challenge directly** for this process - Atheme does not
 support checking a cryptographic signature of the challenge. Java users should use `NoneWithECDSA`
- signature algorithm to achieve this.
+signature algorithm to achieve this.
 
 #### Step 5 - Send signature to server
 
 Now that the challenge has been signed, the signature should be encoded using base64 and sent back
- to the server, using the AUTHENTICATE command again. If everything went to plan, the authentication
-  should succeed.
+to the server, using the AUTHENTICATE command again. If everything went to plan, the authentication
+should succeed.
 
 ### Tools
 
