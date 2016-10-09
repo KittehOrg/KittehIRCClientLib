@@ -162,7 +162,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder messageDelay(int delay) {
-        Sanity.truthiness(delay > 0, "Delay must be at least 1");
+        Sanity.truthiness(delay >= 0, "Delay must be a positive integer");
         this.config.set(Config.MESSAGE_DELAY, delay);
         return this;
     }
