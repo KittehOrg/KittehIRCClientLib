@@ -264,12 +264,17 @@ final class NettyManager {
                 if (this.scheduledPing != null) {
                     this.scheduledPing.cancel(false);
                 }
-                this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(() -> {
+                final Runnable runnable = () -> {
                     String message = ClientConnection.this.queue.poll();
                     if (message != null) {
                         ClientConnection.this.channel.writeAndFlush(message);
                     }
-                }, delay, this.client.getMessageDelay(), TimeUnit.MILLISECONDS);
+                };
+                if (this.client.getMessageDelay() == 0) {
+                    this.channel.eventLoop().execute(runnable);
+                } else {
+                    this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(runnable, delay, this.client.getMessageDelay(), TimeUnit.MILLISECONDS);
+                }
                 this.scheduledPing = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
             }
         }
