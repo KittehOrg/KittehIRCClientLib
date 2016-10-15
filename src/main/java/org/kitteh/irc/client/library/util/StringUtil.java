@@ -24,8 +24,8 @@
 package org.kitteh.irc.client.library.util;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.element.ClientLinked;
+import org.kitteh.irc.client.library.feature.CaseMapping;
 
 import javax.annotation.Nonnull;
 
@@ -157,4 +157,5 @@ public final class StringUtil {
         Sanity.nullCheck(input, "Input cannot be null");
         return client.getServerInfo().getCaseMapping().toLowerCase(input);
     }
+
 }

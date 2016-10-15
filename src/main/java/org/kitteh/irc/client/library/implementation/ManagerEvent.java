@@ -28,14 +28,14 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
-import net.engio.mbassy.subscription.Subscription;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
+import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
-import org.kitteh.irc.client.library.feature.filter.FilteringSubscriptionFactory;
 import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
+import org.kitteh.irc.client.library.feature.filter.FilteringSubscriptionFactory;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.feature.filter.ToSelfOnly;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -47,7 +47,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,6 +59,8 @@ class ManagerEvent implements EventManager {
             Throwable thrown = publicationError.getCause();
             if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehServerMessageException)) {
                 exceptional = (KittehServerMessageException) thrown.getCause();
+            } else if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehNagException)) {
+                exceptional = (KittehNagException) thrown.getCause();
             } else {
                 exceptional = new KittehEventException(thrown);
             }

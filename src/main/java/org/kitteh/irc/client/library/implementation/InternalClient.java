@@ -81,4 +81,8 @@ abstract class InternalClient implements Client {
     abstract void startSending();
 
     abstract void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes);
+
+    abstract void reconnect();
+
+    abstract boolean isSSL();
 }
