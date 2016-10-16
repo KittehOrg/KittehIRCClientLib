@@ -48,6 +48,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
@@ -86,6 +87,7 @@ final class NettyManager {
         private final Object immediateSendingLock = new Object();
         private boolean immediateSendingReady = false;
         private final QueueProcessingThread<String> immediateSending;
+        private Future<?> zeroDelayFuture;
 
         private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;
@@ -264,12 +266,27 @@ final class NettyManager {
                 if (this.scheduledPing != null) {
                     this.scheduledPing.cancel(false);
                 }
-                this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(() -> {
+                if (this.zeroDelayFuture != null) {
+                    this.zeroDelayFuture.cancel(false);
+                }
+                final Runnable pollSendRunnable = () -> {
                     String message = ClientConnection.this.queue.poll();
                     if (message != null) {
                         ClientConnection.this.channel.writeAndFlush(message);
                     }
-                }, delay, this.client.getMessageDelay(), TimeUnit.MILLISECONDS);
+                };
+                if (this.client.getMessageDelay() == 0) {
+                    final Runnable zeroDelayRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            pollSendRunnable.run();
+                            ClientConnection.this.zeroDelayFuture = ClientConnection.this.channel.eventLoop().submit(this);
+                        }
+                    };
+                    zeroDelayFuture = this.channel.eventLoop().submit(zeroDelayRunnable);
+                } else {
+                    this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(pollSendRunnable, delay, this.client.getMessageDelay(), TimeUnit.MILLISECONDS);
+                }
                 this.scheduledPing = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
             }
         }
