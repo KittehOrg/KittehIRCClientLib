@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -134,6 +135,7 @@ final class Config {
 
     static final Entry<String> NAME = new Entry<>("Unnamed", String.class);
     static final Entry<InetSocketAddress> BIND_ADDRESS = new Entry<>(null, InetSocketAddress.class);
+    static final Entry<DefaultMessageMap> DEFAULT_MESSAGE_MAP = new Entry<>(null, DefaultMessageMap.class);
     static final Entry<ExceptionConsumerWrapper> LISTENER_EXCEPTION = new Entry<>(new ExceptionConsumerWrapper(Throwable::printStackTrace), ExceptionConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_INPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_OUTPUT = new Entry<>(null, StringConsumerWrapper.class);

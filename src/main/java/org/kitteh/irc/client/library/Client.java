@@ -48,6 +48,7 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
@@ -114,6 +115,16 @@ public interface Client {
          */
         @Nonnull
         Builder bindPort(int port);
+
+        /**
+         * Sets default messages.
+         *
+         * @param defaultMessageMap default values for messages
+         * @return this builder
+         * @see DefaultMessageMap
+         */
+        @Nonnull
+        Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
 
         /**
          * Sets a listener for all thrown exceptions on this client. By default,
@@ -534,6 +545,16 @@ public interface Client {
     Set<Channel> getChannels();
 
     /**
+     * Gets the message manager for default messages to reply with
+     * when certain messages are being sent. Like a KICK, PART, or
+     * QUIT reason.
+     *
+     * @return the DefaultMessageMap
+     */
+    @Nonnull
+    DefaultMessageMap getDefaultMessageMap();
+
+    /**
      * Gets the client's event manager.
      *
      * @return the event manager for this client
@@ -908,6 +929,15 @@ public interface Client {
      * @param listener catcher of throwable objects
      */
     void setExceptionListener(@Nullable Consumer<Exception> listener);
+
+    /**
+     * Sets the message manager for default messages to reply with
+     * when certain messages are being sent. Like a KICK, PART, or QUIT
+     * reason.
+     *
+     * @param defaults DefaultMessageMap to set
+     */
+    void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults);
 
     /**
      * Sets a listener for all incoming messages from the server.

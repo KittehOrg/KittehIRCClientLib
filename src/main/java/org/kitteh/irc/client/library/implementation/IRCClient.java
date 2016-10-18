@@ -47,6 +47,9 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
+import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.QueueProcessingThreadSender;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
@@ -178,6 +181,8 @@ final class IRCClient extends InternalClient {
 
     private final ActorProvider actorProvider = new ActorProvider(this);
 
+    private DefaultMessageMap defaultMessageMap;
+
     private Map<Character, ModeStatus<UserMode>> userModes;
     private STSMachine stsMachine;
 
@@ -211,6 +216,13 @@ final class IRCClient extends InternalClient {
 
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
+
+
+        DefaultMessageMap defaultMessageMap = this.config.get(Config.DEFAULT_MESSAGE_MAP);
+        if (defaultMessageMap == null) {
+            defaultMessageMap = new SimpleDefaultMessageMap();
+        }
+        this.defaultMessageMap = defaultMessageMap;
 
         this.messageSendingImmediate = new QueueProcessingThreadSender(this, "Immediate");
         this.messageSendingScheduled = this.getMessageSendingQueueSupplier().apply(this);
@@ -282,6 +294,11 @@ final class IRCClient extends InternalClient {
     @Override
     public Set<Channel> getChannels() {
         return this.actorProvider.getTrackedChannels().stream().map(ActorProvider.IRCChannel::snapshot).collect(Collectors.toSet());
+    }
+
+    @Nonnull
+    public DefaultMessageMap getDefaultMessageMap() {
+        return this.defaultMessageMap;
     }
 
     @Nonnull
@@ -368,7 +385,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void removeChannel(@Nonnull String channelName) {
-        this.removeChannelPlease(channelName, null);
+        this.removeChannelPlease(channelName, this.defaultMessageMap.getDefault(DefaultMessageType.PART).orElse(null));
     }
 
     @Override
@@ -469,6 +486,12 @@ final class IRCClient extends InternalClient {
         }
     }
 
+    public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
+        Sanity.nullCheck(defaults, "defaults must not be null");
+
+        this.defaultMessageMap = defaults;
+    }
+
     @Override
     public void setInputListener(@Nullable Consumer<String> listener) {
         if (listener == null) {
@@ -514,7 +537,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void shutdown() {
-        this.shutdownInternal(null);
+        this.shutdownInternal(this.defaultMessageMap.getDefault(DefaultMessageType.QUIT).orElse(null));
     }
 
     @Override
@@ -530,7 +553,7 @@ final class IRCClient extends InternalClient {
         this.messageSendingScheduled.shutdown();
 
         if (this.connection != null) { // In case shutdown is called while building.
-            this.connection.shutdown(reason);
+            this.connection.shutdown(reason, false);
         }
 
         // Shut these down last, so they get any last firings
@@ -696,7 +719,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     void reconnect() {
-        this.connection.shutdown("Reconnecting...", true);
+        this.connection.shutdown(DefaultMessageType.RECONNECT, true);
     }
 
     @Override

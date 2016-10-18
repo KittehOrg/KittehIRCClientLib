@@ -26,7 +26,6 @@ package org.kitteh.irc.client.library.feature.sending;
 import org.kitteh.irc.client.library.Client;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**

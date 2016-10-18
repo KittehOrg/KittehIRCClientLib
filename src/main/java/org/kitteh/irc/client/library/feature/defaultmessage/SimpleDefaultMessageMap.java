@@ -1,0 +1,88 @@
+/*
+ * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package org.kitteh.irc.client.library.feature.defaultmessage;
+
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
+
+
+/**
+ * Provides a way to set default messages.
+ *
+ * @see DefaultMessageType
+ */
+public class SimpleDefaultMessageMap implements DefaultMessageMap {
+    protected final Map<DefaultMessageType, String> defaults = new EnumMap<>(DefaultMessageType.class);
+
+    /**
+     * Creates a default message map and sets all messages to a single value.
+     *
+     * @param defaultString value to be set for all strings
+     */
+    public SimpleDefaultMessageMap(@Nullable String defaultString) {
+        for (DefaultMessageType defaultMessageType : DefaultMessageType.values()) {
+            this.defaults.put(defaultMessageType, defaultString);
+        }
+    }
+
+    /**
+     * Creates a default message map.
+     */
+    public SimpleDefaultMessageMap() {
+    }
+
+    @Override
+    @Nonnull
+    public SimpleDefaultMessageMap setDefault(@Nonnull DefaultMessageType key, @Nullable String defaultString) {
+        Sanity.nullCheck(key, "Key cannot be null");
+        this.defaults.put(key, defaultString);
+        return this;
+    }
+
+    @Override
+    @Nonnull
+    public Optional<String> getDefault(DefaultMessageType key) {
+        Sanity.nullCheck(key, "Key cannot be null");
+        return this.getDefault(key, key.getFallback());
+    }
+
+    @Override
+    @Nonnull
+    public Optional<String> getDefault(@Nonnull DefaultMessageType key, @Nullable String defaultValue) {
+        Sanity.nullCheck(key, "DefaultMessage key cannot be null");
+        return Optional.ofNullable(this.defaults.containsKey(key) ? this.defaults.get(key) : defaultValue);
+    }
+
+    @Override
+    @Nonnull
+    public Map<DefaultMessageType, String> getDefaults() {
+        return Collections.unmodifiableMap(new EnumMap<>(this.defaults));
+    }
+}

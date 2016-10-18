@@ -52,6 +52,7 @@ import io.netty.util.CharsetUtil;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSPolicy;
@@ -124,7 +125,7 @@ final class NettyManager {
                     if (evt instanceof IdleStateEvent) {
                         IdleStateEvent e = (IdleStateEvent) evt;
                         if ((e.state() == IdleState.READER_IDLE) && e.isFirst()) {
-                            ClientConnection.this.shutdown("Reconnecting...", true);
+                            ClientConnection.this.shutdown(DefaultMessageType.QUIT_PING_TIMEOUT, true);
                         }
                     }
                 }
@@ -163,7 +164,7 @@ final class NettyManager {
                         if (!handshakeFuture.isSuccess() && ClientConnection.this.client.getSTSMachine().isPresent()) {
                             STSMachine machine = ClientConnection.this.client.getSTSMachine().get();
                             if (machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
-                                ClientConnection.this.shutdown("Cannot connect securely", false);
+                                ClientConnection.this.shutdown(DefaultMessageType.STS_FAILURE, false);
                                 machine.setCurrentState(STSClientState.STS_PRESENT_CANNOT_CONNECT);
                                 throw new KittehSTSException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
                             }
@@ -209,19 +210,19 @@ final class NettyManager {
             ClientConnection.this.channel.eventLoop().schedule(ClientConnection.this.client::connect, 5, TimeUnit.SECONDS);
         }
 
-        void shutdown(@Nullable String message) {
-            this.shutdown(message, false);
-        }
-
         private void handleException(Exception thrown) {
             this.client.getExceptionListener().queue(thrown);
             if (thrown instanceof IOException) {
-                this.shutdown("IO Error. Reconnecting...", true);
+                this.shutdown(DefaultMessageType.QUIT_INTERNAL_EXCEPTION, true);
             }
         }
 
         void startSending() {
             this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
+        }
+
+        void shutdown(DefaultMessageType messageType, boolean reconnect) {
+            this.shutdown(this.client.getDefaultMessageMap().getDefault(messageType).orElse(null), reconnect);
         }
 
         void shutdown(@Nullable String message, boolean reconnect) {

@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
@@ -73,6 +74,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public ClientBuilder bindPort(int port) {
         this.bindPort = this.validPort(port);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public ClientBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
+        this.config.set(Config.DEFAULT_MESSAGE_MAP, defaultMessageMap);
         return this;
     }
 
