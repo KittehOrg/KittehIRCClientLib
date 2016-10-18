@@ -51,6 +51,7 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
+import org.kitteh.irc.client.library.feature.DefaultingOutboundMessage;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -146,7 +147,7 @@ final class NettyManager {
                     if (evt instanceof IdleStateEvent) {
                         IdleStateEvent e = (IdleStateEvent) evt;
                         if ((e.state() == IdleState.READER_IDLE) && e.isFirst()) {
-                            ClientConnection.this.shutdown("Reconnecting...", true);
+                            ClientConnection.this.shutdown(null, true, true, true);
                         }
                     }
                 }
@@ -245,7 +246,11 @@ final class NettyManager {
         private void handleException(Exception thrown) {
             this.client.getExceptionListener().queue(thrown);
             if (thrown instanceof IOException) {
-                this.shutdown("IO Error. Reconnecting...", true);
+                this.shutdown(
+                    this.client.getDefaultingOutboundMessageMap()
+                        .getDefault(DefaultingOutboundMessage.QUIT_INTERNAL_EXCEPTION, "IO Error. Reconnecting...").orElse(null),
+                    true
+                );
             }
         }
 
@@ -270,6 +275,20 @@ final class NettyManager {
                 }, delay, this.client.getMessageDelay(), TimeUnit.MILLISECONDS);
                 this.scheduledPing = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
             }
+        }
+
+        private void shutdown(@Nullable String message, boolean reconnect, boolean fromTimeout, boolean useOutboundMessageDefaults) {
+            if (message == null && useOutboundMessageDefaults) {
+                if (fromTimeout) {
+                    message = this.client.getDefaultingOutboundMessageMap().getDefault(DefaultingOutboundMessage.QUIT_PING_TIMEOUT, "Connection to server lost.").orElse(null);
+                } else if (reconnect) {
+                    message = this.client.getDefaultingOutboundMessageMap().getDefault(DefaultingOutboundMessage.RECONNECT, "Reconnecting...").orElse(null);
+                } else {
+                    message = this.client.getDefaultingOutboundMessageMap().getDefault(DefaultingOutboundMessage.QUIT).orElse(null);
+                }
+            }
+
+            shutdown(message, reconnect);
         }
 
         private void shutdown(@Nullable String message, boolean reconnect) {

@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.DefaultingOutboundMessageMap;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -136,6 +137,7 @@ final class Config {
     static final Entry<Integer> MESSAGE_DELAY = new Entry<>(Client.DEFAULT_MESSAGE_DELAY, Integer.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);
+    static final Entry<DefaultingOutboundMessageMap> OUTBOUND_MESSAGE_MAP = new Entry<>(null, DefaultingOutboundMessageMap.class);
     static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6697), InetSocketAddress.class);
     static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class, true);
     static final Entry<Boolean> SSL = new Entry<>(true, Boolean.class);

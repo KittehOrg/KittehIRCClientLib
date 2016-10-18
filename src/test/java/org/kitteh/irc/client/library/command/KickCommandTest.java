@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.feature.SimpleDefaultingOutboundMessageMap;
 import org.mockito.Mockito;
 
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class KickCommandTest {
     public void noReasonStrings() {
         Client client = Mockito.mock(Client.class);
         Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+        Mockito.when(client.getDefaultingOutboundMessageMap()).thenReturn(new SimpleDefaultingOutboundMessageMap(null));
 
         KickCommand command = new KickCommand(client, CHANNEL);
         command.target(USER);
@@ -39,6 +41,7 @@ public class KickCommandTest {
     public void noReasonAnymore() {
         Client client = Mockito.mock(Client.class);
         Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+        Mockito.when(client.getDefaultingOutboundMessageMap()).thenReturn(new SimpleDefaultingOutboundMessageMap(null));
 
         KickCommand command = new KickCommand(client, CHANNEL);
         command.reason(REASON);
@@ -59,6 +62,8 @@ public class KickCommandTest {
         Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
         Mockito.when(user.getNick()).thenReturn(USER);
         Mockito.when(user.getClient()).thenReturn(client);
+        Mockito.when(client.getDefaultingOutboundMessageMap()).thenReturn(new SimpleDefaultingOutboundMessageMap(null));
+
 
         KickCommand command = new KickCommand(client, CHANNEL);
         command.target(user);
@@ -75,6 +80,7 @@ public class KickCommandTest {
     public void noTarget() {
         Client client = Mockito.mock(Client.class);
         Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+        Mockito.when(client.getDefaultingOutboundMessageMap()).thenReturn(new SimpleDefaultingOutboundMessageMap(null));
 
         KickCommand command = new KickCommand(client, CHANNEL);
         command.execute();
@@ -89,6 +95,7 @@ public class KickCommandTest {
         User user = Mockito.mock(User.class);
         Mockito.when(user.getClient()).thenReturn(Mockito.mock(Client.class));
         Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
+        Mockito.when(client.getDefaultingOutboundMessageMap()).thenReturn(new SimpleDefaultingOutboundMessageMap(null));
 
         KickCommand command = new KickCommand(client, CHANNEL);
         command.target(user);
@@ -102,6 +109,7 @@ public class KickCommandTest {
         Client client = Mockito.mock(Client.class);
         Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
         Mockito.when(client.toString()).thenReturn("CLIENT OMG");
+        Mockito.when(client.getDefaultingOutboundMessageMap()).thenReturn(new SimpleDefaultingOutboundMessageMap(null));
 
         KickCommand command = new KickCommand(client, CHANNEL);
 

@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.command;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.feature.DefaultingOutboundMessage;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -51,6 +52,7 @@ public class KickCommand extends ChannelCommand {
      */
     public KickCommand(@Nonnull Client client, @Nonnull String channel) {
         super(client, channel);
+        this.reason = this.getClient().getDefaultingOutboundMessageMap().getDefault(DefaultingOutboundMessage.KICK).orElse(null);
     }
 
     /**

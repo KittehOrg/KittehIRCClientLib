@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.DefaultingOutboundMessageMap;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -121,6 +122,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     public ClientBuilder realName(@Nonnull String name) {
         Sanity.safeMessageCheck(name, "Real name");
         this.config.set(Config.REAL_NAME, name);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public ClientBuilder defaultingOutboundMessageMap(@Nonnull DefaultingOutboundMessageMap outboundMessageMap) {
+        this.config.set(Config.OUTBOUND_MESSAGE_MAP, outboundMessageMap);
         return this;
     }
 

@@ -6,7 +6,9 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.DefaultingOutboundMessageMap;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.SimpleDefaultingOutboundMessageMap;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
 
@@ -29,6 +31,7 @@ class FakeClient extends InternalClient {
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
     private final IRCServerInfo serverInfo = new IRCServerInfo(this);
+    private DefaultingOutboundMessageMap defaultingOutboundMessageMap = new SimpleDefaultingOutboundMessageMap(null);
 
     @Override
     void processLine(@Nonnull String line) {
@@ -80,6 +83,11 @@ class FakeClient extends InternalClient {
     @Override
     public void setExceptionListener(@Nullable Consumer<Exception> listener) {
 
+    }
+
+    @Override
+    public void setDefaultingOutboundMessageMap(@Nonnull DefaultingOutboundMessageMap defaults) {
+        this.defaultingOutboundMessageMap = defaults;
     }
 
     @Nonnull
@@ -198,6 +206,12 @@ class FakeClient extends InternalClient {
     @Override
     public String getIntendedNick() {
         return this.config.getNotNull(Config.NICK);
+    }
+
+    @Nonnull
+    @Override
+    public DefaultingOutboundMessageMap getDefaultingOutboundMessageMap() {
+        return this.defaultingOutboundMessageMap;
     }
 
     @Override
