@@ -7,6 +7,7 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
 
@@ -108,6 +109,11 @@ class FakeClient extends InternalClient {
     @Override
     public ManagerISupport getISupportManager() {
         return null;
+    }
+
+    @Override
+    public Optional<StsMachine> getStsMachine() {
+        return Optional.empty(); // No STS in FakeClient for testing, yet.
     }
 
     @Nonnull

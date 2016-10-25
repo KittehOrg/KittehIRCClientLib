@@ -40,11 +40,13 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.exception.KittehAuthorNagException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
@@ -174,11 +176,22 @@ final class IRCClient extends InternalClient {
     private final ActorProvider actorProvider = new ActorProvider(this);
 
     private Map<Character, ModeStatus<UserMode>> userModes;
+    private StsMachine stsMachine;
+    private boolean usingSts = false;
 
     private final ClientCommands commands = new ClientCommands();
 
     IRCClient(@Nonnull Config config) {
         this.config = config;
+        if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
+            this.configureSts();
+        } else if (!this.config.getNotNull(Config.SSL)) {
+            throw new KittehAuthorNagException(
+                    "Connection is insecure. If the server does not support SSL, consider enabling STS support to " +
+                    "facilitate automatic SSL upgrades when it does."
+            );
+        }
+
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
         final String name = this.config.getNotNull(Config.NAME);
@@ -192,6 +205,12 @@ final class IRCClient extends InternalClient {
 
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
+    }
+
+    private void configureSts() {
+        this.stsMachine = new MemoryStsMachine(this.config.get(Config.STS_STORAGE_MANAGER));
+        this.eventManager.registerEventListener(new StsHandler(this.stsMachine));
+        this.usingSts = true;
     }
 
     @Override
@@ -278,6 +297,11 @@ final class IRCClient extends InternalClient {
     @Override
     public ManagerISupport getISupportManager() {
         return this.iSupportManager;
+    }
+
+    @Override
+    public Optional<StsMachine> getStsMachine() {
+        return Optional.ofNullable(this.stsMachine);
     }
 
     @Nonnull

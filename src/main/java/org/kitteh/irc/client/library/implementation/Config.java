@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.Version;
 
@@ -150,7 +151,7 @@ final class Config {
     static final Entry<InetAddress> WEBIRC_IP = new Entry<>(null, InetAddress.class);
     static final Entry<String> WEBIRC_PASSWORD = new Entry<>(null, String.class, true);
     static final Entry<String> WEBIRC_USER = new Entry<>(null, String.class);
-
+    static final Entry<StsStorageManager> STS_STORAGE_MANAGER = new Entry<>(null, StsStorageManager.class);
     /**
      * Magical null value for {@link java.util.concurrent.ConcurrentHashMap}.
      * Must be static because this value is shared across cloned Configs.
