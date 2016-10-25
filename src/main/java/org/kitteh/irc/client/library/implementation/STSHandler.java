@@ -136,7 +136,7 @@ public class STSHandler {
                 }
 
                 // persist him, TODO: with the current port
-                storageMan.addEntry("google.com", duration);
+                storageMan.addEntry("google.com", duration, null); // TODO: get access to it from here..
                 break;
             case "port":
                 // Ignored when already connected securely
