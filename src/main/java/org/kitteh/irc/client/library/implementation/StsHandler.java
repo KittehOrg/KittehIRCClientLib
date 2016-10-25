@@ -2,7 +2,9 @@ package org.kitteh.irc.client.library.implementation;
 
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.element.CapabilityState;
+import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
+import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.sts.StsMachine;
 
 import java.util.Optional;
@@ -42,6 +44,15 @@ public class StsHandler {
 
         // okay, we have an STS capability!
         final CapabilityState sts = potentialStsCapability.get();
-        // TODO: CAP API work I suspect..
+        if (!sts.getValue().isPresent()) {
+            String msg = event.getOriginalMessages().stream().map(ServerMessage::getMessage).reduce(
+                    (a, b) -> (a+b).replace('\n', ' ')
+            ).orElse("Missing!");
+            throw new KittehServerMessageException(msg, "No value provided for sts capability.");
+        }
+
+        final String capabilityValue = sts.getValue().get();
+
+
     }
 }

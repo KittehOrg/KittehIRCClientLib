@@ -24,10 +24,13 @@
 package org.kitteh.irc.client.library.util;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.element.ClientLinked;
+import org.kitteh.irc.client.library.feature.CaseMapping;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * String tools!
@@ -156,5 +159,27 @@ public final class StringUtil {
         Sanity.nullCheck(client, "Client cannot be null");
         Sanity.nullCheck(input, "Input cannot be null");
         return client.getServerInfo().getCaseMapping().toLowerCase(input);
+    }
+
+    /**
+     * Takes a string like "foo,bar=cat,kitten=dog" and returns a HashMap of key -> Optional
+     * @param delimiter Delimiter for between components. E.g. a comma
+     * @param str The whole string
+     * @return The map
+     */
+    public static Map<String, Optional<String>> parseSeparatedKeyValueString(String delimiter, String str) {
+        String[] components = str.split(delimiter);
+        // each component looks like:
+        // "foo=bar" OR "foo"
+        HashMap<String, Optional<String>> map = new HashMap<>();
+        for (String component : components) {
+            if (!component.contains("=")) {
+                map.put(component, Optional.empty());
+            } else {
+                String[] innerComponents = component.split("=");
+                map.put(innerComponents[0], Optional.of(innerComponents[1]));
+            }
+         }
+        return map;
     }
 }
