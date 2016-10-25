@@ -46,8 +46,8 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
-import org.kitteh.irc.client.library.feature.sts.StsMachine;
-import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
+import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -333,7 +333,7 @@ public interface Client {
          * @param storageManager storage system to persist STS information per host.
          */
         @Nonnull
-        Builder stsStorageManager(@Nonnull StsStorageManager storageManager);
+        Builder stsStorageManager(@Nullable STSStorageManager storageManager);
 
         /**
          * Resets this builder to the default values.
@@ -556,7 +556,7 @@ public interface Client {
      * @return The machine, may not be present.
      */
     @Nonnull
-    Optional<StsMachine> getStsMachine();
+    Optional<STSMachine> getSTSMachine();
 
     /**
      * Gets the manager of ISUPPORT info.

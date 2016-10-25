@@ -46,7 +46,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
-import org.kitteh.irc.client.library.feature.sts.StsMachine;
+import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
@@ -176,7 +176,7 @@ final class IRCClient extends InternalClient {
     private final ActorProvider actorProvider = new ActorProvider(this);
 
     private Map<Character, ModeStatus<UserMode>> userModes;
-    private StsMachine stsMachine;
+    private STSMachine stsMachine;
     private boolean usingSts = false;
 
     private final ClientCommands commands = new ClientCommands();
@@ -208,8 +208,8 @@ final class IRCClient extends InternalClient {
     }
 
     private void configureSts() {
-        this.stsMachine = new MemoryStsMachine(this.config.get(Config.STS_STORAGE_MANAGER));
-        this.eventManager.registerEventListener(new StsHandler(this.stsMachine, this.config.getNotNull(Config.SSL)));
+        this.stsMachine = new MemorySTSMachine(this.config.get(Config.STS_STORAGE_MANAGER));
+        this.eventManager.registerEventListener(new STSHandler(this.stsMachine, this.config.getNotNull(Config.SSL)));
         this.usingSts = true;
     }
 
@@ -300,7 +300,7 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public Optional<StsMachine> getStsMachine() {
+    public Optional<STSMachine> getSTSMachine() {
         return Optional.ofNullable(this.stsMachine);
     }
 

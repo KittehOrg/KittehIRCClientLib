@@ -1,3 +1,26 @@
+/*
+ * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package org.kitteh.irc.client.library.implementation;
 
 import net.engio.mbassy.listener.Handler;
@@ -5,9 +28,9 @@ import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
-import org.kitteh.irc.client.library.feature.sts.StsClientState;
-import org.kitteh.irc.client.library.feature.sts.StsMachine;
-import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
+import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.STSClientState;
+import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.StringUtil;
 
 import java.util.Map;
@@ -17,9 +40,9 @@ import java.util.Optional;
  * Class for handling the STS capability,
  * returned in the CAP LS 302 response.
  */
-public class StsHandler {
+public class STSHandler {
 
-    private final StsMachine machine;
+    private final STSMachine machine;
     private final boolean isSecure;
 
     /**
@@ -27,7 +50,7 @@ public class StsHandler {
      *
      * @param machine The STS FSM.
      */
-    public StsHandler(StsMachine machine, boolean isSecure) {
+    public STSHandler(STSMachine machine, boolean isSecure) {
         this.machine = machine;
         this.isSecure = isSecure;
     }
@@ -75,7 +98,7 @@ public class StsHandler {
                 break;
             case "port":
                 // Brilliant, we have a secure port. We'll reconnect with SSL and verify the policy.
-                this.machine.setState(StsClientState.STS_PRESENT_RECONNECTING);
+                this.machine.setState(STSClientState.STS_PRESENT_RECONNECTING);
                 // TODO: Reconnect.
                 break;
         }
@@ -100,7 +123,7 @@ public class StsHandler {
                     throw new KittehServerMessageException(s.get(), "Invalid duration provided");
                 }
 
-                final StsStorageManager storageMan = this.machine.getStorageManager();
+                final STSStorageManager storageMan = this.machine.getStorageManager();
                 if (storageMan.hasEntry("google.com")) {
                     // Clients MUST reset the duration "time to live" every time they receive a valid policy
                     storageMan.removeEntry("google.com");

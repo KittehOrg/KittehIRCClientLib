@@ -167,11 +167,14 @@ public final class StringUtil {
      * @param str The whole string
      * @return The map
      */
-    public static Map<String, Optional<String>> parseSeparatedKeyValueString(String delimiter, String str) {
+    public static Map<String, Optional<String>> parseSeparatedKeyValueString(@Nonnull String delimiter, @Nonnull String str) {
+        Sanity.nullCheck(delimiter, "Need a valid delimiter.");
+        Sanity.nullCheck(str, "Need a valid string to parse.");
+
         String[] components = str.split(delimiter);
         // each component looks like:
         // "foo=bar" OR "foo"
-        HashMap<String, Optional<String>> map = new HashMap<>();
+        Map<String, Optional<String>> map = new HashMap<>();
         for (String component : components) {
             if (!component.contains("=")) {
                 map.put(component, Optional.empty());
