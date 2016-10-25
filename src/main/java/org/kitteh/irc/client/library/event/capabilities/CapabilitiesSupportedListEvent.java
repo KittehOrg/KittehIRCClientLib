@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Fired when a CAP LIST is received.
+ * Fired when a CAP LS is received.
  *
  * @see CapabilityManager
  * @see CapabilityRequestCommand
