@@ -30,7 +30,7 @@ public class KittehAuthorNagException extends RuntimeException {
     /**
      * Constructs the exception.
      *
-     * @param problem the advisory.
+     * @param problem the advisory
      */
     public KittehAuthorNagException(String problem) {
         super("Nag: " + problem);

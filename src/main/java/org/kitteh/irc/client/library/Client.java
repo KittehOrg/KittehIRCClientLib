@@ -553,7 +553,7 @@ public interface Client {
     /**
      * Gets the STS machine instance, if one is in use.
      *
-     * @return The machine, may not be present.
+     * @return the machine, may not be present.
      */
     @Nonnull
     Optional<STSMachine> getSTSMachine();
