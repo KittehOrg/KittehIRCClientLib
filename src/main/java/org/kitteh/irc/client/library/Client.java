@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc.client.library;
 
-import com.sun.istack.internal.NotNull;
 import org.kitteh.irc.client.library.command.AwayCommand;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
@@ -556,7 +555,7 @@ public interface Client {
      *
      * @return The machine, may not be present.
      */
-    @NotNull
+    @Nonnull
     Optional<StsMachine> getStsMachine();
 
     /**

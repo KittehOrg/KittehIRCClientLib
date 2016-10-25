@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import com.sun.istack.internal.NotNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
@@ -60,7 +59,7 @@ abstract class InternalClient implements Client {
     public abstract ManagerISupport getISupportManager();
 
     @Override
-    @NotNull
+    @Nonnull
     public abstract Optional<StsMachine> getStsMachine();
 
     @Nonnull
