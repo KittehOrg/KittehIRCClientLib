@@ -39,9 +39,8 @@ public class StsHandler {
     @Handler
     public void onCapLs(CapabilitiesSupportedListEvent event) {
         // stability not a concern, only one or zero result(s)
-        final Optional<CapabilityState> potentialStsCapability = event.getSupportedCapabilities().stream().filter(
-            c -> c.getName().equals("sts") // inb4 complaints about this indentation
-        ).findAny();
+        final Optional<CapabilityState> potentialStsCapability = event.getSupportedCapabilities().stream()
+            .filter(c -> c.getName().equals("sts")).findAny();
 
         if (!potentialStsCapability.isPresent()) {
             // get out if we can't do anything useful here
@@ -51,14 +50,13 @@ public class StsHandler {
         // okay, we have an STS capability!
         final CapabilityState sts = potentialStsCapability.get();
         if (!sts.getValue().isPresent()) {
-            String msg = event.getOriginalMessages().stream().map(ServerMessage::getMessage).reduce(
-                    (a, b) -> (a+b).replace('\n', ' ')
-            ).orElse("Missing!");
+            final String msg = event.getOriginalMessages().stream().map(ServerMessage::getMessage)
+                .reduce((a, b) -> (a+b).replace('\n', ' ')).orElse("Missing!");
             throw new KittehServerMessageException(msg, "No value provided for sts capability.");
         }
 
         final String capabilityValue = sts.getValue().get();
-        Map<String, Optional<String>> options = StringUtil.parseSeparatedKeyValueString(",", capabilityValue);
+        final Map<String, Optional<String>> options = StringUtil.parseSeparatedKeyValueString(",", capabilityValue);
         for (String key : options.keySet()) {
             // Unknown keys are ignored by the switches below
             if (this.isSecure) {
