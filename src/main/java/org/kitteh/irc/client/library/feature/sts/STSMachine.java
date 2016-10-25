@@ -31,6 +31,8 @@ import javax.annotation.Nonnull;
 public interface STSMachine {
     @Nonnull
     STSClientState getCurrentState();
+
     void setCurrentState(@Nonnull STSClientState newState);
+
     STSStorageManager getStorageManager();
 }
