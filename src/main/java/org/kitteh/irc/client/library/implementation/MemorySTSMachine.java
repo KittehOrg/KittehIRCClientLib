@@ -20,8 +20,7 @@ public class MemorySTSMachine implements STSMachine {
     private STSClientState state = STSClientState.UNKNOWN;
 
     public MemorySTSMachine(@Nonnull STSStorageManager manager) {
-        Sanity.nullCheck(manager, "Cannot have a null STS persistence manager.");
-        this.manager = manager;
+        this.manager = Sanity.nullCheck(manager, "Cannot have a null STS persistence manager.");
     }
 
     @Nonnull
