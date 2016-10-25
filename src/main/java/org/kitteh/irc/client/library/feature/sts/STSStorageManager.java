@@ -23,10 +23,35 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
-public interface STSStorageManager {
-    void addEntry(String hostname, long duration);
+import java.util.Map;
+import java.util.Optional;
 
+/**
+ * Represents a manager that can persist STS policies in some form.
+ */
+public interface STSStorageManager {
+    /**
+     * Adds an STS policy to the store.
+     *
+     * @param hostname the hostname (as sent in the SNI by the client)
+     * @param duration the length in seconds until the expiry
+     */
+    void addEntry(String hostname, long duration, Map<String, Optional<String>> data);
+
+    // TODO: getEntry, some tuple...
+
+    /**
+     * Checks if a policy has been stored for the hostname.
+     *
+     * @param hostname the hostname to check
+     * @return whether the entry exists in the store
+     */
     boolean hasEntry(String hostname);
 
+    /**
+     * Deletes an entry from the store (used for 0 duration policies).
+     *
+     * @param hostname the hostname to remove the policy for
+     */
     void removeEntry(String hostname);
 }
