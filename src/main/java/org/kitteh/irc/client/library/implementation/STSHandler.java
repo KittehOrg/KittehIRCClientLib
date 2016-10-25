@@ -98,7 +98,7 @@ public class STSHandler {
                 break;
             case "port":
                 // Brilliant, we have a secure port. We'll reconnect with SSL and verify the policy.
-                this.machine.setState(STSClientState.STS_PRESENT_RECONNECTING);
+                this.machine.setCurrentState(STSClientState.STS_PRESENT_RECONNECTING);
                 // TODO: Reconnect.
                 break;
         }

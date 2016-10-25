@@ -31,7 +31,7 @@ public class MemorySTSMachine implements STSMachine {
     }
 
     @Override
-    public void setState(@Nonnull STSClientState newState) {
+    public void setCurrentState(@Nonnull STSClientState newState) {
         Sanity.nullCheck(newState, "Need a valid state for the state machine.");
         this.state = newState;
     }
