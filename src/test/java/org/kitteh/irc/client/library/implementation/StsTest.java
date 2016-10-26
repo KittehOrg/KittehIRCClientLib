@@ -108,7 +108,7 @@ public class StsTest {
         }
 
         @Override
-        public void setStsPolicy(@Nonnull Map<String, Optional<String>> policy) {
+        public void setSTSPolicy(@Nonnull Map<String, Optional<String>> policy) {
             this.policy = policy;
         }
 

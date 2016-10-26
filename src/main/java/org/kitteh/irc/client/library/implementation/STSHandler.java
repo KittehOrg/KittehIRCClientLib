@@ -84,7 +84,7 @@ public class STSHandler {
         final Map<String, Optional<String>> options = StringUtil.parseSeparatedKeyValueString(",", capabilityValue);
         for (String key : options.keySet()) {
             // Unknown keys are ignored by the switches below
-            this.machine.setStsPolicy(options);
+            this.machine.setSTSPolicy(options);
             if (this.isSecure) {
                 this.handleSecureKey(key, options);
             } else {

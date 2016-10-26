@@ -72,7 +72,7 @@ public class MemorySTSMachine implements STSMachine {
     }
 
     @Override
-    public void setStsPolicy(@Nonnull Map<String, Optional<String>> policy) {
+    public void setSTSPolicy(@Nonnull Map<String, Optional<String>> policy) {
         Sanity.nullCheck(policy, "Policy cannot be null");
         this.policy = policy;
     }

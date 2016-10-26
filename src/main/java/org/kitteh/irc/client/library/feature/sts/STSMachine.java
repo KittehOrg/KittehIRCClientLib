@@ -61,5 +61,5 @@ public interface STSMachine {
      *
      * @param policy the valid STS policy
      */
-    void setStsPolicy(@Nonnull Map<String, Optional<String>> policy);
+    void setSTSPolicy(@Nonnull Map<String, Optional<String>> policy);
 }
