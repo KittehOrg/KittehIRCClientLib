@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.implementation;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
@@ -33,8 +34,10 @@ import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.StringUtil;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Class for handling the STS capability,
@@ -45,6 +48,7 @@ public class STSHandler {
     private final STSMachine machine;
     private final InternalClient client;
     private final boolean isSecure;
+    private final Predicate<CapabilityState> stsCapabilityPredicate = c -> c.getName().equals("sts");
 
     /**
      * Creates the event handler for STS.
@@ -65,7 +69,7 @@ public class STSHandler {
     public void onCapLs(CapabilitiesSupportedListEvent event) {
         // stability not a concern, only one or zero result(s)
         final Optional<CapabilityState> potentialStsCapability = event.getSupportedCapabilities().stream()
-            .filter(c -> c.getName().equals("sts")).findAny();
+            .filter(this.stsCapabilityPredicate).findAny();
 
         if (!potentialStsCapability.isPresent()) {
             // get out if we can't do anything useful here
@@ -74,8 +78,15 @@ public class STSHandler {
 
         // okay, we have an STS capability!
         final CapabilityState sts = potentialStsCapability.get();
+        final List<ServerMessage> originalMessages = event.getOriginalMessages();
+
+        handleSTSCapability(sts, originalMessages);
+
+    }
+
+    private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
         if (!sts.getValue().isPresent()) {
-            final String msg = event.getOriginalMessages().stream().map(ServerMessage::getMessage)
+            final String msg = originalMessages.stream().map(ServerMessage::getMessage)
                 .reduce((a, b) -> (a+b).replace('\n', ' ')).orElse("Missing!");
             throw new KittehServerMessageException(msg, "No value provided for sts capability.");
         }
@@ -91,7 +102,25 @@ public class STSHandler {
                 this.handleInsecureKey(key, options);
             }
         }
+    }
 
+    @Handler
+    public void onCapNew(CapabilitiesNewSupportedEvent event) {
+        // stability not a concern, only one or zero result(s)
+        final Optional<CapabilityState> potentialStsCapability = event.getNewCapabilities().stream()
+                .filter(this.stsCapabilityPredicate).findAny();
+
+        if (!potentialStsCapability.isPresent()) {
+            // get out if we can't do anything useful here
+            return;
+        }
+
+        // okay, we have an STS capability!
+        final CapabilityState sts = potentialStsCapability.get();
+        final List<ServerMessage> originalMessages = event.getOriginalMessages();
+        if (this.machine.getCurrentState() == STSClientState.UNKNOWN) {
+            this.handleSTSCapability(sts, originalMessages);
+        }
     }
 
     private void handleInsecureKey(String key, Map<String, Optional<String>> opts) {
