@@ -208,8 +208,8 @@ final class IRCClient extends InternalClient {
     }
 
     private void configureSts() {
-        this.stsMachine = new MemorySTSMachine(this.config.get(Config.STS_STORAGE_MANAGER));
-        this.eventManager.registerEventListener(new STSHandler(this.stsMachine, this.config.getNotNull(Config.SSL)));
+        this.stsMachine = new MemorySTSMachine(this.config.get(Config.STS_STORAGE_MANAGER), this);
+        this.eventManager.registerEventListener(new STSHandler(this.stsMachine, this));
         this.usingSts = true;
     }
 
@@ -299,6 +299,7 @@ final class IRCClient extends InternalClient {
         return this.iSupportManager;
     }
 
+    @Nonnull
     @Override
     public Optional<STSMachine> getSTSMachine() {
         return Optional.ofNullable(this.stsMachine);

@@ -105,4 +105,9 @@ public class StringUtilTest {
         Assert.assertTrue(retVal.get("kitten").isPresent());
         Assert.assertEquals(retVal.get("kitten").get(), "dog");
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseSeparatedKeyValueStringWithNull() {
+        StringUtil.parseSeparatedKeyValueString(",", null);
+    }
 }

@@ -21,22 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.sts;
-
-import javax.annotation.Nonnull;
-import java.util.Map;
-import java.util.Optional;
+package org.kitteh.irc.client.library.exception;
 
 /**
- * Interface representing the STS FSM.
+ * Indicates a problem has occurred with strict transport security.
  */
-public interface STSMachine {
-    @Nonnull
-    STSClientState getCurrentState();
-
-    void setCurrentState(@Nonnull STSClientState newState);
-
-    STSStorageManager getStorageManager();
-
-    void setStsPolicy(@Nonnull Map<String, Optional<String>> policy);
+public class KittehSTSException extends RuntimeException {
+    /**
+     * Constructs the exception.
+     *
+     * @param message what went wrong.
+     */
+    public KittehSTSException(String message) {
+        super(String.format("Problem with STS: %s", message));
+    }
 }
