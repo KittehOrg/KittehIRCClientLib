@@ -141,7 +141,7 @@ public class STSHandler {
                 try {
                     Integer.parseInt(port); // can't easily use a short because signed..
                 } catch (NumberFormatException nfe) {
-                    throw new KittehServerMessageException(port, "Specified port could not be parsed.");
+                    throw new KittehServerMessageException(port, "Specified port could not be parsed: "  + nfe.getMessage());
                 }
 
                 this.machine.setCurrentState(STSClientState.STS_PRESENT_RECONNECTING);
@@ -167,7 +167,7 @@ public class STSHandler {
                     // and as a single integer without a prefix or suffix.
                     duration = Long.parseLong(value.get());
                 } catch (NumberFormatException nfe) {
-                    throw new KittehServerMessageException(value.get(), "Invalid duration provided");
+                    throw new KittehServerMessageException(value.get(), "Invalid duration provided: " + nfe.getMessage());
                 }
 
                 final STSStorageManager storageMan = this.machine.getStorageManager();
