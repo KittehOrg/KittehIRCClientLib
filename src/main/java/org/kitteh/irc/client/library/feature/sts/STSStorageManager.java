@@ -58,7 +58,7 @@ public interface STSStorageManager {
     /**
      * Deletes an entry from the store (used for 0 duration policies).
      * <p>
-     * Implementers must ignore requests to remove entries that do not exist.
+     * Implementers MUST ignore requests to remove entries that do not exist.
      *
      * @param hostname the hostname to remove the policy for
      */
