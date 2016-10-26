@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class StsTest {
+public class STSTest {
 
     /**
      * Checks that the STS Handler works when we connect in a plaintext manner and give

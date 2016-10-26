@@ -34,11 +34,18 @@ public interface STSStorageManager {
      * Adds an STS policy to the store.
      *
      * @param hostname the hostname (as sent in the SNI by the client)
-     * @param duration the length in seconds until the expiry
+     * @param duration the length (in seconds) until the expiry of this stored policy
+     * @param data all data sent by the server in the CAP LS "sts" value when connecting securely
      */
     void addEntry(String hostname, long duration, Map<String, Optional<String>> data);
 
-    // TODO: getEntry, some tuple...
+    /**
+     * Gets an STS policy from the store, looking it up via hostname.
+     *
+     * @param hostname the hostname (as sent in the SNI by the client)
+     * @return all data sent by the server in the CAP LS "sts" value when we connected securely
+     */
+    Map<String, Optional<String>> getEntry(String hostname);
 
     /**
      * Checks if a policy has been stored for the hostname.
