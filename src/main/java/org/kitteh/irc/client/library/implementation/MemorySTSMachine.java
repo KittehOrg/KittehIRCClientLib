@@ -49,9 +49,6 @@ public class MemorySTSMachine implements STSMachine {
         switch (this.state) {
             case UNKNOWN:
                 throw new IllegalStateException("Unknown state can only be used as an initial state!");
-            case NO_STS_PRESENT:
-                // nothing to do
-                break;
             case STS_PRESENT_CANNOT_CONNECT:
                 throw new KittehSTSException("Cannot securely to provided STS port, terminating.");
             case STS_PRESENT_RECONNECTING:
@@ -62,7 +59,11 @@ public class MemorySTSMachine implements STSMachine {
 
                 this.client.getConfig().set(Config.SERVER_ADDRESS, newAddress);
                 this.client.connect();
-
+                break;
+            case NO_STS_PRESENT:
+            default:
+                // nothing to do
+                break;
         }
     }
 
