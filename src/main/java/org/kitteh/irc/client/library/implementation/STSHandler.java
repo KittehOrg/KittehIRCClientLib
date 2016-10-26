@@ -31,7 +31,6 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
-import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StringUtil;
 
 import java.util.Map;
@@ -105,7 +104,10 @@ public class STSHandler {
             case "port":
                 // Brilliant, we have a secure port. We'll reconnect with SSL and verify the policy.
                 // Quickly ensure the port is valid (less error checking later)
-                Sanity.truthiness(value.isPresent(), "Port requires a value per the STS spec.");
+                if (!value.isPresent()) {
+                    throw new KittehServerMessageException(key, "STS policy had no value for port.");
+                }
+
                 String port = value.get();
                 try {
                     Integer.parseInt(port); // can't easily use a short because signed..

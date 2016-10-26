@@ -106,6 +106,9 @@ public class StringUtilTest {
         Assert.assertEquals(retVal.get("kitten").get(), "dog");
     }
 
+    /**
+     * Tests parseSeparatedKeyValueString with invalid (null) input.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testParseSeparatedKeyValueStringWithNull() {
         StringUtil.parseSeparatedKeyValueString(",", null);
