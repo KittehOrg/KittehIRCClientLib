@@ -31,12 +31,35 @@ import java.util.Optional;
  * Interface representing the STS FSM.
  */
 public interface STSMachine {
+    /**
+     * Returns the current state in the enum that the
+     * state machine is operating in.
+     *
+     * @return one of STSClientState's members
+     */
     @Nonnull
     STSClientState getCurrentState();
 
+    /**
+     * Changes the state of the FSM, triggering any state-specific work.
+     *
+     * @param newState a valid (non-UNKNOWN, non-null) state
+     */
     void setCurrentState(@Nonnull STSClientState newState);
 
+    /**
+     * Gets the persistence/storage manager.
+     *
+     * @return the storage manager instance
+     */
     STSStorageManager getStorageManager();
 
+    /**
+     * Provides a key->value map of properties, making up the STS policy.
+     * <p>
+     * It is expected the policy is valid at this stage.
+     *
+     * @param policy the valid STS policy
+     */
     void setStsPolicy(@Nonnull Map<String, Optional<String>> policy);
 }
