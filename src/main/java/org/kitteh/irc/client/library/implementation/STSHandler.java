@@ -172,15 +172,18 @@ public class STSHandler {
 
                 final STSStorageManager storageMan = this.machine.getStorageManager();
                 String hostname = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
-                if (storageMan.hasEntry(hostname)) {
-                    // Clients MUST reset the duration "time to live" every time they receive a valid policy
-                    storageMan.removeEntry(hostname);
-                }
 
                 // A duration of 0 means the policy expires immediately.
                 // This method can be used by servers to remove a previously set policy.
                 if (duration == 0) {
+                    storageMan.removeEntry(hostname);
                     return;
+                }
+
+                if (storageMan.hasEntry(hostname)) {
+                    // Clients MUST reset the duration "time to live" every time they receive a valid policy
+                    // We achieve this by just removing old policies and re-adding new ones.
+                    storageMan.removeEntry(hostname);
                 }
 
                 storageMan.addEntry(hostname, duration, opts);
