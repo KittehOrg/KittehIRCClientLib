@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
@@ -37,6 +38,40 @@ public class STSTest {
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
+        Assert.assertEquals(machine.getCurrentState(), STSClientState.STS_PRESENT_RECONNECTING);
+
+        Map<String, Optional<String>> extractedPolicy = machine.getPolicy();
+        final Optional<String> port = extractedPolicy.get("port");
+        Assert.assertTrue(port.isPresent());
+        Assert.assertTrue(port.get().equals("1234"));
+
+        final Optional<String> duration = extractedPolicy.get("duration");
+        Assert.assertTrue(duration.isPresent());
+        Assert.assertTrue(duration.get().equals("300"));
+
+        Assert.assertTrue(extractedPolicy.containsKey("foobar"));
+        Assert.assertFalse(extractedPolicy.get("foobar").isPresent());
+    }
+
+    /**
+     * Checks that the STS Handler works when the STS policy arrives
+     * via CAP new.
+     */
+    @Test
+    public void testHandlerWhenInsecureUsingCapNew() {
+        final FakeClient client = new FakeClient();
+        client.getConfig().set(Config.SSL, false);
+        final StubMachine machine = new StubMachine();
+        Assert.assertEquals(machine.getCurrentState(), STSClientState.UNKNOWN);
+
+        STSHandler handler = new STSHandler(machine, client);
+
+        List<CapabilityState> capabilities = new ArrayList<>();
+        final String policyString = "sts=port=1234,duration=300,foobar";
+        capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
+        List<ServerMessage> messages = new ArrayList<>();
+        messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
+        handler.onCapNew(new CapabilitiesNewSupportedEvent(client, messages, true, capabilities));
         Assert.assertEquals(machine.getCurrentState(), STSClientState.STS_PRESENT_RECONNECTING);
 
         Map<String, Optional<String>> extractedPolicy = machine.getPolicy();
