@@ -50,7 +50,6 @@ public enum STSClientState {
      */
     STS_PRESENT_ALREADY_SECURE,
 
-
     /**
      * We connected via an insecure communication means and found an STS policy. We then
      * tried to establish a secure connection on the advertised port, but couldn't. This
