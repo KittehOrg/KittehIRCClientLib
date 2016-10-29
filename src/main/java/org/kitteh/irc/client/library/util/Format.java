@@ -137,7 +137,7 @@ public enum Format {
      * Character indicating color.
      */
     public static final char COLOR_CHAR = '\u0003';
-    private static final Pattern COLOR_REGEX = Pattern.compile(COLOR_CHAR + "[0-9]{1,2}");
+    private static final Pattern COLOR_REGEX = Pattern.compile(COLOR_CHAR + "[0-9]{1,2}(?:,[0-9]{1,2})?");
     private static final Pattern FORMAT_REGEX = Pattern.compile("[" + BOLD + RESET + REVERSE + UNDERLINE + ']');
 
     /**
