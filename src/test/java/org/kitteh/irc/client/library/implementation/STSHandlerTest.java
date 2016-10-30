@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class STSTest {
+/**
+ * Tests around the STS event handler and the underlying machine.
+ */
+public class STSHandlerTest {
 
     /**
      * Checks that the STS Handler works when we connect in a plaintext manner and give

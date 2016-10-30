@@ -29,9 +29,11 @@ import java.util.Optional;
 /**
  * Represents a manager that can persist STS policies in some form.
  */
-public interface STSStorageManager {
+public interface STSStorageManager extends AutoCloseable {
     /**
      * Adds an STS policy to the store.
+     * <p>
+     * Implementers MUST accept requests to add entries that already exist and overwrite the old entry.
      *
      * @param hostname the hostname (as sent in the SNI by the client)
      * @param duration the length (in seconds) until the expiry of this stored policy
