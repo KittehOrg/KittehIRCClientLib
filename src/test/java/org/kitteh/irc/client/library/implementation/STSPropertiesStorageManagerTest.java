@@ -1,7 +1,9 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.kitteh.irc.client.library.feature.sts.STSPropertiesStorageManager;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.STSUtil;
@@ -19,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class STSPropertiesStorageManagerTest {
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     /**
      * Checks that the simple bundled storage manager works.
@@ -87,7 +92,7 @@ public class STSPropertiesStorageManagerTest {
     @Test
     public void testWithFiles() {
         try {
-            final File tempFile = File.createTempFile("tempFile", "unit-test-sts");
+            final File tempFile = temporaryFolder.newFile("sts.properties");
             try (STSStorageManager sut1 = STSUtil.getDefaultStorageManager(tempFile)) {
                 sut1.addEntry("kitteh.org", 500, StringUtil.parseSeparatedKeyValueString(",", "port=6697,cats"));
                 Assert.assertTrue(sut1.hasEntry("kitteh.org"));
