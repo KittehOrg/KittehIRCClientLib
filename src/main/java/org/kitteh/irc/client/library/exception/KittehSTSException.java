@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.exception;
 
+import javax.annotation.Nonnull;
+
 /**
  * Indicates a problem has occurred with strict transport security.
  */
@@ -32,7 +34,7 @@ public class KittehSTSException extends RuntimeException {
      *
      * @param message what went wrong.
      */
-    public KittehSTSException(String message) {
+    public KittehSTSException(@Nonnull String message) {
         super("Problem with STS: " + message);
     }
 
@@ -42,7 +44,7 @@ public class KittehSTSException extends RuntimeException {
      * @param message what went wrong.
      * @param thrown cause
      */
-    public KittehSTSException(String message, Throwable thrown) {
+    public KittehSTSException(@Nonnull String message, @Nonnull Throwable thrown) {
         super("Problem with STS: " + message, thrown);
     }
 }

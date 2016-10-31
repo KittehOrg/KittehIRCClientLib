@@ -50,6 +50,7 @@ public interface STSMachine {
      *
      * @return the storage manager instance
      */
+    @Nonnull
     STSStorageManager getStorageManager();
 
     /**

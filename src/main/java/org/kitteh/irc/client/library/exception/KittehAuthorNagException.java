@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.exception;
 
+import javax.annotation.Nonnull;
+
 /**
  * Indicates a problem that requires the developer's attention.
  */
@@ -32,7 +34,7 @@ public class KittehAuthorNagException extends RuntimeException {
      *
      * @param problem the advisory
      */
-    public KittehAuthorNagException(String problem) {
+    public KittehAuthorNagException(@Nonnull String problem) {
         super("Nag: " + problem);
     }
 }

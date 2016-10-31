@@ -86,7 +86,7 @@ public class STSHandlerTest {
     /**
      * Checks an error is raised for an invalid port value.
      */
-    @Test(expected=KittehServerMessageException.class)
+    @Test(expected = KittehServerMessageException.class)
     public void testHandlerWithInvalidPort() {
         final FakeClient client = new FakeClient();
         client.getConfig().set(Config.SSL, false);
@@ -103,7 +103,7 @@ public class STSHandlerTest {
     /**
      * Checks an error is raised for an missing port value.
      */
-    @Test(expected=KittehServerMessageException.class)
+    @Test(expected = KittehServerMessageException.class)
     public void testHandlerWithMissingPortValue() {
         final FakeClient client = new FakeClient();
         client.getConfig().set(Config.SSL, false);

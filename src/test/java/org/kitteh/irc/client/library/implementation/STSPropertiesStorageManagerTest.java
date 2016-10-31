@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class STSPropertiesStorageManagerTest {
-
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 

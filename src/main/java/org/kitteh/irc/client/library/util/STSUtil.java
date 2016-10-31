@@ -39,7 +39,6 @@ import java.util.Set;
  * Utility methods for dealing with STS.
  */
 public final class STSUtil {
-
     /**
      * Default filename to use for the properties file.
      */
@@ -53,6 +52,7 @@ public final class STSUtil {
      *
      * @return an STSStorageManager implementer
      */
+    @Nonnull
     public static STSStorageManager getDefaultStorageManager() {
         return STSUtil.getDefaultStorageManager(Paths.get(System.getProperty("user.home"), DEFAULT_FILENAME));
     }
@@ -63,7 +63,8 @@ public final class STSUtil {
      * @param stsFile File instance
      * @return an STSStorageManager implementer
      */
-    public static STSStorageManager getDefaultStorageManager(Path stsFile) {
+    @Nonnull
+    public static STSStorageManager getDefaultStorageManager(@Nonnull Path stsFile) {
         return new STSPropertiesStorageManager(stsFile);
     }
 
@@ -74,6 +75,7 @@ public final class STSUtil {
      * @param str the whole string
      * @return the policy
      */
+    @Nonnull
     public static STSPolicy getSTSPolicyFromString(@Nonnull String delimiter, @Nonnull String str) {
         Sanity.nullCheck(delimiter, "Need a valid delimiter.");
         Sanity.nullCheck(str, "Need a valid string to parse.");

@@ -25,7 +25,9 @@ package org.kitteh.irc.client.library.feature.sts;
 
 import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.util.STSUtil;
+import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -56,6 +58,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * Simple implementation of STSStorageManager which uses a properties file.
      */
     public STSPropertiesStorageManager(Path filePath) {
+        Sanity.nullCheck(filePath, "Must provide a valid path to the properties file to use.");
         this.filePath = filePath;
         this.readData();
     }
@@ -102,6 +105,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @return all data sent by the server in the CAP LS "sts" value when we connected securely
      */
     @Override
+    @Nonnull
     public Optional<STSPolicy> getEntry(String hostname) {
         this.pruneEntries();
         if (!this.hasEntry(hostname)) {
