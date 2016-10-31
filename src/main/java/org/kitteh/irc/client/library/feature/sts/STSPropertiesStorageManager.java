@@ -57,7 +57,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
     /**
      * Simple implementation of STSStorageManager which uses a properties file.
      */
-    public STSPropertiesStorageManager(Path filePath) {
+    public STSPropertiesStorageManager(@Nonnull Path filePath) {
         Sanity.nullCheck(filePath, "Must provide a valid path to the properties file to use.");
         this.filePath = filePath;
         this.readData();
