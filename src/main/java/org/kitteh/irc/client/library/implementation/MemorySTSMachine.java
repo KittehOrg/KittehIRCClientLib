@@ -3,14 +3,12 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.STSPolicy;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
-
 import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.Optional;
 
 import static org.kitteh.irc.client.library.feature.sts.STSClientState.UNKNOWN;
 
@@ -26,7 +24,7 @@ public class MemorySTSMachine implements STSMachine {
     private final STSStorageManager manager;
     private final InternalClient client;
     private STSClientState state = UNKNOWN;
-    private Map<String, Optional<String>> policy;
+    private STSPolicy policy;
 
     public MemorySTSMachine(@Nonnull STSStorageManager manager, InternalClient client) {
         this.client = client;
@@ -55,7 +53,7 @@ public class MemorySTSMachine implements STSMachine {
                 this.client.shutdown();
                 this.client.getConfig().set(Config.SSL, true);
                 InetSocketAddress oldAddress = this.client.getConfig().get(Config.SERVER_ADDRESS);
-                InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.get("port").orElse("6697")));
+                InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault("port", "6697")));
 
                 this.client.getConfig().set(Config.SERVER_ADDRESS, newAddress);
                 this.client.connect();
@@ -73,7 +71,7 @@ public class MemorySTSMachine implements STSMachine {
     }
 
     @Override
-    public void setSTSPolicy(@Nonnull Map<String, Optional<String>> policy) {
+    public void setSTSPolicy(@Nonnull STSPolicy policy) {
         Sanity.nullCheck(policy, "Policy cannot be null");
         this.policy = policy;
     }

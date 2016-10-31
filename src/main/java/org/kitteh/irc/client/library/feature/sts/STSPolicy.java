@@ -23,41 +23,40 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
-import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * Interface representing the STS FSM.
+ * Simple POJO to represent an STS policy.
  */
-public interface STSMachine {
-    /**
-     * Returns the current state in the enum that the
-     * state machine is operating in.
-     *
-     * @return one of STSClientState's members
-     */
-    @Nonnull
-    STSClientState getCurrentState();
+public class STSPolicy {
+
+    private final Map<String, String> options;
+    private final Set<String> flags;
+
 
     /**
-     * Changes the state of the FSM, triggering any state-specific work.
+     * Constucts a policy.
      *
-     * @param newState a valid (non-UNKNOWN, non-null) state
+     * @param options the key-value options from the server-sent policy
+     * @param flags the valueless flags from the server-sent policy
      */
-    void setCurrentState(@Nonnull STSClientState newState);
+    public STSPolicy(Map<String, String> options, Set<String> flags) {
+        this.options = options;
+        this.flags = flags;
+    }
 
     /**
-     * Gets the persistence/storage manager.
-     *
-     * @return the storage manager instance
+     * @return the valueless flags from the server-sent policy
      */
-    STSStorageManager getStorageManager();
+    public Set<String> getFlags() {
+        return flags;
+    }
 
     /**
-     * Provides a key->value map of options and list of flags, making up the STS policy.
-     * <p>
-     * It is expected the policy is valid at this stage.
-     *
-     * @param policy the valid STS policy
+     * @return he key-value options from the server-sent policy
      */
-    void setSTSPolicy(@Nonnull STSPolicy policy);
+    public Map<String, String> getOptions() {
+        return options;
+    }
 }

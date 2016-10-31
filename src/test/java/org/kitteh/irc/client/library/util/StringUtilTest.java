@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Tests the StringUtil class.
@@ -88,29 +86,5 @@ public class StringUtilTest {
         Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
-    }
-
-    /**
-     * Test the parseSeparatedKeyValueString function.
-     */
-    @Test
-    public void testParseSeparatedKeyValueString() {
-        String myStr = "foo,bar=cat,kitten=dog";
-        Map<String, Optional<String>> retVal = StringUtil.parseSeparatedKeyValueString(",", myStr);
-        Assert.assertTrue(retVal.containsKey("foo"));
-        Assert.assertTrue(retVal.containsKey("bar"));
-        Assert.assertTrue(retVal.containsKey("kitten"));
-        Assert.assertFalse(retVal.get("foo").isPresent());
-
-        Assert.assertTrue(retVal.get("kitten").isPresent());
-        Assert.assertEquals(retVal.get("kitten").get(), "dog");
-    }
-
-    /**
-     * Tests parseSeparatedKeyValueString with invalid (null) input.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testParseSeparatedKeyValueStringWithNull() {
-        StringUtil.parseSeparatedKeyValueString(",", null);
     }
 }

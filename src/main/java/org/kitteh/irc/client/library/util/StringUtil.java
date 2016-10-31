@@ -28,9 +28,6 @@ import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * String tools!
@@ -161,28 +158,4 @@ public final class StringUtil {
         return client.getServerInfo().getCaseMapping().toLowerCase(input);
     }
 
-    /**
-     * Takes a string like "foo,bar=cat,kitten=dog" and returns a HashMap of key -> Optional
-     * @param delimiter Delimiter for between components. E.g. a comma
-     * @param str The whole string
-     * @return The map
-     */
-    public static Map<String, Optional<String>> parseSeparatedKeyValueString(@Nonnull String delimiter, @Nonnull String str) {
-        Sanity.nullCheck(delimiter, "Need a valid delimiter.");
-        Sanity.nullCheck(str, "Need a valid string to parse.");
-
-        String[] components = str.split(delimiter);
-        // each component looks like:
-        // "foo=bar" OR "foo"
-        Map<String, Optional<String>> map = new HashMap<>();
-        for (String component : components) {
-            if (!component.contains("=")) {
-                map.put(component, Optional.empty());
-            } else {
-                String[] innerComponents = component.split("=");
-                map.put(innerComponents[0], Optional.of(innerComponents[1]));
-            }
-         }
-        return map;
-    }
 }

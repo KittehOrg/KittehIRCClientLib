@@ -31,13 +31,15 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedLis
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.STSPolicy;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
-import org.kitteh.irc.client.library.util.StringUtil;
+import org.kitteh.irc.client.library.util.STSUtil;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+
+import static org.kitteh.irc.client.library.feature.sts.STSClientState.STS_PRESENT_RECONNECTING;
 
 /**
  * Class for handling the STS capability,
@@ -85,21 +87,24 @@ public class STSHandler {
     }
 
     private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
-        if (!sts.getValue().isPresent()) {
-            final String msg = originalMessages.stream().map(ServerMessage::getMessage)
+        final String msg = originalMessages.stream().map(ServerMessage::getMessage)
                 .reduce((a, b) -> (a+b).replace('\n', ' ')).orElse("Missing!");
+        if (!sts.getValue().isPresent()) {
             throw new KittehServerMessageException(msg, "No value provided for sts capability.");
         }
 
         final String capabilityValue = sts.getValue().get();
-        final Map<String, Optional<String>> options = StringUtil.parseSeparatedKeyValueString(",", capabilityValue);
-        for (String key : options.keySet()) {
+        final STSPolicy policy = STSUtil.getSTSPolicyFromString(",", capabilityValue);
+        if (policy.getFlags().contains("port") || policy.getFlags().contains("duration")) {
+            throw new KittehServerMessageException(msg, "Improper use of flag in required option context!");
+        }
+        for (String key : policy.getOptions().keySet()) {
             // Unknown keys are ignored by the switches below
-            this.machine.setSTSPolicy(options);
+            this.machine.setSTSPolicy(policy);
             if (this.isSecure) {
-                this.handleSecureKey(key, options);
+                this.handleSecureKey(key, policy);
             } else {
-                this.handleInsecureKey(key, options);
+                this.handleInsecureKey(key, policy);
             }
         }
     }
@@ -108,7 +113,7 @@ public class STSHandler {
     public void onCapNew(CapabilitiesNewSupportedEvent event) {
         // stability not a concern, only one or zero result(s)
         final Optional<CapabilityState> potentialStsCapability = event.getNewCapabilities().stream()
-                .filter(STSHandler.STS_CAPABILITY_PREDICATE).findAny();
+                .filter(STS_CAPABILITY_PREDICATE).findAny();
 
         if (!potentialStsCapability.isPresent()) {
             // get out if we can't do anything useful here
@@ -123,51 +128,39 @@ public class STSHandler {
         }
     }
 
-    private void handleInsecureKey(String key, Map<String, Optional<String>> opts) {
-        final Optional<String> value = opts.get(key);
+    private void handleInsecureKey(String key, STSPolicy policy) {
+        final String value = policy.getOptions().get(key);
 
         switch (key) {
             case "duration":
                 // Do NOT persist, because this policy could've been inserted by an active MitM
                 break;
             case "port":
-                // Brilliant, we have a secure port. We'll reconnect with SSL and verify the policy.
-                // Quickly ensure the port is valid (less error checking later)
-                if (!value.isPresent()) {
-                    throw new KittehServerMessageException(key, "STS policy had no value for port.");
-                }
-
-                String port = value.get();
                 try {
-                    Integer.parseInt(port); // can't easily use a short because signed..
+                    Integer.parseInt(value); // can't easily use a short because signed..
                 } catch (NumberFormatException nfe) {
-                    throw new KittehServerMessageException(port, "Specified port could not be parsed: "  + nfe.getMessage());
+                    throw new KittehServerMessageException(value, "Specified port could not be parsed: "  + nfe.getMessage());
                 }
 
-                this.machine.setCurrentState(STSClientState.STS_PRESENT_RECONNECTING);
+                this.machine.setCurrentState(STS_PRESENT_RECONNECTING);
                 break;
         }
     }
 
-    private void handleSecureKey(String key, Map<String, Optional<String>> opts) {
-        final Optional<String> value = opts.get(key);
+    private void handleSecureKey(String key, STSPolicy policy) {
+        final String value = policy.getOptions().get(key);
 
         switch (key) {
             case "duration":
                 // We can safely persist this.
 
-                // MUST be specified in seconds as the value of this key
-                if (!value.isPresent()) {
-                    throw new KittehServerMessageException(key, "Missing value for this STS option.");
-                }
-
                 long duration;
                 try {
                     // This MUST be specified in seconds as the value of this key
                     // and as a single integer without a prefix or suffix.
-                    duration = Long.parseLong(value.get());
+                    duration = Long.parseLong(value);
                 } catch (NumberFormatException nfe) {
-                    throw new KittehServerMessageException(value.get(), "Invalid duration provided: " + nfe.getMessage());
+                    throw new KittehServerMessageException(value, "Invalid duration provided: " + nfe.getMessage());
                 }
 
                 final STSStorageManager storageMan = this.machine.getStorageManager();
@@ -186,7 +179,7 @@ public class STSHandler {
                     storageMan.removeEntry(hostname);
                 }
 
-                storageMan.addEntry(hostname, duration, opts);
+                storageMan.addEntry(hostname, duration, policy);
                 break;
             case "port":
                 // Ignored when already connected securely

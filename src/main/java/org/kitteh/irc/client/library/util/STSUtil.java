@@ -23,11 +23,17 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.kitteh.irc.client.library.feature.sts.STSPolicy;
 import org.kitteh.irc.client.library.feature.sts.STSPropertiesStorageManager;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 
+import javax.annotation.Nonnull;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Utility methods for dealing with STS.
@@ -61,4 +67,30 @@ public final class STSUtil {
         return new STSPropertiesStorageManager(stsFile);
     }
 
+    /**
+     * Takes a string like "foo,bar=cat,kitten=dog" and returns an STSPolicy instance.
+     *
+     * @param delimiter delimiter for between components. E.g. a comma
+     * @param str the whole string
+     * @return the policy
+     */
+    public static STSPolicy getSTSPolicyFromString(@Nonnull String delimiter, @Nonnull String str) {
+        Sanity.nullCheck(delimiter, "Need a valid delimiter.");
+        Sanity.nullCheck(str, "Need a valid string to parse.");
+
+        String[] components = str.split(delimiter);
+        // each component looks like:
+        // "foo=bar" OR "foo"
+        Map<String, String> options = new HashMap<>();
+        Set<String> flags = new HashSet<>();
+        for (String component : components) {
+            if (!component.contains("=")) {
+                flags.add(component);
+            } else {
+                String[] innerComponents = component.split("=");
+                options.put(innerComponents[0], innerComponents[1]);
+            }
+         }
+        return new STSPolicy(options, flags);
+    }
 }

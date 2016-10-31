@@ -24,7 +24,7 @@
 package org.kitteh.irc.client.library.feature.sts;
 
 import org.kitteh.irc.client.library.exception.KittehSTSException;
-import org.kitteh.irc.client.library.util.StringUtil;
+import org.kitteh.irc.client.library.util.STSUtil;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -37,11 +37,10 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 
 /**
  * Simple example implementation of an STSStorageManager.
@@ -49,6 +48,7 @@ import java.util.Set;
 public class STSPropertiesStorageManager implements STSStorageManager {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    public static final BinaryOperator<String> ITEM_COMMA_JOIN = (a, b) -> a + "," + b;
     private final Properties properties = new Properties();
     private final Path filePath;
 
@@ -70,16 +70,15 @@ public class STSPropertiesStorageManager implements STSStorageManager {
         }
     }
 
+
     /**
-     * Adds an STS policy to the store.
-     *
      * @param hostname the hostname (as sent in the SNI by the client)
      * @param duration the length (in seconds) until the expiry of this stored policy
-     * @param data all data sent by the server in the CAP LS "sts" value when connecting securely
+     * @param policy the STS policy instance, including all data sent from the server
      */
     @Override
-    public void addEntry(String hostname, long duration, Map<String, Optional<String>> data) {
-        this.properties.setProperty(hostname, getExpiryFromDuration(duration) + "; " + this.reserializeData(data));
+    public void addEntry(String hostname, long duration, STSPolicy policy) {
+        this.properties.setProperty(hostname, getExpiryFromDuration(duration) + "; " + this.reserializeData(policy));
         this.saveData();
     }
 
@@ -103,16 +102,16 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @return all data sent by the server in the CAP LS "sts" value when we connected securely
      */
     @Override
-    public Map<String, Optional<String>> getEntry(String hostname) {
+    public Optional<STSPolicy> getEntry(String hostname) {
         this.pruneEntries();
         if (!this.hasEntry(hostname)) {
-            return null;
+            return Optional.empty();
         }
 
         String value = this.properties.getProperty(hostname);
         String[] components = value.split("; ");
         String data = components[1];
-        return StringUtil.parseSeparatedKeyValueString(",", data);
+        return Optional.of(STSUtil.getSTSPolicyFromString(",", data));
     }
 
     /**
@@ -162,26 +161,15 @@ public class STSPropertiesStorageManager implements STSStorageManager {
     }
 
     /**
-     * Reserialize the STS data in the same form as used in the spec.
+     * Reserialize the STS policy in the same form as used in the spec.
      *
-     * @param data The map of keys -> optional string values
+     * @param policy The map of keys -> optional string values
      * @return a serialized string
      */
-    private String reserializeData(Map<String, Optional<String>> data) {
-        StringBuilder sb = new StringBuilder(data.keySet().size()*5);
-        Iterator<Map.Entry<String, Optional<String>>> iterator = data.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Optional<String>> entry = iterator.next();
-
-            sb.append(entry.getKey());
-            final Optional<String> value = entry.getValue();
-            if (value.isPresent()) {
-                sb.append("=").append(value.get());
-            }
-            if (iterator.hasNext()) {
-                sb.append(",");
-            }
-        }
+    private String reserializeData(STSPolicy policy) {
+        StringBuilder sb = new StringBuilder(policy.getOptions().size()*10+policy.getFlags().size()*5);
+        sb.append(policy.getFlags().stream().reduce(ITEM_COMMA_JOIN).orElse(""));
+        sb.append(policy.getOptions().entrySet().stream().map(e -> e.getKey()+"="+e.getValue()).reduce("", ITEM_COMMA_JOIN));
         return sb.toString();
     }
 

@@ -9,13 +9,12 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedLis
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.STSPolicy;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Tests around the STS event handler and the underlying machine.
@@ -43,17 +42,14 @@ public class STSHandlerTest {
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
         Assert.assertEquals(machine.getCurrentState(), STSClientState.STS_PRESENT_RECONNECTING);
 
-        Map<String, Optional<String>> extractedPolicy = machine.getPolicy();
-        final Optional<String> port = extractedPolicy.get("port");
-        Assert.assertTrue(port.isPresent());
-        Assert.assertTrue(port.get().equals("1234"));
+        STSPolicy extractedPolicy = machine.getPolicy();
+        final String port = extractedPolicy.getOptions().get("port");
+        Assert.assertTrue(port.equals("1234"));
 
-        final Optional<String> duration = extractedPolicy.get("duration");
-        Assert.assertTrue(duration.isPresent());
-        Assert.assertTrue(duration.get().equals("300"));
+        final String duration = extractedPolicy.getOptions().get("duration");
+        Assert.assertTrue(duration.equals("300"));
 
-        Assert.assertTrue(extractedPolicy.containsKey("foobar"));
-        Assert.assertFalse(extractedPolicy.get("foobar").isPresent());
+        Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
     }
 
     /**
@@ -77,17 +73,14 @@ public class STSHandlerTest {
         handler.onCapNew(new CapabilitiesNewSupportedEvent(client, messages, true, capabilities));
         Assert.assertEquals(machine.getCurrentState(), STSClientState.STS_PRESENT_RECONNECTING);
 
-        Map<String, Optional<String>> extractedPolicy = machine.getPolicy();
-        final Optional<String> port = extractedPolicy.get("port");
-        Assert.assertTrue(port.isPresent());
-        Assert.assertTrue(port.get().equals("1234"));
+        STSPolicy extractedPolicy = machine.getPolicy();
+        final String port = extractedPolicy.getOptions().get("port");
+        Assert.assertTrue(port.equals("1234"));
 
-        final Optional<String> duration = extractedPolicy.get("duration");
-        Assert.assertTrue(duration.isPresent());
-        Assert.assertTrue(duration.get().equals("300"));
+        final String duration = extractedPolicy.getOptions().get("duration");
+        Assert.assertTrue(duration.equals("300"));
 
-        Assert.assertTrue(extractedPolicy.containsKey("foobar"));
-        Assert.assertFalse(extractedPolicy.get("foobar").isPresent());
+        Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
     }
 
     /**
@@ -127,7 +120,7 @@ public class STSHandlerTest {
     private class StubMachine implements STSMachine {
 
         private STSClientState state = STSClientState.UNKNOWN;
-        private Map<String, Optional<String>> policy;
+        private STSPolicy policy;
 
         @Nonnull
         @Override
@@ -145,13 +138,19 @@ public class STSHandlerTest {
             return null;
         }
 
+        /**
+         * Provides a key->value map of properties, making up the STS policy.
+         * <p>
+         * It is expected the policy is valid at this stage.
+         *
+         * @param policy the valid STS policy
+         */
         @Override
-        public void setSTSPolicy(@Nonnull Map<String, Optional<String>> policy) {
+        public void setSTSPolicy(@Nonnull STSPolicy policy) {
             this.policy = policy;
         }
 
-
-        Map<String, Optional<String>> getPolicy() {
+        STSPolicy getPolicy() {
             return policy;
         }
     }
