@@ -35,7 +35,7 @@ public class KittehSTSException extends RuntimeException {
      * @param message what went wrong.
      */
     public KittehSTSException(@Nonnull String message) {
-        super("Problem with STS: " + message);
+        super(message);
     }
 
     /**
@@ -45,6 +45,6 @@ public class KittehSTSException extends RuntimeException {
      * @param thrown cause
      */
     public KittehSTSException(@Nonnull String message, @Nonnull Throwable thrown) {
-        super("Problem with STS: " + message, thrown);
+        super(message, thrown);
     }
 }
