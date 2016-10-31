@@ -33,6 +33,16 @@ public class KittehSTSException extends RuntimeException {
      * @param message what went wrong.
      */
     public KittehSTSException(String message) {
-        super(String.format("Problem with STS: %s", message));
+        super("Problem with STS: " + message);
+    }
+
+    /**
+     * Constructs the exception with a cause.
+     *
+     * @param message what went wrong.
+     * @param thrown cause
+     */
+    public KittehSTSException(String message, Throwable thrown) {
+        super("Problem with STS: " + message, thrown);
     }
 }

@@ -26,10 +26,13 @@ package org.kitteh.irc.client.library.feature.sts;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.util.StringUtil;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.time.Instant;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,23 +50,21 @@ public class STSPropertiesStorageManager implements STSStorageManager {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private final Properties properties = new Properties();
-    private final Writer writer;
+    private final Path filePath;
 
     /**
      * Simple implementation of STSStorageManager which uses a properties file.
      */
-    public STSPropertiesStorageManager(Writer writer, Reader reader) {
-        this.readData(reader);
-        this.writer = writer;
+    public STSPropertiesStorageManager(Path filePath) {
+        this.filePath = filePath;
+        this.readData();
     }
 
-    /**
-     * Reads in old data.
-     */
-    public void readData(Reader reader) {
+    private void readData() {
         try {
-            this.properties.load(reader);
-            reader.close();
+            final BufferedReader bufferedReader = Files.newBufferedReader(this.filePath, StandardCharsets.UTF_8);
+            this.properties.load(bufferedReader);
+            bufferedReader.close();
         } catch (IOException e) {
             throw new KittehSTSException(e.getMessage());
         }
@@ -87,7 +88,9 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      */
     private void saveData() {
         try {
-            this.properties.store(this.writer, "This file contains all the gathered STS policies.");
+            final BufferedWriter bufferedWriter = Files.newBufferedWriter(this.filePath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            this.properties.store(bufferedWriter, "This file contains all the gathered STS policies.");
+            bufferedWriter.close();
         } catch (IOException e) {
             throw new KittehSTSException(e.getMessage());
         }
@@ -130,13 +133,11 @@ public class STSPropertiesStorageManager implements STSStorageManager {
     private void pruneEntries() {
         Set<String> stagedRemovals = new HashSet<>();
 
-        for (Object keyObj : this.properties.keySet()) {
-            String hostname = (String) keyObj;
-
+        for (String hostname : this.properties.stringPropertyNames()) {
             String value = this.properties.getProperty(hostname);
             String[] components = value.split("; ");
             ZonedDateTime dt = ZonedDateTime.parse(components[0], DATE_TIME_FORMATTER);
-            if (dt.isBefore(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC))) {
+            if (dt.isBefore(ZonedDateTime.now(ZoneOffset.UTC))) {
                 stagedRemovals.add(hostname); // CME
             }
         }
@@ -168,12 +169,12 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      */
     private String reserializeData(Map<String, Optional<String>> data) {
         StringBuilder sb = new StringBuilder(data.keySet().size()*5);
-        Iterator<String> iterator = data.keySet().iterator();
+        Iterator<Map.Entry<String, Optional<String>>> iterator = data.entrySet().iterator();
         while (iterator.hasNext()) {
-            String s = iterator.next();
+            Map.Entry<String, Optional<String>> entry = iterator.next();
 
-            sb.append(s);
-            final Optional<String> value = data.get(s);
+            sb.append(entry.getKey());
+            final Optional<String> value = entry.getValue();
             if (value.isPresent()) {
                 sb.append("=").append(value.get());
             }
@@ -191,16 +192,6 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @return the date-time string e.g. 2016-01-01T00:00:00Z
      */
     private String getExpiryFromDuration(long duration) {
-        Instant now = Instant.now();
-        Instant then = now.plusSeconds(duration);
-        return ZonedDateTime.ofInstant(then, ZoneOffset.UTC).format(DATE_TIME_FORMATTER);
-    }
-
-
-    @Override
-    public void close() throws Exception {
-        System.out.println("Called close");
-        this.writer.flush();
-        this.writer.close();
+        return ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(duration).format(DATE_TIME_FORMATTER);
     }
 }

@@ -29,7 +29,7 @@ import java.util.Optional;
 /**
  * Represents a manager that can persist STS policies in some form.
  */
-public interface STSStorageManager extends AutoCloseable {
+public interface STSStorageManager {
     /**
      * Adds an STS policy to the store.
      * <p>

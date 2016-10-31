@@ -23,14 +23,11 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.feature.sts.STSPropertiesStorageManager;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Utility methods for dealing with STS.
@@ -40,7 +37,7 @@ public final class STSUtil {
     /**
      * Default filename to use for the properties file.
      */
-    public static final String DEFAULT_FILENAME = "kicl_sts.properties";
+    public static final String DEFAULT_FILENAME = ".kicl_sts.properties";
 
     private STSUtil() {
     }
@@ -51,7 +48,7 @@ public final class STSUtil {
      * @return an STSStorageManager implementer
      */
     public static STSStorageManager getDefaultStorageManager() {
-        return STSUtil.getDefaultStorageManager(new File(System.getProperty("user.home"), DEFAULT_FILENAME));
+        return STSUtil.getDefaultStorageManager(Paths.get(System.getProperty("user.home"), DEFAULT_FILENAME));
     }
 
     /**
@@ -60,14 +57,8 @@ public final class STSUtil {
      * @param stsFile File instance
      * @return an STSStorageManager implementer
      */
-    public static STSStorageManager getDefaultStorageManager(File stsFile) {
-        try {
-            FileWriter fileWriter = new FileWriter(stsFile);
-            FileReader fileReader = new FileReader(stsFile);
-            return new STSPropertiesStorageManager(fileWriter, fileReader);
-        } catch (IOException e) {
-            throw new KittehSTSException(e.getMessage());
-        }
+    public static STSStorageManager getDefaultStorageManager(Path stsFile) {
+        return new STSPropertiesStorageManager(stsFile);
     }
 
 }

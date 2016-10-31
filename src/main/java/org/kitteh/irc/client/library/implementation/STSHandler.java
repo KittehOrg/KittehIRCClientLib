@@ -48,7 +48,7 @@ public class STSHandler {
     private final STSMachine machine;
     private final InternalClient client;
     private final boolean isSecure;
-    private final Predicate<CapabilityState> stsCapabilityPredicate = c -> c.getName().equals("sts");
+    private final static Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals("sts");
 
     /**
      * Creates the event handler for STS.
@@ -69,7 +69,7 @@ public class STSHandler {
     public void onCapLs(CapabilitiesSupportedListEvent event) {
         // stability not a concern, only one or zero result(s)
         final Optional<CapabilityState> potentialStsCapability = event.getSupportedCapabilities().stream()
-            .filter(this.stsCapabilityPredicate).findAny();
+            .filter(STSHandler.STS_CAPABILITY_PREDICATE).findAny();
 
         if (!potentialStsCapability.isPresent()) {
             // get out if we can't do anything useful here
@@ -108,7 +108,7 @@ public class STSHandler {
     public void onCapNew(CapabilitiesNewSupportedEvent event) {
         // stability not a concern, only one or zero result(s)
         final Optional<CapabilityState> potentialStsCapability = event.getNewCapabilities().stream()
-                .filter(this.stsCapabilityPredicate).findAny();
+                .filter(STSHandler.STS_CAPABILITY_PREDICATE).findAny();
 
         if (!potentialStsCapability.isPresent()) {
             // get out if we can't do anything useful here
