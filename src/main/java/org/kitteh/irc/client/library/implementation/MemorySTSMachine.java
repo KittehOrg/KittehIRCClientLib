@@ -39,7 +39,7 @@ public class MemorySTSMachine implements STSMachine {
     @Override
     public void setCurrentState(@Nonnull STSClientState newState) {
         this.state = Sanity.nullCheck(newState, "Need a valid state for the state machine.");
-        this.step();
+         this.step();
     }
 
     private void step() {
@@ -53,7 +53,7 @@ public class MemorySTSMachine implements STSMachine {
                 InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault("port", "6697")));
 
                 this.client.getConfig().set(Config.SERVER_ADDRESS, newAddress);
-                this.client.connect();
+                this.client.reconnect();
                 break;
             case NO_STS_PRESENT:
             case STS_PRESENT_CANNOT_CONNECT:

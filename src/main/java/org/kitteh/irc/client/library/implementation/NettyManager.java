@@ -311,7 +311,7 @@ final class NettyManager {
             }
         }
 
-        private void shutdown(@Nullable String message, boolean reconnect) {
+        void shutdown(@Nullable String message, boolean reconnect) {
             this.reconnect = reconnect;
 
             this.sendMessage("QUIT" + ((message != null) ? (" :" + message) : ""), true);

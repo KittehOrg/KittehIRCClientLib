@@ -663,6 +663,11 @@ final class IRCClient extends InternalClient {
         }
     }
 
+    @Override
+    void reconnect() {
+        this.connection.shutdown("Reconnecting...", true);
+    }
+
     private List<String> handleArgs(@Nonnull String[] split, int start) {
         final List<String> argsList = new ArrayList<>();
 

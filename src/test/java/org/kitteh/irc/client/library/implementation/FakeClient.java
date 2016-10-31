@@ -66,6 +66,11 @@ class FakeClient extends InternalClient {
 
     }
 
+    @Override
+    void reconnect() {
+
+    }
+
     @Nonnull
     @Override
     Config getConfig() {
