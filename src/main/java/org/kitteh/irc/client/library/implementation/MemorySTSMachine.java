@@ -1,6 +1,5 @@
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSPolicy;
@@ -47,8 +46,6 @@ public class MemorySTSMachine implements STSMachine {
         switch (this.state) {
             case UNKNOWN:
                 throw new IllegalStateException("Unknown state can only be used as an initial state!");
-            case STS_PRESENT_CANNOT_CONNECT:
-                throw new KittehSTSException("Cannot connect securely to provided STS port, terminating.");
             case STS_PRESENT_RECONNECTING:
                 this.client.shutdown();
                 this.client.getConfig().set(Config.SSL, true);
@@ -59,6 +56,8 @@ public class MemorySTSMachine implements STSMachine {
                 this.client.connect();
                 break;
             case NO_STS_PRESENT:
+            case STS_PRESENT_CANNOT_CONNECT:
+                // stay in this state. An exception will have been thrown in Netty with useful info.
             default:
                 // nothing to do
                 break;

@@ -48,7 +48,6 @@ import java.util.function.BinaryOperator;
  * Simple example implementation of an STSStorageManager.
  */
 public class STSPropertiesStorageManager implements STSStorageManager {
-
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     public static final BinaryOperator<String> ITEM_COMMA_JOIN = (a, b) -> a + "," + b;
     private final Properties properties = new Properties();
@@ -58,8 +57,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * Simple implementation of STSStorageManager which uses a properties file.
      */
     public STSPropertiesStorageManager(@Nonnull Path filePath) {
-        Sanity.nullCheck(filePath, "Must provide a valid path to the properties file to use.");
-        this.filePath = filePath;
+        this.filePath = Sanity.nullCheck(filePath, "Must provide a valid path to the properties file to use.");
         this.readData();
     }
 
@@ -84,7 +82,9 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @param policy the STS policy instance, including all data sent from the server
      */
     @Override
-    public void addEntry(String hostname, long duration, STSPolicy policy) {
+    public void addEntry(@Nonnull String hostname, long duration, @Nonnull STSPolicy policy) {
+        Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
+        Sanity.nullCheck(policy, "A valid policy must be provided to be inserted.");
         this.properties.setProperty(hostname, getExpiryFromDuration(duration) + "; " + this.reserializeData(policy));
         this.saveData();
     }
@@ -110,7 +110,9 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      */
     @Override
     @Nonnull
-    public Optional<STSPolicy> getEntry(String hostname) {
+    public Optional<STSPolicy> getEntry(@Nonnull String hostname) {
+        Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
+
         this.pruneEntries();
         if (!this.hasEntry(hostname)) {
             return Optional.empty();
@@ -129,7 +131,9 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @return whether the entry exists in the store
      */
     @Override
-    public boolean hasEntry(String hostname) {
+    public boolean hasEntry(@Nonnull String hostname) {
+        Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
+
         this.pruneEntries();
         return this.properties.containsKey(hostname);
     }
@@ -161,7 +165,9 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @param hostname the hostname to remove the policy for
      */
     @Override
-    public void removeEntry(String hostname) {
+    public void removeEntry(@Nonnull String hostname) {
+        Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
+
         if (!this.hasEntry(hostname)) {
             return;
         }

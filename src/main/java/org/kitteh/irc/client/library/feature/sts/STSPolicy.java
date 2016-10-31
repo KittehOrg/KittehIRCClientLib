@@ -23,6 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
+import org.kitteh.irc.client.library.util.Sanity;
+
+import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +33,6 @@ import java.util.Set;
  * Simple POJO to represent an STS policy.
  */
 public class STSPolicy {
-
     private final Map<String, String> options;
     private final Set<String> flags;
 
@@ -41,22 +43,24 @@ public class STSPolicy {
      * @param options the key-value options from the server-sent policy
      * @param flags the valueless flags from the server-sent policy
      */
-    public STSPolicy(Map<String, String> options, Set<String> flags) {
-        this.options = options;
-        this.flags = flags;
+    public STSPolicy(@Nonnull Map<String, String> options, @Nonnull Set<String> flags) {
+        this.options = Sanity.nullCheck(options, "Must provide a valid options map");
+        this.flags = Sanity.nullCheck(flags, "Must provide a valid flags set");
     }
 
     /**
      * @return the valueless flags from the server-sent policy
      */
+    @Nonnull
     public Set<String> getFlags() {
-        return flags;
+        return this.flags;
     }
 
     /**
-     * @return he key-value options from the server-sent policy
+     * @return the key-value options from the server-sent policy
      */
+    @Nonnull
     public Map<String, String> getOptions() {
-        return options;
+        return this.options;
     }
 }

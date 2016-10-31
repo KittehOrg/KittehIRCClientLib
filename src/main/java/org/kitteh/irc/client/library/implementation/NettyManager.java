@@ -54,6 +54,7 @@ import io.netty.util.concurrent.FutureListener;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
+import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
@@ -197,6 +198,8 @@ final class NettyManager {
                                 if (machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
                                     ClientConnection.this.shutdown("Cannot connect securely", false);
                                     machine.setCurrentState(STSClientState.STS_PRESENT_CANNOT_CONNECT);
+                                    throw new KittehSTSException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
+
                                 }
                             }
                         }
