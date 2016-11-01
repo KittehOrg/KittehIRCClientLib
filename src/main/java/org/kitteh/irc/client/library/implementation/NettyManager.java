@@ -377,7 +377,6 @@ final class NettyManager {
         SocketAddress server = client.getConfig().getNotNull(Config.SERVER_ADDRESS);
         ClientConnection clientConnection;
         if (bind == null) {
-            System.out.println("The address is" + server.toString());
             clientConnection = new ClientConnection(client, bootstrap.connect(server));
         } else {
             clientConnection = new ClientConnection(client, bootstrap.connect(server, bind));
