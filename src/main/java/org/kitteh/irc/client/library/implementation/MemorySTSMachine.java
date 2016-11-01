@@ -39,7 +39,8 @@ public class MemorySTSMachine implements STSMachine {
     @Override
     public void setCurrentState(@Nonnull STSClientState newState) {
         this.state = Sanity.nullCheck(newState, "Need a valid state for the state machine.");
-         this.step();
+        System.out.println("NEW STS STATE: " + this.state.toString());
+        this.step();
     }
 
     private void step() {
@@ -47,12 +48,12 @@ public class MemorySTSMachine implements STSMachine {
             case UNKNOWN:
                 throw new IllegalStateException("Unknown state can only be used as an initial state!");
             case STS_PRESENT_RECONNECTING:
-                this.client.shutdown();
                 this.client.getConfig().set(Config.SSL, true);
                 InetSocketAddress oldAddress = this.client.getConfig().get(Config.SERVER_ADDRESS);
                 InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault("port", "6697")));
 
                 this.client.getConfig().set(Config.SERVER_ADDRESS, newAddress);
+                System.out.println("Reconnect call.");
                 this.client.reconnect();
                 break;
             case NO_STS_PRESENT:
