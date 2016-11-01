@@ -9,6 +9,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 
+import static org.kitteh.irc.client.library.feature.sts.STSClientState.STS_PRESENT_RECONNECTING;
 import static org.kitteh.irc.client.library.feature.sts.STSClientState.UNKNOWN;
 
 /**
@@ -47,14 +48,13 @@ public class MemorySTSMachine implements STSMachine {
         switch (this.state) {
             case UNKNOWN:
                 throw new IllegalStateException("Unknown state can only be used as an initial state!");
+            case STS_POLICY_CACHED:
             case STS_PRESENT_RECONNECTING:
                 this.client.getConfig().set(Config.SSL, true);
                 InetSocketAddress oldAddress = this.client.getConfig().get(Config.SERVER_ADDRESS);
                 InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault("port", "6697")));
 
                 this.client.getConfig().set(Config.SERVER_ADDRESS, newAddress);
-                System.out.println("Reconnect call.");
-                this.client.reconnect();
                 break;
             case NO_STS_PRESENT:
             case STS_PRESENT_CANNOT_CONNECT:
@@ -62,6 +62,10 @@ public class MemorySTSMachine implements STSMachine {
             default:
                 // nothing to do
                 break;
+        }
+
+        if (this.state == STS_PRESENT_RECONNECTING) {
+            this.client.reconnect();
         }
     }
 

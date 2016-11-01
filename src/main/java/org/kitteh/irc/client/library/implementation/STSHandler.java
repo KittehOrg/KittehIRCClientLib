@@ -49,7 +49,7 @@ public class STSHandler {
 
     private final STSMachine machine;
     private final InternalClient client;
-    private final boolean isSecure;
+    private boolean isSecure;
     private final static Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals("sts");
 
     /**
@@ -74,7 +74,9 @@ public class STSHandler {
             .filter(STSHandler.STS_CAPABILITY_PREDICATE).findAny();
 
         if (!potentialStsCapability.isPresent()) {
-            // get out if we can't do anything useful here
+            if (this.machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
+                this.machine.setCurrentState(STSClientState.INVALID_STS_MISSING_ON_RECONNECT);
+            }
             return;
         }
 
@@ -87,6 +89,7 @@ public class STSHandler {
     }
 
     private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
+        this.isSecure = client.getConfig().getNotNull(Config.SSL);
         final String msg = originalMessages.stream().map(ServerMessage::getMessage)
                 .reduce((a, b) -> (a+b).replace('\n', ' ')).orElse("Missing!");
         if (!sts.getValue().isPresent()) {
@@ -180,6 +183,7 @@ public class STSHandler {
                 }
 
                 storageMan.addEntry(hostname, duration, policy);
+                this.machine.setCurrentState(STSClientState.STS_PRESENT_NOW_SECURE);
                 break;
             case "port":
                 // Ignored when already connected securely

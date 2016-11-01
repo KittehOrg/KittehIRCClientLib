@@ -57,6 +57,7 @@ import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.STSPolicy;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -347,6 +348,18 @@ final class NettyManager {
     }
 
     static synchronized ClientConnection connect(@Nonnull InternalClient client) {
+
+        // STS Override
+        if (client.getSTSMachine().isPresent() && !client.getConfig().getNotNull(Config.SSL)) {
+            String hostname = client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
+            final STSMachine machine = client.getSTSMachine().get();
+            if (machine.getStorageManager().hasEntry(hostname)) {
+                STSPolicy policy = machine.getStorageManager().getEntry(hostname).get();
+                machine.setSTSPolicy(policy);
+                machine.setCurrentState(STSClientState.STS_POLICY_CACHED);
+            }
+        }
+
         if (bootstrap == null) {
             bootstrap = new Bootstrap();
             bootstrap.channel(NioSocketChannel.class);

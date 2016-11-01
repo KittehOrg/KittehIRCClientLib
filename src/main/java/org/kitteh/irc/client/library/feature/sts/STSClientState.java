@@ -39,6 +39,11 @@ public enum STSClientState {
     NO_STS_PRESENT,
 
     /**
+     * A cached policy was used to force a secure connection.
+     */
+    STS_POLICY_CACHED,
+
+    /**
      * We connected over an insecure link and found a valid `sts` capability. Now we're
      * going to reconnect on the specified secure port.
      */
@@ -49,6 +54,12 @@ public enum STSClientState {
      * port so we don't need to reconnect. We will update the stored policy, though.
      */
     STS_PRESENT_ALREADY_SECURE,
+
+    /**
+     * We connected over plaintext and found a valid STS policy. We reconnected successfully
+     * using TLS and verified the policy still exists.
+     */
+    STS_PRESENT_NOW_SECURE,
 
     /**
      * We connected via an insecure communication means and found an STS policy. We then
