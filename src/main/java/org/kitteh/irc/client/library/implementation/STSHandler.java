@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
+import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
@@ -35,11 +36,10 @@ import org.kitteh.irc.client.library.feature.sts.STSPolicy;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.STSUtil;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-
-import static org.kitteh.irc.client.library.feature.sts.STSClientState.STS_PRESENT_RECONNECTING;
 
 /**
  * Class for handling the STS capability,
@@ -85,31 +85,6 @@ public class STSHandler {
         final List<ServerMessage> originalMessages = event.getOriginalMessages();
 
         handleSTSCapability(sts, originalMessages);
-
-    }
-
-    private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
-        this.isSecure = client.getConfig().getNotNull(Config.SSL);
-        final String msg = originalMessages.stream().map(ServerMessage::getMessage)
-                .reduce((a, b) -> (a+b).replace('\n', ' ')).orElse("Missing!");
-        if (!sts.getValue().isPresent()) {
-            throw new KittehServerMessageException(msg, "No value provided for sts capability.");
-        }
-
-        final String capabilityValue = sts.getValue().get();
-        final STSPolicy policy = STSUtil.getSTSPolicyFromString(",", capabilityValue);
-        if (policy.getFlags().contains("port") || policy.getFlags().contains("duration")) {
-            throw new KittehServerMessageException(msg, "Improper use of flag in required option context!");
-        }
-        for (String key : policy.getOptions().keySet()) {
-            // Unknown keys are ignored by the switches below
-            this.machine.setSTSPolicy(policy);
-            if (this.isSecure) {
-                this.handleSecureKey(key, policy);
-            } else {
-                this.handleInsecureKey(key, policy);
-            }
-        }
     }
 
     @Handler
@@ -131,6 +106,51 @@ public class STSHandler {
         }
     }
 
+    @Handler
+    public void onDisconnect(ClientConnectionClosedEvent event) {
+        // The spec says we have to update the expiry of the policy if it still exists
+        // at disconnection time...
+        // Do this by removing and re-adding.
+        String hostname = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
+        final STSStorageManager storageManager = this.machine.getStorageManager();
+        if (storageManager.hasEntry(hostname)) {
+            final STSPolicy policy = storageManager.getEntry(hostname).get();
+            long duration = Long.parseLong(policy.getOptions().get("duration"));
+            storageManager.removeEntry(hostname);
+            storageManager.addEntry(hostname, duration, policy);
+        }
+    }
+
+    private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
+        this.isSecure = client.getConfig().getNotNull(Config.SSL);
+        InetSocketAddress address = client.getConfig().getNotNull(Config.SERVER_ADDRESS);
+        final String msg = originalMessages.stream().map(ServerMessage::getMessage)
+                .reduce((a, b) -> (a+b).replace('\n', ' ')).orElse("Missing!");
+        if (!sts.getValue().isPresent()) {
+            throw new KittehServerMessageException(msg, "No value provided for sts capability.");
+        }
+
+        final String capabilityValue = sts.getValue().get();
+        final STSPolicy policy = STSUtil.getSTSPolicyFromString(",", capabilityValue);
+        if (policy.getFlags().contains("port") || policy.getFlags().contains("duration")) {
+            throw new KittehServerMessageException(msg, "Improper use of flag in required option context!");
+        }
+
+        if (!policy.getOptions().containsKey("port")) {
+            policy.getOptions().put("port", Integer.toString(address.getPort())); // spec says port is optional
+        }
+
+        for (String key : policy.getOptions().keySet()) {
+            // Unknown keys are ignored by the switches below
+            this.machine.setSTSPolicy(policy);
+            if (this.isSecure) {
+                this.handleSecureKey(key, policy);
+            } else {
+                this.handleInsecureKey(key, policy);
+            }
+        }
+    }
+
     private void handleInsecureKey(String key, STSPolicy policy) {
         final String value = policy.getOptions().get(key);
 
@@ -145,7 +165,7 @@ public class STSHandler {
                     throw new KittehServerMessageException(value, "Specified port could not be parsed: "  + nfe.getMessage());
                 }
 
-                this.machine.setCurrentState(STS_PRESENT_RECONNECTING);
+                this.machine.setCurrentState(STSClientState.STS_PRESENT_RECONNECTING);
                 break;
         }
     }

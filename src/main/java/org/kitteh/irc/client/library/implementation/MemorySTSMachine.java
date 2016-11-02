@@ -9,9 +9,6 @@ import org.kitteh.irc.client.library.util.Sanity;
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 
-import static org.kitteh.irc.client.library.feature.sts.STSClientState.STS_PRESENT_RECONNECTING;
-import static org.kitteh.irc.client.library.feature.sts.STSClientState.UNKNOWN;
-
 /**
  * "Memory" prefix to distinguish implementation class
  * from interface, because STSMachine isn't IStsMachine.
@@ -23,7 +20,7 @@ public class MemorySTSMachine implements STSMachine {
 
     private final STSStorageManager manager;
     private final InternalClient client;
-    private STSClientState state = UNKNOWN;
+    private STSClientState state = STSClientState.UNKNOWN;
     private STSPolicy policy;
 
     public MemorySTSMachine(@Nonnull STSStorageManager manager, InternalClient client) {
@@ -63,7 +60,7 @@ public class MemorySTSMachine implements STSMachine {
                 break;
         }
 
-        if (this.state == STS_PRESENT_RECONNECTING) {
+        if (this.state == STSClientState.STS_PRESENT_RECONNECTING) {
             this.client.reconnect();
         }
     }
