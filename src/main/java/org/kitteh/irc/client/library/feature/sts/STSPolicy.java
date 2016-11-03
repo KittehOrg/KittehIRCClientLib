@@ -33,6 +33,8 @@ import java.util.Set;
  * Simple POJO to represent an STS policy.
  */
 public class STSPolicy {
+    public static final String POLICY_OPTION_KEY_PORT = "port";
+    public static final String POLICY_OPTION_KEY_DURATION = "duration";
     private final Map<String, String> options;
     private final Set<String> flags;
 

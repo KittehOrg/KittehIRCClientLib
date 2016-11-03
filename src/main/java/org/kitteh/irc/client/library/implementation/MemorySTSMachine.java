@@ -48,7 +48,7 @@ public class MemorySTSMachine implements STSMachine {
             case STS_PRESENT_RECONNECTING:
                 this.client.getConfig().set(Config.SSL, true);
                 InetSocketAddress oldAddress = this.client.getConfig().get(Config.SERVER_ADDRESS);
-                InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault("port", "6697")));
+                InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault(STSPolicy.POLICY_OPTION_KEY_PORT, "6697")));
 
                 this.client.getConfig().set(Config.SERVER_ADDRESS, newAddress);
                 break;

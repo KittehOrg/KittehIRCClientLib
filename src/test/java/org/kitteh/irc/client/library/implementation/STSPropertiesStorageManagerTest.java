@@ -31,14 +31,14 @@ public class STSPropertiesStorageManagerTest {
         final Path path = tempFile.toPath();
 
         STSPropertiesStorageManager sut = new STSPropertiesStorageManager(path);
-        sut.addEntry("kitteh.org", 500, STSUtil.getSTSPolicyFromString(",", "port=6697,cats"));
+        sut.addEntry("kitteh.org", 500, STSUtil.getSTSPolicyFromString(",", STSPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
 
         Assert.assertTrue(sut.hasEntry("kitteh.org"));
         final Optional<STSPolicy> optionalPolicy = sut.getEntry("kitteh.org");
         Assert.assertTrue(optionalPolicy.isPresent());
         final STSPolicy policy = optionalPolicy.get();
-        Assert.assertTrue(policy.getOptions().containsKey("port"));
-        Assert.assertTrue(policy.getOptions().get("port").equals("6697"));
+        Assert.assertTrue(policy.getOptions().containsKey(STSPolicy.POLICY_OPTION_KEY_PORT));
+        Assert.assertTrue(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT).equals("6697"));
         Assert.assertTrue(policy.getFlags().contains("cats"));
     }
 
@@ -51,7 +51,7 @@ public class STSPropertiesStorageManagerTest {
         final File tempFile = temporaryFolder.newFile("sts.properties");
         final Path path = tempFile.toPath();
         STSPropertiesStorageManager sut1 = new STSPropertiesStorageManager(path);
-        sut1.addEntry("kitteh.org", 500, STSUtil.getSTSPolicyFromString(",", "port=6697,cats"));
+        sut1.addEntry("kitteh.org", 500, STSUtil.getSTSPolicyFromString(",", STSPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
 
         Assert.assertTrue(sut1.hasEntry("kitteh.org"));
         STSPropertiesStorageManager sut2 = new STSPropertiesStorageManager(path);
@@ -59,8 +59,8 @@ public class STSPropertiesStorageManagerTest {
         final Optional<STSPolicy> optionalPolicy = sut2.getEntry("kitteh.org");
         Assert.assertTrue(optionalPolicy.isPresent());
         final STSPolicy policy = optionalPolicy.get();
-        Assert.assertTrue(policy.getOptions().containsKey("port"));
-        Assert.assertTrue(policy.getOptions().get("port").equals("6697"));
+        Assert.assertTrue(policy.getOptions().containsKey(STSPolicy.POLICY_OPTION_KEY_PORT));
+        Assert.assertTrue(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT).equals("6697"));
         Assert.assertTrue(policy.getFlags().contains("cats"));
     }
 
@@ -73,7 +73,7 @@ public class STSPropertiesStorageManagerTest {
         final File tempFile = temporaryFolder.newFile("sts.properties");
         final Path path = tempFile.toPath();
         STSPropertiesStorageManager sut = new STSPropertiesStorageManager(path);
-        sut.addEntry("kitteh.org", 0, STSUtil.getSTSPolicyFromString(",", "port=6697,cats"));
+        sut.addEntry("kitteh.org", 0, STSUtil.getSTSPolicyFromString(",", STSPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         final AtomicBoolean okay = new AtomicBoolean(true);
         scheduler.schedule(() -> okay.set(sut.hasEntry("kitteh.org")), 1000, TimeUnit.MILLISECONDS);
@@ -86,7 +86,7 @@ public class STSPropertiesStorageManagerTest {
         final File tempFile = temporaryFolder.newFile("sts.properties");
         final Path path = tempFile.toPath();
         STSStorageManager sut1 = STSUtil.getDefaultStorageManager(path);
-        sut1.addEntry("kitteh.org", 500, STSUtil.getSTSPolicyFromString(",", "port=6697,cats"));
+        sut1.addEntry("kitteh.org", 500, STSUtil.getSTSPolicyFromString(",", STSPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
         STSStorageManager sut2 = STSUtil.getDefaultStorageManager(path);
         Assert.assertTrue(sut2.hasEntry("kitteh.org"));
     }

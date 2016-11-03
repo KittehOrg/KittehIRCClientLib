@@ -115,7 +115,7 @@ public class STSHandler {
         final STSStorageManager storageManager = this.machine.getStorageManager();
         if (storageManager.hasEntry(hostname)) {
             final STSPolicy policy = storageManager.getEntry(hostname).get();
-            long duration = Long.parseLong(policy.getOptions().get("duration"));
+            long duration = Long.parseLong(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION));
             storageManager.removeEntry(hostname);
             storageManager.addEntry(hostname, duration, policy);
         }
@@ -132,12 +132,12 @@ public class STSHandler {
 
         final String capabilityValue = sts.getValue().get();
         final STSPolicy policy = STSUtil.getSTSPolicyFromString(",", capabilityValue);
-        if (policy.getFlags().contains("port") || policy.getFlags().contains("duration")) {
+        if (policy.getFlags().contains(STSPolicy.POLICY_OPTION_KEY_PORT) || policy.getFlags().contains(STSPolicy.POLICY_OPTION_KEY_DURATION)) {
             throw new KittehServerMessageException(msg, "Improper use of flag in required option context!");
         }
 
-        if (!policy.getOptions().containsKey("port")) {
-            policy.getOptions().put("port", Integer.toString(address.getPort())); // spec says port is optional
+        if (!policy.getOptions().containsKey(STSPolicy.POLICY_OPTION_KEY_PORT)) {
+            policy.getOptions().put(STSPolicy.POLICY_OPTION_KEY_PORT, Integer.toString(address.getPort())); // spec says port is optional
         }
 
         for (String key : policy.getOptions().keySet()) {
@@ -155,10 +155,10 @@ public class STSHandler {
         final String value = policy.getOptions().get(key);
 
         switch (key) {
-            case "duration":
+            case STSPolicy.POLICY_OPTION_KEY_DURATION:
                 // Do NOT persist, because this policy could've been inserted by an active MitM
                 break;
-            case "port":
+            case STSPolicy.POLICY_OPTION_KEY_PORT:
                 try {
                     Integer.parseInt(value); // can't easily use a short because signed..
                 } catch (NumberFormatException nfe) {
@@ -174,7 +174,7 @@ public class STSHandler {
         final String value = policy.getOptions().get(key);
 
         switch (key) {
-            case "duration":
+            case STSPolicy.POLICY_OPTION_KEY_DURATION:
                 // We can safely persist this.
 
                 long duration;
@@ -205,7 +205,7 @@ public class STSHandler {
                 storageMan.addEntry(hostname, duration, policy);
                 this.machine.setCurrentState(STSClientState.STS_PRESENT_NOW_SECURE);
                 break;
-            case "port":
+            case STSPolicy.POLICY_OPTION_KEY_PORT:
                 // Ignored when already connected securely
         }
     }

@@ -35,7 +35,7 @@ public class STSHandlerTest {
         STSHandler handler = new STSHandler(machine, client);
 
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "sts=port=1234,duration=300,foobar";
+        final String policyString = "sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
         capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
@@ -43,10 +43,10 @@ public class STSHandlerTest {
         Assert.assertEquals(machine.getCurrentState(), STSClientState.STS_PRESENT_RECONNECTING);
 
         STSPolicy extractedPolicy = machine.getPolicy();
-        final String port = extractedPolicy.getOptions().get("port");
+        final String port = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT);
         Assert.assertTrue(port.equals("1234"));
 
-        final String duration = extractedPolicy.getOptions().get("duration");
+        final String duration = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION);
         Assert.assertTrue(duration.equals("300"));
 
         Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
@@ -66,7 +66,7 @@ public class STSHandlerTest {
         STSHandler handler = new STSHandler(machine, client);
 
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "sts=port=1234,duration=300,foobar";
+        final String policyString = "sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
         capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
@@ -74,10 +74,10 @@ public class STSHandlerTest {
         Assert.assertEquals(machine.getCurrentState(), STSClientState.STS_PRESENT_RECONNECTING);
 
         STSPolicy extractedPolicy = machine.getPolicy();
-        final String port = extractedPolicy.getOptions().get("port");
+        final String port = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT);
         Assert.assertTrue(port.equals("1234"));
 
-        final String duration = extractedPolicy.getOptions().get("duration");
+        final String duration = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION);
         Assert.assertTrue(duration.equals("300"));
 
         Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
@@ -93,7 +93,7 @@ public class STSHandlerTest {
         final StubMachine machine = new StubMachine();
         STSHandler handler = new STSHandler(machine, client);
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "sts=port=cats";
+        final String policyString = "sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=cats";
         capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
@@ -110,7 +110,7 @@ public class STSHandlerTest {
         final StubMachine machine = new StubMachine();
         STSHandler handler = new STSHandler(machine, client);
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "sts=port";
+        final String policyString = "sts=" + STSPolicy.POLICY_OPTION_KEY_PORT;
         capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
