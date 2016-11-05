@@ -40,6 +40,7 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Class for handling the STS capability,
@@ -65,7 +66,7 @@ public class STSHandler {
 
     /**
      * Called when the server responds with its supported capabilities.
-     * @param event The event instance.
+     * @param event the event instance
      */
     @Handler
     public void onCapLs(CapabilitiesSupportedListEvent event) {
@@ -87,6 +88,10 @@ public class STSHandler {
         handleSTSCapability(sts, originalMessages);
     }
 
+    /**
+     * Called when a new capability is advertised by the server.
+     * @param event the event instance
+     */
     @Handler
     public void onCapNew(CapabilitiesNewSupportedEvent event) {
         // stability not a concern, only one or zero result(s)
@@ -106,6 +111,10 @@ public class STSHandler {
         }
     }
 
+    /**
+     * Called when the server connection closes. Used to extend the policy.
+     * @param event the event instance
+     */
     @Handler
     public void onDisconnect(ClientConnectionClosedEvent event) {
         // The spec says we have to update the expiry of the policy if it still exists
@@ -125,7 +134,7 @@ public class STSHandler {
         this.isSecure = client.getConfig().getNotNull(Config.SSL);
         InetSocketAddress address = client.getConfig().getNotNull(Config.SERVER_ADDRESS);
         final String msg = originalMessages.stream().map(ServerMessage::getMessage)
-                .reduce((a, b) -> (a+b).replace('\n', ' ')).orElse("Missing!");
+            .collect(Collectors.joining()).replace('\n', ' ');
         if (!sts.getValue().isPresent()) {
             throw new KittehServerMessageException(msg, "No value provided for sts capability.");
         }

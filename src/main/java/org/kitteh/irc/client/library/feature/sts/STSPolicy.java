@@ -26,8 +26,12 @@ package org.kitteh.irc.client.library.feature.sts;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Simple POJO to represent an STS policy.
@@ -35,19 +39,19 @@ import java.util.Set;
 public class STSPolicy {
     public static final String POLICY_OPTION_KEY_PORT = "port";
     public static final String POLICY_OPTION_KEY_DURATION = "duration";
-    private final Map<String, String> options;
+    private final ConcurrentMap<String, String> options;
     private final Set<String> flags;
 
 
     /**
-     * Constucts a policy.
+     * Constructs a policy.
      *
      * @param options the key-value options from the server-sent policy
      * @param flags the valueless flags from the server-sent policy
      */
     public STSPolicy(@Nonnull Map<String, String> options, @Nonnull Set<String> flags) {
-        this.options = Sanity.nullCheck(options, "Must provide a valid options map");
-        this.flags = Sanity.nullCheck(flags, "Must provide a valid flags set");
+        this.options = new ConcurrentHashMap<>(Sanity.nullCheck(options, "Must provide a valid options map"));
+        this.flags = Collections.synchronizedSet(new HashSet<>(Sanity.nullCheck(flags, "Must provide a valid flags set")));
     }
 
     /**

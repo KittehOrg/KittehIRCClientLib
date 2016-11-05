@@ -42,14 +42,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Simple example implementation of an STSStorageManager.
  */
 public class STSPropertiesStorageManager implements STSStorageManager {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-    public static final BinaryOperator<String> ITEM_COMMA_JOIN = (a, b) -> a + "," + b;
     private final Properties properties = new Properties();
     private final Path filePath;
 
@@ -153,7 +152,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
             }
         }
 
-        stagedRemovals.forEach(this.properties::remove);
+        this.properties.keySet().removeAll(stagedRemovals);
         this.saveData();
     }
 
@@ -181,9 +180,12 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @return a serialized string
      */
     private String reserializeData(STSPolicy policy) {
-        StringBuilder sb = new StringBuilder(policy.getOptions().size()*10+policy.getFlags().size()*5);
-        sb.append(policy.getFlags().stream().reduce(ITEM_COMMA_JOIN).orElse(""));
-        sb.append(policy.getOptions().entrySet().stream().map(e -> e.getKey()+"="+e.getValue()).reduce("", ITEM_COMMA_JOIN));
+        StringBuilder sb = new StringBuilder((policy.getOptions().size() * 10) + (policy.getFlags().size() * 5));
+        sb.append(String.join(",", policy.getFlags()));
+        if (policy.getFlags().size() > 0) {
+            sb.append(",");
+        }
+        sb.append(policy.getOptions().entrySet().stream().map(e -> e.getKey()+"="+e.getValue()).collect(Collectors.joining(",")));
         return sb.toString();
     }
 
