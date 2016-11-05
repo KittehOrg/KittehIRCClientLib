@@ -167,9 +167,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
     public void removeEntry(@Nonnull String hostname) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
 
-        if (!this.hasEntry(hostname)) {
-            return;
-        }
+        this.pruneEntries();
         this.properties.remove(hostname);
     }
 
