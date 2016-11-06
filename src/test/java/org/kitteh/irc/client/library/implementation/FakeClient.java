@@ -71,6 +71,11 @@ class FakeClient extends InternalClient {
 
     }
 
+    @Override
+    boolean isSSL() {
+        return false;
+    }
+
     @Nonnull
     @Override
     Config getConfig() {

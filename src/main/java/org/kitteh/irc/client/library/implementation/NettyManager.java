@@ -173,7 +173,7 @@ final class NettyManager {
             });
 
             // SSL
-            if (this.client.getConfig().getNotNull(Config.SSL)) {
+            if (this.client.isSSL()) {
                 try {
                     File keyCertChainFile = this.client.getConfig().get(Config.SSL_KEY_CERT_CHAIN);
                     File keyFile = this.client.getConfig().get(Config.SSL_KEY);
@@ -342,7 +342,7 @@ final class NettyManager {
     static synchronized ClientConnection connect(@Nonnull InternalClient client) {
 
         // STS Override
-        if (client.getSTSMachine().isPresent() && !client.getConfig().getNotNull(Config.SSL)) {
+        if (client.getSTSMachine().isPresent() && !client.isSSL()) {
             String hostname = client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
             final STSMachine machine = client.getSTSMachine().get();
             if (machine.getStorageManager().hasEntry(hostname)) {

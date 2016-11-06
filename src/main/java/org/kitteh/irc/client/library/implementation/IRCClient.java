@@ -185,7 +185,7 @@ final class IRCClient extends InternalClient {
         this.config = config;
         if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
             this.configureSts();
-        } else if (!this.config.getNotNull(Config.SSL)) {
+        } else if (!this.isSSL()) {
             throw new KittehAuthorNagException(
                     "Connection is insecure. If the server does not support SSL, consider enabling STS support to " +
                     "facilitate automatic SSL upgrades when it does."
@@ -666,6 +666,11 @@ final class IRCClient extends InternalClient {
     @Override
     void reconnect() {
         this.connection.shutdown("Reconnecting...", true);
+    }
+
+    @Override
+    boolean isSSL() {
+        return this.config.getNotNull(Config.SSL);
     }
 
     private List<String> handleArgs(@Nonnull String[] split, int start) {

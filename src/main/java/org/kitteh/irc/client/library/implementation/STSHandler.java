@@ -61,7 +61,7 @@ class STSHandler {
     STSHandler(STSMachine machine, InternalClient client) {
         this.machine = machine;
         this.client = client;
-        this.isSecure = client.getConfig().getNotNull(Config.SSL);
+        this.isSecure = client.isSSL();
     }
 
     /**
@@ -130,7 +130,7 @@ class STSHandler {
     }
 
     private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
-        this.isSecure = this.client.getConfig().getNotNull(Config.SSL);
+        this.isSecure = this.client.isSSL();
         InetSocketAddress address = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS);
         final String msg = originalMessages.stream().map(ServerMessage::getMessage)
             .collect(Collectors.joining()).replace('\n', ' ');
