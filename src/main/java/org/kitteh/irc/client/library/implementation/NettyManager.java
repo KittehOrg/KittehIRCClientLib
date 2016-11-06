@@ -49,8 +49,6 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.FutureListener;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
@@ -188,20 +186,14 @@ final class NettyManager {
                     SslContext sslContext = SslContextBuilder.forClient().trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();
                     InetSocketAddress addr = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS);
                     // The presence of the two latter arguments enables SNI.
-                    final SslHandler sslHandler = sslContext.newHandler(this.channel.alloc(), addr.getHostString(),
-                            addr.getPort());
-                    sslHandler.handshakeFuture().addListener(new FutureListener<Channel>(){
-
-                        @Override
-                        public void operationComplete(Future<Channel> handshakeFuture) throws Exception {
-                            if (!handshakeFuture.isSuccess() && ClientConnection.this.client.getSTSMachine().isPresent()) {
-                                STSMachine machine = ClientConnection.this.client.getSTSMachine().get();
-                                if (machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
-                                    ClientConnection.this.shutdown("Cannot connect securely", false);
-                                    machine.setCurrentState(STSClientState.STS_PRESENT_CANNOT_CONNECT);
-                                    throw new KittehSTSException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
-
-                                }
+                    final SslHandler sslHandler = sslContext.newHandler(this.channel.alloc(), addr.getHostString(), addr.getPort());
+                    sslHandler.handshakeFuture().addListener(handshakeFuture -> {
+                        if (!handshakeFuture.isSuccess() && ClientConnection.this.client.getSTSMachine().isPresent()) {
+                            STSMachine machine = ClientConnection.this.client.getSTSMachine().get();
+                            if (machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
+                                ClientConnection.this.shutdown("Cannot connect securely", false);
+                                machine.setCurrentState(STSClientState.STS_PRESENT_CANNOT_CONNECT);
+                                throw new KittehSTSException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
                             }
                         }
                     });

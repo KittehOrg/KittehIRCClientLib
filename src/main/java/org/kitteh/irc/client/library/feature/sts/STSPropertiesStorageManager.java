@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * Simple example implementation of an STSStorageManager.
  */
 public class STSPropertiesStorageManager implements STSStorageManager {
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private final Properties properties = new Properties();
     private final Path filePath;
 
@@ -74,8 +74,9 @@ public class STSPropertiesStorageManager implements STSStorageManager {
         }
     }
 
-
     /**
+     * Adds an entry to the store, storing data in the backing properties file.
+     *
      * @param hostname the hostname (as sent in the SNI by the client)
      * @param duration the length (in seconds) until the expiry of this stored policy
      * @param policy the STS policy instance, including all data sent from the server
@@ -84,7 +85,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
     public void addEntry(@Nonnull String hostname, long duration, @Nonnull STSPolicy policy) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
         Sanity.nullCheck(policy, "A valid policy must be provided to be inserted.");
-        this.properties.setProperty(hostname, getExpiryFromDuration(duration) + "; " + this.reserializeData(policy));
+        this.properties.setProperty(hostname, this.getExpiryFromDuration(duration) + "; " + this.reserializeData(policy));
         this.saveData();
     }
 
@@ -92,10 +93,8 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * Saves data using the provided Writer.
      */
     private void saveData() {
-        try {
-            final BufferedWriter bufferedWriter = Files.newBufferedWriter(this.filePath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(this.filePath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
             this.properties.store(bufferedWriter, "This file contains all the gathered STS policies.");
-            bufferedWriter.close();
         } catch (IOException e) {
             throw new KittehSTSException(e.getMessage());
         }
@@ -180,10 +179,10 @@ public class STSPropertiesStorageManager implements STSStorageManager {
     private String reserializeData(STSPolicy policy) {
         StringBuilder sb = new StringBuilder((policy.getOptions().size() * 10) + (policy.getFlags().size() * 5));
         sb.append(String.join(",", policy.getFlags()));
-        if (policy.getFlags().size() > 0) {
-            sb.append(",");
+        if (!policy.getFlags().isEmpty()) {
+            sb.append(',');
         }
-        sb.append(policy.getOptions().entrySet().stream().map(e -> e.getKey()+"="+e.getValue()).collect(Collectors.joining(",")));
+        sb.append(policy.getOptions().entrySet().stream().map(e -> e.getKey() + '=' + e.getValue()).collect(Collectors.joining(",")));
         return sb.toString();
     }
 

@@ -46,19 +46,19 @@ import java.util.stream.Collectors;
  * Class for handling the STS capability,
  * returned in the CAP LS 302 response.
  */
-public class STSHandler {
-
+class STSHandler {
     private final STSMachine machine;
     private final InternalClient client;
     private boolean isSecure;
-    private final static Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals("sts");
+    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals("sts");
 
     /**
      * Creates the event handler for STS.
      *
-     * @param machine The STS FSM.
+     * @param machine the STS FSM
+     * @param client the IRC client
      */
-    public STSHandler(STSMachine machine, InternalClient client) {
+    STSHandler(STSMachine machine, InternalClient client) {
         this.machine = machine;
         this.client = client;
         this.isSecure = client.getConfig().getNotNull(Config.SSL);
@@ -66,6 +66,7 @@ public class STSHandler {
 
     /**
      * Called when the server responds with its supported capabilities.
+     *
      * @param event the event instance
      */
     @Handler
@@ -85,11 +86,12 @@ public class STSHandler {
         final CapabilityState sts = potentialStsCapability.get();
         final List<ServerMessage> originalMessages = event.getOriginalMessages();
 
-        handleSTSCapability(sts, originalMessages);
+        this.handleSTSCapability(sts, originalMessages);
     }
 
     /**
      * Called when a new capability is advertised by the server.
+     *
      * @param event the event instance
      */
     @Handler
@@ -113,6 +115,7 @@ public class STSHandler {
 
     /**
      * Called when the server connection closes. Used to extend the policy.
+     *
      * @param event the event instance
      */
     @Handler
@@ -122,17 +125,16 @@ public class STSHandler {
         // Do this by removing and re-adding.
         String hostname = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
         final STSStorageManager storageManager = this.machine.getStorageManager();
-        if (storageManager.hasEntry(hostname)) {
-            final STSPolicy policy = storageManager.getEntry(hostname).get();
+        storageManager.getEntry(hostname).ifPresent(policy -> {
             long duration = Long.parseLong(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION));
             storageManager.removeEntry(hostname);
             storageManager.addEntry(hostname, duration, policy);
-        }
+        });
     }
 
     private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
-        this.isSecure = client.getConfig().getNotNull(Config.SSL);
-        InetSocketAddress address = client.getConfig().getNotNull(Config.SERVER_ADDRESS);
+        this.isSecure = this.client.getConfig().getNotNull(Config.SSL);
+        InetSocketAddress address = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS);
         final String msg = originalMessages.stream().map(ServerMessage::getMessage)
             .collect(Collectors.joining()).replace('\n', ' ');
         if (!sts.getValue().isPresent()) {

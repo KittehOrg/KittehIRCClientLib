@@ -328,9 +328,10 @@ public interface Client {
          * Sets the storage manager for STS (strict transport security) support.
          * <p>
          * By default, this is null and thus STS support is disabled. If you elect to
-         * enable STS, you are not permitted to use AcceptingTrustManagerFactory.
+         * enable STS, you are not permitted to use an insecure trust manager factory.
          *
-         * @param storageManager storage system to persist STS information per host.
+         * @param storageManager storage system to persist STS information per host
+         * @return this builder
          */
         @Nonnull
         Builder stsStorageManager(@Nullable STSStorageManager storageManager);

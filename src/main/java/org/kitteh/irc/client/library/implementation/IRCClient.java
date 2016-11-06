@@ -208,7 +208,7 @@ final class IRCClient extends InternalClient {
     }
 
     private void configureSts() {
-        this.stsMachine = new MemorySTSMachine(this.config.get(Config.STS_STORAGE_MANAGER), this);
+        this.stsMachine = new MemorySTSMachine(this.config.getNotNull(Config.STS_STORAGE_MANAGER), this);
         this.eventManager.registerEventListener(new STSHandler(this.stsMachine, this));
         this.usingSts = true;
     }

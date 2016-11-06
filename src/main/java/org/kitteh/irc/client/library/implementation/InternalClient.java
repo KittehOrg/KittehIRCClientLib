@@ -26,10 +26,8 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
-import org.kitteh.irc.client.library.feature.sts.STSMachine;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 import java.util.Set;
 
 abstract class InternalClient implements Client {
@@ -57,10 +55,6 @@ abstract class InternalClient implements Client {
     @Override
     @Nonnull
     public abstract ManagerISupport getISupportManager();
-
-    @Override
-    @Nonnull
-    public abstract Optional<STSMachine> getSTSMachine();
 
     @Nonnull
     abstract Listener<String> getOutputListener();

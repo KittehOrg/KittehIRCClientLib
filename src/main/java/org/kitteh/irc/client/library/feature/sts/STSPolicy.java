@@ -37,7 +37,13 @@ import java.util.concurrent.ConcurrentMap;
  * Simple POJO to represent an STS policy.
  */
 public class STSPolicy {
+    /**
+     * Name of the secure port key as defined in the spec.
+     */
     public static final String POLICY_OPTION_KEY_PORT = "port";
+    /**
+     * Name of the policy's duration (in seconds) key as defined in the spec.
+     */
     public static final String POLICY_OPTION_KEY_DURATION = "duration";
     private final ConcurrentMap<String, String> options;
     private final Set<String> flags;
