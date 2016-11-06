@@ -24,7 +24,7 @@ public class MemorySTSMachine implements STSMachine {
     private STSPolicy policy;
 
     public MemorySTSMachine(@Nonnull STSStorageManager manager, InternalClient client) {
-        this.client = client;
+        this.client = Sanity.nullCheck(client, "Cannot have a null client.");
         this.manager = Sanity.nullCheck(manager, "Cannot have a null STS persistence manager.");
     }
 
@@ -72,7 +72,6 @@ public class MemorySTSMachine implements STSMachine {
 
     @Override
     public void setSTSPolicy(@Nonnull STSPolicy policy) {
-        Sanity.nullCheck(policy, "Policy cannot be null");
-        this.policy = policy;
+        this.policy = Sanity.nullCheck(policy, "Policy cannot be null");
     }
 }

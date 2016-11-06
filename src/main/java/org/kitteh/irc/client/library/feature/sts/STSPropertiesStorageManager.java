@@ -67,10 +67,8 @@ public class STSPropertiesStorageManager implements STSStorageManager {
             return;
         }
 
-        try {
-            final BufferedReader bufferedReader = Files.newBufferedReader(this.filePath, StandardCharsets.UTF_8);
+        try (BufferedReader bufferedReader = Files.newBufferedReader(this.filePath, StandardCharsets.UTF_8)) {
             this.properties.load(bufferedReader);
-            bufferedReader.close();
         } catch (IOException e) {
             throw new KittehSTSException(e.getMessage(), e);
         }
