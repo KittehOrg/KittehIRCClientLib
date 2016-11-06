@@ -372,7 +372,7 @@ class EventListener {
                 }
             }
             channel.trackUser(user, modes);
-            this.whoMessages.add(messageFromEvent(event));
+            this.whoMessages.add(event.getServerMessage());
         } // No else, server might send other WHO information about non-channels.
     }
 
@@ -386,7 +386,7 @@ class EventListener {
         ActorProvider.IRCChannel whoChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (whoChannel != null) {
             whoChannel.setListReceived();
-            this.whoMessages.add(messageFromEvent(event));
+            this.whoMessages.add(event.getServerMessage());
             this.fire(new ChannelUsersUpdatedEvent(this.client, this.whoMessages, whoChannel.snapshot()));
             this.whoMessages.clear();
         } // No else, server might send other WHO information about non-channels.
@@ -470,7 +470,7 @@ class EventListener {
                     }
                 }
             }
-            this.namesMessages.add(messageFromEvent(event));
+            this.namesMessages.add(event.getServerMessage());
         } else {
             this.trackException(event, "NAMES response sent for invalid channel name");
         }
@@ -485,7 +485,7 @@ class EventListener {
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
-            this.namesMessages.add(messageFromEvent(event));
+            this.namesMessages.add(event.getServerMessage());
             this.fire(new ChannelNamesUpdatedEvent(this.client, this.namesMessages, channel.snapshot()));
             this.namesMessages.clear();
         } else {
@@ -541,7 +541,7 @@ class EventListener {
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
-            messageList.add(messageFromEvent(event));
+            messageList.add(event.getServerMessage());
             String creator = (event.getParameters().size() > (3 + offset)) ? event.getParameters().get((3 + offset)) : null;
             Instant creationTime = null;
             if (event.getParameters().size() > (4 + offset)) {
@@ -593,7 +593,7 @@ class EventListener {
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
-            messageList.add(messageFromEvent(event));
+            messageList.add(event.getServerMessage());
             Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
             if (channelMode.isPresent()) {
                 List<ModeInfo> modeInfos = new ArrayList<>(infoList);
@@ -627,13 +627,13 @@ class EventListener {
             return;
         }
         this.motd.add(event.getParameters().get(1));
-        this.motdMessages.add(messageFromEvent(event));
+        this.motdMessages.add(event.getServerMessage());
     }
 
     @NumericFilter(376)
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void motdEnd(ClientReceiveNumericEvent event) {
-        this.motdMessages.add(messageFromEvent(event));
+        this.motdMessages.add(event.getServerMessage());
         this.client.getServerInfo().setMOTD(new ArrayList<>(this.motd));
         this.fire(new ClientReceiveMOTDEvent(this.client, this.motdMessages));
     }
@@ -695,7 +695,7 @@ class EventListener {
             return;
         }
         Collections.addAll(this.monitorList, event.getParameters().get(1).split(","));
-        this.monitorListMessages.add(messageFromEvent(event));
+        this.monitorListMessages.add(event.getServerMessage());
     }
 
     @NumericFilter(733) // Monitor list end
@@ -755,7 +755,7 @@ class EventListener {
                 this.fire(responseEvent);
                 break;
             case "list":
-                this.capListMessages.add(messageFromEvent(event));
+                this.capListMessages.add(event.getServerMessage());
                 if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
                     this.capList.addAll(capabilityStateList);
                 } else {
@@ -772,7 +772,7 @@ class EventListener {
                 }
                 break;
             case "ls":
-                this.capLsMessages.add(messageFromEvent(event));
+                this.capLsMessages.add(event.getServerMessage());
                 if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
                     this.capList.addAll(capabilityStateList);
                 } else {
@@ -1303,11 +1303,6 @@ class EventListener {
             return new MessageTargetInfo.Channel(channel);
         }
         return MessageTargetInfo.Private.INSTANCE;
-    }
-
-    @Nonnull
-    private static ServerMessage messageFromEvent(@Nonnull ClientReceiveServerMessageEvent event) {
-        return event.getOriginalMessages().get(0);
     }
 
     private void trackException(ClientReceiveServerMessageEvent event, String reason) {

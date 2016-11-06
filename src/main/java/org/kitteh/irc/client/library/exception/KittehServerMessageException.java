@@ -26,12 +26,16 @@ package org.kitteh.irc.client.library.exception;
 import org.kitteh.irc.client.library.element.ServerMessage;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Indicates a problem has occurred in the information sent by the server.
  */
 public class KittehServerMessageException extends RuntimeException {
-    private final ServerMessage message;
+    private final List<ServerMessage> messages;
 
     /**
      * Constructs the exception.
@@ -40,8 +44,18 @@ public class KittehServerMessageException extends RuntimeException {
      * @param problem why it couldn't be processed
      */
     public KittehServerMessageException(ServerMessage message, String problem) {
-        super("Error processing message: " + problem + ". Message: " + message.getMessage());
-        this.message = message;
+        this(Collections.singletonList(message), problem);
+    }
+
+    /**
+     * Constructs the exception.
+     *
+     * @param messages messages that couldn't be processed
+     * @param problem why it couldn't be processed
+     */
+    public KittehServerMessageException(List<ServerMessage> messages, String problem) {
+        super("Error processing message: " + problem + ". Messages: " + System.lineSeparator() + messages.stream().map(ServerMessage::getMessage).collect(Collectors.joining(System.lineSeparator())));
+        this.messages = Collections.unmodifiableList(new ArrayList<>(messages));
     }
 
     /**
@@ -50,7 +64,7 @@ public class KittehServerMessageException extends RuntimeException {
      * @return message
      */
     @Nonnull
-    public ServerMessage getServerMessage() {
-        return this.message;
+    public List<ServerMessage> getServerMessages() {
+        return this.messages;
     }
 }
