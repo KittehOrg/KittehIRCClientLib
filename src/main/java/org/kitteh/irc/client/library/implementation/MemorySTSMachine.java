@@ -16,14 +16,13 @@ import java.net.InetSocketAddress;
  * This class implements our FSM in an in-memory fashion,
  * using Java's data structures.
  */
-public class MemorySTSMachine implements STSMachine {
-
+class MemorySTSMachine implements STSMachine {
     private final STSStorageManager manager;
     private final InternalClient client;
     private STSClientState state = STSClientState.UNKNOWN;
     private STSPolicy policy;
 
-    public MemorySTSMachine(@Nonnull STSStorageManager manager, InternalClient client) {
+    MemorySTSMachine(@Nonnull STSStorageManager manager, InternalClient client) {
         this.client = Sanity.nullCheck(client, "Cannot have a null client.");
         this.manager = Sanity.nullCheck(manager, "Cannot have a null STS persistence manager.");
     }
@@ -65,6 +64,7 @@ public class MemorySTSMachine implements STSMachine {
         }
     }
 
+    @Nonnull
     @Override
     public STSStorageManager getStorageManager() {
         return this.manager;
