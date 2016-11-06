@@ -33,19 +33,39 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Represents a message sent by the server.
- */
-final class IRCServerMessage implements ServerMessage {
+class IRCServerMessage implements ServerMessage {
+    static class IRCNumericCommandServerMessage extends IRCServerMessage implements NumericCommandServerMessage {
+        private final int command;
+
+        IRCNumericCommandServerMessage(int command, @Nonnull String message, @Nonnull List<MessageTag> tags) {
+            super(message, tags);
+            this.command = command;
+        }
+
+        @Override
+        public int getCommand() {
+            return this.command;
+        }
+    }
+
+    static class IRCStringCommandServerMessage extends IRCServerMessage implements StringCommandServerMessage {
+        private final String command;
+
+        IRCStringCommandServerMessage(@Nonnull String command, @Nonnull String message, @Nonnull List<MessageTag> tags) {
+            super(message, tags);
+            this.command = command;
+        }
+
+        @Nonnull
+        @Override
+        public String getCommand() {
+            return this.command;
+        }
+    }
+
     private final String message;
     private final List<MessageTag> tags;
 
-    /**
-     * Constructs a server message.
-     *
-     * @param message full message sent
-     * @param tags processed tags
-     */
     IRCServerMessage(@Nonnull String message, @Nonnull List<MessageTag> tags) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.nullCheck(tags, "Tags cannot be null");
@@ -53,23 +73,12 @@ final class IRCServerMessage implements ServerMessage {
         this.tags = Collections.unmodifiableList(new ArrayList<>(tags));
     }
 
-    /**
-     * Gets the full content of the line sent by the server, minus linebreak
-     * characters \r and \n.
-     *
-     * @return full message content
-     */
     @Nonnull
     @Override
     public String getMessage() {
         return this.message;
     }
 
-    /**
-     * Gets the processed message tags, if any, contained in the message.
-     *
-     * @return message tags or empty if none sent.
-     */
     @Nonnull
     @Override
     public List<MessageTag> getTags() {

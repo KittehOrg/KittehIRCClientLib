@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.event.helper;
 
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.element.ServerMessage;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -64,4 +65,7 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
      */
     @Nonnull
     List<String> getParameters();
+
+    @Nonnull
+    ServerMessage getServerMessage();
 }

@@ -595,7 +595,7 @@ final class IRCClient extends InternalClient {
         List<MessageTag> tags;
         if (split[index].startsWith("@")) {
             if (split.length <= index) {
-                throw new KittehServerMessageException(line, "Server sent a message without a command");
+                throw new KittehServerMessageException(new IRCServerMessage(line, new ArrayList<>()), "Server sent a message without a command");
             }
             String tagSection = split[index];
             if (tagSection.length() < 2) {
@@ -617,20 +617,18 @@ final class IRCClient extends InternalClient {
         final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
 
         if (split.length <= index) {
-            throw new KittehServerMessageException(line, "Server sent a message without a command");
+            throw new KittehServerMessageException(new IRCServerMessage(line, tags), "Server sent a message without a command");
         }
 
         final String commandString = split[index++];
 
         final List<String> args = this.handleArgs(split, index);
 
-        final IRCServerMessage serverMessage = new IRCServerMessage(line, tags);
-
         try {
             int numeric = Integer.parseInt(commandString);
-            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, serverMessage, actor.snapshot(), commandString, numeric, args));
+            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, new IRCServerMessage.IRCNumericCommandServerMessage(numeric, line, tags), actor.snapshot(), commandString, numeric, args));
         } catch (NumberFormatException exception) {
-            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, serverMessage, actor.snapshot(), commandString, args));
+            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, new IRCServerMessage.IRCStringCommandServerMessage(commandString, line, tags), actor.snapshot(), commandString, args));
         }
     }
 }

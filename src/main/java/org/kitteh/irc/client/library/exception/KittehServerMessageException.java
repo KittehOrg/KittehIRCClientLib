@@ -23,17 +23,34 @@
  */
 package org.kitteh.irc.client.library.exception;
 
+import org.kitteh.irc.client.library.element.ServerMessage;
+
+import javax.annotation.Nonnull;
+
 /**
  * Indicates a problem has occurred in the information sent by the server.
  */
 public class KittehServerMessageException extends RuntimeException {
+    private final ServerMessage message;
+
     /**
      * Constructs the exception.
      *
      * @param message message that couldn't be processed
      * @param problem why it couldn't be processed
      */
-    public KittehServerMessageException(String message, String problem) {
-        super("Error processing message: " + problem + ". Message: " + message);
+    public KittehServerMessageException(ServerMessage message, String problem) {
+        super("Error processing message: " + problem + ". Message: " + message.getMessage());
+        this.message = message;
+    }
+
+    /**
+     * Gets the message that led to this exception.
+     *
+     * @return message
+     */
+    @Nonnull
+    public ServerMessage getServerMessage() {
+        return this.message;
     }
 }
