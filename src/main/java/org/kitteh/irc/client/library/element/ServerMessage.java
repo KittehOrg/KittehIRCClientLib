@@ -31,6 +31,31 @@ import java.util.List;
  */
 public interface ServerMessage {
     /**
+     * Represents a message with a String command.
+     */
+    interface StringCommandServerMessage extends ServerMessage {
+        /**
+         * Gets this message's command.
+         *
+         * @return the command present in this message
+         */
+        @Nonnull
+        String getCommand();
+    }
+
+    /**
+     * Represents a message with a numeric command.
+     */
+    interface NumericCommandServerMessage extends ServerMessage {
+        /**
+         * Gets this message's command.
+         *
+         * @return the command present in this message
+         */
+        int getCommand();
+    }
+
+    /**
      * Gets the full content of the line sent by the server, minus linebreak
      * characters \r and \n.
      *

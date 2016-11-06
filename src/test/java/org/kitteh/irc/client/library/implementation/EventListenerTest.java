@@ -14,6 +14,7 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -67,20 +68,18 @@ public class EventListenerTest {
         final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
 
         if (split.length <= index) {
-            throw new KittehServerMessageException(line, "Server sent a message without a command");
+            throw new KittehServerMessageException(new IRCServerMessage(line, new ArrayList<>()), "Server sent a message without a command");
         }
 
         final String commandString = split[index++];
 
         final List<String> args = this.handleArgs(split, index);
 
-        final IRCServerMessage serverMessage = new IRCServerMessage(line, new LinkedList<>());
-
         try {
             int numeric = Integer.parseInt(commandString);
-            this.eventManager.callEvent(new ClientReceiveNumericEvent(this.client, serverMessage, actor.snapshot(), commandString, numeric, args));
+            this.eventManager.callEvent(new ClientReceiveNumericEvent(this.client, new IRCServerMessage.IRCNumericCommandServerMessage(numeric, line, new ArrayList<>()), actor.snapshot(), commandString, numeric, args));
         } catch (NumberFormatException exception) {
-            this.eventManager.callEvent(new ClientReceiveCommandEvent(this.client, serverMessage, actor.snapshot(), commandString, args));
+            this.eventManager.callEvent(new ClientReceiveCommandEvent(this.client, new IRCServerMessage.IRCStringCommandServerMessage(commandString, line, new ArrayList<>()), actor.snapshot(), commandString, args));
         }
     }
 

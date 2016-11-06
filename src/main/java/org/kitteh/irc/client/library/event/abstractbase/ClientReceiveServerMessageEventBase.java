@@ -41,8 +41,7 @@ import java.util.List;
 public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> implements ClientReceiveServerMessageEvent {
     private final List<String> args;
     private final String command;
-    private final List<MessageTag> messageTags;
-    private final String originalMessage;
+    private final ServerMessage message;
 
     /**
      * Constructs the event.
@@ -56,9 +55,8 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
     public ClientReceiveServerMessageEventBase(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, @Nonnull String command, @Nonnull List<String> args) {
         super(client, Collections.singletonList(serverMessage), server);
         this.args = Collections.unmodifiableList(new ArrayList<>(args));
-        this.messageTags = serverMessage.getTags();
+        this.message = serverMessage;
         this.command = command;
-        this.originalMessage = serverMessage.getMessage();
     }
 
     /**
@@ -86,7 +84,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
     @Nonnull
     @Override
     public List<MessageTag> getMessageTags() {
-        return this.messageTags;
+        return this.message.getTags();
     }
 
     /**
@@ -97,6 +95,12 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
     @Nonnull
     @Override
     public String getOriginalMessage() {
-        return this.originalMessage;
+        return this.message.getMessage();
+    }
+
+    @Nonnull
+    @Override
+    public ServerMessage getServerMessage() {
+        return this.message;
     }
 }

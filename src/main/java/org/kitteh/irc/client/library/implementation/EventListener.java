@@ -1311,6 +1311,6 @@ class EventListener {
     }
 
     private void trackException(ClientReceiveServerMessageEvent event, String reason) {
-        this.client.getExceptionListener().queue(new KittehServerMessageException(event.getOriginalMessage(), reason));
+        this.client.getExceptionListener().queue(new KittehServerMessageException(event.getServerMessage(), reason));
     }
 }
