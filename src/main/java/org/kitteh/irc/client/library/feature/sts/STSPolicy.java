@@ -61,6 +61,8 @@ public class STSPolicy {
     }
 
     /**
+     * Get the set of flags in the policy.
+     *
      * @return the valueless flags from the server-sent policy
      */
     @Nonnull
@@ -69,6 +71,8 @@ public class STSPolicy {
     }
 
     /**
+     * Get the map of options to their values (excludes flags which have no value).
+     *
      * @return the key-value options from the server-sent policy
      */
     @Nonnull
