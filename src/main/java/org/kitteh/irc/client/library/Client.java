@@ -24,11 +24,15 @@
 package org.kitteh.irc.client.library;
 
 import org.kitteh.irc.client.library.command.AwayCommand;
-import org.kitteh.irc.client.library.command.Command;
+import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.Command;
 import org.kitteh.irc.client.library.command.KickCommand;
+import org.kitteh.irc.client.library.command.MonitorCommand;
 import org.kitteh.irc.client.library.command.OperCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
+import org.kitteh.irc.client.library.command.WallopsCommand;
+import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
@@ -339,6 +343,14 @@ public interface Client {
         AwayCommand away();
 
         /**
+         * Provides a new CAP REQ command.
+         *
+         * @return new capability request command
+         */
+        @Nonnull
+        CapabilityRequestCommand capabilityRequest();
+
+        /**
          * Provides a new MODE command.
          *
          * @return new mode command
@@ -355,6 +367,14 @@ public interface Client {
         KickCommand kick(@Nonnull Channel channel);
 
         /**
+         * Provides a new MONITOR command.
+         *
+         * @return new monitor command
+         */
+        @Nonnull
+        MonitorCommand monitor();
+
+        /**
          * Provides a new OPER command.
          *
          * @return new oper command
@@ -369,6 +389,22 @@ public interface Client {
          */
         @Nonnull
         TopicCommand topic(@Nonnull Channel channel);
+
+        /**
+         * Provides a new WALLOPS command.
+         *
+         * @return new wallops command
+         */
+        @Nonnull
+        WallopsCommand wallops();
+
+        /**
+         * Provides a new WHOIS command.
+         *
+         * @return new whois command
+         */
+        @Nonnull
+        WhoisCommand whois();
     }
 
     /**
@@ -882,7 +918,7 @@ public interface Client {
     void shutdown(@Nonnull String reason);
 
     /**
-     * Provides the commands.
+     * Provides access to {@link Command}s.
      *
      * @return commands
      */
