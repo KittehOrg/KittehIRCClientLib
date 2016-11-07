@@ -214,6 +214,21 @@ public interface ISupportParameter extends ClientLinked {
          * Parameter name.
          */
         String NAME = "EXTBAN";
+
+        /**
+         * Gets the extban prefix.
+         *
+         * @return extban prefix if present
+         */
+        Optional<Character> getPrefix();
+
+        /**
+         * Gets the extbans.
+         *
+         * @return extbans
+         */
+        @Nonnull
+        List<ChannelMode> getExtBans();
     }
 
     /**

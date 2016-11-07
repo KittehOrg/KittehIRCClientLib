@@ -308,8 +308,45 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     }
 
     private static final class ISupportExtBan extends IRCISupportParameter implements ISupportParameter.ExtBan {
+        private final Optional<Character> prefix;
+        private final List<ChannelMode> extBans;
+
         private ISupportExtBan(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
             super(client, name, value);
+            if (!value.isPresent()) {
+                throw new KittehServerISupportException(name, "No extbans defined");
+            }
+
+            final String[] split = value.get().split(",");
+            final String modes;
+            if (split.length == 2) {
+                this.prefix = Optional.of(split[0].charAt(0));
+                modes = split[1];
+            } else {
+                this.prefix = Optional.empty();
+                modes = split[0];
+            }
+
+            final List<ChannelMode> extBans = new ArrayList<>();
+            for (char item : modes.toCharArray()) {
+                Optional<ChannelMode> mode = client.getServerInfo().getChannelMode(item);
+                if (mode.isPresent()) {
+                    extBans.add(mode);
+                }
+            }
+
+            this.extBans = Collections.unmodifiableList(extBans);
+        }
+
+        @Override
+        public Optional<Character> getPrefix() {
+            return this.prefix;
+        }
+
+        @Nonnull
+        @Override
+        public List<ChannelMode> getExtBans() {
+            return this.extBans;
         }
     }
 
