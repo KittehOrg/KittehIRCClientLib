@@ -26,6 +26,9 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.KickCommand;
+import org.kitteh.irc.client.library.command.TopicCommand;
+import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ISupportParameter;
@@ -162,6 +165,7 @@ class ActorProvider implements Resettable {
         private final Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
         private final Set<Character> trackedModes = new HashSet<>();
         private final Map<String, Set<ChannelUserMode>> modes;
+        private final IRCChannelCommands commands = new IRCChannelCommands();
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
@@ -211,7 +215,7 @@ class ActorProvider implements Resettable {
                     }
                 }
             }
-            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter)));
+            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter), IRCChannel.this.commands));
         }
 
         void trackMode(@Nonnull ChannelMode mode, boolean track) {
@@ -383,12 +387,15 @@ class ActorProvider implements Resettable {
         private final List<User> users;
         private final boolean complete;
         private final Topic topic;
+        private final IRCChannelCommands commands;
 
-        private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic) {
+        private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic, @Nonnull IRCChannelCommands commands) {
             super(channel);
             this.complete = channel.fullListReceived;
             this.channelModes = ModeStatusList.of(channel.channelModes.values());
             this.topic = topic;
+            this.commands = commands;
+            this.commands.setChannel(this);
             this.modeInfoLists = new HashMap<>();
             for (Map.Entry<Character, List<ModeInfo>> entry : channel.modeInfoLists.entrySet()) {
                 this.modeInfoLists.put(entry.getKey(), Collections.unmodifiableList(new ArrayList<>(entry.getValue())));
@@ -484,6 +491,11 @@ class ActorProvider implements Resettable {
         }
 
         @Override
+        public Commands commands() {
+            return this.commands;
+        }
+
+        @Override
         public int hashCode() {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
             return (this.toLowerCase(this.getName()).hashCode() * 2) + this.getClient().hashCode();
@@ -499,6 +511,32 @@ class ActorProvider implements Resettable {
         @Nonnull
         public String toString() {
             return new ToStringer(this).add("client", this.getClient()).add("name", this.getName()).add("complete", this.complete).add("users", this.users.size()).toString();
+        }
+    }
+
+    class IRCChannelCommands implements Channel.Commands {
+        @Nonnull private Channel channel;
+
+        void setChannel(@Nonnull Channel channel) {
+            this.channel = channel;
+        }
+
+        @Nonnull
+        @Override
+        public ChannelModeCommand mode() {
+            return new ChannelModeCommand(this.channel.getClient(), this.channel.getMessagingName());
+        }
+
+        @Nonnull
+        @Override
+        public KickCommand kick() {
+            return new KickCommand(this.channel.getClient(), this.channel.getMessagingName());
+        }
+
+        @Nonnull
+        @Override
+        public TopicCommand topic() {
+            return new TopicCommand(this.channel.getClient(), this.channel.getMessagingName());
         }
     }
 

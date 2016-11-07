@@ -23,6 +23,12 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.command.AwayCommand;
+import org.kitteh.irc.client.library.command.Command;
+import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.KickCommand;
+import org.kitteh.irc.client.library.command.OperCommand;
+import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
@@ -318,6 +324,51 @@ public interface Client {
          */
         @Nonnull
         Client build();
+    }
+
+    /**
+     * Proides commands.
+     */
+    interface Commands {
+        /**
+         * Provides a new AWAY command.
+         *
+         * @return new away command
+         */
+        @Nonnull
+        AwayCommand away();
+
+        /**
+         * Provides a new MODE command.
+         *
+         * @return new mode command
+         */
+        @Nonnull
+        ChannelModeCommand mode(@Nonnull Channel channel);
+
+        /**
+         * Provides a new KICK command.
+         *
+         * @return new kick command
+         */
+        @Nonnull
+        KickCommand kick(@Nonnull Channel channel);
+
+        /**
+         * Provides a new OPER command.
+         *
+         * @return new oper command
+         */
+        @Nonnull
+        OperCommand oper();
+
+        /**
+         * Provides a new TOPIC command.
+         *
+         * @return new topic command
+         */
+        @Nonnull
+        TopicCommand topic(@Nonnull Channel channel);
     }
 
     /**
@@ -829,4 +880,12 @@ public interface Client {
      * @param reason quit message to send
      */
     void shutdown(@Nonnull String reason);
+
+    /**
+     * Provides the commands.
+     *
+     * @return commands
+     */
+    @Nonnull
+    Commands commands();
 }
