@@ -319,7 +319,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
 
             final String[] split = value.get().split(",");
             final String modes;
-            if (split.length == 2) {
+            if (split.length == 2 && !split[0].isEmpty()) {
                 this.prefix = Optional.of(split[0].charAt(0));
                 modes = split[1];
             } else {
@@ -328,8 +328,8 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
             }
 
             final List<ChannelMode> extBans = new ArrayList<>();
-            for (char item : modes.toCharArray()) {
-                Optional<ChannelMode> mode = client.getServerInfo().getChannelMode(item);
+            for (final char item : modes.toCharArray()) {
+                final Optional<ChannelMode> mode = client.getServerInfo().getChannelMode(item);
                 if (mode.isPresent()) {
                     extBans.add(mode.get());
                 }
