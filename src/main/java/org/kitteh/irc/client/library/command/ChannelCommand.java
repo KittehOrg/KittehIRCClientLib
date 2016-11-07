@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -56,5 +57,11 @@ public abstract class ChannelCommand extends Command {
     @Nonnull
     public String getChannel() {
         return this.channel;
+    }
+
+    @Nonnull
+    @Override
+    protected ToStringer toStringer() {
+        return super.toStringer().add("channel", this.getChannel());
     }
 }

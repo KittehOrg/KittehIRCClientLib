@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.command;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -61,4 +62,14 @@ public abstract class Command implements ClientLinked {
      * Executes the command.
      */
     public abstract void execute();
+
+    @Override
+    public String toString() {
+        return this.toStringer().toString();
+    }
+
+    @Nonnull
+    protected ToStringer toStringer() {
+        return new ToStringer(this).add("client", this.getClient());
+    }
 }

@@ -98,7 +98,7 @@ public class CapabilityRequestCommand extends Command {
 
     @Nonnull
     @Override
-    public synchronized String toString() {
-        return new ToStringer(this).add("client", this.getClient()).add("requests", this.requests).toString();
+    protected ToStringer toStringer() {
+        return super.toStringer().add("requests", this.requests);
     }
 }

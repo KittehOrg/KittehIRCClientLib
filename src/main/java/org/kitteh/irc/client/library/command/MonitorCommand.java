@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.command;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -173,5 +174,11 @@ public class MonitorCommand extends Command {
 
     private void monitorCommand(@Nonnull Action action, @Nonnull String targets) {
         this.getClient().sendRawLine("MONITOR " + action.getCharacter() + ' ' + targets);
+    }
+
+    @Nonnull
+    @Override
+    protected ToStringer toStringer() {
+        return super.toStringer().add("action", this.action).add("targets", this.targets);
     }
 }

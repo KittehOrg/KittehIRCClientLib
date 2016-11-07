@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.Command;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
@@ -46,6 +47,35 @@ import java.util.SortedSet;
  * Represents an IRC channel.
  */
 public interface Channel extends MessageReceiver, Staleable {
+    /**
+     * Provides commands.
+     */
+    interface Commands {
+        /**
+         * Provides a new MODE command.
+         *
+         * @return new mode command
+         */
+        @Nonnull
+        ChannelModeCommand mode();
+
+        /**
+         * Provides a new KICK command.
+         *
+         * @return new kick command
+         */
+        @Nonnull
+        KickCommand kick();
+
+        /**
+         * Provides a new TOPIC command.
+         *
+         * @return new topic command
+         */
+        @Nonnull
+        TopicCommand topic();
+    }
+
     /**
      * Information about the channel's topic.
      */
@@ -203,7 +233,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param reason reason for the kick
      */
     default void kick(@Nonnull User user, @Nonnull String reason) {
-        this.newKickCommand().target(user).reason(reason).execute();
+        this.commands().kick().target(user).reason(reason).execute();
     }
 
     /**
@@ -212,28 +242,16 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param user user to kick
      */
     default void kick(@Nonnull User user) {
-        this.newKickCommand().target(user).execute();
+        this.commands().kick().target(user).execute();
     }
 
     /**
-     * Provides a new KICK command.
+     * Provides access to {@link Command}s.
      *
-     * @return new kick command
+     * @return commands
      */
     @Nonnull
-    default KickCommand newKickCommand() {
-        return new KickCommand(this.getClient(), this.getName());
-    }
-
-    /**
-     * Provides a new MODE command.
-     *
-     * @return new mode command
-     */
-    @Nonnull
-    default ChannelModeCommand newModeCommand() {
-        return new ChannelModeCommand(this.getClient(), this.getName());
-    }
+    Commands commands();
 
     /**
      * Parts the channel without stating a reason.
@@ -275,6 +293,6 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param topic new topic
      */
     default void setTopic(@Nonnull String topic) {
-        new TopicCommand(this.getClient(), this.getName()).topic(topic).execute();
+        this.commands().topic().topic(topic).execute();
     }
 }
