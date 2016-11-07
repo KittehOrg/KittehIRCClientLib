@@ -207,6 +207,16 @@ public interface ISupportParameter extends ClientLinked {
     }
 
     /**
+     * Represents support for EXTBAN.
+     */
+    interface ExtBan extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "EXTBAN";
+    }
+
+    /**
      * Gets the name of the parameter.
      *
      * @return parameter name

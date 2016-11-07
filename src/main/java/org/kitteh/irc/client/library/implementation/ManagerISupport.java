@@ -307,6 +307,12 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         }
     }
 
+    private static final class ISupportExtBan extends IRCISupportParameter implements ISupportParameter.ExtBan {
+        private ISupportExtBan(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+            super(client, name, value);
+        }
+    }
+
     ManagerISupport(InternalClient client) {
         super(client);
         this.registerParameter(ISupportParameter.CaseMapping.NAME, ISupportCaseMapping::new);
@@ -320,6 +326,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         this.registerParameter(ISupportParameter.Prefix.NAME, ISupportPrefix::new);
         this.registerParameter(ISupportParameter.WHOX.NAME, ISupportWHOX::new);
         this.registerParameter(ISupportParameter.TopicLen.NAME, ISupportTopicLen::new);
+        this.registerParameter(ISupportParameter.ExtBan.NAME, ISupportExtBan::new);
     }
 
     @Nonnull
