@@ -80,8 +80,9 @@ public class AwayCommand extends Command {
         this.getClient().sendRawLine(exec);
     }
 
+    @Nonnull
     @Override
-    public String toString() {
-        return new ToStringer(this).add("message", this.message).toString();
+    protected ToStringer toStringer() {
+        return super.toStringer().add("message", this.message);
     }
 }

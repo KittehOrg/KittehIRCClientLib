@@ -23,6 +23,15 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.command.AwayCommand;
+import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
+import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.KickCommand;
+import org.kitteh.irc.client.library.command.MonitorCommand;
+import org.kitteh.irc.client.library.command.OperCommand;
+import org.kitteh.irc.client.library.command.TopicCommand;
+import org.kitteh.irc.client.library.command.WallopsCommand;
+import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.User;
@@ -58,6 +67,68 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 final class IRCClient extends InternalClient {
+    private final class ClientCommands implements Commands {
+        @Nonnull
+        @Override
+        public AwayCommand away() {
+            return new AwayCommand(IRCClient.this);
+        }
+
+        @Nonnull
+        @Override
+        public CapabilityRequestCommand capabilityRequest() {
+            return new CapabilityRequestCommand(IRCClient.this);
+        }
+
+        @Nonnull
+        @Override
+        public ChannelModeCommand mode(@Nonnull Channel channel) {
+            Sanity.nullCheck(channel, "Channel cannot be null");
+            Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
+            return new ChannelModeCommand(IRCClient.this, channel.getMessagingName());
+        }
+
+        @Nonnull
+        @Override
+        public KickCommand kick(@Nonnull Channel channel) {
+            Sanity.nullCheck(channel, "Channel cannot be null");
+            Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
+            return new KickCommand(IRCClient.this, channel.getMessagingName());
+        }
+
+        @Nonnull
+        @Override
+        public MonitorCommand monitor() {
+            return new MonitorCommand(IRCClient.this);
+        }
+
+        @Nonnull
+        @Override
+        public OperCommand oper() {
+            return new OperCommand(IRCClient.this);
+        }
+
+        @Nonnull
+        @Override
+        public TopicCommand topic(@Nonnull Channel channel) {
+            Sanity.nullCheck(channel, "Channel cannot be null");
+            Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
+            return new TopicCommand(IRCClient.this, channel.getMessagingName());
+        }
+
+        @Nonnull
+        @Override
+        public WallopsCommand wallops() {
+            return new WallopsCommand(IRCClient.this);
+        }
+
+        @Nonnull
+        @Override
+        public WhoisCommand whois() {
+            return new WhoisCommand(IRCClient.this);
+        }
+    }
+
     private final class InputProcessor extends QueueProcessingThread<String> {
         private InputProcessor() {
             super("Kitteh IRC Client Input Processor (" + IRCClient.this.getName() + ')');
@@ -103,6 +174,8 @@ final class IRCClient extends InternalClient {
     private final ActorProvider actorProvider = new ActorProvider(this);
 
     private Map<Character, ModeStatus<UserMode>> userModes;
+
+    private final ClientCommands commands = new ClientCommands();
 
     IRCClient(@Nonnull Config config) {
         this.config = config;
@@ -630,5 +703,11 @@ final class IRCClient extends InternalClient {
         } catch (NumberFormatException exception) {
             this.eventManager.callEvent(new ClientReceiveCommandEvent(this, new IRCServerMessage.IRCStringCommandServerMessage(commandString, line, tags), actor.snapshot(), commandString, args));
         }
+    }
+
+    @Nonnull
+    @Override
+    public Commands commands() {
+        return this.commands;
     }
 }

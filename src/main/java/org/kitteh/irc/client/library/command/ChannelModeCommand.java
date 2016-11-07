@@ -154,7 +154,7 @@ public class ChannelModeCommand extends ChannelCommand {
 
     @Nonnull
     @Override
-    public String toString() {
-        return new ToStringer(this).add("client", this.getClient()).add("modes", this.changes).toString();
+    protected ToStringer toStringer() {
+        return super.toStringer().add("changes", this.changes);
     }
 }
