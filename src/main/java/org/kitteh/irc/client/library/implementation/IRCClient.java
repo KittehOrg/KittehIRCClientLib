@@ -24,11 +24,14 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.command.AwayCommand;
-import org.kitteh.irc.client.library.command.Command;
+import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.command.KickCommand;
+import org.kitteh.irc.client.library.command.MonitorCommand;
 import org.kitteh.irc.client.library.command.OperCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
+import org.kitteh.irc.client.library.command.WallopsCommand;
+import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.User;
@@ -73,6 +76,12 @@ final class IRCClient extends InternalClient {
 
         @Nonnull
         @Override
+        public CapabilityRequestCommand capabilityRequest() {
+            return new CapabilityRequestCommand(IRCClient.this);
+        }
+
+        @Nonnull
+        @Override
         public ChannelModeCommand mode(@Nonnull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
@@ -89,6 +98,12 @@ final class IRCClient extends InternalClient {
 
         @Nonnull
         @Override
+        public MonitorCommand monitor() {
+            return new MonitorCommand(IRCClient.this);
+        }
+
+        @Nonnull
+        @Override
         public OperCommand oper() {
             return new OperCommand(IRCClient.this);
         }
@@ -99,6 +114,18 @@ final class IRCClient extends InternalClient {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
             return new TopicCommand(IRCClient.this, channel.getMessagingName());
+        }
+
+        @Nonnull
+        @Override
+        public WallopsCommand wallops() {
+            return new WallopsCommand(IRCClient.this);
+        }
+
+        @Nonnull
+        @Override
+        public WhoisCommand whois() {
+            return new WhoisCommand(IRCClient.this);
         }
     }
 

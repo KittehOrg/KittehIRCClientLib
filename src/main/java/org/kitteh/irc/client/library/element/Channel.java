@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.Command;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
@@ -245,7 +246,7 @@ public interface Channel extends MessageReceiver, Staleable {
     }
 
     /**
-     * Provides the commands.
+     * Provides access to {@link Command}s.
      *
      * @return commands
      */
