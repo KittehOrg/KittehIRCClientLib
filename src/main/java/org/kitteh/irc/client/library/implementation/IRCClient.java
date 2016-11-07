@@ -84,13 +84,13 @@ final class IRCClient extends InternalClient {
         public KickCommand kick(@Nonnull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
-            return new ChannelModeCommand(IRCClient.this, channel.getMessagingName());
+            return new KickCommand(IRCClient.this, channel.getMessagingName());
         }
 
         @Nonnull
         @Override
         public OperCommand oper() {
-            return new AwayCommand(IRCClient.this);
+            return new OperCommand(IRCClient.this);
         }
 
         @Nonnull
@@ -98,7 +98,7 @@ final class IRCClient extends InternalClient {
         public TopicCommand topic(@Nonnull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
-            return new ChannelModeCommand(IRCClient.this, channel.getMessagingName());
+            return new TopicCommand(IRCClient.this, channel.getMessagingName());
         }
     }
 
