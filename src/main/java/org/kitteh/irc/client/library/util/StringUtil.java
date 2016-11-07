@@ -174,8 +174,10 @@ public final class StringUtil {
         for (char character : wildcardExpression.toCharArray()) {
             switch (character) {
                 case '*':
+                    builder.append('.').append(character); // * to .*
+                    break;
                 case '?':
-                    builder.append('.').append(character); // * to .* and ? to .?
+                    builder.append('.'); // ? to .
                     break;
                 case '<':
                 case '(':
@@ -203,6 +205,6 @@ public final class StringUtil {
         }
         builder.insert(0, '^');
         builder.append('$');
-        return Pattern.compile(builder.toString());
+        return Pattern.compile(builder.toString(), Pattern.CASE_INSENSITIVE);
     }
 }
