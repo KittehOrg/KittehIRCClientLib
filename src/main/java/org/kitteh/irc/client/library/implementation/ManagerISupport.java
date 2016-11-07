@@ -331,7 +331,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
             for (char item : modes.toCharArray()) {
                 Optional<ChannelMode> mode = client.getServerInfo().getChannelMode(item);
                 if (mode.isPresent()) {
-                    extBans.add(mode);
+                    extBans.add(mode.get());
                 }
             }
 
