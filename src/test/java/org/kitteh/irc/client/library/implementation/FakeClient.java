@@ -330,4 +330,9 @@ class FakeClient extends InternalClient {
     public void shutdown(@Nullable String reason) {
 
     }
+
+    @Override
+    public Commands commands() {
+        return null;    
+    }
 }
