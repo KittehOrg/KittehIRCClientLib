@@ -40,7 +40,6 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Class for handling the STS capability,
@@ -132,16 +131,14 @@ class STSHandler {
     private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
         this.isSecure = this.client.isSSL();
         InetSocketAddress address = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS);
-        final String msg = originalMessages.stream().map(ServerMessage::getMessage)
-            .collect(Collectors.joining()).replace('\n', ' ');
         if (!sts.getValue().isPresent()) {
-            throw new KittehServerMessageException(msg, "No value provided for sts capability.");
+            throw new KittehServerMessageException(originalMessages, "No value provided for sts capability.");
         }
 
         final String capabilityValue = sts.getValue().get();
         final STSPolicy policy = STSUtil.getSTSPolicyFromString(",", capabilityValue);
         if (policy.getFlags().contains(STSPolicy.POLICY_OPTION_KEY_PORT) || policy.getFlags().contains(STSPolicy.POLICY_OPTION_KEY_DURATION)) {
-            throw new KittehServerMessageException(msg, "Improper use of flag in required option context!");
+            throw new KittehServerMessageException(originalMessages, "Improper use of flag in required option context!");
         }
 
         if (!policy.getOptions().containsKey(STSPolicy.POLICY_OPTION_KEY_PORT)) {
@@ -152,14 +149,14 @@ class STSHandler {
             // Unknown keys are ignored by the switches below
             this.machine.setSTSPolicy(policy);
             if (this.isSecure) {
-                this.handleSecureKey(key, policy);
+                this.handleSecureKey(key, policy, originalMessages);
             } else {
-                this.handleInsecureKey(key, policy);
+                this.handleInsecureKey(key, policy, originalMessages);
             }
         }
     }
 
-    private void handleInsecureKey(String key, STSPolicy policy) {
+    private void handleInsecureKey(String key, STSPolicy policy, List<ServerMessage> originalMessages) {
         final String value = policy.getOptions().get(key);
 
         switch (key) {
@@ -170,7 +167,7 @@ class STSHandler {
                 try {
                     Integer.parseInt(value); // can't easily use a short because signed..
                 } catch (NumberFormatException nfe) {
-                    throw new KittehServerMessageException(value, "Specified port could not be parsed: "  + nfe.getMessage());
+                    throw new KittehServerMessageException(originalMessages, "Specified port could not be parsed: "  + nfe.getMessage());
                 }
 
                 this.machine.setCurrentState(STSClientState.STS_PRESENT_RECONNECTING);
@@ -178,7 +175,7 @@ class STSHandler {
         }
     }
 
-    private void handleSecureKey(String key, STSPolicy policy) {
+    private void handleSecureKey(String key, STSPolicy policy, List<ServerMessage> originalMessages) {
         final String value = policy.getOptions().get(key);
 
         switch (key) {
@@ -191,7 +188,7 @@ class STSHandler {
                     // and as a single integer without a prefix or suffix.
                     duration = Long.parseLong(value);
                 } catch (NumberFormatException nfe) {
-                    throw new KittehServerMessageException(value, "Invalid duration provided: " + nfe.getMessage());
+                    throw new KittehServerMessageException(originalMessages, "Invalid duration provided: " + nfe.getMessage());
                 }
 
                 final STSStorageManager storageMan = this.machine.getStorageManager();
