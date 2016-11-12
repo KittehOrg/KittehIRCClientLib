@@ -85,6 +85,9 @@ public class STSPropertiesStorageManager implements STSStorageManager {
     public void addEntry(@Nonnull String hostname, long duration, @Nonnull STSPolicy policy) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
         Sanity.nullCheck(policy, "A valid policy must be provided to be inserted.");
+        if (!policy.getOptions().containsKey("duration")) {
+            policy.getOptions().put("duration", String.valueOf(duration));
+        }
         this.properties.setProperty(hostname, this.getExpiryFromDuration(duration) + "; " + this.reserializeData(policy));
         this.saveData();
     }

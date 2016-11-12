@@ -31,9 +31,28 @@ Alternatively, a default class (currently `STSPropertiesStorageManager`) which s
 file is available to use and built-in to KICL. A utility method makes using this default implementation very straightforward:
 
 ```java
-Client client = Client.builder().nick("Kitteh").serverHost("127.0.0.1").stsStorageManager(STSUtil.getDefaultStorageManager()).build();
+Client client = Client.builder().nick("Kitteh").serverHost("some.hostname.irc.com").stsStorageManager(STSUtil.getDefaultStorageManager()).build();
 client.addChannel("#kicl");
 ```
 
 The STS policies will be persisted in a file in the home directory with name `.kicl_sts.properties`. If you'd prefer to
 store them elsewhere, you can specify a `java.nio.Path` instance when calling `STSUtil.getDefaultStorageManager`.
+
+Now, when the client connects it will automatically obey any relevant policies it has found.
+
+#### Adding your own policies
+
+```java
+STSPolicy policy = STSUtil.getSTSPolicyFromString(",", "port=6697");
+client.getSTSMachine().get().getStorageManager().addEntry("foo.host", 5000, policy);
+```
+
+### Testing STS
+
+**This section is aimed at KICL developers/contributors**
+
+The InspIRCd test network has support for STS, but uses a CAP key of "draft/sts". If you're willing to temporarily
+modify the `STSHandler` class (specifically the STS_CAPABILITY_PREDICATE field) you can use this public test network.
+
+Otherwise, you can use the [Charybdis module](https://github.com/lol768/charybdis/blob/release/4/extensions/sts_module.c)
+that was created as part of the work on this functionality.
