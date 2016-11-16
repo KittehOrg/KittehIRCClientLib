@@ -49,7 +49,7 @@ class STSHandler {
     private final STSMachine machine;
     private final InternalClient client;
     private boolean isSecure;
-    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals("sts");
+    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals("draft/sts");
 
     /**
      * Creates the event handler for STS.

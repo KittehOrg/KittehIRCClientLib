@@ -51,8 +51,10 @@ client.getSTSMachine().get().getStorageManager().addEntry("foo.host", 5000, poli
 
 **This section is aimed at KICL developers/contributors**
 
-The InspIRCd test network has support for STS, but uses a CAP key of "draft/sts". If you're willing to temporarily
-modify the `STSHandler` class (specifically the STS_CAPABILITY_PREDICATE field) you can use this public test network.
+The InspIRCd test network has support for STS, currently using a CAP key of "draft/sts". Due to a
+[recent spec change](https://github.com/ircv3/ircv3-specifications/commit/c0fcd05aceaa7f117d438ebc31814e1d49226967),
+KICL's implementation currently also uses this key.
 
-Otherwise, you can use the [Charybdis module](https://github.com/lol768/charybdis/blob/release/4/extensions/sts_module.c)
-that was created as part of the work on this functionality.
+There is a simple [Charybdis module](https://github.com/lol768/charybdis/blob/release/4/extensions/sts_module.c)
+that was created as part of the work on this functionality for testing purposes only. This has also been updated
+to use the draft key.
