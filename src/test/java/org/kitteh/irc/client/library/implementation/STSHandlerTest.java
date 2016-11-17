@@ -35,7 +35,7 @@ public class STSHandlerTest {
         STSHandler handler = new STSHandler(machine, client);
 
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
+        final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
         capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
@@ -66,7 +66,7 @@ public class STSHandlerTest {
         STSHandler handler = new STSHandler(machine, client);
 
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
+        final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
         capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
@@ -93,7 +93,7 @@ public class STSHandlerTest {
         final StubMachine machine = new StubMachine();
         STSHandler handler = new STSHandler(machine, client);
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=cats";
+        final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=cats";
         capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
@@ -110,7 +110,7 @@ public class STSHandlerTest {
         final StubMachine machine = new StubMachine();
         STSHandler handler = new STSHandler(machine, client);
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "sts=" + STSPolicy.POLICY_OPTION_KEY_PORT;
+        final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT;
         capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new IRCServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
