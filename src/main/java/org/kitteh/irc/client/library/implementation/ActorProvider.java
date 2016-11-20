@@ -165,7 +165,7 @@ class ActorProvider implements Resettable {
         private final Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
         private final Set<Character> trackedModes = new HashSet<>();
         private final Map<String, Set<ChannelUserMode>> modes;
-        private final IRCChannelCommands commands = new IRCChannelCommands();
+        private final IRCChannelCommands commands;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
@@ -176,6 +176,7 @@ class ActorProvider implements Resettable {
         private IRCChannel(@Nonnull String channel) {
             super(channel);
             this.modes = new CIKeyMap<>(ActorProvider.this.client);
+            this.commands = new IRCChannelCommands(channel);
             ActorProvider.this.trackedChannels.put(channel, this);
         }
 
@@ -215,7 +216,7 @@ class ActorProvider implements Resettable {
                     }
                 }
             }
-            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter), IRCChannel.this.commands));
+            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter)));
         }
 
         void trackMode(@Nonnull ChannelMode mode, boolean track) {
@@ -389,13 +390,12 @@ class ActorProvider implements Resettable {
         private final Topic topic;
         private final IRCChannelCommands commands;
 
-        private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic, @Nonnull IRCChannelCommands commands) {
+        private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic) {
             super(channel);
             this.complete = channel.fullListReceived;
             this.channelModes = ModeStatusList.of(channel.channelModes.values());
             this.topic = topic;
-            this.commands = commands;
-            this.commands.setChannel(this);
+            this.commands = channel.commands;
             this.modeInfoLists = new HashMap<>();
             for (Map.Entry<Character, List<ModeInfo>> entry : channel.modeInfoLists.entrySet()) {
                 this.modeInfoLists.put(entry.getKey(), Collections.unmodifiableList(new ArrayList<>(entry.getValue())));
@@ -516,28 +516,28 @@ class ActorProvider implements Resettable {
     }
 
     class IRCChannelCommands implements Channel.Commands {
-        private Channel channel;
+        private String channel;
 
-        void setChannel(@Nonnull Channel channel) {
+        IRCChannelCommands(@Nonnull String channel) {
             this.channel = channel;
         }
 
         @Nonnull
         @Override
         public ChannelModeCommand mode() {
-            return new ChannelModeCommand(this.channel.getClient(), this.channel.getMessagingName());
+            return new ChannelModeCommand(ActorProvider.this.client, this.channel);
         }
 
         @Nonnull
         @Override
         public KickCommand kick() {
-            return new KickCommand(this.channel.getClient(), this.channel.getMessagingName());
+            return new KickCommand(ActorProvider.this.client, this.channel);
         }
 
         @Nonnull
         @Override
         public TopicCommand topic() {
-            return new TopicCommand(this.channel.getClient(), this.channel.getMessagingName());
+            return new TopicCommand(ActorProvider.this.client, this.channel);
         }
     }
 
