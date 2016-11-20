@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
 /**
  * GameSurge's AuthServ protocol. Automatically attempts to identify upon connection.
  */
-public class GameSurge extends AbstractUserPassProtocol implements EventListening {
+public class GameSurge extends AbstractAccountPassProtocol implements EventListening {
     private class Listener {
         @NumericFilter(4)
         @Handler
@@ -56,17 +56,17 @@ public class GameSurge extends AbstractUserPassProtocol implements EventListenin
      * Creates a GameSurge authentication protocol instance.
      *
      * @param client client for which this will be used
-     * @param username username
+     * @param accountName account name
      * @param password password
      */
-    public GameSurge(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-        super(client, username, password);
+    public GameSurge(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
+        super(client, accountName, password);
     }
 
     @Nonnull
     @Override
     protected String getAuthentication() {
-        return "PRIVMSG AuthServ@services.gamesurge.net :auth " + this.getUsername() + ' ' + this.getPassword();
+        return "PRIVMSG AuthServ@services.gamesurge.net :auth " + this.getAccountName() + ' ' + this.getPassword();
     }
 
     @Nonnull

@@ -3,11 +3,11 @@ popular authentication services NickServ (as implemented in Atheme) and [GameSur
 
 ### NickServ
 
-The NickServ authentication protocol works by sending a private message to the "NickServ" user, using the `IDENTIFY`
+The NickServ authentication protocol works by sending a private message to the "NickServ" nickname, using the `IDENTIFY`
 command. The account name and password are provided:
 
 ```
-PRIVMSG NickServ :IDENTIFY username password
+PRIVMSG NickServ :IDENTIFY accountname password
 ```
 
 It's possible to extend the `org.kitteh.irc.client.library.auth.protocol.NickServ` class and override the
@@ -17,7 +17,7 @@ the same).
 To configure the KICL client to use the NickServ authentication class:
 
 ```java
-client.getAuthManager().addProtocol(new NickServ(client, "username", "password"));
+client.getAuthManager().addProtocol(new NickServ(client, "accountname", "password"));
 ```
 
 NickServ is used with this syntax on networks which use Atheme. This includes Freenode and EsperNet amongst others.
@@ -25,14 +25,14 @@ Anope should also support this syntax.
 
 ### AuthServ
 
-[GameSurge](https://gamesurge.net/)'s AuthServ protocol uses the "auth" command and sends it to user `AuthServ@services.gamesurge.net`:
+[GameSurge](https://gamesurge.net/)'s AuthServ protocol uses the "auth" command and sends it to `AuthServ@services.gamesurge.net`:
 
 ```
-PRIVMSG AuthServ@services.gamesurge.net :auth username password
+PRIVMSG AuthServ@services.gamesurge.net :auth accountname password
 ```
 
 To use the GameServ protocol with KICL:
 
 ```java
-client.getAuthManager().addProtocol(new GameSurge(client, "username", "password"));
+client.getAuthManager().addProtocol(new GameSurge(client, "accountname", "password"));
 ```

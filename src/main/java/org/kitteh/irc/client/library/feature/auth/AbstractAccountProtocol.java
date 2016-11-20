@@ -24,30 +24,30 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.auth.element.Username;
+import org.kitteh.irc.client.library.feature.auth.element.AccountName;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
 /**
- * Abstract general username/password protocol.
+ * Abstract general account name protocol.
  */
-public abstract class AbstractUserProtocol implements Username {
+public abstract class AbstractAccountProtocol implements AccountName {
     private final Client client;
-    private String username;
+    private String accountName;
 
     /**
      * Creates an instance.
      *
      * @param client client
-     * @param username username
+     * @param accountName account name
      */
-    protected AbstractUserProtocol(@Nonnull Client client, @Nonnull String username) {
+    protected AbstractAccountProtocol(@Nonnull Client client, @Nonnull String accountName) {
         Sanity.nullCheck(client, "Client cannot be null");
-        Sanity.safeMessageCheck(username, "Username");
+        Sanity.safeMessageCheck(accountName, "Account name");
         this.client = client;
-        this.username = username;
+        this.accountName = accountName;
     }
 
     @Nonnull
@@ -58,14 +58,14 @@ public abstract class AbstractUserProtocol implements Username {
 
     @Nonnull
     @Override
-    public String getUsername() {
-        return this.username;
+    public String getAccountName() {
+        return this.accountName;
     }
 
     @Override
-    public void setUsername(@Nonnull String username) {
-        Sanity.safeMessageCheck(username, "Username");
-        this.username = username;
+    public void setAccountName(@Nonnull String accountName) {
+        Sanity.safeMessageCheck(accountName, "Account name");
+        this.accountName = accountName;
     }
 
     @Override
@@ -84,6 +84,6 @@ public abstract class AbstractUserProtocol implements Username {
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).add("user", this.getUsername()).toString();
+        return new ToStringer(this).add("account", this.getAccountName()).toString();
     }
 }

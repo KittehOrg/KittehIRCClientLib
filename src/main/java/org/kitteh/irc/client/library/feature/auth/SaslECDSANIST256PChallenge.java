@@ -117,17 +117,17 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * Creates an instance.
      *
      * @param client client
-     * @param username username
+     * @param accountName account name
      * @param privateKey private key
      */
-    public SaslECDSANIST256PChallenge(@Nonnull Client client, @Nonnull String username, @Nonnull ECPrivateKey privateKey) {
-        super(client, username, privateKey, "ECDSA-NIST256P-CHALLENGE");
+    public SaslECDSANIST256PChallenge(@Nonnull Client client, @Nonnull String accountName, @Nonnull ECPrivateKey privateKey) {
+        super(client, accountName, privateKey, "ECDSA-NIST256P-CHALLENGE");
     }
 
     @Nonnull
     @Override
     protected String getAuthLine() {
-        return this.getUsername() + '\0' + this.getUsername() + '\0';
+        return this.getAccountName() + '\0' + this.getAccountName() + '\0';
     }
 
     @Nonnull

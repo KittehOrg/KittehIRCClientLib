@@ -12,7 +12,7 @@ the `AbstractSaslProtocol` class. It's also possible to add [non-SASL](alt_auth.
 Protocols can be added by calling the `AuthManager#addProtocol` method, for example:
 
 ```java
-client.getAuthManager().addProtocol(new SaslPlain(client, "username", "password"))
+client.getAuthManager().addProtocol(new SaslPlain(client, "accountname", "password"))
 ```
 
 The three available mechanisms are described below. The server-side SASL authentication logic is almost always performed
@@ -21,8 +21,8 @@ not. If that's the case, it should be easy enough to extend `AbstractSaslProtoco
 
 ### PLAIN Mechanism
 
-Formally described in [RFC 4616](https://tools.ietf.org/html/rfc4616), the PLAIN mechanism sends an authcid (username
-to login with), password and optionally an authzid (username to impersonate) **in plaintext**. As mentioned in the RFC,
+Formally described in [RFC 4616](https://tools.ietf.org/html/rfc4616), the PLAIN mechanism sends an authcid (account name
+to login with), password and optionally an authzid (account name to impersonate) **in plaintext**. As mentioned in the RFC,
 this mechanism **SHOULD NOT** be used without adequate socket security. In practice, this means the PLAIN mechanism
 should never be used without TLS.
 

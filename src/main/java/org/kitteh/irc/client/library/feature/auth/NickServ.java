@@ -38,7 +38,7 @@ import javax.annotation.Nonnull;
 /**
  * NickServ protocol. Automatically attempts to identify upon connection.
  */
-public class NickServ extends AbstractUserPassProtocol implements EventListening, NickReclamation {
+public class NickServ extends AbstractAccountPassProtocol implements EventListening, NickReclamation {
     private class Listener {
         @NumericFilter(4)
         @Handler
@@ -51,7 +51,7 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
             if (event.getActor().getNick().equals(NickServ.this.getNickServNick())) {
                 if (event.getMessage().startsWith("You are now identified")) {
                     int first;
-                    String username = event.getMessage().substring((first = event.getMessage().indexOf(Format.BOLD.toString()) + 1), event.getMessage().indexOf(Format.BOLD.toString(), first));
+                    String accountName = event.getMessage().substring((first = event.getMessage().indexOf(Format.BOLD.toString()) + 1), event.getMessage().indexOf(Format.BOLD.toString(), first));
                     // TODO do something with this information
                 }
             }
@@ -70,17 +70,17 @@ public class NickServ extends AbstractUserPassProtocol implements EventListening
      * Creates a NickServ authentication protocol instance.
      *
      * @param client client for which this will be used
-     * @param username username
+     * @param accountName account name
      * @param password password
      */
-    public NickServ(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-        super(client, username, password);
+    public NickServ(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
+        super(client, accountName, password);
     }
 
     @Nonnull
     @Override
     protected String getAuthentication() {
-        return "PRIVMSG " + this.getNickServNick() + " :IDENTIFY " + this.getUsername() + ' ' + this.getPassword();
+        return "PRIVMSG " + this.getNickServNick() + " :IDENTIFY " + this.getAccountName() + ' ' + this.getPassword();
     }
 
     @Nonnull

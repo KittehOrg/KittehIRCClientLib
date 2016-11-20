@@ -50,7 +50,7 @@ import java.util.Optional;
  *
  * @param <AuthValue> authentication value type
  */
-public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtocol implements EventListening {
+public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountProtocol implements EventListening {
     protected class Listener {
         @Handler(priority = 1)
         public void capList(CapabilitiesSupportedListEvent event) {
@@ -145,12 +145,12 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractUserProtoc
      * Creates an instance.
      *
      * @param client client
-     * @param username username
+     * @param accountName account name
      * @param authValue authentication value
      * @param saslType type of SASL auth
      */
-    protected AbstractSaslProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull AuthValue authValue, @Nonnull String saslType) {
-        super(client, username);
+    protected AbstractSaslProtocol(@Nonnull Client client, @Nonnull String accountName, @Nonnull AuthValue authValue, @Nonnull String saslType) {
+        super(client, accountName);
         this.saslType = saslType;
         this.authValue = authValue;
     }
