@@ -334,6 +334,6 @@ class FakeClient extends InternalClient {
     @Nonnull
     @Override
     public Commands commands() {
-        return null;    
+        return null;
     }
 }
