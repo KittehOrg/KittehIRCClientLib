@@ -82,8 +82,9 @@ public class OperCommand extends Command {
         this.getClient().sendRawLine("OPER " + this.user + ' ' + this.password);
     }
 
+    @Nonnull
     @Override
-    public String toString() {
-        return new ToStringer(this).add("user", (this.user == null) ? null : "AzureDiamond").add("password", (this.password == null) ? null : "hunter2").toString();
+    protected ToStringer toStringer() {
+        return super.toStringer().add("user", (this.user == null) ? null : "AzureDiamond").add("password", (this.password == null) ? null : "hunter2");
     }
 }

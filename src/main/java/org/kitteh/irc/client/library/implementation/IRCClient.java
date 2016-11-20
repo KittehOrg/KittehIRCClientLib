@@ -705,6 +705,7 @@ final class IRCClient extends InternalClient {
         }
     }
 
+    @Nonnull
     @Override
     public Commands commands() {
         return this.commands;

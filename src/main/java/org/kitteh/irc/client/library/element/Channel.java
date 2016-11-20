@@ -48,7 +48,7 @@ import java.util.SortedSet;
  */
 public interface Channel extends MessageReceiver, Staleable {
     /**
-     * Proides commands.
+     * Provides commands.
      */
     interface Commands {
         /**

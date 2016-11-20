@@ -331,7 +331,7 @@ public interface Client {
     }
 
     /**
-     * Proides commands.
+     * Provides commands.
      */
     interface Commands {
         /**
@@ -353,6 +353,7 @@ public interface Client {
         /**
          * Provides a new MODE command.
          *
+         * @param channel channel
          * @return new mode command
          */
         @Nonnull
@@ -361,6 +362,7 @@ public interface Client {
         /**
          * Provides a new KICK command.
          *
+         * @param channel channel
          * @return new kick command
          */
         @Nonnull
@@ -385,6 +387,7 @@ public interface Client {
         /**
          * Provides a new TOPIC command.
          *
+         * @param channel channel
          * @return new topic command
          */
         @Nonnull

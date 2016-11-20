@@ -79,7 +79,7 @@ public class TopicCommand extends ChannelCommand {
 
     @Nonnull
     @Override
-    public String toString() {
-        return new ToStringer(this).add("client", this.getClient()).add("channel", this.getChannel()).add("topic", this.topic).toString();
+    protected ToStringer toStringer() {
+        return super.toStringer().add("topic", this.topic);
     }
 }
