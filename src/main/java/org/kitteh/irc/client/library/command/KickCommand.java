@@ -110,7 +110,7 @@ public class KickCommand extends ChannelCommand {
 
     @Nonnull
     @Override
-    public String toString() {
-        return new ToStringer(this).add("client", this.getClient()).add("channel", this.getChannel()).add("target", this.target).add("reason", this.reason).toString();
+    protected ToStringer toStringer() {
+        return super.toStringer().add("target", this.target).add("reason", this.reason);
     }
 }

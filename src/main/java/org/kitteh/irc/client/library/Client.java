@@ -23,6 +23,16 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.kitteh.irc.client.library.command.AwayCommand;
+import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
+import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.Command;
+import org.kitteh.irc.client.library.command.KickCommand;
+import org.kitteh.irc.client.library.command.MonitorCommand;
+import org.kitteh.irc.client.library.command.OperCommand;
+import org.kitteh.irc.client.library.command.TopicCommand;
+import org.kitteh.irc.client.library.command.WallopsCommand;
+import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
@@ -318,6 +328,86 @@ public interface Client {
          */
         @Nonnull
         Client build();
+    }
+
+    /**
+     * Provides commands.
+     */
+    interface Commands {
+        /**
+         * Provides a new AWAY command.
+         *
+         * @return new away command
+         */
+        @Nonnull
+        AwayCommand away();
+
+        /**
+         * Provides a new CAP REQ command.
+         *
+         * @return new capability request command
+         */
+        @Nonnull
+        CapabilityRequestCommand capabilityRequest();
+
+        /**
+         * Provides a new MODE command.
+         *
+         * @param channel channel
+         * @return new mode command
+         */
+        @Nonnull
+        ChannelModeCommand mode(@Nonnull Channel channel);
+
+        /**
+         * Provides a new KICK command.
+         *
+         * @param channel channel
+         * @return new kick command
+         */
+        @Nonnull
+        KickCommand kick(@Nonnull Channel channel);
+
+        /**
+         * Provides a new MONITOR command.
+         *
+         * @return new monitor command
+         */
+        @Nonnull
+        MonitorCommand monitor();
+
+        /**
+         * Provides a new OPER command.
+         *
+         * @return new oper command
+         */
+        @Nonnull
+        OperCommand oper();
+
+        /**
+         * Provides a new TOPIC command.
+         *
+         * @param channel channel
+         * @return new topic command
+         */
+        @Nonnull
+        TopicCommand topic(@Nonnull Channel channel);
+
+        /**
+         * Provides a new WALLOPS command.
+         *
+         * @return new wallops command
+         */
+        @Nonnull
+        WallopsCommand wallops();
+
+        /**
+         * Provides a new WHOIS command.
+         *
+         * @return new whois command
+         */
+        @Nonnull
+        WhoisCommand whois();
     }
 
     /**
@@ -829,4 +919,12 @@ public interface Client {
      * @param reason quit message to send
      */
     void shutdown(@Nonnull String reason);
+
+    /**
+     * Provides access to {@link Command}s.
+     *
+     * @return commands
+     */
+    @Nonnull
+    Commands commands();
 }

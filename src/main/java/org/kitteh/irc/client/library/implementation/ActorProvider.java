@@ -26,6 +26,9 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
+import org.kitteh.irc.client.library.command.KickCommand;
+import org.kitteh.irc.client.library.command.TopicCommand;
+import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ISupportParameter;
@@ -162,6 +165,7 @@ class ActorProvider implements Resettable {
         private final Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
         private final Set<Character> trackedModes = new HashSet<>();
         private final Map<String, Set<ChannelUserMode>> modes;
+        private final IRCChannelCommands commands;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
@@ -172,6 +176,7 @@ class ActorProvider implements Resettable {
         private IRCChannel(@Nonnull String channel) {
             super(channel);
             this.modes = new CIKeyMap<>(ActorProvider.this.client);
+            this.commands = new IRCChannelCommands(channel);
             ActorProvider.this.trackedChannels.put(channel, this);
         }
 
@@ -383,12 +388,14 @@ class ActorProvider implements Resettable {
         private final List<User> users;
         private final boolean complete;
         private final Topic topic;
+        private final IRCChannelCommands commands;
 
         private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic) {
             super(channel);
             this.complete = channel.fullListReceived;
             this.channelModes = ModeStatusList.of(channel.channelModes.values());
             this.topic = topic;
+            this.commands = channel.commands;
             this.modeInfoLists = new HashMap<>();
             for (Map.Entry<Character, List<ModeInfo>> entry : channel.modeInfoLists.entrySet()) {
                 this.modeInfoLists.put(entry.getKey(), Collections.unmodifiableList(new ArrayList<>(entry.getValue())));
@@ -483,6 +490,12 @@ class ActorProvider implements Resettable {
             channel.trackMode(mode, track);
         }
 
+        @Nonnull
+        @Override
+        public Commands commands() {
+            return this.commands;
+        }
+
         @Override
         public int hashCode() {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
@@ -499,6 +512,32 @@ class ActorProvider implements Resettable {
         @Nonnull
         public String toString() {
             return new ToStringer(this).add("client", this.getClient()).add("name", this.getName()).add("complete", this.complete).add("users", this.users.size()).toString();
+        }
+    }
+
+    class IRCChannelCommands implements Channel.Commands {
+        private final String channel;
+
+        IRCChannelCommands(@Nonnull String channel) {
+            this.channel = channel;
+        }
+
+        @Nonnull
+        @Override
+        public ChannelModeCommand mode() {
+            return new ChannelModeCommand(ActorProvider.this.client, this.channel);
+        }
+
+        @Nonnull
+        @Override
+        public KickCommand kick() {
+            return new KickCommand(ActorProvider.this.client, this.channel);
+        }
+
+        @Nonnull
+        @Override
+        public TopicCommand topic() {
+            return new TopicCommand(ActorProvider.this.client, this.channel);
         }
     }
 
