@@ -490,6 +490,7 @@ class ActorProvider implements Resettable {
             channel.trackMode(mode, track);
         }
 
+        @Nonnull
         @Override
         public Commands commands() {
             return this.commands;
@@ -515,7 +516,7 @@ class ActorProvider implements Resettable {
     }
 
     class IRCChannelCommands implements Channel.Commands {
-        @Nonnull private Channel channel;
+        private Channel channel;
 
         void setChannel(@Nonnull Channel channel) {
             this.channel = channel;

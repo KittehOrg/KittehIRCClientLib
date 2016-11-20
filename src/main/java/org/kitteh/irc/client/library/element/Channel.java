@@ -48,7 +48,7 @@ import java.util.SortedSet;
  */
 public interface Channel extends MessageReceiver, Staleable {
     /**
-     * Proides commands.
+     * Provides commands.
      */
     interface Commands {
         /**
@@ -104,6 +104,14 @@ public interface Channel extends MessageReceiver, Staleable {
         @Nonnull
         Optional<String> getValue();
     }
+
+    /**
+     * Provides access to {@link Command}s.
+     *
+     * @return commands
+     */
+    @Nonnull
+    Commands commands();
 
     /**
      * Gets the latest snapshot of this channel.
@@ -244,14 +252,6 @@ public interface Channel extends MessageReceiver, Staleable {
     default void kick(@Nonnull User user) {
         this.commands().kick().target(user).execute();
     }
-
-    /**
-     * Provides access to {@link Command}s.
-     *
-     * @return commands
-     */
-    @Nonnull
-    Commands commands();
 
     /**
      * Parts the channel without stating a reason.
