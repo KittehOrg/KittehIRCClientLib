@@ -76,7 +76,7 @@ You can use `/msg NickServ SET PUBKEY <pubkey>` where `<pubkey>` is the output f
 To get KICL to do the authentication, call the `addProtocol` method on the `AuthManager` instance:
 
 ```java
-client.getAuthManager().addProtocol(new SaslECDSANIST256PChallenge(client, "ServicesUsername", privateKey));
+client.getAuthManager().addProtocol(new SaslECDSANIST256PChallenge(client, "accountname", privateKey));
 ```
 
 ### Protocol description
@@ -116,12 +116,12 @@ for more information on the SASL process.
 #### Step 2 - Wait for server acknowledgement
 
 The server will send back a `AUTHENTICATE +` message. The + here denotes an empty message.
-Once this message has been seen, the client can begin sending the user information.
+Once this message has been seen, the client can begin sending the account information.
 
-#### Step 3 - Send encapsulated username information
+#### Step 3 - Send encapsulated account name information
 
-The username to authenticate with, along with the identity to impersonate are concatenated
-and joined together by \0 (NUL byte, U+0000) characters. For example, logging in as user Example and impersonating Test:
+The account name to authenticate with, along with the identity to impersonate are concatenated
+and joined together by \0 (NUL byte, U+0000) characters. For example, logging in as account Example and impersonating Test:
 
 `Example\0Test\0`
 
@@ -141,7 +141,7 @@ Once the string has been built, it is base64 encoded and sent via the `AUTHENTIC
 
 The server will now send a 32 byte challenge (this matches the length of a SHA256 signature),
 encoded as base64. The client must **decode** the challenge (do not sign the base64 text
-representation directly) and sign it, using the user's private key. The signature should be stored.
+representation directly) and sign it, using the account's private key. The signature should be stored.
 
 **Important:** Many signature APIs accept data and then perform a cryptographic hash function
 (e.g. SHA1 or SHA256) over the data and sign the message digest instead of the provided data.

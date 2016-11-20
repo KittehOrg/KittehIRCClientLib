@@ -28,21 +28,21 @@ import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
 import javax.annotation.Nonnull;
 
 /**
- * Utilizing a password for authentication.
+ * Utilizing an account name for authentication.
  */
-public interface Username extends AuthProtocol {
+public interface AccountName extends AuthProtocol {
     /**
-     * Gets the username.
+     * Gets the account name.
      *
-     * @return username
+     * @return account name
      */
     @Nonnull
-    String getUsername();
+    String getAccountName();
 
     /**
-     * Sets the username to use.
+     * Sets the account name to use.
      *
-     * @param username username
+     * @param accountName account name
      */
-    void setUsername(@Nonnull String username);
+    void setAccountName(@Nonnull String accountName);
 }

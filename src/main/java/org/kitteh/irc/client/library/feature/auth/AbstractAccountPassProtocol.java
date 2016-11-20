@@ -31,20 +31,20 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.annotation.Nonnull;
 
 /**
- * Abstract general username/password protocol.
+ * Abstract general account/password protocol.
  */
-public abstract class AbstractUserPassProtocol extends AbstractUserProtocol implements Password {
+public abstract class AbstractAccountPassProtocol extends AbstractAccountProtocol implements Password {
     private String password;
 
     /**
      * Creates an instance.
      *
      * @param client client
-     * @param username username
+     * @param accountName account name
      * @param password password
      */
-    protected AbstractUserPassProtocol(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-        super(client, username);
+    protected AbstractAccountPassProtocol(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
+        super(client, accountName);
         Sanity.safeMessageCheck(password, "Password");
         this.password = password;
     }
@@ -64,6 +64,6 @@ public abstract class AbstractUserPassProtocol extends AbstractUserProtocol impl
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).add("user", this.getUsername()).add("pass", this.getPassword()).toString();
+        return new ToStringer(this).add("account", this.getAccountName()).add("pass", this.getPassword()).toString();
     }
 }

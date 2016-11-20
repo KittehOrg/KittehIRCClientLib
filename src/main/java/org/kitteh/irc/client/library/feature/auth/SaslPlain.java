@@ -36,17 +36,17 @@ public class SaslPlain extends AbstractSaslProtocol<String> implements Password 
      * Creates an instance.
      *
      * @param client client
-     * @param username username
+     * @param accountName account name
      * @param password password
      */
-    public SaslPlain(@Nonnull Client client, @Nonnull String username, @Nonnull String password) {
-        super(client, username, password, "PLAIN");
+    public SaslPlain(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
+        super(client, accountName, password, "PLAIN");
     }
 
     @Nonnull
     @Override
     protected String getAuthLine() {
-        return this.getUsername() + '\u0000' + this.getUsername() + '\u0000' + this.getPassword();
+        return this.getAccountName() + '\u0000' + this.getAccountName() + '\u0000' + this.getPassword();
     }
 
     @Nonnull
