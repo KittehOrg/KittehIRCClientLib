@@ -351,9 +351,9 @@ public interface Client {
         CapabilityRequestCommand capabilityRequest();
 
         /**
-         * Provides a new MODE command.
+         * Provides a new channel MODE command.
          *
-         * @param channel channel
+         * @param channel channel in which the mode is being changed
          * @return new mode command
          */
         @Nonnull
@@ -362,7 +362,7 @@ public interface Client {
         /**
          * Provides a new KICK command.
          *
-         * @param channel channel
+         * @param channel channel in which the kick is happening
          * @return new kick command
          */
         @Nonnull
@@ -387,7 +387,7 @@ public interface Client {
         /**
          * Provides a new TOPIC command.
          *
-         * @param channel channel
+         * @param channel channel in which the topic is being changed
          * @return new topic command
          */
         @Nonnull
