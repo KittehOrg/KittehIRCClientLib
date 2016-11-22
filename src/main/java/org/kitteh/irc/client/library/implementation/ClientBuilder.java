@@ -94,6 +94,14 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
+    public ClientBuilder messageDelay(int delay) {
+        Sanity.truthiness(delay >= 0, "Delay cannot be negative");
+        this.config.set(Config.MESSAGE_DELAY, delay);
+        return this;
+    }
+
+    @Nonnull
+    @Override
     public ClientBuilder name(@Nonnull String name) {
         Sanity.safeMessageCheck(name, "Name");
         this.config.set(Config.NAME, name);
@@ -156,14 +164,6 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public ClientBuilder secureTrustManagerFactory(@Nullable TrustManagerFactory factory) {
         this.config.set(Config.SSL_TRUST_MANAGER_FACTORY, factory);
-        return this;
-    }
-
-    @Nonnull
-    @Override
-    public ClientBuilder messageDelay(int delay) {
-        Sanity.truthiness(delay > 0, "Delay must be at least 1");
-        this.config.set(Config.MESSAGE_DELAY, delay);
         return this;
     }
 

@@ -48,6 +48,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
@@ -67,9 +68,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 final class NettyManager {
@@ -78,9 +79,9 @@ final class NettyManager {
 
         private final InternalClient client;
         private final Channel channel;
-        private final Queue<String> queue = new ConcurrentLinkedQueue<>();
+        private final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
         private boolean reconnect = true;
-        private ScheduledFuture<?> scheduledSending;
+        private Future<?> scheduledSending;
         private ScheduledFuture<?> scheduledPing;
         private final Object scheduledSendingLock = new Object();
         private final Object immediateSendingLock = new Object();
@@ -256,21 +257,33 @@ final class NettyManager {
                 if (!force && (this.scheduledSending == null)) {
                     return;
                 }
-                long delay = 0;
-                if (this.scheduledSending != null) {
-                    delay = this.scheduledSending.getDelay(TimeUnit.MILLISECONDS); // Negligible added delay processing this
-                    this.scheduledSending.cancel(false);
+                if (this.scheduledPing == null) {
+                    this.scheduledPing = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
                 }
-                if (this.scheduledPing != null) {
-                    this.scheduledPing.cancel(false);
+                if (this.scheduledSending == null) {
+                    final Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            String message;
+                            try {
+                                message = ClientConnection.this.queue.take();
+                            } catch (InterruptedException e) {
+                                return;
+                            }
+                            if (message != null) {
+                                ClientConnection.this.channel.writeAndFlush(message);
+                            }
+                            int delay = ClientConnection.this.client.getMessageDelay();
+                            if (delay == 0) {
+                                ClientConnection.this.scheduledSending = ClientConnection.this.channel.eventLoop().submit(this);
+                            } else {
+                                ClientConnection.this.scheduledSending = ClientConnection.this.channel.eventLoop().schedule(this, delay, TimeUnit.MILLISECONDS);
+                            }
+                        }
+                    };
+                    int delay = ClientConnection.this.client.getMessageDelay();
+                    ClientConnection.this.channel.eventLoop().schedule(runnable, delay, TimeUnit.MILLISECONDS);
                 }
-                this.scheduledSending = this.channel.eventLoop().scheduleAtFixedRate(() -> {
-                    String message = ClientConnection.this.queue.poll();
-                    if (message != null) {
-                        ClientConnection.this.channel.writeAndFlush(message);
-                    }
-                }, delay, this.client.getMessageDelay(), TimeUnit.MILLISECONDS);
-                this.scheduledPing = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
             }
         }
 
