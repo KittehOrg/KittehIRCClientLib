@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.exception;
 import javax.annotation.Nonnull;
 
 /**
- * Thrown in reaction to exceptions while attempting connection.
+ * Thrown in reaction to exceptions related to the connection.
  */
 public class KittehConnectionException extends Exception {
     private final boolean fatal;
@@ -35,7 +35,7 @@ public class KittehConnectionException extends Exception {
      * Constructs this event.
      *
      * @param cause the cause
-     * @param fatal if the exception indicates a failure to connect
+     * @param fatal true if the exception indicates death of the connection
      */
     public KittehConnectionException(@Nonnull Throwable cause, boolean fatal) {
         super(cause);
@@ -43,10 +43,9 @@ public class KittehConnectionException extends Exception {
     }
 
     /**
-     * Gets if the bot was prevented from connecting.
+     * Gets if the connection has died.
      *
-     * @return true if the bot could not connect, false if the exception
-     * does not indicate failure
+     * @return true if the exception indicates death of the connection
      */
     public boolean isFatal() {
         return this.fatal;
