@@ -207,12 +207,14 @@ class ActorProvider implements Resettable {
         @Override
         @Nonnull
         IRCChannelSnapshot snapshot() {
-            synchronized (this.modes) {
-                if (this.tracked && !this.fullListReceived) {
-                    long now = System.currentTimeMillis();
-                    if ((now - this.lastWho) > 5000) {
-                        this.lastWho = now;
-                        ActorProvider.this.client.sendRawLineAvoidingDuplication("WHO " + this.getName() + (ActorProvider.this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+            if (ActorProvider.this.client.getConfig().getNotNull(Config.QUERY_CHANNEL_INFO)) {
+                synchronized (this.modes) {
+                    if (this.tracked && !this.fullListReceived) {
+                        long now = System.currentTimeMillis();
+                        if ((now - this.lastWho) > 5000) {
+                            this.lastWho = now;
+                            ActorProvider.this.client.sendRawLineAvoidingDuplication("WHO " + this.getName() + (ActorProvider.this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+                        }
                     }
                 }
             }

@@ -166,15 +166,15 @@ public interface Client {
         Builder nick(@Nonnull String nick);
 
         /**
-         * Sets the server password.
+         * Sets if the Client will query WHO and MODE info on join.
          * <p>
-         * If not set, no password is sent
+         * By default, the Client will do so (true).
          *
-         * @param password server password or null to not send one
+         * @param query true for querying
          * @return this builder
          */
         @Nonnull
-        Builder serverPassword(@Nullable String password);
+        Builder queryChannelInformation(boolean query);
 
         /**
          * Sets the realname the client uses.
@@ -187,6 +187,17 @@ public interface Client {
          */
         @Nonnull
         Builder realName(@Nonnull String name);
+
+        /**
+         * Sets the server password.
+         * <p>
+         * If not set, no password is sent
+         *
+         * @param password server password or null to not send one
+         * @return this builder
+         */
+        @Nonnull
+        Builder serverPassword(@Nullable String password);
 
         /**
          * Sets whether the client connects via SSL.
