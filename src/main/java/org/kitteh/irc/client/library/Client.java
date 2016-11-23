@@ -71,8 +71,7 @@ public interface Client {
      * #secure(boolean)} to disable, or the other secure-prefixed methods in this
      * builder to fully utilize the feature. Note that the default
      * TrustManagerFactory relies on your local trust store. The default Oracle
-     * trust store does not support many commonly used certificate authorities
-     * (including StartCom) and does not accept self-signed.
+     * trust store does not accept self-signed certificates.
      */
     interface Builder extends Cloneable {
         /**
