@@ -1049,8 +1049,10 @@ class EventListener {
                 ChannelJoinEvent joinEvent = null;
                 if (user.getNick().equals(this.client.getNick())) {
                     this.client.getActorProvider().trackChannel(channel);
-                    this.client.sendRawLine("MODE " + channel.getName());
-                    this.client.sendRawLine("WHO " + channel.getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+                    if (this.client.getConfig().getNotNull(Config.QUERY_CHANNEL_INFO)) {
+                        this.client.sendRawLine("MODE " + channel.getName());
+                        this.client.sendRawLine("WHO " + channel.getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+                    }
                     if (this.client.getIntendedChannels().contains(channel.getName())) {
                         joinEvent = new RequestedChannelJoinCompleteEvent(this.client, event.getOriginalMessages(), channel.snapshot(), user.snapshot());
                     }

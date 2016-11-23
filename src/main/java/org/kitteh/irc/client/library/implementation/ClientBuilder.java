@@ -119,6 +119,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
+    public ClientBuilder queryChannelInformation(boolean query) {
+        this.config.set(Config.QUERY_CHANNEL_INFO, query);
+        return this;
+    }
+
+    @Nonnull
+    @Override
     public ClientBuilder serverPassword(@Nullable String password) {
         this.config.set(Config.SERVER_PASSWORD, password);
         return this;

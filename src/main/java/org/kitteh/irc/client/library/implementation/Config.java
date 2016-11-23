@@ -135,6 +135,7 @@ final class Config {
     static final Entry<StringConsumerWrapper> LISTENER_OUTPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<Integer> MESSAGE_DELAY = new Entry<>(Client.DEFAULT_MESSAGE_DELAY, Integer.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
+    static final Entry<Boolean> QUERY_CHANNEL_INFO = new Entry<>(true, Boolean.class);
     static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);
     static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6697), InetSocketAddress.class);
     static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class, true);
