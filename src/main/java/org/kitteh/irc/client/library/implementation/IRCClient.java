@@ -40,7 +40,7 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.exception.KittehAuthorNagException;
+import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
@@ -186,7 +186,7 @@ final class IRCClient extends InternalClient {
         if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
             this.configureSts();
         } else if (!this.isSSL()) {
-            throw new KittehAuthorNagException(
+            throw new KittehNagException(
                     "Connection is insecure. If the server does not support SSL, consider enabling STS support to " +
                     "facilitate automatic SSL upgrades when it does."
             );

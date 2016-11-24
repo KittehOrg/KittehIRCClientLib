@@ -29,7 +29,7 @@ import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
-import org.kitteh.irc.client.library.exception.KittehAuthorNagException;
+import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.EventManager;
@@ -59,8 +59,8 @@ class ManagerEvent implements EventManager {
             Throwable thrown = publicationError.getCause();
             if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehServerMessageException)) {
                 exceptional = (KittehServerMessageException) thrown.getCause();
-            } else if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehAuthorNagException)) {
-                exceptional = (KittehAuthorNagException) thrown.getCause();
+            } else if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehNagException)) {
+                exceptional = (KittehNagException) thrown.getCause();
             } else {
                 exceptional = new KittehEventException(thrown);
             }
