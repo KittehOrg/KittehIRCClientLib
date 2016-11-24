@@ -63,7 +63,7 @@ public interface STSMachine {
     STSStorageManager getStorageManager();
 
     /**
-     * Provides a key->value map of options and list of flags, making up the STS policy.
+     * Provides a key-&gt;value map of options and list of flags, making up the STS policy.
      * <p>
      * It is expected the policy is valid at this stage.
      *
