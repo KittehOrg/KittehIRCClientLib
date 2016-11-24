@@ -74,7 +74,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder defaultMessageMap(@Nullable DefaultMessageMap defaultMessageMap) {
+    public ClientBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
         this.config.set(Config.DEFAULT_MESSAGE_MAP, defaultMessageMap);
         return this;
     }
