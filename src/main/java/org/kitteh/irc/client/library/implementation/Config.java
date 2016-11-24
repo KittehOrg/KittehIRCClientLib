@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.Version;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -136,7 +137,7 @@ final class Config {
     static final Entry<Integer> MESSAGE_DELAY = new Entry<>(Client.DEFAULT_MESSAGE_DELAY, Integer.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<Boolean> QUERY_CHANNEL_INFO = new Entry<>(true, Boolean.class);
-    static final Entry<String> REAL_NAME = new Entry<>("Kitteh", String.class);
+    static final Entry<String> REAL_NAME = new Entry<>("KICL " + Version.getVersion() + " - kitteh.org", String.class);
     static final Entry<InetSocketAddress> SERVER_ADDRESS = new Entry<>(new InetSocketAddress("localhost", 6697), InetSocketAddress.class);
     static final Entry<String> SERVER_PASSWORD = new Entry<>(null, String.class, true);
     static final Entry<Boolean> SSL = new Entry<>(true, Boolean.class);
