@@ -6,7 +6,9 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
 
@@ -29,6 +31,7 @@ class FakeClient extends InternalClient {
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
     private final IRCServerInfo serverInfo = new IRCServerInfo(this);
+    private DefaultMessageMap defaultMessageMap = new SimpleDefaultMessageMap(null);
 
     @Override
     void processLine(@Nonnull String line) {
@@ -69,6 +72,10 @@ class FakeClient extends InternalClient {
     @Override
     Config getConfig() {
         return this.config;
+    }
+
+    public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
+        this.defaultMessageMap = defaults;
     }
 
     @Nonnull
@@ -186,6 +193,11 @@ class FakeClient extends InternalClient {
     @Override
     public Set<Channel> getChannels() {
         return Collections.emptySet();
+    }
+
+    @Nonnull
+    public DefaultMessageMap getDefaultMessageMap() {
+        return this.defaultMessageMap;
     }
 
     @Nonnull

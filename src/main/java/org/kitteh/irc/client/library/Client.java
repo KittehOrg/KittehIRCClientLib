@@ -32,6 +32,7 @@ import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
+import org.kitteh.irc.client.library.feature.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
@@ -178,6 +179,16 @@ public interface Client {
          */
         @Nonnull
         Builder realName(@Nonnull String name);
+
+        /**
+         * Sets default messages.
+         *
+         * @param defaultMessageMap default values for messages
+         * @return this builder
+         * @see DefaultMessageMap
+         */
+        @Nonnull
+        Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
 
         /**
          * Sets whether the client connects via SSL.
@@ -428,6 +439,16 @@ public interface Client {
      */
     @Nonnull
     String getIntendedNick();
+
+    /**
+     * Gets the message manager for default messages to reply with
+     * when certain messages are being sent. Like a KICK, PART, or
+     * QUIT reason.
+     *
+     * @return the DefaultMessageMap
+     */
+    @Nonnull
+    DefaultMessageMap getDefaultMessageMap();
 
     /**
      * Gets the manager of ISUPPORT info.
@@ -775,6 +796,15 @@ public interface Client {
      * @param listener catcher of throwable objects
      */
     void setExceptionListener(@Nullable Consumer<Exception> listener);
+
+    /**
+     * Sets the message manager for default messages to reply with
+     * when certain messages are being sent. Like a KICK, PART, or QUIT
+     * reason.
+     *
+     * @param defaults DefaultMessageMap to set
+     */
+    void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults);
 
     /**
      * Sets a listener for all incoming messages from the server.

@@ -34,8 +34,11 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.DefaultMessage;
+import org.kitteh.irc.client.library.feature.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.feature.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
@@ -102,6 +105,8 @@ final class IRCClient extends InternalClient {
 
     private final ActorProvider actorProvider = new ActorProvider(this);
 
+    private DefaultMessageMap defaultMessageMap;
+
     private Map<Character, ModeStatus<UserMode>> userModes;
 
     IRCClient(@Nonnull Config config) {
@@ -119,6 +124,12 @@ final class IRCClient extends InternalClient {
 
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
+
+        DefaultMessageMap defaultMessageMap = this.config.get(Config.DEFAULT_MESSAGE_MAP);
+        if (defaultMessageMap == null) {
+            defaultMessageMap = new SimpleDefaultMessageMap();
+        }
+        this.defaultMessageMap = defaultMessageMap;
     }
 
     @Override
@@ -202,6 +213,11 @@ final class IRCClient extends InternalClient {
     }
 
     @Nonnull
+    public DefaultMessageMap getDefaultMessageMap() {
+        return this.defaultMessageMap;
+    }
+
+    @Nonnull
     @Override
     public ManagerISupport getISupportManager() {
         return this.iSupportManager;
@@ -266,7 +282,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void removeChannel(@Nonnull String channelName) {
-        this.removeChannelPlease(channelName, null);
+        this.removeChannelPlease(channelName, this.defaultMessageMap.getDefault(DefaultMessage.PART).orElse(null));
     }
 
     @Override
@@ -372,6 +388,12 @@ final class IRCClient extends InternalClient {
         }
     }
 
+    public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
+        Sanity.nullCheck(defaults, "defaults must not be null");
+
+        this.defaultMessageMap = defaults;
+    }
+
     @Override
     public void setInputListener(@Nullable Consumer<String> listener) {
         if (listener == null) {
@@ -413,7 +435,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void shutdown() {
-        this.shutdownInternal(null);
+        this.shutdownInternal(this.defaultMessageMap.getDefault(DefaultMessage.QUIT).orElse(null));
     }
 
     @Override
