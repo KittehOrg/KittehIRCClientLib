@@ -255,9 +255,9 @@ final class ClientBuilder implements Client.Builder, Cloneable {
         if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
             final TrustManagerFactory factory = this.config.get(Config.SSL_TRUST_MANAGER_FACTORY);
             Sanity.truthiness(
-                !(factory instanceof AcceptingTrustManagerFactory) &&
-                !(factory instanceof InsecureTrustManagerFactory),
-                "Cannot use STS with an insecure trust manager."
+                    !(factory instanceof AcceptingTrustManagerFactory) &&
+                            !(factory instanceof InsecureTrustManagerFactory),
+                    "Cannot use STS with an insecure trust manager."
             );
         }
 

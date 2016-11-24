@@ -92,7 +92,7 @@ public final class STSUtil {
                 String[] innerComponents = component.split("=");
                 options.put(innerComponents[0], innerComponents[1]);
             }
-         }
+        }
         return new STSPolicy(options, flags);
     }
 }

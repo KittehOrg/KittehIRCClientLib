@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
-import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ISupportParameter;

@@ -73,7 +73,7 @@ class STSHandler {
     public void onCapLs(CapabilitiesSupportedListEvent event) {
         // stability not a concern, only one or zero result(s)
         final Optional<CapabilityState> potentialStsCapability = event.getSupportedCapabilities().stream()
-            .filter(STSHandler.STS_CAPABILITY_PREDICATE).findAny();
+                .filter(STSHandler.STS_CAPABILITY_PREDICATE).findAny();
 
         if (!potentialStsCapability.isPresent()) {
             if (this.machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
@@ -168,7 +168,7 @@ class STSHandler {
                 try {
                     Integer.parseInt(value); // can't easily use a short because signed..
                 } catch (NumberFormatException nfe) {
-                    throw new KittehServerMessageException(originalMessages, "Specified port could not be parsed: "  + nfe.getMessage());
+                    throw new KittehServerMessageException(originalMessages, "Specified port could not be parsed: " + nfe.getMessage());
                 }
 
                 this.machine.setCurrentState(STSClientState.STS_PRESENT_RECONNECTING);
