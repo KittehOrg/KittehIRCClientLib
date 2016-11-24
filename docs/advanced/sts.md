@@ -1,6 +1,6 @@
 ### Strict transport security
 
-Due to recent development efforts, KICL now supports the IRCv3
+Due to recent development efforts, KICL now supports the draft IRCv3
 [STS specification](https://ircv3.net/specs/core/sts-3.3.html) which adds support for strict transport security
 policies to be set by the IRC server administrators.
 
@@ -13,9 +13,8 @@ whilst ensuring experienced developers are able to turn off the functionality.
 
 #### Why should I care?
 
-The internet is a scary place now. We can't afford to do things in plaintext anymore, and IRC is no exception.
-There's been great success with HSTS on the web (although it's not as widespread yet as some would hope) and
-IRC should follow suit.
+With modern libraries, encryption of communication can be performed seamlessly to increase the privacy of IRC messaging.
+This is well-aligned with current best practices with other technologies, such as HTTP, and the internet as a whole.
 
 Servers and clients that support this new capability will connect in a secure manner, even if the user misconfigures
 the client to connect over a plaintext port. It will also allow server operators/admins to seamlessly upgrade users to
