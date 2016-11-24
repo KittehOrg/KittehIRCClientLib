@@ -46,6 +46,8 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
+import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -323,6 +325,18 @@ public interface Client {
         Builder webircRemove();
 
         /**
+         * Sets the storage manager for STS (strict transport security) support.
+         * <p>
+         * By default, this is null and thus STS support is disabled. If you elect to
+         * enable STS, you are not permitted to use an insecure trust manager factory.
+         *
+         * @param storageManager storage system to persist STS information per host
+         * @return this builder
+         */
+        @Nonnull
+        Builder stsStorageManager(@Nullable STSStorageManager storageManager);
+
+        /**
          * Resets this builder to the default values.
          *
          * @return this builder
@@ -536,6 +550,14 @@ public interface Client {
      */
     @Nonnull
     String getIntendedNick();
+
+    /**
+     * Gets the STS machine instance, if one is in use.
+     *
+     * @return the machine, may not be present
+     */
+    @Nonnull
+    Optional<STSMachine> getSTSMachine();
 
     /**
      * Gets the manager of ISUPPORT info.

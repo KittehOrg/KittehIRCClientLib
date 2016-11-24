@@ -44,6 +44,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -52,6 +53,10 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
+import org.kitteh.irc.client.library.exception.KittehSTSException;
+import org.kitteh.irc.client.library.feature.sts.STSClientState;
+import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.STSPolicy;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -169,7 +174,7 @@ final class NettyManager {
             });
 
             // SSL
-            if (this.client.getConfig().getNotNull(Config.SSL)) {
+            if (this.client.isSSL()) {
                 try {
                     File keyCertChainFile = this.client.getConfig().get(Config.SSL_KEY_CERT_CHAIN);
                     File keyFile = this.client.getConfig().get(Config.SSL_KEY);
@@ -181,7 +186,20 @@ final class NettyManager {
                     }
                     SslContext sslContext = SslContextBuilder.forClient().trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();
                     InetSocketAddress addr = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS);
-                    this.channel.pipeline().addFirst(sslContext.newHandler(this.channel.alloc(), addr.getHostString(), addr.getPort()));
+                    // The presence of the two latter arguments enables SNI.
+                    final SslHandler sslHandler = sslContext.newHandler(this.channel.alloc(), addr.getHostString(), addr.getPort());
+                    sslHandler.handshakeFuture().addListener(handshakeFuture -> {
+                        if (!handshakeFuture.isSuccess() && ClientConnection.this.client.getSTSMachine().isPresent()) {
+                            STSMachine machine = ClientConnection.this.client.getSTSMachine().get();
+                            if (machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
+                                ClientConnection.this.shutdown("Cannot connect securely", false);
+                                machine.setCurrentState(STSClientState.STS_PRESENT_CANNOT_CONNECT);
+                                throw new KittehSTSException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
+                            }
+                        }
+                    });
+                    this.channel.pipeline().addFirst(sslHandler);
+
                 } catch (SSLException | NoSuchAlgorithmException | KeyStoreException e) {
                     this.client.getExceptionListener().queue(new KittehConnectionException(e, true));
                     return;
@@ -287,7 +305,7 @@ final class NettyManager {
             }
         }
 
-        private void shutdown(@Nullable String message, boolean reconnect) {
+        void shutdown(@Nullable String message, boolean reconnect) {
             this.reconnect = reconnect;
 
             this.sendMessage("QUIT" + ((message != null) ? (" :" + message) : ""), true);
@@ -323,6 +341,18 @@ final class NettyManager {
     }
 
     static synchronized ClientConnection connect(@Nonnull InternalClient client) {
+
+        // STS Override
+        if (client.getSTSMachine().isPresent() && !client.isSSL()) {
+            String hostname = client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
+            final STSMachine machine = client.getSTSMachine().get();
+            if (machine.getStorageManager().hasEntry(hostname)) {
+                STSPolicy policy = machine.getStorageManager().getEntry(hostname).get();
+                machine.setSTSPolicy(policy);
+                machine.setCurrentState(STSClientState.STS_POLICY_CACHED);
+            }
+        }
+
         if (bootstrap == null) {
             bootstrap = new Bootstrap();
             bootstrap.channel(NioSocketChannel.class);
