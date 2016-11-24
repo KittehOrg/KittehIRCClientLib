@@ -65,7 +65,7 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
      * @param key the default message key to set a value for
      * @param defaultString the default value to assume when nothing is
      * provided for this DefaultMessage
-     * @return Returns this to permit chaining
+     * @return returns this to permit chaining
      */
     public SimpleDefaultMessageMap setDefault(@Nonnull DefaultMessage key, @Nullable String defaultString) {
         Sanity.nullCheck(key, "DefaultMessage key must not be null");

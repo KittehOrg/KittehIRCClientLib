@@ -74,6 +74,10 @@ class FakeClient extends InternalClient {
         return this.config;
     }
 
+    public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
+        this.defaultMessageMap = defaults;
+    }
+
     @Nonnull
     @Override
     Listener<Exception> getExceptionListener() {
@@ -83,10 +87,6 @@ class FakeClient extends InternalClient {
     @Override
     public void setExceptionListener(@Nullable Consumer<Exception> listener) {
 
-    }
-
-    public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
-        this.defaultMessageMap = defaults;
     }
 
     @Nonnull
@@ -196,6 +196,11 @@ class FakeClient extends InternalClient {
     }
 
     @Nonnull
+    public DefaultMessageMap getDefaultMessageMap() {
+        return this.defaultMessageMap;
+    }
+
+    @Nonnull
     @Override
     public EventManager getEventManager() {
         return this.eventManager;
@@ -205,11 +210,6 @@ class FakeClient extends InternalClient {
     @Override
     public String getIntendedNick() {
         return this.config.getNotNull(Config.NICK);
-    }
-
-    @Nonnull
-    public DefaultMessageMap getDefaultMessageMap() {
-        return this.defaultMessageMap;
     }
 
     @Override
