@@ -127,7 +127,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder defaultingOutboundMessageMap(@Nonnull DefaultingOutboundMessageMap outboundMessageMap) {
+    public ClientBuilder defaultingOutboundMessageMap(@Nullable DefaultingOutboundMessageMap outboundMessageMap) {
         this.config.set(Config.OUTBOUND_MESSAGE_MAP, outboundMessageMap);
         return this;
     }
