@@ -144,6 +144,15 @@ public interface Client {
         Builder listenOutput(@Nullable Consumer<String> listener);
 
         /**
+         * Sets the delay between messages being sent to the server
+         *
+         * @param delay the delay in milliseconds
+         * @return this builder
+         */
+        @Nonnull
+        Builder messageDelay(int delay);
+
+        /**
          * Names the client, for internal labeling.
          *
          * @param name a name to label the client internally
@@ -252,15 +261,6 @@ public interface Client {
          */
         @Nonnull
         Builder secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
-
-        /**
-         * Sets the delay between messages being sent to the server
-         *
-         * @param delay the delay in milliseconds
-         * @return this builder
-         */
-        @Nonnull
-        Builder messageDelay(int delay);
 
         /**
          * Sets the server host to which the client will connect.
@@ -472,6 +472,14 @@ public interface Client {
      * @param channelsAndKeys pairs of channel, key
      */
     void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys);
+
+    /**
+     * Provides access to {@link Command}s.
+     *
+     * @return commands
+     */
+    @Nonnull
+    Commands commands();
 
     /**
      * Gets the authentication manager.
@@ -929,12 +937,4 @@ public interface Client {
      * @param reason quit message to send
      */
     void shutdown(@Nonnull String reason);
-
-    /**
-     * Provides access to {@link Command}s.
-     *
-     * @return commands
-     */
-    @Nonnull
-    Commands commands();
 }
