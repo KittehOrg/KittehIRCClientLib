@@ -30,7 +30,7 @@ Alternatively, a default class (currently `STSPropertiesStorageManager`) which s
 file is available to use and built-in to KICL. A utility method makes using this default implementation very straightforward:
 
 ```java
-Client client = Client.builder().nick("Kitteh").serverHost("some.hostname.irc.com").stsStorageManager(STSUtil.getDefaultStorageManager()).build();
+Client client = Client.builder().serverHost("irc.kitteh.org").stsStorageManager(STSUtil.getDefaultStorageManager()).build();
 client.addChannel("#kicl");
 ```
 
@@ -43,7 +43,7 @@ Now, when the client connects it will automatically obey any relevant policies i
 
 ```java
 STSPolicy policy = STSUtil.getSTSPolicyFromString(",", "port=6697");
-client.getSTSMachine().get().getStorageManager().addEntry("foo.host", 5000, policy);
+client.getSTSMachine().get().getStorageManager().addEntry("irc.kitteh.org", 5000, policy);
 ```
 
 ### Testing STS
