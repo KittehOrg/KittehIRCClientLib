@@ -57,7 +57,7 @@ public interface DefaultingOutboundMessageMap {
     Optional<String> getDefault(DefaultingOutboundMessage key);
 
     /**
-     * Retrieve the default string value for the specified
+     * Retrieves the default string value for the specified
      * DefaultingOutboundMessage, but override the defaultString value with
      * our own message if the value is not set.
      *
@@ -65,15 +65,15 @@ public interface DefaultingOutboundMessageMap {
      * message of
      * @param defaultValue Instead of referencing to the defaultString,
      * use this value instead if it is not set.
-     * @return The string of the default value, or the second parameter
+     * @return the string of the default value, or the second parameter
      * if the key is not set.
      */
     Optional<String> getDefault(DefaultingOutboundMessage key, String defaultValue);
 
     /**
-     * Retrieve the full list of all DefaultingOutboundMessage <-> String mappings.
+     * Retrieves the full list of all DefaultingOutboundMessage <-> String mappings.
      *
-     * @return Retrieve the map
+     * @return retrieve the map
      */
     Map<DefaultingOutboundMessage, String> getDefaults();
 }

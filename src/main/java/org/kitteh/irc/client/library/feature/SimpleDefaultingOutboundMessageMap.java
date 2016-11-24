@@ -32,9 +32,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * Provides a way to set default messages for certain events, for example during
+ * a reconnect, quit, or kick.
+ */
 public class SimpleDefaultingOutboundMessageMap implements DefaultingOutboundMessageMap {
     protected final Map<DefaultingOutboundMessage, String> defaults = new HashMap<>();
-    @Nullable protected final String defaultString;
+    protected final String defaultString;
 
     /**
      * Creates a SimpleDefaultingOutboundMessageMap object with a custom string to default
@@ -63,8 +68,7 @@ public class SimpleDefaultingOutboundMessageMap implements DefaultingOutboundMes
      * @param defaultString The default value to assume when nothing is
      * provided for this DefaultingOutboundMessage
      * @return Returns this to permit chaining
-     * @throws IllegalArgumentException Will throw an IllegalArgumentException is you set the
-     * defaultString value to "". Use null instead.
+     * @throws IllegalArgumentException if defaultString is an empty String. Use null instead.
      */
     public SimpleDefaultingOutboundMessageMap setDefault(@Nonnull DefaultingOutboundMessage key, @Nullable String defaultString) {
         Sanity.nullCheck(key, "DefaultingOutboundMessage key must not be null");

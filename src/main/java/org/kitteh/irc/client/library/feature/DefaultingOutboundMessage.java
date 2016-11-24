@@ -29,11 +29,11 @@ package org.kitteh.irc.client.library.feature;
  */
 public enum DefaultingOutboundMessage {
     /**
-     * When a KickCommand has no reason supplied
+     * When a KickCommand has no reason supplied.
      */
     KICK,
     /**
-     * When a channel is parted with no reason supplied
+     * When a channel is parted with no reason supplied.
      */
     PART,
     /**
@@ -48,8 +48,8 @@ public enum DefaultingOutboundMessage {
     /**
      * When KICL thinks it has lost connection with the server, it will
      * attempt to reconnect with this value. Does not work when it is
-     * the server that is timing KICL out (i.e. because you lose
-     * internet connection.)
+     * the server that is timing KICL out (e.g. because you lose
+     * internet connection)
      */
     QUIT_PING_TIMEOUT,
     /**
