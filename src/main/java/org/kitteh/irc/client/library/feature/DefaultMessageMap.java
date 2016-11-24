@@ -61,9 +61,9 @@ public interface DefaultMessageMap {
      * DefaultMessage, but override the defaultString value with
      * our own message if the value is not set.
      *
-     * @param key The default DefaultMessage key to obtain the
+     * @param key the default DefaultMessage key to obtain the
      * message of
-     * @param defaultValue Instead of referencing to the defaultString,
+     * @param defaultValue instead of referencing to the defaultString,
      * use this value instead if it is not set.
      * @return the string of the default value, or the second parameter
      * if the key is not set.

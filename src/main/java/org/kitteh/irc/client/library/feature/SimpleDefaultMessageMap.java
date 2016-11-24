@@ -64,8 +64,8 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
     /**
      * Sets a default message for the DefaultMessage.
      *
-     * @param key The default message key to set a value for
-     * @param defaultString The default value to assume when nothing is
+     * @param key the default message key to set a value for
+     * @param defaultString the default value to assume when nothing is
      * provided for this DefaultMessage
      * @return Returns this to permit chaining
      * @throws IllegalArgumentException if defaultString is an empty String. Use null instead.
