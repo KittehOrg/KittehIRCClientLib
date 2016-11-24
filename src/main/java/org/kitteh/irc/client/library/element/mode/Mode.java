@@ -25,8 +25,6 @@ package org.kitteh.irc.client.library.element.mode;
 
 import org.kitteh.irc.client.library.element.ClientLinked;
 
-import javax.annotation.Nonnull;
-
 /**
  * A base class defining information a mode would have.
  */

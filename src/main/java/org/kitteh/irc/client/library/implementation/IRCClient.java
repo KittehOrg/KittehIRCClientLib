@@ -188,7 +188,7 @@ final class IRCClient extends InternalClient {
         } else if (!this.isSSL()) {
             throw new KittehNagException(
                     "Connection is insecure. If the server does not support SSL, consider enabling STS support to " +
-                    "facilitate automatic SSL upgrades when it does."
+                            "facilitate automatic SSL upgrades when it does."
             );
         }
 

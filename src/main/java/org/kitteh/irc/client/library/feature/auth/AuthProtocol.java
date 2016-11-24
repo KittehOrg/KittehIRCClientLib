@@ -25,8 +25,6 @@ package org.kitteh.irc.client.library.feature.auth;
 
 import org.kitteh.irc.client.library.element.ClientLinked;
 
-import javax.annotation.Nonnull;
-
 /**
  * An authentication protocol.
  */

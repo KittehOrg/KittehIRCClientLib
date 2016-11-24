@@ -23,8 +23,6 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import javax.annotation.Nonnull;
-
 /**
  * Represents a snapshot of an element.
  */
