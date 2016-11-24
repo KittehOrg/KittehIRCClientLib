@@ -27,6 +27,15 @@ import javax.annotation.Nonnull;
 
 /**
  * Interface representing the STS FSM.
+ * <p>
+ * This is a finite state machine which represents
+ * the various states related to strict-transport
+ * security that the client can be in at any one time.
+ * <p>
+ * State changes are caused by the IRCd sending the
+ * appropriate capability data, or if a user manually
+ * initiates a change. Actions are automatically taken
+ * as a result of state transitions,
  */
 public interface STSMachine {
     /**
