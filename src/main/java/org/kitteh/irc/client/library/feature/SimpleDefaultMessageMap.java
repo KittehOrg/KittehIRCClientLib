@@ -46,11 +46,9 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
      * to when an DefaultMessage key is not set.
      *
      * @param defaultString a default string to use for when a key is not set
-     * @throws IllegalArgumentException Will throw an IllegalArgumentException is you set the
-     * defaultString value to "". Use null instead.
      */
     public SimpleDefaultMessageMap(@Nullable String defaultString) {
-        this.defaultString = this.emptyStringCheck(defaultString);
+        this.defaultString = defaultString;
     }
 
     /**
@@ -68,12 +66,11 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
      * @param defaultString the default value to assume when nothing is
      * provided for this DefaultMessage
      * @return Returns this to permit chaining
-     * @throws IllegalArgumentException if defaultString is an empty String. Use null instead.
      */
     public SimpleDefaultMessageMap setDefault(@Nonnull DefaultMessage key, @Nullable String defaultString) {
         Sanity.nullCheck(key, "DefaultMessage key must not be null");
 
-        this.defaults.put(key, this.emptyStringCheck(defaultString));
+        this.defaults.put(key, defaultString);
 
         return this;
     }
@@ -124,24 +121,5 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
         }
 
         return Collections.unmodifiableMap(this.defaults);
-    }
-
-    /**
-     * Checks if defaultString is not null and is empty, then
-     * throws an IllegalArgumentException.
-     *
-     * @param defaultString string to check
-     * @return defaultString as it was passed
-     * @throws IllegalArgumentException if the defaultString is not null and is empty
-     */
-    protected String emptyStringCheck(@Nullable String defaultString) {
-        if (defaultString != null && defaultString.isEmpty()) {
-            // Both "" and null are legal here, technically. But for KICL to
-            // perform best (and to avoid != null && string.isEmpty() checks)
-            // we enforce a requirement on null.
-            throw new IllegalArgumentException("defaultString may not be an empty string, use null instead.");
-        }
-
-        return defaultString;
     }
 }

@@ -9,17 +9,6 @@ import java.util.Map;
  * Tests the DefaultMessage system.
  */
 public class DefaultMessageTest {
-    @Test(expected = IllegalArgumentException.class)
-    public void testCannotCreateDefaultQuotedString() {
-        new SimpleDefaultMessageMap("");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testCannotSetQuotedString() {
-        new SimpleDefaultMessageMap("foo")
-            .setDefault(DefaultMessage.QUIT, "");
-    }
-
     @Test
     public void testSetKeyReturnsSetValue() {
         SimpleDefaultMessageMap defaults = new SimpleDefaultMessageMap("foo")
