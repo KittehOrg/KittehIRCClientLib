@@ -37,41 +37,41 @@ import java.util.Optional;
  * Provides a way to set default messages for certain events, for example during
  * a reconnect, quit, or kick.
  */
-public class SimpleDefaultingOutboundMessageMap implements DefaultingOutboundMessageMap {
-    protected final Map<DefaultingOutboundMessage, String> defaults = new HashMap<>();
+public class SimpleDefaultMessageMap implements DefaultMessageMap {
+    protected final Map<DefaultMessage, String> defaults = new HashMap<>();
     protected final String defaultString;
 
     /**
-     * Creates a SimpleDefaultingOutboundMessageMap object with a custom string to default
-     * to when an DefaultingOutboundMessage key is not set.
+     * Creates a SimpleDefaultMessageMap object with a custom string to default
+     * to when an DefaultMessage key is not set.
      *
      * @param defaultString a default string to use for when a key is not set
      * @throws IllegalArgumentException Will throw an IllegalArgumentException is you set the
      * defaultString value to "". Use null instead.
      */
-    public SimpleDefaultingOutboundMessageMap(@Nullable String defaultString) {
+    public SimpleDefaultMessageMap(@Nullable String defaultString) {
         this.defaultString = this.emptyStringCheck(defaultString);
     }
 
     /**
-     * Creates a SimpleDefaultingOutboundMessageMap object with predefined string to default
-     * to when an DefaultingOutboundMessage key is not set.
+     * Creates a SimpleDefaultMessageMap object with predefined string to default
+     * to when an DefaultMessage key is not set.
      */
-    public SimpleDefaultingOutboundMessageMap() {
+    public SimpleDefaultMessageMap() {
         this.defaultString = null;
     }
 
     /**
-     * Sets a default message for the DefaultingOutboundMessage.
+     * Sets a default message for the DefaultMessage.
      *
-     * @param key The outbound message key to set a value for
+     * @param key The default message key to set a value for
      * @param defaultString The default value to assume when nothing is
-     * provided for this DefaultingOutboundMessage
+     * provided for this DefaultMessage
      * @return Returns this to permit chaining
      * @throws IllegalArgumentException if defaultString is an empty String. Use null instead.
      */
-    public SimpleDefaultingOutboundMessageMap setDefault(@Nonnull DefaultingOutboundMessage key, @Nullable String defaultString) {
-        Sanity.nullCheck(key, "DefaultingOutboundMessage key must not be null");
+    public SimpleDefaultMessageMap setDefault(@Nonnull DefaultMessage key, @Nullable String defaultString) {
+        Sanity.nullCheck(key, "DefaultMessage key must not be null");
 
         this.defaults.put(key, this.emptyStringCheck(defaultString));
 
@@ -80,31 +80,31 @@ public class SimpleDefaultingOutboundMessageMap implements DefaultingOutboundMes
 
     /**
      * Retrieves the default string value for the specified
-     * DefaultingOutboundMessage.
+     * DefaultMessage.
      *
-     * @param key the default DefaultingOutboundMessage key to obtain the
+     * @param key the default DefaultMessage key to obtain the
      * default of
      * @return the string of the default value, or the predefined
      * defaultString
-     * @see {@link #getDefault(DefaultingOutboundMessage, String)}
+     * @see {@link #getDefault(DefaultMessage, String)}
      */
-    public Optional<String> getDefault(DefaultingOutboundMessage key) {
+    public Optional<String> getDefault(DefaultMessage key) {
         return this.getDefault(key, this.defaultString);
     }
 
     /**
      * Retrieves the default string value for the specified
-     * DefaultingOutboundMessage, but override the defaultString
+     * DefaultMessage, but override the defaultString
      * value with our own message if the value is not set.
      *
-     * @param key default DefaultingOutboundMessage key to get the default of
+     * @param key default DefaultMessage key to get the default of
      * @param defaultValue instead of referencing to the defaultString,
      * use this value instead if it is not set.
      * @return string of the default value, or the second parameter
      * if the key is not set.
      */
-    public Optional<String> getDefault(@Nonnull DefaultingOutboundMessage key, @Nullable String defaultValue) {
-        Sanity.nullCheck(key, "DefaultingOutboundMessage key must not be null");
+    public Optional<String> getDefault(@Nonnull DefaultMessage key, @Nullable String defaultValue) {
+        Sanity.nullCheck(key, "DefaultMessage key must not be null");
 
         String value = this.defaults.get(key);
 
@@ -116,10 +116,10 @@ public class SimpleDefaultingOutboundMessageMap implements DefaultingOutboundMes
      * Retrieves a list of all currently-defined defaults, filling in the
      * unset keys with the defaultString defined in the object's constructor.
      *
-     * @return a map with default strings for all outbound messages
+     * @return a map with default strings for all default messages
      */
-    public Map<DefaultingOutboundMessage, String> getDefaults() {
-        for (DefaultingOutboundMessage key : DefaultingOutboundMessage.values()) {
+    public Map<DefaultMessage, String> getDefaults() {
+        for (DefaultMessage key : DefaultMessage.values()) {
             this.defaults.computeIfAbsent(key, value -> this.defaultString);
         }
 

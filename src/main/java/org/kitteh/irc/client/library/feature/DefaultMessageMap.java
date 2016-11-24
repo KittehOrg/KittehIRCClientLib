@@ -28,52 +28,52 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * A minimalistic interface of what an outbound message map should at least
+ * A minimalistic interface of what a message map should at least
  * include.
  *
  * Note that for KICL to perform best, null should be passed instead of "" if
  * we want to pass an empty string.
  */
-public interface DefaultingOutboundMessageMap {
+public interface DefaultMessageMap {
     /**
      * Sets a new value for the specified outbound message, so that when the
      * value is requested via #getDefault later it will return this value.
      *
      * @param key outbound message to set a value for
      * @param defaultString default value to assume when nothing is provided
-     * for this DefaultingOutboundMessage
+     * for this DefaultMessage
      * @return self to permit chaining
      */
-    DefaultingOutboundMessageMap setDefault(DefaultingOutboundMessage key, @Nullable String defaultString);
+    DefaultMessageMap setDefault(DefaultMessage key, @Nullable String defaultString);
 
     /**
-     * Retrieves the value that is attached to the DefaultingOutboundMessage
+     * Retrieves the value that is attached to the DefaultMessage
      * key.
      *
-     * @param key default DefaultingOutboundMessage key to obtain the message
+     * @param key default DefaultMessage key to obtain the message
      * of
      * @return default message that was set
      */
-    Optional<String> getDefault(DefaultingOutboundMessage key);
+    Optional<String> getDefault(DefaultMessage key);
 
     /**
      * Retrieves the default string value for the specified
-     * DefaultingOutboundMessage, but override the defaultString value with
+     * DefaultMessage, but override the defaultString value with
      * our own message if the value is not set.
      *
-     * @param key The default DefaultingOutboundMessage key to obtain the
+     * @param key The default DefaultMessage key to obtain the
      * message of
      * @param defaultValue Instead of referencing to the defaultString,
      * use this value instead if it is not set.
      * @return the string of the default value, or the second parameter
      * if the key is not set.
      */
-    Optional<String> getDefault(DefaultingOutboundMessage key, String defaultValue);
+    Optional<String> getDefault(DefaultMessage key, String defaultValue);
 
     /**
-     * Retrieves the full list of all DefaultingOutboundMessage <-> String mappings.
+     * Retrieves the full list of all DefaultMessage <-> String mappings.
      *
      * @return retrieve the map
      */
-    Map<DefaultingOutboundMessage, String> getDefaults();
+    Map<DefaultMessage, String> getDefaults();
 }

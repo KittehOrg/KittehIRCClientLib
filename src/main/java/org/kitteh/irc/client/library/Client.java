@@ -32,7 +32,7 @@ import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
-import org.kitteh.irc.client.library.feature.DefaultingOutboundMessageMap;
+import org.kitteh.irc.client.library.feature.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
@@ -181,14 +181,14 @@ public interface Client {
         Builder realName(@Nonnull String name);
 
         /**
-         * Sets default outbound messages.
+         * Sets default messages.
          *
-         * @param defaultingOutboundMessageMap default values for outbound messages
+         * @param defaultMessageMap default values for messages
          * @return this builder
-         * @see DefaultingOutboundMessageMap
+         * @see DefaultMessageMap
          */
         @Nonnull
-        Builder defaultingOutboundMessageMap(@Nonnull DefaultingOutboundMessageMap defaultingOutboundMessageMap);
+        Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
 
         /**
          * Sets whether the client connects via SSL.
@@ -441,14 +441,14 @@ public interface Client {
     String getIntendedNick();
 
     /**
-     * Gets the outbound message manager for default messages to reply with
-     * when certain outbound messages are being sent. Like a KICK, PART, or
+     * Gets the message manager for default messages to reply with
+     * when certain messages are being sent. Like a KICK, PART, or
      * QUIT reason.
      *
-     * @return the DefaultingOutboundMessageMap
+     * @return the DefaultMessageMap
      */
     @Nonnull
-    DefaultingOutboundMessageMap getDefaultingOutboundMessageMap();
+    DefaultMessageMap getDefaultMessageMap();
 
     /**
      * Gets the manager of ISUPPORT info.
@@ -798,13 +798,13 @@ public interface Client {
     void setExceptionListener(@Nullable Consumer<Exception> listener);
 
     /**
-     * Sets the outbound message manager for default messages to reply with
+     * Sets the message manager for default messages to reply with
      * when certain messages are being sent. Like a KICK, PART, or QUIT
      * reason.
      *
-     * @param defaults DefaultingOutboundMessageMap to set
+     * @param defaults DefaultMessageMap to set
      */
-    void setDefaultingOutboundMessageMap(@Nonnull DefaultingOutboundMessageMap defaults);
+    void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults);
 
     /**
      * Sets a listener for all incoming messages from the server.

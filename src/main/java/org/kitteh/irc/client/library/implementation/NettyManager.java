@@ -51,7 +51,7 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
-import org.kitteh.irc.client.library.feature.DefaultingOutboundMessage;
+import org.kitteh.irc.client.library.feature.DefaultMessage;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -247,8 +247,8 @@ final class NettyManager {
             this.client.getExceptionListener().queue(thrown);
             if (thrown instanceof IOException) {
                 this.shutdown(
-                    this.client.getDefaultingOutboundMessageMap()
-                        .getDefault(DefaultingOutboundMessage.QUIT_INTERNAL_EXCEPTION, "IO Error. Reconnecting...").orElse(null),
+                    this.client.getDefaultMessageMap()
+                        .getDefault(DefaultMessage.QUIT_INTERNAL_EXCEPTION, "IO Error. Reconnecting...").orElse(null),
                     true
                 );
             }
@@ -277,14 +277,14 @@ final class NettyManager {
             }
         }
 
-        private void shutdown(@Nullable String message, boolean reconnect, boolean fromTimeout, boolean useOutboundMessageDefaults) {
-            if (message == null && useOutboundMessageDefaults) {
+        private void shutdown(@Nullable String message, boolean reconnect, boolean fromTimeout, boolean useMessageDefaults) {
+            if (message == null && useMessageDefaults) {
                 if (fromTimeout) {
-                    message = this.client.getDefaultingOutboundMessageMap().getDefault(DefaultingOutboundMessage.QUIT_PING_TIMEOUT, "Connection to server lost.").orElse(null);
+                    message = this.client.getDefaultMessageMap().getDefault(DefaultMessage.QUIT_PING_TIMEOUT, "Connection to server lost.").orElse(null);
                 } else if (reconnect) {
-                    message = this.client.getDefaultingOutboundMessageMap().getDefault(DefaultingOutboundMessage.RECONNECT, "Reconnecting...").orElse(null);
+                    message = this.client.getDefaultMessageMap().getDefault(DefaultMessage.RECONNECT, "Reconnecting...").orElse(null);
                 } else {
-                    message = this.client.getDefaultingOutboundMessageMap().getDefault(DefaultingOutboundMessage.QUIT).orElse(null);
+                    message = this.client.getDefaultMessageMap().getDefault(DefaultMessage.QUIT).orElse(null);
                 }
             }
 

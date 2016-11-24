@@ -27,7 +27,7 @@ package org.kitteh.irc.client.library.feature;
  * An enum that maps out all possible outbound messages between KICL and the
  * server that we wish to provide a custom default message for.
  */
-public enum DefaultingOutboundMessage {
+public enum DefaultMessage {
     /**
      * When a KickCommand has no reason supplied.
      */

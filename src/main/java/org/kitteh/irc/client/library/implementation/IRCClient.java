@@ -34,11 +34,11 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
-import org.kitteh.irc.client.library.feature.DefaultingOutboundMessage;
-import org.kitteh.irc.client.library.feature.DefaultingOutboundMessageMap;
+import org.kitteh.irc.client.library.feature.DefaultMessage;
+import org.kitteh.irc.client.library.feature.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
-import org.kitteh.irc.client.library.feature.SimpleDefaultingOutboundMessageMap;
+import org.kitteh.irc.client.library.feature.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
@@ -105,7 +105,7 @@ final class IRCClient extends InternalClient {
 
     private final ActorProvider actorProvider = new ActorProvider(this);
 
-    private DefaultingOutboundMessageMap defaultingOutboundMessageMap;
+    private DefaultMessageMap defaultMessageMap;
 
     private Map<Character, ModeStatus<UserMode>> userModes;
 
@@ -125,11 +125,11 @@ final class IRCClient extends InternalClient {
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
 
-        DefaultingOutboundMessageMap defaultingOutboundMessageMap = this.config.get(Config.OUTBOUND_MESSAGE_MAP);
-        if (defaultingOutboundMessageMap == null) {
-            defaultingOutboundMessageMap = new SimpleDefaultingOutboundMessageMap();
+        DefaultMessageMap defaultMessageMap = this.config.get(Config.DEFAULT_MESSAGE_MAP);
+        if (defaultMessageMap == null) {
+            defaultMessageMap = new SimpleDefaultMessageMap();
         }
-        this.defaultingOutboundMessageMap = defaultingOutboundMessageMap;
+        this.defaultMessageMap = defaultMessageMap;
     }
 
     @Override
@@ -213,9 +213,8 @@ final class IRCClient extends InternalClient {
     }
 
     @Nonnull
-    @Override
-    public DefaultingOutboundMessageMap getDefaultingOutboundMessageMap() {
-        return this.defaultingOutboundMessageMap;
+    public DefaultMessageMap getDefaultMessageMap() {
+        return this.defaultMessageMap;
     }
 
     @Nonnull
@@ -283,7 +282,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void removeChannel(@Nonnull String channelName) {
-        this.removeChannelPlease(channelName, this.defaultingOutboundMessageMap.getDefault(DefaultingOutboundMessage.PART).orElse(null));
+        this.removeChannelPlease(channelName, this.defaultMessageMap.getDefault(DefaultMessage.PART).orElse(null));
     }
 
     @Override
@@ -389,11 +388,10 @@ final class IRCClient extends InternalClient {
         }
     }
 
-    @Override
-    public void setDefaultingOutboundMessageMap(@Nonnull DefaultingOutboundMessageMap defaults) {
+    public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
         Sanity.nullCheck(defaults, "defaults must not be null");
 
-        this.defaultingOutboundMessageMap = defaults;
+        this.defaultMessageMap = defaults;
     }
 
     @Override
@@ -437,7 +435,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void shutdown() {
-        this.shutdownInternal(this.defaultingOutboundMessageMap.getDefault(DefaultingOutboundMessage.QUIT).orElse(null));
+        this.shutdownInternal(this.defaultMessageMap.getDefault(DefaultMessage.QUIT).orElse(null));
     }
 
     @Override
