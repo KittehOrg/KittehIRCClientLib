@@ -152,7 +152,7 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
                 tagName = tag.substring(0, index);
                 value = Optional.of(this.getTagValue(tag.substring(index + 1)));
             } else {
-                tagName = tag;
+                tagName = (index < 0) ? tag : tag.substring(0, index);
                 value = Optional.empty();
             }
             MessageTag messageTag = null;
