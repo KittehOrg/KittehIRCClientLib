@@ -60,7 +60,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
     }
 
     /**
-     * Gets the subsequent arguments after the numeric.
+     * Gets the subsequent arguments after the command.
      *
      * @return arguments
      */
