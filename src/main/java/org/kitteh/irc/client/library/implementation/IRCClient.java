@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.AwayCommand;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
@@ -46,6 +47,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
@@ -311,8 +313,9 @@ final class IRCClient extends InternalClient {
         return this.messageCutter;
     }
 
+    @Nonnull
     @Override
-    public int getMessageDelay() {
+    public Function<Client, ? extends MessageSendingQueue> getMessageSendingQueueSupplier() {
         return this.config.getNotNull(Config.MESSAGE_DELAY);
     }
 
@@ -485,9 +488,10 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void setMessageDelay(int delay) {
-        Sanity.truthiness(delay >= 0, "Delay cannot be negative");
-        this.config.set(Config.MESSAGE_DELAY, delay);
+    public void setMessageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier) {
+        Sanity.nullCheck(supplier, "Supplier cannot be null");
+        this.config.set(Config.MESSAGE_DELAY, supplier);
+        this.connection.updateSendingQueue();
     }
 
     @Override

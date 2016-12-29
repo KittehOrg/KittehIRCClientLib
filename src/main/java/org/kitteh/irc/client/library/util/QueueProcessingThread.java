@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -39,7 +41,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @param name name of the thread
      */
-    protected QueueProcessingThread(String name) {
+    protected QueueProcessingThread(@Nonnull String name) {
         this.setName(name);
         this.start();
     }
@@ -68,7 +70,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @param remainingQueue the queue
      */
-    protected void cleanup(Queue<Type> remainingQueue) {
+    protected void cleanup(@Nonnull Queue<Type> remainingQueue) {
         // NOOP
     }
 
@@ -77,7 +79,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @param element next element from the queue
      */
-    protected abstract void processElement(Type element);
+    protected abstract void processElement(@Nonnull Type element);
 
     /**
      * Gets if the queue contains a specified item.
@@ -85,8 +87,18 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      * @param item the item
      * @return true if the item is in the queue
      */
-    public boolean contains(Type item) {
+    public boolean contains(@Nonnull Type item) {
         return this.queue.contains(item);
+    }
+
+    /**
+     * Gets a copy of the queue in its current state.
+     *
+     * @return a queue copy
+     */
+    @Nonnull
+    public Queue<Type> getQueue() {
+        return new ArrayDeque<>(this.queue);
     }
 
     /**
@@ -94,7 +106,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @param item item to queue
      */
-    public void queue(Type item) {
+    public void queue(@Nonnull Type item) {
         synchronized (this.queue) {
             this.queue.add(item);
             this.queue.notify();

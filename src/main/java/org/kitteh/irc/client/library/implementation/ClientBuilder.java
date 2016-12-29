@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -37,6 +38,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 final class ClientBuilder implements Client.Builder, Cloneable {
     private static final int DEFAULT_SERVER_PORT = 6697;
@@ -97,9 +99,9 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder messageDelay(int delay) {
-        Sanity.truthiness(delay >= 0, "Delay cannot be negative");
-        this.config.set(Config.MESSAGE_DELAY, delay);
+    public ClientBuilder messageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier) {
+        Sanity.nullCheck(supplier, "Supplier cannot be null");
+        this.config.set(Config.MESSAGE_DELAY, supplier);
         return this;
     }
 

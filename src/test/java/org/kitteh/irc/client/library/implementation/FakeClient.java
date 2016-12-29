@@ -1,5 +1,6 @@
 package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
@@ -7,6 +8,7 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Pair;
@@ -18,6 +20,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 class FakeClient extends InternalClient {
     private final AuthManager authManager = new ManagerAuth(this);
@@ -109,6 +112,11 @@ class FakeClient extends InternalClient {
         this.messageCutter = cutter;
     }
 
+    @Override
+    public void setMessageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier) {
+
+    }
+
     @Nonnull
     @Override
     Set<String> getIntendedChannels() {
@@ -130,6 +138,12 @@ class FakeClient extends InternalClient {
     @Override
     public Cutter getMessageCutter() {
         return this.messageCutter;
+    }
+
+    @Nonnull
+    @Override
+    public Function<Client, ? extends MessageSendingQueue> getMessageSendingQueueSupplier() {
+        return null;
     }
 
     @Nonnull
@@ -214,16 +228,6 @@ class FakeClient extends InternalClient {
     @Override
     public String getIntendedNick() {
         return this.config.getNotNull(Config.NICK);
-    }
-
-    @Override
-    public int getMessageDelay() {
-        return 0;
-    }
-
-    @Override
-    public void setMessageDelay(int delay) {
-
     }
 
     @Nonnull

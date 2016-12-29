@@ -48,6 +48,8 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
+import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
+import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.Cutter;
@@ -63,6 +65,7 @@ import java.net.InetAddress;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * An individual IRC connection, see {@link #builder()} to create one.
@@ -148,13 +151,14 @@ public interface Client {
         Builder listenOutput(@Nullable Consumer<String> listener);
 
         /**
-         * Sets the delay between messages being sent to the server
+         * Sets the supplier of message sending queues.
          *
-         * @param delay the delay in milliseconds
+         * @param supplier supplier
          * @return this builder
+         * @see MessageSendingQueue
          */
         @Nonnull
-        Builder messageDelay(int delay);
+        Builder messageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier);
 
         /**
          * Names the client, for internal labeling.
@@ -437,14 +441,6 @@ public interface Client {
     }
 
     /**
-     * The default message delay, in milliseconds.
-     *
-     * @see #getMessageDelay()
-     * @see #setMessageDelay(int)
-     */
-    int DEFAULT_MESSAGE_DELAY = 1200;
-
-    /**
      * Creates a {@link Builder} to build clients.
      *
      * @return a client builder
@@ -580,13 +576,14 @@ public interface Client {
     Cutter getMessageCutter();
 
     /**
-     * Gets the delay between messages sent to the server.
-     * <p>
-     * Default is 1200ms.
+     * Gets the message sending queue supplier. Default supplies a
+     * {@link SingleDelaySender}
+     * with a delay of 1200.
      *
-     * @return milliseconds between sent messages
+     * @return the supplier
      */
-    int getMessageDelay();
+    @Nonnull
+    Function<Client, ? extends MessageSendingQueue> getMessageSendingQueueSupplier();
 
     /**
      * Gets the message tag manager.
@@ -927,13 +924,11 @@ public interface Client {
     void setMessageCutter(@Nonnull Cutter cutter);
 
     /**
-     * Sets the delay between messages sent to the server.
-     * <p>
-     * Default is 1200ms.
+     * Sets the message sending queue supplier.
      *
-     * @param delay milliseconds between sent messages
+     * @param supplier the supplier
      */
-    void setMessageDelay(int delay);
+    void setMessageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier);
 
     /**
      * Sets the nick the client wishes to use.

@@ -41,7 +41,7 @@ class Listener<Type> {
         }
 
         @Override
-        protected void processElement(Type element) {
+        protected void processElement(@Nonnull Type element) {
             try {
                 this.consumer.accept(element);
             } catch (final Throwable thrown) {
@@ -50,7 +50,7 @@ class Listener<Type> {
         }
 
         @Override
-        protected void cleanup(Queue<Type> remainingQueue) {
+        protected void cleanup(@Nonnull Queue<Type> remainingQueue) {
             while (!remainingQueue.isEmpty()) {
                 try {
                     this.consumer.accept(remainingQueue.poll());

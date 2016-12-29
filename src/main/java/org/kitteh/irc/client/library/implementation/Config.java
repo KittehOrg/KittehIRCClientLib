@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.Version;
@@ -39,6 +40,7 @@ import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Stores a Client's configured data from the {@link Client.Builder}.
@@ -135,7 +137,7 @@ final class Config {
     static final Entry<ExceptionConsumerWrapper> LISTENER_EXCEPTION = new Entry<>(new ExceptionConsumerWrapper(Throwable::printStackTrace), ExceptionConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_INPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_OUTPUT = new Entry<>(null, StringConsumerWrapper.class);
-    static final Entry<Integer> MESSAGE_DELAY = new Entry<>(Client.DEFAULT_MESSAGE_DELAY, Integer.class);
+    static final Entry<Function> MESSAGE_DELAY = new Entry<>(SingleDelaySender.getSupplier(SingleDelaySender.DEFAULT_MESSAGE_DELAY), Function.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<Boolean> QUERY_CHANNEL_INFO = new Entry<>(true, Boolean.class);
     static final Entry<String> REAL_NAME = new Entry<>("KICL " + Version.getVersion() + " - kitteh.org", String.class);

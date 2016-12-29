@@ -53,10 +53,11 @@ import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
+import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
+import org.kitteh.irc.client.library.feature.sending.QueueProcessingThreadSender;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSPolicy;
-import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -77,87 +78,28 @@ import java.util.concurrent.TimeUnit;
 
 final class NettyManager {
     static final class ClientConnection {
-        class SendingQueue extends QueueProcessingThread<String> {
-            private final Object sendingLock = new Object();
-            private volatile boolean waiting = true;
-
-            SendingQueue(@Nonnull String type) {
-                super("Kitteh IRC Client " + type + " Sending Queue (" + ClientConnection.this.client.getName() + ')');
-            }
-
-            @Override
-            protected void processElement(String message) {
-                synchronized (this.sendingLock) {
-                    if (this.waiting) {
-                        try {
-                            this.sendingLock.wait();
-                        } catch (InterruptedException e) {
-                            return;
-                        }
-                    }
-                    this.checkReady();
-                    ClientConnection.this.channel.writeAndFlush(message);
-                }
-            }
-
-            protected void checkReady() {
-                // NOOP
-            }
-
-            void begin() {
-                synchronized (this.sendingLock) {
-                    this.waiting = false;
-                    this.sendingLock.notify();
-                }
-            }
-        }
-
         private static final int MAX_LINE_LENGTH = 2048;
 
         private final InternalClient client;
         private final Channel channel;
         private boolean reconnect = true;
-        private final SendingQueue scheduledSending;
+        private MessageSendingQueue scheduledSending;
         private ScheduledFuture<?> scheduledPing;
-        private final Object schedulingLock = new Object();
-        private final SendingQueue immediateSending;
+        private final Object scheduledSendingLock = new Object();
+        private final MessageSendingQueue immediateSending;
+        private boolean shutdown = false;
 
         private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;
             this.channel = channelFuture.channel();
 
-            this.immediateSending = new SendingQueue("Immediate");
-            this.scheduledSending = new SendingQueue("Delayed") {
-                private long last = System.currentTimeMillis();
-
-                @Override
-                protected void checkReady() {
-                    int delay = client.getMessageDelay();
-                    if (delay == 0) {
-                        return; // Get out as fast as possible OMG!
-                    }
-                    long now;
-                    long remaining;
-                    do {
-                        now = System.currentTimeMillis();
-                        remaining = delay - (now - this.last);
-                        if (remaining > 0) {
-                            try {
-                                Thread.sleep(remaining);
-                            } catch (InterruptedException e) {
-                                this.interrupt();
-                                return;
-                            }
-                        }
-                    } while (remaining > 0);
-                    this.last = now;
-                }
-            };
+            this.immediateSending = new QueueProcessingThreadSender(client, "Immediate", this.channel::writeAndFlush);
+            this.scheduledSending = client.getMessageSendingQueueSupplier().apply(client);
 
             channelFuture.addListener(future -> {
                 if (future.isSuccess()) {
                     this.buildOurFutureTogether();
-                    this.immediateSending.begin();
+                    this.immediateSending.beginSending();
                 } else {
                     this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), false));
                     this.scheduleReconnect();
@@ -267,7 +209,7 @@ final class NettyManager {
                 if (ClientConnection.this.reconnect) {
                     this.scheduleReconnect();
                 }
-                this.immediateSending.interrupt();
+                this.immediateSending.shutdown();
                 ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
                 removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
             });
@@ -282,10 +224,15 @@ final class NettyManager {
         }
 
         void sendMessage(@Nonnull String message, boolean priority, boolean avoidDuplicates) {
-            if (priority) {
-                this.immediateSending.queue(message);
-            } else if (!avoidDuplicates || !this.scheduledSending.contains(message)) {
-                this.scheduledSending.queue(message);
+            synchronized (this.scheduledSendingLock) {
+                if (this.shutdown) {
+                    return;
+                }
+                if (priority) {
+                    this.immediateSending.queue(message);
+                } else if (!avoidDuplicates || !this.scheduledSending.contains(message)) {
+                    this.scheduledSending.queue(message);
+                }
             }
         }
 
@@ -301,15 +248,36 @@ final class NettyManager {
         }
 
         void startSending() {
-            synchronized (this.schedulingLock) {
-                this.scheduledSending.begin();
+            synchronized (this.scheduledSendingLock) {
+                if (this.shutdown) {
+                    return;
+                }
+                this.scheduledSending.beginSending();
                 this.scheduledPing = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
+            }
+        }
+
+        void updateSendingQueue() {
+            synchronized (this.scheduledSendingLock) {
+                if (this.shutdown) {
+                    return;
+                }
+                MessageSendingQueue newQueue = this.client.getMessageSendingQueueSupplier().apply(this.client);
+                this.scheduledSending.shutdown().forEach(newQueue::queue);
+                this.scheduledSending = newQueue;
+                this.scheduledSending.beginSending();
             }
         }
 
         void shutdown(@Nullable String message, boolean reconnect) {
             this.reconnect = reconnect;
 
+            synchronized (this.scheduledSendingLock) {
+                this.shutdown = true;
+                this.immediateSending.shutdown();
+                this.scheduledSending.shutdown();
+                this.scheduledPing.cancel(true);
+            }
             this.sendMessage("QUIT" + ((message != null) ? (" :" + message) : ""), true);
             this.channel.close();
         }
