@@ -80,6 +80,16 @@ public abstract class QueueProcessingThread<Type> extends Thread {
     protected abstract void processElement(Type element);
 
     /**
+     * Gets if the queue contains a specified item.
+     *
+     * @param item the item
+     * @return true if the item is in the queue
+     */
+    public boolean contains(Type item) {
+        return this.queue.contains(item);
+    }
+
+    /**
      * Queues an item.
      *
      * @param item item to queue

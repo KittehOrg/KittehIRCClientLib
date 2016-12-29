@@ -488,9 +488,6 @@ final class IRCClient extends InternalClient {
     public void setMessageDelay(int delay) {
         Sanity.truthiness(delay >= 0, "Delay cannot be negative");
         this.config.set(Config.MESSAGE_DELAY, delay);
-        if (this.connection != null) {
-            this.connection.updateScheduling();
-        }
     }
 
     @Override
