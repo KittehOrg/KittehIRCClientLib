@@ -189,7 +189,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
     }
 
     /**
-     * Gets the info to base64 encodein the first AUTHENTICATE message.
+     * Gets the info to base64 encode in the first AUTHENTICATE message.
      *
      * @return value to encode
      */
