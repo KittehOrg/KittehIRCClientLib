@@ -27,26 +27,25 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.client.RequestedChannelLeaveEvent;
+import org.kitteh.irc.client.library.event.client.UnexpectedChannelLeaveEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * I have left a channel I want to be in, via kick!
+ * I have left a channel I want to be in, via part!
  */
-public class RequestedChannelLeaveViaKickEvent extends ChannelKickEvent implements RequestedChannelLeaveEvent {
+public class UnexpectedChannelLeaveViaPartEvent extends ChannelPartEvent implements UnexpectedChannelLeaveEvent {
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
      * @param originalMessages original messages
      * @param channel channel being left
-     * @param user actor kicking the targeted user
-     * @param target targeted user
+     * @param user user leaving
      * @param message message the user left
      */
-    public RequestedChannelLeaveViaKickEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull User user, @Nonnull User target, @Nonnull String message) {
-        super(client, originalMessages, channel, user, target, message);
+    public UnexpectedChannelLeaveViaPartEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull User user, @Nonnull String message) {
+        super(client, originalMessages, channel, user, message);
     }
 }

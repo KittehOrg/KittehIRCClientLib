@@ -21,31 +21,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.channel;
+package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.client.RequestedChannelLeaveEvent;
-
-import javax.annotation.Nonnull;
-import java.util.List;
+import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 
 /**
- * I have left a channel I want to be in, via part!
+ * I have left the channel I wanted! Will fire each time the client leaves a
+ * channel added via {@link Client#addChannel} and not removed via {@link
+ * Client#removeChannel}.
  */
-public class RequestedChannelLeaveViaPartEvent extends ChannelPartEvent implements RequestedChannelLeaveEvent {
-    /**
-     * Creates the event.
-     *
-     * @param client client for which this is occurring
-     * @param originalMessages original messages
-     * @param channel channel being left
-     * @param user user leaving
-     * @param message message the user left
-     */
-    public RequestedChannelLeaveViaPartEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull User user, @Nonnull String message) {
-        super(client, originalMessages, channel, user, message);
-    }
+public interface UnexpectedChannelLeaveEvent extends ChannelEvent {
 }

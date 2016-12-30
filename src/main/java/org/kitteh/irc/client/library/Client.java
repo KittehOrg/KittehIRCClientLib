@@ -40,7 +40,7 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.RequestedChannelJoinCompleteEvent;
-import org.kitteh.irc.client.library.event.client.RequestedChannelLeaveEvent;
+import org.kitteh.irc.client.library.event.client.UnexpectedChannelLeaveEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
@@ -464,7 +464,7 @@ public interface Client {
      * @param channels channel(s) to add
      * @throws IllegalArgumentException if null or invalid
      * @see RequestedChannelJoinCompleteEvent
-     * @see RequestedChannelLeaveEvent
+     * @see UnexpectedChannelLeaveEvent
      */
     void addChannel(@Nonnull String... channels);
 
