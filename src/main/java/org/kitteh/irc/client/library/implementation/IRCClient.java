@@ -180,7 +180,6 @@ final class IRCClient extends InternalClient {
 
     private Map<Character, ModeStatus<UserMode>> userModes;
     private STSMachine stsMachine;
-    private boolean usingSts = false;
 
     private final ClientCommands commands = new ClientCommands();
 
@@ -220,7 +219,6 @@ final class IRCClient extends InternalClient {
     private void configureSts() {
         this.stsMachine = new MemorySTSMachine(this.config.getNotNull(Config.STS_STORAGE_MANAGER), this);
         this.eventManager.registerEventListener(new STSHandler(this.stsMachine, this));
-        this.usingSts = true;
     }
 
     @Override
