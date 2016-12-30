@@ -183,7 +183,7 @@ final class IRCClient extends InternalClient {
 
     private final ClientCommands commands = new ClientCommands();
 
-    private MessageSendingQueue messageSendingImmediate;
+    private final MessageSendingQueue messageSendingImmediate;
     private MessageSendingQueue messageSendingScheduled;
     private final Object messageSendingLock = new Object();
 
