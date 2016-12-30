@@ -63,19 +63,6 @@ public class SingleDelaySender extends QueueProcessingThreadSender {
         this.delay = delay;
     }
 
-    /**
-     * Constructs the sending queue with a custom consumer.
-     *
-     * @param client the client
-     * @param name name of this sending queue
-     * @param consumer the consumer
-     * @param delay initial delay
-     */
-    public SingleDelaySender(@Nonnull Client client, @Nonnull String name, @Nonnull Consumer<String> consumer, int delay) {
-        super(client, name, consumer);
-        this.delay = delay;
-    }
-
     @Override
     protected boolean checkReady(@Nonnull String message) {
         int currentDelay = this.delay;

@@ -49,12 +49,9 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
-import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
-import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
-import org.kitteh.irc.client.library.feature.sending.QueueProcessingThreadSender;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSPolicy;
@@ -83,23 +80,17 @@ final class NettyManager {
         private final InternalClient client;
         private final Channel channel;
         private boolean reconnect = true;
-        private MessageSendingQueue scheduledSending;
-        private ScheduledFuture<?> scheduledPing;
         private final Object scheduledSendingLock = new Object();
-        private final MessageSendingQueue immediateSending;
         private boolean shutdown = false;
 
         private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;
             this.channel = channelFuture.channel();
 
-            this.immediateSending = new QueueProcessingThreadSender(client, "Immediate", this.channel::writeAndFlush);
-            this.scheduledSending = client.getMessageSendingQueueSupplier().apply(client);
-
             channelFuture.addListener(future -> {
                 if (future.isSuccess()) {
                     this.buildOurFutureTogether();
-                    this.immediateSending.beginSending();
+                    this.client.beginMessageSendingImmediate(this.channel::writeAndFlush);
                 } else {
                     this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), false));
                     this.scheduleReconnect();
@@ -209,7 +200,6 @@ final class NettyManager {
                 if (ClientConnection.this.reconnect) {
                     this.scheduleReconnect();
                 }
-                this.immediateSending.shutdown();
                 ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
                 removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
             });
@@ -217,23 +207,6 @@ final class NettyManager {
 
         private void scheduleReconnect() {
             ClientConnection.this.channel.eventLoop().schedule(ClientConnection.this.client::connect, 5, TimeUnit.SECONDS);
-        }
-
-        void sendMessage(@Nonnull String message, boolean priority) {
-            this.sendMessage(message, priority, false);
-        }
-
-        void sendMessage(@Nonnull String message, boolean priority, boolean avoidDuplicates) {
-            synchronized (this.scheduledSendingLock) {
-                if (this.shutdown) {
-                    return;
-                }
-                if (priority) {
-                    this.immediateSending.queue(message);
-                } else if (!avoidDuplicates || !this.scheduledSending.contains(message)) {
-                    this.scheduledSending.queue(message);
-                }
-            }
         }
 
         void shutdown(@Nullable String message) {
@@ -248,37 +221,14 @@ final class NettyManager {
         }
 
         void startSending() {
-            synchronized (this.scheduledSendingLock) {
-                if (this.shutdown) {
-                    return;
-                }
-                this.scheduledSending.beginSending();
-                this.scheduledPing = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
-            }
-        }
-
-        void updateSendingQueue() {
-            synchronized (this.scheduledSendingLock) {
-                if (this.shutdown) {
-                    return;
-                }
-                MessageSendingQueue newQueue = this.client.getMessageSendingQueueSupplier().apply(this.client);
-                this.scheduledSending.shutdown().forEach(newQueue::queue);
-                this.scheduledSending = newQueue;
-                this.scheduledSending.beginSending();
-            }
+            this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
         }
 
         void shutdown(@Nullable String message, boolean reconnect) {
             this.reconnect = reconnect;
 
-            synchronized (this.scheduledSendingLock) {
-                this.shutdown = true;
-                this.immediateSending.shutdown();
-                this.scheduledSending.shutdown();
-                this.scheduledPing.cancel(true);
-            }
-            this.sendMessage("QUIT" + ((message != null) ? (" :" + message) : ""), true);
+            this.client.pauseMessageSending();
+            this.channel.writeAndFlush("QUIT" + ((message != null) ? (" :" + message) : ""));
             this.channel.close();
         }
 

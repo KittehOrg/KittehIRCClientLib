@@ -25,8 +25,10 @@ package org.kitteh.irc.client.library.feature.sending;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.function.Consumer;
 
@@ -35,7 +37,8 @@ import java.util.function.Consumer;
  */
 public class QueueProcessingThreadSender extends QueueProcessingThread<String> implements MessageSendingQueue {
     private final Client client;
-    private final Consumer<String> consumer;
+    private Consumer<String> consumer = string -> {
+    };
     private final Object sendingLock = new Object();
     private volatile boolean waiting = true;
 
@@ -46,20 +49,8 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
      * @param name name of this sending queue
      */
     public QueueProcessingThreadSender(@Nonnull Client client, @Nonnull String name) {
-        this(client, name, client::sendRawLineImmediately);
-    }
-
-    /**
-     * Constructs the sending queue with a custom consumer.
-     *
-     * @param client the client
-     * @param name name of this sending queue
-     * @param consumer consumer to process the message
-     */
-    public QueueProcessingThreadSender(@Nonnull Client client, @Nonnull String name, @Nonnull Consumer<String> consumer) {
         super("Kitteh IRC Client " + name + " Sending Queue (" + client.getName() + ')');
         this.client = client;
-        this.consumer = consumer;
     }
 
     @Override
@@ -91,7 +82,7 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
 
     @Override
     protected final void cleanup(@Nonnull Queue<String> remainingQueue) {
-        // NOOP
+        // NOOP - Nothing to do about these missed messages but cry
     }
 
     /**
@@ -105,8 +96,10 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
     }
 
     @Override
-    public void beginSending() {
+    public void beginSending(@Nonnull Consumer<String> consumer) {
+        Sanity.nullCheck(consumer, "Consumer cannot be null");
         synchronized (this.sendingLock) {
+            this.consumer = consumer;
             this.waiting = false;
             this.sendingLock.notify();
         }
@@ -114,8 +107,23 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
 
     @Nonnull
     @Override
+    public Optional<Consumer<String>> getConsumer() {
+        return Optional.ofNullable(this.consumer);
+    }
+
+    @Override
+    public void pause() {
+        synchronized (this.sendingLock) {
+            this.waiting = true;
+        }
+    }
+
+    @Nonnull
+    @Override
     public Queue<String> shutdown() {
-        this.interrupt();
-        return this.getQueue();
+        synchronized (this.sendingLock) {
+            this.interrupt();
+            return this.getQueue();
+        }
     }
 }

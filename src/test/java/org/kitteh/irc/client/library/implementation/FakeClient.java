@@ -168,6 +168,16 @@ class FakeClient extends InternalClient {
 
     }
 
+    @Override
+    void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
+
+    }
+
+    @Override
+    void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
+
+    }
+
     @Nonnull
     @Override
     ActorProvider getActorProvider() {
@@ -257,6 +267,11 @@ class FakeClient extends InternalClient {
     @Override
     public IRCServerInfo getServerInfo() {
         return this.serverInfo;
+    }
+
+    @Override
+    void pauseMessageSending() {
+
     }
 
     @Nonnull

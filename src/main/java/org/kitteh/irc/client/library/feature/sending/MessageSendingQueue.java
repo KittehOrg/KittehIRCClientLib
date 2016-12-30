@@ -24,17 +24,20 @@
 package org.kitteh.irc.client.library.feature.sending;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.Queue;
+import java.util.function.Consumer;
 
 /**
  * A queue for sending messages.
  */
 public interface MessageSendingQueue {
     /**
-     * Called upon client connection, after negotiation is complete. Do not
-     * call unless you know what you're doing.
+     * Starts sending messages to the given consumer.
+     *
+     * @param consumer the consumer to consume
      */
-    void beginSending();
+    void beginSending(@Nonnull Consumer<String> consumer);
 
     /**
      * Gets if the queue currently has within it a particular message.
@@ -45,6 +48,19 @@ public interface MessageSendingQueue {
     boolean contains(@Nonnull String message);
 
     /**
+     * Gets the queue's currently set consumer.
+     *
+     * @return current consumer if present
+     */
+    @Nonnull
+    Optional<Consumer<String>> getConsumer();
+
+    /**
+     * Pauses message sending.
+     */
+    void pause();
+
+    /**
      * Queues a given message.
      *
      * @param message the message to queue
@@ -52,7 +68,7 @@ public interface MessageSendingQueue {
     void queue(@Nonnull String message);
 
     /**
-     * Closes down shop. No further messages will be sent.
+     * Closes down shop, interrupts all threads. No further messages.
      *
      * @return the remaining messages
      */

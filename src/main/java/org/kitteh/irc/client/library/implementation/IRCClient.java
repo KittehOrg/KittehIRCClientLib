@@ -48,6 +48,7 @@ import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
+import org.kitteh.irc.client.library.feature.sending.QueueProcessingThreadSender;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
@@ -183,6 +184,10 @@ final class IRCClient extends InternalClient {
 
     private final ClientCommands commands = new ClientCommands();
 
+    private MessageSendingQueue messageSendingImmediate;
+    private MessageSendingQueue messageSendingScheduled;
+    private final Object messageSendingLock = new Object();
+
     IRCClient(@Nonnull Config config) {
         this.config = config;
         if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
@@ -207,6 +212,9 @@ final class IRCClient extends InternalClient {
 
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
+
+        this.messageSendingImmediate = new QueueProcessingThreadSender(this, "Immediate");
+        this.messageSendingScheduled = this.getMessageSendingQueueSupplier().apply(this);
     }
 
     private void configureSts() {
@@ -438,29 +446,30 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendRawLine(@Nonnull String message) {
-        this.sendRawLineCheck(message);
-        this.connection.sendMessage(message, false);
+        this.sendRawLine(message, false, false);
     }
 
     @Override
     public void sendRawLineAvoidingDuplication(@Nonnull String message) {
-        this.sendRawLineCheck(message);
-        this.connection.sendMessage(message, false, true);
+        this.sendRawLine(message, false, true);
     }
 
     @Override
     public void sendRawLineImmediately(@Nonnull String message) {
-        this.sendRawLineCheck(message);
-        this.connection.sendMessage(message, true);
+        this.sendRawLine(message, true, false);
     }
 
-    private void sendRawLineCheck(@Nonnull String message) {
+    private void sendRawLine(@Nonnull String message, boolean priority, boolean avoidDuplicates) {
         Sanity.safeMessageCheck(message);
         if (!message.isEmpty() && (message.length() > ((message.charAt(0) == '@') ? 1022 : 510))) {
             throw new IllegalArgumentException("Message too long: " + message.length());
         }
-        if (this.connection == null) {
-            throw new IllegalStateException("Cannot send messages prior to connection");
+        synchronized (this.messageSendingLock) {
+            if (priority) {
+                this.messageSendingImmediate.queue(message);
+            } else if (!avoidDuplicates || !this.messageSendingScheduled.contains(message)) {
+                this.messageSendingScheduled.queue(message);
+            }
         }
     }
 
@@ -491,7 +500,13 @@ final class IRCClient extends InternalClient {
     public void setMessageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier) {
         Sanity.nullCheck(supplier, "Supplier cannot be null");
         this.config.set(Config.MESSAGE_DELAY, supplier);
-        this.connection.updateSendingQueue();
+        synchronized (this.messageSendingLock) {
+            MessageSendingQueue newQueue = this.getMessageSendingQueueSupplier().apply(this);
+            this.messageSendingScheduled.shutdown().forEach(newQueue::queue);
+            Optional<Consumer<String>> consumer = this.messageSendingScheduled.getConsumer();
+            this.messageSendingScheduled = newQueue;
+            consumer.ifPresent(con -> this.messageSendingScheduled.beginSending(con));
+        }
     }
 
     @Override
@@ -523,6 +538,9 @@ final class IRCClient extends InternalClient {
 
     private void shutdownInternal(@Nullable String reason) {
         this.processor.interrupt();
+
+        this.messageSendingImmediate.shutdown();
+        this.messageSendingScheduled.shutdown();
 
         if (this.connection != null) { // In case shutdown is called while building.
             this.connection.shutdown(reason);
@@ -620,6 +638,28 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
+    void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
+        synchronized (this.messageSendingLock) {
+            this.messageSendingImmediate.beginSending(consumer);
+        }
+    }
+
+    @Override
+    void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
+        synchronized (this.messageSendingLock) {
+            this.messageSendingScheduled.beginSending(consumer);
+        }
+    }
+
+    @Override
+    void pauseMessageSending() {
+        synchronized (this.messageSendingLock) {
+            this.messageSendingImmediate.pause();
+            this.messageSendingScheduled.pause();
+        }
+    }
+
+    @Override
     void ping() {
         this.sendRawLine("PING " + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
     }
@@ -648,6 +688,9 @@ final class IRCClient extends InternalClient {
     @Override
     void startSending() {
         this.connection.startSending();
+        synchronized (this.messageSendingLock) {
+            this.messageSendingScheduled.beginSending(this.messageSendingImmediate::queue);
+        }
     }
 
     @Override

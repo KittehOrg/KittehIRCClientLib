@@ -29,9 +29,14 @@ import org.kitteh.irc.client.library.element.mode.UserMode;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
+import java.util.function.Consumer;
 
 abstract class InternalClient implements Client {
     abstract void connect();
+
+    abstract void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer);
+
+    abstract void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer);
 
     @Nonnull
     abstract ActorProvider getActorProvider();
@@ -65,6 +70,8 @@ abstract class InternalClient implements Client {
     @Override
     @Nonnull
     public abstract IRCServerInfo getServerInfo();
+
+    abstract void pauseMessageSending();
 
     abstract void ping();
 
