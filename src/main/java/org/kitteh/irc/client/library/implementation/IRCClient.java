@@ -378,18 +378,12 @@ final class IRCClient extends InternalClient {
     }
 
     private void removeChannelPlease(@Nonnull String channelName, @Nullable String reason) {
-        Sanity.nullCheck(channelName, "Channel cannot be null");
-        ActorProvider.IRCChannel channel = this.actorProvider.getChannel(channelName);
-        if (channel != null) {
-            if (reason != null) {
-                Sanity.safeMessageCheck(reason, "Part reason");
-            }
-            String name = channel.getName();
-            this.channelsIntended.remove(name);
-            if (this.actorProvider.getTrackedChannelNames().contains(channel.getName())) {
-                this.sendRawLine("PART " + name + (reason != null ? (" :" + reason) : ""));
-            }
+        Sanity.nullCheck(channelName, "Channel name cannot be null");
+        if (reason != null) {
+            Sanity.safeMessageCheck(reason, "Part reason");
         }
+        this.channelsIntended.remove(channelName);
+        this.sendRawLine("PART " + channelName + (reason != null ? (" :" + reason) : ""));
     }
 
     @Override
