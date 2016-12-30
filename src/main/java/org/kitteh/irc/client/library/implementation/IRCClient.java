@@ -226,9 +226,9 @@ final class IRCClient extends InternalClient {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (String channelName : channels) {
-            if (!this.serverInfo.isValidChannel(channelName)) {
-                continue;
-            }
+            Sanity.truthiness(this.serverInfo.isValidChannel(channelName), "Invalid channel name " + channelName);
+        }
+        for (String channelName : channels) {
             this.channelsIntended.add(channelName);
             this.sendRawLine("JOIN :" + channelName);
         }
@@ -238,26 +238,21 @@ final class IRCClient extends InternalClient {
     public void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key) {
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.nullCheck(key, "Key cannot be null");
-        Sanity.truthiness(this.serverInfo.isValidChannel(channel), "Invalid channel name");
+        Sanity.truthiness(this.serverInfo.isValidChannel(channel), "Invalid channel name " + channel);
         this.channelsIntended.add(channel);
         this.sendRawLine("JOIN :" + channel + ' ' + key);
     }
 
-    /**
-     * Adds key-protected channels to this client.
-     * <p>
-     * Joins the channels if already connected.
-     *
-     * @param channelsAndKeys pairs of channel, key
-     */
     @Override
     public void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys) {
         Sanity.nullCheck(channelsAndKeys, "Channel/key pairs cannot be null");
         Sanity.truthiness(channelsAndKeys.length > 0, "Channel/key pairs cannot be empty array");
         for (Pair<String, String> channelAndKey : channelsAndKeys) {
-            if ((channelAndKey.getLeft() == null) || !this.serverInfo.isValidChannel(channelAndKey.getLeft())) {
-                continue;
-            }
+            String channelName = channelAndKey.getLeft();
+            Sanity.truthiness(channelName == null, "Channel/key pairs cannot contain null channel name");
+            Sanity.truthiness(this.serverInfo.isValidChannel(channelName), "Channel/key pairs cannot contain invalid channel name " + channelName);
+        }
+        for (Pair<String, String> channelAndKey : channelsAndKeys) {
             this.channelsIntended.add(channelAndKey.getLeft());
             this.sendRawLine("JOIN :" + channelAndKey.getLeft() + (channelAndKey.getRight() == null ? "" : (' ' + channelAndKey.getRight())));
         }

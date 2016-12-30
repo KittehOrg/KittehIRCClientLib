@@ -462,7 +462,7 @@ public interface Client {
      * Joins the channels if already connected.
      *
      * @param channels channel(s) to add
-     * @throws IllegalArgumentException if null
+     * @throws IllegalArgumentException if null or invalid
      * @see RequestedChannelJoinCompleteEvent
      * @see RequestedChannelLeaveEvent
      */
@@ -475,6 +475,7 @@ public interface Client {
      *
      * @param channel channel to add
      * @param key channel key
+     * @throws IllegalArgumentException if null or invalid
      */
     void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key);
 
@@ -484,6 +485,7 @@ public interface Client {
      * Joins the channels if already connected.
      *
      * @param channelsAndKeys pairs of channel, key
+     * @throws IllegalArgumentException if null or invalid
      */
     void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys);
 
