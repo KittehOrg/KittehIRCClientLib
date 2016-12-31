@@ -23,7 +23,7 @@ chghost | echo-message | invite-notify | sasl | server-time | userhost-in-names
 
 STS | message-tags | SNI
 :-: | :----------: | :-:
-✘   | ✘            |✔
+✔   | ✘            |✔
 
 #### Notes
 * The following capabilities are supported but are not automatically requested:
@@ -37,4 +37,5 @@ STS | message-tags | SNI
     * [ECDSA-NIST256P-CHALLENGE](advanced/ecdsa.md) - `SaslECDSANIST256PChallenge`
     * EXTERNAL - `SaslExternal`
 * The TLS extension, which is a STARTTLS approach, will likely never be supported. It is horrible and evil and should be destroyed!
-    * Use the [SSL](advanced/ssl.md) support that KICL has built-in instead.
+    * Use the [SSL](advanced/ssl.md) and [STS](advanced/sts.md) support that KICL has built-in instead.
+* Metadata has been deprecated (IRCv3.2). It will not be implemented until the new spec is written.
