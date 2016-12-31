@@ -136,6 +136,7 @@ class FakeClient extends InternalClient {
         return null;
     }
 
+    @Nonnull
     @Override
     public Optional<STSMachine> getSTSMachine() {
         return Optional.empty(); // No STS in FakeClient for testing

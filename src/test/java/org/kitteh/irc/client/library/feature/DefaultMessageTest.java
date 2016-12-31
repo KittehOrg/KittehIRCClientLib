@@ -57,7 +57,7 @@ public class DefaultMessageTest {
 
     @Test
     public void testGetDefaultWithIfUnsetParameter() {
-        SimpleDefaultMessageMap defaults = new SimpleDefaultMessageMap("foo")
+        SimpleDefaultMessageMap defaults = new SimpleDefaultMessageMap("unset")
                 .setDefault(DefaultMessageType.QUIT, "kittens");
 
         Assert.assertEquals("kittens", defaults.getDefault(DefaultMessageType.QUIT, "set").orElse(null));
