@@ -19,7 +19,7 @@ chghost | echo-message | invite-notify | sasl | server-time | userhost-in-names
 :-----: | :----------: | :-----------: | :--: | :---------: | :---------------:
 ✔       | ✔            | ✔             | ✔    | ✔           | ✔
 
-### IRCv3.3 (specification not finalized)
+### IRCv3 draft specifications
 
 STS | message-tags | SNI
 :-: | :----------: | :-:
