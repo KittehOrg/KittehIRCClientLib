@@ -395,7 +395,7 @@ final class IRCClient extends InternalClient {
     }
 
     private void removeChannelPlease(@Nonnull String channelName, @Nullable String reason) {
-        Sanity.nullCheck(channelName, "Channel name cannot be null");
+        Sanity.truthiness(this.serverInfo.isValidChannel(channelName), "Invalid channel name " + channelName);
         if (reason != null) {
             Sanity.safeMessageCheck(reason, "Part reason");
         }
