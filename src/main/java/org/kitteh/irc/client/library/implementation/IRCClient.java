@@ -297,6 +297,7 @@ final class IRCClient extends InternalClient {
     }
 
     @Nonnull
+    @Override
     public DefaultMessageMap getDefaultMessageMap() {
         return this.defaultMessageMap;
     }

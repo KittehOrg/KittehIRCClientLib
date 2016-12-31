@@ -194,9 +194,7 @@ public class ModeStatusList<ModeType extends Mode> {
             }
             modes.append(change.getMode().getChar());
             Optional<String> parameter = change.getParameter();
-            if (parameter.isPresent()) {
-                parameters.append(' ').append(parameter.get());
-            }
+            parameter.ifPresent(s -> parameters.append(' ').append(s));
         }
         return modes.toString() + parameters;
     }

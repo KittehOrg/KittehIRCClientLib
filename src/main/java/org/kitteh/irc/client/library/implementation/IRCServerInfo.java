@@ -57,7 +57,7 @@ class IRCServerInfo implements Resettable, ServerInfo {
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
-    private final Pattern channelPattern = Pattern.compile("([#!&\\+][^ ,\\07\\r\\n]+)");
+    private final Pattern channelPattern = Pattern.compile("([#!&+][^ ,\\07\\r\\n]+)");
 
     IRCServerInfo(@Nonnull InternalClient client) {
         this.client = client;

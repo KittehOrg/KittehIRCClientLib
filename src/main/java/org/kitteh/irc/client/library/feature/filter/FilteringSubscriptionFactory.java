@@ -46,10 +46,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A filtering factory for filters.
+ */
 public class FilteringSubscriptionFactory extends SubscriptionFactory {
     private static final Constructor<Subscription> SUBSCRIPTION_CONSTRUCTOR;
     private final Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> filters;
 
+    /**
+     * Constructs the filter factory.
+     *
+     * @param filters the filters
+     */
     public FilteringSubscriptionFactory(@Nonnull Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> filters) {
         this.filters = Sanity.nullCheck(filters, "filters");
     }

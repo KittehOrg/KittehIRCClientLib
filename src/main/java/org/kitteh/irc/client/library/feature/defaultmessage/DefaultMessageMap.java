@@ -65,7 +65,8 @@ public interface DefaultMessageMap {
     Optional<String> getDefault(DefaultMessageType key, String defaultValue);
 
     /**
-     * Retrieves the full list of all DefaultMessage <-> String mappings.
+     * Retrieves the full list of all {@link DefaultMessageType} to String
+     * mappings.
      *
      * @return an immutable copy of the map
      */

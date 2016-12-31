@@ -306,12 +306,7 @@ class ActorProvider implements Resettable {
 
         @Nonnull
         private Set<ChannelUserMode> getModes(@Nonnull String nick) {
-            Set<ChannelUserMode> set = this.modes.get(nick);
-            if (set == null) {
-                set = new HashSet<>();
-                this.modes.put(nick, set);
-            }
-            return set;
+            return this.modes.computeIfAbsent(nick, k -> new HashSet<>());
         }
 
         private void setModes(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
@@ -744,7 +739,7 @@ class ActorProvider implements Resettable {
     // Let's just do it assuming no IRCD can handle following the rules.
     // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
     private static final Pattern NICK_PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
-    private static final Pattern SERVER_PATTERN = Pattern.compile("(?!\\-)(?:[a-zA-Z\\d\\-]{0,62}[a-zA-Z\\d]\\.){1,126}(?!\\d+)[a-zA-Z\\d]{1,63}");
+    private static final Pattern SERVER_PATTERN = Pattern.compile("(?!-)(?:[a-zA-Z\\d\\-]{0,62}[a-zA-Z\\d]\\.){1,126}(?!\\d+)[a-zA-Z\\d]{1,63}");
 
     private final InternalClient client;
 

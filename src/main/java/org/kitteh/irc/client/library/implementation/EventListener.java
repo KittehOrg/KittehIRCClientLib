@@ -861,14 +861,12 @@ class EventListener {
 
         if (!user.getHost().equals(newHostString)) {
             this.client.getActorProvider().trackUserHostnameChange(user.getNick(), newHostString);
-            user = ircUser.snapshot();
-            this.fire(new UserHostnameChangeEvent(this.client, event.getOriginalMessages(), oldUser, user));
+            this.fire(new UserHostnameChangeEvent(this.client, event.getOriginalMessages(), oldUser, ircUser.snapshot()));
         }
 
         if (!user.getUserString().equals(newUserString)) {
             this.client.getActorProvider().trackUserUserStringChange(user.getNick(), newUserString);
-            user = ircUser.snapshot();
-            this.fire(new UserUserStringChangeEvent(this.client, event.getOriginalMessages(), oldUser, user));
+            this.fire(new UserUserStringChangeEvent(this.client, event.getOriginalMessages(), oldUser, ircUser.snapshot()));
         }
     }
 

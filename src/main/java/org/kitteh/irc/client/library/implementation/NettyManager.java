@@ -81,8 +81,6 @@ final class NettyManager {
         private final InternalClient client;
         private final Channel channel;
         private boolean reconnect = true;
-        private final Object scheduledSendingLock = new Object();
-        private boolean shutdown = false;
 
         private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;

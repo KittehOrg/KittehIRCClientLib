@@ -66,6 +66,11 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
     @Nonnull
     List<String> getParameters();
 
+    /**
+     * Gets the server message received.
+     *
+     * @return the server message
+     */
     @Nonnull
     ServerMessage getServerMessage();
 }

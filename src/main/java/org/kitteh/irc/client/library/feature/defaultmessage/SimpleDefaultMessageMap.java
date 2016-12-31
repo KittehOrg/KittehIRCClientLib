@@ -76,7 +76,7 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
     @Override
     @Nonnull
     public Optional<String> getDefault(@Nonnull DefaultMessageType key, @Nullable String defaultValue) {
-        Sanity.nullCheck(key, "DefaultMessage key cannot be null");
+        Sanity.nullCheck(key, "Key cannot be null");
         return Optional.ofNullable(this.defaults.containsKey(key) ? this.defaults.get(key) : defaultValue);
     }
 

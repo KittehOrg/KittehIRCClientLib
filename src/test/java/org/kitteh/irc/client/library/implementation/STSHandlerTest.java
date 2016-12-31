@@ -133,6 +133,7 @@ public class STSHandlerTest {
             this.state = newState;
         }
 
+        @Nonnull
         @Override
         public STSStorageManager getStorageManager() {
             return null;

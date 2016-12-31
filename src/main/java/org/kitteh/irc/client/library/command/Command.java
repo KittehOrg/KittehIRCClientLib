@@ -68,6 +68,11 @@ public abstract class Command implements ClientLinked {
         return this.toStringer().toString();
     }
 
+    /**
+     * Generates a partial {@link ToStringer} for the command.
+     *
+     * @return the partial toString generator
+     */
     @Nonnull
     protected ToStringer toStringer() {
         return new ToStringer(this).add("client", this.getClient());
