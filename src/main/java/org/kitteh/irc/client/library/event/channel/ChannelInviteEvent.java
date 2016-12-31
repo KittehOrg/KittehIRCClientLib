@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -63,5 +64,11 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
     @Nonnull
     public String getTarget() {
         return this.target;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("target", this.target);
     }
 }

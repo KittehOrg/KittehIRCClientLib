@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -70,5 +71,11 @@ public class MonitoredNickListFullEvent extends ServerMessageEventBase {
     @Nonnull
     public List<String> getRejectedNicks() {
         return this.rejectedNicks;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("limit", this.limit).add("rejectedNicks", this.rejectedNicks);
     }
 }

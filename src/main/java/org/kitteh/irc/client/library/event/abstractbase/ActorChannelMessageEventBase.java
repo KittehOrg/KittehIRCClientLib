@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -67,5 +68,11 @@ public abstract class ActorChannelMessageEventBase<A extends Actor> extends Acto
     @Nonnull
     public final String getMessage() {
         return this.message;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("message", this.message);
     }
 }

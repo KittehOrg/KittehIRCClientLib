@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ServerMessageEvent;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -56,5 +57,11 @@ public abstract class ServerMessageEventBase extends ClientEventBase implements 
     @Override
     public List<ServerMessage> getOriginalMessages() {
         return this.originalMessages;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("originalMessages", this.originalMessages);
     }
 }

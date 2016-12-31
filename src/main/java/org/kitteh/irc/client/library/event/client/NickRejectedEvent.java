@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -88,5 +89,11 @@ public class NickRejectedEvent extends ServerMessageEventBase {
         Sanity.truthiness(!newNick.equals(this.attemptedNick), "Cannot set new nick to the currently failing nick");
         Sanity.truthiness(!newNick.contains(" "), "Nick cannot contain spaces");
         this.newNick = newNick;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("attemptedNick", this.attemptedNick).add("newNick", this.newNick);
     }
 }

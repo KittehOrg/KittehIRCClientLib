@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -73,5 +74,11 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
     @Override
     public boolean isToClient() {
         return this.isToClient;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("isToClient", this.isToClient).add("target", this.target);
     }
 }

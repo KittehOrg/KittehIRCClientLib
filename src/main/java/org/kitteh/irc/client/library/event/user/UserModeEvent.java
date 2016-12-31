@@ -71,4 +71,10 @@ public class UserModeEvent extends ActorEventBase<Actor> {
     public String toString() {
         return new ToStringer(this).add("client", this.getClient()).add("actor", this.getActor()).add("statusList", this.statusList).add("target", this.target).toString();
     }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("target", this.target).add("statusList", this.statusList);
+    }
 }

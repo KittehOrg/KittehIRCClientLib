@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -67,5 +68,11 @@ public class CapabilitiesDeletedSupportedEvent extends CapabilityNegotiationResp
     @Nonnull
     public List<CapabilityState> getDeletedCapabilities() {
         return this.deletedCapabilities;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("deletedCapabilities", this.deletedCapabilities);
     }
 }

@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.Change;
 import org.kitteh.irc.client.library.event.helper.UserInfoChangeEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -75,5 +76,11 @@ public class UserInfoChangeEventBase<Type> extends ActorEventBase<User> implemen
     @Override
     public Change<Type> getChange() {
         return this.change;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("newUser", this.newUser).add("change", this.change);
     }
 }

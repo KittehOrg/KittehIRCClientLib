@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -60,5 +61,11 @@ public abstract class ActorEventBase<A extends Actor> extends ServerMessageEvent
     @Nonnull
     public final A getActor() {
         return this.actor;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("actor", this.actor);
     }
 }

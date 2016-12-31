@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -102,5 +103,11 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
     @Override
     public ServerMessage getServerMessage() {
         return this.message;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("message", this.message);
     }
 }

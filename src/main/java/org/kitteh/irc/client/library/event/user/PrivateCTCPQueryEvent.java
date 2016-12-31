@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,5 +80,11 @@ public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> im
      */
     public void setReply(@Nullable String reply) {
         this.reply = (reply == null) ? null : Sanity.safeMessageCheck(reply, "Reply");
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("reply", this.reply);
     }
 }

@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.event.helper.ChannelTargetedEvent;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -75,5 +76,11 @@ public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMe
     @Override
     public final ChannelUserMode getPrefix() {
         return this.prefix;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("channelPrefix", this.prefix);
     }
 }

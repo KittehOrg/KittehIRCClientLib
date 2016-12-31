@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationRequestEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -64,5 +65,11 @@ public abstract class CapabilityNegotiationResponseEventWithRequestBase extends 
     @Override
     public List<String> getRequests() {
         return Collections.unmodifiableList(new ArrayList<>(this.requests));
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("requests", this.requests);
     }
 }

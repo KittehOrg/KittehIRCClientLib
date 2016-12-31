@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -79,5 +80,11 @@ public class ClientConnectedEvent extends ClientEventBase {
     @Nonnull
     public ServerInfo getServerInfo() {
         return this.serverInfo;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("server", this.server);
     }
 }

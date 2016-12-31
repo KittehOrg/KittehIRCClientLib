@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChangeEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -83,5 +84,11 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<User> impleme
     @Override
     public User getUser() {
         return this.getTarget();
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("target", this.target);
     }
 }

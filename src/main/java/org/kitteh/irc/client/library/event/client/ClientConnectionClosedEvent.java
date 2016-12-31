@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -52,5 +53,11 @@ public class ClientConnectionClosedEvent extends ClientEventBase {
      */
     public boolean isReconnecting() {
         return this.reconnecting;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("isReconnecting", this.reconnecting);
     }
 }

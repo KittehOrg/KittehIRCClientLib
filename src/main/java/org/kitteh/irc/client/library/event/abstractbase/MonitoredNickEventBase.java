@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -52,5 +53,11 @@ public abstract class MonitoredNickEventBase extends ServerMessageEventBase impl
     @Override
     public String getNick() {
         return this.nick;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("nick", this.nick);
     }
 }

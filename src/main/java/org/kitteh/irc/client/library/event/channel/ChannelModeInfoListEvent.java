@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -74,5 +75,11 @@ public class ChannelModeInfoListEvent extends ChannelEventBase {
     @Nonnull
     public List<ModeInfo> getModeInfo() {
         return this.info;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("mode", this.mode).add("info", this.info);
     }
 }

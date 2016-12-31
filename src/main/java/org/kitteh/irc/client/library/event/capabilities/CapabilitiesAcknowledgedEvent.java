@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -66,5 +67,11 @@ public class CapabilitiesAcknowledgedEvent extends CapabilityNegotiationResponse
     @Nonnull
     public List<CapabilityState> getAcknowledgedCapabilities() {
         return this.acknowledgedCapabilities;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("acknowledgedCapabilities", this.acknowledgedCapabilities);
     }
 }

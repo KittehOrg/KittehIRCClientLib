@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -67,5 +68,11 @@ public abstract class CapabilityNegotiationResponseEventBase extends ServerMessa
     @Override
     public final void setEndingNegotiation(boolean endNegotiation) {
         this.endNegotiation = endNegotiation;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("isEndingNegotiation", this.endNegotiation).add("isNegotiating", this.isNegotiating());
     }
 }
