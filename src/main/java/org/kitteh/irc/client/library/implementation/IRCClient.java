@@ -389,8 +389,7 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void removeChannel(@Nonnull String channelName, @Nonnull String reason) {
-        Sanity.nullCheck(reason, "Reason cannot be null");
+    public void removeChannel(@Nonnull String channelName, @Nullable String reason) {
         this.removeChannelPlease(channelName, reason);
     }
 
@@ -486,6 +485,7 @@ final class IRCClient extends InternalClient {
         }
     }
 
+    @Override
     public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
         Sanity.nullCheck(defaults, "defaults must not be null");
 
@@ -541,7 +541,7 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void shutdown(@Nonnull String reason) {
+    public void shutdown(@Nullable String reason) {
         Sanity.safeMessageCheck(reason, "Quit reason");
         this.shutdownInternal(reason);
     }

@@ -695,9 +695,9 @@ public interface Client {
      *
      * @param channel channel to leave
      * @param reason part reason
-     * @throws IllegalArgumentException if arguments are null
+     * @throws IllegalArgumentException if channel is null
      */
-    void removeChannel(@Nonnull String channel, @Nonnull String reason);
+    void removeChannel(@Nonnull String channel, @Nullable String reason);
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
@@ -989,5 +989,5 @@ public interface Client {
      *
      * @param reason quit message to send
      */
-    void shutdown(@Nonnull String reason);
+    void shutdown(@Nullable String reason);
 }
