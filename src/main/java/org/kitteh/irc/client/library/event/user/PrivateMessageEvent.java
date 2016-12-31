@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
-import org.kitteh.irc.client.library.event.helper.Replyable;
+import org.kitteh.irc.client.library.event.helper.ReplyableEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Fires when a message is sent to the client.
  */
-public class PrivateMessageEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User>, Replyable {
+public class PrivateMessageEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User>, ReplyableEvent {
     /**
      * Creates the event.
      *

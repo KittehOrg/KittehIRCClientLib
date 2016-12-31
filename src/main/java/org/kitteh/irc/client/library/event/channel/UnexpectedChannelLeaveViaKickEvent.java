@@ -27,7 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.client.UnexpectedChannelLeaveEvent;
+import org.kitteh.irc.client.library.event.helper.UnexpectedChannelLeaveEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;

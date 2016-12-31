@@ -21,10 +21,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.client;
+package org.kitteh.irc.client.library.event.helper;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 
 /**
  * I have left the channel I wanted! Will fire each time the client leaves a

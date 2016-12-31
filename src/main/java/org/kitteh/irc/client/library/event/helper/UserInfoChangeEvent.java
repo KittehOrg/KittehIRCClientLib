@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.event.helper;
 
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.util.Change;
 
 import javax.annotation.Nonnull;
 

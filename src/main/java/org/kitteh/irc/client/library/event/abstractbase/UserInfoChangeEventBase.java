@@ -26,8 +26,8 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.helper.Change;
 import org.kitteh.irc.client.library.event.helper.UserInfoChangeEvent;
+import org.kitteh.irc.client.library.util.Change;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
