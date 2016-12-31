@@ -13,5 +13,8 @@ org.kitteh.irc.client.library.exception
 org.kitteh.irc.client.library.feature
 org.kitteh.irc.client.library.feature.auth
 org.kitteh.irc.client.library.feature.auth.element
+org.kitteh.irc.client.library.feature.defaultmessage
 org.kitteh.irc.client.library.feature.filter
+org.kitteh.irc.client.library.feature.sending
+org.kitteh.irc.client.library.feature.sts
 org.kitteh.irc.client.library.util
