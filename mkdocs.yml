@@ -7,10 +7,11 @@ pages:
 - Advanced:
   - Account Tracking: advanced/accounts.md
   - SSL: advanced/ssl.md
+    - SSL root import: advanced/ssl_import.md
+    - STS: advanced/sts.md
   - WEBIRC: advanced/webirc.md
   - SASL: advanced/sasl.md
   - ECDSA: advanced/ecdsa.md
   - Alternative Authentication: advanced/alt_auth.md
-  - SSL root import: advanced/ssl_import.md
 markdown_extensions: [fenced_code]
 theme: readthedocs
