@@ -70,6 +70,8 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
+import org.kitteh.irc.client.library.event.dcc.DccRequestEvent;
+import org.kitteh.irc.client.library.event.dcc.UnknownDccRequestEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
@@ -975,6 +977,9 @@ class EventListener {
                         case "FINGER":
                             reply = "FINGER om nom nom tasty finger";
                             break;
+                        case "DCC":
+                            this.handleDccEvent(user, event.getOriginalMessages(), event.getParameters());
+                            break;
                     }
                     if (ctcpMessage.startsWith("PING ")) {
                         reply = ctcpMessage;
@@ -993,6 +998,30 @@ class EventListener {
                     this.fire(new ChannelTargetedCTCPEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), ctcpMessage));
                 }
                 break;
+        }
+    }
+
+    private void handleDccEvent(User user, List<ServerMessage> originalMessages, List<String> parameters) {
+        String dccService = CTCPUtil.fromCTCP(parameters.get(2));
+        if (dccService.equals("CHAT")) {
+            String dccType = CTCPUtil.fromCTCP(parameters.get(3));
+            if (!dccType.equals("chat")) {
+                this.fire(new UnknownDccRequestEvent(this.client, originalMessages, user, dccService, dccType));
+                return;
+            }
+            String ip = CTCPUtil.fromCTCP(parameters.get(4));
+            String port = CTCPUtil.fromCTCP(parameters.get(5));
+            int portInt;
+            try {
+                portInt = Integer.parseInt(port);
+            } catch (NumberFormatException invalidPort) {
+                // Ignore this for now
+                return;
+            }
+            this.fire(new DccRequestEvent(this.client, originalMessages, user, dccService, dccType, ip, portInt));
+        } else {
+            // repeat service as type
+            this.fire(new UnknownDccRequestEvent(this.client, originalMessages, user, dccService, dccService));
         }
     }
 
