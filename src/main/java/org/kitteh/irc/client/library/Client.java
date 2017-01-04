@@ -40,9 +40,9 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
-import org.kitteh.irc.client.library.event.dcc.DccConnectedEvent;
-import org.kitteh.irc.client.library.event.dcc.DccFailedEvent;
-import org.kitteh.irc.client.library.event.dcc.DccSocketBoundEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCConnectedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCFailedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCSocketBoundEvent;
 import org.kitteh.irc.client.library.event.helper.UnexpectedChannelLeaveEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.feature.AuthManager;
@@ -901,11 +901,11 @@ public interface Client {
      * Sends a DCC CHAT request to the target.
      * <p>
      * <p>When the server socket is bound locally, a
-     * {@link DccSocketBoundEvent} will be fired. When the chat is connected,
-     * a {@link DccConnectedEvent} will be fired. If the connection fails, a
-     * {@link DccFailedEvent} will be fired.</p>
+     * {@link DCCSocketBoundEvent} will be fired. When the chat is connected,
+     * a {@link DCCConnectedEvent} will be fired. If the connection fails, a
+     * {@link DCCFailedEvent} will be fired.</p>
      */
-    void requestDccChat(@Nonnull User target);
+    void requestDCCChat(@Nonnull User target);
 
     /**
      * Sends a raw IRC message.

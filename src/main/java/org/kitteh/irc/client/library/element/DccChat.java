@@ -25,7 +25,7 @@ package org.kitteh.irc.client.library.element;
 
 import javax.annotation.Nonnull;
 
-public interface DccChat extends DccExchange {
+public interface DCCChat extends DCCExchange {
     /**
      * Sends the user a message over DCC chat.
      *

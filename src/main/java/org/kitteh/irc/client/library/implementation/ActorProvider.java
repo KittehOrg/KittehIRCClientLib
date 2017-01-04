@@ -30,8 +30,8 @@ import org.kitteh.irc.client.library.command.KickCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.DccChat;
-import org.kitteh.irc.client.library.element.DccExchange;
+import org.kitteh.irc.client.library.element.DCCChat;
+import org.kitteh.irc.client.library.element.DCCExchange;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.Staleable;
@@ -41,7 +41,7 @@ import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
-import org.kitteh.irc.client.library.event.dcc.DccChatMessageEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCChatMessageEvent;
 import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -714,7 +714,7 @@ class ActorProvider implements Resettable {
         }
     }
 
-    abstract class IRCDccExchange extends IRCActor {
+    abstract class IRCDCCExchange extends IRCActor {
         private final String type;
         private final String name;
         private io.netty.channel.Channel nettyChannel;
@@ -722,11 +722,11 @@ class ActorProvider implements Resettable {
         private SocketAddress remoteAddress;
         private boolean connected;
 
-        private IRCDccExchange(@Nonnull String type, @Nonnull String name) {
+        private IRCDCCExchange(@Nonnull String type, @Nonnull String name) {
             super(type + '\0' + name);
             this.type = type;
             this.name = name;
-            NettyManager.connectDcc(ActorProvider.this.client, this);
+            NettyManager.connectDCC(ActorProvider.this.client, this);
         }
 
         abstract String getCtcp();
@@ -773,19 +773,19 @@ class ActorProvider implements Resettable {
 
         @Override
         @Nonnull
-        IRCDccExchangeSnapshot snapshot() {
+        IRCDCCExchangeSnapshot snapshot() {
             throw new UnsupportedOperationException("Cannot snapshot only the exchange");
         }
     }
 
-    class IRCDccChat extends IRCDccExchange {
-        private IRCDccChat(@Nonnull String name) {
+    class IRCDCCChat extends IRCDCCExchange {
+        private IRCDCCChat(@Nonnull String name) {
             super("CHAT", name);
         }
 
         @Override
         void onMessage(String msg) {
-            ActorProvider.this.client.getEventManager().callEvent(new DccChatMessageEvent(ActorProvider.this.client, Collections.emptyList(), this.snapshot(), msg));
+            ActorProvider.this.client.getEventManager().callEvent(new DCCChatMessageEvent(ActorProvider.this.client, Collections.emptyList(), this.snapshot(), msg));
         }
 
         @Override
@@ -796,18 +796,18 @@ class ActorProvider implements Resettable {
 
         @Override
         @Nonnull
-        IRCDccChatSnapshot snapshot() {
-            return new IRCDccChatSnapshot(this);
+        IRCDCCChatSnapshot snapshot() {
+            return new IRCDCCChatSnapshot(this);
         }
     }
 
-    abstract class IRCDccExchangeSnapshot extends IRCActorSnapshot implements DccExchange {
+    abstract class IRCDCCExchangeSnapshot extends IRCActorSnapshot implements DCCExchange {
         final io.netty.channel.Channel nettyChannel;
         private final SocketAddress localAddress;
         private final SocketAddress remoteAddress;
         private final boolean connected;
 
-        private IRCDccExchangeSnapshot(@Nonnull IRCDccExchange actor) {
+        private IRCDCCExchangeSnapshot(@Nonnull IRCDCCExchange actor) {
             super(actor);
             this.nettyChannel = actor.nettyChannel;
             this.localAddress = actor.localAddress;
@@ -842,8 +842,8 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCDccChatSnapshot extends IRCDccExchangeSnapshot implements DccChat {
-        private IRCDccChatSnapshot(@Nonnull IRCDccChat actor) {
+    class IRCDCCChatSnapshot extends IRCDCCExchangeSnapshot implements DCCChat {
+        private IRCDCCChatSnapshot(@Nonnull IRCDCCChat actor) {
             super(actor);
         }
 
@@ -967,8 +967,8 @@ class ActorProvider implements Resettable {
     }
 
     @Nonnull
-    IRCDccChat getDccChat(@Nonnull String nick) {
-        return new IRCDccChat(nick);
+    IRCDCCChat getDCCChat(@Nonnull String nick) {
+        return new IRCDCCChat(nick);
     }
 
     private void staleUser(String nick) {

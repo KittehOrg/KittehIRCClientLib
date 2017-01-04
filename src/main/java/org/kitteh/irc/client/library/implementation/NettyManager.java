@@ -52,10 +52,10 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
-import org.kitteh.irc.client.library.event.dcc.DccConnectedEvent;
-import org.kitteh.irc.client.library.event.dcc.DccConnectionClosedEvent;
-import org.kitteh.irc.client.library.event.dcc.DccFailedEvent;
-import org.kitteh.irc.client.library.event.dcc.DccSocketBoundEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCConnectedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCConnectionClosedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCFailedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCSocketBoundEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
@@ -228,12 +228,12 @@ final class NettyManager {
         }
     }
 
-    static class DccConnection extends ChannelInitializer<SocketChannel> {
-        private final ActorProvider.IRCDccExchange exchange;
+    static class DCCConnection extends ChannelInitializer<SocketChannel> {
+        private final ActorProvider.IRCDCCExchange exchange;
         private final InternalClient client;
         private int connectionsMade;
 
-        private DccConnection(ActorProvider.IRCDccExchange ex, InternalClient client) {
+        private DCCConnection(ActorProvider.IRCDCCExchange ex, InternalClient client) {
             this.exchange = ex;
             this.client = client;
         }
@@ -256,9 +256,9 @@ final class NettyManager {
             channel.pipeline().addFirst(successHandler, new ChannelInboundHandlerAdapter() {
                 @Override
                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                    DccConnection.this.exchange.setRemoteAddress(ctx.channel().remoteAddress());
-                    DccConnection.this.exchange.setConnected(true);
-                    DccConnection.this.client.getEventManager().callEvent(new DccConnectedEvent(DccConnection.this.client, Collections.emptyList(), DccConnection.this.exchange.snapshot()));
+                    DCCConnection.this.exchange.setRemoteAddress(ctx.channel().remoteAddress());
+                    DCCConnection.this.exchange.setConnected(true);
+                    DCCConnection.this.client.getEventManager().callEvent(new DCCConnectedEvent(DCCConnection.this.client, Collections.emptyList(), DCCConnection.this.exchange.snapshot()));
                     ctx.channel().pipeline().remove(this);
                 }
             });
@@ -266,14 +266,14 @@ final class NettyManager {
             channel.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                 @Override
                 public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                    // kill Dcc when inactive
+                    // kill DCC when inactive
                     ctx.close();
-                    DccConnection.this.exchange.setLocalAddress(null);
-                    DccConnection.this.exchange.setRemoteAddress(null);
-                    DccConnection.this.exchange.setConnected(false);
+                    DCCConnection.this.exchange.setLocalAddress(null);
+                    DCCConnection.this.exchange.setRemoteAddress(null);
+                    DCCConnection.this.exchange.setConnected(false);
                     // Close related ServerSocket
                     ctx.channel().parent().close();
-                    DccConnection.this.client.getEventManager().callEvent(new DccConnectionClosedEvent(DccConnection.this.client, Collections.emptyList(), DccConnection.this.exchange.snapshot()));
+                    DCCConnection.this.client.getEventManager().callEvent(new DCCConnectionClosedEvent(DCCConnection.this.client, Collections.emptyList(), DCCConnection.this.exchange.snapshot()));
                 }
             });
             channel.pipeline().addFirst("[INPUT] Exception Handler", new ChannelInboundHandlerAdapter() {
@@ -285,13 +285,13 @@ final class NettyManager {
                         ctx.channel().pipeline().remove(successHandler);
                         ctx.channel().close().addListener(ft -> {
                             if (ft.isDone()) {
-                                DccConnection.this.client.getEventManager().callEvent(new DccFailedEvent(DccConnection.this.client, "Netty exception", cause));
+                                DCCConnection.this.client.getEventManager().callEvent(new DCCFailedEvent(DCCConnection.this.client, "Netty exception", cause));
                             }
                         });
                         this.firstRemove = true;
                     }
                     if (cause instanceof Exception) {
-                        DccConnection.this.client.getExceptionListener().queue((Exception) cause);
+                        DCCConnection.this.client.getExceptionListener().queue((Exception) cause);
                     }
                 }
             });
@@ -299,7 +299,7 @@ final class NettyManager {
                 @Override
                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
                     if (cause instanceof Exception) {
-                        DccConnection.this.client.getExceptionListener().queue((Exception) cause);
+                        DCCConnection.this.client.getExceptionListener().queue((Exception) cause);
                     }
                 }
             });
@@ -404,11 +404,11 @@ final class NettyManager {
         return clientConnection;
     }
 
-    static Runnable connectDcc(InternalClient client, ActorProvider.IRCDccExchange exchange) {
+    static Runnable connectDCC(InternalClient client, ActorProvider.IRCDCCExchange exchange) {
         Sanity.nullCheck(eventLoopGroup, "A DCC connection cannot be made without a client");
         ChannelFuture future = new ServerBootstrap()
                 .channel(NioServerSocketChannel.class)
-                .childHandler(new DccConnection(exchange, client))
+                .childHandler(new DCCConnection(exchange, client))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .group(eventLoopGroup)
@@ -416,10 +416,10 @@ final class NettyManager {
         future.addListener(ft -> {
             if (ft.isSuccess()) {
                 exchange.setLocalAddress(future.channel().localAddress());
-                client.getEventManager().callEvent(new DccSocketBoundEvent(client, Collections.emptyList(), exchange.snapshot()));
+                client.getEventManager().callEvent(new DCCSocketBoundEvent(client, Collections.emptyList(), exchange.snapshot()));
                 exchange.onSocketBound();
             } else {
-                client.getEventManager().callEvent(new DccFailedEvent(client, "Failed to bind to address " + future.channel().localAddress(), ft.cause()));
+                client.getEventManager().callEvent(new DCCFailedEvent(client, "Failed to bind to address " + future.channel().localAddress(), ft.cause()));
             }
         });
         return () -> future.channel().close();

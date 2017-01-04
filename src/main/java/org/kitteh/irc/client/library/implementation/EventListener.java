@@ -70,8 +70,8 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
-import org.kitteh.irc.client.library.event.dcc.DccRequestEvent;
-import org.kitteh.irc.client.library.event.dcc.UnknownDccRequestEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCRequestEvent;
+import org.kitteh.irc.client.library.event.dcc.UnknownDCCRequestEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
@@ -978,7 +978,7 @@ class EventListener {
                             reply = "FINGER om nom nom tasty finger";
                             break;
                         case "DCC":
-                            this.handleDccEvent(user, event.getOriginalMessages(), event.getParameters());
+                            this.handleDCCEvent(user, event.getOriginalMessages(), event.getParameters());
                             break;
                     }
                     if (ctcpMessage.startsWith("PING ")) {
@@ -1001,12 +1001,12 @@ class EventListener {
         }
     }
 
-    private void handleDccEvent(User user, List<ServerMessage> originalMessages, List<String> parameters) {
+    private void handleDCCEvent(User user, List<ServerMessage> originalMessages, List<String> parameters) {
         String dccService = CTCPUtil.fromCTCP(parameters.get(2));
         if (dccService.equals("CHAT")) {
             String dccType = CTCPUtil.fromCTCP(parameters.get(3));
             if (!dccType.equals("chat")) {
-                this.fire(new UnknownDccRequestEvent(this.client, originalMessages, user, dccService, dccType));
+                this.fire(new UnknownDCCRequestEvent(this.client, originalMessages, user, dccService, dccType));
                 return;
             }
             String ip = CTCPUtil.fromCTCP(parameters.get(4));
@@ -1018,10 +1018,10 @@ class EventListener {
                 // Ignore this for now
                 return;
             }
-            this.fire(new DccRequestEvent(this.client, originalMessages, user, dccService, dccType, ip, portInt));
+            this.fire(new DCCRequestEvent(this.client, originalMessages, user, dccService, dccType, ip, portInt));
         } else {
             // repeat service as type
-            this.fire(new UnknownDccRequestEvent(this.client, originalMessages, user, dccService, dccService));
+            this.fire(new UnknownDCCRequestEvent(this.client, originalMessages, user, dccService, dccService));
         }
     }
 

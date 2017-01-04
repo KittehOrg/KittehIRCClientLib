@@ -24,22 +24,22 @@
 package org.kitteh.irc.client.library.event.dcc;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.DccExchange;
+import org.kitteh.irc.client.library.element.DCCExchange;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
- * Fires when a {@link DccExchange} connection fails.
+ * Fires when a {@link DCCExchange} connection fails.
  */
-public class DccFailedEvent extends ClientEventBase {
+public class DCCFailedEvent extends ClientEventBase {
     @Nullable
     private final String reason;
     @Nullable
     private final Throwable cause;
 
-    public DccFailedEvent(Client client, @Nullable String reason, @Nullable Throwable cause) {
+    public DCCFailedEvent(Client client, @Nullable String reason, @Nullable Throwable cause) {
         super(client);
         this.reason = reason;
         this.cause = cause;

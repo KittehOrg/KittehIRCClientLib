@@ -24,17 +24,17 @@
 package org.kitteh.irc.client.library.event.dcc;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.DccExchange;
+import org.kitteh.irc.client.library.element.DCCExchange;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
 
 import java.util.List;
 
 /**
- * Fires when a {@link DccExchange} is terminated.
+ * Fires when a {@link DCCExchange} is terminated.
  */
-public class DccConnectionClosedEvent extends ActorEventBase<DccExchange> {
-    public DccConnectionClosedEvent(Client client, List<ServerMessage> originalMessages, DccExchange actor) {
+public class DCCConnectionClosedEvent extends ActorEventBase<DCCExchange> {
+    public DCCConnectionClosedEvent(Client client, List<ServerMessage> originalMessages, DCCExchange actor) {
         super(client, originalMessages, actor);
     }
 }

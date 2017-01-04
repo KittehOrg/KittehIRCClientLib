@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * Represents an exchange using DCC.
  */
-public interface DccExchange extends Actor, Closeable {
+public interface DCCExchange extends Actor, Closeable {
     /**
      * @return the socket address of the local end
      */

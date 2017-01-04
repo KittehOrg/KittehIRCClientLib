@@ -355,7 +355,7 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    public void requestDccChat(@Nonnull User target) {
+    public void requestDCCChat(@Nonnull User target) {
 
     }
 

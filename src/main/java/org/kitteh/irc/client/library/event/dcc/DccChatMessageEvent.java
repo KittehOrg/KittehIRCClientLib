@@ -24,7 +24,7 @@
 package org.kitteh.irc.client.library.event.dcc;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.DccChat;
+import org.kitteh.irc.client.library.element.DCCChat;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ReplyableEvent;
@@ -35,8 +35,8 @@ import java.util.List;
 /**
  * Fires when a DCC CHAT message is received.
  */
-public class DccChatMessageEvent extends ActorMessageEventBase<DccChat> implements ReplyableEvent {
-    public DccChatMessageEvent(Client client, List<ServerMessage> originalMessages, DccChat actor, String message) {
+public class DCCChatMessageEvent extends ActorMessageEventBase<DCCChat> implements ReplyableEvent {
+    public DCCChatMessageEvent(Client client, List<ServerMessage> originalMessages, DCCChat actor, String message) {
         super(client, originalMessages, actor, message);
     }
 

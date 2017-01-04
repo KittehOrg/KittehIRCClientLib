@@ -35,12 +35,12 @@ import java.util.List;
 /**
  * Fires when a DCC request is received by the incoming DCC connection handler.
  */
-public class DccRequestEvent extends ActorEventBase<User> {
+public class DCCRequestEvent extends ActorEventBase<User> {
     private final String type;
     private final String ip;
     private final int port;
 
-    public DccRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull String service, @Nonnull String type, @Nonnull String ip, int port) {
+    public DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull String service, @Nonnull String type, @Nonnull String ip, int port) {
         super(client, originalMessages, actor);
         Sanity.nullCheck(type, "type cannot be null");
         Sanity.nullCheck(ip, "ip cannot be null");
@@ -64,8 +64,8 @@ public class DccRequestEvent extends ActorEventBase<User> {
     /**
      * Accepts the request and connect to the socket.
      *
-     * <p>This will trigger {@link DccConnectedEvent} if successful and
-     * {@link DccFailedEvent} otherwise.</p>
+     * <p>This will trigger {@link DCCConnectedEvent} if successful and
+     * {@link DCCFailedEvent} otherwise.</p>
      */
     public void accept() {
         // TODO actually accept :P
