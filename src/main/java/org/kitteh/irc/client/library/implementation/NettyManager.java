@@ -262,7 +262,7 @@ final class NettyManager {
                     ctx.channel().pipeline().remove(this);
                 }
             });
-            addInputDecoder(Integer.MAX_VALUE, channel, this.client, DccConnection.this.exchange::onMessage);
+            addInputDecoder(Integer.MAX_VALUE, channel, this.client, this.exchange::onMessage);
             channel.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                 @Override
                 public void channelInactive(ChannelHandlerContext ctx) throws Exception {
@@ -405,7 +405,7 @@ final class NettyManager {
     }
 
     static Runnable connectDcc(InternalClient client, ActorProvider.IRCDccExchange exchange) {
-        Sanity.nullCheck(eventLoopGroup, "A Dcc connection cannot be made without a client");
+        Sanity.nullCheck(eventLoopGroup, "A DCC connection cannot be made without a client");
         ChannelFuture future = new ServerBootstrap()
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new DccConnection(exchange, client))
