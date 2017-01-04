@@ -266,6 +266,11 @@ class FakeClient extends InternalClient {
         return this.messageTagManager;
     }
 
+    @Override
+    NettyManager.ClientConnection getClientConnection() {
+        return null;
+    }
+
     @Nonnull
     @Override
     public String getName() {
@@ -358,6 +363,11 @@ class FakeClient extends InternalClient {
 
     @Override
     public void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+
+    }
+
+    @Override
+    public void requestDCCChat(@Nonnull String target) {
 
     }
 

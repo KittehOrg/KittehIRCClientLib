@@ -70,6 +70,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCRequestEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
@@ -91,12 +92,15 @@ import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.event.user.WhoisEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
+import org.kitteh.irc.client.library.feature.DCCRequest;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
+import org.kitteh.irc.client.library.util.IPUtil;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import java.net.InetSocketAddress;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -107,6 +111,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @net.engio.mbassy.listener.Listener(references = References.Strong)
@@ -983,6 +988,14 @@ class EventListener {
                     if (ctcpMessage.startsWith("PING ")) {
                         reply = ctcpMessage;
                     }
+                    if (ctcpMessage.startsWith("DCC ")) {
+                        // DCC handling may incur some exceptions when parsing the info -- don't let that stop the CTCP event
+                        try {
+                            this.handleDCCEvent(user, event, Arrays.asList(ctcpMessage.split(" ")));
+                        } catch (RuntimeException e) {
+                            this.client.getExceptionListener().queue(e);
+                        }
+                    }
                     PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
                     this.fire(ctcpEvent);
                     Optional<String> replyMessage = ctcpEvent.getReply();
@@ -998,6 +1011,57 @@ class EventListener {
                 }
                 break;
         }
+    }
+
+    private void handleDCCEvent(User user, ClientReceiveCommandEvent event, List<String> parameters) {
+        // parameters looks like [DCC, CHAT, chat, ip, port]
+        if (parameters.size() <= 1) {
+            // invalid parameters, ignore request
+            this.logInvalidDccRequest(event, "No DCC type specified");
+            return;
+        }
+        String dccService = parameters.get(1);
+        if (dccService.equals("CHAT")) {
+            if (parameters.size() <= 2) {
+                // invalid parameters, ignore request
+                this.logInvalidDccRequest(event, "CHAT parameters not specified");
+                return;
+            }
+            String dccType = parameters.get(2);
+            if (!dccType.equals("chat")) {
+                this.logInvalidDccRequest(event, "Unknown DCC CHAT type " + dccType);
+                return;
+            }
+            if (parameters.size() <= 4) {
+                // invalid parameters, ignore request
+                this.logInvalidDccRequest(event, "DCC CHAT IP and port not provided");
+                return;
+            }
+            // IP is an integer, decode it
+            String rawIp = parameters.get(3);
+            String ip = IPUtil.getInetAddressFromIntString(rawIp).getHostAddress();
+            String port = parameters.get(4);
+            int portInt;
+            try {
+                portInt = Integer.parseInt(port);
+            } catch (NumberFormatException invalidPort) {
+                return;
+            }
+            InetSocketAddress socketAddress = new InetSocketAddress(ip, portInt);
+
+            CompletableFuture<Void> acceptFuture = new CompletableFuture<>();
+            acceptFuture.thenRun(() -> {
+                ActorProvider.IRCDCCChat chat = this.client.getActorProvider().getDCCChat(user.getNick());
+                NettyManager.connectToDCCClient(this.client, chat, socketAddress);
+            });
+
+            DCCRequest request = new DCCRequest(acceptFuture, dccService, dccType, socketAddress);
+            this.fire(new DCCRequestEvent(this.client, event.getOriginalMessages(), user, request));
+        }
+    }
+
+    private void logInvalidDccRequest(ClientReceiveServerMessageEvent event, String reason) {
+        this.trackException(event, "DCC request is invalid: " + reason);
     }
 
     @CommandFilter("MODE")

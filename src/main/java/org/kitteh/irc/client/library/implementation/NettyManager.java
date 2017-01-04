@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -37,6 +38,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
@@ -51,12 +53,17 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCConnectedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCConnectionClosedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCFailedEvent;
+import org.kitteh.irc.client.library.event.dcc.DCCSocketBoundEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSPolicy;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -70,10 +77,16 @@ import java.net.SocketAddress;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 final class NettyManager {
     static final class ClientConnection {
@@ -102,21 +115,7 @@ final class NettyManager {
         }
 
         private void buildOurFutureTogether() {
-            // Outbound - Processed in pipeline back to front.
-            this.channel.pipeline().addFirst("[OUTPUT] Output listener", new MessageToMessageEncoder<String>() {
-                @Override
-                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
-                    ClientConnection.this.client.getOutputListener().queue(msg);
-                    out.add(msg);
-                }
-            });
-            this.channel.pipeline().addFirst("[OUTPUT] Add line breaks", new MessageToMessageEncoder<String>() {
-                @Override
-                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
-                    out.add(msg + "\r\n");
-                }
-            });
-            this.channel.pipeline().addFirst("[OUTPUT] String encoder", new StringEncoder(CharsetUtil.UTF_8));
+            addOutputEncoder(this.channel, this.client, true);
 
             // Handle timeout
             this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 0));
@@ -132,19 +131,7 @@ final class NettyManager {
                 }
             });
 
-            // Inbound
-            this.channel.pipeline().addLast("[INPUT] Line splitter", new DelimiterBasedFrameDecoder(MAX_LINE_LENGTH, Unpooled.wrappedBuffer(new byte[]{(byte) '\r', (byte) '\n'})));
-            this.channel.pipeline().addLast("[INPUT] String decoder", new StringDecoder(CharsetUtil.UTF_8));
-            this.channel.pipeline().addLast("[INPUT] Send to client", new SimpleChannelInboundHandler<String>() {
-                @Override
-                protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-                    if (msg == null) {
-                        return;
-                    }
-                    ClientConnection.this.client.getInputListener().queue(msg);
-                    ClientConnection.this.client.processLine(msg);
-                }
-            });
+            addInputDecoder(MAX_LINE_LENGTH, this.channel, this.client, this.client::processLine);
 
             // SSL
             if (this.client.isSSL()) {
@@ -172,7 +159,6 @@ final class NettyManager {
                         }
                     });
                     this.channel.pipeline().addFirst(sslHandler);
-
                 } catch (SSLException | NoSuchAlgorithmException | KeyStoreException e) {
                     this.client.getExceptionListener().queue(new KittehConnectionException(e, true));
                     return;
@@ -244,11 +230,125 @@ final class NettyManager {
         }
     }
 
+    static class DCCConnection extends ChannelInitializer<SocketChannel> {
+        private final ActorProvider.IRCDCCExchange exchange;
+        private final InternalClient client;
+        private final AtomicBoolean connected = new AtomicBoolean();
+        private Channel channel;
+
+        private DCCConnection(ActorProvider.IRCDCCExchange ex, InternalClient client) {
+            this.exchange = ex;
+            this.client = client;
+        }
+
+        @Override
+        public void initChannel(SocketChannel channel) throws Exception {
+            if (!this.connected.compareAndSet(false, true)) {
+                // Only one connection is allowed.
+                channel.close();
+                return;
+            }
+            // we can close the server socket now
+            channel.parent().close();
+
+            this.channel = channel;
+            this.exchange.setNettyChannel(channel);
+            NettyManager.dccConnections.computeIfAbsent(this.client, c -> new ArrayList<>()).add(this);
+
+            addOutputEncoder(channel, this.client, false);
+
+            // Inbound & exceptions
+            String successHandler = "[INPUT] Success Handler";
+            channel.pipeline().addFirst(successHandler, new ChannelInboundHandlerAdapter() {
+                @Override
+                public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                    DCCConnection.this.exchange.setLocalAddress(ctx.channel().localAddress());
+                    DCCConnection.this.exchange.setRemoteAddress(ctx.channel().remoteAddress());
+                    DCCConnection.this.exchange.setConnected(true);
+                    DCCConnection.this.client.getEventManager().callEvent(new DCCConnectedEvent(DCCConnection.this.client, Collections.emptyList(), DCCConnection.this.exchange.snapshot()));
+                    ctx.channel().pipeline().remove(this);
+                }
+            });
+            addInputDecoder(Integer.MAX_VALUE, channel, this.client, this.exchange::onMessage);
+            channel.pipeline().addFirst("[INPUT] Exception Handler", new ChannelInboundHandlerAdapter() {
+                private boolean firstRemove;
+
+                @Override
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                    if (!this.firstRemove) {
+                        ctx.channel().pipeline().remove(successHandler);
+                        ctx.channel().close().addListener(ft -> {
+                            if (ft.isDone()) {
+                                DCCConnection.this.client.getEventManager().callEvent(new DCCFailedEvent(DCCConnection.this.client, "Netty exception", cause));
+                            }
+                        });
+                        this.firstRemove = true;
+                    }
+                    if (cause instanceof Exception) {
+                        DCCConnection.this.client.getExceptionListener().queue((Exception) cause);
+                    }
+                }
+            });
+            channel.pipeline().addLast("[OUTPUT] Exception Handler", new ChannelOutboundHandlerAdapter() {
+                @Override
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                    if (cause instanceof Exception) {
+                        DCCConnection.this.client.getExceptionListener().queue((Exception) cause);
+                    }
+                }
+            });
+
+            channel.closeFuture().addListener(future -> {
+                this.exchange.setLocalAddress(null);
+                this.exchange.setRemoteAddress(null);
+                this.exchange.setConnected(false);
+                this.client.getEventManager().callEvent(new DCCConnectionClosedEvent(DCCConnection.this.client, Collections.emptyList(), DCCConnection.this.exchange.snapshot()));
+                removeDCCConnection(this);
+            });
+        }
+    }
+
     @Nullable
     private static Bootstrap bootstrap;
     @Nullable
     private static EventLoopGroup eventLoopGroup;
     private static final Set<ClientConnection> connections = new HashSet<>();
+    private static final Map<InternalClient, List<DCCConnection>> dccConnections = new HashMap<>();
+
+    private static void addOutputEncoder(Channel channel, InternalClient client, boolean carriageReturn) {
+        // Outbound - Processed in pipeline back to front.
+        channel.pipeline().addFirst("[OUTPUT] Output listener", new MessageToMessageEncoder<String>() {
+            @Override
+            protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+                client.getOutputListener().queue(msg);
+                out.add(msg);
+            }
+        });
+        final String linebreak = carriageReturn ? "\r\n" : "\n";
+        channel.pipeline().addFirst("[OUTPUT] Add line breaks", new MessageToMessageEncoder<String>() {
+            @Override
+            protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+                out.add(msg + linebreak);
+            }
+        });
+        channel.pipeline().addFirst("[OUTPUT] String encoder", new StringEncoder(CharsetUtil.UTF_8));
+    }
+
+    private static void addInputDecoder(int maxLineLength, Channel channel, InternalClient client, Consumer<String> lineProcessor) {
+        // Inbound
+        channel.pipeline().addLast("[INPUT] Line splitter", new DelimiterBasedFrameDecoder(maxLineLength, Unpooled.wrappedBuffer(new byte[]{(byte) '\r', (byte) '\n'})));
+        channel.pipeline().addLast("[INPUT] String decoder", new StringDecoder(CharsetUtil.UTF_8));
+        channel.pipeline().addLast("[INPUT] Send to client", new SimpleChannelInboundHandler<String>() {
+            @Override
+            protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+                if (msg == null) {
+                    return;
+                }
+                client.getInputListener().queue(msg);
+                lineProcessor.accept(msg);
+            }
+        });
+    }
 
     private NettyManager() {
 
@@ -256,7 +356,20 @@ final class NettyManager {
 
     private static synchronized void removeClientConnection(@Nonnull ClientConnection connection, boolean reconnecting) {
         connections.remove(connection);
-        if (!reconnecting && connections.isEmpty()) {
+        shutdownIfFinished(reconnecting);
+    }
+
+    private static synchronized void removeDCCConnection(@Nonnull DCCConnection connection) {
+        List<DCCConnection> connections = dccConnections.get(connection.client);
+        connections.remove(connection);
+        if (connections.isEmpty()) {
+            dccConnections.remove(connection.client);
+        }
+        shutdownIfFinished(false);
+    }
+
+    private static synchronized void shutdownIfFinished(boolean reconnecting) {
+        if (!reconnecting && connections.isEmpty() && dccConnections.isEmpty()) {
             if (eventLoopGroup != null) {
                 eventLoopGroup.shutdownGracefully();
             }
@@ -301,6 +414,50 @@ final class NettyManager {
         }
         connections.add(clientConnection);
         return clientConnection;
+    }
+
+    static Runnable createDCCServer(InternalClient client, ActorProvider.IRCDCCExchange exchange) {
+        Sanity.nullCheck(client.getClientConnection(), "A DCC connection cannot be made without a client connection");
+        SocketAddress bind = client.getConfig().get(Config.BIND_ADDRESS);
+        if (bind == null) {
+            // try binding to the client socket
+            bind = client.getClientConnection().channel.localAddress();
+            Sanity.nullCheck(bind, "The client connection is not bound, a DCC connection cannot be made");
+        }
+        ChannelFuture future = new ServerBootstrap()
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new DCCConnection(exchange, client))
+                .childOption(ChannelOption.TCP_NODELAY, true)
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .group(eventLoopGroup)
+                .bind(bind);
+        future.addListener(ft -> {
+            if (ft.isSuccess()) {
+                exchange.setLocalAddress(future.channel().localAddress());
+                client.getEventManager().callEvent(new DCCSocketBoundEvent(client, Collections.emptyList(), exchange.snapshot()));
+                exchange.onSocketBound();
+            } else {
+                client.getEventManager().callEvent(new DCCFailedEvent(client, "Failed to bind to address " + future.channel().localAddress(), ft.cause()));
+            }
+        });
+        return () -> future.channel().close();
+    }
+
+    static Runnable connectToDCCClient(InternalClient client, ActorProvider.IRCDCCExchange exchange, SocketAddress remoteAddress) {
+        Sanity.nullCheck(eventLoopGroup, "A DCC connection cannot be made without a client");
+        ChannelFuture future = new Bootstrap()
+                .channel(NioSocketChannel.class)
+                .handler(new DCCConnection(exchange, client))
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .group(eventLoopGroup)
+                .connect(remoteAddress);
+        future.addListener(ft -> {
+            if (!ft.isSuccess()) {
+                client.getEventManager().callEvent(new DCCFailedEvent(client, "Failed to connect to address " + remoteAddress, ft.cause()));
+            }
+        });
+        return () -> future.channel().close();
     }
 
     @Nonnull

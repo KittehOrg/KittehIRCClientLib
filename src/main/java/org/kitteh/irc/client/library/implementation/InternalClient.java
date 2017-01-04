@@ -71,6 +71,8 @@ abstract class InternalClient implements Client {
     @Nonnull
     public abstract IRCServerInfo getServerInfo();
 
+    abstract NettyManager.ClientConnection getClientConnection();
+
     abstract void pauseMessageSending();
 
     abstract void ping();
