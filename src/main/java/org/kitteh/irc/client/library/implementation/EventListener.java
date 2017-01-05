@@ -1039,7 +1039,7 @@ class EventListener {
             } catch (NumberFormatException invalidPort) {
                 return;
             }
-            this.fire(new DCCRequestEvent(this.client, originalMessages, user, dccService, dccType, ip, portInt) {
+            this.fire(new DCCRequestEvent(this.client, originalMessages, user, dccService, dccType, new InetSocketAddress(ip, portInt)) {
                 private volatile boolean actionTaken = false;
 
                 @Override

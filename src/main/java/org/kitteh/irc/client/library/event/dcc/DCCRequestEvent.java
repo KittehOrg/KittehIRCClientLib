@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.net.InetSocketAddress;
 import java.util.List;
 
 /**
@@ -38,26 +39,25 @@ import java.util.List;
  */
 public abstract class DCCRequestEvent extends ActorEventBase<User> {
     private final String type;
-    private final String ip;
-    private final int port;
+    private final InetSocketAddress ip;
 
-    protected DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull String service, @Nonnull String type, @Nonnull String ip, int port) {
+    protected DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull String service, @Nonnull String type, @Nonnull InetSocketAddress ip) {
         super(client, originalMessages, actor);
         this.type = Sanity.nullCheck(type, "type cannot be null");
         this.ip = Sanity.nullCheck(ip, "ip cannot be null");
-        this.port = port;
     }
 
     public String getType() {
         return this.type;
     }
 
-    public String getIp() {
+    /**
+     * Returns the address offered in the request. Calling {@link #accept()} will connect to this address.
+     *
+     * @return the offered address
+     */
+    public InetSocketAddress getRequestAddress() {
         return this.ip;
-    }
-
-    public int getPort() {
-        return this.port;
     }
 
     /**
