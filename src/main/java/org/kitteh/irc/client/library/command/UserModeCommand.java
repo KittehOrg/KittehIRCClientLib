@@ -76,8 +76,7 @@ public class UserModeCommand extends Command {
      */
     @Nonnull
     public UserModeCommand add(boolean add, @Nonnull UserMode mode, @Nonnull String parameter) {
-        Sanity.nullCheck(parameter, "Parameter cannot be null");
-        return this.addChange(add, mode, parameter);
+        return this.addChange(add, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
     }
 
     @Nonnull

@@ -48,7 +48,6 @@ public class STSPolicy {
     private final ConcurrentMap<String, String> options;
     private final Set<String> flags;
 
-
     /**
      * Constructs a policy.
      *

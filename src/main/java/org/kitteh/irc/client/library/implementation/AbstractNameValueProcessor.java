@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
@@ -38,7 +39,7 @@ abstract class AbstractNameValueProcessor<NameValue> {
         private final TriFunction<Client, String, Optional<String>, ? extends NameValue> function;
 
         protected Creator(@Nonnull TriFunction<Client, String, Optional<String>, ? extends NameValue> function) {
-            this.function = function;
+            this.function = Sanity.nullCheck(function, "Function cannot be null");
         }
 
         @Nonnull
@@ -64,17 +65,17 @@ abstract class AbstractNameValueProcessor<NameValue> {
 
     @Nonnull
     protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
-        return this.optional(this.registeredNames.get(name));
+        return this.optional(this.registeredNames.get(Sanity.nullCheck(name, "Name cannot be null")));
     }
 
     @Nonnull
     protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
-        return this.optional(this.registeredNames.put(name, creator));
+        return this.optional(this.registeredNames.put(Sanity.nullCheck(name, "Name cannot be null"), creator));
     }
 
     @Nonnull
     protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
-        return this.optional(this.registeredNames.remove(name));
+        return this.optional(this.registeredNames.remove(Sanity.nullCheck(name, "Name cannot be null")));
     }
 
     @Nonnull

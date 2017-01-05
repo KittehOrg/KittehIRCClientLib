@@ -108,16 +108,14 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder messageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier) {
-        Sanity.nullCheck(supplier, "Supplier cannot be null");
-        this.config.set(Config.MESSAGE_DELAY, supplier);
+        this.config.set(Config.MESSAGE_DELAY, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 
     @Nonnull
     @Override
     public ClientBuilder name(@Nonnull String name) {
-        Sanity.safeMessageCheck(name, "Name");
-        this.config.set(Config.NAME, name);
+        this.config.set(Config.NAME, Sanity.safeMessageCheck(name, "Name"));
         return this;
     }
 
@@ -147,8 +145,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder realName(@Nonnull String name) {
-        Sanity.safeMessageCheck(name, "Real name");
-        this.config.set(Config.REAL_NAME, name);
+        this.config.set(Config.REAL_NAME, Sanity.safeMessageCheck(name, "Real name"));
         return this;
     }
 
@@ -190,8 +187,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder serverHost(@Nonnull String host) {
-        Sanity.nullCheck(host, "Host cannot be null");
-        this.serverHost = host;
+        this.serverHost = Sanity.nullCheck(host, "Host cannot be null");
         return this;
     }
 

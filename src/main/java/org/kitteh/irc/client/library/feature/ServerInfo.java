@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -153,7 +154,7 @@ public interface ServerInfo {
     @Nonnull
     default <ISupport extends ISupportParameter> Optional<ISupport> getISupportParameter(@Nonnull String name, @Nonnull Class<ISupport> clazz) {
         Optional<ISupportParameter> optional = this.getISupportParameter(name);
-        if (optional.isPresent() && clazz.isInstance(optional.get())) {
+        if (optional.isPresent() && Sanity.nullCheck(clazz, "Class cannot be null").isInstance(optional.get())) {
             return (Optional<ISupport>) optional;
         }
         return Optional.empty();

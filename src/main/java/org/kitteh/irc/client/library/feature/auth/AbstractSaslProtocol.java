@@ -151,8 +151,8 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
      */
     protected AbstractSaslProtocol(@Nonnull Client client, @Nonnull String accountName, @Nonnull AuthValue authValue, @Nonnull String saslType) {
         super(client, accountName);
-        this.saslType = saslType;
-        this.authValue = authValue;
+        this.saslType = Sanity.nullCheck(saslType, "SASL type cannot be null");
+        this.authValue = Sanity.nullCheck(authValue, "Auth value cannot be null");
     }
 
     @Nonnull
@@ -184,8 +184,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
      * @throws IllegalArgumentException if the value is null
      */
     protected final void setAuthValue(@Nonnull AuthValue authValue) {
-        Sanity.nullCheck(authValue, "Auth value cannot be null");
-        this.authValue = authValue;
+        this.authValue = Sanity.nullCheck(authValue, "Auth value cannot be null");
     }
 
     /**

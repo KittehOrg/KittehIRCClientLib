@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -46,7 +47,7 @@ public abstract class MonitoredNickEventBase extends ServerMessageEventBase impl
      */
     protected MonitoredNickEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull String nick) {
         super(client, originalMessages);
-        this.nick = nick;
+        this.nick = Sanity.nullCheck(nick, "Nick cannot be null");
     }
 
     @Nonnull

@@ -50,7 +50,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      * @param client the client to which this map is tied
      */
     public CIKeyMap(Client client) {
-        this.client = client;
+        this.client = Sanity.nullCheck(client, "Client cannot be null");
     }
 
     /**

@@ -163,7 +163,7 @@ public interface CapabilityManager {
          * @param field the field to try and get the value for
          * @return the capability extension name
          */
-        private static String getStringForCapabilityField(Field field) {
+        private static String getStringForCapabilityField(@Nonnull Field field) {
             return RiskyBusiness.assertSafe(f -> (String) f.get(null), field);
         }
     }

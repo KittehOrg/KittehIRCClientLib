@@ -60,8 +60,7 @@ public abstract class ActorChannelMessageEventBase<A extends Actor> extends Acto
      */
     protected ActorChannelMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull Channel channel, @Nonnull String message) {
         super(client, originalMessages, actor, channel);
-        Sanity.nullCheck(message, "Message cannot be null");
-        this.message = message;
+        this.message = Sanity.nullCheck(message, "Message cannot be null");
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -52,7 +53,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      */
     public ChannelModeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Actor actor, @Nonnull Channel channel, @Nonnull ModeStatusList<ChannelMode> statusList) {
         super(client, originalMessages, actor, channel);
-        this.statusList = statusList;
+        this.statusList = Sanity.nullCheck(statusList, "Status list cannot be null");
     }
 
     /**

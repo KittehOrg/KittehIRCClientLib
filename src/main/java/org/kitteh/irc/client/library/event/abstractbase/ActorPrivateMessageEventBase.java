@@ -29,7 +29,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ActorEvent;
 import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.event.helper.PrivateEvent;
-import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -60,7 +59,6 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
      */
     protected ActorPrivateMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull String target, @Nonnull String message) {
         super(client, originalMessages, actor, message);
-        Sanity.nullCheck(message, "Message cannot be null");
         this.target = target;
         this.isToClient = client.getServerInfo().getCaseMapping().areEqualIgnoringCase(client.getNick(), target);
     }

@@ -44,10 +44,8 @@ public abstract class AbstractAccountProtocol implements AccountName {
      * @param accountName account name
      */
     protected AbstractAccountProtocol(@Nonnull Client client, @Nonnull String accountName) {
-        Sanity.nullCheck(client, "Client cannot be null");
-        Sanity.safeMessageCheck(accountName, "Account name");
-        this.client = client;
-        this.accountName = accountName;
+        this.client = Sanity.nullCheck(client, "Client cannot be null");
+        this.accountName = Sanity.safeMessageCheck(accountName, "Account name");
     }
 
     @Nonnull
@@ -64,8 +62,7 @@ public abstract class AbstractAccountProtocol implements AccountName {
 
     @Override
     public void setAccountName(@Nonnull String accountName) {
-        Sanity.safeMessageCheck(accountName, "Account name");
-        this.accountName = accountName;
+        this.accountName = Sanity.safeMessageCheck(accountName, "Account name");
     }
 
     @Override

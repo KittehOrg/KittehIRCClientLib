@@ -46,8 +46,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      * @param mode mode to set
      */
     public ModeStatus(boolean setting, @Nonnull ModeType mode) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
-        this.mode = mode;
+        this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
         this.parameter = Optional.empty();
         this.setting = setting;
     }
@@ -60,10 +59,8 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      * @param parameter parameter
      */
     public ModeStatus(boolean setting, @Nonnull ModeType mode, @Nonnull String parameter) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
-        Sanity.safeMessageCheck(parameter, "Parameter");
-        this.mode = mode;
-        this.parameter = Optional.of(parameter);
+        this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
+        this.parameter = Optional.of(Sanity.safeMessageCheck(parameter, "Parameter"));
         this.setting = setting;
     }
 

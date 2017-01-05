@@ -50,10 +50,8 @@ public class ClientConnectedEvent extends ClientEventBase {
      */
     public ClientConnectedEvent(@Nonnull Client client, @Nonnull Actor server, @Nonnull ServerInfo serverInfo) {
         super(client);
-        Sanity.nullCheck(server, "Server cannot be null");
-        Sanity.nullCheck(serverInfo, "ServerInfo cannot be null");
-        this.server = server;
-        this.serverInfo = serverInfo;
+        this.server = Sanity.nullCheck(server, "Server cannot be null");
+        this.serverInfo = Sanity.nullCheck(serverInfo, "ServerInfo cannot be null");
     }
 
     /**

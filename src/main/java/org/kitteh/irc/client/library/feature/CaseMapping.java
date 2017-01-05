@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.feature;
 
+import org.kitteh.irc.client.library.util.Sanity;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -92,6 +94,7 @@ public enum CaseMapping {
      */
     @Nonnull
     public String toLowerCase(@Nonnull String input) {
+        Sanity.nullCheck(input, "Input cannot be null");
         char[] arr = input.toCharArray();
         for (int i = 0; i < arr.length; i++) {
             char c = arr[i];

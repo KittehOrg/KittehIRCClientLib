@@ -45,8 +45,7 @@ public abstract class AbstractAccountPassProtocol extends AbstractAccountProtoco
      */
     protected AbstractAccountPassProtocol(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
         super(client, accountName);
-        Sanity.safeMessageCheck(password, "Password");
-        this.password = password;
+        this.password = Sanity.safeMessageCheck(password, "Password");
     }
 
     @Nonnull
@@ -57,8 +56,7 @@ public abstract class AbstractAccountPassProtocol extends AbstractAccountProtoco
 
     @Override
     public void setPassword(@Nonnull String password) {
-        Sanity.safeMessageCheck(password, "Password");
-        this.password = password;
+        this.password = Sanity.safeMessageCheck(password, "Password");
     }
 
     @Nonnull

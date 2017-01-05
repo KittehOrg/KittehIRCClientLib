@@ -50,8 +50,8 @@ public class CISet implements Set<String> {
      *
      * @param client the client to which this set is tied
      */
-    public CISet(Client client) {
-        this.client = client;
+    public CISet(@Nonnull Client client) {
+        this.client = Sanity.nullCheck(client, "Client cannot be null");
     }
 
     /**

@@ -83,8 +83,7 @@ public class ChannelModeCommand extends ChannelCommand {
      */
     @Nonnull
     public ChannelModeCommand add(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
-        Sanity.nullCheck(parameter, "Parameter cannot be null");
-        return this.addChange(add, mode, parameter);
+        return this.addChange(add, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
     }
 
     /**

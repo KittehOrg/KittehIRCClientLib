@@ -61,16 +61,14 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
     @Override
     @Nonnull
     public SimpleDefaultMessageMap setDefault(@Nonnull DefaultMessageType key, @Nullable String defaultString) {
-        Sanity.nullCheck(key, "Key cannot be null");
-        this.defaults.put(key, defaultString);
+        this.defaults.put(Sanity.nullCheck(key, "Key cannot be null"), defaultString);
         return this;
     }
 
     @Override
     @Nonnull
     public Optional<String> getDefault(DefaultMessageType key) {
-        Sanity.nullCheck(key, "Key cannot be null");
-        return this.getDefault(key, key.getFallback());
+        return this.getDefault(Sanity.nullCheck(key, "Key cannot be null"), key.getFallback());
     }
 
     @Override

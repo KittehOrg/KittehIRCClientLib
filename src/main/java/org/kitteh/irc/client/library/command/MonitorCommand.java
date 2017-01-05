@@ -100,8 +100,7 @@ public class MonitorCommand extends Command {
      */
     @Nonnull
     public MonitorCommand action(@Nonnull Action action) {
-        Sanity.nullCheck(action, "Action cannot be null");
-        this.action = action;
+        this.action = Sanity.nullCheck(action, "Action cannot be null");
         return this;
     }
 
@@ -116,8 +115,7 @@ public class MonitorCommand extends Command {
      */
     @Nonnull
     public MonitorCommand target(@Nonnull String... targets) {
-        Sanity.nullCheck(targets, "Targets cannot be null");
-        return this.target(Arrays.asList(targets));
+        return this.target(Arrays.asList(Sanity.nullCheck(targets, "Targets cannot be null")));
     }
 
     /**

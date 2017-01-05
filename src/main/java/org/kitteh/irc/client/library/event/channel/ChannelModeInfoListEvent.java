@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -53,8 +54,8 @@ public class ChannelModeInfoListEvent extends ChannelEventBase {
      */
     public ChannelModeInfoListEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull ChannelMode mode, @Nonnull List<ModeInfo> info) {
         super(client, originalMessages, channel);
-        this.mode = mode;
-        this.info = Collections.unmodifiableList(info);
+        this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
+        this.info = Collections.unmodifiableList(Sanity.nullCheck(info, "Info cannot be null"));
     }
 
     /**

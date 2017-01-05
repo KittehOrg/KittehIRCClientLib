@@ -380,8 +380,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void knockChannel(@Nonnull String channelName) {
-        Sanity.nullCheck(channelName, "Channel cannot be null");
-        this.sendRawLine("KNOCK " + channelName);
+        this.sendRawLine("KNOCK " + Sanity.nullCheck(channelName, "Channel cannot be null"));
     }
 
     @Override
@@ -421,11 +420,17 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.nullCheck(cutter, "Cutter cannot be null");
         cutter.split(message, this.getRemainingLength("PRIVMSG", target)).forEach(line -> this.sendMessage(target, line));
     }
 
     @Override
     public void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.nullCheck(cutter, "Cutter cannot be null");
         cutter.split(message, this.getRemainingLength("NOTICE", target)).forEach(line -> this.sendNotice(target, line));
     }
 
@@ -488,8 +493,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
-        Sanity.nullCheck(defaults, "defaults must not be null");
-
+        Sanity.nullCheck(defaults, "Defaults cannot be null");
         this.defaultMessageMap = defaults;
     }
 
@@ -509,8 +513,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void setMessageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier) {
-        Sanity.nullCheck(supplier, "Supplier cannot be null");
-        this.config.set(Config.MESSAGE_DELAY, supplier);
+        this.config.set(Config.MESSAGE_DELAY, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         synchronized (this.messageSendingLock) {
             MessageSendingQueue newQueue = this.getMessageSendingQueueSupplier().apply(this);
             this.messageSendingScheduled.shutdown().forEach(newQueue::queue);
@@ -543,7 +546,9 @@ final class IRCClient extends InternalClient {
 
     @Override
     public void shutdown(@Nullable String reason) {
-        Sanity.safeMessageCheck(reason, "Quit reason");
+        if (reason != null) {
+            Sanity.safeMessageCheck(reason, "Quit reason");
+        }
         this.shutdownInternal(reason);
     }
 
@@ -705,7 +710,7 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
         if (this.userModes == null) {
             this.userModes = new HashMap<>();
         }

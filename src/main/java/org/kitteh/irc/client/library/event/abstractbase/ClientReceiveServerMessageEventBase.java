@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -40,7 +41,7 @@ import java.util.List;
  * events if you want to listen to such an event.
  */
 public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> implements ClientReceiveServerMessageEvent {
-    private final List<String> args;
+    private final List<String> parameters;
     private final String command;
     private final ServerMessage message;
 
@@ -51,13 +52,13 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * @param serverMessage server message
      * @param server server
      * @param command command
-     * @param args args
+     * @param parameters parameters
      */
-    public ClientReceiveServerMessageEventBase(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, @Nonnull String command, @Nonnull List<String> args) {
-        super(client, Collections.singletonList(serverMessage), server);
-        this.args = Collections.unmodifiableList(new ArrayList<>(args));
+    public ClientReceiveServerMessageEventBase(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, @Nonnull String command, @Nonnull List<String> parameters) {
+        super(client, Collections.singletonList(Sanity.nullCheck(serverMessage, "Server message cannot be null")), server);
+        this.parameters = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(parameters, "Parameters cannot be null")));
         this.message = serverMessage;
-        this.command = command;
+        this.command = Sanity.nullCheck(command, "Command cannot be null");
     }
 
     /**
@@ -68,7 +69,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
     @Nonnull
     @Override
     public List<String> getParameters() {
-        return this.args;
+        return this.parameters;
     }
 
     @Nonnull

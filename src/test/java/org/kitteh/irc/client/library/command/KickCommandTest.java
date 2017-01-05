@@ -1,14 +1,13 @@
 package org.kitteh.irc.client.library.command;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
 import org.mockito.Mockito;
-
-import java.util.Optional;
 
 /**
  * Tests the KickCommand
@@ -18,20 +17,34 @@ public class KickCommandTest {
     private static final String USER = "targetuser";
     private static final String REASON = "bad breath";
 
+    private Client client;
+    private User user;
+
+    /**
+     * And then Kitteh said, let there be test!
+     */
+    @Before
+    public void before() {
+        this.client = Mockito.mock(Client.class);
+        ServerInfo serverInfo = Mockito.mock(ServerInfo.class);
+        this.user = Mockito.mock(User.class);
+        Mockito.when(this.client.getServerInfo()).thenReturn(serverInfo);
+        Mockito.when(serverInfo.isValidChannel(Mockito.any())).thenReturn(true);
+        Mockito.when(this.client.getDefaultMessageMap()).thenReturn(new SimpleDefaultMessageMap(null));
+        Mockito.when(this.client.toString()).thenReturn("CLIENT OMG");
+        Mockito.when(this.user.getNick()).thenReturn(USER);
+    }
+
     /**
      * Test with strings and no reason.
      */
     @Test
     public void noReasonStrings() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-        Mockito.when(client.getDefaultMessageMap()).thenReturn(new SimpleDefaultMessageMap(null));
-
-        KickCommand command = new KickCommand(client, CHANNEL);
+        KickCommand command = new KickCommand(this.client, CHANNEL);
         command.target(USER);
         command.execute();
 
-        Mockito.verify(client).sendRawLine("KICK " + CHANNEL + ' ' + USER);
+        Mockito.verify(this.client).sendRawLine("KICK " + CHANNEL + ' ' + USER);
     }
 
     /**
@@ -39,17 +52,13 @@ public class KickCommandTest {
      */
     @Test
     public void noReasonAnymore() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-        Mockito.when(client.getDefaultMessageMap()).thenReturn(new SimpleDefaultMessageMap(null));
-
-        KickCommand command = new KickCommand(client, CHANNEL);
+        KickCommand command = new KickCommand(this.client, CHANNEL);
         command.reason(REASON);
         command.target(USER);
         command.reason(null);
         command.execute();
 
-        Mockito.verify(client).sendRawLine("KICK " + CHANNEL + ' ' + USER);
+        Mockito.verify(this.client).sendRawLine("KICK " + CHANNEL + ' ' + USER);
     }
 
     /**
@@ -57,20 +66,14 @@ public class KickCommandTest {
      */
     @Test
     public void reasonElements() {
-        Client client = Mockito.mock(Client.class);
-        User user = Mockito.mock(User.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-        Mockito.when(user.getNick()).thenReturn(USER);
-        Mockito.when(user.getClient()).thenReturn(client);
-        Mockito.when(client.getDefaultMessageMap()).thenReturn(new SimpleDefaultMessageMap(null));
+        Mockito.when(this.user.getClient()).thenReturn(this.client);
 
-
-        KickCommand command = new KickCommand(client, CHANNEL);
+        KickCommand command = new KickCommand(this.client, CHANNEL);
         command.target(user);
         command.reason(REASON);
         command.execute();
 
-        Mockito.verify(client).sendRawLine("KICK " + CHANNEL + ' ' + USER + " :" + REASON);
+        Mockito.verify(this.client).sendRawLine("KICK " + CHANNEL + ' ' + USER + " :" + REASON);
     }
 
     /**
@@ -78,11 +81,7 @@ public class KickCommandTest {
      */
     @Test(expected = IllegalStateException.class)
     public void noTarget() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-        Mockito.when(client.getDefaultMessageMap()).thenReturn(new SimpleDefaultMessageMap(null));
-
-        KickCommand command = new KickCommand(client, CHANNEL);
+        KickCommand command = new KickCommand(this.client, CHANNEL);
         command.execute();
     }
 
@@ -91,14 +90,10 @@ public class KickCommandTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void wrongClientUser() {
-        Client client = Mockito.mock(Client.class);
-        User user = Mockito.mock(User.class);
-        Mockito.when(user.getClient()).thenReturn(Mockito.mock(Client.class));
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-        Mockito.when(client.getDefaultMessageMap()).thenReturn(new SimpleDefaultMessageMap(null));
+        Mockito.when(this.user.getClient()).thenReturn(Mockito.mock(Client.class));
 
-        KickCommand command = new KickCommand(client, CHANNEL);
-        command.target(user);
+        KickCommand command = new KickCommand(this.client, CHANNEL);
+        command.target(this.user);
     }
 
     /**
@@ -106,12 +101,7 @@ public class KickCommandTest {
      */
     @Test
     public void toStringer() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-        Mockito.when(client.toString()).thenReturn("CLIENT OMG");
-        Mockito.when(client.getDefaultMessageMap()).thenReturn(new SimpleDefaultMessageMap(null));
-
-        KickCommand command = new KickCommand(client, CHANNEL);
+        KickCommand command = new KickCommand(this.client, CHANNEL);
 
         Assert.assertTrue(command.toString().contains(CHANNEL));
     }

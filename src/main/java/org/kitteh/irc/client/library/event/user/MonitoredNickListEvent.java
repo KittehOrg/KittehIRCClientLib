@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -49,7 +50,7 @@ public class MonitoredNickListEvent extends ServerMessageEventBase {
      */
     public MonitoredNickListEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull List<String> nicks) {
         super(client, originalMessages);
-        this.nicks = Collections.unmodifiableList(new ArrayList<>(nicks));
+        this.nicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(nicks, "Nicks cannot be null")));
     }
 
     /**

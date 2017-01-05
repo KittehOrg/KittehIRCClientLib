@@ -43,8 +43,7 @@ public abstract class Command implements ClientLinked {
      * @throws IllegalArgumentException if client is null
      */
     protected Command(@Nonnull Client client) {
-        Sanity.nullCheck(client, "Client cannot be null");
-        this.client = client;
+        this.client = Sanity.nullCheck(client, "Client cannot be null");
     }
 
     /**

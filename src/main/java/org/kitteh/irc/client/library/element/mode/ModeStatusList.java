@@ -57,7 +57,7 @@ public class ModeStatusList<ModeType extends Mode> {
         Map<Character, ChannelMode> modes = new HashMap<>();
         client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
         client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));
-        return from(client, string, modes);
+        return from(string, modes);
     }
 
     /**
@@ -69,12 +69,11 @@ public class ModeStatusList<ModeType extends Mode> {
      */
     @Nonnull
     public static ModeStatusList<UserMode> fromUser(@Nonnull Client client, @Nonnull String string) {
-        return from(client, string, client.getServerInfo().getUserModes().stream().collect(Collectors.toMap(UserMode::getChar, Function.identity())));
+        return from(string, client.getServerInfo().getUserModes().stream().collect(Collectors.toMap(UserMode::getChar, Function.identity())));
     }
 
     @Nonnull
-    private static <ModeType extends Mode> ModeStatusList<ModeType> from(@Nonnull Client client, @Nonnull String string, @Nonnull Map<Character, ModeType> modes) {
-        Sanity.nullCheck(client, "Client cannot be null");
+    private static <ModeType extends Mode> ModeStatusList<ModeType> from(@Nonnull String string, @Nonnull Map<Character, ModeType> modes) {
         Sanity.safeMessageCheck(string, "String");
         List<ModeStatus<ModeType>> list = new ArrayList<>();
         String[] args = string.split(" ");

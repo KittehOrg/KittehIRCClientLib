@@ -59,7 +59,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
         private final ECPrivateKey privateKey;
         private final ECPublicKey publicKey;
 
-        private ECKeyPair(ECPrivateKey privateKey, ECPublicKey publicKey) {
+        private ECKeyPair(@Nonnull ECPrivateKey privateKey, @Nonnull ECPublicKey publicKey) {
             this.privateKey = privateKey;
             this.publicKey = publicKey;
         }
@@ -69,6 +69,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
          *
          * @return a reference to the private key
          */
+        @Nonnull
         public ECPrivateKey getPrivate() {
             return this.privateKey;
         }
@@ -78,6 +79,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
          *
          * @return a reference to the public key
          */
+        @Nonnull
         public ECPublicKey getPublic() {
             return this.publicKey;
         }
@@ -213,7 +215,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      */
     @Nonnull
     public static String getCompressedBase64PublicKey(@Nonnull ECPublicKey publicKey) {
-        Sanity.nullCheck(publicKey, "Public ke cannot be null");
+        Sanity.nullCheck(publicKey, "Public key cannot be null");
         ECPoint ecPoint = publicKey.getW();
         byte[] xBytes = ecPoint.getAffineX().toByteArray();
         int overflow = xBytes.length - 32;

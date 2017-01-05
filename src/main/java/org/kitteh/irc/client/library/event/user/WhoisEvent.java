@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.user;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.WhoisData;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -44,7 +45,7 @@ public class WhoisEvent extends ClientEventBase {
      */
     public WhoisEvent(@Nonnull Client client, @Nonnull WhoisData whoisData) {
         super(client);
-        this.whoisData = whoisData;
+        this.whoisData = Sanity.nullCheck(whoisData, "Whois data cannot be null");
     }
 
     /**

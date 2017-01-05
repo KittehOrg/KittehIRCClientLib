@@ -64,8 +64,7 @@ public class KickCommand extends ChannelCommand {
      */
     @Nonnull
     public KickCommand target(@Nonnull String target) {
-        Sanity.safeMessageCheck(target, "Target");
-        this.target = target;
+        this.target = Sanity.safeMessageCheck(target, "Target");
         return this;
     }
 

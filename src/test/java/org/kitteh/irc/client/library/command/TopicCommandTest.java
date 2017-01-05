@@ -1,12 +1,11 @@
 package org.kitteh.irc.client.library.command;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.mockito.Mockito;
-
-import java.util.Optional;
 
 /**
  * Tests TopicCommand.
@@ -15,14 +14,24 @@ public class TopicCommandTest {
     private static final String CHANNEL = "#targetchannel";
     private static final String TOPIC = "Meow meow meow!";
 
+    private Client client;
+
+    /**
+     * And then Kitteh said, let there be test!
+     */
+    @Before
+    public void before() {
+        this.client = Mockito.mock(Client.class);
+        ServerInfo serverInfo = Mockito.mock(ServerInfo.class);
+        Mockito.when(this.client.getServerInfo()).thenReturn(serverInfo);
+        Mockito.when(serverInfo.isValidChannel(Mockito.any())).thenReturn(true);
+    }
+
     /**
      * Tests a simple topic check.
      */
     @Test
     public void testNoNew() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-
         TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
         topicCommand.execute();
 
@@ -34,9 +43,6 @@ public class TopicCommandTest {
      */
     @Test
     public void testNoNewAnymore() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-
         TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
         topicCommand.topic(TOPIC);
         topicCommand.query();
@@ -50,9 +56,6 @@ public class TopicCommandTest {
      */
     @Test
     public void testNoNewAnymoreNull() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-
         TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
         topicCommand.topic(TOPIC);
         topicCommand.topic(null);
@@ -66,9 +69,6 @@ public class TopicCommandTest {
      */
     @Test
     public void testToString() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-
         TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
         topicCommand.topic(TOPIC);
         topicCommand.execute();
@@ -81,9 +81,6 @@ public class TopicCommandTest {
      */
     @Test
     public void testSet() {
-        Client client = Mockito.mock(Client.class);
-        Mockito.when(client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
-
         TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
         topicCommand.topic(TOPIC);
         topicCommand.execute();

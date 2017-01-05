@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -52,8 +53,8 @@ public class UserModeEvent extends ActorEventBase<Actor> {
      */
     public UserModeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Actor actor, @Nonnull String target, @Nonnull ModeStatusList<UserMode> statusList) {
         super(client, originalMessages, actor);
-        this.statusList = statusList;
-        this.target = target;
+        this.statusList = Sanity.nullCheck(statusList, "Status list cannot be null");
+        this.target = Sanity.nullCheck(target, "Target cannot be null");
     }
 
     /**

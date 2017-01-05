@@ -49,10 +49,8 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      */
     public NickRejectedEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull String attemptedNick, @Nonnull String newNick) {
         super(client, originalMessages);
-        Sanity.nullCheck(attemptedNick, "Attempted nick cannot be null");
-        Sanity.nullCheck(newNick, "New nick cannot be null");
-        this.attemptedNick = attemptedNick;
-        this.newNick = newNick;
+        this.attemptedNick = Sanity.nullCheck(attemptedNick, "Attempted nick cannot be null");
+        this.newNick = Sanity.nullCheck(newNick, "New nick cannot be null");
     }
 
     /**

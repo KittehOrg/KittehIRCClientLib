@@ -45,8 +45,7 @@ public abstract class ClientEventBase implements ClientEvent {
      * @param client the client
      */
     protected ClientEventBase(@Nonnull Client client) {
-        Sanity.nullCheck(client, "Client cannot be null");
-        this.client = client;
+        this.client = Sanity.nullCheck(client, "Client cannot be null");
     }
 
     @Override

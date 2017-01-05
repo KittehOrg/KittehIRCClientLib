@@ -39,8 +39,7 @@ public class Mask {
      */
     @Nonnull
     public static Mask fromString(@Nonnull String string) {
-        Sanity.nullCheck(string, "String cannot be null");
-        return new Mask(string);
+        return new Mask(Sanity.nullCheck(string, "String cannot be null"));
     }
 
     private final String string;

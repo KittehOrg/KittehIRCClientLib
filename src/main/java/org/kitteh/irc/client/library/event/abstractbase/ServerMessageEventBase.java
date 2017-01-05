@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ServerMessageEvent;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -50,7 +51,7 @@ public abstract class ServerMessageEventBase extends ClientEventBase implements 
      */
     protected ServerMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
         super(client);
-        this.originalMessages = Collections.unmodifiableList(new ArrayList<>(originalMessages));
+        this.originalMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(originalMessages, "Original messages cannot be null")));
     }
 
     @Nonnull
