@@ -28,7 +28,7 @@ import java.net.SocketAddress;
 import java.util.Optional;
 
 /**
- * Represents an exchange using DCC.
+ * Represents an immutable snapshot of an exchange using DCC.
  */
 public interface DCCExchange extends Actor, Closeable {
     /**

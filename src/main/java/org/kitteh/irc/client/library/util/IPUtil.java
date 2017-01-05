@@ -30,6 +30,8 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 public final class IPUtil {
+    private static final BigInteger X_FFFF = BigInteger.valueOf(0xFFFF);
+
     private IPUtil() {
     }
 
@@ -79,8 +81,6 @@ public final class IPUtil {
         }
         return addressLong.toString();
     }
-
-    private static final BigInteger X_FFFF = BigInteger.valueOf(0xFFFF);
 
     private static String numberToIPv6(BigInteger ipNumber) {
         // Open with [ for IPv6 literal
