@@ -728,12 +728,12 @@ class ActorProvider implements Resettable {
             this.name = name;
         }
 
-        abstract String getCtcp();
+        abstract String getCTCP();
 
         abstract void onMessage(String msg);
 
         final void onSocketBound() {
-            ActorProvider.this.client.sendCTCPMessage(this.getName(), this.getCtcp());
+            ActorProvider.this.client.sendCTCPMessage(this.getName(), this.getCTCP());
         }
 
         String getType() {
@@ -788,9 +788,14 @@ class ActorProvider implements Resettable {
         }
 
         @Override
-        String getCtcp() {
+        String getCTCP() {
             InetSocketAddress addr = (InetSocketAddress) this.getLocalAddress();
-            return String.format("DCC CHAT chat %s %s", addr.getAddress().getHostAddress(), addr.getPort());
+            long addressLong = 0;
+            byte[] bytes = addr.getAddress().getAddress();
+            for (byte b : bytes) {
+                addressLong = (addressLong << 8) | (b & 0xFF);
+            }
+            return String.format("DCC CHAT chat %s %s", addressLong, addr.getPort());
         }
 
         @Override
