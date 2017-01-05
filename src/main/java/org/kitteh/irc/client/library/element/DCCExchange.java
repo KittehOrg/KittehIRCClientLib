@@ -32,18 +32,31 @@ import java.util.Optional;
  */
 public interface DCCExchange extends Actor, Closeable {
     /**
+     * Returns the socket address of the local end.
+     *
      * @return the socket address of the local end
      */
     Optional<SocketAddress> getLocalSocketAddress();
 
     /**
+     * Returns the socket address of the remote end.
+     *
      * @return the socket address of the remote end
      */
     Optional<SocketAddress> getRemoteSocketAddress();
 
     /**
+     * Returns the nickname of the user that is on the remote end. Will not be updated if the User changes their name.
+     *
+     * @return the nickname of the user on the remote end
+     */
+    String getUserNick();
+
+    /**
+     * Returns the connection status of the exchange.
+     *
      * @return {@code true} if the exchange is connected, otherwise
-     *      {@code false}
+     * {@code false}
      */
     boolean isConnected();
 

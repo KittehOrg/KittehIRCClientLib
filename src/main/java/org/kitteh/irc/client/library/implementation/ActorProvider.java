@@ -716,7 +716,7 @@ class ActorProvider implements Resettable {
 
     abstract class IRCDCCExchange extends IRCActor {
         private final String type;
-        private final String name;
+        private final String nick;
         private io.netty.channel.Channel nettyChannel;
         private SocketAddress localAddress;
         private SocketAddress remoteAddress;
@@ -725,7 +725,7 @@ class ActorProvider implements Resettable {
         private IRCDCCExchange(@Nonnull String type, @Nonnull String name) {
             super(type + '\0' + name);
             this.type = type;
-            this.name = name;
+            this.nick = name;
         }
 
         abstract String getCTCP();
@@ -738,12 +738,6 @@ class ActorProvider implements Resettable {
 
         String getType() {
             return this.type;
-        }
-
-        @Override
-        @Nonnull
-        String getName() {
-            return this.name;
         }
 
         SocketAddress getLocalAddress() {
@@ -810,6 +804,7 @@ class ActorProvider implements Resettable {
         private final SocketAddress localAddress;
         private final SocketAddress remoteAddress;
         private final boolean connected;
+        private final String userNick;
 
         private IRCDCCExchangeSnapshot(@Nonnull IRCDCCExchange actor) {
             super(actor);
@@ -817,6 +812,7 @@ class ActorProvider implements Resettable {
             this.localAddress = actor.localAddress;
             this.remoteAddress = actor.remoteAddress;
             this.connected = actor.connected;
+            this.userNick = actor.nick;
         }
 
         @Override
@@ -827,6 +823,11 @@ class ActorProvider implements Resettable {
         @Override
         public Optional<SocketAddress> getRemoteSocketAddress() {
             return Optional.ofNullable(this.remoteAddress);
+        }
+
+        @Override
+        public String getUserNick() {
+            return this.userNick;
         }
 
         @Override
