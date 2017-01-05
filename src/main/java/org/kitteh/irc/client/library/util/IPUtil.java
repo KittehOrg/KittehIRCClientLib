@@ -56,6 +56,21 @@ public final class IPUtil {
         }
     }
 
+    /**
+     * Takes a InetAddress and converts it into a String containing an integer (potentially larger than 32-bits).
+     *
+     * @param address the IP address
+     * @return the IP integer as a string
+     */
+    public static String getIntStringFromInetAddress(InetAddress address) {
+        BigInteger addressLong = BigInteger.ZERO;
+        byte[] bytes = address.getAddress();
+        for (byte b : bytes) {
+            addressLong = addressLong.shiftLeft(8).or(BigInteger.valueOf(b & 0xFF));
+        }
+        return addressLong.toString();
+    }
+
     private static final BigInteger X_FFFF = BigInteger.valueOf(0xFFFF);
 
     private static String numberToIPv6(BigInteger ipNumber) {
@@ -63,8 +78,8 @@ public final class IPUtil {
         StringBuilder ipString = new StringBuilder("[");
 
         for (int i = 0; i < 8; i++) {
-            ipString.insert(0, ":");
-            ipString.insert(0, ipNumber.and(X_FFFF).toString(16));
+            ipString.insert(1, ":");
+            ipString.insert(1, ipNumber.and(X_FFFF).toString(16));
 
             ipNumber = ipNumber.shiftRight(16);
         }

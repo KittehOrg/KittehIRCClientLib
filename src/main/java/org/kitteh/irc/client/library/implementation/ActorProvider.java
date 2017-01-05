@@ -43,6 +43,7 @@ import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.event.dcc.DCCChatMessageEvent;
 import org.kitteh.irc.client.library.util.CIKeyMap;
+import org.kitteh.irc.client.library.util.IPUtil;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -785,12 +786,7 @@ class ActorProvider implements Resettable {
         @Override
         String getCTCP() {
             InetSocketAddress addr = (InetSocketAddress) this.getLocalAddress();
-            BigInteger addressLong = BigInteger.ZERO;
-            byte[] bytes = addr.getAddress().getAddress();
-            for (byte b : bytes) {
-                addressLong = addressLong.shiftLeft(8).or(BigInteger.valueOf(b & 0xFF));
-            }
-            System.err.println(String.format("DCC CHAT chat %s %s", addressLong, addr.getPort()));
+            String addressLong = IPUtil.getIntStringFromInetAddress(addr.getAddress());
             return String.format("DCC CHAT chat %s %s", addressLong, addr.getPort());
         }
 
