@@ -24,8 +24,10 @@
 package org.kitteh.irc.client.library.util;
 
 import java.math.BigInteger;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 public final class IPUtil {
     private IPUtil() {
@@ -49,7 +51,14 @@ public final class IPUtil {
             ip = numberToIPv6(ipInt);
         }
         try {
-            return InetAddress.getByName(ip);
+            InetAddress address = InetAddress.getByName(ip);
+            if (address instanceof Inet6Address
+                    && ((Inet6Address) address).isIPv4CompatibleAddress()) {
+                // Un-wrap IPv6 -> IPv4 address (some systems are still IPv4 only and this helps compatibility)
+                // To do so, just copy the last 4 parts of the IPv6 address
+                return InetAddress.getByAddress(Arrays.copyOfRange(address.getAddress(), 12, 16));
+            }
+            return address;
         } catch (UnknownHostException e) {
             // should never happen, as we pass an IP
             throw new AssertionError("invalid IP " + ip, e);
