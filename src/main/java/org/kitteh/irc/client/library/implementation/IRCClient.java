@@ -194,14 +194,6 @@ final class IRCClient extends InternalClient {
 
     IRCClient(@Nonnull Config config) {
         this.config = config;
-        if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
-            this.configureSts();
-        } else if (!this.isSSL()) {
-            throw new KittehNagException(
-                    "Connection is insecure. If the server does not support SSL, consider enabling STS support to " +
-                            "facilitate automatic SSL upgrades when it does."
-            );
-        }
 
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
@@ -213,6 +205,15 @@ final class IRCClient extends InternalClient {
         this.inputListener = new Listener<>(name, (inputListenerWrapper == null) ? null : inputListenerWrapper.getConsumer());
         Config.StringConsumerWrapper outputListenerWrapper = this.config.get(Config.LISTENER_OUTPUT);
         this.outputListener = new Listener<>(name, (outputListenerWrapper == null) ? null : outputListenerWrapper.getConsumer());
+
+        if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
+            this.configureSts();
+        } else if (!this.isSSL()) {
+            this.exceptionListener.queue(new KittehNagException(
+                    "Connection is insecure. If the server does not support SSL, consider enabling STS support to " +
+                            "facilitate automatic SSL upgrades when it does."
+            ));
+        }
 
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
