@@ -70,7 +70,7 @@ public final class IPUtil {
         }
 
         // replace last : with ] to close IPv6 literal
-        ipString.setCharAt(ipString.length(), ']');
+        ipString.setCharAt(ipString.length() - 1, ']');
         return ipString.toString();
 
     }
