@@ -726,7 +726,6 @@ class ActorProvider implements Resettable {
             super(type + '\0' + name);
             this.type = type;
             this.name = name;
-            NettyManager.connectDCC(ActorProvider.this.client, this);
         }
 
         abstract String getCtcp();

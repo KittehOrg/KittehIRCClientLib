@@ -27,15 +27,16 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
+import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Fires when a DCC request is received by the incoming DCC connection handler.
+ * Fires when a DCC request is received by the incoming DCC connection handler. All raw data can be viewed via {@link PrivateCTCPQueryEvent}.
  */
-public class DCCRequestEvent extends ActorEventBase<User> {
+public abstract class DCCRequestEvent extends ActorEventBase<User> {
     private final String type;
     private final String ip;
     private final int port;
@@ -62,12 +63,15 @@ public class DCCRequestEvent extends ActorEventBase<User> {
     }
 
     /**
-     * Accepts the request and connect to the socket.
+     * Accepts the request and connects to the socket.
      *
-     * <p>This will trigger {@link DCCConnectedEvent} if successful and
+     * <p>This will trigger {@link DCCConnectedEvent} if the connection is successful and
      * {@link DCCFailedEvent} otherwise.</p>
      */
-    public void accept() {
-        // TODO actually accept :P
-    }
+    public abstract void accept();
+
+    /**
+     * Denies the request.
+     */
+    public abstract void deny();
 }

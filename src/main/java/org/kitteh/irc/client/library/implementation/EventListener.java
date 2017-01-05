@@ -71,7 +71,6 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.dcc.DCCRequestEvent;
-import org.kitteh.irc.client.library.event.dcc.UnknownDCCRequestEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
@@ -99,6 +98,7 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import java.net.InetSocketAddress;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -977,12 +977,12 @@ class EventListener {
                         case "FINGER":
                             reply = "FINGER om nom nom tasty finger";
                             break;
-                        case "DCC":
-                            this.handleDCCEvent(user, event.getOriginalMessages(), event.getParameters());
-                            break;
                     }
                     if (ctcpMessage.startsWith("PING ")) {
                         reply = ctcpMessage;
+                    }
+                    if (ctcpMessage.startsWith("DCC ")) {
+                        this.handleDCCEvent(user, event.getOriginalMessages(), Arrays.asList(ctcpMessage.split(" ")));
                     }
                     PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
                     this.fire(ctcpEvent);
@@ -1002,26 +1002,66 @@ class EventListener {
     }
 
     private void handleDCCEvent(User user, List<ServerMessage> originalMessages, List<String> parameters) {
-        String dccService = CTCPUtil.fromCTCP(parameters.get(2));
+        // TODO should unknown requests or improperly formatted requests get logged? just to clarify to the user that they are still noticed
+
+        // parameters looks like [DCC, CHAT, chat, ip, port]
+        if (parameters.size() <= 1) {
+            // invalid parameters, ignore request
+            return;
+        }
+        String dccService = parameters.get(1);
         if (dccService.equals("CHAT")) {
-            String dccType = CTCPUtil.fromCTCP(parameters.get(3));
-            if (!dccType.equals("chat")) {
-                this.fire(new UnknownDCCRequestEvent(this.client, originalMessages, user, dccService, dccType));
+            if (parameters.size() <= 2) {
+                // invalid parameters, ignore request
                 return;
             }
-            String ip = CTCPUtil.fromCTCP(parameters.get(4));
-            String port = CTCPUtil.fromCTCP(parameters.get(5));
+            String dccType = parameters.get(2);
+            if (!dccType.equals("chat")) {
+                return;
+            }
+            if (parameters.size() <= 4) {
+                // invalid parameters, ignore request
+                return;
+            }
+            String ip;
+            // IP is an integer, decode it
+            try {
+                String rawIp = parameters.get(3);
+                int ipInt = Integer.parseInt(rawIp);
+                ip = String.format("%d.%d.%d.%d", (ipInt >> 24 & 0xff), (ipInt >> 16 & 0xff), (ipInt >> 8 & 0xff), (ipInt & 0xff));
+            } catch (NumberFormatException invalidIp) {
+                return;
+            }
+            String port = parameters.get(4);
             int portInt;
             try {
                 portInt = Integer.parseInt(port);
             } catch (NumberFormatException invalidPort) {
-                // Ignore this for now
                 return;
             }
-            this.fire(new DCCRequestEvent(this.client, originalMessages, user, dccService, dccType, ip, portInt));
-        } else {
-            // repeat service as type
-            this.fire(new UnknownDCCRequestEvent(this.client, originalMessages, user, dccService, dccService));
+            this.fire(new DCCRequestEvent(this.client, originalMessages, user, dccService, dccType, ip, portInt) {
+                private volatile boolean actionTaken = false;
+
+                @Override
+                public void accept() {
+                    if (this.actionTaken) {
+                        throw new IllegalStateException("This request has already been responded to.");
+                    }
+                    this.actionTaken = true;
+                    ActorProvider.IRCDCCChat chat = EventListener.this.client.getActorProvider().getDCCChat(user.getNick());
+                    NettyManager.connectToDCCClient(EventListener.this.client, chat, new InetSocketAddress(ip, portInt));
+                }
+
+                @Override
+                public void deny() {
+                    if (this.actionTaken) {
+                        throw new IllegalStateException("This request has already been responded to.");
+                    }
+                    this.actionTaken = true;
+                    // TODO add configuration for this?
+                    user.sendNotice("Your DCC request has been denied.");
+                }
+            });
         }
     }
 

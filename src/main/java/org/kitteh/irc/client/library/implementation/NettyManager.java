@@ -71,6 +71,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.KeyStore;
@@ -256,6 +257,7 @@ final class NettyManager {
             channel.pipeline().addFirst(successHandler, new ChannelInboundHandlerAdapter() {
                 @Override
                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                    DCCConnection.this.exchange.setLocalAddress(ctx.channel().localAddress());
                     DCCConnection.this.exchange.setRemoteAddress(ctx.channel().remoteAddress());
                     DCCConnection.this.exchange.setConnected(true);
                     DCCConnection.this.client.getEventManager().callEvent(new DCCConnectedEvent(DCCConnection.this.client, Collections.emptyList(), DCCConnection.this.exchange.snapshot()));
@@ -271,8 +273,11 @@ final class NettyManager {
                     DCCConnection.this.exchange.setLocalAddress(null);
                     DCCConnection.this.exchange.setRemoteAddress(null);
                     DCCConnection.this.exchange.setConnected(false);
-                    // Close related ServerSocket
-                    ctx.channel().parent().close();
+                    // Close related ServerSocket if present
+                    Channel parent = ctx.channel().parent();
+                    if (parent != null) {
+                        parent.close();
+                    }
                     DCCConnection.this.client.getEventManager().callEvent(new DCCConnectionClosedEvent(DCCConnection.this.client, Collections.emptyList(), DCCConnection.this.exchange.snapshot()));
                 }
             });
@@ -404,7 +409,7 @@ final class NettyManager {
         return clientConnection;
     }
 
-    static Runnable connectDCC(InternalClient client, ActorProvider.IRCDCCExchange exchange) {
+    static Runnable createDCCServer(InternalClient client, ActorProvider.IRCDCCExchange exchange) {
         Sanity.nullCheck(eventLoopGroup, "A DCC connection cannot be made without a client");
         ChannelFuture future = new ServerBootstrap()
                 .channel(NioServerSocketChannel.class)
@@ -415,11 +420,30 @@ final class NettyManager {
                 .bind(0);
         future.addListener(ft -> {
             if (ft.isSuccess()) {
-                exchange.setLocalAddress(future.channel().localAddress());
+                // set the local address to a likely candidate to be externally accessible
+                InetAddress localExternal = InetAddress.getLocalHost();
+                exchange.setLocalAddress(new InetSocketAddress(localExternal, ((InetSocketAddress) future.channel().localAddress()).getPort()));
                 client.getEventManager().callEvent(new DCCSocketBoundEvent(client, Collections.emptyList(), exchange.snapshot()));
                 exchange.onSocketBound();
             } else {
                 client.getEventManager().callEvent(new DCCFailedEvent(client, "Failed to bind to address " + future.channel().localAddress(), ft.cause()));
+            }
+        });
+        return () -> future.channel().close();
+    }
+
+    static Runnable connectToDCCClient(InternalClient client, ActorProvider.IRCDCCExchange exchange, SocketAddress remoteAddress) {
+        Sanity.nullCheck(eventLoopGroup, "A DCC connection cannot be made without a client");
+        ChannelFuture future = new Bootstrap()
+                .channel(NioSocketChannel.class)
+                .handler(new DCCConnection(exchange, client))
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .group(eventLoopGroup)
+                .connect(remoteAddress);
+        future.addListener(ft -> {
+            if (!ft.isSuccess()) {
+                client.getEventManager().callEvent(new DCCFailedEvent(client, "Failed to connect to address " + remoteAddress, ft.cause()));
             }
         });
         return () -> future.channel().close();

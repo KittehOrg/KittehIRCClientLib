@@ -46,13 +46,17 @@ public class DCCFailedEvent extends ClientEventBase {
     }
 
     /**
-     * @return the readable reason for the failure
+     * Returns the human-readable reason for the failure.
+     *
+     * @return the human-readable reason for the failure
      */
     public Optional<String> getReason() {
         return Optional.ofNullable(this.reason);
     }
 
     /**
+     * Returns the exception that caused the failure.
+     *
      * @return the exception that caused the failure
      */
     public Optional<Throwable> getCause() {
