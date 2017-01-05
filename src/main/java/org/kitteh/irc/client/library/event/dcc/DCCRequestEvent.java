@@ -41,12 +41,10 @@ public abstract class DCCRequestEvent extends ActorEventBase<User> {
     private final String ip;
     private final int port;
 
-    public DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull String service, @Nonnull String type, @Nonnull String ip, int port) {
+    protected DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull String service, @Nonnull String type, @Nonnull String ip, int port) {
         super(client, originalMessages, actor);
-        Sanity.nullCheck(type, "type cannot be null");
-        Sanity.nullCheck(ip, "ip cannot be null");
-        this.type = type;
-        this.ip = ip;
+        this.type = Sanity.nullCheck(type, "type cannot be null");
+        this.ip = Sanity.nullCheck(ip, "ip cannot be null");
         this.port = port;
     }
 
