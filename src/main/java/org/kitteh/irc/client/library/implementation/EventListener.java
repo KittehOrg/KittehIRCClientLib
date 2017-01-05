@@ -94,6 +94,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
+import org.kitteh.irc.client.library.util.IPUtil;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -1027,8 +1028,7 @@ class EventListener {
             // IP is an integer, decode it
             try {
                 String rawIp = parameters.get(3);
-                int ipInt = Integer.parseInt(rawIp);
-                ip = String.format("%d.%d.%d.%d", (ipInt >> 24 & 0xff), (ipInt >> 16 & 0xff), (ipInt >> 8 & 0xff), (ipInt & 0xff));
+                ip = IPUtil.getInetAdressFromIntString(rawIp).getHostAddress();
             } catch (NumberFormatException invalidIp) {
                 return;
             }

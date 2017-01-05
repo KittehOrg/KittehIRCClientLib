@@ -48,6 +48,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.time.Instant;
@@ -784,11 +785,12 @@ class ActorProvider implements Resettable {
         @Override
         String getCTCP() {
             InetSocketAddress addr = (InetSocketAddress) this.getLocalAddress();
-            long addressLong = 0;
+            BigInteger addressLong = BigInteger.ZERO;
             byte[] bytes = addr.getAddress().getAddress();
             for (byte b : bytes) {
-                addressLong = (addressLong << 8) | (b & 0xFF);
+                addressLong = addressLong.shiftLeft(8).or(BigInteger.valueOf(b & 0xFF));
             }
+            System.err.println(String.format("DCC CHAT chat %s %s", addressLong, addr.getPort()));
             return String.format("DCC CHAT chat %s %s", addressLong, addr.getPort());
         }
 
