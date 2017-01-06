@@ -31,7 +31,8 @@ import java.util.Arrays;
 
 public final class IPUtil {
     private static final BigInteger X_FFFF = BigInteger.valueOf(0xFFFF);
-    private static final int LENGTH_OF_LARGEST_IPV6_INTEGER = BigInteger.valueOf(2).pow(128).toString().length();
+    // Length of (2**128) - 1 -- IPv6 has up to 2**128 addresses
+    private static final int LENGTH_OF_LARGEST_IPV6_INTEGER = 39;
 
     private IPUtil() {
     }
