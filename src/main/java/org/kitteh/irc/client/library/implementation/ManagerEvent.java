@@ -28,6 +28,8 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
+import net.engio.mbassy.listener.Handler;
+import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.exception.KittehNagException;
@@ -91,6 +93,8 @@ class ManagerEvent implements EventManager {
         this.registerAnnotationFilter(CommandFilter.class, new CommandFilter.Processor());
         this.registerAnnotationFilter(NumericFilter.class, new NumericFilter.Processor());
         this.registerAnnotationFilter(ToSelfOnly.class, new ToSelfOnly.Processor());
+
+        this.registerEventListener(this);
     }
 
     @Override
@@ -131,6 +135,13 @@ class ManagerEvent implements EventManager {
         Sanity.nullCheck(listener, "Listener cannot be null");
         this.listeners.remove(listener);
         this.bus.unsubscribe(listener);
+    }
+
+    @Handler(priority = Integer.MIN_VALUE)
+    public void onShutdown(ClientConnectionClosedEvent event) {
+        if (!event.isReconnecting()) {
+            this.bus.shutdown();
+        }
     }
 
     @Nonnull
