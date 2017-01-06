@@ -69,7 +69,7 @@ public abstract class DCCRequestEvent extends ActorEventBase<User> {
     public abstract void accept();
 
     /**
-     * Denies the request.
+     * Rejects the request.
      */
-    public abstract void deny();
+    public abstract void reject();
 }

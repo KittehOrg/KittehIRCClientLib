@@ -1055,7 +1055,7 @@ class EventListener {
                 }
 
                 @Override
-                public void deny() {
+                public void reject() {
                     if (this.actionTaken) {
                         throw new IllegalStateException("This request has already been responded to.");
                     }
