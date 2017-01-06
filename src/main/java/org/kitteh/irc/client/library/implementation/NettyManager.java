@@ -71,7 +71,6 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.KeyStore;
@@ -113,7 +112,7 @@ final class NettyManager {
         }
 
         private void buildOurFutureTogether() {
-            addOutputEncoder(this.channel, this.client);
+            addOutputEncoder(this.channel, this.client, true);
 
             // Handle timeout
             this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 0));
@@ -250,7 +249,7 @@ final class NettyManager {
             this.exchange.setNettyChannel(channel);
             NettyManager.dccConnections.computeIfAbsent(this.client, c -> new ArrayList<>()).add(channel);
 
-            addOutputEncoder(channel, this.client);
+            addOutputEncoder(channel, this.client, false);
 
             // Inbound & exceptions
             String successHandler = "[INPUT] Success Handler";
@@ -318,7 +317,7 @@ final class NettyManager {
     private static final Set<ClientConnection> connections = new HashSet<>();
     private static final Map<InternalClient, List<Channel>> dccConnections = new HashMap<>();
 
-    private static void addOutputEncoder(Channel channel, InternalClient client) {
+    private static void addOutputEncoder(Channel channel, InternalClient client, boolean carriageReturn) {
         // Outbound - Processed in pipeline back to front.
         channel.pipeline().addFirst("[OUTPUT] Output listener", new MessageToMessageEncoder<String>() {
             @Override
@@ -327,10 +326,11 @@ final class NettyManager {
                 out.add(msg);
             }
         });
+        final String linebreak = carriageReturn ? "\r\n" : "\n";
         channel.pipeline().addFirst("[OUTPUT] Add line breaks", new MessageToMessageEncoder<String>() {
             @Override
             protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
-                out.add(msg + "\r\n");
+                out.add(msg + linebreak);
             }
         });
         channel.pipeline().addFirst("[OUTPUT] String encoder", new StringEncoder(CharsetUtil.UTF_8));
@@ -410,19 +410,23 @@ final class NettyManager {
     }
 
     static Runnable createDCCServer(InternalClient client, ActorProvider.IRCDCCExchange exchange) {
-        Sanity.nullCheck(eventLoopGroup, "A DCC connection cannot be made without a client");
+        Sanity.nullCheck(client.getClientConnection(), "A DCC connection cannot be made without a client connection");
+        SocketAddress bind = client.getConfig().get(Config.BIND_ADDRESS);
+        if (bind == null) {
+            // try binding to the client socket
+            bind = client.getClientConnection().channel.localAddress();
+            Sanity.nullCheck(bind, "The client connection is not bound, a DCC connection cannot be made");
+        }
         ChannelFuture future = new ServerBootstrap()
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new DCCConnection(exchange, client))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .group(eventLoopGroup)
-                .bind(0);
+                .bind(bind);
         future.addListener(ft -> {
             if (ft.isSuccess()) {
-                // set the local address to a likely candidate to be externally accessible
-                InetAddress localExternal = InetAddress.getLocalHost();
-                exchange.setLocalAddress(new InetSocketAddress(localExternal, ((InetSocketAddress) future.channel().localAddress()).getPort()));
+                exchange.setLocalAddress(future.channel().localAddress());
                 client.getEventManager().callEvent(new DCCSocketBoundEvent(client, Collections.emptyList(), exchange.snapshot()));
                 exchange.onSocketBound();
             } else {

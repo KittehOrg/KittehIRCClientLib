@@ -639,6 +639,11 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
+    NettyManager.ClientConnection getClientConnection() {
+        return this.connection;
+    }
+
+    @Override
     void connect() {
         this.connection = NettyManager.connect(this);
         this.processor.queue("");

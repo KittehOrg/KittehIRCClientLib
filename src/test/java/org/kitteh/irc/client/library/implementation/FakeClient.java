@@ -259,6 +259,11 @@ class FakeClient extends InternalClient {
         return this.messageTagManager;
     }
 
+    @Override
+    NettyManager.ClientConnection getClientConnection() {
+        return null;
+    }
+
     @Nonnull
     @Override
     public String getName() {
