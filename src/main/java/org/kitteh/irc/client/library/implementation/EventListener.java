@@ -983,7 +983,12 @@ class EventListener {
                         reply = ctcpMessage;
                     }
                     if (ctcpMessage.startsWith("DCC ")) {
-                        this.handleDCCEvent(user, event.getOriginalMessages(), Arrays.asList(ctcpMessage.split(" ")));
+                        // DCC handling may incur some exceptions when parsing the info -- don't let that stop the CTCP event
+                        try {
+                            this.handleDCCEvent(user, event, Arrays.asList(ctcpMessage.split(" ")));
+                        } catch (RuntimeException e) {
+                            this.client.getExceptionListener().queue(e);
+                        }
                     }
                     PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
                     this.fire(ctcpEvent);
@@ -1002,36 +1007,33 @@ class EventListener {
         }
     }
 
-    private void handleDCCEvent(User user, List<ServerMessage> originalMessages, List<String> parameters) {
-        // TODO should unknown requests or improperly formatted requests get logged? just to clarify to the user that they are still noticed
-
+    private void handleDCCEvent(User user, ClientReceiveCommandEvent event, List<String> parameters) {
         // parameters looks like [DCC, CHAT, chat, ip, port]
         if (parameters.size() <= 1) {
             // invalid parameters, ignore request
+            this.logInvalidDccRequest(event, "No DCC type specified");
             return;
         }
         String dccService = parameters.get(1);
         if (dccService.equals("CHAT")) {
             if (parameters.size() <= 2) {
                 // invalid parameters, ignore request
+                this.logInvalidDccRequest(event, "CHAT parameters not specified");
                 return;
             }
             String dccType = parameters.get(2);
             if (!dccType.equals("chat")) {
+                this.logInvalidDccRequest(event, "Unknown DCC CHAT type " + dccType);
                 return;
             }
             if (parameters.size() <= 4) {
                 // invalid parameters, ignore request
+                this.logInvalidDccRequest(event, "DCC CHAT IP and port not provided");
                 return;
             }
-            String ip;
             // IP is an integer, decode it
-            try {
-                String rawIp = parameters.get(3);
-                ip = IPUtil.getInetAdressFromIntString(rawIp).getHostAddress();
-            } catch (NumberFormatException invalidIp) {
-                return;
-            }
+            String rawIp = parameters.get(3);
+            String ip = IPUtil.getInetAdressFromIntString(rawIp).getHostAddress();
             String port = parameters.get(4);
             int portInt;
             try {
@@ -1039,7 +1041,7 @@ class EventListener {
             } catch (NumberFormatException invalidPort) {
                 return;
             }
-            this.fire(new DCCRequestEvent(this.client, originalMessages, user, dccService, dccType, new InetSocketAddress(ip, portInt)) {
+            this.fire(new DCCRequestEvent(this.client, event.getOriginalMessages(), user, dccService, dccType, new InetSocketAddress(ip, portInt)) {
                 private volatile boolean actionTaken = false;
 
                 @Override
@@ -1063,6 +1065,10 @@ class EventListener {
                 }
             });
         }
+    }
+
+    private void logInvalidDccRequest(ClientReceiveServerMessageEvent event, String reason) {
+        this.trackException(event, "DCC request is invalid: " + reason);
     }
 
     @CommandFilter("MODE")

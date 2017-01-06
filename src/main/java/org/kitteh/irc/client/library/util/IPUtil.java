@@ -31,6 +31,7 @@ import java.util.Arrays;
 
 public final class IPUtil {
     private static final BigInteger X_FFFF = BigInteger.valueOf(0xFFFF);
+    private static final int LENGTH_OF_LARGEST_IPv6_INTEGER = BigInteger.valueOf(2).pow(128).toString().length();
 
     private IPUtil() {
     }
@@ -42,7 +43,38 @@ public final class IPUtil {
      * @return the corresponding IP address as an InetAddress instance
      */
     public static InetAddress getInetAdressFromIntString(String ipInteger) {
-        BigInteger ipInt = new BigInteger(ipInteger);
+        if (ipInteger.length() > LENGTH_OF_LARGEST_IPv6_INTEGER) {
+            // prevent attacks with large strings to allocate large BigIntegers
+            throw new IllegalArgumentException("IP " + ipInteger + " is too big to be an address");
+        }
+        BigInteger ipInt;
+        try {
+            ipInt = new BigInteger(ipInteger);
+        } catch (NumberFormatException invalidInt) {
+            // try returning it as a raw IP -- some clients send like this
+            try {
+                // Prevent hostname lookup by filtering for literals
+                // IPv4 addresses have 3 dots (0.0.0.0) which means 4 split sections
+                // IPv6 literals must start with a [
+                String[] ipv4Split = ipInteger.split("\\.");
+                boolean isIpv4 = ipv4Split.length == 4;
+                boolean isIpv6 = ipInteger.startsWith("[");
+                if (!(isIpv4 || isIpv6)) {
+                    throw invalidInt;
+                }
+                if (isIpv4) {
+                    // Check all the IPv4 parts are just numbers
+                    for (String ipv4Part : ipv4Split) {
+                        if (!ipv4Part.codePoints().allMatch(Character::isDigit)) {
+                            throw invalidInt;
+                        }
+                    }
+                }
+                return InetAddress.getByName(ipInteger);
+            } catch (UnknownHostException invalidAddress) {
+                throw new IllegalArgumentException(invalidAddress);
+            }
+        }
         String ip;
         if (ipInt.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) < 0) {
             int ipv4Int = ipInt.intValueExact();
