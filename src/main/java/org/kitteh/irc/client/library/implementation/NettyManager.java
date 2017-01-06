@@ -77,7 +77,7 @@ import java.util.concurrent.TimeUnit;
 
 final class NettyManager {
     static final class ClientConnection {
-        private static final int MAX_LINE_LENGTH = 2048;
+        private static final int MAX_LINE_LENGTH = 4096;
 
         private final InternalClient client;
         private final Channel channel;
