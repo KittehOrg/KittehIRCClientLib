@@ -49,6 +49,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
+import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
@@ -81,6 +82,8 @@ final class NettyManager {
         private final InternalClient client;
         private final Channel channel;
         private boolean reconnect = true;
+
+        private ScheduledFuture<?> ping;
 
         private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;
@@ -199,6 +202,9 @@ final class NettyManager {
                 if (ClientConnection.this.reconnect) {
                     this.scheduleReconnect();
                 }
+                if (this.ping != null) {
+                    this.ping.cancel(true);
+                }
                 ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
                 removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
             });
@@ -216,7 +222,7 @@ final class NettyManager {
         }
 
         void startSending() {
-            this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
+            this.ping = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
         }
 
         void shutdown(DefaultMessageType messageType, boolean reconnect) {
