@@ -31,7 +31,7 @@ import java.util.Arrays;
 
 public final class IPUtil {
     private static final BigInteger X_FFFF = BigInteger.valueOf(0xFFFF);
-    private static final int LENGTH_OF_LARGEST_IPv6_INTEGER = BigInteger.valueOf(2).pow(128).toString().length();
+    private static final int LENGTH_OF_LARGEST_IPV6_INTEGER = BigInteger.valueOf(2).pow(128).toString().length();
 
     private IPUtil() {
     }
@@ -43,7 +43,7 @@ public final class IPUtil {
      * @return the corresponding IP address as an InetAddress instance
      */
     public static InetAddress getInetAdressFromIntString(String ipInteger) {
-        if (ipInteger.length() > LENGTH_OF_LARGEST_IPv6_INTEGER) {
+        if (ipInteger.length() > LENGTH_OF_LARGEST_IPV6_INTEGER) {
             // prevent attacks with large strings to allocate large BigIntegers
             throw new IllegalArgumentException("IP " + ipInteger + " is too big to be an address");
         }
