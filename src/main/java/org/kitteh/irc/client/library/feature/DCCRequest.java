@@ -29,16 +29,17 @@ public class DCCRequest {
      *
      * @return the service of DCC being requested
      */
-    String getService() {
+    public String getService() {
         return this.service;
     }
 
     /**
-     * The type of DCC being requested. For the CHAT service, this could be 'chat' or 'whiteboard'. For other services, it usually is the same as the service.
+     * The type of DCC being requested. For the CHAT service, this could be 'chat' or 'whiteboard'.
+     * For other services, it usually is the same as the service.
      *
      * @return the type of DCC being requested
      */
-    String getType() {
+    public String getType() {
         return this.type;
     }
 
