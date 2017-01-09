@@ -904,8 +904,24 @@ public interface Client {
      * {@link DCCSocketBoundEvent} will be fired. When the chat is connected,
      * a {@link DCCConnectedEvent} will be fired. If the connection fails, a
      * {@link DCCFailedEvent} will be fired.</p>
+     *
+     * @param target The target to request a DCC chat from
      */
-    void requestDCCChat(@Nonnull User target);
+    default void requestDCCChat(@Nonnull User target) {
+        this.requestDCCChat(target.getNick());
+    }
+
+    /**
+     * Sends a DCC CHAT request to the target.
+     * <p>
+     * <p>When the server socket is bound locally, a
+     * {@link DCCSocketBoundEvent} will be fired. When the chat is connected,
+     * a {@link DCCConnectedEvent} will be fired. If the connection fails, a
+     * {@link DCCFailedEvent} will be fired.</p>
+     *
+     * @param target The target to request a DCC chat from
+     */
+    void requestDCCChat(@Nonnull String target);
 
     /**
      * Sends a raw IRC message.

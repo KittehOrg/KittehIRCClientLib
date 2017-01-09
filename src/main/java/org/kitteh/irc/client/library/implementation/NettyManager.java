@@ -84,10 +84,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 final class NettyManager {
-
     static final class ClientConnection {
         private static final int MAX_LINE_LENGTH = 2048;
 
@@ -117,7 +117,6 @@ final class NettyManager {
             // Handle timeout
             this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 0));
             this.channel.pipeline().addLast("[INPUT] Catch idle", new ChannelDuplexHandler() {
-
                 @Override
                 public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                     if (evt instanceof IdleStateEvent) {
@@ -165,7 +164,6 @@ final class NettyManager {
 
             // Exception handling
             this.channel.pipeline().addLast("[INPUT] Exception handler", new ChannelInboundHandlerAdapter() {
-
                 @Override
                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
                     if (cause instanceof Exception) {
@@ -174,7 +172,6 @@ final class NettyManager {
                 }
             });
             this.channel.pipeline().addFirst("[OUTPUT] Exception handler", new ChannelOutboundHandlerAdapter() {
-
                 @Override
                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
                     if (cause instanceof Exception) {
@@ -231,7 +228,8 @@ final class NettyManager {
     static class DCCConnection extends ChannelInitializer<SocketChannel> {
         private final ActorProvider.IRCDCCExchange exchange;
         private final InternalClient client;
-        private int connectionsMade;
+        private final AtomicBoolean connected = new AtomicBoolean();
+        private Channel channel;
 
         private DCCConnection(ActorProvider.IRCDCCExchange ex, InternalClient client) {
             this.exchange = ex;
@@ -240,14 +238,17 @@ final class NettyManager {
 
         @Override
         public void initChannel(SocketChannel channel) throws Exception {
-            if (this.connectionsMade > 0) {
+            if (!this.connected.compareAndSet(false, true)) {
                 // Only one connection is allowed.
                 channel.close();
                 return;
             }
-            this.connectionsMade++;
+            // we can close the server socket now
+            channel.parent().close();
+
+            this.channel = channel;
             this.exchange.setNettyChannel(channel);
-            NettyManager.dccConnections.computeIfAbsent(this.client, c -> new ArrayList<>()).add(channel);
+            NettyManager.dccConnections.computeIfAbsent(this.client, c -> new ArrayList<>()).add(this);
 
             addOutputEncoder(channel, this.client, false);
 
@@ -264,22 +265,6 @@ final class NettyManager {
                 }
             });
             addInputDecoder(Integer.MAX_VALUE, channel, this.client, this.exchange::onMessage);
-            channel.pipeline().addLast(new ChannelInboundHandlerAdapter() {
-                @Override
-                public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                    // kill DCC when inactive
-                    ctx.close();
-                    DCCConnection.this.exchange.setLocalAddress(null);
-                    DCCConnection.this.exchange.setRemoteAddress(null);
-                    DCCConnection.this.exchange.setConnected(false);
-                    // Close related ServerSocket if present
-                    Channel parent = ctx.channel().parent();
-                    if (parent != null) {
-                        parent.close();
-                    }
-                    DCCConnection.this.client.getEventManager().callEvent(new DCCConnectionClosedEvent(DCCConnection.this.client, Collections.emptyList(), DCCConnection.this.exchange.snapshot()));
-                }
-            });
             channel.pipeline().addFirst("[INPUT] Exception Handler", new ChannelInboundHandlerAdapter() {
                 private boolean firstRemove;
 
@@ -299,13 +284,21 @@ final class NettyManager {
                     }
                 }
             });
-            channel.pipeline().addLast("[OUTPUT] Exception Handler", new ChannelInboundHandlerAdapter() {
+            channel.pipeline().addLast("[OUTPUT] Exception Handler", new ChannelOutboundHandlerAdapter() {
                 @Override
                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
                     if (cause instanceof Exception) {
                         DCCConnection.this.client.getExceptionListener().queue((Exception) cause);
                     }
                 }
+            });
+
+            channel.closeFuture().addListener(future -> {
+                this.exchange.setLocalAddress(null);
+                this.exchange.setRemoteAddress(null);
+                this.exchange.setConnected(false);
+                this.client.getEventManager().callEvent(new DCCConnectionClosedEvent(DCCConnection.this.client, Collections.emptyList(), DCCConnection.this.exchange.snapshot()));
+                removeDCCConnection(this);
             });
         }
     }
@@ -315,7 +308,7 @@ final class NettyManager {
     @Nullable
     private static EventLoopGroup eventLoopGroup;
     private static final Set<ClientConnection> connections = new HashSet<>();
-    private static final Map<InternalClient, List<Channel>> dccConnections = new HashMap<>();
+    private static final Map<InternalClient, List<DCCConnection>> dccConnections = new HashMap<>();
 
     private static void addOutputEncoder(Channel channel, InternalClient client, boolean carriageReturn) {
         // Outbound - Processed in pipeline back to front.
@@ -358,11 +351,20 @@ final class NettyManager {
 
     private static synchronized void removeClientConnection(@Nonnull ClientConnection connection, boolean reconnecting) {
         connections.remove(connection);
-        List<Channel> dcc = dccConnections.get(connection.client);
-        if (dcc != null) {
-            dcc.forEach(Channel::close);
+        shutdownIfFinished(reconnecting);
+    }
+
+    private static synchronized void removeDCCConnection(@Nonnull DCCConnection connection) {
+        List<DCCConnection> connections = dccConnections.get(connection.client);
+        connections.remove(connection);
+        if (connections.isEmpty()) {
+            dccConnections.remove(connection.client);
         }
-        if (!reconnecting && connections.isEmpty()) {
+        shutdownIfFinished(false);
+    }
+
+    private static synchronized void shutdownIfFinished(boolean reconnecting) {
+        if (!reconnecting && connections.isEmpty() && dccConnections.isEmpty()) {
             if (eventLoopGroup != null) {
                 eventLoopGroup.shutdownGracefully();
             }

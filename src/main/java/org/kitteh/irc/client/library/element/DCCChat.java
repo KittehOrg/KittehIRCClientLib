@@ -25,9 +25,12 @@ package org.kitteh.irc.client.library.element;
 
 import javax.annotation.Nonnull;
 
+/**
+ * The DCC CHAT exchange. This exchange allows two users to send text over a socket.
+ */
 public interface DCCChat extends DCCExchange {
     /**
-     * Sends the user a message over DCC chat.
+     * Sends the user a message over DCC CHAT.
      *
      * <p>This method won't work if the chat is not
      * {@link #isConnected() connected}.</p>

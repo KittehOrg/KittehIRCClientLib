@@ -92,6 +92,7 @@ import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.event.user.WhoisEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
+import org.kitteh.irc.client.library.feature.DCCRequest;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.util.IPUtil;
@@ -110,6 +111,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @net.engio.mbassy.listener.Listener(references = References.Strong)
@@ -1033,7 +1035,7 @@ class EventListener {
             }
             // IP is an integer, decode it
             String rawIp = parameters.get(3);
-            String ip = IPUtil.getInetAdressFromIntString(rawIp).getHostAddress();
+            String ip = IPUtil.getInetAddressFromIntString(rawIp).getHostAddress();
             String port = parameters.get(4);
             int portInt;
             try {
@@ -1041,29 +1043,16 @@ class EventListener {
             } catch (NumberFormatException invalidPort) {
                 return;
             }
-            this.fire(new DCCRequestEvent(this.client, event.getOriginalMessages(), user, dccService, dccType, new InetSocketAddress(ip, portInt)) {
-                private volatile boolean actionTaken = false;
+            InetSocketAddress socketAddress = new InetSocketAddress(ip, portInt);
 
-                @Override
-                public void accept() {
-                    if (this.actionTaken) {
-                        throw new IllegalStateException("This request has already been responded to.");
-                    }
-                    this.actionTaken = true;
-                    ActorProvider.IRCDCCChat chat = EventListener.this.client.getActorProvider().getDCCChat(user.getNick());
-                    NettyManager.connectToDCCClient(EventListener.this.client, chat, new InetSocketAddress(ip, portInt));
-                }
-
-                @Override
-                public void reject() {
-                    if (this.actionTaken) {
-                        throw new IllegalStateException("This request has already been responded to.");
-                    }
-                    this.actionTaken = true;
-                    // TODO add configuration for this?
-                    user.sendNotice("Your DCC request has been denied.");
-                }
+            CompletableFuture<Void> acceptFuture = new CompletableFuture<>();
+            acceptFuture.thenRun(() -> {
+                ActorProvider.IRCDCCChat chat = this.client.getActorProvider().getDCCChat(user.getNick());
+                NettyManager.connectToDCCClient(this.client, chat, socketAddress);
             });
+
+            DCCRequest request = new DCCRequest(acceptFuture, dccService, dccType, socketAddress);
+            this.fire(new DCCRequestEvent(this.client, event.getOriginalMessages(), user, request));
         }
     }
 

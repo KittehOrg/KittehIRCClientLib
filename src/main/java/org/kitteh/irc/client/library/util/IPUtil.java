@@ -43,7 +43,7 @@ public final class IPUtil {
      * @param ipInteger the IP integer string
      * @return the corresponding IP address as an InetAddress instance
      */
-    public static InetAddress getInetAdressFromIntString(String ipInteger) {
+    public static InetAddress getInetAddressFromIntString(String ipInteger) {
         if (ipInteger.length() > LENGTH_OF_LARGEST_IPV6_INTEGER) {
             // prevent attacks with large strings to allocate large BigIntegers
             throw new IllegalArgumentException("IP " + ipInteger + " is too big to be an address");

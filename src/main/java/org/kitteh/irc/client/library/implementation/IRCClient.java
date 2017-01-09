@@ -455,9 +455,9 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void requestDCCChat(@Nonnull User target) {
+    public void requestDCCChat(@Nonnull String target) {
         Sanity.nullCheck(target, "Target cannot be null");
-        ActorProvider.IRCDCCChat chat = this.actorProvider.getDCCChat(target.getNick());
+        ActorProvider.IRCDCCChat chat = this.actorProvider.getDCCChat(target);
         NettyManager.createDCCServer(this, chat);
     }
 

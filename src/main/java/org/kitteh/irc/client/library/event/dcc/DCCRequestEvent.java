@@ -28,48 +28,29 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
+import org.kitteh.irc.client.library.feature.DCCRequest;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
-import java.net.InetSocketAddress;
 import java.util.List;
 
 /**
  * Fires when a DCC request is received by the incoming DCC connection handler. All raw data can be viewed via {@link PrivateCTCPQueryEvent}.
  */
-public abstract class DCCRequestEvent extends ActorEventBase<User> {
-    private final String type;
-    private final InetSocketAddress ip;
+public final class DCCRequestEvent extends ActorEventBase<User> {
+    private final DCCRequest request;
 
-    protected DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull String service, @Nonnull String type, @Nonnull InetSocketAddress ip) {
+    public DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull DCCRequest request) {
         super(client, originalMessages, actor);
-        this.type = Sanity.nullCheck(type, "type cannot be null");
-        this.ip = Sanity.nullCheck(ip, "ip cannot be null");
-    }
-
-    public String getType() {
-        return this.type;
+        this.request = Sanity.nullCheck(request, "request cannot be null");
     }
 
     /**
-     * Returns the address offered in the request. Calling {@link #accept()} will connect to this address.
+     * Returns the request. It contains information about the request, as well as a way to accept it.
      *
-     * @return the offered address
+     * @return the request
      */
-    public InetSocketAddress getRequestAddress() {
-        return this.ip;
+    public DCCRequest getRequest() {
+        return this.request;
     }
-
-    /**
-     * Accepts the request and connects to the socket.
-     *
-     * <p>This will trigger {@link DCCConnectedEvent} if the connection is successful and
-     * {@link DCCFailedEvent} otherwise.</p>
-     */
-    public abstract void accept();
-
-    /**
-     * Rejects the request.
-     */
-    public abstract void reject();
 }
