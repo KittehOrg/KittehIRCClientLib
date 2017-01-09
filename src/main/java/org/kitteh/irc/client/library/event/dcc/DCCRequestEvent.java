@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Fires when a DCC request is received by the incoming DCC connection handler. All raw data can be viewed via {@link PrivateCTCPQueryEvent}.
  */
-public final class DCCRequestEvent extends ActorEventBase<User> {
+public class DCCRequestEvent extends ActorEventBase<User> {
     private final DCCRequest request;
 
     public DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull DCCRequest request) {
