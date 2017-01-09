@@ -212,7 +212,6 @@ final class NettyManager {
         void shutdown(@Nullable String message, boolean reconnect) {
             this.reconnect = reconnect;
 
-
             this.client.pauseMessageSending();
             this.channel.writeAndFlush("QUIT" + ((message != null) ? (" :" + message) : ""));
             this.channel.close();
