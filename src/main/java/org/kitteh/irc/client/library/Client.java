@@ -908,6 +908,7 @@ public interface Client {
      * @param target The target to request a DCC chat from
      */
     default void requestDCCChat(@Nonnull User target) {
+        Sanity.nullCheck(target, "target cannot be null");
         this.requestDCCChat(target.getNick());
     }
 
