@@ -123,7 +123,7 @@ class EventListener {
         if (!event.getParameters().isEmpty()) {
             this.client.setCurrentNick(event.getParameters().get(0));
         } else {
-            this.trackException(event, "Nickname unconfirmed.");
+            this.trackException(event, "Nickname missing; can't confirm");
         }
     }
 
@@ -142,13 +142,13 @@ class EventListener {
                     }
                     this.client.getServerInfo().setUserModes(modes);
                 } else {
-                    this.trackException(event, "Server user modes missing.");
+                    this.trackException(event, "Server user modes missing");
                 }
             } else {
-                this.trackException(event, "Server version missing.");
+                this.trackException(event, "Server version and user modes missing");
             }
         } else {
-            this.trackException(event, "Server address and version missing.");
+            this.trackException(event, "Server address, version, and user modes missing");
         }
         this.client.sendRawLineImmediately("WHOIS " + this.client.getNick());
         this.fire(new ClientConnectedEvent(this.client, event.getActor(), this.client.getServerInfo()));
@@ -167,7 +167,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void umode(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "UMODE response of incorrect length");
+            this.trackException(event, "UMODE response too short");
             return;
         }
 
@@ -205,7 +205,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisAway(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS AWAY response of incorrect length");
+            this.trackException(event, "WHOIS AWAY response too short");
             return;
         }
         this.getWhoisBuilder(event.getParameters().get(1)).setAway(event.getParameters().get((event.getParameters().size() == 3) ? 2 : 3));
@@ -215,7 +215,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisUser(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "WHOIS USER response of incorrect length");
+            this.trackException(event, "WHOIS USER response too short");
             return;
         }
         WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
@@ -233,7 +233,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisServer(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS SERVER response of incorrect length");
+            this.trackException(event, "WHOIS SERVER response too short");
             return;
         }
         WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
@@ -247,7 +247,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisOperator(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS OPERATOR response of incorrect length");
+            this.trackException(event, "WHOIS OPERATOR response too short");
             return;
         }
         this.getWhoisBuilder(event.getParameters().get(1)).setOperatorInformation(event.getParameters().get(2));
@@ -257,7 +257,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisIdle(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 4) {
-            this.trackException(event, "WHOIS IDLE response of incorrect length");
+            this.trackException(event, "WHOIS IDLE response too short");
             return;
         }
         WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
@@ -285,7 +285,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisAccount(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS ACCOUNT response of incorrect length");
+            this.trackException(event, "WHOIS ACCOUNT response too short");
             return;
         }
         this.getWhoisBuilder(event.getParameters().get(1)).setAccount(event.getParameters().get(2));
@@ -295,7 +295,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisChannels(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS CHANNELS response of incorrect length");
+            this.trackException(event, "WHOIS CHANNELS response too short");
             return;
         }
         this.getWhoisBuilder(event.getParameters().get(1)).addChannels(event.getParameters().get(2));
@@ -305,7 +305,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisSecure(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "WHOIS SECURE response of incorrect length");
+            this.trackException(event, "WHOIS SECURE response too short");
             return;
         }
         this.getWhoisBuilder(event.getParameters().get(1)).setSecure();
@@ -315,7 +315,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoisEnd(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "WHOIS END response of incorrect length");
+            this.trackException(event, "WHOIS END response too short");
             return;
         }
         WhoisData whois = this.getWhoisBuilder(event.getParameters().get(1)).build();
@@ -333,7 +333,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void who(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < ((event.getNumeric() == 352) ? 8 : 9)) {
-            this.trackException(event, "WHO response of incorrect length");
+            this.trackException(event, "WHO response too short");
             return;
         }
         final ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -380,7 +380,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void whoComplete(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "WHO response of incorrect length");
+            this.trackException(event, "WHO response too short");
             return;
         }
         ActorProvider.IRCChannel whoChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -396,7 +396,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void channelMode(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "Channel mode info message of incorrect length");
+            this.trackException(event, "Channel mode info message too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -418,7 +418,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "Topic message of incorrect length");
+            this.trackException(event, "Topic message too short");
             return;
         }
         ActorProvider.IRCChannel topicChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -433,7 +433,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void topicInfo(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 4) {
-            this.trackException(event, "Topic message of incorrect length");
+            this.trackException(event, "Topic message too short");
             return;
         }
         ActorProvider.IRCChannel topicSetChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -451,7 +451,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void names(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 4) {
-            this.trackException(event, "NAMES response of incorrect length");
+            this.trackException(event, "NAMES response too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(2));
@@ -480,7 +480,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void namesComplete(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "NAMES response of incorrect length");
+            this.trackException(event, "NAMES response too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -536,7 +536,7 @@ class EventListener {
 
     private void modeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList, int offset) {
         if (event.getParameters().size() < (3 + offset)) {
-            this.trackException(event, name + " response of incorrect length");
+            this.trackException(event, name + " response too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -588,7 +588,7 @@ class EventListener {
 
     private void endModeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, name + " response of incorrect length");
+            this.trackException(event, name + " response too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -623,7 +623,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void motdContent(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "MOTD message of incorrect length");
+            this.trackException(event, "MOTD message too short");
             return;
         }
         this.motd.add(event.getParameters().get(1));
@@ -652,7 +652,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void knock(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "KNOCK message of incorrect length");
+            this.trackException(event, "KNOCK message too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -669,7 +669,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void monitorOnline(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "MONITOR status message of incorrect length");
+            this.trackException(event, "MONITOR status message too short");
             return;
         }
         List<ServerMessage> originalMessages = event.getOriginalMessages();
@@ -691,7 +691,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void monitorList(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "MONITOR list message of incorrect length");
+            this.trackException(event, "MONITOR list message too short");
             return;
         }
         Collections.addAll(this.monitorList, event.getParameters().get(1).split(","));
@@ -710,7 +710,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void monitorListFull(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "MONITOR list full message of incorrect length");
+            this.trackException(event, "MONITOR list full message too short");
             return;
         }
         int limit;
@@ -733,14 +733,14 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void cap(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 3) {
-            this.trackException(event, "CAP message of incorrect length");
+            this.trackException(event, "CAP message too short");
             return;
         }
         CapabilityNegotiationResponseEventBase responseEvent = null;
         int capabilityListIndex;
         if ("*".equals(event.getParameters().get(CAPABILITY_LIST_INDEX_DEFAULT))) {
             if (event.getParameters().size() < 4) {
-                this.trackException(event, "CAP message of incorrect length");
+                this.trackException(event, "CAP message too short");
                 return;
             }
             capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT + 1;
@@ -850,7 +850,7 @@ class EventListener {
         ActorProvider.IRCUser ircUser = this.client.getActorProvider().getUser(user.getNick());
 
         if (ircUser == null) {
-            this.trackException(event, "Null old user for nick.");
+            this.trackException(event, "Null old user for nick");
             return;
         }
 
@@ -874,7 +874,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void account(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.trackException(event, "ACCOUNT message of incorrect length");
+            this.trackException(event, "ACCOUNT message too short");
             return;
         }
         String account = event.getParameters().get(0);
@@ -891,7 +891,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void notice(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "NOTICE message of incorrect length");
+            this.trackException(event, "NOTICE message too short");
             return;
         }
         String message = event.getParameters().get(1);
@@ -928,7 +928,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void privmsg(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "PRIVMSG message of incorrect length");
+            this.trackException(event, "PRIVMSG message too short");
             return;
         }
         if (!(event.getActor() instanceof User)) {
@@ -1000,7 +1000,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void mode(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "MODE message of incorrect length");
+            this.trackException(event, "MODE message too short");
             return;
         }
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
@@ -1036,7 +1036,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void join(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.trackException(event, "JOIN message of incorrect length");
+            this.trackException(event, "JOIN message too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
@@ -1077,7 +1077,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void part(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.trackException(event, "PART message of incorrect length");
+            this.trackException(event, "PART message too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
@@ -1120,7 +1120,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void kick(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "KICK message of incorrect length");
+            this.trackException(event, "KICK message too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
@@ -1152,7 +1152,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void nick(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.trackException(event, "NICK message of incorrect length");
+            this.trackException(event, "NICK message too short");
             return;
         }
         if (event.getActor() instanceof User) {
@@ -1182,7 +1182,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void invite(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "INVITE message of incorrect length");
+            this.trackException(event, "INVITE message too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
@@ -1200,7 +1200,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void topic(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.trackException(event, "TOPIC message of incorrect length");
+            this.trackException(event, "TOPIC message too short");
             return;
         }
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
@@ -1217,7 +1217,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void wallops(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 1) {
-            this.trackException(event, "WALLOPS message of incorrect length");
+            this.trackException(event, "WALLOPS message too short");
             return;
         }
         this.fire(new WallopsEvent(this.client, event.getOriginalMessages(), event.getActor(), event.getParameters().get(0)));
