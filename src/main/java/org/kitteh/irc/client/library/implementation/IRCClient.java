@@ -139,7 +139,7 @@ final class IRCClient extends InternalClient {
 
     private final class InputProcessor extends QueueProcessingThread<String> {
         private InputProcessor() {
-            super("Kitteh IRC Client Input Processor (" + IRCClient.this.getName() + ')');
+            super("KICL Input Processor (" + IRCClient.this.getName() + ')');
         }
 
         @Override

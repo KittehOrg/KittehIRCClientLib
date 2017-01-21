@@ -49,7 +49,7 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
      * @param name name of this sending queue
      */
     public QueueProcessingThreadSender(@Nonnull Client client, @Nonnull String name) {
-        super("Kitteh IRC Client " + name + " Sending Queue (" + Sanity.nullCheck(client, "Client cannot be null").getName() + ')');
+        super("KICL " + name + " Sending Queue (" + Sanity.nullCheck(client, "Client cannot be null").getName() + ')');
         this.client = client;
     }
 

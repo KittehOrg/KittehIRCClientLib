@@ -36,7 +36,7 @@ class Listener<Type> {
         private volatile Consumer<Type> consumer;
 
         private ListenerThread(@Nonnull String clientName, @Nonnull Consumer<Type> consumer) {
-            super("Kitteh IRC Client Listener (" + clientName + ')');
+            super("KICL Listener (" + clientName + ')');
             this.consumer = consumer;
         }
 
