@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -36,22 +37,15 @@ public interface WhoisData extends User {
      *
      * @return idle time, in seconds
      */
+    @Nonnull
     Optional<Long> getIdleTime();
-
-    /**
-     * Gets a user's operator information, if they have any privileges.
-     * <p>
-     * Example: "is an Operator".
-     *
-     * @return privileges, or empty if none
-     */
-    Optional<String> getOperatorInformation();
 
     /**
      * Gets the description of the server the user is on.
      *
      * @return description or empty if none present
      */
+    @Nonnull
     Optional<String> getServerDescription();
 
     /**
@@ -59,6 +53,7 @@ public interface WhoisData extends User {
      *
      * @return time of arrival
      */
+    @Nonnull
     Optional<Long> getSignOnTime();
 
     /**

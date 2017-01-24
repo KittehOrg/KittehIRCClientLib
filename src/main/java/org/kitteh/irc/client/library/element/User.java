@@ -71,6 +71,18 @@ public interface User extends MessageReceiver, Staleable {
     String getNick();
 
     /**
+     * Gets a user's operator information, if they have any privileges, noting
+     * that this information may not imply actual IRC Operator status but some
+     * other IRC network status as well.
+     * <p>
+     * Example: "is an Operator".
+     *
+     * @return operator info, or empty if none known
+     */
+    @Nonnull
+    Optional<String> getOperatorInformation();
+
+    /**
      * Gets the user's real name
      *
      * @return real name if known

@@ -143,6 +143,7 @@ class WhoisBuilder {
             return this.creationTime;
         }
 
+        @Nonnull
         @Override
         public Optional<Long> getIdleTime() {
             return this.idleTime;
@@ -160,6 +161,7 @@ class WhoisBuilder {
             return this.serverDescription;
         }
 
+        @Nonnull
         @Override
         public Optional<Long> getSignOnTime() {
             return this.signOnTime;

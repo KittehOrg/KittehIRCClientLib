@@ -543,6 +543,7 @@ class ActorProvider implements Resettable {
         private String nick;
         private String user;
         private boolean isAway;
+        private String operString;
         private String realName;
         private String server;
 
@@ -571,6 +572,10 @@ class ActorProvider implements Resettable {
         void setAway(boolean isAway) {
             this.isAway = isAway;
             this.markStale();
+        }
+
+        void setOperString(@Nonnull String operString) {
+            this.operString = operString;
         }
 
         void setRealName(@Nonnull String realName) {
@@ -617,6 +622,7 @@ class ActorProvider implements Resettable {
         private final boolean isAway;
         private final String host;
         private final String nick;
+        private final Optional<String> operString;
         private final Optional<String> realName;
         private final Optional<String> server;
         private final String user;
@@ -628,6 +634,7 @@ class ActorProvider implements Resettable {
             this.nick = user.nick;
             this.user = user.user;
             this.host = user.host;
+            this.operString = Optional.ofNullable(user.operString);
             this.realName = Optional.ofNullable(user.realName);
             this.server = Optional.ofNullable(user.server);
             this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.modes.containsKey(this.nick)).map(IRCChannel::getName).collect(Collectors.toSet()));
@@ -666,6 +673,12 @@ class ActorProvider implements Resettable {
         @Override
         public String getNick() {
             return this.nick;
+        }
+
+        @Nonnull
+        @Override
+        public Optional<String> getOperatorInformation() {
+            return this.operString;
         }
 
         @Nonnull
