@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import javax.annotation.Nullable;
+
 /**
  * Represents a function that accepts three arguments and produces a result.
  *
@@ -41,5 +43,6 @@ public interface TriFunction<First, Second, Third, Result> {
      * @param third the third function argument
      * @return the function result
      */
-    Result apply(First first, Second second, Third third);
+    @Nullable
+    Result apply(@Nullable First first, @Nullable Second second, @Nullable Third third);
 }

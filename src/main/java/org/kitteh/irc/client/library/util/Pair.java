@@ -45,7 +45,8 @@ public final class Pair<Left, Right> {
      * @param <Right> type of the second object
      * @return pair of the objects
      */
-    public static <Left, Right> Pair<Left, Right> of(Left left, Right right) {
+    @Nonnull
+    public static <Left, Right> Pair<Left, Right> of(@Nullable Left left, @Nullable Right right) {
         return new Pair<>(left, right);
     }
 

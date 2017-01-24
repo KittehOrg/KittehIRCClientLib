@@ -48,6 +48,7 @@ public final class RiskyBusiness {
          * @return output
          * @throws Exception if something goes wrong
          */
+        @Nullable
         Output apply(@Nullable Input input) throws Exception;
     }
 
@@ -61,6 +62,7 @@ public final class RiskyBusiness {
      * @param <Output> output type
      * @return output of the function
      */
+    @Nullable
     public static <Input, Output> Output assertSafe(@Nonnull CheckedFunction<Input, Output> function, @Nullable Input input) {
         Sanity.nullCheck(function, "Function cannot be null");
         try {

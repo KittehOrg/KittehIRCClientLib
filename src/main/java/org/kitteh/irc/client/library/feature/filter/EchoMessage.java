@@ -31,6 +31,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -44,7 +45,7 @@ public @interface EchoMessage {
      */
     class Processor implements FilterProcessor<ActorMessageEvent<? extends Actor>, EchoMessage> {
         @Override
-        public boolean accepts(ActorMessageEvent<? extends Actor> event, EchoMessage[] annotations) {
+        public boolean accepts(@Nonnull ActorMessageEvent<? extends Actor> event, @Nonnull EchoMessage[] annotations) {
             Optional<User> client = event.getClient().getUser();
             return client.isPresent() && client.get().equals(event.getActor());
         }
