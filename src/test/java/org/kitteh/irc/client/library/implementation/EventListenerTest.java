@@ -139,7 +139,7 @@ public class EventListenerTest {
     public void test1WelcomeFail() {
         this.fireLine(":irc.network 001");
         Mockito.verify(this.client, Mockito.times(0)).setCurrentNick(Mockito.anyString());
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Nickname unconfirmed.")));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Nickname missing; can't confirm")));
     }
 
     /**
@@ -166,7 +166,7 @@ public class EventListenerTest {
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();
         Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class)));
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server version missing.")));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server version and user modes missing")));
     }
 
 
@@ -181,7 +181,7 @@ public class EventListenerTest {
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();
         Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class)));
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server address and version missing.")));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server address, version, and user modes missing")));
     }
 
     @Test
@@ -202,7 +202,7 @@ public class EventListenerTest {
         this.fireLine(":irc.network 372 Kitteh");
         this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setMOTD(Mockito.argThat(o -> (o != null) && (((List<String>) o).size() == 1) && ((List<String>) o).get(0).contains("Hello")));
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message of incorrect length")));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message too short")));
     }
 
     @Test
@@ -214,6 +214,6 @@ public class EventListenerTest {
     @Test
     public void testWALLOPSFail() {
         this.fireLine(":irc.network WALLOPS");
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "WALLOPS message of incorrect length")));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "WALLOPS message too short")));
     }
 }
