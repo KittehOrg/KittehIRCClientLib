@@ -364,6 +364,10 @@ class EventListener {
                     user.setAway(true);
                     continue;
                 }
+                if (prefix == '*') {
+                    user.setOperString("*");
+                    continue;
+                }
                 for (ChannelUserMode mode : this.client.getServerInfo().getChannelUserModes()) {
                     if (mode.getNickPrefix() == prefix) {
                         modes.add(mode);
