@@ -54,7 +54,7 @@ public @interface NumericFilter {
      */
     class Processor implements FilterProcessor<ClientReceiveNumericEvent, NumericFilter> {
         @Override
-        public boolean accepts(ClientReceiveNumericEvent event, NumericFilter[] numericFilters) {
+        public boolean accepts(@Nonnull ClientReceiveNumericEvent event, @Nonnull NumericFilter[] numericFilters) {
             for (NumericFilter numericFilter : numericFilters) {
                 if (numericFilter.value() == event.getNumeric()) {
                     return true;

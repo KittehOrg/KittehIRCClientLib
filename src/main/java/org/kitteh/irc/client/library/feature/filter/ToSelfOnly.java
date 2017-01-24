@@ -29,6 +29,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.annotation.Nonnull;
 
 /**
  * Only get messages addressed to self.
@@ -41,7 +42,7 @@ public @interface ToSelfOnly {
      */
     class Processor implements FilterProcessor<PrivateEvent, ToSelfOnly> {
         @Override
-        public boolean accepts(PrivateEvent privateEvent, ToSelfOnly[] annotations) {
+        public boolean accepts(@Nonnull PrivateEvent privateEvent, @Nonnull ToSelfOnly[] annotations) {
             return privateEvent.isToClient();
         }
     }

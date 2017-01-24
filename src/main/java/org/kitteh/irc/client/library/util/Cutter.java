@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public interface Cutter {
     class DefaultWordCutter implements Cutter {
         @Nonnull
         @Override
-        public List<String> split(@Nonnull String message, int size) {
+        public List<String> split(@Nonnull String message, @Nonnegative int size) {
             Sanity.nullCheck(message, "Message cannot be null");
             Sanity.truthiness(size > 0, "Size must be positive");
             List<String> list = new ArrayList<>();
@@ -87,5 +88,5 @@ public interface Cutter {
      * message is null
      */
     @Nonnull
-    List<String> split(@Nonnull String message, int size);
+    List<String> split(@Nonnull String message, @Nonnegative int size);
 }

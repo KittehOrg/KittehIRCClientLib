@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.filter;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 
 /**
@@ -37,5 +38,5 @@ public interface FilterProcessor<Event, A extends Annotation> {
      * @param annotations the annotations
      * @return true if the event continues
      */
-    boolean accepts(Event event, A[] annotations);
+    boolean accepts(@Nonnull Event event, @Nonnull A[] annotations);
 }

@@ -54,7 +54,7 @@ public @interface CommandFilter {
      */
     class Processor implements FilterProcessor<ClientReceiveCommandEvent, CommandFilter> {
         @Override
-        public boolean accepts(ClientReceiveCommandEvent event, CommandFilter[] commandFilters) {
+        public boolean accepts(@Nonnull ClientReceiveCommandEvent event, @Nonnull CommandFilter[] commandFilters) {
             for (CommandFilter commandFilter : commandFilters) {
                 if (commandFilter.value().equalsIgnoreCase(event.getCommand())) {
                     return true;
