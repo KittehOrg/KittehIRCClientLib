@@ -64,10 +64,12 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -295,6 +297,17 @@ final class IRCClient extends InternalClient {
     @Override
     public Set<Channel> getChannels() {
         return this.actorProvider.getTrackedChannels().stream().map(ActorProvider.IRCChannel::snapshot).collect(Collectors.toSet());
+    }
+
+    @Nonnull
+    @Override
+    public Set<Channel> getChannels(@Nonnull Collection<String> channels) {
+        return Sanity.nullCheck(channels, "Channels collection cannot be null").stream()
+                .filter(Objects::nonNull)
+                .map(this.actorProvider::getTrackedChannel)
+                .filter(Objects::nonNull)
+                .map(ActorProvider.IRCChannel::snapshot)
+                .collect(Collectors.toSet());
     }
 
     @Nonnull

@@ -17,6 +17,7 @@ import org.kitteh.irc.client.library.util.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -234,6 +235,12 @@ class FakeClient extends InternalClient {
     @Override
     public Set<Channel> getChannels() {
         return Collections.emptySet();
+    }
+
+    @Nonnull
+    @Override
+    public Set<Channel> getChannels(@Nonnull Collection<String> channels) {
+        return null;
     }
 
     @Nonnull
