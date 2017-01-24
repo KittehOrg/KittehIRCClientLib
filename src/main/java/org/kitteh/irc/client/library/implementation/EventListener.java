@@ -52,6 +52,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKnockEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelModeInfoEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelModeInfoListEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNamesUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
@@ -408,6 +409,7 @@ class EventListener {
                 this.trackException(event, e.getMessage());
                 return;
             }
+            this.fire(new ChannelModeInfoEvent(this.client, event.getOriginalMessages(), channel.snapshot(), statusList));
             channel.updateChannelModes(statusList);
         } else {
             this.trackException(event, "Channel mode info message sent for invalid channel name");
