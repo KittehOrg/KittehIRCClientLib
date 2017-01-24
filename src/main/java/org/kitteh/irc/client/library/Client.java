@@ -63,6 +63,7 @@ import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.net.InetAddress;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -547,6 +548,16 @@ public interface Client {
      */
     @Nonnull
     Set<Channel> getChannels();
+
+    /**
+     * Gets the channels on the given collection in which the client is
+     * currently present.
+     *
+     * @param channels collection of channel names to get
+     * @return the client's current channels that are named in the collection
+     */
+    @Nonnull
+    Set<Channel> getChannels(@Nonnull Collection<String> channels);
 
     /**
      * Gets the message manager for default messages to reply with
