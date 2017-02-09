@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2017 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -29,6 +29,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
+/**
+ * IP address utilities.
+ */
 public final class IPUtil {
     private static final BigInteger X_FFFF = BigInteger.valueOf(0xFFFF);
     // Length of (2**128) - 1 -- IPv6 has up to 2**128 addresses
@@ -38,7 +41,8 @@ public final class IPUtil {
     }
 
     /**
-     * Takes a string containing an integer (potentially larger than 32-bits) and converts it to the appropriate IP address class.
+     * Takes a string containing an integer (potentially larger than 32-bits)
+     * and converts it to the appropriate IP address class.
      *
      * @param ipInteger the IP integer string
      * @return the corresponding IP address as an InetAddress instance
@@ -80,15 +84,14 @@ public final class IPUtil {
         if (ipInt.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) < 0) {
             int ipv4Int = ipInt.intValueExact();
             // IPv4
-            ip = String.format("%d.%d.%d.%d", (ipv4Int >> 24 & 0xff), (ipv4Int >> 16 & 0xff), (ipv4Int >> 8 & 0xff), (ipv4Int & 0xff));
+            ip = String.format("%d.%d.%d.%d", ((ipv4Int >> 24) & 0xff), ((ipv4Int >> 16) & 0xff), ((ipv4Int >> 8) & 0xff), (ipv4Int & 0xff));
         } else {
             // IPv6
             ip = numberToIPv6(ipInt);
         }
         try {
             InetAddress address = InetAddress.getByName(ip);
-            if (address instanceof Inet6Address
-                    && ((Inet6Address) address).isIPv4CompatibleAddress()) {
+            if ((address instanceof Inet6Address) && ((Inet6Address) address).isIPv4CompatibleAddress()) {
                 // Un-wrap IPv6 -> IPv4 address (some systems are still IPv4 only and this helps compatibility)
                 // To do so, just copy the last 4 parts of the IPv6 address
                 return InetAddress.getByAddress(Arrays.copyOfRange(address.getAddress(), 12, 16));
@@ -101,7 +104,8 @@ public final class IPUtil {
     }
 
     /**
-     * Takes a InetAddress and converts it into a String containing an integer (potentially larger than 32-bits).
+     * Takes a InetAddress and converts it into a String containing an
+     * integer (potentially larger than 32-bits).
      *
      * @param address the IP address
      * @return the IP integer as a string
@@ -120,7 +124,7 @@ public final class IPUtil {
         StringBuilder ipString = new StringBuilder("[");
 
         for (int i = 0; i < 8; i++) {
-            ipString.insert(1, ":");
+            ipString.insert(1, ':');
             ipString.insert(1, ipNumber.and(X_FFFF).toString(16));
 
             ipNumber = ipNumber.shiftRight(16);
@@ -129,7 +133,5 @@ public final class IPUtil {
         // replace last : with ] to close IPv6 literal
         ipString.setCharAt(ipString.length() - 1, ']');
         return ipString.toString();
-
     }
-
 }

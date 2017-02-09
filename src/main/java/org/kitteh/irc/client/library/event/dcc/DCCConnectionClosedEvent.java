@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2017 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,13 +27,21 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.DCCExchange;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
+import org.kitteh.irc.client.library.event.helper.DCCEvent;
 
 import java.util.List;
 
 /**
  * Fires when a {@link DCCExchange} is terminated.
  */
-public class DCCConnectionClosedEvent extends ActorEventBase<DCCExchange> {
+public class DCCConnectionClosedEvent extends ActorEventBase<DCCExchange> implements DCCEvent {
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param originalMessages original messages
+     * @param actor the actor
+     */
     public DCCConnectionClosedEvent(Client client, List<ServerMessage> originalMessages, DCCExchange actor) {
         super(client, originalMessages, actor);
     }

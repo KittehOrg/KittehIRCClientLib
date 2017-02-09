@@ -1017,24 +1017,24 @@ class EventListener {
         // parameters looks like [DCC, CHAT, chat, ip, port]
         if (parameters.size() <= 1) {
             // invalid parameters, ignore request
-            this.logInvalidDccRequest(event, "No DCC type specified");
+            this.logInvalidDCCRequest(event, "No DCC type specified");
             return;
         }
         String dccService = parameters.get(1);
-        if (dccService.equals("CHAT")) {
+        if ("CHAT".equalsIgnoreCase(dccService)) {
             if (parameters.size() <= 2) {
                 // invalid parameters, ignore request
-                this.logInvalidDccRequest(event, "CHAT parameters not specified");
+                this.logInvalidDCCRequest(event, "CHAT parameters not specified");
                 return;
             }
             String dccType = parameters.get(2);
-            if (!dccType.equals("chat")) {
-                this.logInvalidDccRequest(event, "Unknown DCC CHAT type " + dccType);
+            if (!"chat".equalsIgnoreCase(dccType)) {
+                this.logInvalidDCCRequest(event, "Unknown DCC CHAT type " + dccType);
                 return;
             }
             if (parameters.size() <= 4) {
                 // invalid parameters, ignore request
-                this.logInvalidDccRequest(event, "DCC CHAT IP and port not provided");
+                this.logInvalidDCCRequest(event, "DCC CHAT IP and port not provided");
                 return;
             }
             // IP is an integer, decode it
@@ -1054,13 +1054,13 @@ class EventListener {
                 ActorProvider.IRCDCCChat chat = this.client.getActorProvider().getDCCChat(user.getNick());
                 NettyManager.connectToDCCClient(this.client, chat, socketAddress);
             });
-
+            System.out.println("Hello");
             DCCRequest request = new DCCRequest(acceptFuture, dccService, dccType, socketAddress);
             this.fire(new DCCRequestEvent(this.client, event.getOriginalMessages(), user, request));
         }
     }
 
-    private void logInvalidDccRequest(ClientReceiveServerMessageEvent event, String reason) {
+    private void logInvalidDCCRequest(ClientReceiveServerMessageEvent event, String reason) {
         this.trackException(event, "DCC request is invalid: " + reason);
     }
 

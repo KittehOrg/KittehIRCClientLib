@@ -234,7 +234,6 @@ final class NettyManager {
         private final ActorProvider.IRCDCCExchange exchange;
         private final InternalClient client;
         private final AtomicBoolean connected = new AtomicBoolean();
-        private Channel channel;
 
         private DCCConnection(ActorProvider.IRCDCCExchange ex, InternalClient client) {
             this.exchange = ex;
@@ -249,9 +248,10 @@ final class NettyManager {
                 return;
             }
             // we can close the server socket now
-            channel.parent().close();
+            if (channel.parent() != null) {
+                channel.parent().close();
+            }
 
-            this.channel = channel;
             this.exchange.setNettyChannel(channel);
             NettyManager.dccConnections.computeIfAbsent(this.client, c -> new ArrayList<>()).add(this);
 
@@ -279,7 +279,7 @@ final class NettyManager {
                         ctx.channel().pipeline().remove(successHandler);
                         ctx.channel().close().addListener(ft -> {
                             if (ft.isDone()) {
-                                DCCConnection.this.client.getEventManager().callEvent(new DCCFailedEvent(DCCConnection.this.client, "Netty exception", cause));
+                                DCCConnection.this.client.getEventManager().callEvent(new DCCFailedEvent(DCCConnection.this.client, DCCConnection.this.exchange.snapshot(), "Netty exception", cause));
                             }
                         });
                         this.firstRemove = true;
@@ -416,12 +416,12 @@ final class NettyManager {
         return clientConnection;
     }
 
-    static Runnable createDCCServer(InternalClient client, ActorProvider.IRCDCCExchange exchange) {
-        Sanity.nullCheck(client.getClientConnection(), "A DCC connection cannot be made without a client connection");
+    static Runnable createDCCServer(InternalClient client, ClientConnection connection, ActorProvider.IRCDCCExchange exchange) {
+        Sanity.nullCheck(connection, "A DCC connection cannot be made without a client connection");
         SocketAddress bind = client.getConfig().get(Config.BIND_ADDRESS);
         if (bind == null) {
             // try binding to the client socket
-            bind = client.getClientConnection().channel.localAddress();
+            bind = connection.channel.localAddress();
             Sanity.nullCheck(bind, "The client connection is not bound, a DCC connection cannot be made");
         }
         ChannelFuture future = new ServerBootstrap()
@@ -437,7 +437,7 @@ final class NettyManager {
                 client.getEventManager().callEvent(new DCCSocketBoundEvent(client, Collections.emptyList(), exchange.snapshot()));
                 exchange.onSocketBound();
             } else {
-                client.getEventManager().callEvent(new DCCFailedEvent(client, "Failed to bind to address " + future.channel().localAddress(), ft.cause()));
+                client.getEventManager().callEvent(new DCCFailedEvent(client, exchange.snapshot(), "Failed to bind to address " + future.channel().localAddress(), ft.cause()));
             }
         });
         return () -> future.channel().close();
@@ -454,7 +454,7 @@ final class NettyManager {
                 .connect(remoteAddress);
         future.addListener(ft -> {
             if (!ft.isSuccess()) {
-                client.getEventManager().callEvent(new DCCFailedEvent(client, "Failed to connect to address " + remoteAddress, ft.cause()));
+                client.getEventManager().callEvent(new DCCFailedEvent(client, exchange.snapshot(), "Failed to connect to address " + remoteAddress, ft.cause()));
             }
         });
         return () -> future.channel().close();

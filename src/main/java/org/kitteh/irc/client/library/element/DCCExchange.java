@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2017 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -32,23 +32,23 @@ import java.util.Optional;
  */
 public interface DCCExchange extends Actor, Closeable {
     /**
-     * Returns the socket address of the local end.
+     * Returns the local socket address used.
      *
-     * @return the socket address of the local end
+     * @return the local socket address
      */
     Optional<SocketAddress> getLocalSocketAddress();
 
     /**
-     * Returns the socket address of the remote end.
+     * Returns the socket address of the other party.
      *
-     * @return the socket address of the remote end
+     * @return the remote socket address
      */
     Optional<SocketAddress> getRemoteSocketAddress();
 
     /**
-     * Returns the nickname of the user that is on the remote end. Will not be updated if the User changes their name.
+     * Returns the nickname of the other user at time of connection.
      *
-     * @return the nickname of the user on the remote end
+     * @return the nickname of the remote user at time of connection
      */
     String getUserNick();
 
@@ -63,9 +63,9 @@ public interface DCCExchange extends Actor, Closeable {
     /**
      * Closes this DCC exchange. It will no longer be
      * {@link #isConnected() connected}.
-     *
-     * <p>Note: Because this is a snapshot, the connected status
-     * <em>will not</em> be updated on this object.</p>
+     * <p>
+     * Note: Because this is a snapshot, the connected status <em>will
+     * not</em> be updated on this object.
      */
     @Override
     void close();

@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2017 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -26,14 +26,15 @@ package org.kitteh.irc.client.library.element;
 import javax.annotation.Nonnull;
 
 /**
- * The DCC CHAT exchange. This exchange allows two users to send text over a socket.
+ * The DCC CHAT exchange. This exchange allows two users to send text over a
+ * socket.
  */
 public interface DCCChat extends DCCExchange {
     /**
      * Sends the user a message over DCC CHAT.
      *
-     * <p>This method won't work if the chat is not
-     * {@link #isConnected() connected}.</p>
+     * This method won't work if the chat is not
+     * {@link #isConnected() connected}.
      *
      * @param message the message to send
      */

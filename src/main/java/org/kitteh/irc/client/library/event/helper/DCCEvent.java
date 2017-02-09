@@ -21,28 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.dcc;
-
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.DCCExchange;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
-import org.kitteh.irc.client.library.event.helper.DCCEvent;
-
-import java.util.List;
+package org.kitteh.irc.client.library.event.helper;
 
 /**
- * Fires when a {@link DCCExchange} connects.
+ * An event involving DCC communication.
  */
-public class DCCConnectedEvent extends ActorEventBase<DCCExchange> implements DCCEvent {
-    /**
-     * Constructs the event.
-     *
-     * @param client the client
-     * @param originalMessages original messages
-     * @param actor the actor
-     */
-    public DCCConnectedEvent(Client client, List<ServerMessage> originalMessages, DCCExchange actor) {
-        super(client, originalMessages, actor);
-    }
+public interface DCCEvent {
 }

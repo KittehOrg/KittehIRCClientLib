@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2017 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,30 +27,49 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
+import org.kitteh.irc.client.library.event.helper.DCCEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.feature.DCCRequest;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Fires when a DCC request is received by the incoming DCC connection handler. All raw data can be viewed via {@link PrivateCTCPQueryEvent}.
+ * Fires when a DCC request is received by the incoming DCC connection
+ * handler. All raw data can be viewed via {@link PrivateCTCPQueryEvent}.
  */
-public class DCCRequestEvent extends ActorEventBase<User> {
+public class DCCRequestEvent extends ActorEventBase<User> implements DCCEvent {
     private final DCCRequest request;
 
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param originalMessages original messages
+     * @param actor the actor
+     * @param request the request
+     */
     public DCCRequestEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User actor, @Nonnull DCCRequest request) {
         super(client, originalMessages, actor);
         this.request = Sanity.nullCheck(request, "request cannot be null");
     }
 
     /**
-     * Returns the request. It contains information about the request, as well as a way to accept it.
+     * Gets the request. It contains information about the request, as well
+     * as a way to accept it.
      *
      * @return the request
      */
+    @Nonnull
     public DCCRequest getRequest() {
         return this.request;
+    }
+
+    @Override
+    @Nonnull
+    protected ToStringer toStringer() {
+        return super.toStringer().add("request", this.request);
     }
 }

@@ -748,7 +748,7 @@ class ActorProvider implements Resettable {
         abstract void onMessage(String msg);
 
         final void onSocketBound() {
-            ActorProvider.this.client.sendCTCPMessage(this.getName(), this.getCTCP());
+            ActorProvider.this.client.sendCTCPMessage(this.nick, this.getCTCP());
         }
 
         String getType() {
@@ -761,10 +761,6 @@ class ActorProvider implements Resettable {
 
         void setLocalAddress(SocketAddress localAddress) {
             this.localAddress = localAddress;
-        }
-
-        SocketAddress getRemoteAddress() {
-            return this.remoteAddress;
         }
 
         void setRemoteAddress(SocketAddress remoteAddress) {
@@ -781,9 +777,7 @@ class ActorProvider implements Resettable {
 
         @Override
         @Nonnull
-        IRCDCCExchangeSnapshot snapshot() {
-            throw new UnsupportedOperationException("Cannot snapshot only the exchange");
-        }
+        abstract IRCDCCExchangeSnapshot snapshot();
     }
 
     class IRCDCCChat extends IRCDCCExchange {

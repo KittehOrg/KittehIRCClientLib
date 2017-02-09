@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2017 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,14 +27,23 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.DCCExchange;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
+import org.kitteh.irc.client.library.event.helper.DCCEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Fired when the socket for a DCCExchange is bound, but no connection has been made yet.
+ * Fired when the socket for a DCCExchange is bound, but no connection has
+ * been made yet.
  */
-public class DCCSocketBoundEvent extends ActorEventBase<DCCExchange> {
+public class DCCSocketBoundEvent extends ActorEventBase<DCCExchange> implements DCCEvent {
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param originalMessages original messages
+     * @param actor the actor
+     */
     public DCCSocketBoundEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull DCCExchange actor) {
         super(client, originalMessages, actor);
     }

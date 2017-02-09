@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013-2016 Matt Baxter http://kitteh.org
+ * * Copyright (C) 2013-2017 Matt Baxter http://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.DCCChat;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
+import org.kitteh.irc.client.library.event.helper.DCCEvent;
 import org.kitteh.irc.client.library.event.helper.ReplyableEvent;
 
 import javax.annotation.Nonnull;
@@ -35,7 +36,15 @@ import java.util.List;
 /**
  * Fires when a DCC CHAT message is received.
  */
-public class DCCChatMessageEvent extends ActorMessageEventBase<DCCChat> implements ReplyableEvent {
+public class DCCChatMessageEvent extends ActorMessageEventBase<DCCChat> implements DCCEvent, ReplyableEvent {
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param originalMessages original messages
+     * @param actor the actor
+     * @param message the message
+     */
     public DCCChatMessageEvent(Client client, List<ServerMessage> originalMessages, DCCChat actor, String message) {
         super(client, originalMessages, actor, message);
     }

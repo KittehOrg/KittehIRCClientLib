@@ -182,11 +182,6 @@ class FakeClient extends InternalClient {
 
     }
 
-    @Override
-    void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
-
-    }
-
     @Nonnull
     @Override
     ActorProvider getActorProvider() {
@@ -264,11 +259,6 @@ class FakeClient extends InternalClient {
     @Override
     public ManagerMessageTag getMessageTagManager() {
         return this.messageTagManager;
-    }
-
-    @Override
-    NettyManager.ClientConnection getClientConnection() {
-        return null;
     }
 
     @Nonnull

@@ -119,10 +119,10 @@ public interface User extends MessageReceiver, Staleable {
 
     /**
      * Sends a DCC CHAT request to the user.
-     *
-     * <p>When the server socket is bound locally, a
-     * {@link DCCSocketBoundEvent} will be fired. When the chat is connected,
-     * a {@link DCCConnectedEvent} will be fired. If the connection fails, a
+     * <p>
+     * When the server socket is bound locally, a {@link DCCSocketBoundEvent}
+     * will be fired. When the chat is connected, a
+     * {@link DCCConnectedEvent} will be fired. If the connection fails, a
      * {@link DCCFailedEvent} will be fired.</p>
      *
      * @see Client#requestDCCChat(User)
