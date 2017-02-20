@@ -27,11 +27,17 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Optional;
 
 /**
  * Only get messages sent by self.
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface EchoMessage {
     /**
      * {@inheritDoc}

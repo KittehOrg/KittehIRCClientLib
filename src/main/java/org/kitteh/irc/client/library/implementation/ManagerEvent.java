@@ -36,6 +36,7 @@ import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
+import org.kitteh.irc.client.library.feature.filter.EchoMessage;
 import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 import org.kitteh.irc.client.library.feature.filter.FilteringSubscriptionFactory;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
@@ -91,6 +92,7 @@ class ManagerEvent implements EventManager {
         this.client = client;
         // Defaults!
         this.registerAnnotationFilter(CommandFilter.class, new CommandFilter.Processor());
+        this.registerAnnotationFilter(EchoMessage.class, new EchoMessage.Processor());
         this.registerAnnotationFilter(NumericFilter.class, new NumericFilter.Processor());
         this.registerAnnotationFilter(ToSelfOnly.class, new ToSelfOnly.Processor());
 
