@@ -162,7 +162,11 @@ public interface Client {
         Builder listenOutput(@Nullable Consumer<String> listener);
 
         /**
-         * Sets the supplier of message sending queues.
+         * Sets the supplier of message sending queues, which dictate the
+         * rate at which messages are sent by the Client to the server.
+         * <p>
+         * By default, the {@link SingleDelaySender} is used with a delay set
+         * to {@link SingleDelaySender#DEFAULT_MESSAGE_DELAY}.
          *
          * @param supplier supplier
          * @return this builder
