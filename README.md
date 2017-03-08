@@ -12,9 +12,10 @@ using the Netty library to maximize performance and scalability.
 ### Minimal example
 
 ```java
+import net.engio.mbassy.listener.Handler;
+
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
-import org.kitteh.irc.lib.net.engio.mbassy.listener.Handler;
 
 public class Example {
     public static class Listener {
