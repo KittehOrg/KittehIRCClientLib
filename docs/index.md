@@ -57,7 +57,7 @@ KICL is built and deployed using Maven. Releases are available on Maven Central.
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <scope>...</scope>
 </dependency>
 ```
