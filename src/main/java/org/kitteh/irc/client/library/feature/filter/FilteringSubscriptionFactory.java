@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.feature.filter;
 
 import net.engio.mbassy.bus.BusRuntime;
 import net.engio.mbassy.bus.IMessagePublication;
+import net.engio.mbassy.bus.MessagePublication;
 import net.engio.mbassy.bus.config.IBusConfiguration;
 import net.engio.mbassy.bus.error.MessageBusException;
 import net.engio.mbassy.common.StrongConcurrentSet;
@@ -101,7 +102,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
         }
 
         @Override
-        public void dispatch(IMessagePublication publication, Object message, Iterable listeners) {
+        public void dispatch(MessagePublication publication, Object message, Iterable listeners) {
             for (FilterProcessorWrapper filter : this.filters) {
                 if (!filter.filterProcessor.accepts(message, filter.annotations)) {
                     return;
