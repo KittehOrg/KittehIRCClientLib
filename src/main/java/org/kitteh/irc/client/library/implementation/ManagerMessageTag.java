@@ -42,35 +42,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
-    private static class IRCMessageTag implements MessageTag {
-        private final String name;
-        private final Optional<String> value;
-
-        private IRCMessageTag(@Nonnull String name, @Nonnull Optional<String> value) {
-            this.name = name;
-            this.value = value;
-        }
-
-        @Nonnull
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Nonnull
-        @Override
-        public Optional<String> getValue() {
-            return this.value;
-        }
-
-        @Nonnull
-        @Override
-        public String toString() {
-            return new ToStringer(this).add("name", this.name).add("value", this.value).toString();
-        }
-    }
-
-    private static class IRCMessageTagTime extends IRCMessageTag implements MessageTag.Time {
+    private static class IRCMessageTagTime extends DefaultMessageTag implements MessageTag.Time {
         private static final TriFunction<Client, String, Optional<String>, IRCMessageTagTime> FUNCTION = (client, name, value) -> new IRCMessageTagTime(name, value, Instant.parse(value.get()));
 
         private final Instant time;
@@ -165,7 +137,7 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
                 }
             }
             if (messageTag == null) {
-                messageTag = new IRCMessageTag(tagName, value);
+                messageTag = new DefaultMessageTag(tagName, value);
             }
             list.add(messageTag);
         }
