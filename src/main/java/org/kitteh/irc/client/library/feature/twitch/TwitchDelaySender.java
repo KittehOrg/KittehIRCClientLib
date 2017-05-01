@@ -61,7 +61,9 @@ public class TwitchDelaySender extends QueueProcessingThreadSender {
      * @return supplier
      */
     public static Function<Client, TwitchDelaySender> getSupplier(boolean modOrOpOnly) {
-        return client -> new TwitchDelaySender(client, "TwitchDelay " +( modOrOpOnly ? "Only Mod/Op" : "Standard"), modOrOpOnly? MOD_OP_PER_THIRTY_SECONDS : NON_MOD_OP_PER_THIRTY_SECONDS);
+        return client -> new TwitchDelaySender(client,
+                "TwitchDelay " + (modOrOpOnly ? "Only Mod/Op" : "Standard"),
+                modOrOpOnly ? MOD_OP_PER_THIRTY_SECONDS : NON_MOD_OP_PER_THIRTY_SECONDS);
     }
 
     /**
@@ -96,6 +98,9 @@ public class TwitchDelaySender extends QueueProcessingThreadSender {
             }
         } while (remaining > 0);
         this.timestamps[this.currentIndex++] = now;
+        if (this.currentIndex >= this.timestamps.length) {
+            this.currentIndex = 0;
+        }
         return true;
     }
 }
