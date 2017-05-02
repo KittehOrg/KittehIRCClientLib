@@ -119,7 +119,9 @@ public class Twitch {
             if (!channel.isPresent()) {
                 throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
             }
-            this.client.getEventManager().callEvent(new ClearchatEvent(this.client, event.getOriginalMessages(), channel.get(), reason));
+            Optional<MessageTag> durationTag = event.getMessageTags().stream().filter(tag -> tag instanceof BanDuration).findAny();
+            Optional<Integer> duration = durationTag.map(tag -> ((BanDuration) tag).getDuration());
+            this.client.getEventManager().callEvent(new ClearchatEvent(this.client, event.getOriginalMessages(), channel.get(), reason, duration));
         }
     }
 
@@ -170,9 +172,13 @@ public class Twitch {
         }
     }
 
+    /**
+     * An event for when Twitch sends a CLEARCHAT message meaning a ban has
+     * happened.
+     */
     public static class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
         private final String banReason;
-        // TODO duration
+        private final Optional<Integer> duration;
 
         /**
          * Constructs the event.
@@ -181,10 +187,28 @@ public class Twitch {
          * @param originalMessages original messages
          * @param channel the channel
          */
-        ClearchatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason) {
+        ClearchatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason, @Nonnull Optional<Integer> duration) {
             super(client, originalMessages, channel);
             this.banReason = banReason;
+            this.duration = duration;
         }
 
+        /**
+         * Gets the ban duration.
+         *
+         * @return ban duration or {@link Optional#EMPTY} if permanent
+         */
+        public Optional<Integer> getBanDuration() {
+            return this.duration;
+        }
+
+        /**
+         * Gets the ban reason.
+         *
+         * @return ban reason
+         */
+        public String getBanReason() {
+            return this.banReason;
+        }
     }
 }
