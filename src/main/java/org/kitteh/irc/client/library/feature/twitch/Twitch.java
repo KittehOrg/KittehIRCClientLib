@@ -40,6 +40,8 @@ import org.kitteh.irc.client.library.util.TriFunction;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.Stream;
 
 /**
  * Helpful things.
@@ -120,7 +122,11 @@ public class Twitch {
                 throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
             }
             Optional<MessageTag> durationTag = event.getMessageTags().stream().filter(tag -> tag instanceof BanDuration).findAny();
-            Optional<Integer> duration = durationTag.map(tag -> ((BanDuration) tag).getDuration());
+            OptionalInt duration = durationTag
+                    .map(Stream::of)
+                    .orElseGet(Stream::empty)
+                    .mapToInt(tag -> ((BanDuration) tag).getDuration())
+                    .findFirst();
             this.client.getEventManager().callEvent(new ClearchatEvent(this.client, event.getOriginalMessages(), channel.get(), reason, duration));
         }
     }
@@ -178,7 +184,7 @@ public class Twitch {
      */
     public static class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
         private final String banReason;
-        private final Optional<Integer> duration;
+        private final OptionalInt duration;
 
         /**
          * Constructs the event.
@@ -187,7 +193,7 @@ public class Twitch {
          * @param originalMessages original messages
          * @param channel the channel
          */
-        ClearchatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason, @Nonnull Optional<Integer> duration) {
+        ClearchatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason, @Nonnull OptionalInt duration) {
             super(client, originalMessages, channel);
             this.banReason = banReason;
             this.duration = duration;
@@ -196,9 +202,10 @@ public class Twitch {
         /**
          * Gets the ban duration.
          *
-         * @return ban duration or {@link Optional#EMPTY} if permanent
+         * @return ban duration in seconds or {@link Optional#EMPTY} if
+         * permanent
          */
-        public Optional<Integer> getBanDuration() {
+        public OptionalInt getBanDuration() {
             return this.duration;
         }
 
