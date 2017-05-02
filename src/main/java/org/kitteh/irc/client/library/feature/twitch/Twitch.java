@@ -27,18 +27,16 @@ import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
-import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
-import org.kitteh.irc.client.library.util.TriFunction;
+import org.kitteh.irc.client.library.feature.twitch.event.ClearchatEvent;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
@@ -128,94 +126,6 @@ public class Twitch {
                     .mapToInt(tag -> ((BanDuration) tag).getDuration())
                     .findFirst();
             this.client.getEventManager().callEvent(new ClearchatEvent(this.client, event.getOriginalMessages(), channel.get(), reason, duration));
-        }
-    }
-
-    /**
-     * Message tag for ban duration.
-     */
-    public static class BanDuration extends MessageTagManager.DefaultMessageTag {
-        private static final TriFunction<Client, String, Optional<String>, BanDuration> FUNCTION = (client, name, value) -> new BanDuration(name, value, Integer.parseInt(value.get()));
-
-        private final int duration;
-
-        /**
-         * Constructs ban reason message tag.
-         *
-         * @param name tag name
-         * @param value tag value or {@link Optional#EMPTY}
-         * @param duration duration, in seconds, of the ban
-         */
-        public BanDuration(@Nonnull String name, @Nonnull Optional<String> value, int duration) {
-            super(name, value);
-            this.duration = duration;
-        }
-
-        /**
-         * Gets the ban duration.
-         *
-         * @return time, in seconds, the ban will last
-         */
-        public int getDuration() {
-            return this.duration;
-        }
-    }
-
-    /**
-     * Message tag for ban reason.
-     */
-    public static class BanReason extends MessageTagManager.DefaultMessageTag {
-        private static final TriFunction<Client, String, Optional<String>, BanReason> FUNCTION = (client, name, value) -> new BanReason(name, value);
-
-        /**
-         * Constructs ban reason message tag.
-         *
-         * @param name tag name
-         * @param value tag value or {@link Optional#EMPTY}
-         */
-        public BanReason(@Nonnull String name, @Nonnull Optional<String> value) {
-            super(name, value);
-        }
-    }
-
-    /**
-     * An event for when Twitch sends a CLEARCHAT message meaning a ban has
-     * happened.
-     */
-    public static class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
-        private final String banReason;
-        private final OptionalInt duration;
-
-        /**
-         * Constructs the event.
-         *
-         * @param client the client
-         * @param originalMessages original messages
-         * @param channel the channel
-         */
-        ClearchatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason, @Nonnull OptionalInt duration) {
-            super(client, originalMessages, channel);
-            this.banReason = banReason;
-            this.duration = duration;
-        }
-
-        /**
-         * Gets the ban duration.
-         *
-         * @return ban duration in seconds or {@link Optional#EMPTY} if
-         * permanent
-         */
-        public OptionalInt getBanDuration() {
-            return this.duration;
-        }
-
-        /**
-         * Gets the ban reason.
-         *
-         * @return ban reason
-         */
-        public String getBanReason() {
-            return this.banReason;
         }
     }
 }
