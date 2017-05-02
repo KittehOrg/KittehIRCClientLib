@@ -17,7 +17,7 @@ import java.util.OptionalInt;
  */
 public class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
     private final String banReason;
-    private final OptionalInt duration;
+    private final OptionalInt banDuration;
 
     /**
      * Constructs the event.
@@ -25,11 +25,13 @@ public class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
      * @param client the client
      * @param originalMessages original messages
      * @param channel the channel
+     * @param banReason ban reason
+     * @param banDuration ban duration
      */
-    public ClearchatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason, @Nonnull OptionalInt duration) {
+    public ClearchatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason, @Nonnull OptionalInt banDuration) {
         super(client, originalMessages, channel);
         this.banReason = banReason;
-        this.duration = duration;
+        this.banDuration = banDuration;
     }
 
     /**
@@ -39,7 +41,7 @@ public class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
      * permanent
      */
     public OptionalInt getBanDuration() {
-        return this.duration;
+        return this.banDuration;
     }
 
     /**
