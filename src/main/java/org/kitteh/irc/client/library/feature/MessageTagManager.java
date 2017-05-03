@@ -47,7 +47,7 @@ public interface MessageTagManager {
          * Constructs a default message tag.
          *
          * @param name tag name
-         * @param value tag value or {@link Optional#EMPTY}
+         * @param value tag value or {@link Optional#empty()}
          */
         public DefaultMessageTag(@Nonnull String name, @Nonnull Optional<String> value) {
             this.name = name;

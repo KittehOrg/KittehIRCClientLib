@@ -19,7 +19,7 @@ public class BanDuration extends MessageTagManager.DefaultMessageTag {
      * Constructs ban reason message tag.
      *
      * @param name tag name
-     * @param value tag value or {@link Optional#EMPTY}
+     * @param value tag value or {@link Optional#empty()}
      * @param duration duration, in seconds, of the ban
      */
     public BanDuration(@Nonnull String name, @Nonnull Optional<String> value, int duration) {

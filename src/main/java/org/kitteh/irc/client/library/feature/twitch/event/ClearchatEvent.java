@@ -37,7 +37,7 @@ public class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
     /**
      * Gets the ban duration.
      *
-     * @return ban duration in seconds or {@link Optional#EMPTY} if
+     * @return ban duration in seconds or {@link Optional#empty()} if
      * permanent
      */
     public OptionalInt getBanDuration() {
