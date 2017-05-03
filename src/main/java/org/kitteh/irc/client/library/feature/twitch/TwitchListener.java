@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 /**
  * Helpful things.
  */
-public class Twitch {
+public class TwitchListener {
     /**
      * Capability to receive JOIN, MODE, NAMES, and PART.
      */
@@ -57,7 +57,7 @@ public class Twitch {
 
     private final Client client;
 
-    public Twitch(@Nonnull Client client) {
+    public TwitchListener(@Nonnull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
         client.getEventManager().registerEventListener(this);
         client.getMessageTagManager().registerTagCreator("ban-duration", CAPABILITY_TAGS, BanDuration.FUNCTION);
