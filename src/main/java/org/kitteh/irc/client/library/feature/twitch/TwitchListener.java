@@ -46,6 +46,11 @@ import java.util.stream.Stream;
  */
 public class TwitchListener {
     /**
+     * Capability to receive commands.
+     */
+    public static final String CAPABILITY_COMMANDS = "twitch.tv/commands";
+
+    /**
      * Capability to receive JOIN, MODE, NAMES, and PART.
      */
     public static final String CAPABILITY_MEMBERSHIP = "twitch.tv/membership";
@@ -66,6 +71,7 @@ public class TwitchListener {
 
     @Handler
     public void capList(@Nonnull CapabilitiesSupportedListEvent event) {
+        event.addRequest(CAPABILITY_COMMANDS);
         event.addRequest(CAPABILITY_MEMBERSHIP);
         event.addRequest(CAPABILITY_TAGS);
         // TODO less aggressive
