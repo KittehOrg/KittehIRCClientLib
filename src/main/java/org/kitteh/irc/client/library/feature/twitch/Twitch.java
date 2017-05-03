@@ -30,11 +30,11 @@ import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
-import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.twitch.event.ClearchatEvent;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -55,77 +55,40 @@ public class Twitch {
      */
     public static final String CAPABILITY_TAGS = "twitch.tv/tags";
 
-    /**
-     * An event listener that will request the membership capability, which
-     * will let the client receive JOIN, MODE, NAMES and PART messages.
-     */
-    public static class MembershipListener {
-        /**
-         * Adds the membership ability
-         *
-         * @param client client gaining this ability
-         */
-        public static void add(@Nonnull Client client) {
-            client.getEventManager().registerEventListener(new MembershipListener());
-        }
+    private final Client client;
 
-        private MembershipListener() {
-        }
-
-        @Handler
-        public void capList(@Nonnull CapabilitiesSupportedListEvent event) {
-            event.addRequest(CAPABILITY_MEMBERSHIP);
-            // TODO less aggressive
-        }
+    public Twitch(@Nonnull Client client) {
+        this.client = Sanity.nullCheck(client, "Client cannot be null");
+        client.getEventManager().registerEventListener(this);
+        client.getMessageTagManager().registerTagCreator("ban-duration", CAPABILITY_TAGS, BanDuration.FUNCTION);
+        client.getMessageTagManager().registerTagCreator("ban-reason", CAPABILITY_TAGS, BanReason.FUNCTION);
     }
 
-    /**
-     * An event listener that will request the tags capability, which will
-     * let the client receive tags and tag-related messages, as well as adds
-     * the appropriate tags to the {@link MessageTagManager}.
-     */
-    public static class TagListener {
-        private final Client client;
+    @Handler
+    public void capList(@Nonnull CapabilitiesSupportedListEvent event) {
+        event.addRequest(CAPABILITY_MEMBERSHIP);
+        event.addRequest(CAPABILITY_TAGS);
+        // TODO less aggressive
+    }
 
-        private TagListener(@Nonnull Client client) {
-            this.client = client;
+    @CommandFilter("CLEARCHAT")
+    @Handler(priority = Integer.MAX_VALUE - 2)
+    public void clearchat(ClientReceiveCommandEvent event) {
+        Optional<MessageTag> reasonTag = event.getMessageTags().stream().filter(tag -> tag instanceof BanReason).findAny();
+        if (!reasonTag.isPresent() || !reasonTag.get().getValue().isPresent()) {
+            throw new KittehServerMessageException(event.getServerMessage(), "No ban reason present in ban");
         }
-
-        /**
-         * Adds support for tags.
-         *
-         * @param client client gaining this ability
-         */
-        public static void add(@Nonnull Client client) {
-            client.getEventManager().registerEventListener(new TagListener(client));
-            client.getMessageTagManager().registerTagCreator("ban-duration", CAPABILITY_TAGS, BanDuration.FUNCTION);
-            client.getMessageTagManager().registerTagCreator("ban-reason", CAPABILITY_TAGS, BanReason.FUNCTION);
+        String reason = reasonTag.get().getValue().get();
+        Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
+        if (!channel.isPresent()) {
+            throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
         }
-
-        @Handler
-        public void capList(@Nonnull CapabilitiesSupportedListEvent event) {
-            event.addRequest(CAPABILITY_TAGS);
-        }
-
-        @CommandFilter("CLEARCHAT")
-        @Handler(priority = Integer.MAX_VALUE - 2)
-        public void clearchat(ClientReceiveCommandEvent event) {
-            Optional<MessageTag> reasonTag = event.getMessageTags().stream().filter(tag -> tag instanceof BanReason).findAny();
-            if (!reasonTag.isPresent() || !reasonTag.get().getValue().isPresent()) {
-                throw new KittehServerMessageException(event.getServerMessage(), "No ban reason present in ban");
-            }
-            String reason = reasonTag.get().getValue().get();
-            Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
-            if (!channel.isPresent()) {
-                throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
-            }
-            Optional<MessageTag> durationTag = event.getMessageTags().stream().filter(tag -> tag instanceof BanDuration).findAny();
-            OptionalInt duration = durationTag
-                    .map(Stream::of)
-                    .orElseGet(Stream::empty)
-                    .mapToInt(tag -> ((BanDuration) tag).getDuration())
-                    .findFirst();
-            this.client.getEventManager().callEvent(new ClearchatEvent(this.client, event.getOriginalMessages(), channel.get(), reason, duration));
-        }
+        Optional<MessageTag> durationTag = event.getMessageTags().stream().filter(tag -> tag instanceof BanDuration).findAny();
+        OptionalInt duration = durationTag
+                .map(Stream::of)
+                .orElseGet(Stream::empty)
+                .mapToInt(tag -> ((BanDuration) tag).getDuration())
+                .findFirst();
+        this.client.getEventManager().callEvent(new ClearchatEvent(this.client, event.getOriginalMessages(), channel.get(), reason, duration));
     }
 }
