@@ -34,7 +34,13 @@ import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.twitch.event.ClearchatEvent;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.Color;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.EmoteSets;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.MsgId;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.UserId;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.UserType;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -68,7 +74,13 @@ public class TwitchListener {
         client.getEventManager().registerEventListener(this);
         client.getMessageTagManager().registerTagCreator("ban-duration", CAPABILITY_TAGS, BanDuration.FUNCTION);
         client.getMessageTagManager().registerTagCreator("ban-reason", CAPABILITY_TAGS, BanReason.FUNCTION);
+        client.getMessageTagManager().registerTagCreator("color", CAPABILITY_TAGS, Color.FUNCTION);
+        client.getMessageTagManager().registerTagCreator("display-name", CAPABILITY_TAGS, DisplayName.FUNCTION);
+        client.getMessageTagManager().registerTagCreator("emote-sets", CAPABILITY_TAGS, EmoteSets.FUNCTION);
         client.getMessageTagManager().registerTagCreator("msg-id", CAPABILITY_TAGS, MsgId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator("turbo", CAPABILITY_TAGS, Turbo.FUNCTION);
+        client.getMessageTagManager().registerTagCreator("user-id", CAPABILITY_TAGS, UserId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator("user-type", CAPABILITY_TAGS, UserType.FUNCTION);
     }
 
     @Handler

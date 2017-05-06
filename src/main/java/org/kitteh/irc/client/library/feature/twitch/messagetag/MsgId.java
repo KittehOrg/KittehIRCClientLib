@@ -39,7 +39,10 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
     /**
      * Known msg id values, according to Twitch documentation.
      */
-    public static class KnownIds {
+    public static final class KnownValues {
+        private KnownValues() {
+        }
+
         /**
          * <user> is already banned in this room.
          */
