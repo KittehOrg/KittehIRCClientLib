@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.feature.twitch;
 
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
@@ -45,8 +46,10 @@ import org.kitteh.irc.client.library.feature.twitch.messagetag.UserType;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -86,10 +89,16 @@ public class TwitchListener {
 
     @Handler
     public void capList(@Nonnull CapabilitiesSupportedListEvent event) {
-        event.addRequest(CAPABILITY_COMMANDS);
-        event.addRequest(CAPABILITY_MEMBERSHIP);
-        event.addRequest(CAPABILITY_TAGS);
-        // TODO less aggressive
+        List<String> already = this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList());
+        if (!already.contains(CAPABILITY_COMMANDS)) {
+            event.addRequest(CAPABILITY_COMMANDS);
+        }
+        if (!already.contains(CAPABILITY_MEMBERSHIP)) {
+            event.addRequest(CAPABILITY_MEMBERSHIP);
+        }
+        if (!already.contains(CAPABILITY_TAGS)) {
+            event.addRequest(CAPABILITY_TAGS);
+        }
     }
 
     @CommandFilter("CLEARCHAT")
