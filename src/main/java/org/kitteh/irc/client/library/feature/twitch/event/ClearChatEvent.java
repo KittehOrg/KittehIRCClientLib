@@ -38,7 +38,7 @@ import java.util.OptionalInt;
  * An event for when Twitch sends a CLEARCHAT message meaning a ban has
  * happened.
  */
-public class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
+public class ClearChatEvent extends ChannelEventBase implements ChannelEvent {
     private final String banReason;
     private final OptionalInt banDuration;
 
@@ -51,7 +51,7 @@ public class ClearchatEvent extends ChannelEventBase implements ChannelEvent {
      * @param banReason ban reason
      * @param banDuration ban duration
      */
-    public ClearchatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason, @Nonnull OptionalInt banDuration) {
+    public ClearChatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull String banReason, @Nonnull OptionalInt banDuration) {
         super(client, originalMessages, channel);
         this.banReason = banReason;
         this.banDuration = banDuration;
