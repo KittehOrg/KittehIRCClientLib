@@ -23,8 +23,11 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.kitteh.irc.client.library.util.Sanity;
+
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents a message sent by the server.
@@ -71,4 +74,31 @@ public interface ServerMessage {
      */
     @Nonnull
     List<MessageTag> getTags();
+
+    /**
+     * Gets the named tag if present
+     *
+     * @param name tag name
+     * @return tag if present
+     */
+    default Optional<MessageTag> getTag(@Nonnull String name) {
+        return this.getTags().stream().filter(tag -> tag.getName().equals(Sanity.nullCheck(name, "Name cannot be null"))).findAny();
+    }
+
+    /**
+     * Gets the named message tag if present and if of the specified type.
+     *
+     * @param name message tag name
+     * @param clazz message tag type
+     * @param <Tag> message tag type
+     * @return message tag if present
+     */
+    @Nonnull
+    default <Tag extends MessageTag> Optional<Tag> getTag(@Nonnull String name, @Nonnull Class<Tag> clazz) {
+        return this.getTags().stream()
+                .filter(tag -> tag.getName().equals(Sanity.nullCheck(name, "Name cannot be null")))
+                .filter(tag -> Sanity.nullCheck(clazz, "Class cannot be null").isInstance(tag))
+                .map(tag -> (Tag) tag)
+                .findAny();
+    }
 }

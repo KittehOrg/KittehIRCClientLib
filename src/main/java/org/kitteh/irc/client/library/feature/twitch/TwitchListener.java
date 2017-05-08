@@ -31,7 +31,8 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedLis
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
-import org.kitteh.irc.client.library.feature.twitch.event.ClearchatEvent;
+import org.kitteh.irc.client.library.feature.twitch.event.ClearChatEvent;
+import org.kitteh.irc.client.library.feature.twitch.event.GlobalUserStateEvent;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.Color;
@@ -93,7 +94,7 @@ public class TwitchListener {
 
     @CommandFilter("CLEARCHAT")
     @Handler(priority = Integer.MAX_VALUE - 2)
-    public void clearchat(ClientReceiveCommandEvent event) {
+    public void clearChat(ClientReceiveCommandEvent event) {
         Optional<MessageTag> reasonTag = event.getMessageTags().stream().filter(tag -> tag instanceof BanReason).findAny();
         if (!reasonTag.isPresent() || !reasonTag.get().getValue().isPresent()) {
             throw new KittehServerMessageException(event.getServerMessage(), "No ban reason present in ban");
@@ -109,6 +110,12 @@ public class TwitchListener {
                 .orElseGet(Stream::empty)
                 .mapToInt(tag -> ((BanDuration) tag).getDuration())
                 .findFirst();
-        this.client.getEventManager().callEvent(new ClearchatEvent(this.client, event.getOriginalMessages(), channel.get(), reason, duration));
+        this.client.getEventManager().callEvent(new ClearChatEvent(this.client, event.getOriginalMessages(), channel.get(), reason, duration));
+    }
+
+    @CommandFilter("GLOBALUSERSTATE")
+    @Handler(priority = Integer.MAX_VALUE - 2)
+    public void globalUserState(ClientReceiveCommandEvent event) {
+        this.client.getEventManager().callEvent(new GlobalUserStateEvent(this.client, event.getOriginalMessages()));
     }
 }
