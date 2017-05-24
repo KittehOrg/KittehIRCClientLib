@@ -34,6 +34,9 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.twitch.event.ClearChatEvent;
 import org.kitteh.irc.client.library.feature.twitch.event.GlobalUserStateEvent;
+import org.kitteh.irc.client.library.feature.twitch.event.RoomStateEvent;
+import org.kitteh.irc.client.library.feature.twitch.event.UserNoticeEvent;
+import org.kitteh.irc.client.library.feature.twitch.event.UserStateEvent;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.Color;
@@ -125,5 +128,39 @@ public class TwitchListener {
     @Handler(priority = Integer.MAX_VALUE - 2)
     public void globalUserState(ClientReceiveCommandEvent event) {
         this.client.getEventManager().callEvent(new GlobalUserStateEvent(this.client, event.getOriginalMessages()));
+    }
+
+    @CommandFilter("ROOMSTATE")
+    @Handler(priority = Integer.MAX_VALUE - 2)
+    public void roomState(ClientReceiveCommandEvent event) {
+        Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
+        if (!channel.isPresent()) {
+            throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
+        }
+        this.client.getEventManager().callEvent(new RoomStateEvent(this.client, event.getOriginalMessages(), channel.get()));
+    }
+
+    @CommandFilter("USERNOTICE")
+    @Handler(priority = Integer.MAX_VALUE - 2)
+    public void userNotice(ClientReceiveCommandEvent event) {
+        Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
+        if (!channel.isPresent()) {
+            throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
+        }
+        String message = null;
+        if (event.getParameters().size() > 1) {
+            message = event.getParameters().get(1);
+        }
+        this.client.getEventManager().callEvent(new UserNoticeEvent(this.client, event.getOriginalMessages(), channel.get(), message));
+    }
+
+    @CommandFilter("USERSTATE")
+    @Handler(priority = Integer.MAX_VALUE - 2)
+    public void userState(ClientReceiveCommandEvent event) {
+        Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
+        if (!channel.isPresent()) {
+            throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
+        }
+        this.client.getEventManager().callEvent(new UserStateEvent(this.client, event.getOriginalMessages(), channel.get()));
     }
 }
