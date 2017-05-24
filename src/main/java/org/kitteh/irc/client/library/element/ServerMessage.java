@@ -82,7 +82,8 @@ public interface ServerMessage {
      * @return tag if present
      */
     default Optional<MessageTag> getTag(@Nonnull String name) {
-        return this.getTags().stream().filter(tag -> tag.getName().equals(Sanity.nullCheck(name, "Name cannot be null"))).findAny();
+        Sanity.nullCheck(name, "Name cannot be null");
+        return this.getTags().stream().filter(tag -> tag.getName().equals(name)).findAny();
     }
 
     /**
@@ -95,9 +96,11 @@ public interface ServerMessage {
      */
     @Nonnull
     default <Tag extends MessageTag> Optional<Tag> getTag(@Nonnull String name, @Nonnull Class<Tag> clazz) {
+        Sanity.nullCheck(name, "Name cannot be null");
+        Sanity.nullCheck(clazz, "Class cannot be null");
         return this.getTags().stream()
-                .filter(tag -> tag.getName().equals(Sanity.nullCheck(name, "Name cannot be null")))
-                .filter(tag -> Sanity.nullCheck(clazz, "Class cannot be null").isInstance(tag))
+                .filter(tag -> tag.getName().equals(name))
+                .filter(clazz::isInstance)
                 .map(tag -> (Tag) tag)
                 .findAny();
     }

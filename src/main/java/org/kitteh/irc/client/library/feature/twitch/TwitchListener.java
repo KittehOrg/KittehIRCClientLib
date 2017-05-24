@@ -75,7 +75,6 @@ public class TwitchListener {
 
     public TwitchListener(@Nonnull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
-        client.getEventManager().registerEventListener(this);
         client.getMessageTagManager().registerTagCreator("ban-duration", CAPABILITY_TAGS, BanDuration.FUNCTION);
         client.getMessageTagManager().registerTagCreator("ban-reason", CAPABILITY_TAGS, BanReason.FUNCTION);
         client.getMessageTagManager().registerTagCreator("color", CAPABILITY_TAGS, Color.FUNCTION);
