@@ -131,7 +131,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
     public Badges(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
         if (!value.isPresent()) {
-            this.badges = Collections.unmodifiableList(new ArrayList<>());
+            this.badges = Collections.emptyList();
         } else {
             List<Badge> badges = new ArrayList<>();
             String[] badgesSplit = value.get().split(",");
