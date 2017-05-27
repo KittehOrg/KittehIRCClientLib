@@ -33,6 +33,11 @@ import java.util.List;
 
 /**
  * An event for when Twitch sends a ROOMSTATE message.
+ *
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.BroadcasterLang
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.R9k
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Slow
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.SubsOnly
  */
 public class RoomStateEvent extends ChannelEventBase implements SingleMessageEvent {
     /**

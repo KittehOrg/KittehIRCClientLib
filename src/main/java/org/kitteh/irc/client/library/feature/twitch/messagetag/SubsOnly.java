@@ -21,34 +21,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.twitch.event;
+package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Optional;
 
 /**
- * An event for when Twitch sends a GLOBALUSERSTATE message on successful
- * login.
- *
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Color
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.EmoteSets
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserId
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
+ * Indicates chatting is for subscribers only.
  */
-public class GlobalUserStateEvent extends ServerMessageEventBase implements SingleMessageEvent {
+public class SubsOnly extends MessageTagManager.DefaultMessageTag {
+    public static final TriFunction<Client, String, Optional<String>, SubsOnly> FUNCTION = (client, name, value) -> new SubsOnly(name, value);
+
     /**
-     * Constructs the event.
-     *
-     * @param client the client
-     * @param originalMessages original messages
+     * Known subs-only states.
      */
-    public GlobalUserStateEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
-        super(client, originalMessages);
+    public static final class KnownValues {
+        private KnownValues() {
+        }
+
+        /**
+         * Disabled.
+         */
+        public static final String DISABLED = "0";
+
+        /**
+         * Enabled.
+         */
+        public static final String ENABLED = "1";
+    }
+
+    /**
+     * Constructs the message tag.
+     *
+     * @param name tag name
+     * @param value tag value or {@link Optional#empty()}
+     */
+    public SubsOnly(@Nonnull String name, @Nonnull Optional<String> value) {
+        super(name, value);
     }
 }

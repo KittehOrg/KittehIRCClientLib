@@ -21,34 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.twitch.event;
+package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Optional;
 
 /**
- * An event for when Twitch sends a GLOBALUSERSTATE message on successful
- * login.
- *
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Color
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.EmoteSets
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserId
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
+ * Message tag broadcaster language.
  */
-public class GlobalUserStateEvent extends ServerMessageEventBase implements SingleMessageEvent {
+public class BroadcasterLang extends MessageTagManager.DefaultMessageTag {
+    public static final TriFunction<Client, String, Optional<String>, BroadcasterLang> FUNCTION = (client, name, value) -> new BroadcasterLang(name, value);
+
     /**
-     * Constructs the event.
+     * Constructs the message tag.
      *
-     * @param client the client
-     * @param originalMessages original messages
+     * @param name tag name
+     * @param value tag value or {@link Optional#empty()}
      */
-    public GlobalUserStateEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
-        super(client, originalMessages);
+    public BroadcasterLang(@Nonnull String name, @Nonnull Optional<String> value) {
+        super(name, value);
     }
 }

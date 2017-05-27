@@ -21,34 +21,41 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.twitch.event;
+package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Optional;
 
 /**
- * An event for when Twitch sends a GLOBALUSERSTATE message on successful
- * login.
- *
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Color
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.EmoteSets
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserId
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
+ * Message tag slow, indicating non-moderators have to wait between messages.
  */
-public class GlobalUserStateEvent extends ServerMessageEventBase implements SingleMessageEvent {
+public class Slow extends MessageTagManager.DefaultMessageTag {
+    public static final TriFunction<Client, String, Optional<String>, Slow> FUNCTION = (client, name, value) -> new Slow(name, value, Integer.parseInt(value.get()));
+
+    private final int delay;
+
     /**
-     * Constructs the event.
+     * Constructs the message tag.
      *
-     * @param client the client
-     * @param originalMessages original messages
+     * @param name tag name
+     * @param value tag value or {@link Optional#empty()}
+     * @param delay delay between messages
      */
-    public GlobalUserStateEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
-        super(client, originalMessages);
+    public Slow(@Nonnull String name, @Nonnull Optional<String> value, int delay) {
+        super(name, value);
+        this.delay = delay;
+    }
+
+    /**
+     * Gets the delay between messages.
+     *
+     * @return time, in seconds, chatters have to wait
+     */
+    public int getDelay() {
+        return this.delay;
     }
 }
