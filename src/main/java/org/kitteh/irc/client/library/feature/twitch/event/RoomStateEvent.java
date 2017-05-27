@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * An event for when Twitch sends a ROOMSTATE message.
  */
-public class RoomStateEvent extends ChannelEventBase {
+public class RoomStateEvent extends ChannelEventBase implements SingleMessageEvent {
     /**
      * Constructs the event.
      *

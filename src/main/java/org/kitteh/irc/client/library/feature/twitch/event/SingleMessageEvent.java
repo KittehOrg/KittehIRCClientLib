@@ -23,30 +23,47 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.event;
 
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
+import org.kitteh.irc.client.library.event.helper.ServerMessageEvent;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Optional;
 
 /**
- * An event for when Twitch sends a CLEARCHAT message meaning a ban has
- * happened.
- *
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason
+ * Twitch events are single message, and this lets you get their tags.
  */
-public class ClearChatEvent extends ChannelEventBase implements SingleMessageEvent {
+public interface SingleMessageEvent extends ServerMessageEvent {
     /**
-     * Constructs the event.
+     * Gets the message.
      *
-     * @param client the client
-     * @param originalMessages original messages
-     * @param channel the channel
+     * @return message
      */
-    public ClearChatEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel) {
-        super(client, originalMessages, channel);
+    default ServerMessage getOriginalMessage() {
+        return this.getOriginalMessages().get(1);
+    }
+
+    /**
+     * Gets the named tag if present
+     *
+     * @param name tag name
+     * @return tag if present
+     */
+    @Nonnull
+    default Optional<MessageTag> getTag(@Nonnull String name) {
+        return this.getOriginalMessage().getTag(name);
+    }
+
+    /**
+     * Gets the named message tag if present and if of the specified type.
+     *
+     * @param name message tag name
+     * @param clazz message tag type
+     * @param <Tag> message tag type
+     * @return message tag if present
+     */
+    @Nonnull
+    default <Tag extends MessageTag> Optional<Tag> getTag(@Nonnull String name, @Nonnull Class<Tag> clazz) {
+        return this.getOriginalMessage().getTag(name, clazz);
     }
 }

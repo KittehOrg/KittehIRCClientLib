@@ -34,7 +34,7 @@ import java.util.List;
  * An event for when Twitch sends a GLOBALUSERSTATE message on successful
  * login.
  */
-public class GlobalUserStateEvent extends ServerMessageEventBase {
+public class GlobalUserStateEvent extends ServerMessageEventBase implements SingleMessageEvent {
     /**
      * Constructs the event.
      *

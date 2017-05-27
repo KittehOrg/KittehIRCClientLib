@@ -37,7 +37,7 @@ import java.util.Optional;
  * An event for when Twitch sends a USERNOTICE message, which is when a user
  * subscribes or re-subscribes.
  */
-public class UserNoticeEvent extends ChannelEventBase {
+public class UserNoticeEvent extends ChannelEventBase implements SingleMessageEvent {
     private final Optional<String> message;
 
     /**

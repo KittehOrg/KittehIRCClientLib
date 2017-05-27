@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * An event for when Twitch sends a USERSTATE message.
  */
-public class UserStateEvent extends ChannelEventBase {
+public class UserStateEvent extends ChannelEventBase implements SingleMessageEvent {
     /**
      * Constructs the event.
      *
