@@ -21,36 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.twitch.event;
+package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Optional;
 
 /**
- * An event for when Twitch sends a USERSTATE message.
- *
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Color
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Emotes
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Mod
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Subscriber
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
+ * Message tag user.
  */
-public class UserStateEvent extends ChannelEventBase implements SingleMessageEvent {
+public class User extends MessageTagManager.DefaultMessageTag {
+    public static final TriFunction<Client, String, Optional<String>, User> FUNCTION = (client, name, value) -> new User(name, value);
+
     /**
-     * Constructs the event.
+     * Constructs the message tag.
      *
-     * @param client the client
-     * @param originalMessages original messages
-     * @param channel the channel
+     * @param name tag name
+     * @param value tag value or {@link Optional#empty()}
      */
-    public UserStateEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel) {
-        super(client, originalMessages, channel);
+    public User(@Nonnull String name, @Nonnull Optional<String> value) {
+        super(name, value);
     }
 }

@@ -21,36 +21,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.twitch.event;
+package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Optional;
 
 /**
- * An event for when Twitch sends a USERSTATE message.
- *
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Color
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Emotes
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Mod
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Subscriber
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo
- * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
+ * User has a subscriber badge or not.
  */
-public class UserStateEvent extends ChannelEventBase implements SingleMessageEvent {
+public class Subscriber extends MessageTagManager.DefaultMessageTag {
+    public static final TriFunction<Client, String, Optional<String>, Subscriber> FUNCTION = (client, name, value) -> new Subscriber(name, value);
+
     /**
-     * Constructs the event.
-     *
-     * @param client the client
-     * @param originalMessages original messages
-     * @param channel the channel
+     * Known subscriber badge states.
      */
-    public UserStateEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel) {
-        super(client, originalMessages, channel);
+    public static final class KnownValues {
+        private KnownValues() {
+        }
+
+        /**
+         * User has no subscriber badge.
+         */
+        public static final String NO_BADGE = "0";
+
+        /**
+         * User has a subscriber badge.
+         */
+        public static final String BADGE = "1";
+    }
+
+    /**
+     * Constructs the message tag.
+     *
+     * @param name tag name
+     * @param value tag value or {@link Optional#empty()}
+     */
+    public Subscriber(@Nonnull String name, @Nonnull Optional<String> value) {
+        super(name, value);
     }
 }

@@ -36,6 +36,23 @@ import java.util.Optional;
 /**
  * An event for when Twitch sends a USERNOTICE message, which is when a user
  * subscribes or re-subscribes.
+ *
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Badges
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Color
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Emotes
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Mod
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgId
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamMonths
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamSubPlan
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamSubPlanName
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.RoomId
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Subscriber
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.SystemMsg
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.User
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserId
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
  */
 public class UserNoticeEvent extends ChannelEventBase implements SingleMessageEvent {
     private final Optional<String> message;
