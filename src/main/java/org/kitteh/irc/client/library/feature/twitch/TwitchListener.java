@@ -90,30 +90,30 @@ public class TwitchListener {
 
     public TwitchListener(@Nonnull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
-        client.getMessageTagManager().registerTagCreator("badges", CAPABILITY_TAGS, Badges.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("ban-duration", CAPABILITY_TAGS, BanDuration.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("ban-reason", CAPABILITY_TAGS, BanReason.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("broadcaster-lang", CAPABILITY_TAGS, BroadcasterLang.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("color", CAPABILITY_TAGS, Color.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("display-name", CAPABILITY_TAGS, DisplayName.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("emotes", CAPABILITY_TAGS, Emotes.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("emote-sets", CAPABILITY_TAGS, EmoteSets.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("id", CAPABILITY_TAGS, Id.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("msg-id", CAPABILITY_TAGS, MsgId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("msg-param-months", CAPABILITY_TAGS, MsgParamMonths.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("msg-param-sub-plan", CAPABILITY_TAGS, MsgParamSubPlan.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("msg-param-sub-plan-name", CAPABILITY_TAGS, MsgParamSubPlanName.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("mod", CAPABILITY_TAGS, Mod.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("r9k", CAPABILITY_TAGS, R9k.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("room-id", CAPABILITY_TAGS, RoomId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("slow", CAPABILITY_TAGS, Slow.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("subs-only", CAPABILITY_TAGS, SubsOnly.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("subscriber", CAPABILITY_TAGS, Subscriber.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("system-msg", CAPABILITY_TAGS, SystemMsg.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("turbo", CAPABILITY_TAGS, Turbo.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("user", CAPABILITY_TAGS, User.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("user-id", CAPABILITY_TAGS, UserId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator("user-type", CAPABILITY_TAGS, UserType.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "badges", Badges.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "ban-duration", BanDuration.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "ban-reason", BanReason.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "broadcaster-lang", BroadcasterLang.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "color", Color.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "display-name", DisplayName.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "emotes", Emotes.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "emote-sets", EmoteSets.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "id", Id.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "msg-id", MsgId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "msg-param-months", MsgParamMonths.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "msg-param-sub-plan", MsgParamSubPlan.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "msg-param-sub-plan-name", MsgParamSubPlanName.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "mod", Mod.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "r9k", R9k.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "room-id", RoomId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "slow", Slow.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "subs-only", SubsOnly.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "subscriber", Subscriber.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "system-msg", SystemMsg.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "turbo", Turbo.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "user", User.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "user-id", UserId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, "user-type", UserType.FUNCTION);
     }
 
     @Handler
