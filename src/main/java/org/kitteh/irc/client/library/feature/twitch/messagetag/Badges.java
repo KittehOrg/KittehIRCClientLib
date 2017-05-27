@@ -132,21 +132,22 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
         super(name, value);
         if (!value.isPresent()) {
             this.badges = Collections.unmodifiableList(new ArrayList<>());
-            return;
-        }
-        List<Badge> badges = new ArrayList<>();
-        String[] badgesSplit = value.get().split(",");
-        for (String badgeInfo : badgesSplit) {
-            String[] split = badgeInfo.split("/");
-            String version;
-            if (split.length > 1) {
-                version = split[1];
-            } else {
-                version = "";
+        } else {
+            List<Badge> badges = new ArrayList<>();
+            String[] badgesSplit = value.get().split(",");
+            for (String badgeInfo : badgesSplit) {
+                String[] split = badgeInfo.split("/");
+                String version;
+                if (split.length > 1) {
+                    version = split[1];
+                } else {
+                    version = "";
+                }
+                badges.add(new Badge(split[0], version));
             }
-            badges.add(new Badge(split[0], version));
+
+            this.badges = Collections.unmodifiableList(badges);
         }
-        this.badges = Collections.unmodifiableList(badges);
     }
 
     /**

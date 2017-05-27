@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -51,11 +50,7 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
      */
     public EmoteSets(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
-        if (!value.isPresent()) {
-            this.emoteSets = Collections.unmodifiableList(new ArrayList<>());
-            return;
-        }
-        this.emoteSets = Collections.unmodifiableList(Arrays.stream(value.get().split(",")).map(Integer::valueOf).collect(Collectors.toList()));
+        this.emoteSets = value.map(string -> Collections.unmodifiableList(Arrays.stream(value.get().split(",")).map(Integer::valueOf).collect(Collectors.toList()))).orElse(Collections.emptyList());
     }
 
     /**
