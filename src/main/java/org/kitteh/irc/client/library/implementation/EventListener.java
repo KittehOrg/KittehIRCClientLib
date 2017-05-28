@@ -93,6 +93,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
+import org.kitteh.irc.client.library.feature.twitch.TwitchListener;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -131,6 +132,7 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void version(ClientReceiveNumericEvent event) {
         this.client.resetServerInfo();
+        boolean isTwitch = this.client.getEventManager().getRegisteredEventListeners().stream().anyMatch(listener -> (listener instanceof TwitchListener));
         if (event.getParameters().size() > 1) {
             this.client.getServerInfo().setAddress(event.getParameters().get(1));
             if (event.getParameters().size() > 2) {
@@ -144,13 +146,15 @@ class EventListener {
                 } else {
                     this.trackException(event, "Server user modes missing");
                 }
-            } else {
+            } else if (!isTwitch) {
                 this.trackException(event, "Server version and user modes missing");
             }
         } else {
             this.trackException(event, "Server address, version, and user modes missing");
         }
-        this.client.sendRawLineImmediately("WHOIS " + this.client.getNick());
+        if (!isTwitch) {
+            this.client.sendRawLineImmediately("WHOIS " + this.client.getNick());
+        }
         this.fire(new ClientConnectedEvent(this.client, event.getActor(), this.client.getServerInfo()));
         this.client.startSending();
     }
