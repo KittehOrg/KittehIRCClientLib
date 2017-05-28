@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
@@ -51,6 +52,8 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     private int bindPort;
     private String serverHost;
     private int serverPort = DEFAULT_SERVER_PORT;
+    @Nullable
+    private Function<Client, EventManager> eventManagerFunction;
 
     ClientBuilder() {
         this.config = new Config();
@@ -81,6 +84,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public ClientBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
         this.config.set(Config.DEFAULT_MESSAGE_MAP, defaultMessageMap);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder eventManager(@Nonnull Function<Client, EventManager> function) {
+        this.eventManagerFunction = Sanity.nullCheck(function, "Function cannot be null");
         return this;
     }
 
@@ -268,7 +278,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
         }
 
         this.updateInetEntries();
-        IRCClient client = new IRCClient(this.config.clone());
+        IRCClient client = new IRCClient(this.config.clone(), this.eventManagerFunction);
         if (this.after != null) {
             this.after.accept(client);
         }

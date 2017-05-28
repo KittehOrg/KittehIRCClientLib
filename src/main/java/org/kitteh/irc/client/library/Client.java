@@ -128,6 +128,16 @@ public interface Client {
         Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
 
         /**
+         * Sets the event manager function.
+         *
+         * @param function event manager function
+         * @return this builder
+         * @see EventManager
+         */
+        @Nonnull
+        Builder eventManager(@Nonnull Function<Client, EventManager> function);
+
+        /**
          * Sets a listener for all thrown exceptions on this client. By default,
          * a consumer exists which calls Throwable#printStackTrace() on all
          * received exceptions.
