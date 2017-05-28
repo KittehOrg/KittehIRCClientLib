@@ -40,7 +40,7 @@
     </developers>
 
     <issueManagement>
-        <system>Github</system>
+        <system>GitHub</system>
         <url>https://github.com/KittehOrg/KittehIRCClientLib/issues</url>
     </issueManagement>
 
