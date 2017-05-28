@@ -17,4 +17,7 @@ org.kitteh.irc.client.library.feature.defaultmessage
 org.kitteh.irc.client.library.feature.filter
 org.kitteh.irc.client.library.feature.sending
 org.kitteh.irc.client.library.feature.sts
+org.kitteh.irc.client.library.feature.twitch
+org.kitteh.irc.client.library.feature.twitch.event
+org.kitteh.irc.client.library.feature.twitch.messagetag
 org.kitteh.irc.client.library.util
