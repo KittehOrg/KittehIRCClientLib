@@ -560,7 +560,7 @@ class EventListener {
             }
             Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
             if (channelMode.isPresent()) {
-                infoList.add(new ModeData.IRCModeInfo(this.client, channel.snapshot(), channelMode.get(), event.getParameters().get((2 + offset)), Optional.ofNullable(creator), Optional.ofNullable(creationTime)));
+                infoList.add(new ModeInfo.DefaultModeInfo(this.client, channel.snapshot(), channelMode.get(), event.getParameters().get((2 + offset)), Optional.ofNullable(creator), Optional.ofNullable(creationTime)));
             } else {
                 this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
             }
@@ -1033,7 +1033,7 @@ class EventListener {
             }
             Channel channelSnapshot = channel.snapshot();
             this.fire(new ChannelModeEvent(this.client, event.getOriginalMessages(), event.getActor(), channelSnapshot, statusList));
-            statusList.getStatuses().stream().filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK).forEach(status -> channel.trackModeInfo(status.isSetting(), new ModeData.IRCModeInfo(this.client, channelSnapshot, status.getMode(), status.getParameter().get(), Optional.of(event.getActor().getName()), Optional.of(Instant.now()))));
+            statusList.getStatuses().stream().filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK).forEach(status -> channel.trackModeInfo(status.isSetting(), new ModeInfo.DefaultModeInfo(this.client, channelSnapshot, status.getMode(), status.getParameter().get(), Optional.of(event.getActor().getName()), Optional.of(Instant.now()))));
             channel.updateChannelModes(statusList);
         } else {
             this.trackException(event, "MODE message sent for invalid target");
