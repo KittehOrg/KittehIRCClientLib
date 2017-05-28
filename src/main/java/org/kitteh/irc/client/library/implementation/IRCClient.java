@@ -171,7 +171,7 @@ final class IRCClient extends InternalClient {
 
     private final AuthManager authManager = new ManagerAuth(this);
     private final ManagerCapability capabilityManager = new ManagerCapability(this);
-    private final EventManager eventManager = new ManagerEvent(this);
+    private final EventManager eventManager;
     private final ManagerISupport iSupportManager = new ManagerISupport(this);
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
 
@@ -192,8 +192,9 @@ final class IRCClient extends InternalClient {
     private MessageSendingQueue messageSendingScheduled;
     private final Object messageSendingLock = new Object();
 
-    IRCClient(@Nonnull Config config) {
+    IRCClient(@Nonnull Config config, @Nullable Function<Client, EventManager> eventManagerFunction) {
         this.config = config;
+        this.eventManager = eventManagerFunction != null ? eventManagerFunction.apply(this) : new ManagerEvent(this);
 
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
