@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
 import org.kitteh.irc.client.library.feature.auth.element.EventListening;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
 import org.mockito.Mockito;
 
 import javax.annotation.Nonnull;
@@ -20,7 +21,7 @@ public class AuthManagerTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFailureWithNullProtocol() {
         Client client = new FakeClient();
-        ManagerAuth sut = new ManagerAuth(client);
+        DefaultAuthManager sut = new DefaultAuthManager(client);
         sut.addProtocol(null);
     }
 
@@ -30,7 +31,7 @@ public class AuthManagerTest {
     @Test
     public void testAddProtocolManagementMethods() {
         final Client client = new FakeClient();
-        ManagerAuth sut = new ManagerAuth(client);
+        DefaultAuthManager sut = new DefaultAuthManager(client);
         final AuthProtocol ap = new AuthProtocol() {
             @Nonnull
             @Override
@@ -58,7 +59,7 @@ public class AuthManagerTest {
     @Test
     public void testAddProtocolOfSameTypeMethods() {
         final Client client = new FakeClient();
-        ManagerAuth sut = new ManagerAuth(client);
+        DefaultAuthManager sut = new DefaultAuthManager(client);
         StubAuthProtocol stub1 = new StubAuthProtocol();
         sut.addProtocol(stub1);
         StubAuthProtocol stub2 = new StubAuthProtocol();
@@ -86,7 +87,7 @@ public class AuthManagerTest {
     @Test
     public void testEventListeningAuthProtocol() {
         final Client client = new FakeClient();
-        ManagerAuth sut = new ManagerAuth(client);
+        DefaultAuthManager sut = new DefaultAuthManager(client);
         final StubAuthProtocol stub = new StubAuthProtocol();
         sut.addProtocol(stub);
         sut.removeProtocol(stub);

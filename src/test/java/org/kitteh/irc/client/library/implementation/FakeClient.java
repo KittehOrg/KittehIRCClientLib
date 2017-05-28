@@ -8,6 +8,7 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
@@ -26,7 +27,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 class FakeClient extends InternalClient {
-    private final AuthManager authManager = new ManagerAuth(this);
+    private final AuthManager authManager = new DefaultAuthManager(this);
     private final ManagerCapability capabilityManager = new ManagerCapability(this);
     private final Config config = new Config();
     private final EventManager eventManager = new ManagerEvent(this);

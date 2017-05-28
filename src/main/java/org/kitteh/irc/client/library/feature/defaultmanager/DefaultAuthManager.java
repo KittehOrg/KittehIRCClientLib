@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.feature.defaultmanager;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.AuthManager;
@@ -38,11 +38,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-final class ManagerAuth implements AuthManager {
+/**
+ * Default implementation of {@link AuthManager}.
+ */
+public class DefaultAuthManager implements AuthManager {
     private final Client client;
     private final Set<AuthProtocol> protocols = new HashSet<>();
 
-    ManagerAuth(@Nonnull Client client) {
+    /**
+     * Constructs the AuthManager.
+     *
+     * @param client client for which this manager will operate
+     */
+    public DefaultAuthManager(@Nonnull Client client) {
         this.client = client;
     }
 

@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Things to make life lovely!
+ * Defaults!
  */
-package org.kitteh.irc.client.library.feature;
+package org.kitteh.irc.client.library.feature.defaultmanager;
