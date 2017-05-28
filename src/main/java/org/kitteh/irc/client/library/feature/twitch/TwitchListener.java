@@ -39,6 +39,7 @@ import org.kitteh.irc.client.library.feature.twitch.event.UserStateEvent;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.Badges;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason;
+import org.kitteh.irc.client.library.feature.twitch.messagetag.Bits;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BroadcasterLang;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.Color;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName;
@@ -98,6 +99,7 @@ public class TwitchListener {
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Badges.NAME, Badges.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BanDuration.NAME, BanDuration.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BanReason.NAME, BanReason.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Bits.NAME, Bits.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BroadcasterLang.NAME, BroadcasterLang.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Color.NAME, Color.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, DisplayName.NAME, DisplayName.FUNCTION);
