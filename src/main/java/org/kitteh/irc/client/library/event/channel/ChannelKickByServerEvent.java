@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
@@ -37,13 +38,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A {@link User} has kicked another User!
+ * A {@link User} has kicked!
  *
- * @see ChannelKickByServerEvent ChannelKickByServerEvent temporarily allows
- * for getting when the server kicks rather than just a User. Will be removed
- * in release 4.0.0 when this class will be changed to support all Actors.
+ * @deprecated to be removed in 4.0.0 when {@link ChannelKickEvent} supports
+ * more than users kicking.
  */
-public class ChannelKickEvent extends ActorChannelMessageEventBase<User> implements ChannelUserListChangeEvent {
+@Deprecated
+public class ChannelKickByServerEvent extends ActorChannelMessageEventBase<Actor> implements ChannelUserListChangeEvent {
     private final User target;
 
     /**
@@ -52,12 +53,13 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<User> impleme
      * @param client client for which this is occurring
      * @param originalMessages original messages
      * @param channel channel being left
-     * @param user actor kicking the targeted user
+     * @param actor actor kicking the targeted user
      * @param target targeted user
      * @param message message the user left
      */
-    public ChannelKickEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull User user, @Nonnull User target, @Nonnull String message) {
-        super(client, originalMessages, user, channel, message);
+    @Deprecated
+    public ChannelKickByServerEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull Actor actor, @Nonnull User target, @Nonnull String message) {
+        super(client, originalMessages, actor, channel, message);
         this.target = Sanity.nullCheck(target, "Target cannot be null");
     }
 
