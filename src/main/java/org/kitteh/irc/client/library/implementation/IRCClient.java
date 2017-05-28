@@ -425,6 +425,14 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
+    public void sendCTCPReply(@Nonnull String target, @Nonnull String message) {
+        Sanity.safeMessageCheck(target, "Target");
+        Sanity.safeMessageCheck(message);
+        Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
+        this.sendRawLine("NOTICE " + target + " :" + CTCPUtil.toCTCP(message));
+    }
+
+    @Override
     public void sendMessage(@Nonnull String target, @Nonnull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);

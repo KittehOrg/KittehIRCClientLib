@@ -74,7 +74,9 @@ public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> im
     }
 
     /**
-     * Sets the reply to send to the CTCP sender.
+     * Sets the reply to send to the CTCP sender. Note that this method will
+     * not work if listening async. For async replies, set this to null and
+     * use {@link Client#sendCTCPReply(String, String)}.
      *
      * @param reply message to send back
      */

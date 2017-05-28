@@ -720,7 +720,8 @@ public interface Client {
      * need escaping when sending a CTCP message.
      * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
-     * with the {@link PrivateCTCPQueryEvent}</i>
+     * with the {@link PrivateCTCPQueryEvent} and reply there or use
+     * {@link #sendCTCPReply(String, String)}</i>
      *
      * @param target the destination of the message
      * @param message the message to send
@@ -734,13 +735,39 @@ public interface Client {
      * need escaping when sending a CTCP message.
      * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
-     * with the {@link PrivateCTCPQueryEvent}</i>
+     * with the {@link PrivateCTCPQueryEvent} and reply there or use
+     * {@link #sendCTCPReply(MessageReceiver, String)}</i>
      *
      * @param target the destination of the message
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
     default void sendCTCPMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+        Sanity.nullCheck(target, "Target cannot be null");
+        this.sendCTCPMessage(target.getMessagingName(), message);
+    }
+
+    /**
+     * Sends a CTCP reply to a target user or channel. Automagically adds
+     * the CTCP delimiter around the message and escapes the characters that
+     * need escaping when sending a CTCP message.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
+     */
+    void sendCTCPReply(@Nonnull String target, @Nonnull String message);
+
+    /**
+     * Sends a CTCP reply to a target user or channel. Automagically adds
+     * the CTCP delimiter around the message and escapes the characters that
+     * need escaping when sending a CTCP message.
+     *
+     * @param target the destination of the message
+     * @param message the message to send
+     * @throws IllegalArgumentException for null parameters
+     */
+    default void sendCTCPReply(@Nonnull MessageReceiver target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendCTCPMessage(target.getMessagingName(), message);
     }
