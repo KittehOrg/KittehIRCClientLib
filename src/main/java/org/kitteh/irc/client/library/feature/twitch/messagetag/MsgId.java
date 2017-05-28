@@ -52,7 +52,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
         }
 
         /**
-         * <user> is already banned in this room.
+         * &lt;user&gt; is already banned in this room.
          */
         public static final String ALREADY_BANNED = "already_banned";
         /**
@@ -80,15 +80,15 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
          */
         public static final String ALREADY_SUBS_ON = "already_subs_on";
         /**
-         * This channel is hosting <channel>.
+         * This channel is hosting &lt;channel&gt;.
          */
         public static final String BAD_HOST_HOSTING = "bad_host_hosting";
         /**
-         * <user> is not banned from this room.
+         * &lt;user&gt; is not banned from this room.
          */
         public static final String BAD_UNBAN_NO_BAN = "bad_unban_no_ban";
         /**
-         * <user> is banned from this room.
+         * &lt;user&gt; is banned from this room.
          */
         public static final String BAN_SUCCESS = "ban_success";
         /**
@@ -104,11 +104,11 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
          */
         public static final String HOST_OFF = "host_off";
         /**
-         * Now hosting <channel>.
+         * Now hosting &lt;channel&gt;.
          */
         public static final String HOST_ON = "host_on";
         /**
-         * There are <number> host commands remaining this half hour.
+         * There are &lt;number&gt; host commands remaining this half hour.
          */
         public static final String HOSTS_REMAINING = "hosts_remaining";
         /**
@@ -128,7 +128,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
          */
         public static final String SLOW_OFF = "slow_off";
         /**
-         * This room is now in slow mode. You may send messages every <slow seconds> seconds.
+         * This room is now in slow mode. You may send messages every &lt;slow seconds&gt; seconds.
          */
         public static final String SLOW_ON = "slow_on";
         /**
@@ -140,15 +140,15 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
          */
         public static final String SUBS_ON = "subs_on";
         /**
-         * <user> has been timed out for <duration> seconds.
+         * &lt;user&gt; has been timed out for &lt;duration&gt; seconds.
          */
         public static final String TIMEOUT_SUCCESS = "timeout_success";
         /**
-         * <user> is no longer banned from this chat room.
+         * &lt;user&gt; is no longer banned from this chat room.
          */
         public static final String UNBAN_SUCCESS = "unban_success";
         /**
-         * Unrecognized command: <command>.
+         * Unrecognized command: &lt;command&gt;.
          */
         public static final String UNRECOGNIZED_CMD = "unrecognized_cmd";
     }
