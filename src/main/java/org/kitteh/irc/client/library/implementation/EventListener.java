@@ -1134,7 +1134,7 @@ class EventListener {
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
         if (channel != null) {
             ActorProvider.IRCUser kickedUser = this.client.getActorProvider().getUser(event.getParameters().get(1));
-            if ((kickedUser != null) || !(event.getActor() instanceof User)) {
+            if ((kickedUser != null) && (event.getActor() instanceof User)) {
                 boolean isSelf = event.getParameters().get(1).equals(this.client.getNick());
                 ChannelKickEvent kickEvent;
                 String kickReason = (event.getParameters().size() > 2) ? event.getParameters().get(2) : "";
