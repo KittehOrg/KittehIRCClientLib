@@ -21,59 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.feature.twitch.event;
 
-import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.helper.ServerMessageEvent;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Optional;
 
 /**
- * Represents a message sent by the server.
+ * Twitch events are single message, and this lets you get their tags.
  */
-public interface ServerMessage {
+public interface SingleMessageEvent extends ServerMessageEvent {
     /**
-     * Represents a message with a String command.
-     */
-    interface StringCommandServerMessage extends ServerMessage {
-        /**
-         * Gets this message's command.
-         *
-         * @return the command present in this message
-         */
-        @Nonnull
-        String getCommand();
-    }
-
-    /**
-     * Represents a message with a numeric command.
-     */
-    interface NumericCommandServerMessage extends ServerMessage {
-        /**
-         * Gets this message's command.
-         *
-         * @return the command present in this message
-         */
-        int getCommand();
-    }
-
-    /**
-     * Gets the full content of the line sent by the server, minus linebreak
-     * characters \r and \n.
+     * Gets the message.
      *
-     * @return full message content
+     * @return message
      */
-    @Nonnull
-    String getMessage();
-
-    /**
-     * Gets the processed message tags, if any, contained in the message.
-     *
-     * @return message tags or empty if none sent.
-     */
-    @Nonnull
-    List<MessageTag> getTags();
+    default ServerMessage getOriginalMessage() {
+        return this.getOriginalMessages().get(0);
+    }
 
     /**
      * Gets the named tag if present
@@ -81,9 +49,9 @@ public interface ServerMessage {
      * @param name tag name
      * @return tag if present
      */
+    @Nonnull
     default Optional<MessageTag> getTag(@Nonnull String name) {
-        Sanity.nullCheck(name, "Name cannot be null");
-        return this.getTags().stream().filter(tag -> tag.getName().equals(name)).findAny();
+        return this.getOriginalMessage().getTag(name);
     }
 
     /**
@@ -96,12 +64,6 @@ public interface ServerMessage {
      */
     @Nonnull
     default <Tag extends MessageTag> Optional<Tag> getTag(@Nonnull String name, @Nonnull Class<Tag> clazz) {
-        Sanity.nullCheck(name, "Name cannot be null");
-        Sanity.nullCheck(clazz, "Class cannot be null");
-        return this.getTags().stream()
-                .filter(tag -> tag.getName().equals(name))
-                .filter(clazz::isInstance)
-                .map(tag -> (Tag) tag)
-                .findAny();
+        return this.getOriginalMessage().getTag(name, clazz);
     }
 }

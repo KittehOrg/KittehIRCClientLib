@@ -662,8 +662,8 @@ public interface Client {
 
     /**
      * Gets the User that the client is represented by. Will return {@link
-     * Optional#EMPTY} until the Client is in a Channel for which joining has
-     * completed, meaning full user info is available.
+     * Optional#empty()} until the Client is in a Channel for which joining
+     * has completed, meaning full user info is available.
      *
      * @return the user of this client if known
      */
@@ -671,7 +671,7 @@ public interface Client {
     Optional<User> getUser();
 
     /**
-     * Gets the user's modes. Will return {@link Optional#EMPTY} until the
+     * Gets the user's modes. Will return {@link Optional#empty()} until the
      * Client has queried this information, which is requested after the
      * connection registration has completed.
      *

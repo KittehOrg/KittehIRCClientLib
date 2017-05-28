@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.feature;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
@@ -35,6 +36,53 @@ import java.util.Optional;
  * Manages message tags.
  */
 public interface MessageTagManager {
+    /**
+     * Default message tag.
+     */
+    class DefaultMessageTag implements MessageTag {
+        private final String name;
+        private final Optional<String> value;
+
+        /**
+         * Constructs a default message tag.
+         *
+         * @param name tag name
+         * @param value tag value or {@link Optional#empty()}
+         */
+        public DefaultMessageTag(@Nonnull String name, @Nonnull Optional<String> value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        @Nonnull
+        @Override
+        public String getName() {
+            return this.name;
+        }
+
+        @Nonnull
+        @Override
+        public Optional<String> getValue() {
+            return this.value;
+        }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return this.toStringer().toString();
+        }
+
+        /**
+         * ToStringPartyTime.
+         *
+         * @return a usable toString that will be used in {@link #toString()}
+         */
+        @Nonnull
+        protected ToStringer toStringer() {
+            return new ToStringer(this).add("name", this.name).add("value", this.value);
+        }
+    }
+
     /**
      * Gets the registered tag creators for a given capability.
      *
