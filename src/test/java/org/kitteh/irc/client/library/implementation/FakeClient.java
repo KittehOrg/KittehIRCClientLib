@@ -332,6 +332,11 @@ class FakeClient extends InternalClient {
     }
 
     @Override
+    public void sendCTCPReply(@Nonnull String target, @Nonnull String message) {
+
+    }
+
+    @Override
     public void sendMessage(@Nonnull String target, @Nonnull String message) {
 
     }

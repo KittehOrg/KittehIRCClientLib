@@ -97,8 +97,6 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
         }
     }
 
-    private static final Pattern emotePattern = Pattern.compile("([^:-]*):([^:-]*)-([^:-]*)");
-
     private final List<Emote> emotes;
 
     private Emotes(@Nonnull String name, @Nonnull Optional<String> value) {
