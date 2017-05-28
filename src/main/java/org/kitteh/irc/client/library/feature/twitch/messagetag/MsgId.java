@@ -34,6 +34,14 @@ import java.util.Optional;
  * Message tag for message IDs.
  */
 public class MsgId extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "msg-id";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, MsgId> FUNCTION = (client, name, value) -> new MsgId(name, value);
 
     /**
@@ -145,13 +153,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
         public static final String UNRECOGNIZED_CMD = "unrecognized_cmd";
     }
 
-    /**
-     * Constructs msg id message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public MsgId(@Nonnull String name, @Nonnull Optional<String> value) {
+    private MsgId(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

@@ -34,15 +34,17 @@ import java.util.Optional;
  * Message tag for an ID.
  */
 public class Id extends MessageTagManager.DefaultMessageTag {
-    public static final TriFunction<Client, String, Optional<String>, Id> FUNCTION = (client, name, value) -> new Id(name, value);
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "id";
 
     /**
-     * Constructs msg id message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
+     * Function to create this message tag.
      */
-    public Id(@Nonnull String name, @Nonnull Optional<String> value) {
+    public static final TriFunction<Client, String, Optional<String>, Id> FUNCTION = (client, name, value) -> new Id(name, value);
+
+    private Id(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

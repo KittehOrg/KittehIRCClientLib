@@ -34,6 +34,14 @@ import java.util.Optional;
  * Message tag for turbo.
  */
 public class Turbo extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "turbo";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, Turbo> FUNCTION = (client, name, value) -> new Turbo(name, value);
 
     /**
@@ -53,13 +61,7 @@ public class Turbo extends MessageTagManager.DefaultMessageTag {
         public static final String HAS_TURBO_BADGE = "1";
     }
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public Turbo(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Turbo(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
@@ -38,17 +39,19 @@ import java.util.stream.Collectors;
  * Message tag for emote sets.
  */
 public class EmoteSets extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "emote-sets";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, EmoteSets> FUNCTION = (client, name, value) -> new EmoteSets(name, value);
 
     private final List<Integer> emoteSets;
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public EmoteSets(@Nonnull String name, @Nonnull Optional<String> value) {
+    private EmoteSets(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
         this.emoteSets = value.map(string -> Collections.unmodifiableList(Arrays.stream(value.get().split(",")).map(Integer::valueOf).collect(Collectors.toList()))).orElse(Collections.emptyList());
     }
@@ -61,5 +64,11 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
     @Nonnull
     public List<Integer> getEmoteSets() {
         return this.emoteSets;
+    }
+
+    @Nonnull
+    @Override
+    public ToStringer toStringer() {
+        return super.toStringer().add("emoteSets", this.emoteSets);
     }
 }

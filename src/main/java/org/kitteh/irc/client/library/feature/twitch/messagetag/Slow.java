@@ -34,18 +34,19 @@ import java.util.Optional;
  * Message tag slow, indicating non-moderators have to wait between messages.
  */
 public class Slow extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "slow";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, Slow> FUNCTION = (client, name, value) -> new Slow(name, value, Integer.parseInt(value.get()));
 
     private final int delay;
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     * @param delay delay between messages
-     */
-    public Slow(@Nonnull String name, @Nonnull Optional<String> value, int delay) {
+    private Slow(@Nonnull String name, @Nonnull Optional<String> value, int delay) {
         super(name, value);
         this.delay = delay;
     }

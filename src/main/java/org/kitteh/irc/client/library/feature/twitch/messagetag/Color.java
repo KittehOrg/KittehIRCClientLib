@@ -34,15 +34,17 @@ import java.util.Optional;
  * Message tag for color.
  */
 public class Color extends MessageTagManager.DefaultMessageTag {
-    public static final TriFunction<Client, String, Optional<String>, Color> FUNCTION = (client, name, value) -> new Color(name, value);
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "color";
 
     /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
+     * Function to create this message tag.
      */
-    public Color(@Nonnull String name, @Nonnull Optional<String> value) {
+    public static final TriFunction<Client, String, Optional<String>, Color> FUNCTION = (client, name, value) -> new Color(name, value);
+
+    private Color(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

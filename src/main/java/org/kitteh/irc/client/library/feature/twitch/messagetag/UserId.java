@@ -34,15 +34,17 @@ import java.util.Optional;
  * Message tag for user ID.
  */
 public class UserId extends MessageTagManager.DefaultMessageTag {
-    public static final TriFunction<Client, String, Optional<String>, UserId> FUNCTION = (client, name, value) -> new UserId(name, value);
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "user-id";
 
     /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
+     * Function to create this message tag.
      */
-    public UserId(@Nonnull String name, @Nonnull Optional<String> value) {
+    public static final TriFunction<Client, String, Optional<String>, UserId> FUNCTION = (client, name, value) -> new UserId(name, value);
+
+    private UserId(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

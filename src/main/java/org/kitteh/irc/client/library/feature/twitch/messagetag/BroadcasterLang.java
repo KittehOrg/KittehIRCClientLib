@@ -34,15 +34,17 @@ import java.util.Optional;
  * Message tag broadcaster language.
  */
 public class BroadcasterLang extends MessageTagManager.DefaultMessageTag {
-    public static final TriFunction<Client, String, Optional<String>, BroadcasterLang> FUNCTION = (client, name, value) -> new BroadcasterLang(name, value);
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "broadcaster-lang";
 
     /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
+     * Function to create this message tag.
      */
-    public BroadcasterLang(@Nonnull String name, @Nonnull Optional<String> value) {
+    public static final TriFunction<Client, String, Optional<String>, BroadcasterLang> FUNCTION = (client, name, value) -> new BroadcasterLang(name, value);
+
+    private BroadcasterLang(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

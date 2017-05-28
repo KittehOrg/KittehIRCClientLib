@@ -34,6 +34,14 @@ import java.util.Optional;
  * Message tag for user types.
  */
 public class UserType extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "user-type";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, UserType> FUNCTION = (client, name, value) -> new UserType(name, value);
 
     /**
@@ -65,13 +73,7 @@ public class UserType extends MessageTagManager.DefaultMessageTag {
         public static final String STAFF = "staff";
     }
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public UserType(@Nonnull String name, @Nonnull Optional<String> value) {
+    private UserType(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

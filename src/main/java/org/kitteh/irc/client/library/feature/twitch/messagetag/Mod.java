@@ -34,6 +34,14 @@ import java.util.Optional;
  * User has a mod badge or not.
  */
 public class Mod extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "mod";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, Mod> FUNCTION = (client, name, value) -> new Mod(name, value);
 
     /**
@@ -54,13 +62,7 @@ public class Mod extends MessageTagManager.DefaultMessageTag {
         public static final String BADGE = "1";
     }
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public Mod(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Mod(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

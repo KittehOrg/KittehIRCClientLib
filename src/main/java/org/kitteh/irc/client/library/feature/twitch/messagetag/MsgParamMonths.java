@@ -34,18 +34,19 @@ import java.util.Optional;
  * Message tag for subscription months.
  */
 public class MsgParamMonths extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "msg-param-months";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, MsgParamMonths> FUNCTION = (client, name, value) -> new MsgParamMonths(name, value, Integer.parseInt(value.get()));
 
     private final int months;
 
-    /**
-     * Constructs ban reason message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     * @param months number of consecutive months the user has subscribed for
-     */
-    public MsgParamMonths(@Nonnull String name, @Nonnull Optional<String> value, int months) {
+    private MsgParamMonths(@Nonnull String name, @Nonnull Optional<String> value, int months) {
         super(name, value);
         this.months = months;
     }

@@ -69,7 +69,17 @@ public interface MessageTagManager {
         @Nonnull
         @Override
         public String toString() {
-            return new ToStringer(this).add("name", this.name).add("value", this.value).toString();
+            return this.toStringer().toString();
+        }
+
+        /**
+         * ToStringPartyTime.
+         *
+         * @return a usable toString that will be used in {@link #toString()}
+         */
+        @Nonnull
+        protected ToStringer toStringer() {
+            return new ToStringer(this).add("name", this.name).add("value", this.value);
         }
     }
 

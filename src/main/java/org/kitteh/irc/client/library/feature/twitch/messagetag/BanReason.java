@@ -34,15 +34,17 @@ import java.util.Optional;
  * Message tag for ban reason.
  */
 public class BanReason extends MessageTagManager.DefaultMessageTag {
-    public static final TriFunction<Client, String, Optional<String>, BanReason> FUNCTION = (client, name, value) -> new BanReason(name, value);
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "ban-reason";
 
     /**
-     * Constructs ban reason message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
+     * Function to create this message tag.
      */
-    public BanReason(@Nonnull String name, @Nonnull Optional<String> value) {
+    public static final TriFunction<Client, String, Optional<String>, BanReason> FUNCTION = (client, name, value) -> new BanReason(name, value);
+
+    private BanReason(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

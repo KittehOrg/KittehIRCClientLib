@@ -34,6 +34,14 @@ import java.util.Optional;
  * User has a subscriber badge or not.
  */
 public class Subscriber extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "subscriber";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, Subscriber> FUNCTION = (client, name, value) -> new Subscriber(name, value);
 
     /**
@@ -54,13 +62,7 @@ public class Subscriber extends MessageTagManager.DefaultMessageTag {
         public static final String BADGE = "1";
     }
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public Subscriber(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Subscriber(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
@@ -37,6 +38,14 @@ import java.util.Optional;
  * We don't need no stinkin' badges.
  */
 public class Badges extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "badges";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, Badges> FUNCTION = (client, name, value) -> new Badges(name, value);
 
     /**
@@ -118,17 +127,17 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
         public String getVersion() {
             return this.version;
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("name", this.name).add("version", this.version).toString();
+        }
     }
 
     private final List<Badge> badges;
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public Badges(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Badges(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
         if (!value.isPresent()) {
             this.badges = Collections.emptyList();
@@ -158,5 +167,11 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
     @Nonnull
     public List<Badge> getBadges() {
         return this.badges;
+    }
+
+    @Nonnull
+    @Override
+    protected ToStringer toStringer() {
+        return super.toStringer().add("badges", this.badges);
     }
 }

@@ -34,6 +34,14 @@ import java.util.Optional;
  * R9K mode where messages over 9 characters must be unique.
  */
 public class R9k extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "r9k";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, R9k> FUNCTION = (client, name, value) -> new R9k(name, value);
 
     /**
@@ -54,13 +62,7 @@ public class R9k extends MessageTagManager.DefaultMessageTag {
         public static final String ENABLED = "1";
     }
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public R9k(@Nonnull String name, @Nonnull Optional<String> value) {
+    private R9k(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

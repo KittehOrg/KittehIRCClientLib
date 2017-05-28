@@ -34,15 +34,17 @@ import java.util.Optional;
  * Message tag for room ID.
  */
 public class RoomId extends MessageTagManager.DefaultMessageTag {
-    public static final TriFunction<Client, String, Optional<String>, RoomId> FUNCTION = (client, name, value) -> new RoomId(name, value);
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "room-id";
 
     /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
+     * Function to create this message tag.
      */
-    public RoomId(@Nonnull String name, @Nonnull Optional<String> value) {
+    public static final TriFunction<Client, String, Optional<String>, RoomId> FUNCTION = (client, name, value) -> new RoomId(name, value);
+
+    private RoomId(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

@@ -34,6 +34,14 @@ import java.util.Optional;
  * Indicates chatting is for subscribers only.
  */
 public class SubsOnly extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "subs-only";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, SubsOnly> FUNCTION = (client, name, value) -> new SubsOnly(name, value);
 
     /**
@@ -54,13 +62,7 @@ public class SubsOnly extends MessageTagManager.DefaultMessageTag {
         public static final String ENABLED = "1";
     }
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public SubsOnly(@Nonnull String name, @Nonnull Optional<String> value) {
+    private SubsOnly(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

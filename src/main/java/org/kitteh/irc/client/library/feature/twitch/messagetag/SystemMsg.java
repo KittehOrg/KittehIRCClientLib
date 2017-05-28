@@ -34,15 +34,17 @@ import java.util.Optional;
  * Message tag system message.
  */
 public class SystemMsg extends MessageTagManager.DefaultMessageTag {
-    public static final TriFunction<Client, String, Optional<String>, SystemMsg> FUNCTION = (client, name, value) -> new SystemMsg(name, value);
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "system-msg";
 
     /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
+     * Function to create this message tag.
      */
-    public SystemMsg(@Nonnull String name, @Nonnull Optional<String> value) {
+    public static final TriFunction<Client, String, Optional<String>, SystemMsg> FUNCTION = (client, name, value) -> new SystemMsg(name, value);
+
+    private SystemMsg(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

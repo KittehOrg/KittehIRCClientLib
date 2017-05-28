@@ -34,18 +34,19 @@ import java.util.Optional;
  * Message tag for ban duration.
  */
 public class BanDuration extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "ban-duration";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, BanDuration> FUNCTION = (client, name, value) -> new BanDuration(name, value, Integer.parseInt(value.get()));
 
     private final int duration;
 
-    /**
-     * Constructs ban reason message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     * @param duration duration, in seconds, of the ban
-     */
-    public BanDuration(@Nonnull String name, @Nonnull Optional<String> value, int duration) {
+    private BanDuration(@Nonnull String name, @Nonnull Optional<String> value, int duration) {
         super(name, value);
         this.duration = duration;
     }

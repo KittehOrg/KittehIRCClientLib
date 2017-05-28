@@ -34,6 +34,14 @@ import java.util.Optional;
  * Message tag for subscription plan.
  */
 public class MsgParamSubPlan extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "msg-param-sub-plan";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, MsgParamSubPlan> FUNCTION = (client, name, value) -> new MsgParamSubPlan(name, value);
 
     /**
@@ -61,13 +69,7 @@ public class MsgParamSubPlan extends MessageTagManager.DefaultMessageTag {
         public static final String PRIME = "prime";
     }
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public MsgParamSubPlan(@Nonnull String name, @Nonnull Optional<String> value) {
+    private MsgParamSubPlan(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
     }
 }

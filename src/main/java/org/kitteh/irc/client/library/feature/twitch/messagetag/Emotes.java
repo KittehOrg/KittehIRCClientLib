@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
@@ -38,6 +39,14 @@ import java.util.regex.Pattern;
  * I'm so emotional right now.
  */
 public class Emotes extends MessageTagManager.DefaultMessageTag {
+    /**
+     * Name of this message tag.
+     */
+    public static final String NAME = "emotes";
+
+    /**
+     * Function to create this message tag.
+     */
     public static final TriFunction<Client, String, Optional<String>, Emotes> FUNCTION = (client, name, value) -> new Emotes(name, value);
 
     /**
@@ -80,19 +89,19 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
         public int getLastIndex() {
             return this.lastIndex;
         }
+
+        @Nonnull
+        @Override
+        public String toString() {
+            return new ToStringer(this).add("id", this.id).add("firstIndex", this.firstIndex).add("lastIndex", this.lastIndex).toString();
+        }
     }
 
     private static final Pattern emotePattern = Pattern.compile("([^:-]*):([^:-]*)-([^:-]*)");
 
     private final List<Emote> emotes;
 
-    /**
-     * Constructs the message tag.
-     *
-     * @param name tag name
-     * @param value tag value or {@link Optional#empty()}
-     */
-    public Emotes(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Emotes(@Nonnull String name, @Nonnull Optional<String> value) {
         super(name, value);
         if (!value.isPresent()) {
             this.emotes = Collections.emptyList();
@@ -138,5 +147,11 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
     @Nonnull
     public List<Emote> getEmotes() {
         return this.emotes;
+    }
+
+    @Nonnull
+    @Override
+    protected ToStringer toStringer() {
+        return super.toStringer().add("emotes", this.emotes);
     }
 }
