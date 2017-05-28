@@ -40,7 +40,7 @@ public interface SingleMessageEvent extends ServerMessageEvent {
      * @return message
      */
     default ServerMessage getOriginalMessage() {
-        return this.getOriginalMessages().get(1);
+        return this.getOriginalMessages().get(0);
     }
 
     /**
