@@ -24,6 +24,9 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
@@ -139,6 +142,8 @@ final class Config {
     static final Entry<ExceptionConsumerWrapper> LISTENER_EXCEPTION = new Entry<>(new ExceptionConsumerWrapper(Throwable::printStackTrace), ExceptionConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_INPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_OUTPUT = new Entry<>(null, StringConsumerWrapper.class);
+    static final Entry<Function> MANAGER_AUTH = new Entry<>(getFunction(DefaultAuthManager::new), Function.class);
+    static final Entry<Function> MANAGER_EVENT = new Entry<>(getFunction(DefaultEventManager::new), Function.class);
     static final Entry<Function> MESSAGE_DELAY = new Entry<>(SingleDelaySender.getSupplier(SingleDelaySender.DEFAULT_MESSAGE_DELAY), Function.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<Boolean> QUERY_CHANNEL_INFO = new Entry<>(true, Boolean.class);
@@ -162,6 +167,10 @@ final class Config {
      * Must be static because this value is shared across cloned Configs.
      */
     private static final Object NULL = new Object();
+
+    private static Function<Client, ?> getFunction(Function<Client, ?> function) {
+        return function;
+    }
 
     private final Map<Entry<?>, Object> map = new ConcurrentHashMap<>();
 

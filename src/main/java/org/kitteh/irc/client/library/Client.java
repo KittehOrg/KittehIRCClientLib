@@ -48,6 +48,8 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
@@ -97,6 +99,18 @@ public interface Client {
         Builder afterBuildConsumer(@Nullable Consumer<Client> consumer);
 
         /**
+         * Sets the supplier of the authentication manager.
+         * <p>
+         * By default, the {@link DefaultAuthManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultAuthManager
+         */
+        @Nonnull
+        Builder authManagerSupplier(@Nonnull Function<Client, ? extends AuthManager> supplier);
+
+        /**
          * Binds the client to a host or IP locally.
          * <p>
          * By default, the host is not set which results in wildcard binding.
@@ -127,6 +141,18 @@ public interface Client {
          */
         @Nonnull
         Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
+
+        /**
+         * Sets the supplier of the event manager.
+         * <p>
+         * By default, the {@link DefaultEventManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultEventManager
+         */
+        @Nonnull
+        Builder eventManagerSupplier(@Nonnull Function<Client, ? extends EventManager> supplier);
 
         /**
          * Sets a listener for all thrown exceptions on this client. By default,

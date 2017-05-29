@@ -47,8 +47,6 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
-import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
-import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
@@ -174,9 +172,9 @@ final class IRCClient extends InternalClient {
 
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
 
-    private final AuthManager authManager = new DefaultAuthManager(this);
+    private final AuthManager authManager;
     private final ManagerCapability capabilityManager = new ManagerCapability(this);
-    private final EventManager eventManager = new DefaultEventManager(this);
+    private final EventManager eventManager;
     private final ManagerISupport iSupportManager = new ManagerISupport(this);
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
 
@@ -200,6 +198,9 @@ final class IRCClient extends InternalClient {
     IRCClient(@Nonnull Config config) {
         this.config = config;
 
+        // Get event manager up and running immediately!
+        this.eventManager = ((Function<Client, EventManager>) this.config.getNotNull(Config.MANAGER_EVENT)).apply(this);
+
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
         Config.ExceptionConsumerWrapper exceptionListenerWrapper = this.config.get(Config.LISTENER_EXCEPTION);
@@ -221,6 +222,7 @@ final class IRCClient extends InternalClient {
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
 
+        this.authManager = ((Function<Client, AuthManager>) this.config.getNotNull(Config.MANAGER_AUTH)).apply(this);
 
         DefaultMessageMap defaultMessageMap = this.config.get(Config.DEFAULT_MESSAGE_MAP);
         if (defaultMessageMap == null) {

@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library.implementation;
 
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
@@ -63,6 +65,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
         return this;
     }
 
+    @Override
+    @Nonnull
+    public Client.Builder authManagerSupplier(@Nonnull Function<Client, ? extends AuthManager> supplier) {
+        this.config.set(Config.MANAGER_AUTH, Sanity.nullCheck(supplier, "Supplier cannot be null"));
+        return this;
+    }
+
     @Nonnull
     @Override
     public ClientBuilder bindHost(@Nullable String host) {
@@ -81,6 +90,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public ClientBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
         this.config.set(Config.DEFAULT_MESSAGE_MAP, defaultMessageMap);
+        return this;
+    }
+
+    @Override
+    @Nonnull
+    public Client.Builder eventManagerSupplier(@Nonnull Function<Client, ? extends EventManager> supplier) {
+        this.config.set(Config.MANAGER_EVENT, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 
