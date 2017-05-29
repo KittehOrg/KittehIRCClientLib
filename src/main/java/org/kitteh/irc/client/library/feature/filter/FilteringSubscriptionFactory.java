@@ -24,7 +24,6 @@
 package org.kitteh.irc.client.library.feature.filter;
 
 import net.engio.mbassy.bus.BusRuntime;
-import net.engio.mbassy.bus.IMessagePublication;
 import net.engio.mbassy.bus.MessagePublication;
 import net.engio.mbassy.bus.config.IBusConfiguration;
 import net.engio.mbassy.bus.error.MessageBusException;

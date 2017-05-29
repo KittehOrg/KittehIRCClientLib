@@ -25,11 +25,11 @@ package org.kitteh.irc.client.library.feature.filter;
 
 import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.annotation.Nonnull;
 
 /**
  * Only get messages addressed to self.
