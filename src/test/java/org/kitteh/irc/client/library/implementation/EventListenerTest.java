@@ -9,6 +9,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CaseMapping;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.mockito.ArgumentMatcher;
@@ -26,7 +27,7 @@ import java.util.function.Function;
 public class EventListenerTest {
     private InternalClient client;
     private ActorProvider actorProvider;
-    private ManagerEvent eventManager;
+    private DefaultEventManager eventManager;
     private Listener<Exception> exceptionListener;
     private IRCServerInfo serverInfo;
 
@@ -37,7 +38,7 @@ public class EventListenerTest {
     public void before() {
         this.client = Mockito.mock(InternalClient.class);
         this.actorProvider = new ActorProvider(this.client);
-        this.eventManager = Mockito.spy(new ManagerEvent(this.client));
+        this.eventManager = Mockito.spy(new DefaultEventManager(this.client));
         this.eventManager.registerEventListener(new EventListener(this.client));
         this.exceptionListener = Mockito.mock(Listener.class);
         this.serverInfo = Mockito.mock(IRCServerInfo.class);

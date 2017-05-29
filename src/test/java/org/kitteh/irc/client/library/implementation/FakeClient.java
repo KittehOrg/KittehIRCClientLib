@@ -9,6 +9,7 @@ import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
@@ -31,7 +32,7 @@ class FakeClient extends InternalClient {
     private final AuthManager authManager = new DefaultAuthManager(this);
     private final ManagerCapability capabilityManager = new ManagerCapability(this);
     private final Config config = new Config();
-    private final EventManager eventManager = new ManagerEvent(this);
+    private final EventManager eventManager = new DefaultEventManager(this);
     private final Listener<Exception> listenerException = new Listener<>(this, null);
     private final Listener<String> listenerInput = new Listener<>(this, null);
     private final Listener<String> listenerOutput = new Listener<>(this, null);

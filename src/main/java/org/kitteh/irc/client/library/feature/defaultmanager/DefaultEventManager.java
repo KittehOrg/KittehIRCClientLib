@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.feature.defaultmanager;
 
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
@@ -29,6 +29,7 @@ import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.exception.KittehEventException;
@@ -54,7 +55,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-class ManagerEvent implements EventManager {
+/**
+ * Default implementation of {@link EventManager}.
+ */
+public class DefaultEventManager implements EventManager {
     private class Exceptional implements IPublicationErrorHandler {
         @Override
         public void handleError(@Nonnull PublicationError publicationError) {
@@ -67,7 +71,7 @@ class ManagerEvent implements EventManager {
             } else {
                 exceptional = new KittehEventException(thrown);
             }
-            ManagerEvent.this.client.getExceptionListener().queue(exceptional);
+            DefaultEventManager.this.client.getExceptionListener().queue(exceptional);
         }
 
         @Nonnull
@@ -78,11 +82,16 @@ class ManagerEvent implements EventManager {
     }
 
     private final MBassador<Object> bus;
-    private final InternalClient client;
+    private final Client client;
     private final Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> filters = new ConcurrentHashMap<>();
     private final Set<Object> listeners = new HashSet<>();
 
-    ManagerEvent(@Nonnull InternalClient client) {
+    /**
+     * Constructs the event manager.
+     *
+     * @param client client for which this manager will operate
+     */
+    public DefaultEventManager(@Nonnull Client client) {
         BusConfiguration configuration = new BusConfiguration()
                 .addFeature(Feature.SyncPubSub.Default().setSubscriptionFactory(new FilteringSubscriptionFactory(this.filters)))
                 .addFeature(Feature.AsynchronousHandlerInvocation.Default())
