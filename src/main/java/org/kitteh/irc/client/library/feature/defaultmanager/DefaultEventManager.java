@@ -59,7 +59,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * Default implementation of {@link EventManager}.
  */
 public class DefaultEventManager implements EventManager {
-    private class Exceptional implements IPublicationErrorHandler {
+    /**
+     * Exception handler.
+     */
+    public static class Exceptional implements IPublicationErrorHandler {
+        private final Client client;
+
+        /**
+         * Constructs this exceptional class.
+         *
+         * @param client client to send exceptions to
+         */
+        public Exceptional(@Nonnull Client client) {
+            this.client = client;
+        }
+
         @Override
         public void handleError(@Nonnull PublicationError publicationError) {
             Exception exceptional;
@@ -71,7 +85,7 @@ public class DefaultEventManager implements EventManager {
             } else {
                 exceptional = new KittehEventException(thrown);
             }
-            DefaultEventManager.this.client.getExceptionListener().queue(exceptional);
+            this.client.getExceptionListener().queue(exceptional);
         }
 
         @Nonnull
@@ -96,7 +110,7 @@ public class DefaultEventManager implements EventManager {
                 .addFeature(Feature.SyncPubSub.Default().setSubscriptionFactory(new FilteringSubscriptionFactory(this.filters)))
                 .addFeature(Feature.AsynchronousHandlerInvocation.Default())
                 .addFeature(Feature.AsynchronousMessageDispatch.Default())
-                .addPublicationErrorHandler(new Exceptional());
+                .addPublicationErrorHandler(new Exceptional(client));
         this.bus = new MBassador<>(configuration);
         this.client = client;
         // Defaults!
@@ -148,6 +162,11 @@ public class DefaultEventManager implements EventManager {
         this.bus.unsubscribe(listener);
     }
 
+    /**
+     * Just the manager listening for shutdown, don't worry about it.
+     *
+     * @param event event of doom
+     */
     @Handler(priority = Integer.MIN_VALUE)
     public void onShutdown(ClientConnectionClosedEvent event) {
         if (!event.isReconnecting()) {
