@@ -12,6 +12,7 @@ import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.util.Listener;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 

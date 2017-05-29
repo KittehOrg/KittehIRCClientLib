@@ -6,6 +6,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.feature.CaseMapping;
+import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.TriFunction;
 import org.mockito.Mockito;
 
@@ -308,7 +309,7 @@ public class ISupportManagerTest {
 
     private ManagerISupport getManager() {
         InternalClient client = Mockito.mock(InternalClient.class);
-        Mockito.when(client.getExceptionListener()).thenReturn(new Listener<>("Client", null));
+        Mockito.when(client.getExceptionListener()).thenReturn(new Listener<>(new FakeClient(), null));
         return new ManagerISupport(client);
     }
 }

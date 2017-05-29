@@ -21,17 +21,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.util;
 
-import org.kitteh.irc.client.library.util.QueueProcessingThread;
-import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.Client;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Queue;
 import java.util.function.Consumer;
 
-class Listener<Type> {
+/**
+ * A listener is a receiver of items that, if given a consumer, operates a
+ * queue processing thread to send items to that consumer. Items are only
+ * queued if a consumer is present.
+ *
+ * @param <Type> type of object listened to
+ */
+public class Listener<Type> {
     private final class ListenerThread extends QueueProcessingThread<Type> {
         private volatile Consumer<Type> consumer;
 
@@ -65,23 +71,41 @@ class Listener<Type> {
     @Nullable
     private ListenerThread thread;
 
-    Listener(@Nonnull String clientName, @Nullable Consumer<Type> consumer) {
-        this.clientName = clientName;
-        this.thread = (consumer == null) ? null : new ListenerThread(clientName, consumer);
+    /**
+     * @param client the client
+     * @param consumer consumer or null for no consumer
+     */
+    public Listener(@Nonnull Client client, @Nullable Consumer<Type> consumer) {
+        this.clientName = Sanity.nullCheck(client, "Client cannot be null").getName();
+        this.thread = (consumer == null) ? null : new ListenerThread(this.clientName, consumer);
     }
 
-    void queue(@Nonnull Type item) {
+    /**
+     * Queues an item.
+     *
+     * @param item item to queue
+     */
+    public void queue(@Nonnull Type item) {
         if (this.thread != null) {
             this.thread.queue(item);
         }
     }
 
-    void removeConsumer() {
+    /**
+     * Removes the consumer from the listener.
+     */
+    public void removeConsumer() {
         this.shutdown();
         this.thread = null;
     }
 
-    void setConsumer(@Nonnull Consumer<Type> consumer) {
+    /**
+     * Sets the consumer for the listener, starting a queue processing thread
+     * if none existed.
+     *
+     * @param consumer new consumer
+     */
+    public void setConsumer(@Nonnull Consumer<Type> consumer) {
         if (this.thread == null) {
             this.thread = new ListenerThread(this.clientName, consumer);
         } else {
@@ -89,7 +113,12 @@ class Listener<Type> {
         }
     }
 
-    void shutdown() {
+    /**
+     * Shuts down the listener. The listener cannot be brought back from this
+     * state, and this method should typically only be called by the Client
+     * during shutdown.
+     */
+    public void shutdown() {
         if (this.thread != null) {
             this.thread.interrupt();
         }
@@ -98,6 +127,6 @@ class Listener<Type> {
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).toString();
+        return new ToStringer(this).add("clientName", this.clientName).toString();
     }
 }

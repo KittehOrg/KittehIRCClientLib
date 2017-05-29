@@ -14,6 +14,7 @@ import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessage
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 
 import javax.annotation.Nonnull;
@@ -31,9 +32,9 @@ class FakeClient extends InternalClient {
     private final ManagerCapability capabilityManager = new ManagerCapability(this);
     private final Config config = new Config();
     private final EventManager eventManager = new ManagerEvent(this);
-    private final Listener<Exception> listenerException = new Listener<>("Test", null);
-    private final Listener<String> listenerInput = new Listener<>("Test", null);
-    private final Listener<String> listenerOutput = new Listener<>("Test", null);
+    private final Listener<Exception> listenerException = new Listener<>(this, null);
+    private final Listener<String> listenerInput = new Listener<>(this, null);
+    private final Listener<String> listenerOutput = new Listener<>(this, null);
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
     private final IRCServerInfo serverInfo = new IRCServerInfo(this);
@@ -96,7 +97,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    Listener<Exception> getExceptionListener() {
+    public Listener<Exception> getExceptionListener() {
         return this.listenerException;
     }
 

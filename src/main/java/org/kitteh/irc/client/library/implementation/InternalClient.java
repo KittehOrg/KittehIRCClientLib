@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.util.Listener;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -47,9 +48,6 @@ abstract class InternalClient implements Client {
 
     @Nonnull
     abstract Config getConfig();
-
-    @Nonnull
-    abstract Listener<Exception> getExceptionListener();
 
     @Nonnull
     abstract Listener<String> getInputListener();

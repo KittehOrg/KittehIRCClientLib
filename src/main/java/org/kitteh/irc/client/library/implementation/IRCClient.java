@@ -56,6 +56,7 @@ import org.kitteh.irc.client.library.feature.sending.QueueProcessingThreadSender
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -200,14 +201,12 @@ final class IRCClient extends InternalClient {
 
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
-        final String name = this.config.getNotNull(Config.NAME);
-
         Config.ExceptionConsumerWrapper exceptionListenerWrapper = this.config.get(Config.LISTENER_EXCEPTION);
-        this.exceptionListener = new Listener<>(name, (exceptionListenerWrapper == null) ? null : exceptionListenerWrapper.getConsumer());
+        this.exceptionListener = new Listener<>(this, (exceptionListenerWrapper == null) ? null : exceptionListenerWrapper.getConsumer());
         Config.StringConsumerWrapper inputListenerWrapper = this.config.get(Config.LISTENER_INPUT);
-        this.inputListener = new Listener<>(name, (inputListenerWrapper == null) ? null : inputListenerWrapper.getConsumer());
+        this.inputListener = new Listener<>(this, (inputListenerWrapper == null) ? null : inputListenerWrapper.getConsumer());
         Config.StringConsumerWrapper outputListenerWrapper = this.config.get(Config.LISTENER_OUTPUT);
-        this.outputListener = new Listener<>(name, (outputListenerWrapper == null) ? null : outputListenerWrapper.getConsumer());
+        this.outputListener = new Listener<>(this, (outputListenerWrapper == null) ? null : outputListenerWrapper.getConsumer());
 
         if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
             this.configureSts();
@@ -321,6 +320,12 @@ final class IRCClient extends InternalClient {
     @Override
     public EventManager getEventManager() {
         return this.eventManager;
+    }
+
+    @Nonnull
+    @Override
+    public Listener<Exception> getExceptionListener() {
+        return this.exceptionListener;
     }
 
     @Nonnull
@@ -621,12 +626,6 @@ final class IRCClient extends InternalClient {
     @Override
     Config getConfig() {
         return this.config;
-    }
-
-    @Nonnull
-    @Override
-    Listener<Exception> getExceptionListener() {
-        return this.exceptionListener;
     }
 
     @Nonnull

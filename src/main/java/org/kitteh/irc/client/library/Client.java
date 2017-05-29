@@ -54,6 +54,7 @@ import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -576,6 +577,14 @@ public interface Client {
      */
     @Nonnull
     EventManager getEventManager();
+
+    /**
+     * Gets the exception listener.
+     *
+     * @return the exception listener
+     */
+    @Nonnull
+    Listener<Exception> getExceptionListener();
 
     /**
      * Gets the nickname the client intends to possess. May not reflect

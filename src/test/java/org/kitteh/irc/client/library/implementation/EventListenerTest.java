@@ -9,6 +9,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CaseMapping;
+import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
