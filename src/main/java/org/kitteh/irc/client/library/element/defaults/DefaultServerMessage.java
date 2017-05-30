@@ -21,10 +21,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.element.defaults;
 
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -33,11 +34,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class IRCServerMessage implements ServerMessage {
-    static class IRCNumericCommandServerMessage extends IRCServerMessage implements NumericCommandServerMessage {
+/**
+ * Default implementation of {@link ServerMessage}.
+ */
+public class DefaultServerMessage implements ServerMessage {
+    /**
+     * Default implementation of {@link NumericCommandServerMessage}.
+     */
+    public static class NumericCommand extends DefaultServerMessage implements NumericCommandServerMessage {
         private final int command;
 
-        IRCNumericCommandServerMessage(int command, @Nonnull String message, @Nonnull List<MessageTag> tags) {
+        /**
+         * Constructs a numeric command message.
+         *
+         * @param command numeric
+         * @param message full message
+         * @param tags message tags
+         */
+        public NumericCommand(int command, @Nonnull String message, @Nonnull List<MessageTag> tags) {
             super(message, tags);
             this.command = command;
         }
@@ -48,10 +62,20 @@ class IRCServerMessage implements ServerMessage {
         }
     }
 
-    static class IRCStringCommandServerMessage extends IRCServerMessage implements StringCommandServerMessage {
+    /**
+     * Default implementation of {@link StringCommandServerMessage}.
+     */
+    public static class StringCommand extends DefaultServerMessage implements StringCommandServerMessage {
         private final String command;
 
-        IRCStringCommandServerMessage(@Nonnull String command, @Nonnull String message, @Nonnull List<MessageTag> tags) {
+        /**
+         * Constructs a string command message.
+         *
+         * @param command command
+         * @param message full message
+         * @param tags message tags
+         */
+        public StringCommand(@Nonnull String command, @Nonnull String message, @Nonnull List<MessageTag> tags) {
             super(message, tags);
             this.command = command;
         }
@@ -66,7 +90,14 @@ class IRCServerMessage implements ServerMessage {
     private final String message;
     private final List<MessageTag> tags;
 
-    IRCServerMessage(@Nonnull String message, @Nonnull List<MessageTag> tags) {
+    /**
+     * Constructs a sad, non-command message, only used in KICL for bad
+     * messages going to a {@link KittehServerMessageException}.
+     *
+     * @param message full message
+     * @param tags parsed tags
+     */
+    public DefaultServerMessage(@Nonnull String message, @Nonnull List<MessageTag> tags) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.nullCheck(tags, "Tags cannot be null");
         this.message = message;
@@ -81,7 +112,7 @@ class IRCServerMessage implements ServerMessage {
 
     @Nonnull
     @Override
-    public List<MessageTag> getTags() {
+    public final List<MessageTag> getTags() {
         return this.tags;
     }
 

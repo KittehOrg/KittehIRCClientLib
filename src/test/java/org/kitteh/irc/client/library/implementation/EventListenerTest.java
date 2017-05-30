@@ -3,6 +3,7 @@ package org.kitteh.irc.client.library.implementation;
 import org.junit.Before;
 import org.junit.Test;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.defaults.DefaultServerMessage;
 import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
@@ -70,7 +71,7 @@ public class EventListenerTest {
         final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
 
         if (split.length <= index) {
-            throw new KittehServerMessageException(new IRCServerMessage(line, new ArrayList<>()), "Server sent a message without a command");
+            throw new KittehServerMessageException(new DefaultServerMessage(line, new ArrayList<>()), "Server sent a message without a command");
         }
 
         final String commandString = split[index++];
@@ -79,9 +80,9 @@ public class EventListenerTest {
 
         try {
             int numeric = Integer.parseInt(commandString);
-            this.eventManager.callEvent(new ClientReceiveNumericEvent(this.client, new IRCServerMessage.IRCNumericCommandServerMessage(numeric, line, new ArrayList<>()), actor.snapshot(), commandString, numeric, args));
+            this.eventManager.callEvent(new ClientReceiveNumericEvent(this.client, new DefaultServerMessage.NumericCommand(numeric, line, new ArrayList<>()), actor.snapshot(), commandString, numeric, args));
         } catch (NumberFormatException exception) {
-            this.eventManager.callEvent(new ClientReceiveCommandEvent(this.client, new IRCServerMessage.IRCStringCommandServerMessage(commandString, line, new ArrayList<>()), actor.snapshot(), commandString, args));
+            this.eventManager.callEvent(new ClientReceiveCommandEvent(this.client, new DefaultServerMessage.StringCommand(commandString, line, new ArrayList<>()), actor.snapshot(), commandString, args));
         }
     }
 

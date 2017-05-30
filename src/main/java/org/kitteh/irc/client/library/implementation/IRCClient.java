@@ -36,6 +36,7 @@ import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.defaults.DefaultServerMessage;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
@@ -789,7 +790,7 @@ final class IRCClient extends InternalClient {
         List<MessageTag> tags;
         if (split[index].startsWith("@")) {
             if (split.length <= index) {
-                throw new KittehServerMessageException(new IRCServerMessage(line, new ArrayList<>()), "Server sent a message without a command");
+                throw new KittehServerMessageException(new DefaultServerMessage(line, new ArrayList<>()), "Server sent a message without a command");
             }
             String tagSection = split[index];
             if (tagSection.length() < 2) {
@@ -811,7 +812,7 @@ final class IRCClient extends InternalClient {
         final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
 
         if (split.length <= index) {
-            throw new KittehServerMessageException(new IRCServerMessage(line, tags), "Server sent a message without a command");
+            throw new KittehServerMessageException(new DefaultServerMessage(line, tags), "Server sent a message without a command");
         }
 
         final String commandString = split[index++];
@@ -820,9 +821,9 @@ final class IRCClient extends InternalClient {
 
         try {
             int numeric = Integer.parseInt(commandString);
-            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, new IRCServerMessage.IRCNumericCommandServerMessage(numeric, line, tags), actor.snapshot(), commandString, numeric, args));
+            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, new DefaultServerMessage.NumericCommand(numeric, line, tags), actor.snapshot(), commandString, numeric, args));
         } catch (NumberFormatException exception) {
-            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, new IRCServerMessage.IRCStringCommandServerMessage(commandString, line, tags), actor.snapshot(), commandString, args));
+            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, new DefaultServerMessage.StringCommand(commandString, line, tags), actor.snapshot(), commandString, args));
         }
     }
 
