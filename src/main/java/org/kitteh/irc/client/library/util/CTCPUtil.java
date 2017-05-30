@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.util;
 
 import javax.annotation.Nonnull;
 import java.util.regex.Matcher;
@@ -54,13 +54,10 @@ import java.util.regex.Pattern;
  */
 
 /**
- * A utility class for CTCP handling.
- * <p>
- * Stored in this package so it can be package private to avoid confusion.
- * This stuff is all handled internally by the client; no client user needs
- * to know how to do this.
+ * A utility class for CTCP handling, though this is <i>done by KICL methods
+ * already in pretty much all cases</i>.
  */
-final class CTCPUtil {
+public final class CTCPUtil {
     private static final char CTCP_DELIMITER = '\u0001';
     private static final char CTCP_MQUOTE = '\u0016';
 
@@ -78,7 +75,7 @@ final class CTCPUtil {
      * @return converted message
      */
     @Nonnull
-    static String fromCTCP(@Nonnull String message) {
+    public static String fromCTCP(@Nonnull String message) {
         final String ctcpContent = message.substring(1, message.indexOf(CTCP_DELIMITER, 1)); // Strip the delimiters
         StringBuilder builder = new StringBuilder(ctcpContent.length());
         int currentIndex = 0;
@@ -129,7 +126,7 @@ final class CTCPUtil {
      * @param message message to test
      * @return true if the message is a CTCP message
      */
-    static boolean isCTCP(@Nonnull String message) {
+    public static boolean isCTCP(@Nonnull String message) {
         return CTCP_MESSAGE.matcher(message).matches();
     }
 
@@ -140,7 +137,7 @@ final class CTCPUtil {
      * @return converted message
      */
     @Nonnull
-    static String toCTCP(@Nonnull String message) {
+    public static String toCTCP(@Nonnull String message) {
         StringBuilder builder = new StringBuilder(message.length());
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;
