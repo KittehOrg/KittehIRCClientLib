@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.WhoisData;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -53,7 +54,9 @@ class WhoisBuilder {
         private final boolean away;
         private final Optional<String> awayMessage;
 
-        private Whois(Client client, String account, Set<String> channels, String nick, String userString, String host, String realName, String server, String serverDescription, boolean secureConnection, String operatorInformation, Long idleTime, Long signOnTime, String awayMessage) {
+        private Whois(@Nonnull Client client, @Nullable String account, @Nonnull Set<String> channels, @Nonnull String nick, @Nonnull String userString,
+                      @Nonnull String host, @Nullable String realName, @Nullable String server, @Nullable String serverDescription, boolean secureConnection,
+                      @Nullable String operatorInformation, @Nullable Long idleTime, @Nullable Long signOnTime, @Nullable String awayMessage) {
             this.client = client;
             this.account = Optional.ofNullable(account);
             this.channels = Collections.unmodifiableSet(new HashSet<>(channels));
@@ -208,7 +211,7 @@ class WhoisBuilder {
     private Long signOnTime;
     private String awayMessage;
 
-    WhoisBuilder(Client client, String nick) {
+    WhoisBuilder(@Nonnull Client client, @Nonnull String nick) {
         this.client = client;
         this.nick = nick;
     }
