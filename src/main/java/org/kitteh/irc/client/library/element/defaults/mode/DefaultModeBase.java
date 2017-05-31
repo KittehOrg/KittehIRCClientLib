@@ -21,8 +21,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.element.defaults.mode;
 
-final class ModeData {
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.mode.Mode;
 
+import javax.annotation.Nonnull;
+
+/**
+ * Abstract base class for modes.
+ */
+public abstract class DefaultModeBase implements Mode {
+    private final Client client;
+    private final char mode;
+
+    /**
+     * Constructs and such.
+     *
+     * @param client client
+     * @param mode character
+     */
+    protected DefaultModeBase(@Nonnull Client client, char mode) {
+        this.client = client;
+        this.mode = mode;
+    }
+
+    @Override
+    @Nonnull
+    public Client getClient() {
+        return this.client;
+    }
+
+    @Override
+    public char getChar() {
+        return this.mode;
+    }
 }

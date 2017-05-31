@@ -25,6 +25,8 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.defaults.mode.DefaultChannelMode;
+import org.kitteh.irc.client.library.element.defaults.mode.DefaultChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
@@ -197,7 +199,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
                         default:
                             type = ChannelMode.Type.D_PARAMETER_NEVER;
                     }
-                    modesList.add(new ModeData.IRCChannelMode(client, mode, type));
+                    modesList.add(new DefaultChannelMode(client, mode, type));
                 }
             }
             this.modes = Collections.unmodifiableList(modesList);
@@ -283,7 +285,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
             }
             List<ChannelUserMode> prefixList = new ArrayList<>();
             for (int index = 0; index < modes.length(); index++) {
-                prefixList.add(new ModeData.IRCChannelUserMode(client, modes.charAt(index), display.charAt(index)));
+                prefixList.add(new DefaultChannelUserMode(client, modes.charAt(index), display.charAt(index)));
             }
             this.modes = Collections.unmodifiableList(prefixList);
         }

@@ -32,6 +32,7 @@ import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.WhoisData;
+import org.kitteh.irc.client.library.element.defaults.mode.DefaultUserMode;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ModeInfo;
@@ -143,7 +144,7 @@ class EventListener {
                 if (event.getParameters().size() > 3) {
                     List<UserMode> modes = new ArrayList<>(event.getParameters().get(3).length());
                     for (char mode : event.getParameters().get(3).toCharArray()) {
-                        modes.add(new ModeData.IRCUserMode(this.client, mode));
+                        modes.add(new DefaultUserMode(this.client, mode));
                     }
                     this.client.getServerInfo().setUserModes(modes);
                 } else {

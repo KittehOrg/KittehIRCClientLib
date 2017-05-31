@@ -21,8 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
-
-final class ModeData {
-
-}
+/**
+ * Default mode element implementations.
+ */
+package org.kitteh.irc.client.library.element.defaults.mode;
