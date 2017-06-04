@@ -264,7 +264,7 @@ final class IRCClient extends InternalClient {
         Sanity.truthiness(channelsAndKeys.length > 0, "Channel/key pairs cannot be empty array");
         for (Pair<String, String> channelAndKey : channelsAndKeys) {
             String channelName = channelAndKey.getLeft();
-            Sanity.truthiness(channelName == null, "Channel/key pairs cannot contain null channel name");
+            Sanity.nullCheck(channelName, "Channel/key pairs cannot contain null channel name");
             Sanity.truthiness(this.serverInfo.isValidChannel(channelName), "Channel/key pairs cannot contain invalid channel name " + channelName);
         }
         for (Pair<String, String> channelAndKey : channelsAndKeys) {
