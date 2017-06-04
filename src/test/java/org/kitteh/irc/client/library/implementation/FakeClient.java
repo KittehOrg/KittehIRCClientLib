@@ -89,6 +89,7 @@ class FakeClient extends InternalClient {
         return this.config;
     }
 
+    @Override
     public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
         this.defaultMessageMap = defaults;
     }
@@ -244,6 +245,7 @@ class FakeClient extends InternalClient {
     }
 
     @Nonnull
+    @Override
     public DefaultMessageMap getDefaultMessageMap() {
         return this.defaultMessageMap;
     }
