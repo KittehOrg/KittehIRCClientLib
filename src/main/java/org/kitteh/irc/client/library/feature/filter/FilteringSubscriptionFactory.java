@@ -23,17 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.filter;
 
-import net.engio.mbassy.bus.BusRuntime;
-import net.engio.mbassy.bus.IMessagePublication;
 import net.engio.mbassy.bus.MessagePublication;
-import net.engio.mbassy.bus.config.IBusConfiguration;
-import net.engio.mbassy.bus.error.MessageBusException;
-import net.engio.mbassy.common.StrongConcurrentSet;
-import net.engio.mbassy.common.WeakConcurrentSet;
 import net.engio.mbassy.dispatch.DelegatingMessageDispatcher;
+import net.engio.mbassy.dispatch.IHandlerInvocation;
 import net.engio.mbassy.dispatch.IMessageDispatcher;
-import net.engio.mbassy.listener.MessageHandler;
-import net.engio.mbassy.subscription.Subscription;
 import net.engio.mbassy.subscription.SubscriptionContext;
 import net.engio.mbassy.subscription.SubscriptionFactory;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -41,9 +34,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +42,6 @@ import java.util.Map;
  * A filtering factory for filters.
  */
 public class FilteringSubscriptionFactory extends SubscriptionFactory {
-    private static final Constructor<Subscription> SUBSCRIPTION_CONSTRUCTOR;
     private final Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> filters;
 
     /**
@@ -63,34 +53,20 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
         this.filters = Sanity.nullCheck(filters, "filters");
     }
 
-    static {
-        try {
-            SUBSCRIPTION_CONSTRUCTOR = Subscription.class.getDeclaredConstructor(SubscriptionContext.class, IMessageDispatcher.class, Collection.class);
-            SUBSCRIPTION_CONSTRUCTOR.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            throw new AssertionError("Cannot initialize subscriptions");
-        }
-    }
-
     @Override
-    public Subscription createSubscription(BusRuntime runtime, MessageHandler handlerMetadata) throws MessageBusException {
-        try {
-            SubscriptionContext context = new SubscriptionContext(runtime, handlerMetadata, runtime.get(IBusConfiguration.Properties.PublicationErrorHandlers));
-            IMessageDispatcher dispatcher = this.buildDispatcher(context, this.buildInvocationForHandler(context));
-            List<FilterProcessorWrapper> filterWrappers = new ArrayList<>();
-            for (Map.Entry<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> entry : this.filters.entrySet()) {
-                Annotation[] annotations = handlerMetadata.getMethod().getAnnotationsByType(entry.getKey());
-                if (annotations.length > 0) {
-                    filterWrappers.add(new FilterProcessorWrapper(entry.getValue(), annotations));
-                }
+    protected IMessageDispatcher buildDispatcher(SubscriptionContext context, IHandlerInvocation invocation) {
+        IMessageDispatcher dispatcher = super.buildDispatcher(context, invocation);
+        List<FilterProcessorWrapper> filterWrappers = new ArrayList<>();
+        for (Map.Entry<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> entry : this.filters.entrySet()) {
+            Annotation[] annotations = context.getHandler().getMethod().getAnnotationsByType(entry.getKey());
+            if (annotations.length > 0) {
+                filterWrappers.add(new FilterProcessorWrapper(entry.getValue(), annotations));
             }
-            if (!filterWrappers.isEmpty()) {
-                dispatcher = new FilteredMessageDispatcher(dispatcher, filterWrappers.toArray(new FilterProcessorWrapper[filterWrappers.size()]));
-            }
-            return SUBSCRIPTION_CONSTRUCTOR.newInstance(context, dispatcher, handlerMetadata.useStrongReferences() ? new StrongConcurrentSet<>() : new WeakConcurrentSet<>());
-        } catch (Exception e) {
-            throw new MessageBusException(e);
         }
+        if (!filterWrappers.isEmpty()) {
+            dispatcher = new FilteredMessageDispatcher(dispatcher, filterWrappers.toArray(new FilterProcessorWrapper[filterWrappers.size()]));
+        }
+        return dispatcher;
     }
 
     private final class FilteredMessageDispatcher extends DelegatingMessageDispatcher {
