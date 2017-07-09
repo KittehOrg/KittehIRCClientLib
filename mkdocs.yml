@@ -4,6 +4,7 @@ pages:
 - Home: index.md
 - Events: events.md
 - IRCv3 Support: ircv3.md
+- Common Problems: common_problems.md
 - Advanced:
   - Account Tracking: advanced/accounts.md
   - SSL: advanced/ssl.md
