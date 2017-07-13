@@ -781,43 +781,62 @@ final class IRCClient extends InternalClient {
             this.actorProvider.reset();
             this.capabilityManager.reset();
             this.serverInfo.reset();
+            return;
         }
 
-        final String[] split = line.split(" ");
-
-        int index = 0;
+        int position = 0;
+        int next;
+        // Skip starting spaces just in case
+        while ((next = line.indexOf(' ', position)) == position) {
+            position = next + 1;
+        }
 
         List<MessageTag> tags;
-        if (split[index].startsWith("@")) {
-            if (split.length <= index) {
-                throw new KittehServerMessageException(new DefaultServerMessage(line, new ArrayList<>()), "Server sent a message without a command");
-            }
-            String tagSection = split[index];
+        if (line.charAt(position) == '@') {
+            String tagSection = line.substring(position, next);
+            position = next + 1;
             if (tagSection.length() < 2) {
                 throw new KittehServerMessageTagException(line, "Server sent an empty tag section");
             }
             tags = this.messageTagManager.getTags(tagSection.substring(1));
-            index++;
         } else {
             tags = Collections.unmodifiableList(new ArrayList<>());
         }
 
         final String actorName;
-        if (split[index].startsWith(":")) {
-            actorName = split[index].substring(1);
-            index++;
+        if (line.charAt(position) == ':') {
+            actorName = line.substring(position + 1, next);
+            position = next + 1;
         } else {
             actorName = "";
         }
         final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
 
-        if (split.length <= index) {
-            throw new KittehServerMessageException(new DefaultServerMessage(line, tags), "Server sent a message without a command");
+        String commandString = null;
+        List<String> args = new ArrayList<>();
+
+        free:
+        while ((next = line.indexOf(' ', position)) != -1) {
+            if (line.charAt(position) == ':') {
+                position++;
+                /* I've got to */
+                break free;
+            } else if (position != next) {
+                if (commandString == null) {
+                    commandString = line.substring(position, next);
+                } else {
+                    args.add(line.substring(position, next));
+                }
+            }
+            position = next + 1;
+        }
+        if (position != line.length()) {
+            args.add(line.substring((line.charAt(position) == ':') ? (position + 1) : position, line.length()));
         }
 
-        final String commandString = split[index++];
-
-        final List<String> args = this.handleArgs(split, index);
+        if (commandString == null) {
+            throw new KittehServerMessageException(new DefaultServerMessage(line, tags), "Server sent a message without a command");
+        }
 
         try {
             int numeric = Integer.parseInt(commandString);
