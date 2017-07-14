@@ -760,22 +760,6 @@ final class IRCClient extends InternalClient {
         return this.config.getNotNull(Config.SSL);
     }
 
-    private List<String> handleArgs(@Nonnull String[] split, int start) {
-        final List<String> argsList = new ArrayList<>();
-
-        int index = start;
-        for (; index < split.length; index++) {
-            if (split[index].startsWith(":")) {
-                split[index] = split[index].substring(1);
-                argsList.add(StringUtil.combineSplit(split, index));
-                break;
-            }
-            argsList.add(split[index]);
-        }
-
-        return argsList;
-    }
-
     private void handleLine(@Nonnull final String line) {
         if (line.isEmpty()) {
             this.actorProvider.reset();
