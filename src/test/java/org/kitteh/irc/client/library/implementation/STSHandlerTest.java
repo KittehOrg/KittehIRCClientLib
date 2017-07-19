@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.defaults.DefaultServerMessage;
+import org.kitteh.irc.client.library.element.defaults.DefaultCapabilityState;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
@@ -37,7 +38,7 @@ public class STSHandlerTest {
 
         List<CapabilityState> capabilities = new ArrayList<>();
         final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
-        capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
+        capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
@@ -68,7 +69,7 @@ public class STSHandlerTest {
 
         List<CapabilityState> capabilities = new ArrayList<>();
         final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
-        capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
+        capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapNew(new CapabilitiesNewSupportedEvent(client, messages, true, capabilities));
@@ -95,7 +96,7 @@ public class STSHandlerTest {
         STSHandler handler = new STSHandler(machine, client);
         List<CapabilityState> capabilities = new ArrayList<>();
         final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=cats";
-        capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
+        capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
@@ -112,7 +113,7 @@ public class STSHandlerTest {
         STSHandler handler = new STSHandler(machine, client);
         List<CapabilityState> capabilities = new ArrayList<>();
         final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT;
-        capabilities.add(new ManagerCapability.IRCCapabilityState(client, policyString));
+        capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));

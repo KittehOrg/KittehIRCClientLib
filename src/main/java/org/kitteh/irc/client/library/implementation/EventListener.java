@@ -32,6 +32,7 @@ import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.WhoisData;
+import org.kitteh.irc.client.library.element.defaults.DefaultCapabilityState;
 import org.kitteh.irc.client.library.element.defaults.mode.DefaultUserMode;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
@@ -759,7 +760,7 @@ class EventListener {
         } else {
             capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT;
         }
-        List<CapabilityState> capabilityStateList = Arrays.stream(event.getParameters().get(capabilityListIndex).split(" ")).filter(string -> !string.isEmpty()).map(capability -> new ManagerCapability.IRCCapabilityState(this.client, capability)).collect(Collectors.toCollection(ArrayList::new));
+        List<CapabilityState> capabilityStateList = Arrays.stream(event.getParameters().get(capabilityListIndex).split(" ")).filter(string -> !string.isEmpty()).map(capability -> new DefaultCapabilityState(this.client, capability)).collect(Collectors.toCollection(ArrayList::new));
         switch (event.getParameters().get(1).toLowerCase()) {
             case "ack":
                 this.client.getCapabilityManager().updateCapabilities(capabilityStateList);
