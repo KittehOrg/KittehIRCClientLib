@@ -782,6 +782,10 @@ final class IRCClient extends InternalClient {
                 throw new KittehServerMessageTagException(line, "Server sent an empty tag section");
             }
             tags = this.messageTagManager.getTags(tagSection.substring(1));
+            // Skip more spaces just in case
+            while ((next = line.indexOf(' ', position)) == position) {
+                position = next + 1;
+            }
         } else {
             tags = Collections.unmodifiableList(new ArrayList<>());
         }
@@ -805,16 +809,22 @@ final class IRCClient extends InternalClient {
                 /* I've got to */
                 break free;
             } else if (position != next) {
+                String bit = line.substring(position, next);
                 if (commandString == null) {
-                    commandString = line.substring(position, next);
+                    commandString = bit;
                 } else {
-                    args.add(line.substring(position, next));
+                    args.add(bit);
                 }
             }
             position = next + 1;
         }
         if (position != line.length()) {
-            args.add(line.substring((line.charAt(position) == ':') ? (position + 1) : position, line.length()));
+            String bit = line.substring((line.charAt(position) == ':') ? (position + 1) : position, line.length());
+            if (commandString == null) {
+                commandString = bit;
+            } else {
+                args.add(bit);
+            }
         }
 
         if (commandString == null) {
