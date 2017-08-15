@@ -255,9 +255,11 @@ final class Config {
                 try {
                     Entry<?> entry = (Entry<?>) field.get(null);
                     Object setEntry = this.get(entry);
-                    String info;
-                    if (entry.noToString) {
-                        info = (setEntry == null) ? null : "[[ENTRY NOT NULL BUT SENSITIVE DATA]]";
+                    final String info;
+                    if (setEntry == null) {
+                        info = null;
+                    } else if (entry.noToString) {
+                        info = "[[ENTRY NOT NULL BUT SENSITIVE DATA]]";
                     } else {
                         info = setEntry.toString();
                     }
