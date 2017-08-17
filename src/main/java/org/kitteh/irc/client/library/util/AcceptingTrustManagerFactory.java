@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.ssl.util.SimpleTrustManagerFactory;
 import io.netty.util.internal.EmptyArrays;
 import org.kitteh.irc.client.library.Client;
@@ -83,5 +84,16 @@ public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactor
     @Override
     protected void engineInit(ManagerFactoryParameters managerFactoryParameters) throws Exception {
         // NOOP
+    }
+
+    /**
+     * Tests if {@code factory} produces instances of a known
+     * insecure (accepting) trust manager.
+     *
+     * @param factory the factory
+     * @return true if the factory is insecure, false if not
+     */
+    public static boolean isInsecure(TrustManagerFactory factory) {
+        return (factory instanceof AcceptingTrustManagerFactory) || (factory instanceof InsecureTrustManagerFactory);
     }
 }

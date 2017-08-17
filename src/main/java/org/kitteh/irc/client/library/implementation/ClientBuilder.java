@@ -23,7 +23,6 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
@@ -276,11 +275,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     public Client build() {
         if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
             final TrustManagerFactory factory = this.config.get(Config.SSL_TRUST_MANAGER_FACTORY);
-            Sanity.truthiness(
-                    !(factory instanceof AcceptingTrustManagerFactory) &&
-                            !(factory instanceof InsecureTrustManagerFactory),
-                    "Cannot use STS with an insecure trust manager."
-            );
+            Sanity.truthiness(!AcceptingTrustManagerFactory.isInsecure(factory), "Cannot use STS with an insecure trust manager.");
         }
 
         this.updateInetEntries();
