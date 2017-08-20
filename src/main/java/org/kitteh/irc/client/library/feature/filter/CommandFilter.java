@@ -23,6 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.filter;
 
+import net.engio.mbassy.listener.Filter;
+import net.engio.mbassy.listener.IMessageFilter;
+import net.engio.mbassy.subscription.SubscriptionContext;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 
 import javax.annotation.Nonnull;
@@ -45,6 +48,7 @@ import java.lang.annotation.Target;
  *     }
  * </pre>
  */
+@Filter(CommandFilter.Processor.class)
 @Repeatable(CommandFilter.Commands.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -52,7 +56,10 @@ public @interface CommandFilter {
     /**
      * Processes this annotation-based filter.
      */
-    class Processor implements FilterProcessor<ClientReceiveCommandEvent, CommandFilter> {
+    class Processor implements FilterProcessor<ClientReceiveCommandEvent, CommandFilter>, IMessageFilter<ClientReceiveCommandEvent> {
+        public Processor() {
+        }
+
         @Override
         public boolean accepts(@Nonnull ClientReceiveCommandEvent event, @Nonnull CommandFilter[] commandFilters) {
             for (CommandFilter commandFilter : commandFilters) {
@@ -61,6 +68,11 @@ public @interface CommandFilter {
                 }
             }
             return false;
+        }
+
+        @Override
+        public boolean accepts(ClientReceiveCommandEvent event, SubscriptionContext context) {
+            return this.accepts(event, context.getHandler().getMethod().getAnnotationsByType(CommandFilter.class));
         }
     }
 

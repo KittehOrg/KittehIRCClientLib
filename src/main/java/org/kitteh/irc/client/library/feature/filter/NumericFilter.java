@@ -23,6 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.filter;
 
+import net.engio.mbassy.listener.Filter;
+import net.engio.mbassy.listener.IMessageFilter;
+import net.engio.mbassy.subscription.SubscriptionContext;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 
 import javax.annotation.Nonnull;
@@ -45,6 +48,7 @@ import java.lang.annotation.Target;
  *     }
  * </pre>
  */
+@Filter(NumericFilter.Processor.class)
 @Repeatable(NumericFilter.Numerics.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -52,7 +56,10 @@ public @interface NumericFilter {
     /**
      * Processes this annotation-based filter.
      */
-    class Processor implements FilterProcessor<ClientReceiveNumericEvent, NumericFilter> {
+    class Processor implements FilterProcessor<ClientReceiveNumericEvent, NumericFilter>, IMessageFilter<ClientReceiveNumericEvent> {
+        public Processor() {
+        }
+
         @Override
         public boolean accepts(@Nonnull ClientReceiveNumericEvent event, @Nonnull NumericFilter[] numericFilters) {
             for (NumericFilter numericFilter : numericFilters) {
@@ -61,6 +68,11 @@ public @interface NumericFilter {
                 }
             }
             return false;
+        }
+
+        @Override
+        public boolean accepts(ClientReceiveNumericEvent event, SubscriptionContext context) {
+            return this.accepts(event, context.getHandler().getMethod().getAnnotationsByType(NumericFilter.class));
         }
     }
 
