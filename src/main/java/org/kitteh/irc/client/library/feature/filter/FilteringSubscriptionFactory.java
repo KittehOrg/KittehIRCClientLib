@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.feature.filter;
 
 import net.engio.mbassy.bus.MessagePublication;
+import net.engio.mbassy.bus.error.MessageBusException;
 import net.engio.mbassy.dispatch.DelegatingMessageDispatcher;
 import net.engio.mbassy.dispatch.IHandlerInvocation;
 import net.engio.mbassy.dispatch.IMessageDispatcher;
@@ -54,7 +55,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
     }
 
     @Override
-    protected IMessageDispatcher buildDispatcher(SubscriptionContext context, IHandlerInvocation invocation) {
+    protected IMessageDispatcher buildDispatcher(SubscriptionContext context, IHandlerInvocation invocation) throws MessageBusException {
         IMessageDispatcher dispatcher = super.buildDispatcher(context, invocation);
         List<FilterProcessorWrapper> filterWrappers = new ArrayList<>();
         for (Map.Entry<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> entry : this.filters.entrySet()) {

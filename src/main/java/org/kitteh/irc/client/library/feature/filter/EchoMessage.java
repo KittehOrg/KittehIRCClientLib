@@ -23,6 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.filter;
 
+import net.engio.mbassy.listener.Filter;
+import net.engio.mbassy.listener.IMessageFilter;
+import net.engio.mbassy.subscription.SubscriptionContext;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
@@ -37,17 +40,26 @@ import java.util.Optional;
 /**
  * Only get messages sent by self.
  */
+@Filter(EchoMessage.Processor.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface EchoMessage {
     /**
      * {@inheritDoc}
      */
-    class Processor implements FilterProcessor<ActorMessageEvent<? extends Actor>, EchoMessage> {
+    class Processor implements FilterProcessor<ActorMessageEvent<? extends Actor>, EchoMessage>, IMessageFilter<ActorMessageEvent<? extends Actor>> {
+        public Processor() {
+        }
+
         @Override
         public boolean accepts(@Nonnull ActorMessageEvent<? extends Actor> event, @Nonnull EchoMessage[] annotations) {
             Optional<User> client = event.getClient().getUser();
             return client.isPresent() && client.get().equals(event.getActor());
+        }
+
+        @Override
+        public boolean accepts(ActorMessageEvent<? extends Actor> event, SubscriptionContext context) {
+            return this.accepts(event, context.getHandler().getMethod().getAnnotationsByType(EchoMessage.class));
         }
     }
 }

@@ -23,6 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.filter;
 
+import net.engio.mbassy.listener.Filter;
+import net.engio.mbassy.listener.IMessageFilter;
+import net.engio.mbassy.subscription.SubscriptionContext;
 import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 
 import javax.annotation.Nonnull;
@@ -34,16 +37,25 @@ import java.lang.annotation.Target;
 /**
  * Only get messages addressed to self.
  */
+@Filter(ToSelfOnly.Processor.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ToSelfOnly {
     /**
      * {@inheritDoc}
      */
-    class Processor implements FilterProcessor<PrivateEvent, ToSelfOnly> {
+    class Processor implements FilterProcessor<PrivateEvent, ToSelfOnly>, IMessageFilter<PrivateEvent> {
+        public Processor() {
+        }
+
         @Override
         public boolean accepts(@Nonnull PrivateEvent privateEvent, @Nonnull ToSelfOnly[] annotations) {
             return privateEvent.isToClient();
+        }
+
+        @Override
+        public boolean accepts(PrivateEvent event, SubscriptionContext context) {
+            return this.accepts(event, context.getHandler().getMethod().getAnnotationsByType(ToSelfOnly.class));
         }
     }
 }
