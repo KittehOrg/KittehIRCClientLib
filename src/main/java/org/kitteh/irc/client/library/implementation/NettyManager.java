@@ -52,11 +52,13 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
+import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
 import org.kitteh.irc.client.library.feature.sts.STSPolicy;
+import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -156,6 +158,8 @@ final class NettyManager {
                     if (factory == null) {
                         factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                         factory.init((KeyStore) null);
+                    } else if (AcceptingTrustManagerFactory.isInsecure(factory)) {
+                        this.client.getExceptionListener().queue(new KittehNagException(String.format("Client '%s' is using an insecure trust manager factory.", this.client)));
                     }
                     SslContext sslContext = SslContextBuilder.forClient().trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();
                     InetSocketAddress addr = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS);
