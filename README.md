@@ -52,4 +52,12 @@ Releases are available on Maven Central.
 
 Snapshots are available on the Sonatype OSSRH: https://oss.sonatype.org/content/repositories/snapshots
 
+### Branches
+
+**master** branch tracks releases and may occasionally contain bug fixes or JavaDoc changes prior to release.
+
+**next** branch contains code for upcoming releases and is always working toward the next major or minor release.
+
+### Logo?
+
 ![KICL HAS A BAD LOGO](http://i.imgur.com/KCUNexy.png)
