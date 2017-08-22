@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 
 import javax.annotation.Nonnull;
+import java.util.regex.Pattern;
 
 /**
  * String tools!
@@ -158,4 +159,52 @@ public final class StringUtil {
         return client.getServerInfo().getCaseMapping().toLowerCase(input);
     }
 
+    /**
+     * Converts an IRC wildcard (*, ?) to a regular expression pattern.
+     *
+     * @param wildcardExpression expression
+     * @return a pattern
+     * @throws IllegalArgumentException if wildcardExpression is null
+     */
+    @Nonnull
+    public static Pattern wildcardToPattern(@Nonnull String wildcardExpression) {
+        Sanity.nullCheck(wildcardExpression, "Wildcard expression cannot be null");
+
+        StringBuilder builder = new StringBuilder(wildcardExpression.length());
+        for (char character : wildcardExpression.toCharArray()) {
+            switch (character) {
+                case '*':
+                    builder.append('.').append(character); // * to .*
+                    break;
+                case '?':
+                    builder.append('.'); // ? to .
+                    break;
+                case '<':
+                case '(':
+                case '[':
+                case '{':
+                case '\\':
+                case '^':
+                case '-':
+                case '=':
+                case '$':
+                case '!':
+                case '|':
+                case ']':
+                case '}':
+                case ')':
+                case '+':
+                case '.':
+                case '>':
+                    builder.append('\\');
+                    // Deliberately fall through!
+                default:
+                    builder.append(character);
+                    break;
+            }
+        }
+        builder.insert(0, '^');
+        builder.append('$');
+        return Pattern.compile(builder.toString(), Pattern.CASE_INSENSITIVE);
+    }
 }

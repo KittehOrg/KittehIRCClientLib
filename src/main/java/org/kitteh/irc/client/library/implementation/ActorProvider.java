@@ -40,6 +40,7 @@ import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.util.CIKeyMap;
+import org.kitteh.irc.client.library.util.Mask;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -746,13 +747,7 @@ class ActorProvider implements Resettable {
         }
     }
 
-    // Valid nick chars: \w\[]^`{}|-_
-    // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
-    // You know what? Screw it.
-    // Let's just do it assuming no IRCD can handle following the rules.
-    // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
-    private static final Pattern NICK_PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
-    private static final Pattern SERVER_PATTERN = Pattern.compile("(?!-)(?:[a-zA-Z\\d\\-]{0,62}[a-zA-Z\\d]\\.){1,126}(?!\\d+)[a-zA-Z\\d]{1,63}");
+    private static final Pattern SERVER_PATTERN = Pattern.compile("(?!\\-)(?:[a-zA-Z\\d\\-]{0,62}[a-zA-Z\\d]\\.){1,126}(?!\\d+)[a-zA-Z\\d]{1,63}");
 
     private final InternalClient client;
 
@@ -783,7 +778,7 @@ class ActorProvider implements Resettable {
 
     @Nonnull
     IRCActor getActor(@Nonnull String name) {
-        Matcher nickMatcher = NICK_PATTERN.matcher(name);
+        Matcher nickMatcher = Mask.NICK_PATTERN.matcher(name);
         if (nickMatcher.matches()) {
             String nick = nickMatcher.group(1);
             IRCUser user = this.trackedUsers.get(nick);
