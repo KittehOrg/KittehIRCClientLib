@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -33,13 +34,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-final class ManagerCapability implements CapabilityManager, Resettable {
-    private final InternalClient client;
+/**
+ * Default implementation of {@link CapabilityManager}.
+ */
+public class ManagerCapability implements CapabilityManager.WithManagement {
+    private final Client client;
     private final Map<String, CapabilityState> capabilities = new ConcurrentHashMap<>();
     private List<CapabilityState> supportedCapabilities = new ArrayList<>();
     private boolean negotiating = true;
 
-    ManagerCapability(InternalClient client) {
+    /**
+     * Constructs the capability manager.
+     *
+     * @param client client for which this manager will operate
+     */
+    public ManagerCapability(Client client) {
         this.client = client;
     }
 
@@ -61,15 +70,18 @@ final class ManagerCapability implements CapabilityManager, Resettable {
         return new ArrayList<>(this.supportedCapabilities);
     }
 
-    boolean isNegotiating() {
+    @Override
+    public boolean isNegotiating() {
         return this.negotiating;
     }
 
-    void endNegotiation() {
+    @Override
+    public void endNegotiation() {
         this.negotiating = false;
     }
 
-    void updateCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
+    @Override
+    public void updateCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
         for (CapabilityState capabilityState : capabilityStates) {
             if (capabilityState.isDisabled()) {
                 this.capabilities.remove(capabilityState.getName());
@@ -79,18 +91,24 @@ final class ManagerCapability implements CapabilityManager, Resettable {
         }
     }
 
-    void setCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
+    @Override
+    public void setCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
         this.capabilities.clear();
         this.updateCapabilities(capabilityStates);
     }
 
-    void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
+    @Override
+    public void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
         this.supportedCapabilities = new ArrayList<>(capabilityStates);
     }
 
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).add("client", this.client).toString();
+        return new ToStringer(this)
+                .add("client", this.client)
+                .add("capabilities", this.capabilities)
+                .add("supportedCapabilities", this.supportedCapabilities)
+                .toString();
     }
 }

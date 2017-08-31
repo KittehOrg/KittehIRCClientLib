@@ -23,6 +23,12 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-interface Resettable {
+/**
+ * A system that can be reset, for a fresh connection.
+ */
+public interface Resettable {
+    /**
+     * Resets.
+     */
     void reset();
 }

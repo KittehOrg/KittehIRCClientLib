@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.feature.auth.SaslECDSANIST256PChallenge;
 import org.kitteh.irc.client.library.feature.auth.SaslPlain;
+import org.kitteh.irc.client.library.implementation.Resettable;
 import org.kitteh.irc.client.library.util.RiskyBusiness;
 import org.kitteh.irc.client.library.util.Sanity;
 
@@ -153,7 +154,9 @@ public interface CapabilityManager {
         }
 
         static {
-            DEFAULTS = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields()).filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())).map(Defaults::getStringForCapabilityField).collect(Collectors.toCollection(SUPPLIER)));
+            DEFAULTS = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields())
+                    .filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
+                    .map(Defaults::getStringForCapabilityField).collect(Collectors.toCollection(SUPPLIER)));
         }
 
         /**
@@ -166,6 +169,47 @@ public interface CapabilityManager {
         private static String getStringForCapabilityField(@Nonnull Field field) {
             return RiskyBusiness.assertSafe(f -> (String) f.get(null), field);
         }
+    }
+
+    /**
+     * A capability manager with management features.
+     */
+    interface WithManagement extends CapabilityManager, Resettable {
+        /**
+         * Gets if we are still in negotiation. True on construction and
+         * after a {@link #reset()}.
+         *
+         * @return true if still negotiating
+         */
+        boolean isNegotiating();
+
+        /**
+         * Ends negotiation status, making {@link #isNegotiating()} false.
+         */
+        void endNegotiation();
+
+        /**
+         * Updates the current active capabilities, adding new and removing
+         * any labeled with {@link CapabilityState#isDisabled()}.
+         *
+         * @param capabilityStates capability states
+         */
+        void updateCapabilities(@Nonnull List<CapabilityState> capabilityStates);
+
+        /**
+         * Wipes the previously known active capabilities, setting only those
+         * in the provided list.
+         *
+         * @param capabilityStates fresh set of capability states
+         */
+        void setCapabilities(@Nonnull List<CapabilityState> capabilityStates);
+
+        /**
+         * Sets the supported capabilities as reported by the server.
+         *
+         * @param capabilityStates supported capabilities
+         */
+        void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates);
     }
 
     /**
