@@ -87,6 +87,7 @@ import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.ServerNoticeEvent;
+import org.kitteh.irc.client.library.event.user.UserAwayMessageEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserModeEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
@@ -898,7 +899,13 @@ class EventListener {
     @CommandFilter("AWAY")
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveCommandEvent event) {
-        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0));
+        if (!(event.getActor() instanceof User)) {
+            this.trackException(event, "AWAY message from something other than a user");
+            return;
+        }
+        String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0);
+        this.fire(new UserAwayMessageEvent(this.client, event.getOriginalMessages(), (User) event.getActor(), awayMessage));
+        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), awayMessage);
     }
 
     @CommandFilter("NOTICE")
