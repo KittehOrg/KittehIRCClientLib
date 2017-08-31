@@ -204,9 +204,9 @@ class IRCServerInfo implements Resettable, ServerInfo {
                 .add("address", this.address)
                 .add("version", this.version)
                 .add("motd", this.motd)
-                .add("defaultChannelModes", this.getChannelModes())
-                .add("defaultChannelPrefixes", this.getChannelPrefixes())
-                .add("defaultChannelUserModes", this.getChannelUserModes())
+                .add("channelModes", this.getChannelModes())
+                .add("channelPrefixes", this.getChannelPrefixes())
+                .add("channelUserModes", this.getChannelUserModes())
                 .add("userModes", this.userModes)
                 .add("iSupportParameters", this.iSupportParameterMap)
                 .toString();
