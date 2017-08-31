@@ -1,41 +1,72 @@
-The following IRCv3 features are supported out of the box.
+This page documents IRCv3 features. With two exceptions noted, all of the IRCv3 3.1 and 3.2
+specifications are implemented. Draft/WIP specs have some support (STS, SNI).
 
 See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 
-### IRCv3.1
+### Capabilities supported
 
-CAP | multi-prefix | sasl | account-notify | away-notify | extended-join | tls
-:-: | :----------: | :--: | :------------: | :---------: | :-----------: | :-:
-✔   | ✔            | ✔    | ✔              | ✔           | ✔             | ✘
+* CAP
+  * The client starts the connection with `CAP LS 302` and will request a modifiable selection of capabilities.
+  * It supports CAP spec 3.2, including the NEW and DEL commands.
+* multi-prefix
+  * Prefixes sorted by importance according to ISUPPORT info.
+* sasl
+  * This is requested if the below mechanism classes are used and given to the AuthManager.
+      * PLAIN - `SaslPlain`.
+      * [ECDSA-NIST256P-CHALLENGE](advanced/ecdsa.md) - `SaslECDSANIST256PChallenge`.
+      * EXTERNAL - `SaslExternal`.
+* account-notify
+  * Accessible via `User#getAccount()`.
+* away-notify
+  * Boolean `User#isAway()`.
+* extended-join
+  * Information tracked automagically.
+* Message tags
+  * Getters in `ServerMessage`.
+  * Custom class registration in `MessageTagManager`.
+* Monitor
+  * `MonitorCommand` to get the party started.
+  * `MonitoredNickOnlineEvent`, `MonitoredNickOfflineEvent` to track.
+  * `MonitoredNickListEvent`, `MonitoredNickListFullEvent`.
+* account-tag
+* cap-notify
+  * Not actually requested because it's implicitly enabled with `CAP LS 302`.
+* chghost
+  * `UserHostnameChangeEvent` and `UserUserStringChangeEvent`.
+  * Common shared `UserInfoChangeEvent` includes nick changes too.
+* echo-message
+  * Not requested by default.
+  * `@EchoMessage` filter acquires only messages sent by self.
+* invite-notify
+  * Not automatically requested.
+  * Picked up by `ChannelInviteEvent`.
+* server-time
+* userhost-in-names
+* STS
+  * Draft spec supported.
+  * `STSPropertiesStorageManager` as default implementation.
+* SNI
+  * Draft spec supported.
+* WEBIRC
+  * Supported in the client builder.
+  * For more information see [here](advanced/webirc.md).
 
 
-### IRCv3.2
+### Not yet supported
 
-CAP | Message Tags | Metadata | Monitor | account-tag | batch | cap-notify
-:-: | :----------: | :------: | :-----: | :---------: | :---: | :--------:
-✔   | ✔            |✘         | ✔       | ✔           | ✘     | ✔
+* batch
+* message-tags draft
+* client-only tags
+  * reply
+  * react
+* labeled-message draft
+* message-ids draft
 
-chghost | echo-message | invite-notify | sasl | server-time | userhost-in-names
-:-----: | :----------: | :-----------: | :--: | :---------: | :---------------:
-✔       | ✔            | ✔             | ✔    | ✔           | ✔
+### No plans to support
 
-### IRCv3 draft specifications
-
-STS | message-tags | SNI
-:-: | :----------: | :-:
-✔   | ✘            |✔
-
-#### Notes
-* The following capabilities are supported but are not automatically requested:
-    * SASL
-        * This is requested if the below mechanism classes are used and given to the AuthManager.
-    * echo-message
-        * After requesting you can also use the annotation filter `@EchoMessage` on events to only receive echoed messages.
-    * invite-notify
-* SASL mechanisms supported and the classes for using them:
-    * PLAIN - `SaslPlain`
-    * [ECDSA-NIST256P-CHALLENGE](advanced/ecdsa.md) - `SaslECDSANIST256PChallenge`
-    * EXTERNAL - `SaslExternal`
-* The TLS extension, which is a STARTTLS approach, will likely never be supported. It is horrible and evil and should be destroyed!
-    * Use the [SSL](advanced/ssl.md) and [STS](advanced/sts.md) support that KICL has built-in instead.
-* Metadata has been deprecated (IRCv3.2). It will not be implemented until the new spec is written.
+* Metadata
+  * The metadata 3.2 spec was deprecated.
+  * KICL will consider supporting a new spec if one is proposed.
+* TLS
+  * This is a STARTTLS approach, which is silly when the default KICL strategy is SSL.
+  * Use the [SSL](advanced/ssl.md) and [STS](advanced/sts.md) support that KICL has built-in instead.

@@ -6,19 +6,18 @@ and utilizes Java 8's Optional to avoid returning null in the API.
 
 Some niceties about KICL include:
 
+* Events model for handling information from the server.
 * [Full SSL support](advanced/ssl.md)
 * [WEBIRC authentication](advanced/webirc.md)
 * Fully featured CTCP support
-* [IRCv3.1 and IRCv3.2 support](ircv3.md)
+* Rather comprehensive [IRCv3 support](ircv3.md) including:
     * CAP negotiation
-    * SASL authentication
-    * Account tracking with account-notify, extended-join, and WHOX
+    * Account tracking with combined power of account-notify, extended-join, and WHOX
     * Away status tracking with away-notify
     * More accurate mode tracking with multi-prefix
 * Flexible authentication
     * SASL, NickServ, and GameSurge's AuthServ supported out-of-the-box
     * Custom authentication protocols can be easily written and registered
-* Events model for handling information from the server.
 
 
 ## Getting started
