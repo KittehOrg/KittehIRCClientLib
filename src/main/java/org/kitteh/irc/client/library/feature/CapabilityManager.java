@@ -82,6 +82,13 @@ public interface CapabilityManager {
         public static final String AWAY_NOTIFY = "away-notify";
 
         /**
+         * Capability change notification. Implicitly enabled by the server
+         * when "CAP LS 302" (or higher version) is sent and therefore it
+         * is not requested by the default capability manager.
+         */
+        public static final transient String CAP_NOTIFY = "cap-notify";
+
+        /**
          * Self-sent message echoing, not utilized unless requested.
          */
         public static final transient String ECHO_MESSAGE = "echo-message";
