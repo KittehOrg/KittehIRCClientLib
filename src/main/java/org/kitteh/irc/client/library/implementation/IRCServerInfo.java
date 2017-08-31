@@ -199,6 +199,16 @@ class IRCServerInfo implements Resettable, ServerInfo {
     @Nonnull
     @Override
     public String toString() {
-        return new ToStringer(this).add("client", this.client).toString();
+        return new ToStringer(this)
+                .add("client", this.client)
+                .add("address", this.address)
+                .add("version", this.version)
+                .add("motd", this.motd)
+                .add("channelModes", this.channelModes)
+                .add("channelPrefixes", this.channelPrefixes)
+                .add("channelUserModes", this.channelUserModes)
+                .add("userModes", this.userModes)
+                .add("iSupportParameters", this.iSupportParameterMap)
+                .toString();
     }
 }
