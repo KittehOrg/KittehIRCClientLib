@@ -49,9 +49,9 @@ import java.util.regex.Pattern;
 class IRCServerInfo implements Resettable, ServerInfo {
     private final InternalClient client;
     private final Map<String, ISupportParameter> iSupportParameterMap = new ConcurrentHashMap<>();
-    private final List<ChannelMode> channelModes;
-    private final List<Character> channelPrefixes = Arrays.asList('#', '&', '!', '+');
-    private final List<ChannelUserMode> channelUserModes;
+    private final List<ChannelMode> defaultChannelModes;
+    private final List<Character> defaultChannelPrefixes = Arrays.asList('#', '&', '!', '+');
+    private final List<ChannelUserMode> defaultChannelUserModes;
     private Optional<List<String>> motd = Optional.empty();
     private Optional<String> address = Optional.empty();
     private Optional<String> version = Optional.empty();
@@ -65,27 +65,27 @@ class IRCServerInfo implements Resettable, ServerInfo {
     IRCServerInfo(@Nonnull InternalClient client) {
         this.client = client;
         // RFC 1459
-        List<ChannelMode> channelModes = new ArrayList<>(9);
-        channelModes.add(new DefaultChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER)); // Topic settable by channel operator only
-        channelModes.add(new DefaultChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER)); // Secret
-        channelModes.add(new DefaultChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER)); // Private
-        channelModes.add(new DefaultChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER)); // No messages from outside
-        channelModes.add(new DefaultChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER)); // Moderated
-        channelModes.add(new DefaultChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER)); // Invite-only
-        channelModes.add(new DefaultChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET)); // User limit
-        channelModes.add(new DefaultChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS)); // Channel key
-        channelModes.add(new DefaultChannelMode(client, 'b', ChannelMode.Type.A_MASK)); // Ban mask
-        this.channelModes = Collections.unmodifiableList(channelModes);
-        List<ChannelUserMode> channelUserModes = new ArrayList<>(2);
-        channelUserModes.add(new DefaultChannelUserMode(client, 'o', '@')); // OP
-        channelUserModes.add(new DefaultChannelUserMode(client, 'v', '+')); // Voice
-        this.channelUserModes = Collections.unmodifiableList(channelUserModes);
-        List<UserMode> userModes = new ArrayList<>(4);
-        userModes.add(new DefaultUserMode(client, 'i')); // Invisible
-        userModes.add(new DefaultUserMode(client, 's')); // Can receive server notices
-        userModes.add(new DefaultUserMode(client, 'w')); // Can receive wallops
-        userModes.add(new DefaultUserMode(client, 'o')); // Operator
-        this.userModes = Collections.unmodifiableList(userModes);
+        List<ChannelMode> defaultChannelModes = new ArrayList<>(9);
+        defaultChannelModes.add(new DefaultChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER)); // Topic settable by channel operator only
+        defaultChannelModes.add(new DefaultChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER)); // Secret
+        defaultChannelModes.add(new DefaultChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER)); // Private
+        defaultChannelModes.add(new DefaultChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER)); // No messages from outside
+        defaultChannelModes.add(new DefaultChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER)); // Moderated
+        defaultChannelModes.add(new DefaultChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER)); // Invite-only
+        defaultChannelModes.add(new DefaultChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET)); // User limit
+        defaultChannelModes.add(new DefaultChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS)); // Channel key
+        defaultChannelModes.add(new DefaultChannelMode(client, 'b', ChannelMode.Type.A_MASK)); // Ban mask
+        this.defaultChannelModes = Collections.unmodifiableList(defaultChannelModes);
+        List<ChannelUserMode> defaultChannelUserModes = new ArrayList<>(2);
+        defaultChannelUserModes.add(new DefaultChannelUserMode(client, 'o', '@')); // OP
+        defaultChannelUserModes.add(new DefaultChannelUserMode(client, 'v', '+')); // Voice
+        this.defaultChannelUserModes = Collections.unmodifiableList(defaultChannelUserModes);
+        List<UserMode> defaultUserModes = new ArrayList<>(4);
+        defaultUserModes.add(new DefaultUserMode(client, 'i')); // Invisible
+        defaultUserModes.add(new DefaultUserMode(client, 's')); // Can receive server notices
+        defaultUserModes.add(new DefaultUserMode(client, 'w')); // Can receive wallops
+        defaultUserModes.add(new DefaultUserMode(client, 'o')); // Operator
+        this.userModes = Collections.unmodifiableList(defaultUserModes);
     }
 
     @Override
@@ -107,21 +107,21 @@ class IRCServerInfo implements Resettable, ServerInfo {
     @Override
     public List<ChannelMode> getChannelModes() {
         Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter(ISupportParameter.ChanModes.NAME, ISupportParameter.ChanModes.class);
-        return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.channelModes);
+        return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.defaultChannelModes);
     }
 
     @Nonnull
     @Override
     public List<Character> getChannelPrefixes() {
         Optional<ISupportParameter.ChanTypes> optional = this.getISupportParameter(ISupportParameter.ChanTypes.NAME, ISupportParameter.ChanTypes.class);
-        return new ArrayList<>(optional.isPresent() ? optional.get().getTypes() : this.channelPrefixes);
+        return new ArrayList<>(optional.isPresent() ? optional.get().getTypes() : this.defaultChannelPrefixes);
     }
 
     @Nonnull
     @Override
     public List<ChannelUserMode> getChannelUserModes() {
         Optional<ISupportParameter.Prefix> optional = this.getISupportParameter(ISupportParameter.Prefix.NAME, ISupportParameter.Prefix.class);
-        return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.channelUserModes);
+        return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.defaultChannelUserModes);
     }
 
     @Nonnull
@@ -204,9 +204,9 @@ class IRCServerInfo implements Resettable, ServerInfo {
                 .add("address", this.address)
                 .add("version", this.version)
                 .add("motd", this.motd)
-                .add("channelModes", this.channelModes)
-                .add("channelPrefixes", this.channelPrefixes)
-                .add("channelUserModes", this.channelUserModes)
+                .add("defaultChannelModes", this.getChannelModes())
+                .add("defaultChannelPrefixes", this.getChannelPrefixes())
+                .add("defaultChannelUserModes", this.getChannelUserModes())
                 .add("userModes", this.userModes)
                 .add("iSupportParameters", this.iSupportParameterMap)
                 .toString();
