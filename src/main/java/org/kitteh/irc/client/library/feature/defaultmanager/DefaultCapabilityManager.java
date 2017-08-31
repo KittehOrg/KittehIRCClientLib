@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.feature.defaultmanager;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.CapabilityState;
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Default implementation of {@link CapabilityManager}.
  */
-public class ManagerCapability implements CapabilityManager.WithManagement {
+public class DefaultCapabilityManager implements CapabilityManager.WithManagement {
     private final Client client;
     private final Map<String, CapabilityState> capabilities = new ConcurrentHashMap<>();
     private List<CapabilityState> supportedCapabilities = new ArrayList<>();
@@ -48,7 +48,7 @@ public class ManagerCapability implements CapabilityManager.WithManagement {
      *
      * @param client client for which this manager will operate
      */
-    public ManagerCapability(Client client) {
+    public DefaultCapabilityManager(Client client) {
         this.client = client;
     }
 

@@ -34,7 +34,7 @@ import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.feature.auth.SaslECDSANIST256PChallenge;
 import org.kitteh.irc.client.library.feature.auth.SaslPlain;
-import org.kitteh.irc.client.library.implementation.Resettable;
+import org.kitteh.irc.client.library.util.Resettable;
 import org.kitteh.irc.client.library.util.RiskyBusiness;
 import org.kitteh.irc.client.library.util.Sanity;
 

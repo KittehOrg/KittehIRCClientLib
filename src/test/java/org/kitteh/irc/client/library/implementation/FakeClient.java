@@ -9,6 +9,7 @@ import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
@@ -30,7 +31,7 @@ import java.util.function.Function;
 
 class FakeClient extends InternalClient {
     private final AuthManager authManager = new DefaultAuthManager(this);
-    private final ManagerCapability capabilityManager = new ManagerCapability(this);
+    private final DefaultCapabilityManager capabilityManager = new DefaultCapabilityManager(this);
     private final Config config = new Config();
     private final EventManager eventManager = new DefaultEventManager(this);
     private final Listener<Exception> listenerException = new Listener<>(this, null);
@@ -225,7 +226,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public ManagerCapability getCapabilityManager() {
+    public DefaultCapabilityManager getCapabilityManager() {
         return this.capabilityManager;
     }
 

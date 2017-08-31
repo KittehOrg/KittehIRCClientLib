@@ -48,6 +48,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
@@ -174,7 +175,7 @@ final class IRCClient extends InternalClient {
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
 
     private final AuthManager authManager;
-    private final ManagerCapability capabilityManager = new ManagerCapability(this);
+    private final DefaultCapabilityManager capabilityManager = new DefaultCapabilityManager(this);
     private final EventManager eventManager;
     private final ManagerISupport iSupportManager = new ManagerISupport(this);
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
@@ -285,7 +286,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     @Nonnull
-    public ManagerCapability getCapabilityManager() {
+    public DefaultCapabilityManager getCapabilityManager() {
         return this.capabilityManager;
     }
 

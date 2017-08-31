@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.implementation;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.util.Listener;
 
 import javax.annotation.Nonnull;
@@ -44,7 +45,7 @@ abstract class InternalClient implements Client {
 
     @Nonnull
     @Override
-    public abstract ManagerCapability getCapabilityManager();
+    public abstract DefaultCapabilityManager getCapabilityManager();
 
     @Nonnull
     abstract Config getConfig();
