@@ -27,9 +27,8 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
- * Describes WHOIS data received. Note that away status is unknown, so
- * {@link User#isAway()} always returns false. This information also is
- * always {@link User#isStale()}.
+ * Describes WHOIS data received. This information is always
+ * {@link User#isStale()}.
  */
 public interface WhoisData extends User {
     /**
