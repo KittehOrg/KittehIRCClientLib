@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.WhoisData;
 import org.kitteh.irc.client.library.element.defaults.DefaultCapabilityState;
+import org.kitteh.irc.client.library.element.defaults.DefaultWhoisData;
 import org.kitteh.irc.client.library.element.defaults.mode.DefaultUserMode;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
@@ -201,11 +202,11 @@ class EventListener {
         this.fire(new ClientAwayStatusChangeEvent(this.client, event.getOriginalMessages(), event.getNumeric() == 306));
     }
 
-    private WhoisBuilder whoisBuilder;
+    private DefaultWhoisData.Builder whoisBuilder;
 
-    private WhoisBuilder getWhoisBuilder(String nick) {
+    private DefaultWhoisData.Builder getWhoisBuilder(String nick) {
         if ((this.whoisBuilder == null) || !this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(this.whoisBuilder.getNick(), nick)) {
-            this.whoisBuilder = new WhoisBuilder(this.client, nick);
+            this.whoisBuilder = new DefaultWhoisData.Builder(this.client, nick);
         }
         return this.whoisBuilder;
     }
@@ -227,7 +228,7 @@ class EventListener {
             this.trackException(event, "WHOIS USER response too short");
             return;
         }
-        WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
         switch (event.getParameters().size()) {
             case 6:
                 whoisBuilder.setRealName(event.getParameters().get(5));
@@ -245,7 +246,7 @@ class EventListener {
             this.trackException(event, "WHOIS SERVER response too short");
             return;
         }
-        WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
         whoisBuilder.setServer(event.getParameters().get(2));
         if (event.getParameters().size() > 3) {
             whoisBuilder.setServerDescription(event.getParameters().get(3));
@@ -269,7 +270,7 @@ class EventListener {
             this.trackException(event, "WHOIS IDLE response too short");
             return;
         }
-        WhoisBuilder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
         long idleTime;
         try {
             idleTime = Long.parseLong(event.getParameters().get(2));
