@@ -898,7 +898,7 @@ class EventListener {
     @CommandFilter("AWAY")
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveCommandEvent event) {
-        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), !event.getParameters().isEmpty());
+        this.client.getActorProvider().setUserAway(((User) event.getActor()).getNick(), event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0));
     }
 
     @CommandFilter("NOTICE")

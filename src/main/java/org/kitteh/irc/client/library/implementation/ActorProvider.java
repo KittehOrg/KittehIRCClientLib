@@ -540,6 +540,7 @@ class ActorProvider implements Resettable {
 
     class IRCUser extends IRCStaleable<IRCUserSnapshot> {
         private String account;
+        private String awayMessage;
         private String host;
         private String nick;
         private String user;
@@ -570,8 +571,19 @@ class ActorProvider implements Resettable {
             this.markStale();
         }
 
+        void setAway(String awayMessage) {
+            this.awayMessage = awayMessage;
+            if (awayMessage != null) {
+                this.isAway = true;
+            }
+            this.markStale();
+        }
+
         void setAway(boolean isAway) {
             this.isAway = isAway;
+            if (!isAway) {
+                this.awayMessage = null;
+            }
             this.markStale();
         }
 
@@ -619,9 +631,10 @@ class ActorProvider implements Resettable {
 
     class IRCUserSnapshot extends IRCActorSnapshot implements User {
         private final Optional<String> account;
+        private final Optional<String> awayMessage;
         private final Set<String> channels;
-        private final boolean isAway;
         private final String host;
+        private final boolean isAway;
         private final String nick;
         private final Optional<String> operString;
         private final Optional<String> realName;
@@ -631,10 +644,11 @@ class ActorProvider implements Resettable {
         private IRCUserSnapshot(@Nonnull IRCUser user) {
             super(user);
             this.account = Optional.ofNullable(user.account);
-            this.isAway = user.isAway;
+            this.awayMessage = Optional.ofNullable(user.awayMessage);
             this.nick = user.nick;
             this.user = user.user;
             this.host = user.host;
+            this.isAway = user.isAway;
             this.operString = Optional.ofNullable(user.operString);
             this.realName = Optional.ofNullable(user.realName);
             this.server = Optional.ofNullable(user.server);
@@ -650,6 +664,12 @@ class ActorProvider implements Resettable {
         @Override
         public Optional<String> getAccount() {
             return this.account;
+        }
+
+        @Nonnull
+        @Override
+        public Optional<String> getAwayMessage() {
+            return this.awayMessage;
         }
 
         @Nonnull
@@ -849,10 +869,10 @@ class ActorProvider implements Resettable {
         }
     }
 
-    void setUserAway(@Nonnull String nick, boolean away) {
+    void setUserAway(@Nonnull String nick, String message) {
         IRCUser user = this.trackedUsers.get(nick);
         if (user != null) {
-            user.setAway(away);
+            user.setAway(message);
         }
     }
 

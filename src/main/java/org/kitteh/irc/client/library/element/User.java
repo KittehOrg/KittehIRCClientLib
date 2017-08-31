@@ -47,6 +47,14 @@ public interface User extends MessageReceiver, Staleable {
     Optional<String> getAccount();
 
     /**
+     * Gets, if one is set and known, the away message for the user.
+     *
+     * @return away message if known
+     */
+    @Nonnull
+    Optional<String> getAwayMessage();
+
+    /**
      * Gets the user's channels.
      *
      * @return channel names the user is in

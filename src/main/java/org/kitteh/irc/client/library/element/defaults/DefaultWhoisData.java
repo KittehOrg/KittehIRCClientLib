@@ -264,6 +264,12 @@ public class DefaultWhoisData implements WhoisData {
 
     @Nonnull
     @Override
+    public Optional<String> getAwayMessage() {
+        return this.awayMessage;
+    }
+
+    @Nonnull
+    @Override
     public Set<String> getChannels() {
         return this.channels;
     }
