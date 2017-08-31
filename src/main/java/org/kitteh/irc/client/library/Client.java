@@ -49,6 +49,7 @@ import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
@@ -131,6 +132,18 @@ public interface Client {
          */
         @Nonnull
         Builder bindPort(int port);
+
+        /**
+         * Sets the supplier of the capability manager.
+         * <p>
+         * By default, the {@link DefaultCapabilityManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultCapabilityManager
+         */
+        @Nonnull
+        Builder capabilityManagerSupplier(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier);
 
         /**
          * Sets default messages.

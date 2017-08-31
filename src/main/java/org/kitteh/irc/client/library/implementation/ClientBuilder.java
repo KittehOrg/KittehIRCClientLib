@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
@@ -82,6 +83,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public ClientBuilder bindPort(int port) {
         this.bindPort = this.validPort(port);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public ClientBuilder capabilityManagerSupplier(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier) {
+        this.config.set(Config.MANAGER_CAPABILITY, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 

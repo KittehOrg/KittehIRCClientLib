@@ -46,9 +46,9 @@ import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
-import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
@@ -175,7 +175,7 @@ final class IRCClient extends InternalClient {
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
 
     private final AuthManager authManager;
-    private final DefaultCapabilityManager capabilityManager = new DefaultCapabilityManager(this);
+    private final CapabilityManager.WithManagement capabilityManager;
     private final EventManager eventManager;
     private final ManagerISupport iSupportManager = new ManagerISupport(this);
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
@@ -225,6 +225,7 @@ final class IRCClient extends InternalClient {
         this.eventManager.registerEventListener(new EventListener(this));
 
         this.authManager = ((Function<Client, AuthManager>) this.config.getNotNull(Config.MANAGER_AUTH)).apply(this);
+        this.capabilityManager = ((Function<Client, CapabilityManager.WithManagement>) this.config.getNotNull(Config.MANAGER_CAPABILITY)).apply(this);
 
         DefaultMessageMap defaultMessageMap = this.config.get(Config.DEFAULT_MESSAGE_MAP);
         if (defaultMessageMap == null) {
@@ -286,7 +287,7 @@ final class IRCClient extends InternalClient {
 
     @Override
     @Nonnull
-    public DefaultCapabilityManager getCapabilityManager() {
+    public CapabilityManager.WithManagement getCapabilityManager() {
         return this.capabilityManager;
     }
 

@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
@@ -142,6 +143,7 @@ final class Config {
     static final Entry<StringConsumerWrapper> LISTENER_INPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_OUTPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<Function> MANAGER_AUTH = new Entry<>(getFunction(DefaultAuthManager::new), Function.class);
+    static final Entry<Function> MANAGER_CAPABILITY = new Entry<>(getFunction(DefaultCapabilityManager::new), Function.class);
     static final Entry<Function> MANAGER_EVENT = new Entry<>(getFunction(DefaultEventManager::new), Function.class);
     static final Entry<Function> MESSAGE_DELAY = new Entry<>(SingleDelaySender.getSupplier(SingleDelaySender.DEFAULT_MESSAGE_DELAY), Function.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
