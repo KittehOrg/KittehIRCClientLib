@@ -16,9 +16,12 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
       * [ECDSA-NIST256P-CHALLENGE](advanced/ecdsa.md) - `SaslECDSANIST256PChallenge`.
       * EXTERNAL - `SaslExternal`.
 * account-notify
-  * Accessible via `User#getAccount()`.
+  * Tracked for `User#getAccount()`.
+  * `UserAccountStatusEvent`.
 * away-notify
   * Boolean `User#isAway()`.
+  * `User#getAwayMessage()`.
+  * `UserAwayMessageEvent`.
 * extended-join
   * Information tracked automagically.
 * Message tags
