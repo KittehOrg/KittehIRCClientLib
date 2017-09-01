@@ -35,13 +35,11 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A {@link User} has changed away status, informed via AWAY message. Note
- * that two events may fire in a row while the user remains away, just with
- * a changed message.
+ * A {@link User} has changed account status, either signing into one or
+ * signing out of one. Fired if the server supports account-notify.
  */
-public class UserAwayMessageEvent extends ActorEventBase<User> {
-    private final boolean isAway;
-    private final Optional<String> message;
+public class UserAccountStatusEvent extends ActorEventBase<User> {
+    private final Optional<String> account;
 
     /**
      * Creates the event.
@@ -49,37 +47,26 @@ public class UserAwayMessageEvent extends ActorEventBase<User> {
      * @param client client for which this is occurring
      * @param originalMessages original messages
      * @param user user
-     * @param message message the user left
+     * @param account account the user is signed into
      */
-    public UserAwayMessageEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nullable String message) {
+    public UserAccountStatusEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nullable String account) {
         super(client, originalMessages, user);
-        this.isAway = message != null;
-        this.message = Optional.ofNullable(message);
+        this.account = Optional.ofNullable(account);
     }
 
     /**
-     * Gets if the user is away. If true, {@link #getAwayMessage()} is not
-     * empty.
+     * Gets the account, if signed into one, or empty if signed out.
      *
-     * @return true if away
-     */
-    public boolean isAway() {
-        return this.isAway;
-    }
-
-    /**
-     * Gets the away message.
-     *
-     * @return away message or empty if no longer away
+     * @return account or empty if no account
      */
     @Nonnull
-    public Optional<String> getAwayMessage() {
-        return this.message;
+    public Optional<String> getAccount() {
+        return this.account;
     }
 
     @Override
     @Nonnull
     protected ToStringer toStringer() {
-        return super.toStringer().add("awayMessage", this.message).add("isAway", this.isAway);
+        return super.toStringer().add("account", this.account);
     }
 }

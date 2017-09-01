@@ -87,6 +87,7 @@ import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.ServerNoticeEvent;
+import org.kitteh.irc.client.library.event.user.UserAccountStatusEvent;
 import org.kitteh.irc.client.library.event.user.UserAwayMessageEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserModeEvent;
@@ -892,8 +893,14 @@ class EventListener {
             this.trackException(event, "ACCOUNT message too short");
             return;
         }
-        String account = event.getParameters().get(0);
-        this.client.getActorProvider().setUserAccount(((User) event.getActor()).getNick(), "*".equals(account) ? null : account);
+        if (!(event.getActor() instanceof User)) {
+            this.trackException(event, "ACCOUNT message from something other than a user");
+            return;
+        }
+        String accountParameter = event.getParameters().get(0);
+        String accountName = "*".equals(accountParameter) ? null : accountParameter;
+        this.fire(new UserAccountStatusEvent(this.client, event.getOriginalMessages(), (User) event.getActor(), accountName));
+        this.client.getActorProvider().setUserAccount(((User) event.getActor()).getNick(), accountName);
     }
 
     @CommandFilter("AWAY")
