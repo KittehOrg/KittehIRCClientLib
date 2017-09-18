@@ -34,8 +34,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 abstract class InternalClient implements Client {
-    abstract void connect();
-
     abstract void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer);
 
     abstract void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer);

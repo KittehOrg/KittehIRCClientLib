@@ -659,7 +659,11 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    void connect() {
+    public void connect() {
+        if (this.connection != null) {
+            throw new IllegalStateException("Client is already connecting");
+        }
+
         this.connection = NettyManager.connect(this);
         this.processor.queue("");
 
