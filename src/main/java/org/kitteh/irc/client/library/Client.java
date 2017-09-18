@@ -146,6 +146,17 @@ public interface Client {
         Builder capabilityManagerSupplier(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier);
 
         /**
+         * Sets if the client should connect on {@link #build()}.
+         *
+         * @param connect if the client should be connected when built
+         * @return this builder
+         * @deprecated use {@link #buildAndConnect()}
+         */
+        @Deprecated
+        @Nonnull
+        Builder connectWhenBuilt(boolean connect);
+
+        /**
          * Sets default messages.
          *
          * @param defaultMessageMap default values for messages
@@ -406,6 +417,14 @@ public interface Client {
         Builder reset();
 
         /**
+         * Clientmaker, clientmaker, make me a client!
+         *
+         * @return a client designed to your liking
+         */
+        @Nonnull
+        Client build();
+
+        /**
          * Clientmaker, clientmaker, make me a client, build me the client and
          * begin connection, block me until {@link #afterBuildConsumer(Consumer)}
          * is run!
@@ -413,7 +432,7 @@ public interface Client {
          * @return a client designed to your liking
          */
         @Nonnull
-        Client build();
+        Client buildAndConnect();
     }
 
     /**
@@ -1068,6 +1087,13 @@ public interface Client {
      * @param listener output listener
      */
     void setOutputListener(@Nullable Consumer<String> listener);
+
+    /**
+     * Begin connecting to the server.
+     *
+     * @throws IllegalStateException if the client is already connecting
+     */
+    void connect();
 
     /**
      * Shuts down the client without a quit message.

@@ -46,6 +46,8 @@ import java.util.function.Function;
 final class ClientBuilder implements Client.Builder, Cloneable {
     private static final int DEFAULT_SERVER_PORT = 6697;
     private Config config;
+    @Deprecated
+    private boolean connectWhenBuilt = true;
     @Nullable
     private Consumer<Client> after;
     @Nullable
@@ -97,6 +99,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public ClientBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
         this.config.set(Config.DEFAULT_MESSAGE_MAP, defaultMessageMap);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder connectWhenBuilt(boolean connect) {
+        this.connectWhenBuilt = connect;
         return this;
     }
 
@@ -281,17 +290,33 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public Client build() {
+        final Client client = this.clientPlease();
+        if (this.connectWhenBuilt) {
+            client.connect();
+        }
+        return client;
+    }
+
+    @Nonnull
+    @Override
+    public Client buildAndConnect() {
+        final Client client = this.clientPlease();
+        client.connect();
+        return client;
+    }
+
+    @Nonnull
+    private Client clientPlease() {
         if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
             final TrustManagerFactory factory = this.config.get(Config.SSL_TRUST_MANAGER_FACTORY);
             Sanity.truthiness(!AcceptingTrustManagerFactory.isInsecure(factory), "Cannot use STS with an insecure trust manager.");
         }
 
         this.updateInetEntries();
-        IRCClient client = new IRCClient(this.config.clone());
+        final Client client = new IRCClient(this.config.clone());
         if (this.after != null) {
             this.after.accept(client);
         }
-        client.connect();
         return client;
     }
 

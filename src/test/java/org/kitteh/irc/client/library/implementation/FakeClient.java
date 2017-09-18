@@ -178,7 +178,7 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    void connect() {
+    public void connect() {
 
     }
 
