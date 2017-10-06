@@ -652,7 +652,13 @@ class ActorProvider implements Resettable {
             this.operString = Optional.ofNullable(user.operString);
             this.realName = Optional.ofNullable(user.realName);
             this.server = Optional.ofNullable(user.server);
-            this.channels = Collections.unmodifiableSet(ActorProvider.this.trackedChannels.values().stream().filter(channel -> channel.modes.containsKey(this.nick)).map(IRCChannel::getName).collect(Collectors.toSet()));
+            Set<String> chanSet = new HashSet<>();
+            for (ActorProvider.IRCChannel channel : ActorProvider.this.trackedChannels.values()) {
+                if (channel.modes.containsKey(this.nick)) {
+                    chanSet.add(channel.getName());
+                }
+            }
+            this.channels = Collections.unmodifiableSet(chanSet);
         }
 
         @Override
