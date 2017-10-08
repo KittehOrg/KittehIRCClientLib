@@ -23,56 +23,52 @@
  */
 package org.kitteh.irc.client.library.util.mask;
 
-import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-/**
- * Represents a mask that can match a {@link User}.
- */
-public interface Mask extends Predicate<User> {
-    /**
-     * Tests if the user matches this mask.
-     *
-     * @param user the user
-     * @return {@code true} if user matches this mask
-     */
-    @Override
-    boolean test(@Nonnull final User user);
+public class HostMask implements Mask {
+    private final String host;
 
-    /**
-     * Tests if the string matches this mask.
-     *
-     * @param string the string
-     * @return {@code true} if string matches this mask
-     */
-    boolean test(@Nonnull final String string);
-
-    /**
-     * Gets a set of users that match this mask in the provided channel.
-     *
-     * @param channel the channel
-     * @return a set of users that match this mask
-     */
-    @Nonnull
-    default Set<User> getMatches(@Nonnull final Channel channel) {
-        Sanity.nullCheck(channel, "Channel cannot be null");
-        return channel.getUsers().stream()
-            .filter(this)
-            .collect(Collectors.toSet());
+    public HostMask(@Nonnull final String host) {
+        this.host = Sanity.nullCheck(host, "host");
     }
 
-    /**
-     * Gets the string representation of this mask.
-     *
-     * @return the string representation
-     */
+    @Override
+    public boolean test(@Nonnull final User user) {
+        Sanity.nullCheck(user, "user");
+        return user.getHost().equals(this.host);
+    }
+
+    @Override
+    public boolean test(@Nonnull final String host) {
+        Sanity.nullCheck(host, "host");
+        return host.equals(this.host);
+    }
+
     @Nonnull
-    String asString();
+    @Override
+    public String asString() {
+        return "*!*@" + this.host; // TODO(kashike)
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || this.getClass() != other.getClass()) {
+            return false;
+        }
+        final HostMask that = (HostMask) other;
+        return Objects.equals(this.host, that.host);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.host);
+    }
 }

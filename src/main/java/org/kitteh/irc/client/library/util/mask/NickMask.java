@@ -49,6 +49,12 @@ public class NickMask implements Mask {
         return nick.equals(this.nick);
     }
 
+    @Nonnull
+    @Override
+    public String asString() {
+        return this.nick + "!*@*"; // TODO(kashike)
+    }
+
     @Override
     public boolean equals(final Object other) {
         if (this == other) {
