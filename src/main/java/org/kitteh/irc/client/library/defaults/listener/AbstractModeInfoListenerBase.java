@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.event.channel.ChannelModeInfoListEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.util.mask.Mask;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -92,7 +93,8 @@ public class AbstractModeInfoListenerBase extends AbstractDefaultListenerBase {
             }
             Optional<ChannelMode> channelMode = this.getClient().getServerInfo().getChannelMode(mode);
             if (channelMode.isPresent()) {
-                infoList.add(new ModeInfo.DefaultModeInfo(this.getClient(), channel.get(), channelMode.get(), event.getParameters().get((2 + offset)), creator, creationTime));
+                final Mask.AsString mask = this.getClient().getMaskProvider().getAsString(event.getParameters().get((2 + offset)));
+                infoList.add(new ModeInfo.DefaultModeInfo(this.getClient(), channel.get(), channelMode.get(), mask, creator, creationTime));
             } else {
                 this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
             }

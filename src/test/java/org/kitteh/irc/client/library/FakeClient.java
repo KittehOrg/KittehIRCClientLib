@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
@@ -77,7 +78,7 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
-    public void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword, @Nullable InetSocketAddress bindAddress, @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType, @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker, @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager, @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers, @NonNull MessageTagManager messageTagManager, @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap, @NonNull Function<WithManagement, ? extends MessageSendingQueue> messageSendingQueue, @NonNull Function<WithManagement, ? extends ServerInfo.WithManagement> serverInfo, @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener, @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain, @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory, @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost, @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
+    public void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword, @Nullable InetSocketAddress bindAddress, @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType, @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker, @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager, @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers, @NonNull MaskProvider maskProvider, @NonNull MessageTagManager messageTagManager, @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap, @NonNull Function<WithManagement, ? extends MessageSendingQueue> messageSendingQueue, @NonNull Function<WithManagement, ? extends ServerInfo.WithManagement> serverInfo, @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener, @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain, @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory, @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost, @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
 
     }
 
@@ -153,6 +154,11 @@ public class FakeClient implements Client.WithManagement {
     @Override
     public @NonNull Set<String> getIntendedChannels() {
         return new HashSet<>();
+    }
+
+    @Override
+    public @NonNull MaskProvider getMaskProvider() {
+        return null;
     }
 
     @Override

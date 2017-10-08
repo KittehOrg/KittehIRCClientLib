@@ -50,6 +50,7 @@ import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.Version;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
@@ -270,6 +271,12 @@ public class DefaultBuilder implements Client.Builder {
         }
 
         @Override
+        public @NonNull Management maskProvider(@NonNull Function<Client.WithManagement, ? extends MaskProvider> supplier) {
+            DefaultBuilder.this.maskProvider = (supplier != null) ? supplier : DEFAULT_MASK_PROVIDER;
+            return this;
+        }
+
+        @Override
         public @NonNull Management messageSendingQueueSupplier(@Nullable Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
             DefaultBuilder.this.messageSendingQueue = Sanity.nullCheck(supplier, "Supplier cannot be null");
             return this;
@@ -308,6 +315,7 @@ public class DefaultBuilder implements Client.Builder {
     private static final Function<Client.WithManagement, ? extends EventManager> DEFAULT_EVENT_MANAGER = DefaultEventManager::new;
     private static final List<EventListenerSupplier> DEFAULT_EVENT_LISTENERS = Arrays.asList(DefaultListeners.values());
     private static final Function<Client.WithManagement, ? extends ISupportManager> DEFAULT_ISUPPORT_MANAGER = DefaultISupportManager::new;
+    private static final Function<Client.WithManagement, ? extends MaskProvider> DEFAULT_MASK_PROVIDER = MaskProvider.DefaultMaskProvider::new;
     private static final Function<Client.WithManagement, ? extends MessageSendingQueue> DEFAULT_MESSAGE_SENDING_QUEUE = SingleDelaySender.getSupplier(SingleDelaySender.DEFAULT_MESSAGE_DELAY);
     private static final Function<Client.WithManagement, ? extends MessageTagManager> DEFAULT_MESSAGE_TAG_MANAGER = DefaultMessageTagManager::new;
     private static final Function<Client.WithManagement, ? extends ServerInfo.WithManagement> DEFAULT_SERVER_INFO = DefaultServerInfo::new;
@@ -354,6 +362,7 @@ public class DefaultBuilder implements Client.Builder {
     private Function<Client.WithManagement, ? extends EventManager> eventManager = DEFAULT_EVENT_MANAGER;
     private List<EventListenerSupplier> eventListeners = DEFAULT_EVENT_LISTENERS;
     private Function<Client.WithManagement, ? extends ISupportManager> iSupportManager = DEFAULT_ISUPPORT_MANAGER;
+    private Function<Client.WithManagement, ? extends MaskProvider> maskProvider = DEFAULT_MASK_PROVIDER;
     private Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue = DEFAULT_MESSAGE_SENDING_QUEUE;
     private Function<Client.WithManagement, ? extends MessageTagManager> messageTagManager = DEFAULT_MESSAGE_TAG_MANAGER;
     private Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo = DEFAULT_SERVER_INFO;
@@ -429,7 +438,7 @@ public class DefaultBuilder implements Client.Builder {
                 this.nick, this.userString, this.realName,
                 this.actorTracker.apply(client),
                 this.authManager.apply(client), this.capabilityManager.apply(client), this.eventManager.apply(client),
-                this.eventListeners, this.messageTagManager.apply(client),
+                this.eventListeners, this.maskProvider.apply(client), this.messageTagManager.apply(client),
                 this.iSupportManager.apply(client), this.defaultMessageMap, this.messageSendingQueue,
                 this.serverInfo, this.exceptionListener, this.inputListener, this.outputListener, this.secure,
                 this.secureKeyCertChain, this.secureKey, this.secureKeyPassword, this.secureTrustManagerFactory, this.stsStorageManager,

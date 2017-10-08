@@ -45,6 +45,7 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.mask.NameMask;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -427,12 +428,6 @@ public class DefaultActorTracker implements ActorTracker {
         }
     }
 
-    // Valid nick chars: \w\[]^`{}|-_
-    // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
-    // You know what? Screw it.
-    // Let's just do it assuming no IRCD can handle following the rules.
-    // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
-    private static final Pattern NICK_PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
     private static final Pattern SERVER_PATTERN = Pattern.compile("(?!-)(?:[a-zA-Z\\d\\-]{0,62}[a-zA-Z\\d]\\.){1,126}(?!\\d+)[a-zA-Z\\d]{1,63}");
 
     private final Client.WithManagement client;
@@ -472,7 +467,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     private IrcUser getUserByName(@NonNull String name) {
-        Matcher nickMatcher = NICK_PATTERN.matcher(name);
+        Matcher nickMatcher = NameMask.PATTERN.matcher(name);
         if (nickMatcher.matches()) {
             String nick = nickMatcher.group(1);
             IrcUser user = this.trackedUsers.get(nick);

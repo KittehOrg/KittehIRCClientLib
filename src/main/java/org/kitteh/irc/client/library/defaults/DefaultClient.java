@@ -73,6 +73,7 @@ import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
@@ -185,6 +186,7 @@ public class DefaultClient implements Client.WithManagement {
     private CapabilityManager.WithManagement capabilityManager;
     private EventManager eventManager;
     private ISupportManager iSupportManager;
+    private MaskProvider maskProvider; // TODO(kashike): setter
     private MessageTagManager messageTagManager;
     private ActorTracker actorTracker;
 
@@ -239,7 +241,7 @@ public class DefaultClient implements Client.WithManagement {
                            @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
                            @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
                            @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
-                           @NonNull MessageTagManager messageTagManager,
+                           @NonNull MaskProvider maskProvider, @NonNull MessageTagManager messageTagManager,
                            @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
                            @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
                            @NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
@@ -261,6 +263,7 @@ public class DefaultClient implements Client.WithManagement {
         this.authManager = authManager;
         this.capabilityManager = capabilityManager;
         this.eventManager = eventManager;
+        this.maskProvider = maskProvider;
         this.messageTagManager = messageTagManager;
         this.iSupportManager = iSupportManager;
         this.defaultMessageMap = (defaultMessageMap == null) ? new SimpleDefaultMessageMap() : defaultMessageMap;
@@ -397,6 +400,11 @@ public class DefaultClient implements Client.WithManagement {
     @Override
     public @NonNull ISupportManager getISupportManager() {
         return this.iSupportManager;
+    }
+
+    @Override
+    public @NonNull MaskProvider getMaskProvider() {
+        return this.maskProvider;
     }
 
     @Override

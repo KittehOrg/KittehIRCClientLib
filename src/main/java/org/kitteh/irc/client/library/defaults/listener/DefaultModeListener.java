@@ -38,6 +38,7 @@ import org.kitteh.irc.client.library.event.user.UserModeEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.util.StringUtil;
+import org.kitteh.irc.client.library.util.mask.Mask;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -107,9 +108,12 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
             this.fire(new ChannelModeEvent(this.getClient(), event.getOriginalMessages(), event.getActor(), channel, statusList));
             statusList.getStatuses().stream()
                     .filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK)
-                    .forEach(status -> this.getTracker().trackChannelModeInfo(channel.getName(), status.isSetting(),
-                            new ModeInfo.DefaultModeInfo(this.getClient(), channel, status.getMode(), status.getParameter().get(), event.getActor().getName(), Instant.now())
-                    ));
+                    .forEach(status -> {
+                        final Mask.AsString mask = this.getClient().getMaskProvider().getAsString(status.getParameter().get());
+                        this.getTracker().trackChannelModeInfo(channel.getName(), status.isSetting(),
+                                new ModeInfo.DefaultModeInfo(this.getClient(), channel, status.getMode(), mask, event.getActor().getName(), Instant.now())
+                        );
+                    });
             this.getTracker().updateChannelModes(channel.getName(), statusList);
         } else {
             this.trackException(event, "MODE message sent for invalid target");

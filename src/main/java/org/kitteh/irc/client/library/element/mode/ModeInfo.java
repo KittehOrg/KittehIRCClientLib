@@ -29,8 +29,8 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ClientLinked;
-import org.kitteh.irc.client.library.util.Mask;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.mask.Mask;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -47,7 +47,7 @@ public interface ModeInfo extends ClientLinked {
         private final Instant creationTime;
         private final String creator;
         private final Channel channel;
-        private final Mask mask;
+        private final Mask.AsString mask;
         private final ChannelMode mode;
 
         /**
@@ -60,11 +60,11 @@ public interface ModeInfo extends ClientLinked {
          * @param creator creator, if known
          * @param creationTime creation time, if known
          */
-        public DefaultModeInfo(@NonNull Client client, @NonNull Channel channel, @NonNull ChannelMode mode, @NonNull String mask, @Nullable String creator, @Nullable Instant creationTime) {
+        public DefaultModeInfo(@NonNull Client client, @NonNull Channel channel, @NonNull ChannelMode mode, Mask.@NonNull AsString mask, @Nullable String creator, @Nullable Instant creationTime) {
             this.client = client;
             this.creator = creator;
             this.channel = channel;
-            this.mask = Mask.fromString(mask);
+            this.mask = mask;
             this.creationTime = creationTime;
             this.mode = mode;
         }
@@ -85,7 +85,7 @@ public interface ModeInfo extends ClientLinked {
         }
 
         @Override
-        public @NonNull Mask getMask() {
+        public Mask.@NonNull AsString getMask() {
             return this.mask;
         }
 
@@ -125,7 +125,7 @@ public interface ModeInfo extends ClientLinked {
      *
      * @return the mask
      */
-    @NonNull Mask getMask();
+    Mask.@NonNull AsString getMask();
 
     /**
      * Gets the mode for which this info exists.

@@ -21,52 +21,40 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.util;
+package org.kitteh.irc.client.library.util.mask.operation;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.mask.Mask;
 
 /**
- * Represents a mask that can match a {@link User}.
+ * A mask that negates the value obtained from {@link NegateMask#mask}.
  */
-public class Mask {
-    /**
-     * Creates a Mask from a given String.
-     *
-     * @param string string
-     * @return mask from string
-     */
-    public static @NonNull Mask fromString(@NonNull String string) {
-        return new Mask(Sanity.nullCheck(string, "String cannot be null"));
-    }
-
-    private final String string;
-
-    private Mask(@NonNull String string) {
-        this.string = string;
-    }
+public final class NegateMask implements Mask {
+    private final Mask mask;
 
     /**
-     * Gets the String representation of this mask.
-     *
-     * @return string
+     * TODO
+     * @param mask
      */
-    public @NonNull String asString() {
-        return this.string;
+    public NegateMask(final @NonNull Mask mask) {
+        this.mask = Sanity.nullCheck(mask, "mask");
     }
 
     @Override
-    public int hashCode() {
-        return (2 * this.string.hashCode()) + 5;
+    public boolean test(final @NonNull User user) {
+        return !this.mask.test(user);
     }
 
     @Override
-    public boolean equals(Object o) {
-        return (o instanceof Mask) && ((Mask) o).string.equals(this.string);
+    public boolean test(final @NonNull String string) {
+        return !this.mask.test(string);
     }
 
     @Override
-    public @NonNull String toString() {
-        return new ToStringer(this).add("string", this.string).toString();
+    public String toString() {
+        return new ToStringer(this).add("mask", this.mask).toString();
     }
 }

@@ -72,6 +72,7 @@ import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
@@ -454,6 +455,14 @@ public interface Client extends ClientLinked {
             @NonNull Management iSupportManager(@Nullable Function<Client.WithManagement, ? extends ISupportManager> supplier);
 
             /**
+             * Sets the supplier of the mask provider.
+             *
+             * @param supplier supplier
+             * @return this builder
+             */
+            @NonNull Management maskProvider(@NonNull Function<Client.WithManagement, ? extends MaskProvider> supplier);
+
+            /**
              * Sets the supplier of message sending queues, which dictate the
              * rate at which messages are sent by the Client to the server.
              * <p>
@@ -714,6 +723,13 @@ public interface Client extends ClientLinked {
         @NonNull Set<String> getIntendedChannels();
 
         /**
+         * Gets the mask provider.
+         *
+         * @return the mask provider
+         */
+        @NonNull MaskProvider getMaskProvider();
+
+        /**
          * Gets the currently set output listener.
          *
          * @return output listener
@@ -834,6 +850,7 @@ public interface Client extends ClientLinked {
          * @param capabilityManager capabilityManager
          * @param eventManager eventManager
          * @param listenerSuppliers listenerSuppliers
+         * @param maskProvider maskProvider
          * @param messageTagManager messageTagManager
          * @param iSupportManager iSupportManager
          * @param defaultMessageMap defaultMessageMap
@@ -859,7 +876,7 @@ public interface Client extends ClientLinked {
                         @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
                         @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
                         @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
-                        @NonNull MessageTagManager messageTagManager,
+                        @NonNull MaskProvider maskProvider, @NonNull MessageTagManager messageTagManager,
                         @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
                         @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
                         @NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
