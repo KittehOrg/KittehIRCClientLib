@@ -26,15 +26,51 @@ package org.kitteh.irc.client.library.util.mask;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
+/**
+ * A mask that only cares about matching the host.
+ */
 public class HostMask implements Mask {
+    /**
+     * Creates a host mask from the given user.
+     *
+     * @param user the user
+     * @return the host mask from the user's host
+     */
+    @Nonnull
+    public static HostMask fromUser(@Nonnull final User user) {
+        Sanity.nullCheck(user, "user");
+        return new HostMask(user.getHost());
+    }
+
+    /**
+     * Creates a host mask from the given host.
+     *
+     * @param host the host
+     * @return the host mask
+     */
+    @Nonnull
+    public static HostMask fromHost(@Nonnull final String host) {
+        Sanity.nullCheck(host, "host");
+        return new HostMask(host);
+    }
+
     private final String host;
 
     public HostMask(@Nonnull final String host) {
         this.host = Sanity.nullCheck(host, "host");
+    }
+
+    /**
+     * Gets the host.
+     *
+     * @return the host
+     */
+    @Nonnull
+    public String getHost() {
+        return this.host;
     }
 
     @Override

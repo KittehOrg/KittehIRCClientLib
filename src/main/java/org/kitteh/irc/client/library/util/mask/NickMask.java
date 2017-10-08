@@ -26,15 +26,51 @@ package org.kitteh.irc.client.library.util.mask;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
+/**
+ * A mask that only cares about matching the nick.
+ */
 public class NickMask implements Mask {
+    /**
+     * Creates a nick mask from the given user.
+     *
+     * @param user the user
+     * @return the nick mask from the user's host
+     */
+    @Nonnull
+    public static NickMask fromUser(@Nonnull final User user) {
+        Sanity.nullCheck(user, "user");
+        return new NickMask(user.getNick());
+    }
+
+    /**
+     * Creates a nick mask from the given nick.
+     *
+     * @param nick the nick
+     * @return the nick mask
+     */
+    @Nonnull
+    public static NickMask fromNick(@Nonnull final String nick) {
+        Sanity.nullCheck(nick, "nick");
+        return new NickMask(nick);
+    }
+
     private final String nick;
 
     public NickMask(@Nonnull final String nick) {
         this.nick = Sanity.nullCheck(nick, "nick");
+    }
+
+    /**
+     * Gets the nick.
+     *
+     * @return the nick
+     */
+    @Nonnull
+    public String getNick() {
+        return this.nick;
     }
 
     @Override

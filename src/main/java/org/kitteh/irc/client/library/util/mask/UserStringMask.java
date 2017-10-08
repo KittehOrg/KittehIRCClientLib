@@ -26,15 +26,51 @@ package org.kitteh.irc.client.library.util.mask;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-
+/**
+ * A mask that only cares about matching the user string.
+ */
 public class UserStringMask implements Mask {
+    /**
+     * Creates a user string mask from the given user.
+     *
+     * @param user the user
+     * @return the nick mask from the user's user string
+     */
+    @Nonnull
+    public static UserStringMask fromUser(@Nonnull final User user) {
+        Sanity.nullCheck(user, "user");
+        return new UserStringMask(user.getUserString());
+    }
+
+    /**
+     * Creates a user string mask from the given user string.
+     *
+     * @param userString the userString
+     * @return the userString mask
+     */
+    @Nonnull
+    public static UserStringMask fromUserString(@Nonnull final String userString) {
+        Sanity.nullCheck(userString, "userString");
+        return new UserStringMask(userString);
+    }
+
     private final String userString;
 
     public UserStringMask(@Nonnull final String userString) {
         this.userString = Sanity.nullCheck(userString, "userString");
+    }
+
+    /**
+     * Gets the user string.
+     *
+     * @return the user string
+     */
+    @Nonnull
+    public String getUserString() {
+        return this.userString;
     }
 
     @Override
