@@ -21,57 +21,50 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.util;
+package org.kitteh.irc.client.library.util.mask;
 
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
 /**
  * Represents a mask that can match a {@link User}.
  */
-// Say bye.
-public class Mask {
+public interface Mask extends Predicate<User> {
     /**
-     * Creates a Mask from a given String.
+     * Tests if the user matches this mask.
      *
-     * @param string string
-     * @return mask from string
+     * @param user the user
+     * @return {@code true} if user matches this mask
      */
-    @Nonnull
-    public static Mask fromString(@Nonnull String string) {
-        return new Mask(Sanity.nullCheck(string, "String cannot be null"));
-    }
-
-    private final String string;
-
-    private Mask(@Nonnull String string) {
-        this.string = string;
-    }
+    @Override
+    boolean test(@Nonnull final User user);
 
     /**
-     * Gets the String representation of this mask.
+     * Tests if the string matches this mask.
      *
-     * @return string
+     * @param string the string
+     * @return {@code true} if string matches this mask
+     */
+    boolean test(@Nonnull final String string);
+
+    /**
+     * Gets a set of users that match this mask in the provided channel.
+     *
+     * @param channel the channel
+     * @return a set of users that match this mask
      */
     @Nonnull
-    public String asString() {
-        return this.string;
-    }
-
-    @Override
-    public int hashCode() {
-        return (2 * this.string.hashCode()) + 5;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return (o instanceof Mask) && ((Mask) o).string.equals(this.string);
-    }
-
-    @Nonnull
-    @Override
-    public String toString() {
-        return new ToStringer(this).add("string", this.string).toString();
+    default Set<User> getMatches(@Nonnull final Channel channel) {
+        Sanity.nullCheck(channel, "Channel cannot be null");
+        return channel.getUsers().stream()
+            .filter(this)
+            .collect(Collectors.toSet());
     }
 }

@@ -21,57 +21,48 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.util;
+package org.kitteh.irc.client.library.util.mask;
 
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.util.Sanity;
+
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-/**
- * Represents a mask that can match a {@link User}.
- */
-// Say bye.
-public class Mask {
-    /**
-     * Creates a Mask from a given String.
-     *
-     * @param string string
-     * @return mask from string
-     */
-    @Nonnull
-    public static Mask fromString(@Nonnull String string) {
-        return new Mask(Sanity.nullCheck(string, "String cannot be null"));
+public class NickMask implements Mask {
+    private final String nick;
+
+    public NickMask(@Nonnull final String nick) {
+        this.nick = Sanity.nullCheck(nick, "nick");
     }
 
-    private final String string;
-
-    private Mask(@Nonnull String string) {
-        this.string = string;
+    @Override
+    public boolean test(@Nonnull final User user) {
+        Sanity.nullCheck(user, "user");
+        return user.getNick().equals(this.nick);
     }
 
-    /**
-     * Gets the String representation of this mask.
-     *
-     * @return string
-     */
-    @Nonnull
-    public String asString() {
-        return this.string;
+    @Override
+    public boolean test(@Nonnull final String nick) {
+        Sanity.nullCheck(nick, "nick");
+        return nick.equals(this.nick);
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || this.getClass() != other.getClass()) {
+            return false;
+        }
+        final NickMask that = (NickMask) other;
+        return Objects.equals(this.nick, that.nick);
     }
 
     @Override
     public int hashCode() {
-        return (2 * this.string.hashCode()) + 5;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return (o instanceof Mask) && ((Mask) o).string.equals(this.string);
-    }
-
-    @Nonnull
-    @Override
-    public String toString() {
-        return new ToStringer(this).add("string", this.string).toString();
+        return Objects.hash(this.nick);
     }
 }
