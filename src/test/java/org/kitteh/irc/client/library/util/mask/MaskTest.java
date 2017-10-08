@@ -9,7 +9,6 @@ import org.kitteh.irc.client.library.implementation.TestUser;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,16 +19,32 @@ public class MaskTest {
     }
 
     @Test
-    public void testHost() {
+    public void testHostSingle() {
         final HostMask mask = HostMask.fromHost("kitten.institute");
 
         Assert.assertEquals("kitten.institute", mask.getHost());
         Assert.assertEquals("*!*@kitten.institute", mask.asString());
 
-        final User mbaxter = new TestUser("mbaxter", "~mbax", "kitten.institute", null);
-        final User kashike = new TestUser("kashike", "kashike", "is.sleeping.in.the.kingdom.of.kandarin.xyz", null);
+        assertContainsOnly(mask, Collections.singletonList(
+            new TestUser("mbaxter", "~mbax", "kitten.institute", null)
+        ), Collections.singletonList(
+            new TestUser("kashike", "kashike", "is.sleeping.in.the.kingdom.of.kandarin.xyz", null)
+        ));
+    }
 
-        assertContainsOnly(mask, Collections.singletonList(mbaxter), Collections.singletonList(kashike));
+    @Test
+    public void testHostMulti() {
+        final HostMask mask = HostMask.fromHost("kitten.institute");
+
+        Assert.assertEquals("kitten.institute", mask.getHost());
+        Assert.assertEquals("*!*@kitten.institute", mask.asString());
+
+        assertContainsOnly(mask, Arrays.asList(
+            new TestUser("mbaxter", "~mbax", "kitten.institute", null),
+            new TestUser("kashike", "kashike", "kitten.institute", null)
+        ), Collections.singletonList(
+            new TestUser("lol768", "lol768", "andy.in.toy.story", null)
+        ));
     }
 
     @Test
@@ -39,14 +54,10 @@ public class MaskTest {
         Assert.assertEquals("mbaxter", mask.getNick());
         Assert.assertEquals("mbaxter!*@*", mask.asString());
 
-        final Channel channel = Mockito.mock(Channel.class);
-        final User mbaxter = new TestUser("mbaxter", "~mbax", "kitten.institute", null);
-        final User kashike = new TestUser("kashike", "kashike", "is.sleeping.in.the.kingdom.of.kandarin.xyz", null);
-        Mockito.when(channel.getUsers()).thenReturn(Arrays.asList(mbaxter, kashike));
-
-        final Collection<User> matches = mask.getMatches(channel);
-        Assert.assertTrue(matches.size() == 1);
-        Assert.assertTrue(matches.contains(mbaxter));
-        Assert.assertFalse(matches.contains(kashike));
+        assertContainsOnly(mask, Collections.singletonList(
+            new TestUser("mbaxter", "~mbax", "kitten.institute", null)
+        ), Collections.singletonList(
+            new TestUser("kashike", "kashike", "is.sleeping.in.the.kingdom.of.kandarin.xyz", null)
+        ));
     }
 }
