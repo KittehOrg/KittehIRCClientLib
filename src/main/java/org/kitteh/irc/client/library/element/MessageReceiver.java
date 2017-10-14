@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.element;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.StringUtil;
 
 import javax.annotation.Nonnull;
 
@@ -39,6 +40,16 @@ public interface MessageReceiver extends Actor {
      */
     @Nonnull
     String getMessagingName();
+
+    /**
+     * Gets the lowercase version of the name used when sending messages.
+     *
+     * @return the lowercase version of the name by which you can message this receiver
+     */
+    @Nonnull
+    default String getLowerCaseMessagingName() {
+        return StringUtil.toLowerCase(this, this.getMessagingName());
+    }
 
     /**
      * Sends this actor a CTCP message.
