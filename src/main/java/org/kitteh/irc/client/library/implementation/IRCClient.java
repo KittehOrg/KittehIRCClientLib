@@ -251,7 +251,7 @@ final class IRCClient extends InternalClient {
         }
         for (String channelName : channels) {
             this.channelsIntended.add(channelName);
-            this.sendRawLine("JOIN :" + channelName);
+            this.sendRawLine("JOIN " + channelName);
         }
     }
 
@@ -261,7 +261,7 @@ final class IRCClient extends InternalClient {
         Sanity.nullCheck(key, "Key cannot be null");
         Sanity.truthiness(this.serverInfo.isValidChannel(channel), "Invalid channel name " + channel);
         this.channelsIntended.add(channel);
-        this.sendRawLine("JOIN :" + channel + ' ' + key);
+        this.sendRawLine("JOIN " + channel + ' ' + key);
     }
 
     @Override
@@ -275,7 +275,7 @@ final class IRCClient extends InternalClient {
         }
         for (Pair<String, String> channelAndKey : channelsAndKeys) {
             this.channelsIntended.add(channelAndKey.getLeft());
-            this.sendRawLine("JOIN :" + channelAndKey.getLeft() + (channelAndKey.getRight() == null ? "" : (' ' + channelAndKey.getRight())));
+            this.sendRawLine("JOIN " + channelAndKey.getLeft() + (channelAndKey.getRight() == null ? "" : (' ' + channelAndKey.getRight())));
         }
     }
 
