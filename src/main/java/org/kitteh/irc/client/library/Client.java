@@ -150,7 +150,7 @@ public interface Client {
          *
          * @param connect if the client should be connected when built
          * @return this builder
-         * @deprecated use {@link #buildAndConnect()}
+         * @deprecated temporary until {@link #build()} doesn't connect in version 4.0.0 - use {@link #buildAndConnect()}
          */
         @Deprecated
         @Nonnull
