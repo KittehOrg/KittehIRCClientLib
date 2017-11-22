@@ -85,20 +85,23 @@ final class NettyManager {
         private final Channel channel;
         private boolean reconnect = true;
 
+        private volatile ChannelFuture channelFuture;
+
         private ScheduledFuture<?> ping;
 
         private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;
             this.channel = channelFuture.channel();
+            this.channelFuture = channelFuture;
 
             channelFuture.addListener(future -> {
+                ClientConnection.this.channelFuture = null;
                 if (future.isSuccess()) {
                     this.buildOurFutureTogether();
                     this.client.beginMessageSendingImmediate(this.channel::writeAndFlush);
                 } else {
                     this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), false));
                     this.scheduleReconnect();
-                    removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
                 }
             });
         }
@@ -210,7 +213,6 @@ final class NettyManager {
                     this.ping.cancel(true);
                 }
                 ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
-                removeClientConnection(ClientConnection.this, ClientConnection.this.reconnect);
             });
         }
 
@@ -239,6 +241,14 @@ final class NettyManager {
             this.client.pauseMessageSending();
             this.channel.writeAndFlush("QUIT" + ((message != null) ? (" :" + message) : ""));
             this.channel.close();
+            ChannelFuture future = this.channelFuture;
+            if (future != null) {
+                future.cancel(true);
+                removeClientConnection(this.client);
+            }
+            if (!reconnect) {
+                removeClientConnection(this.client);
+            }
         }
 
         @Nonnull
@@ -252,15 +262,15 @@ final class NettyManager {
     private static Bootstrap bootstrap;
     @Nullable
     private static EventLoopGroup eventLoopGroup;
-    private static final Set<ClientConnection> connections = new HashSet<>();
+    private static final Set<InternalClient> clients = new HashSet<>();
 
     private NettyManager() {
 
     }
 
-    private static synchronized void removeClientConnection(@Nonnull ClientConnection connection, boolean reconnecting) {
-        connections.remove(connection);
-        if (!reconnecting && connections.isEmpty()) {
+    private static synchronized void removeClientConnection(@Nonnull InternalClient client) {
+        clients.remove(client);
+        if (clients.isEmpty()) {
             if (eventLoopGroup != null) {
                 eventLoopGroup.shutdownGracefully();
             }
@@ -303,7 +313,7 @@ final class NettyManager {
         } else {
             clientConnection = new ClientConnection(client, bootstrap.connect(server, bind));
         }
-        connections.add(clientConnection);
+        clients.add(client);
         return clientConnection;
     }
 

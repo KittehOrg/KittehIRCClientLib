@@ -124,6 +124,7 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
     public Queue<String> shutdown() {
         synchronized (this.sendingLock) {
             this.interrupt();
+            this.sendingLock.notify();
             return this.getQueue();
         }
     }
