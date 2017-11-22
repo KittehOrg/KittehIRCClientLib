@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.event.channel;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
@@ -42,11 +43,11 @@ public class UnexpectedChannelLeaveViaKickEvent extends ChannelKickEvent impleme
      * @param client client for which this is occurring
      * @param originalMessages original messages
      * @param channel channel being left
-     * @param user actor kicking the targeted user
+     * @param actor actor kicking the targeted user
      * @param target targeted user
      * @param message message the user left
      */
-    public UnexpectedChannelLeaveViaKickEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull User user, @Nonnull User target, @Nonnull String message) {
-        super(client, originalMessages, channel, user, target, message);
+    public UnexpectedChannelLeaveViaKickEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull Actor actor, @Nonnull User target, @Nonnull String message) {
+        super(client, originalMessages, channel, actor, target, message);
     }
 }

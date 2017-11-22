@@ -51,7 +51,6 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedLis
 import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelKickByServerEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKnockEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
@@ -66,7 +65,6 @@ import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent;
-import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaKickByServerEvent;
 import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaKickEvent;
 import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaPartEvent;
 import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
@@ -1158,19 +1156,10 @@ class EventListener {
                 boolean isSelf = event.getParameters().get(1).equals(this.client.getNick());
                 ClientEvent kickEvent;
                 String kickReason = (event.getParameters().size() > 2) ? event.getParameters().get(2) : "";
-                // TODO 4.0.0 no longer cast, remove deprecated
-                if (event.getActor() instanceof User) {
-                    if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
-                        kickEvent = new UnexpectedChannelLeaveViaKickEvent(this.client, event.getOriginalMessages(), channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
-                    } else {
-                        kickEvent = new ChannelKickEvent(this.client, event.getOriginalMessages(), channel.snapshot(), (User) event.getActor(), kickedUser.snapshot(), kickReason);
-                    }
+                if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
+                    kickEvent = new UnexpectedChannelLeaveViaKickEvent(this.client, event.getOriginalMessages(), channel.snapshot(), event.getActor(), kickedUser.snapshot(), kickReason);
                 } else {
-                    if (isSelf && this.client.getIntendedChannels().contains(channel.getName())) {
-                        kickEvent = new UnexpectedChannelLeaveViaKickByServerEvent(this.client, event.getOriginalMessages(), channel.snapshot(), event.getActor(), kickedUser.snapshot(), kickReason);
-                    } else {
-                        kickEvent = new ChannelKickByServerEvent(this.client, event.getOriginalMessages(), channel.snapshot(), event.getActor(), kickedUser.snapshot(), kickReason);
-                    }
+                    kickEvent = new ChannelKickEvent(this.client, event.getOriginalMessages(), channel.snapshot(), event.getActor(), kickedUser.snapshot(), kickReason);
                 }
                 this.fire(kickEvent);
                 channel.trackUserPart(event.getParameters().get(1));
