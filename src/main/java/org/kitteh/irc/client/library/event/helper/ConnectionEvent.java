@@ -21,25 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.client;
-
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
-import org.kitteh.irc.client.library.event.helper.ConnectionEvent;
-
-import javax.annotation.Nonnull;
+package org.kitteh.irc.client.library.event.helper;
 
 /**
- * The {@link Client} has connected to the server and is about to begin IRC
- * negotiation.
+ * An event involving a Client's connection.
  */
-public class ClientConnectionEstablishedEvent extends ClientEventBase implements ConnectionEvent {
-    /**
-     * Constructs the event.
-     *
-     * @param client client for which this is occurring
-     */
-    public ClientConnectionEstablishedEvent(@Nonnull Client client) {
-        super(client);
-    }
+public interface ConnectionEvent extends ClientEvent {
 }

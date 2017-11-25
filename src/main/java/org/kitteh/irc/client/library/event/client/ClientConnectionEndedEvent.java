@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.event.helper.ConnectionEvent;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -34,7 +35,7 @@ import java.util.Optional;
 /**
  * The {@link Client} has had a connection end.
  */
-public abstract class ClientConnectionEndedEvent extends ClientEventBase {
+public abstract class ClientConnectionEndedEvent extends ClientEventBase implements ConnectionEvent {
     private final Optional<Exception> exception;
     private boolean reconnecting;
     private int reconnectionDelayMillis = 5000;
