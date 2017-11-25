@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -31,10 +32,12 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
- * The {@link Client} has had a working connection cease.
+ * The {@link Client} has had a connection end.
  */
-public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
-    private final Optional<String> lastMessage;
+public abstract class ClientConnectionEndedEvent extends ClientEventBase {
+    private final Optional<Exception> exception;
+    private boolean reconnecting;
+    private int reconnectionDelayMillis = 5000;
 
     /**
      * Constructs the event.
@@ -42,28 +45,61 @@ public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
      * @param client client for which this is occurring
      * @param reconnecting true if the client plans to reconnect
      * @param exception exception, if there was one, closing it
-     * @param lastMessage last message received
      */
-    public ClientConnectionClosedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Exception exception, @Nullable String lastMessage) {
-        super(client, reconnecting, exception);
-        this.lastMessage = Optional.ofNullable(lastMessage);
+    protected ClientConnectionEndedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Exception exception) {
+        super(client);
+        this.reconnecting = reconnecting;
+        this.exception = Optional.ofNullable(exception);
     }
 
     /**
-     * Gets the last message sent prior to disconnect. Useful if killed from
-     * the server. This message may not have been processed yet by other
-     * events.
-     *
-     * @return last message, or empty, sent by the server
+     * TODO javadoc
+     * @return
      */
     @Nonnull
-    public Optional<String> getLastMessage() {
-        return this.lastMessage;
+    public Optional<Exception> getException() {
+        return this.exception;
+    }
+
+    /**
+     * TODO javadoc
+     *
+     * @return
+     */
+    public int getReconnectionDelay() {
+        return this.reconnectionDelayMillis;
+    }
+
+    /**
+     * Gets if the client plans to reconnect to the server.
+     *
+     * @return true if the client will attempt to reconnect
+     */
+    public boolean isReconnecting() {
+        return this.reconnecting;
+    }
+
+    /**
+     * //TODO shutdown condition, javadoc
+     *
+     * @param reconnecting
+     */
+    public void setReconnecting(boolean reconnecting) {
+        this.reconnecting = reconnecting;
+    }
+
+    /**
+     * TODO javadoc
+     *
+     * @param millis
+     */
+    public void setReconnectionDelay(int millis) {
+        this.reconnectionDelayMillis = millis;
     }
 
     @Override
     @Nonnull
     protected ToStringer toStringer() {
-        return super.toStringer().add("lastMessage", this.lastMessage);
+        return super.toStringer().add("isReconnecting", this.reconnecting).add("reconnectionDelay", this.reconnectionDelayMillis);
     }
 }

@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.defaults.DefaultServerMessage;
-import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
+import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.WallopsEvent;
@@ -155,7 +155,7 @@ public class EventListenerTest {
         Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setVersion("kittydis-1.3.3.7-dev");
         Mockito.verify(this.client, Mockito.times(1)).startSending();
-        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class, event -> "irc.network".equals(event.getServer().getName()) && event.getServerInfo().equals(this.serverInfo))));
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class, event -> "irc.network".equals(event.getServer().getName()) && event.getServerInfo().equals(this.serverInfo))));
     }
 
     /**
@@ -168,7 +168,7 @@ public class EventListenerTest {
         Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();
-        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class)));
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class)));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server version and user modes missing")));
     }
 
@@ -183,7 +183,7 @@ public class EventListenerTest {
         Mockito.verify(this.serverInfo, Mockito.times(0)).setAddress(Mockito.anyString());
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();
-        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientConnectedEvent.class)));
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class)));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server address, version, and user modes missing")));
     }
 

@@ -30,7 +30,7 @@ import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
+import org.kitteh.irc.client.library.event.client.ClientConnectionEndedEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.exception.KittehEventException;
 import org.kitteh.irc.client.library.exception.KittehNagException;
@@ -168,7 +168,7 @@ public class DefaultEventManager implements EventManager {
      * @param event event of doom
      */
     @Handler(priority = Integer.MIN_VALUE)
-    public void onShutdown(ClientConnectionClosedEvent event) {
+    public void onShutdown(ClientConnectionEndedEvent event) {
         if (!event.isReconnecting()) {
             this.bus.shutdown();
         }
