@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for subscription plan name.
@@ -42,9 +41,9 @@ public class MsgParamSubPlanName extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, MsgParamSubPlanName> FUNCTION = (client, name, value) -> new MsgParamSubPlanName(name, value);
+    public static final TriFunction<Client, String, String, MsgParamSubPlanName> FUNCTION = (client, name, value) -> new MsgParamSubPlanName(name, value);
 
-    private MsgParamSubPlanName(@Nonnull String name, @Nonnull Optional<String> value) {
+    private MsgParamSubPlanName(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

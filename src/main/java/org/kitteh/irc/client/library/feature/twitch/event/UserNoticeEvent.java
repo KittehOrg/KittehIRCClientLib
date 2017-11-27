@@ -55,7 +55,7 @@ import java.util.Optional;
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
  */
 public class UserNoticeEvent extends ChannelEventBase implements TwitchSingleMessageEvent {
-    private final Optional<String> message;
+    private final String message;
 
     /**
      * Constructs the event.
@@ -67,7 +67,7 @@ public class UserNoticeEvent extends ChannelEventBase implements TwitchSingleMes
      */
     public UserNoticeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nullable String message) {
         super(client, originalMessages, channel);
-        this.message = Optional.ofNullable(message);
+        this.message = message;
     }
 
     /**
@@ -77,6 +77,6 @@ public class UserNoticeEvent extends ChannelEventBase implements TwitchSingleMes
      */
     @Nonnull
     public Optional<String> getMessage() {
-        return this.message;
+        return Optional.ofNullable(this.message);
     }
 }

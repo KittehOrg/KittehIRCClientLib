@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for subscription plan.
@@ -42,7 +41,7 @@ public class MsgParamSubPlan extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, MsgParamSubPlan> FUNCTION = (client, name, value) -> new MsgParamSubPlan(name, value);
+    public static final TriFunction<Client, String, String, MsgParamSubPlan> FUNCTION = (client, name, value) -> new MsgParamSubPlan(name, value);
 
     /**
      * Known subscription plans.
@@ -69,7 +68,7 @@ public class MsgParamSubPlan extends MessageTagManager.DefaultMessageTag {
         public static final String PRIME = "prime";
     }
 
-    private MsgParamSubPlan(@Nonnull String name, @Nonnull Optional<String> value) {
+    private MsgParamSubPlan(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

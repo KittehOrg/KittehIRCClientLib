@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Indicates chatting is for subscribers only.
@@ -42,7 +41,7 @@ public class SubsOnly extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, SubsOnly> FUNCTION = (client, name, value) -> new SubsOnly(name, value);
+    public static final TriFunction<Client, String, String, SubsOnly> FUNCTION = (client, name, value) -> new SubsOnly(name, value);
 
     /**
      * Known subs-only states.
@@ -62,7 +61,7 @@ public class SubsOnly extends MessageTagManager.DefaultMessageTag {
         public static final String ENABLED = "1";
     }
 
-    private SubsOnly(@Nonnull String name, @Nonnull Optional<String> value) {
+    private SubsOnly(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

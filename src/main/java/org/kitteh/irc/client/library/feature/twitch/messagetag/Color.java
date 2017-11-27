@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for color.
@@ -42,9 +41,9 @@ public class Color extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, Color> FUNCTION = (client, name, value) -> new Color(name, value);
+    public static final TriFunction<Client, String, String, Color> FUNCTION = (client, name, value) -> new Color(name, value);
 
-    private Color(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Color(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

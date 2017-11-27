@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for message IDs.
@@ -42,7 +41,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, MsgId> FUNCTION = (client, name, value) -> new MsgId(name, value);
+    public static final TriFunction<Client, String, String, MsgId> FUNCTION = (client, name, value) -> new MsgId(name, value);
 
     /**
      * Known msg id values, according to Twitch documentation.
@@ -153,7 +152,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
         public static final String UNRECOGNIZED_CMD = "unrecognized_cmd";
     }
 
-    private MsgId(@Nonnull String name, @Nonnull Optional<String> value) {
+    private MsgId(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

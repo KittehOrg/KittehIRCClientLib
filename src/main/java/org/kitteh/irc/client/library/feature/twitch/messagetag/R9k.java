@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * R9K mode where messages over 9 characters must be unique.
@@ -42,7 +41,7 @@ public class R9k extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, R9k> FUNCTION = (client, name, value) -> new R9k(name, value);
+    public static final TriFunction<Client, String, String, R9k> FUNCTION = (client, name, value) -> new R9k(name, value);
 
     /**
      * Known r9k states.
@@ -62,7 +61,7 @@ public class R9k extends MessageTagManager.DefaultMessageTag {
         public static final String ENABLED = "1";
     }
 
-    private R9k(@Nonnull String name, @Nonnull Optional<String> value) {
+    private R9k(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

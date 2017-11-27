@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for subscription months.
@@ -42,11 +41,11 @@ public class MsgParamMonths extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, MsgParamMonths> FUNCTION = (client, name, value) -> new MsgParamMonths(name, value, Integer.parseInt(value.get()));
+    public static final TriFunction<Client, String, String, MsgParamMonths> FUNCTION = (client, name, value) -> new MsgParamMonths(name, value, Integer.parseInt(value));
 
     private final int months;
 
-    private MsgParamMonths(@Nonnull String name, @Nonnull Optional<String> value, int months) {
+    private MsgParamMonths(@Nonnull String name, @Nonnull String value, int months) {
         super(name, value);
         this.months = months;
     }

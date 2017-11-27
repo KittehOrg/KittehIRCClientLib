@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * I'm so emotional right now.
@@ -46,7 +45,7 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, Emotes> FUNCTION = (client, name, value) -> new Emotes(name, value);
+    public static final TriFunction<Client, String, String, Emotes> FUNCTION = (client, name, value) -> new Emotes(name, value);
 
     /**
      * One emote.
@@ -98,13 +97,13 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
 
     private final List<Emote> emotes;
 
-    private Emotes(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Emotes(@Nonnull String name, @Nonnull String value) {
         super(name, value);
-        if (!value.isPresent()) {
+        if (value == null) {
             this.emotes = Collections.emptyList();
         } else {
             List<Emote> emotes = new ArrayList<>();
-            String[] emotesSplit = value.get().split("/");
+            String[] emotesSplit = value.split("/");
             for (String emoteInfo : emotesSplit) {
                 String[] emoteAndIndices = emoteInfo.split(":");
                 if (emoteAndIndices.length < 2) {

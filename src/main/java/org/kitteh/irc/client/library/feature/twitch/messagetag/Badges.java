@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * We don't need no stinkin' badges.
@@ -46,7 +45,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, Badges> FUNCTION = (client, name, value) -> new Badges(name, value);
+    public static final TriFunction<Client, String, String, Badges> FUNCTION = (client, name, value) -> new Badges(name, value);
 
     /**
      * Known badge names.
@@ -137,13 +136,13 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
 
     private final List<Badge> badges;
 
-    private Badges(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Badges(@Nonnull String name, @Nonnull String value) {
         super(name, value);
-        if (!value.isPresent()) {
+        if (value == null) {
             this.badges = Collections.emptyList();
         } else {
             List<Badge> badges = new ArrayList<>();
-            String[] badgesSplit = value.get().split(",");
+            String[] badgesSplit = value.split(",");
             for (String badgeInfo : badgesSplit) {
                 String[] split = badgeInfo.split("/");
                 String version;

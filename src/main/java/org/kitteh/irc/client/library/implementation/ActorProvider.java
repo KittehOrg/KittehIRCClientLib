@@ -341,32 +341,32 @@ class ActorProvider implements Resettable {
     }
 
     class IRCChannelTopicSnapshot implements Channel.Topic {
-        private final Optional<Actor> setter;
-        private final Optional<Instant> time;
-        private final Optional<String> topic;
+        private final Actor setter;
+        private final Instant time;
+        private final String topic;
 
         private IRCChannelTopicSnapshot(@Nullable Instant time, @Nullable String topic, @Nullable Actor setter) {
-            this.time = Optional.ofNullable(time);
-            this.topic = Optional.ofNullable(topic);
-            this.setter = Optional.ofNullable(setter);
+            this.time = time;
+            this.topic = topic;
+            this.setter = setter;
         }
 
         @Nonnull
         @Override
         public Optional<Actor> getSetter() {
-            return this.setter;
+            return Optional.ofNullable(this.setter);
         }
 
         @Nonnull
         @Override
         public Optional<Instant> getTime() {
-            return this.time;
+            return Optional.ofNullable(this.time);
         }
 
         @Nonnull
         @Override
         public Optional<String> getValue() {
-            return this.topic;
+            return Optional.ofNullable(this.topic);
         }
 
         @Nonnull
@@ -630,28 +630,28 @@ class ActorProvider implements Resettable {
     }
 
     class IRCUserSnapshot extends IRCActorSnapshot implements User {
-        private final Optional<String> account;
-        private final Optional<String> awayMessage;
+        private final String account;
+        private final String awayMessage;
         private final Set<String> channels;
         private final String host;
         private final boolean isAway;
         private final String nick;
-        private final Optional<String> operString;
-        private final Optional<String> realName;
-        private final Optional<String> server;
+        private final String operString;
+        private final String realName;
+        private final String server;
         private final String user;
 
         private IRCUserSnapshot(@Nonnull IRCUser user) {
             super(user);
-            this.account = Optional.ofNullable(user.account);
-            this.awayMessage = Optional.ofNullable(user.awayMessage);
+            this.account = user.account;
+            this.awayMessage = user.awayMessage;
             this.nick = user.nick;
             this.user = user.user;
             this.host = user.host;
             this.isAway = user.isAway;
-            this.operString = Optional.ofNullable(user.operString);
-            this.realName = Optional.ofNullable(user.realName);
-            this.server = Optional.ofNullable(user.server);
+            this.operString = user.operString;
+            this.realName = user.realName;
+            this.server = user.server;
             Set<String> chanSet = new HashSet<>();
             for (ActorProvider.IRCChannel channel : ActorProvider.this.trackedChannels.values()) {
                 if (channel.modes.containsKey(this.nick)) {
@@ -669,13 +669,13 @@ class ActorProvider implements Resettable {
         @Nonnull
         @Override
         public Optional<String> getAccount() {
-            return this.account;
+            return Optional.ofNullable(this.account);
         }
 
         @Nonnull
         @Override
         public Optional<String> getAwayMessage() {
-            return this.awayMessage;
+            return Optional.ofNullable(this.awayMessage);
         }
 
         @Nonnull
@@ -705,19 +705,19 @@ class ActorProvider implements Resettable {
         @Nonnull
         @Override
         public Optional<String> getOperatorInformation() {
-            return this.operString;
+            return Optional.ofNullable(this.operString);
         }
 
         @Nonnull
         @Override
         public Optional<String> getRealName() {
-            return this.realName;
+            return Optional.ofNullable(this.realName);
         }
 
         @Nonnull
         @Override
         public Optional<String> getServer() {
-            return this.server;
+            return Optional.ofNullable(this.server);
         }
 
         @Nonnull

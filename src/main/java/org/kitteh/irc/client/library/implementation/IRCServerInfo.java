@@ -53,9 +53,9 @@ class IRCServerInfo implements Resettable, ServerInfo {
     private final List<ChannelMode> defaultChannelModes;
     private final List<Character> defaultChannelPrefixes = Arrays.asList('#', '&', '!', '+');
     private final List<ChannelUserMode> defaultChannelUserModes;
-    private Optional<List<String>> motd = Optional.empty();
-    private Optional<String> address = Optional.empty();
-    private Optional<String> version = Optional.empty();
+    private List<String> motd;
+    private String address;
+    private String version;
     private List<UserMode> userModes;
 
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
@@ -97,11 +97,11 @@ class IRCServerInfo implements Resettable, ServerInfo {
     @Nonnull
     @Override
     public Optional<String> getAddress() {
-        return this.address;
+        return Optional.ofNullable(this.address);
     }
 
     void setAddress(@Nonnull String serverAddress) {
-        this.address = Optional.of(serverAddress);
+        this.address = serverAddress;
     }
 
     @Nonnull
@@ -145,21 +145,21 @@ class IRCServerInfo implements Resettable, ServerInfo {
     @Nonnull
     @Override
     public Optional<List<String>> getMOTD() {
-        return this.motd;
+        return Optional.ofNullable(this.motd);
     }
 
     void setMOTD(@Nonnull List<String> motd) {
-        this.motd = Optional.of(Collections.unmodifiableList(motd));
+        this.motd = Collections.unmodifiableList(motd);
     }
 
     @Nonnull
     @Override
     public Optional<String> getVersion() {
-        return this.version;
+        return Optional.ofNullable(this.version);
     }
 
     void setVersion(@Nonnull String version) {
-        this.version = Optional.of(version);
+        this.version = version;
     }
 
     // Util stuffs

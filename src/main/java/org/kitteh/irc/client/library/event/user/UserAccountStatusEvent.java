@@ -39,7 +39,7 @@ import java.util.Optional;
  * signing out of one. Fired if the server supports account-notify.
  */
 public class UserAccountStatusEvent extends ActorEventBase<User> {
-    private final Optional<String> account;
+    private final String account;
 
     /**
      * Creates the event.
@@ -51,7 +51,7 @@ public class UserAccountStatusEvent extends ActorEventBase<User> {
      */
     public UserAccountStatusEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nullable String account) {
         super(client, originalMessages, user);
-        this.account = Optional.ofNullable(account);
+        this.account = account;
     }
 
     /**
@@ -61,7 +61,7 @@ public class UserAccountStatusEvent extends ActorEventBase<User> {
      */
     @Nonnull
     public Optional<String> getAccount() {
-        return this.account;
+        return Optional.ofNullable(this.account);
     }
 
     @Override

@@ -36,7 +36,7 @@ import java.util.Optional;
  */
 public class ModeStatus<ModeType extends Mode> implements ClientLinked {
     private final ModeType mode;
-    private final Optional<String> parameter;
+    private final String parameter;
     private final boolean setting;
 
     /**
@@ -47,7 +47,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      */
     public ModeStatus(boolean setting, @Nonnull ModeType mode) {
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
-        this.parameter = Optional.empty();
+        this.parameter = null;
         this.setting = setting;
     }
 
@@ -60,7 +60,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      */
     public ModeStatus(boolean setting, @Nonnull ModeType mode, @Nonnull String parameter) {
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
-        this.parameter = Optional.of(Sanity.safeMessageCheck(parameter, "Parameter"));
+        this.parameter = Sanity.safeMessageCheck(parameter, "Parameter");
         this.setting = setting;
     }
 
@@ -87,7 +87,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      */
     @Nonnull
     public Optional<String> getParameter() {
-        return this.parameter;
+        return Optional.ofNullable(this.parameter);
     }
 
     /**

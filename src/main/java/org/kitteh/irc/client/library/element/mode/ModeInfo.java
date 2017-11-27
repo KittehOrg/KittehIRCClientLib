@@ -43,8 +43,8 @@ public interface ModeInfo extends ClientLinked {
      */
     class DefaultModeInfo implements ModeInfo {
         private final Client client;
-        private final Optional<Instant> creationTime;
-        private final Optional<String> creator;
+        private final Instant creationTime;
+        private final String creator;
         private final Channel channel;
         private final Mask mask;
         private final ChannelMode mode;
@@ -59,7 +59,7 @@ public interface ModeInfo extends ClientLinked {
          * @param creator creator, if known
          * @param creationTime creation time, if known
          */
-        public DefaultModeInfo(@Nonnull Client client, @Nonnull Channel channel, @Nonnull ChannelMode mode, @Nonnull String mask, @Nonnull Optional<String> creator, @Nonnull Optional<Instant> creationTime) {
+        public DefaultModeInfo(@Nonnull Client client, @Nonnull Channel channel, @Nonnull ChannelMode mode, @Nonnull String mask, @Nonnull String creator, @Nonnull Instant creationTime) {
             this.client = client;
             this.creator = creator;
             this.channel = channel;
@@ -71,7 +71,7 @@ public interface ModeInfo extends ClientLinked {
         @Nonnull
         @Override
         public Optional<String> getCreator() {
-            return this.creator;
+            return Optional.ofNullable(this.creator);
         }
 
         @Nonnull
@@ -101,7 +101,7 @@ public interface ModeInfo extends ClientLinked {
         @Nonnull
         @Override
         public Optional<Instant> getCreationTime() {
-            return this.creationTime;
+            return Optional.ofNullable(this.creationTime);
         }
 
         @Nonnull

@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for ban reason.
@@ -42,9 +41,9 @@ public class BanReason extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, BanReason> FUNCTION = (client, name, value) -> new BanReason(name, value);
+    public static final TriFunction<Client, String, String, BanReason> FUNCTION = (client, name, value) -> new BanReason(name, value);
 
-    private BanReason(@Nonnull String name, @Nonnull Optional<String> value) {
+    private BanReason(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

@@ -38,7 +38,7 @@ public class DefaultCapabilityState implements CapabilityState {
     private final long creationTime;
     private final boolean disable;
     private final String name;
-    private final Optional<String> value;
+    private final String value;
 
     /**
      * Constructs a capability state.
@@ -54,10 +54,10 @@ public class DefaultCapabilityState implements CapabilityState {
         int index = remaining.indexOf('=');
         if ((index > -1) && (remaining.length() > (index + 1))) {
             this.name = remaining.substring(0, index);
-            this.value = Optional.of(remaining.substring(index + 1));
+            this.value = remaining.substring(index + 1);
         } else {
             this.name = (index > -1) ? remaining.substring(0, index) : remaining;
-            this.value = Optional.empty();
+            this.value = null;
         }
     }
 
@@ -95,7 +95,7 @@ public class DefaultCapabilityState implements CapabilityState {
     @Nonnull
     @Override
     public Optional<String> getValue() {
-        return this.value;
+        return Optional.ofNullable(this.value);
     }
 
     @Override

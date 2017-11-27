@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -47,13 +46,13 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, EmoteSets> FUNCTION = (client, name, value) -> new EmoteSets(name, value);
+    public static final TriFunction<Client, String, String, EmoteSets> FUNCTION = (client, name, value) -> new EmoteSets(name, value);
 
     private final List<Integer> emoteSets;
 
-    private EmoteSets(@Nonnull String name, @Nonnull Optional<String> value) {
+    private EmoteSets(@Nonnull String name, @Nonnull String value) {
         super(name, value);
-        this.emoteSets = value.map(string -> Collections.unmodifiableList(Arrays.stream(value.get().split(",")).map(Integer::valueOf).collect(Collectors.toList()))).orElse(Collections.emptyList());
+        this.emoteSets = (value == null) ? Collections.emptyList() : Collections.unmodifiableList(Arrays.stream(value.split(",")).map(Integer::valueOf).collect(Collectors.toList()));
     }
 
     /**

@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for bits amount.
@@ -42,11 +41,11 @@ public class Bits extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, Bits> FUNCTION = (client, name, value) -> new Bits(name, value, Integer.parseInt(value.get()));
+    public static final TriFunction<Client, String, String, Bits> FUNCTION = (client, name, value) -> new Bits(name, value, Integer.parseInt(value));
 
     private final int amount;
 
-    private Bits(@Nonnull String name, @Nonnull Optional<String> value, int amount) {
+    private Bits(@Nonnull String name, @Nonnull String value, int amount) {
         super(name, value);
         this.amount = amount;
     }

@@ -48,9 +48,9 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     private static class IRCISupportParameter implements ISupportParameter {
         private final Client client;
         private final String name;
-        private final Optional<String> value;
+        private final String value;
 
-        private IRCISupportParameter(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private IRCISupportParameter(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             this.client = client;
             this.name = name;
             this.value = value;
@@ -71,7 +71,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         @Nonnull
         @Override
         public Optional<String> getValue() {
-            return this.value;
+            return Optional.ofNullable(this.value);
         }
 
         @Nonnull
@@ -82,9 +82,9 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     }
 
     private abstract static class IRCISupportParameterValueRequired extends IRCISupportParameter {
-        private IRCISupportParameterValueRequired(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private IRCISupportParameterValueRequired(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
-            if (!value.isPresent()) {
+            if (value == null) {
                 throw new KittehServerISupportException(name, "Value is required");
             }
         }
@@ -93,10 +93,10 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     private abstract static class IRCISupportParameterInteger extends IRCISupportParameterValueRequired implements ISupportParameter.IntegerParameter {
         private final int integer;
 
-        private IRCISupportParameterInteger(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private IRCISupportParameterInteger(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
             try {
-                this.integer = Integer.parseInt(value.get());
+                this.integer = Integer.parseInt(value);
             } catch (Exception e) {
                 throw new KittehServerISupportException(name, "Could not parse value", e);
             }
@@ -111,12 +111,12 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     private static final class ISupportCaseMapping extends IRCISupportParameterValueRequired implements ISupportParameter.CaseMapping {
         private final org.kitteh.irc.client.library.feature.CaseMapping caseMapping;
 
-        private ISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
-            if (!value.isPresent()) {
+            if (value == null) {
                 throw new KittehServerISupportException(name, "No casemapping value");
             }
-            Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value.get());
+            Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value);
             if (caseMapping.isPresent()) {
                 this.caseMapping = caseMapping.get();
             } else {
@@ -132,7 +132,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     }
 
     private static final class ISupportChannelLen extends IRCISupportParameterInteger implements ISupportParameter.ChannelLen {
-        private ISupportChannelLen(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportChannelLen(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
         }
     }
@@ -140,12 +140,12 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     private static final class ISupportChanLimit extends IRCISupportParameterValueRequired implements ISupportParameter.ChanLimit {
         private final Map<Character, Integer> limits;
 
-        private ISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
-            if (!value.isPresent()) {
+            if (value == null) {
                 throw new KittehServerISupportException(name, "No limits defined");
             }
-            String[] pairs = value.get().split(",");
+            String[] pairs = value.split(",");
             Map<Character, Integer> limits = new HashMap<>();
             for (String p : pairs) {
                 String[] pair = p.split(":");
@@ -175,12 +175,12 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     private static final class ISupportChanModes extends IRCISupportParameterValueRequired implements ISupportParameter.ChanModes {
         private final List<ChannelMode> modes;
 
-        private ISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
-            if (!value.isPresent()) {
+            if (value == null) {
                 throw new KittehServerISupportException(name, "No modes defined");
             }
-            String[] modes = value.get().split(",");
+            String[] modes = value.split(",");
             List<ChannelMode> modesList = new ArrayList<>();
             for (int typeId = 0; (typeId < modes.length) && (typeId < 4); typeId++) {
                 for (char mode : modes[typeId].toCharArray()) {
@@ -215,13 +215,13 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     private static final class ISupportChanTypes extends IRCISupportParameterValueRequired implements ISupportParameter.ChanTypes {
         private final List<Character> prefixes;
 
-        private ISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
-            if (!value.isPresent()) {
+            if (value == null) {
                 throw new KittehServerISupportException(name, "No chantypes defined");
             }
             List<Character> prefixes = new ArrayList<>();
-            for (char c : value.get().toCharArray()) {
+            for (char c : value.toCharArray()) {
                 prefixes.add(c);
             }
             this.prefixes = Collections.unmodifiableList(prefixes);
@@ -235,7 +235,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     }
 
     private static final class ISupportModes extends IRCISupportParameterInteger implements ISupportParameter.Modes {
-        private ISupportModes(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportModes(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
         }
     }
@@ -243,12 +243,12 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     private static final class ISupportNetwork extends IRCISupportParameterValueRequired implements ISupportParameter.Network {
         private final String networkName;
 
-        private ISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
-            if (!value.isPresent()) {
+            if (value == null) {
                 throw new KittehServerISupportException(name, "No network name defined");
             }
-            this.networkName = value.get();
+            this.networkName = value;
         }
 
         @Nonnull
@@ -259,7 +259,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     }
 
     private static final class ISupportNickLen extends IRCISupportParameterInteger implements ISupportParameter.NickLen {
-        private ISupportNickLen(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportNickLen(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
         }
     }
@@ -269,12 +269,12 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
 
         private final List<ChannelUserMode> modes;
 
-        private ISupportPrefix(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportPrefix(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
-            if (!value.isPresent()) {
+            if (value == null) {
                 throw new KittehServerISupportException(name, "No prefixes defined");
             }
-            Matcher matcher = this.PATTERN.matcher(value.get());
+            Matcher matcher = this.PATTERN.matcher(value);
             if (!matcher.find()) {
                 throw new KittehServerISupportException(name, "Data does not match expected pattern");
             }
@@ -298,13 +298,13 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
     }
 
     private static final class ISupportWHOX extends IRCISupportParameter implements ISupportParameter.WHOX {
-        private ISupportWHOX(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportWHOX(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
         }
     }
 
     private static final class ISupportTopicLen extends IRCISupportParameterInteger implements ISupportParameter.TopicLen {
-        private ISupportTopicLen(@Nonnull Client client, @Nonnull String name, @Nonnull Optional<String> value) {
+        private ISupportTopicLen(@Nonnull Client client, @Nonnull String name, @Nonnull String value) {
             super(client, name, value);
         }
     }
@@ -326,19 +326,19 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
 
     @Nonnull
     @Override
-    public Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> getCreator(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> getCreator(@Nonnull String tagName) {
         return this.getCreatorByName(tagName);
     }
 
     @Nonnull
     @Override
-    public Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> registerParameter(@Nonnull String tagName, @Nonnull TriFunction<Client, String, Optional<String>, ? extends ISupportParameter> function) {
+    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> registerParameter(@Nonnull String tagName, @Nonnull TriFunction<Client, String, String, ? extends ISupportParameter> function) {
         return this.registerCreator(tagName, new Creator<>(function));
     }
 
     @Nonnull
     @Override
-    public Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> unregisterParameter(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> unregisterParameter(@Nonnull String tagName) {
         return this.unregisterCreator(tagName);
     }
 
@@ -347,14 +347,14 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         int index;
         Creator<ISupportParameter> creator;
         String tagName;
-        Optional<String> value;
+        String value;
         // Split out value if present
         if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
             tagName = tag.substring(0, index);
-            value = Optional.of(tag.substring(index + 1));
+            value = tag.substring(index + 1);
         } else {
             tagName = tag;
-            value = Optional.empty();
+            value = null;
         }
         ISupportParameter iSupportParameter = null;
         // Attempt creating from registered creator, fall back on default

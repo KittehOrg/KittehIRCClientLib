@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for ban duration.
@@ -42,11 +41,11 @@ public class BanDuration extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, BanDuration> FUNCTION = (client, name, value) -> new BanDuration(name, value, Integer.parseInt(value.get()));
+    public static final TriFunction<Client, String, String, BanDuration> FUNCTION = (client, name, value) -> new BanDuration(name, value, Integer.parseInt(value));
 
     private final int duration;
 
-    private BanDuration(@Nonnull String name, @Nonnull Optional<String> value, int duration) {
+    private BanDuration(@Nonnull String name, @Nonnull String value, int duration) {
         super(name, value);
         this.duration = duration;
     }

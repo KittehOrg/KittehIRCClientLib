@@ -43,11 +43,11 @@ import java.util.stream.Collectors;
 
 final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
     private static class IRCMessageTagTime extends DefaultMessageTag implements MessageTag.Time {
-        private static final TriFunction<Client, String, Optional<String>, IRCMessageTagTime> FUNCTION = (client, name, value) -> new IRCMessageTagTime(name, value, Instant.parse(value.get()));
+        private static final TriFunction<Client, String, String, IRCMessageTagTime> FUNCTION = (client, name, value) -> new IRCMessageTagTime(name, value, Instant.parse(value));
 
         private final Instant time;
 
-        private IRCMessageTagTime(@Nonnull String name, @Nonnull Optional<String> value, @Nonnull Instant time) {
+        private IRCMessageTagTime(@Nonnull String name, @Nonnull String value, @Nonnull Instant time) {
             super(name, value);
             this.time = time;
         }
@@ -62,7 +62,7 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
     protected static class TagCreator extends Creator<MessageTag> {
         private final String capability;
 
-        private TagCreator(@Nonnull String capability, @Nonnull TriFunction<Client, String, Optional<String>, ? extends MessageTag> function) {
+        private TagCreator(@Nonnull String capability, @Nonnull TriFunction<Client, String, String, ? extends MessageTag> function) {
             super(function);
             this.capability = capability;
         }
@@ -88,25 +88,25 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
 
     @Nonnull
     @Override
-    public Map<String, TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability) {
+    public Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability) {
         return Collections.unmodifiableMap(this.getRegistrations().entrySet().stream().filter(e -> ((TagCreator) e.getValue()).getCapability().equals(capability)).collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFunction())));
     }
 
     @Nonnull
     @Override
-    public Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getTagCreator(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@Nonnull String tagName) {
         return this.getCreatorByName(tagName);
     }
 
     @Nonnull
     @Override
-    public Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, Optional<String>, ? extends MessageTag> function) {
+    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, String, ? extends MessageTag> function) {
         return this.registerCreator(tagName, new TagCreator(capability, function));
     }
 
     @Nonnull
     @Override
-    public Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> unregisterTag(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@Nonnull String tagName) {
         return this.unregisterCreator(tagName);
     }
 
@@ -118,14 +118,14 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
         TagCreator tagCreator;
         for (String tag : tags) {
             String tagName;
-            Optional<String> value;
+            String value;
             // Split out value if present
             if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
                 tagName = tag.substring(0, index);
-                value = Optional.of(this.getTagValue(tag.substring(index + 1)));
+                value = this.getTagValue(tag.substring(index + 1));
             } else {
                 tagName = (index < 0) ? tag : tag.substring(0, index);
-                value = Optional.empty();
+                value = null;
             }
             MessageTag messageTag = null;
             // Attempt creating from registered creator, fall back on default

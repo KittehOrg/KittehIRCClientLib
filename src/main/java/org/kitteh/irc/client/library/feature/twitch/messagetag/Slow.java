@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag slow, indicating non-moderators have to wait between messages.
@@ -42,11 +41,11 @@ public class Slow extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, Slow> FUNCTION = (client, name, value) -> new Slow(name, value, Integer.parseInt(value.get()));
+    public static final TriFunction<Client, String, String, Slow> FUNCTION = (client, name, value) -> new Slow(name, value, Integer.parseInt(value));
 
     private final int delay;
 
-    private Slow(@Nonnull String name, @Nonnull Optional<String> value, int delay) {
+    private Slow(@Nonnull String name, @Nonnull String value, int delay) {
         super(name, value);
         this.delay = delay;
     }

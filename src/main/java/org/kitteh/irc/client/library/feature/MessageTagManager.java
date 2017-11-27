@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public interface MessageTagManager {
      */
     class DefaultMessageTag implements MessageTag {
         private final String name;
-        private final Optional<String> value;
+        private final String value;
 
         /**
          * Constructs a default message tag.
@@ -49,7 +50,7 @@ public interface MessageTagManager {
          * @param name tag name
          * @param value tag value or {@link Optional#empty()}
          */
-        public DefaultMessageTag(@Nonnull String name, @Nonnull Optional<String> value) {
+        public DefaultMessageTag(@Nonnull String name, @Nullable String value) {
             this.name = name;
             this.value = value;
         }
@@ -63,7 +64,7 @@ public interface MessageTagManager {
         @Nonnull
         @Override
         public Optional<String> getValue() {
-            return this.value;
+            return Optional.ofNullable(this.value);
         }
 
         @Nonnull
@@ -90,7 +91,7 @@ public interface MessageTagManager {
      * @return mapping of tags to their creators for the given capability
      */
     @Nonnull
-    Map<String, TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability);
+    Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability);
 
     /**
      * Gets the registered tag creator for a given tag name.
@@ -99,7 +100,7 @@ public interface MessageTagManager {
      * @return registered creator if present
      */
     @Nonnull
-    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> getTagCreator(@Nonnull String tagName);
+    Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@Nonnull String tagName);
 
     /**
      * Registers a function that creates a tag from given tag name and tag
@@ -111,7 +112,7 @@ public interface MessageTagManager {
      * @return displaced tag creator if one existed for the given tag name
      */
     @Nonnull
-    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, Optional<String>, ? extends MessageTag> tagCreator);
+    Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, String, ? extends MessageTag> tagCreator);
 
     /**
      * Removes the registered tag creator for a given tag name.
@@ -120,5 +121,5 @@ public interface MessageTagManager {
      * @return registered creator if present
      */
     @Nonnull
-    Optional<TriFunction<Client, String, Optional<String>, ? extends MessageTag>> unregisterTag(@Nonnull String tagName);
+    Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@Nonnull String tagName);
 }

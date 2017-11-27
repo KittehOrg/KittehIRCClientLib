@@ -11,13 +11,12 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Nonnull;
 
 /**
  * A test that ensures filtering works without explicitly registering filters.

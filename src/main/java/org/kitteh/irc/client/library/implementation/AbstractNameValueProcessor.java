@@ -36,14 +36,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 abstract class AbstractNameValueProcessor<NameValue> {
     protected static class Creator<NameValue> {
-        private final TriFunction<Client, String, Optional<String>, ? extends NameValue> function;
+        private final TriFunction<Client, String, String, ? extends NameValue> function;
 
-        protected Creator(@Nonnull TriFunction<Client, String, Optional<String>, ? extends NameValue> function) {
+        protected Creator(@Nonnull TriFunction<Client, String, String, ? extends NameValue> function) {
             this.function = Sanity.nullCheck(function, "Function cannot be null");
         }
 
         @Nonnull
-        protected TriFunction<Client, String, Optional<String>, ? extends NameValue> getFunction() {
+        protected TriFunction<Client, String, String, ? extends NameValue> getFunction() {
             return this.function;
         }
     }
@@ -64,22 +64,22 @@ abstract class AbstractNameValueProcessor<NameValue> {
     }
 
     @Nonnull
-    protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
+    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
         return this.optional(this.registeredNames.get(Sanity.nullCheck(name, "Name cannot be null")));
     }
 
     @Nonnull
-    protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
+    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
         return this.optional(this.registeredNames.put(Sanity.nullCheck(name, "Name cannot be null"), creator));
     }
 
     @Nonnull
-    protected final Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
+    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
         return this.optional(this.registeredNames.remove(Sanity.nullCheck(name, "Name cannot be null")));
     }
 
     @Nonnull
-    private Optional<TriFunction<Client, String, Optional<String>, ? extends NameValue>> optional(@Nullable Creator<NameValue> creator) {
+    private Optional<TriFunction<Client, String, String, ? extends NameValue>> optional(@Nullable Creator<NameValue> creator) {
         return (creator == null) ? Optional.empty() : Optional.of(creator.getFunction());
     }
 

@@ -41,7 +41,7 @@ import java.util.Optional;
  */
 public class UserAwayMessageEvent extends ActorEventBase<User> {
     private final boolean isAway;
-    private final Optional<String> message;
+    private final String message;
 
     /**
      * Creates the event.
@@ -54,7 +54,7 @@ public class UserAwayMessageEvent extends ActorEventBase<User> {
     public UserAwayMessageEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nullable String message) {
         super(client, originalMessages, user);
         this.isAway = message != null;
-        this.message = Optional.ofNullable(message);
+        this.message = message;
     }
 
     /**
@@ -74,7 +74,7 @@ public class UserAwayMessageEvent extends ActorEventBase<User> {
      */
     @Nonnull
     public Optional<String> getAwayMessage() {
-        return this.message;
+        return Optional.ofNullable(this.message);
     }
 
     @Override

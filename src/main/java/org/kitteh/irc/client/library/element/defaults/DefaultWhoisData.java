@@ -199,22 +199,22 @@ public class DefaultWhoisData implements WhoisData {
     }
 
     private final Client client;
-    private final Optional<String> account;
+    private final String account;
     private final Set<String> channels;
     private final String name;
     private final String nick;
     private final String userString;
     private final String host;
     private final long creationTime;
-    private final Optional<String> realName;
-    private final Optional<String> server;
-    private final Optional<Long> idleTime;
-    private final Optional<String> serverDescription;
+    private final String realName;
+    private final String server;
+    private final Long idleTime;
+    private final String serverDescription;
     private final boolean secureConnection;
-    private final Optional<String> operatorInformation;
-    private final Optional<Long> signOnTime;
+    private final String operatorInformation;
+    private final Long signOnTime;
     private final boolean away;
-    private final Optional<String> awayMessage;
+    private final String awayMessage;
 
     /**
      * Creates the default WHOIS data object.
@@ -238,34 +238,34 @@ public class DefaultWhoisData implements WhoisData {
                             @Nonnull String host, @Nullable String realName, @Nullable String server, @Nullable String serverDescription, boolean secureConnection,
                             @Nullable String operatorInformation, @Nullable Long idleTime, @Nullable Long signOnTime, @Nullable String awayMessage) {
         this.client = client;
-        this.account = Optional.ofNullable(account);
+        this.account = account;
         this.channels = Collections.unmodifiableSet(new HashSet<>(channels));
         this.name = nick + '!' + userString + '@' + host;
         this.nick = nick;
         this.userString = userString;
         this.host = host;
-        this.realName = Optional.ofNullable(realName);
-        this.server = Optional.ofNullable(server);
-        this.serverDescription = Optional.ofNullable(serverDescription);
-        this.operatorInformation = Optional.ofNullable(operatorInformation);
+        this.realName = realName;
+        this.server = server;
+        this.serverDescription = serverDescription;
+        this.operatorInformation = operatorInformation;
         this.secureConnection = secureConnection;
-        this.idleTime = Optional.ofNullable(idleTime);
-        this.signOnTime = Optional.ofNullable(signOnTime);
+        this.idleTime = idleTime;
+        this.signOnTime = signOnTime;
         this.away = awayMessage != null;
-        this.awayMessage = Optional.ofNullable(awayMessage);
+        this.awayMessage = awayMessage;
         this.creationTime = System.currentTimeMillis();
     }
 
     @Nonnull
     @Override
     public Optional<String> getAccount() {
-        return this.account;
+        return Optional.ofNullable(this.account);
     }
 
     @Nonnull
     @Override
     public Optional<String> getAwayMessage() {
-        return this.awayMessage;
+        return Optional.ofNullable(this.awayMessage);
     }
 
     @Nonnull
@@ -289,13 +289,13 @@ public class DefaultWhoisData implements WhoisData {
     @Nonnull
     @Override
     public Optional<String> getRealName() {
-        return this.realName;
+        return Optional.ofNullable(this.realName);
     }
 
     @Nonnull
     @Override
     public Optional<String> getServer() {
-        return this.server;
+        return Optional.ofNullable(this.server);
     }
 
     @Nonnull
@@ -335,25 +335,25 @@ public class DefaultWhoisData implements WhoisData {
     @Nonnull
     @Override
     public Optional<Long> getIdleTime() {
-        return this.idleTime;
+        return Optional.ofNullable(this.idleTime);
     }
 
     @Nonnull
     @Override
     public Optional<String> getOperatorInformation() {
-        return this.operatorInformation;
+        return Optional.ofNullable(this.operatorInformation);
     }
 
     @Nonnull
     @Override
     public Optional<String> getServerDescription() {
-        return this.serverDescription;
+        return Optional.ofNullable(this.serverDescription);
     }
 
     @Nonnull
     @Override
     public Optional<Long> getSignOnTime() {
-        return this.signOnTime;
+        return Optional.ofNullable(this.signOnTime);
     }
 
     @Override

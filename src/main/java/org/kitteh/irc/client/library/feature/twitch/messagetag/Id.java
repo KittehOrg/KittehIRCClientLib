@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag for an ID.
@@ -42,9 +41,9 @@ public class Id extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, Id> FUNCTION = (client, name, value) -> new Id(name, value);
+    public static final TriFunction<Client, String, String, Id> FUNCTION = (client, name, value) -> new Id(name, value);
 
-    private Id(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Id(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

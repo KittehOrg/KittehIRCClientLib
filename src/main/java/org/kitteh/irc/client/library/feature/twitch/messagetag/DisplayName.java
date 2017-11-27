@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * Message tag display name.
@@ -42,9 +41,9 @@ public class DisplayName extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, DisplayName> FUNCTION = (client, name, value) -> new DisplayName(name, value);
+    public static final TriFunction<Client, String, String, DisplayName> FUNCTION = (client, name, value) -> new DisplayName(name, value);
 
-    private DisplayName(@Nonnull String name, @Nonnull Optional<String> value) {
+    private DisplayName(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }

@@ -266,26 +266,26 @@ public class ISupportManagerTest {
     @Test
     public void registrationAndRun() {
         ManagerISupport manager = this.getManager();
-        TriFunction<Client, String, Optional<String>, ? extends ISupportParameter> kitten = (client, name, value) -> new KittenParameter(false);
-        TriFunction<Client, String, Optional<String>, ? extends ISupportParameter> naughtyKitten = (client, name, value) -> new KittenParameter(true);
+        TriFunction<Client, String, String, ? extends ISupportParameter> kitten = (client, name, value) -> new KittenParameter(false);
+        TriFunction<Client, String, String, ? extends ISupportParameter> naughtyKitten = (client, name, value) -> new KittenParameter(true);
 
         // Register
         Assert.assertTrue(!manager.registerParameter("KITTEN", kitten).isPresent());
         // Is it registered?
-        Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> optionalGotten = manager.getCreator("KITTEN");
+        Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> optionalGotten = manager.getCreator("KITTEN");
         Assert.assertTrue(optionalGotten.isPresent());
         Assert.assertEquals(kitten, optionalGotten.get());
         // Get parameter
         Assert.assertTrue(KittenParameter.class.isAssignableFrom(manager.getParameter("KITTEN").getClass()));
         // Remove
-        Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> optionalRemoved = manager.unregisterParameter("KITTEN");
+        Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> optionalRemoved = manager.unregisterParameter("KITTEN");
         Assert.assertTrue(optionalRemoved.isPresent());
         Assert.assertEquals(kitten, optionalRemoved.get());
 
         // Register it again, to test removal on replacement registration.
         manager.registerParameter("KITTEN", kitten);
         // Register the naughty version
-        Optional<TriFunction<Client, String, Optional<String>, ? extends ISupportParameter>> optionalReplaced = manager.registerParameter("KITTEN", naughtyKitten);
+        Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> optionalReplaced = manager.registerParameter("KITTEN", naughtyKitten);
         // Was it replaced?
         Assert.assertTrue(optionalReplaced.isPresent());
         Assert.assertEquals(kitten, optionalReplaced.get());

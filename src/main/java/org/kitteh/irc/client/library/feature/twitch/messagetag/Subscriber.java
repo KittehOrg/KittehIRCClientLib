@@ -28,7 +28,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 /**
  * User has a subscriber badge or not.
@@ -42,7 +41,7 @@ public class Subscriber extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
-    public static final TriFunction<Client, String, Optional<String>, Subscriber> FUNCTION = (client, name, value) -> new Subscriber(name, value);
+    public static final TriFunction<Client, String, String, Subscriber> FUNCTION = (client, name, value) -> new Subscriber(name, value);
 
     /**
      * Known subscriber badge states.
@@ -62,7 +61,7 @@ public class Subscriber extends MessageTagManager.DefaultMessageTag {
         public static final String BADGE = "1";
     }
 
-    private Subscriber(@Nonnull String name, @Nonnull Optional<String> value) {
+    private Subscriber(@Nonnull String name, @Nonnull String value) {
         super(name, value);
     }
 }
