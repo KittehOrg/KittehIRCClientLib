@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -36,6 +37,7 @@ import java.util.Optional;
  */
 public class ModeStatus<ModeType extends Mode> implements ClientLinked {
     private final ModeType mode;
+    @Nullable
     private final String parameter;
     private final boolean setting;
 

@@ -257,6 +257,7 @@ final class Config {
                 try {
                     Entry<?> entry = (Entry<?>) field.get(null);
                     Object setEntry = this.get(entry);
+                    @Nullable
                     final String info;
                     if (setEntry == null) {
                         info = null;

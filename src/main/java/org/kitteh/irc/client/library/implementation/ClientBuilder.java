@@ -53,6 +53,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nullable
     private String bindHost;
     private int bindPort;
+    @Nullable
     private String serverHost;
     private int serverPort = DEFAULT_SERVER_PORT;
 

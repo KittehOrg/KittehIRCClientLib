@@ -28,6 +28,7 @@ import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -38,6 +39,7 @@ public class DefaultCapabilityState implements CapabilityState {
     private final long creationTime;
     private final boolean disable;
     private final String name;
+    @Nullable
     private final String value;
 
     /**

@@ -46,6 +46,7 @@ import java.util.Optional;
  * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
  */
 public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User> {
+    @Nullable
     private String reply;
 
     /**

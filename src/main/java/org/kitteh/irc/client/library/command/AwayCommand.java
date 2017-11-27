@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
  * Sends an AWAY request to the server.
  */
 public class AwayCommand extends Command {
+    @Nullable
     private String message;
 
     /**

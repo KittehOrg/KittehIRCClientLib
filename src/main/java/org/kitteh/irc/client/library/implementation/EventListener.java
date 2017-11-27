@@ -104,6 +104,7 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -202,6 +203,7 @@ class EventListener {
         this.fire(new ClientAwayStatusChangeEvent(this.client, event.getOriginalMessages(), event.getNumeric() == 306));
     }
 
+    @Nullable
     private DefaultWhoisData.Builder whoisBuilder;
 
     private DefaultWhoisData.Builder getWhoisBuilder(String nick) {

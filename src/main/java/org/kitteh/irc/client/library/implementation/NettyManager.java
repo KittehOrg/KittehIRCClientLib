@@ -85,6 +85,7 @@ final class NettyManager {
         private final Channel channel;
         private boolean reconnect = true;
 
+        @Nullable
         private volatile ChannelFuture channelFuture;
 
         private ScheduledFuture<?> ping;

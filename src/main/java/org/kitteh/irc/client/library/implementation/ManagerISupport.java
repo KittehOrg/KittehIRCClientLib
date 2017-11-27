@@ -35,6 +35,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -347,6 +348,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         int index;
         Creator<ISupportParameter> creator;
         String tagName;
+        @Nullable
         String value;
         // Split out value if present
         if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {

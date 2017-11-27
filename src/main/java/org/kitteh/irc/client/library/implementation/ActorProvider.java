@@ -169,7 +169,9 @@ class ActorProvider implements Resettable {
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
+        @Nullable
         private Actor topicSetter;
+        @Nullable
         private Instant topicTime;
         private volatile boolean tracked;
 
@@ -540,6 +542,7 @@ class ActorProvider implements Resettable {
 
     class IRCUser extends IRCStaleable<IRCUserSnapshot> {
         private String account;
+        @Nullable
         private String awayMessage;
         private String host;
         private String nick;

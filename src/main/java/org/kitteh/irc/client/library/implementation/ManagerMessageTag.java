@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,6 +119,7 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
         TagCreator tagCreator;
         for (String tag : tags) {
             String tagName;
+            @Nullable
             String value;
             // Split out value if present
             if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {

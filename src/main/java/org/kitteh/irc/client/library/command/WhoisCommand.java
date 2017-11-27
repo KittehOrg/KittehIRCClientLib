@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
  * Sends a WHOIS request to the server.
  */
 public class WhoisCommand extends Command {
+    @Nullable
     private String server;
     private String target;
 
