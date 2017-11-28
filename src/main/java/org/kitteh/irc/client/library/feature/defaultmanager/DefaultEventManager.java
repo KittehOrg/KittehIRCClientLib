@@ -169,7 +169,7 @@ public class DefaultEventManager implements EventManager {
      */
     @Handler(priority = Integer.MIN_VALUE)
     public void onShutdown(ClientConnectionEndedEvent event) {
-        if (!event.isReconnectable()) {
+        if (!event.canAttemptReconnect()) {
             this.bus.shutdown();
         }
     }

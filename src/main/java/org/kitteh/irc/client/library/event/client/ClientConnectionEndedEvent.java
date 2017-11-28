@@ -46,7 +46,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     @Nullable
     private final Exception exception;
     private int reconnectionDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
-    private boolean tryReconnection;
+    private boolean attemptReconnect;
 
     /**
      * Constructs the event.
@@ -58,7 +58,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     protected ClientConnectionEndedEvent(@Nonnull Client client, boolean canReconnect, @Nullable Exception exception) {
         super(client);
         this.canReconnect = canReconnect;
-        this.tryReconnection = canReconnect;
+        this.attemptReconnect = canReconnect;
         this.exception = exception;
     }
 
@@ -76,9 +76,9 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      * Gets the delay until reconnection.
      *
      * @return reconnection delay, in milliseconds
-     * @see #isReconnectable()
-     * @see #isTryingReconnection()
-     * @see #setTryReconnection(boolean)
+     * @see #canAttemptReconnect()
+     * @see #willAttemptReconnect()
+     * @see #setAttemptReconnect(boolean)
      */
     public int getReconnectionDelay() {
         return this.reconnectionDelayMillis;
@@ -90,7 +90,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      *
      * @return true if the client can reconnect
      */
-    public boolean isReconnectable() {
+    public boolean canAttemptReconnect() {
         return this.canReconnect;
     }
 
@@ -99,21 +99,21 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      *
      * @return true if the client will attempt to reconnect
      */
-    public boolean isTryingReconnection() {
-        return this.canReconnect && this.tryReconnection;
+    public boolean willAttemptReconnect() {
+        return this.canReconnect && this.attemptReconnect;
     }
 
     /**
      * Sets if the client will attempt to connect again. Note that this will
-     * only happen if {@link #isReconnectable()} is true as the client cannot
+     * only happen if {@link #canAttemptReconnect()} is true as the client cannot
      * try to reconnect if it has been shutdown. Setting to true will still
-     * result in a false {@link #isTryingReconnection()} if it is not able
+     * result in a false {@link #willAttemptReconnect()} if it is not able
      * to reconnect.
      *
      * @param reconnecting true to reconnect, false to not reconnect
      */
-    public void setTryReconnection(boolean reconnecting) {
-        this.tryReconnection = reconnecting;
+    public void setAttemptReconnect(boolean reconnecting) {
+        this.attemptReconnect = reconnecting;
     }
 
     /**
@@ -121,9 +121,9 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      *
      * @param millis reconnection delay
      * @throws IllegalArgumentException if negative
-     * @see #isReconnectable()
-     * @see #isTryingReconnection()
-     * @see #setTryReconnection(boolean)
+     * @see #canAttemptReconnect()
+     * @see #willAttemptReconnect()
+     * @see #setAttemptReconnect(boolean)
      */
     public void setReconnectionDelay(int millis) {
         Sanity.truthiness(millis > -1, "Delay cannot be negative");
@@ -134,8 +134,8 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     @Nonnull
     protected ToStringer toStringer() {
         return super.toStringer()
-                .add("canReconnect", this.canReconnect)
-                .add("isTryingReconnection", this.tryReconnection)
+                .add("canAttemptReconnect", this.canReconnect)
+                .add("willAttemptReconnect", this.attemptReconnect)
                 .add("reconnectionDelay", this.reconnectionDelayMillis);
     }
 }

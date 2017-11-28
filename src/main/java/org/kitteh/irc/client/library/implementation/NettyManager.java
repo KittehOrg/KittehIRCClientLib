@@ -110,7 +110,7 @@ final class NettyManager {
                     ClientConnectionFailedEvent event = new ClientConnectionFailedEvent(this.client, this.reconnect, exception);
                     this.client.getEventManager().callEvent(event);
                     this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), false));
-                    if (event.isTryingReconnection()) {
+                    if (event.willAttemptReconnect()) {
                         this.scheduleReconnect(event.getReconnectionDelay());
                     }
                 }
@@ -224,7 +224,7 @@ final class NettyManager {
                 @Nullable final Exception exception = (future.cause() instanceof Exception) ? (Exception) future.cause() : null;
                 ClientConnectionClosedEvent event = new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect, exception, this.lastMessage);
                 ClientConnection.this.client.getEventManager().callEvent(event);
-                if (event.isTryingReconnection()) {
+                if (event.willAttemptReconnect()) {
                     this.scheduleReconnect(event.getReconnectionDelay());
                 }
             });
