@@ -42,21 +42,23 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      */
     public static final int DEFAULT_RECONNECTION_DELAY_MILLIS = 5000;
 
+    private final boolean canReconnect;
     @Nullable
     private final Exception exception;
-    private boolean reconnecting;
     private int reconnectionDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
+    private boolean tryReconnection;
 
     /**
      * Constructs the event.
      *
      * @param client client for which this is occurring
-     * @param reconnecting true if the client plans to reconnect
+     * @param canReconnect true if the client plans to reconnect
      * @param exception exception, if there was one, closing it
      */
-    protected ClientConnectionEndedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Exception exception) {
+    protected ClientConnectionEndedEvent(@Nonnull Client client, boolean canReconnect, @Nullable Exception exception) {
         super(client);
-        this.reconnecting = reconnecting;
+        this.canReconnect = canReconnect;
+        this.tryReconnection = canReconnect;
         this.exception = exception;
     }
 
@@ -74,11 +76,22 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      * Gets the delay until reconnection.
      *
      * @return reconnection delay, in milliseconds
-     * @see #isReconnecting()
-     * @see #setReconnecting(boolean)
+     * @see #isReconnectable()
+     * @see #isTryingReconnection()
+     * @see #setTryReconnection(boolean)
      */
     public int getReconnectionDelay() {
         return this.reconnectionDelayMillis;
+    }
+
+    /**
+     * Gets if the client will be able to reconnect. This is false if, for
+     * instance, the client has been shutdown.
+     *
+     * @return true if the client can reconnect
+     */
+    public boolean isReconnectable() {
+        return this.canReconnect;
     }
 
     /**
@@ -86,18 +99,21 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      *
      * @return true if the client will attempt to reconnect
      */
-    public boolean isReconnecting() {
-        return this.reconnecting;
+    public boolean isTryingReconnection() {
+        return this.canReconnect && this.tryReconnection;
     }
 
     /**
-     * Sets if the client will attempt to connect again.
+     * Sets if the client will attempt to connect again. Note that this will
+     * only happen if {@link #isReconnectable()} is true as the client cannot
+     * try to reconnect if it has been shutdown. Setting to true will still
+     * result in a false {@link #isTryingReconnection()} if it is not able
+     * to reconnect.
      *
      * @param reconnecting true to reconnect, false to not reconnect
      */
-    public void setReconnecting(boolean reconnecting) {
-        // TODO client shutdown condition
-        this.reconnecting = reconnecting;
+    public void setTryReconnection(boolean reconnecting) {
+        this.tryReconnection = reconnecting;
     }
 
     /**
@@ -105,8 +121,9 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      *
      * @param millis reconnection delay
      * @throws IllegalArgumentException if negative
-     * @see #isReconnecting()
-     * @see #setReconnecting(boolean)
+     * @see #isReconnectable()
+     * @see #isTryingReconnection()
+     * @see #setTryReconnection(boolean)
      */
     public void setReconnectionDelay(int millis) {
         Sanity.truthiness(millis > -1, "Delay cannot be negative");
@@ -116,6 +133,9 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     @Override
     @Nonnull
     protected ToStringer toStringer() {
-        return super.toStringer().add("isReconnecting", this.reconnecting).add("reconnectionDelay", this.reconnectionDelayMillis);
+        return super.toStringer()
+                .add("canReconnect", this.canReconnect)
+                .add("isTryingReconnection", this.tryReconnection)
+                .add("reconnectionDelay", this.reconnectionDelayMillis);
     }
 }
