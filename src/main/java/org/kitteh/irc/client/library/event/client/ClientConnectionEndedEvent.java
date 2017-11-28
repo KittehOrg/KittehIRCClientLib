@@ -36,9 +36,15 @@ import java.util.Optional;
  * The {@link Client} has had a connection end.
  */
 public abstract class ClientConnectionEndedEvent extends ClientEventBase implements ConnectionEvent {
-    private final Optional<Exception> exception;
+    /**
+     * Default reconnection delay, in milliseconds.
+     */
+    public static final int DEFAULT_RECONNECTION_DELAY_MILLIS = 5000;
+
+    @Nullable
+    private final Exception exception;
     private boolean reconnecting;
-    private int reconnectionDelayMillis = 5000;
+    private int reconnectionDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
 
     /**
      * Constructs the event.
@@ -50,7 +56,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     protected ClientConnectionEndedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Exception exception) {
         super(client);
         this.reconnecting = reconnecting;
-        this.exception = Optional.ofNullable(exception);
+        this.exception = exception;
     }
 
     /**
@@ -59,7 +65,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      */
     @Nonnull
     public Optional<Exception> getException() {
-        return this.exception;
+        return Optional.ofNullable(this.exception);
     }
 
     /**
