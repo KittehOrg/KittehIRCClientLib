@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.event.client;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.event.helper.ConnectionEvent;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
@@ -60,8 +61,9 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     }
 
     /**
-     * TODO javadoc
-     * @return
+     * Gets the exception that caused this disconnect, if there was one.
+     *
+     * @return exception or empty if no exception
      */
     @Nonnull
     public Optional<Exception> getException() {
@@ -69,9 +71,11 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     }
 
     /**
-     * TODO javadoc
+     * Gets the delay until reconnection.
      *
-     * @return
+     * @return reconnection delay, in milliseconds
+     * @see #isReconnecting()
+     * @see #setReconnecting(boolean)
      */
     public int getReconnectionDelay() {
         return this.reconnectionDelayMillis;
@@ -87,20 +91,25 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     }
 
     /**
-     * //TODO shutdown condition, javadoc
+     * Sets if the client will attempt to connect again.
      *
-     * @param reconnecting
+     * @param reconnecting true to reconnect, false to not reconnect
      */
     public void setReconnecting(boolean reconnecting) {
+        // TODO client shutdown condition
         this.reconnecting = reconnecting;
     }
 
     /**
-     * TODO javadoc
+     * Sets the delay until a reconnection attempt, in milliseconds.
      *
-     * @param millis
+     * @param millis reconnection delay
+     * @throws IllegalArgumentException if negative
+     * @see #isReconnecting()
+     * @see #setReconnecting(boolean)
      */
     public void setReconnectionDelay(int millis) {
+        Sanity.truthiness(millis > -1, "Delay cannot be negative");
         this.reconnectionDelayMillis = millis;
     }
 
