@@ -693,13 +693,6 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
-        synchronized (this.messageSendingLock) {
-            this.messageSendingScheduled.beginSending(consumer);
-        }
-    }
-
-    @Override
     public void pauseMessageSending() {
         synchronized (this.messageSendingLock) {
             this.messageSendingImmediate.pause();
@@ -758,6 +751,11 @@ final class IRCClient extends InternalClient {
     @Override
     public void reconnect() {
         this.connection.shutdown(DefaultMessageType.RECONNECT, true);
+    }
+
+    @Override
+    public void reconnect(@Nullable String reason) {
+        this.connection.shutdown(reason, true);
     }
 
     @Override

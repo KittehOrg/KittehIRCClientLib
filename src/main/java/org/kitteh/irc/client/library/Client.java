@@ -52,6 +52,7 @@ import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
@@ -519,46 +520,109 @@ public interface Client {
      * A Client with management features.
      */
     interface WithManagement extends Client {
+        /**
+         * Starts the sending of queued 'immediately' messages.
+         *
+         * @param consumer consumer with which to handle this queue
+         */
         void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer);
-
-        void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer);
 
         @Nonnull
         @Override
-        public CapabilityManager.WithManagement getCapabilityManager();
+        CapabilityManager.WithManagement getCapabilityManager();
 
+        /**
+         * Gets the currently set input listener.
+         *
+         * @return input listener
+         */
         @Nonnull
         Listener<String> getInputListener();
 
+        /**
+         * Gets the channels the client intends to join.
+         *
+         * @return intended channels
+         */
         @Nonnull
         Set<String> getIntendedChannels();
 
+        /**
+         * Gets the currently set output listener.
+         *
+         * @return output listener
+         */
         @Nonnull
         Listener<String> getOutputListener();
 
+        /**
+         * Gets the nickname the client has last requested.
+         *
+         * @return requested nick
+         */
         @Nonnull
         String getRequestedNick();
 
+        /**
+         * Pauses message sending, waiting for next successful connection.
+         */
         void pauseMessageSending();
 
+        /**
+         * Sends a PING.
+         */
         void ping();
 
+        /**
+         * Processes a line from the IRC server.
+         *
+         * @param line line to process
+         */
         void processLine(@Nonnull String line);
 
+        /**
+         * Resets the existing server information.
+         */
         void resetServerInfo();
 
+        /**
+         * Sends a nick change request.
+         *
+         * @param newNick new nickname
+         */
         void sendNickChange(@Nonnull String newNick);
 
+        /**
+         * Sets the current nickname the client knows it has.
+         *
+         * @param nick nickname
+         */
         void setCurrentNick(@Nonnull String nick);
 
+        /**
+         * Sets the client's user modes.
+         *
+         * @param userModes user modes to set
+         */
         void setUserModes(@Nonnull ModeStatusList<UserMode> userModes);
 
+        /**
+         * Starts sending queued messages.
+         */
         void startSending();
 
+        /**
+         * Updates the client's user modes.
+         *
+         * @param userModes mode changes
+         */
         void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes);
 
-        void reconnect();
-
+        /**
+         * Gets if the client is confirgured for a secure connection.
+         *
+         * @return true if configured for secure
+         */
         boolean isSSL();
     }
 
@@ -810,6 +874,19 @@ public interface Client {
      * @param channelName the channel to send the KNOCK for.
      */
     void knockChannel(@Nonnull String channelName);
+
+    /**
+     * Triggers a reconnect, quitting with the default {@link
+     * DefaultMessageType#RECONNECT} message.
+     */
+    void reconnect();
+
+    /**
+     * Triggers a reconnect, quitting with the given reason.
+     *
+     * @param reason disconnect reason
+     */
+    void reconnect(@Nullable String reason);
 
     /**
      * Removes a channel from the client, leaving as necessary.

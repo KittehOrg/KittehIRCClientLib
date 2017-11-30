@@ -83,6 +83,11 @@ class FakeClient extends InternalClient {
     }
 
     @Override
+    public void reconnect(@Nullable String reason) {
+
+    }
+
+    @Override
     public boolean isSSL() {
         return false;
     }
@@ -184,11 +189,6 @@ class FakeClient extends InternalClient {
 
     @Override
     public void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
-
-    }
-
-    @Override
-    public void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
 
     }
 
