@@ -42,11 +42,11 @@ public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
      *
      * @param client client for which this is occurring
      * @param reconnecting true if the client plans to reconnect
-     * @param exception exception, if there was one, closing it
+     * @param cause cause, if there was one, closing it
      * @param lastMessage last message received
      */
-    public ClientConnectionClosedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Exception exception, @Nullable String lastMessage) {
-        super(client, reconnecting, exception);
+    public ClientConnectionClosedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Throwable cause, @Nullable String lastMessage) {
+        super(client, reconnecting, cause);
         this.lastMessage = lastMessage;
     }
 

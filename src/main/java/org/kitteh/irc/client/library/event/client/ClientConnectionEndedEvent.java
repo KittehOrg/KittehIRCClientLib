@@ -44,7 +44,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
 
     private final boolean canReconnect;
     @Nullable
-    private final Exception exception;
+    private final Throwable cause;
     private int reconnectionDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
     private boolean attemptReconnect;
 
@@ -53,13 +53,13 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      *
      * @param client client for which this is occurring
      * @param canReconnect true if the client plans to reconnect
-     * @param exception exception, if there was one, closing it
+     * @param cause cause, if there was one, closing it
      */
-    protected ClientConnectionEndedEvent(@Nonnull Client client, boolean canReconnect, @Nullable Exception exception) {
+    protected ClientConnectionEndedEvent(@Nonnull Client client, boolean canReconnect, @Nullable Throwable cause) {
         super(client);
         this.canReconnect = canReconnect;
         this.attemptReconnect = canReconnect;
-        this.exception = exception;
+        this.cause = cause;
     }
 
     /**
@@ -68,8 +68,8 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      * @return exception or empty if no exception
      */
     @Nonnull
-    public Optional<Exception> getException() {
-        return Optional.ofNullable(this.exception);
+    public Optional<Throwable> getCause() {
+        return Optional.ofNullable(this.cause);
     }
 
     /**
@@ -136,6 +136,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
         return super.toStringer()
                 .add("canAttemptReconnect", this.canReconnect)
                 .add("willAttemptReconnect", this.attemptReconnect)
-                .add("reconnectionDelay", this.reconnectionDelayMillis);
+                .add("reconnectionDelay", this.reconnectionDelayMillis)
+                .add("cause", this.cause);
     }
 }

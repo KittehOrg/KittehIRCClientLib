@@ -106,8 +106,7 @@ final class NettyManager {
                     this.client.getEventManager().callEvent(new ClientConnectionEstablishedEvent(this.client));
                     this.client.beginMessageSendingImmediate(this.channel::writeAndFlush);
                 } else {
-                    @Nullable final Exception exception = (future.cause() instanceof Exception) ? (Exception) future.cause() : null;
-                    ClientConnectionFailedEvent event = new ClientConnectionFailedEvent(this.client, this.reconnect, exception);
+                    ClientConnectionFailedEvent event = new ClientConnectionFailedEvent(this.client, this.reconnect, future.cause());
                     this.client.getEventManager().callEvent(event);
                     this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), false));
                     if (event.willAttemptReconnect()) {
@@ -221,8 +220,7 @@ final class NettyManager {
                 if (this.ping != null) {
                     this.ping.cancel(true);
                 }
-                @Nullable final Exception exception = (future.cause() instanceof Exception) ? (Exception) future.cause() : null;
-                ClientConnectionClosedEvent event = new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect, exception, this.lastMessage);
+                ClientConnectionClosedEvent event = new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect, future.cause(), this.lastMessage);
                 ClientConnection.this.client.getEventManager().callEvent(event);
                 if (event.willAttemptReconnect()) {
                     this.scheduleReconnect(event.getReconnectionDelay());

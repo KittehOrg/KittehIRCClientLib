@@ -37,9 +37,9 @@ public class ClientConnectionFailedEvent extends ClientConnectionEndedEvent {
      *
      * @param client client for which this is occurring
      * @param reconnecting true if the client plans to reconnect
-     * @param exception exception, if there was one, closing it
+     * @param cause cause, if there was one, closing it
      */
-    public ClientConnectionFailedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Exception exception) {
-        super(client, reconnecting, exception);
+    public ClientConnectionFailedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Throwable cause) {
+        super(client, reconnecting, cause);
     }
 }
