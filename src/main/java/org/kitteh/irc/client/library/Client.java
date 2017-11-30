@@ -39,7 +39,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent;
-import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
+import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.helper.UnexpectedChannelLeaveEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
 import org.kitteh.irc.client.library.feature.AuthManager;
@@ -720,7 +720,7 @@ public interface Client {
      * connected. As long as the client remains connected the information
      * returned by this object will update according to information received
      * from the server. A new one can be acquired from {@link
-     * ClientConnectedEvent}
+     * ClientNegotiationCompleteEvent}
      *
      * @return the server information object
      */

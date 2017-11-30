@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
-import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
+import org.kitteh.irc.client.library.event.client.ClientConnectionEndedEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.sts.STSClientState;
 import org.kitteh.irc.client.library.feature.sts.STSMachine;
@@ -116,7 +116,7 @@ class STSHandler {
      * @param event the event instance
      */
     @Handler
-    public void onDisconnect(ClientConnectionClosedEvent event) {
+    public void onDisconnect(ClientConnectionEndedEvent event) {
         // The spec says we have to update the expiry of the policy if it still exists
         // at disconnection time...
         // Do this by removing and re-adding.

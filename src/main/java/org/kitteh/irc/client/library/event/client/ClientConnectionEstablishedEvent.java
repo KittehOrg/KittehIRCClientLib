@@ -24,47 +24,22 @@
 package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.event.helper.ConnectionEvent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
- * The {@link Client} has had a working connection cease.
+ * The {@link Client} has connected to the server and is about to begin IRC
+ * negotiation.
  */
-public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
-    @Nullable
-    private final String lastMessage;
-
+public class ClientConnectionEstablishedEvent extends ClientEventBase implements ConnectionEvent {
     /**
      * Constructs the event.
      *
      * @param client client for which this is occurring
-     * @param reconnecting true if the client plans to reconnect
-     * @param cause cause, if there was one, closing it
-     * @param lastMessage last message received
      */
-    public ClientConnectionClosedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Throwable cause, @Nullable String lastMessage) {
-        super(client, reconnecting, cause);
-        this.lastMessage = lastMessage;
-    }
-
-    /**
-     * Gets the last message sent prior to disconnect. Useful if killed from
-     * the server. This message may not have been processed yet by other
-     * events.
-     *
-     * @return last message, or empty, sent by the server
-     */
-    @Nonnull
-    public Optional<String> getLastMessage() {
-        return Optional.ofNullable(this.lastMessage);
-    }
-
-    @Override
-    @Nonnull
-    protected ToStringer toStringer() {
-        return super.toStringer().add("lastMessage", this.lastMessage);
+    public ClientConnectionEstablishedEvent(@Nonnull Client client) {
+        super(client);
     }
 }

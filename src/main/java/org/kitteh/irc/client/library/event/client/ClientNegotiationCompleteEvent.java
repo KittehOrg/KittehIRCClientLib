@@ -33,11 +33,11 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.annotation.Nonnull;
 
 /**
- * The {@link Client} has successfully connected to the server. At this time
- * the client will begin to send queued messages which were not essential to
- * establishing the connection.
+ * The {@link Client} has successfully completed negotiation with the server.
+ * At this time the client will begin to send queued messages which were not
+ * essential to negotiating the connection.
  */
-public class ClientConnectedEvent extends ClientEventBase {
+public class ClientNegotiationCompleteEvent extends ClientEventBase {
     private final Actor server;
     private final ServerInfo serverInfo;
 
@@ -48,7 +48,7 @@ public class ClientConnectedEvent extends ClientEventBase {
      * @param server the server to which the client is connected
      * @param serverInfo information about the server
      */
-    public ClientConnectedEvent(@Nonnull Client client, @Nonnull Actor server, @Nonnull ServerInfo serverInfo) {
+    public ClientNegotiationCompleteEvent(@Nonnull Client client, @Nonnull Actor server, @Nonnull ServerInfo serverInfo) {
         super(client);
         this.server = Sanity.nullCheck(server, "Server cannot be null");
         this.serverInfo = Sanity.nullCheck(serverInfo, "ServerInfo cannot be null");

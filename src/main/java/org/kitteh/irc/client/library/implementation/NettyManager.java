@@ -51,6 +51,8 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
+import org.kitteh.irc.client.library.event.client.ClientConnectionEstablishedEvent;
+import org.kitteh.irc.client.library.event.client.ClientConnectionFailedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehSTSException;
@@ -90,6 +92,8 @@ final class NettyManager {
 
         private ScheduledFuture<?> ping;
 
+        private volatile String lastMessage;
+
         private ClientConnection(@Nonnull final InternalClient client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;
             this.channel = channelFuture.channel();
@@ -99,10 +103,15 @@ final class NettyManager {
                 ClientConnection.this.channelFuture = null;
                 if (future.isSuccess()) {
                     this.buildOurFutureTogether();
+                    this.client.getEventManager().callEvent(new ClientConnectionEstablishedEvent(this.client));
                     this.client.beginMessageSendingImmediate(this.channel::writeAndFlush);
                 } else {
+                    ClientConnectionFailedEvent event = new ClientConnectionFailedEvent(this.client, this.reconnect, future.cause());
+                    this.client.getEventManager().callEvent(event);
                     this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), false));
-                    this.scheduleReconnect();
+                    if (event.willAttemptReconnect()) {
+                        this.scheduleReconnect(event.getReconnectionDelay());
+                    }
                 }
             });
         }
@@ -149,6 +158,7 @@ final class NettyManager {
                     }
                     ClientConnection.this.client.getInputListener().queue(msg);
                     ClientConnection.this.client.processLine(msg);
+                    ClientConnection.this.lastMessage = msg;
                 }
             });
 
@@ -206,19 +216,20 @@ final class NettyManager {
             });
 
             // Clean up on disconnect
-            this.channel.closeFuture().addListener(futureListener -> {
-                if (ClientConnection.this.reconnect) {
-                    this.scheduleReconnect();
-                }
+            this.channel.closeFuture().addListener(future -> {
                 if (this.ping != null) {
                     this.ping.cancel(true);
                 }
-                ClientConnection.this.client.getEventManager().callEvent(new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect));
+                ClientConnectionClosedEvent event = new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect, future.cause(), this.lastMessage);
+                ClientConnection.this.client.getEventManager().callEvent(event);
+                if (event.willAttemptReconnect()) {
+                    this.scheduleReconnect(event.getReconnectionDelay());
+                }
             });
         }
 
-        private void scheduleReconnect() {
-            ClientConnection.this.channel.eventLoop().schedule(ClientConnection.this.client::connect, 5, TimeUnit.SECONDS);
+        private void scheduleReconnect(int delay) {
+            ClientConnection.this.channel.eventLoop().schedule(ClientConnection.this.client::connect, delay, TimeUnit.MILLISECONDS);
         }
 
         private void handleException(Exception thrown) {

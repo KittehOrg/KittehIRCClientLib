@@ -68,7 +68,7 @@ import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteE
 import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaKickEvent;
 import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaPartEvent;
 import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
-import org.kitteh.irc.client.library.event.client.ClientConnectedEvent;
+import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
@@ -162,7 +162,7 @@ class EventListener {
         if (!isTwitch) {
             this.client.sendRawLineImmediately("WHOIS " + this.client.getNick());
         }
-        this.fire(new ClientConnectedEvent(this.client, event.getActor(), this.client.getServerInfo()));
+        this.fire(new ClientNegotiationCompleteEvent(this.client, event.getActor(), this.client.getServerInfo()));
         this.client.startSending();
     }
 
