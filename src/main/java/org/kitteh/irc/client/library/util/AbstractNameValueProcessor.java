@@ -21,12 +21,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.util;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.util.Sanity;
-import org.kitteh.irc.client.library.util.ToStringer;
-import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,16 +31,36 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-abstract class AbstractNameValueProcessor<NameValue> {
-    protected static class Creator<NameValue> {
+/**
+ * Abstract class for registering and processing name/value pairs.
+ *
+ * @param <NameValue> type of pair
+ */
+public abstract class AbstractNameValueProcessor<NameValue> {
+    /**
+     * A creator of name/value pairs of a particular type.
+     *
+     * @param <NameValue> type of pair
+     */
+    public static class Creator<NameValue> {
         private final TriFunction<Client, String, String, ? extends NameValue> function;
 
-        protected Creator(@Nonnull TriFunction<Client, String, String, ? extends NameValue> function) {
+        /**
+         * Constructs the creator.
+         *
+         * @param function function to do the work
+         */
+        public Creator(@Nonnull TriFunction<Client, String, String, ? extends NameValue> function) {
             this.function = Sanity.nullCheck(function, "Function cannot be null");
         }
 
+        /**
+         * Gets the creator's function.
+         *
+         * @return function
+         */
         @Nonnull
-        protected TriFunction<Client, String, String, ? extends NameValue> getFunction() {
+        public TriFunction<Client, String, String, ? extends NameValue> getFunction() {
             return this.function;
         }
     }
@@ -51,11 +68,16 @@ abstract class AbstractNameValueProcessor<NameValue> {
     private final Client.WithManagement client;
     private final Map<String, Creator<NameValue>> registeredNames = new ConcurrentHashMap<>();
 
-    AbstractNameValueProcessor(Client.WithManagement client) {
+    protected AbstractNameValueProcessor(Client.WithManagement client) {
         this.client = client;
     }
 
-    protected Client.WithManagement getClient() {
+    /**
+     * Gets the Client for which this processor functions.
+     *
+     * @return client
+     */
+    public Client.WithManagement getClient() {
         return this.client;
     }
 

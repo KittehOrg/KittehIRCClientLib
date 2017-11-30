@@ -27,6 +27,9 @@ import org.kitteh.irc.client.library.Client;
 
 import javax.annotation.Nonnull;
 
+/**
+ * I'll be gone soon.
+ */
 abstract class InternalClient implements Client.WithManagement {
     @Nonnull
     abstract ActorProvider getActorProvider();

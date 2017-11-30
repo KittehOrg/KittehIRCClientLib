@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.AbstractNameValueProcessor;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 

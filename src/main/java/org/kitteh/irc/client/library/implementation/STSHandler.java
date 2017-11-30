@@ -42,15 +42,15 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * Class for handling the STS capability,
- * returned in the CAP LS 302 response.
+ * Class for handling the STS capability, returned in the CAP LS 302 response.
  */
 class STSHandler {
+    public static final String DRAFT = "draft/";
+    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals(DRAFT + "sts");
+
     private final STSMachine machine;
     private final InternalClient client;
     private boolean isSecure;
-    public static final String DRAFT = "draft/";
-    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals(DRAFT + "sts");
 
     /**
      * Creates the event handler for STS.
