@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.defaults.mode.DefaultChannelMode;
 import org.kitteh.irc.client.library.element.defaults.mode.DefaultChannelUserMode;
@@ -48,7 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 class IRCServerInfo implements Resettable, ServerInfo {
-    private final InternalClient client;
+    private final Client.WithManagement client;
     private final Map<String, ISupportParameter> iSupportParameterMap = new ConcurrentHashMap<>();
     private final List<ChannelMode> defaultChannelModes;
     private final List<Character> defaultChannelPrefixes = Arrays.asList('#', '&', '!', '+');
@@ -63,7 +64,7 @@ class IRCServerInfo implements Resettable, ServerInfo {
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private final Pattern channelPattern = Pattern.compile("([#!&+][^ ,\\07\\r\\n]+)");
 
-    IRCServerInfo(@Nonnull InternalClient client) {
+    IRCServerInfo(@Nonnull Client.WithManagement client) {
         this.client = client;
         // RFC 1459
         List<ChannelMode> defaultChannelModes = new ArrayList<>(9);

@@ -24,69 +24,21 @@
 package org.kitteh.irc.client.library.implementation;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.mode.ModeStatusList;
-import org.kitteh.irc.client.library.element.mode.UserMode;
-import org.kitteh.irc.client.library.feature.CapabilityManager;
-import org.kitteh.irc.client.library.util.Listener;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
-import java.util.function.Consumer;
 
-abstract class InternalClient implements Client {
-    abstract void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer);
-
-    abstract void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer);
-
+abstract class InternalClient implements Client.WithManagement {
     @Nonnull
     abstract ActorProvider getActorProvider();
 
     @Nonnull
-    @Override
-    public abstract CapabilityManager.WithManagement getCapabilityManager();
-
-    @Nonnull
     abstract Config getConfig();
-
-    @Nonnull
-    abstract Listener<String> getInputListener();
-
-    @Nonnull
-    abstract Set<String> getIntendedChannels();
 
     @Override
     @Nonnull
     public abstract ManagerISupport getISupportManager();
 
-    @Nonnull
-    abstract Listener<String> getOutputListener();
-
-    @Nonnull
-    abstract String getRequestedNick();
-
     @Override
     @Nonnull
     public abstract IRCServerInfo getServerInfo();
-
-    abstract void pauseMessageSending();
-
-    abstract void ping();
-
-    abstract void processLine(@Nonnull String line);
-
-    abstract void resetServerInfo();
-
-    abstract void sendNickChange(@Nonnull String newNick);
-
-    abstract void setCurrentNick(@Nonnull String nick);
-
-    abstract void setUserModes(@Nonnull ModeStatusList<UserMode> userModes);
-
-    abstract void startSending();
-
-    abstract void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes);
-
-    abstract void reconnect();
-
-    abstract boolean isSSL();
 }

@@ -43,47 +43,47 @@ class FakeClient extends InternalClient {
     private DefaultMessageMap defaultMessageMap = new SimpleDefaultMessageMap(null);
 
     @Override
-    void processLine(@Nonnull String line) {
+    public void processLine(@Nonnull String line) {
 
     }
 
     @Override
-    void resetServerInfo() {
+    public void resetServerInfo() {
 
     }
 
     @Override
-    void sendNickChange(@Nonnull String newNick) {
+    public void sendNickChange(@Nonnull String newNick) {
 
     }
 
     @Override
-    void setCurrentNick(@Nonnull String nick) {
+    public void setCurrentNick(@Nonnull String nick) {
 
     }
 
     @Override
-    void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    public void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
 
     }
 
     @Override
-    void startSending() {
+    public void startSending() {
 
     }
 
     @Override
-    void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    public void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
 
     }
 
     @Override
-    void reconnect() {
+    public void reconnect() {
 
     }
 
     @Override
-    boolean isSSL() {
+    public boolean isSSL() {
         return false;
     }
 
@@ -111,7 +111,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    Listener<String> getInputListener() {
+    public Listener<String> getInputListener() {
         return this.listenerInput;
     }
 
@@ -132,7 +132,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    Set<String> getIntendedChannels() {
+    public Set<String> getIntendedChannels() {
         return new HashSet<>();
     }
 
@@ -162,7 +162,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    Listener<String> getOutputListener() {
+    public Listener<String> getOutputListener() {
         return this.listenerOutput;
     }
 
@@ -173,7 +173,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    String getRequestedNick() {
+    public String getRequestedNick() {
         return "";
     }
 
@@ -183,12 +183,12 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
+    public void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
 
     }
 
     @Override
-    void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
+    public void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
 
     }
 
@@ -199,7 +199,7 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    void ping() {
+    public void ping() {
 
     }
 
@@ -296,7 +296,7 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    void pauseMessageSending() {
+    public void pauseMessageSending() {
 
     }
 

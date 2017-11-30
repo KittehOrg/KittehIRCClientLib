@@ -614,7 +614,7 @@ final class IRCClient extends InternalClient {
      * @param line line to be processed
      */
     @Override
-    void processLine(@Nonnull String line) {
+    public void processLine(@Nonnull String line) {
         if (line.startsWith("PING ")) {
             this.sendRawLineImmediately("PONG " + line.substring(5));
         } else if (!line.isEmpty()) {
@@ -636,25 +636,25 @@ final class IRCClient extends InternalClient {
 
     @Nonnull
     @Override
-    Listener<String> getInputListener() {
+    public Listener<String> getInputListener() {
         return this.inputListener;
     }
 
     @Nonnull
     @Override
-    Set<String> getIntendedChannels() {
+    public Set<String> getIntendedChannels() {
         return this.channelsIntended;
     }
 
     @Nonnull
     @Override
-    Listener<String> getOutputListener() {
+    public Listener<String> getOutputListener() {
         return this.outputListener;
     }
 
     @Nonnull
     @Override
-    String getRequestedNick() {
+    public String getRequestedNick() {
         return this.requestedNick;
     }
 
@@ -686,21 +686,21 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
+    public void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
         synchronized (this.messageSendingLock) {
             this.messageSendingImmediate.beginSending(consumer);
         }
     }
 
     @Override
-    void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
+    public void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer) {
         synchronized (this.messageSendingLock) {
             this.messageSendingScheduled.beginSending(consumer);
         }
     }
 
     @Override
-    void pauseMessageSending() {
+    public void pauseMessageSending() {
         synchronized (this.messageSendingLock) {
             this.messageSendingImmediate.pause();
             this.messageSendingScheduled.pause();
@@ -708,33 +708,33 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    void ping() {
+    public void ping() {
         this.sendRawLine("PING " + this.pingPurr[this.pingPurrCount++ % this.pingPurr.length]); // Connection's asleep, post cat sounds
     }
 
     @Override
-    void resetServerInfo() {
+    public void resetServerInfo() {
         this.serverInfo = new IRCServerInfo(this);
     }
 
     @Override
-    void sendNickChange(@Nonnull String newNick) {
+    public void sendNickChange(@Nonnull String newNick) {
         this.requestedNick = newNick;
         this.sendRawLineImmediately("NICK " + newNick);
     }
 
     @Override
-    void setCurrentNick(@Nonnull String nick) {
+    public void setCurrentNick(@Nonnull String nick) {
         this.currentNick = nick;
     }
 
     @Override
-    void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    public void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
         this.userModes = new HashMap<>(userModes.getStatuses().stream().collect(Collectors.toMap(modeStatus -> modeStatus.getMode().getChar(), Function.identity())));
     }
 
     @Override
-    void startSending() {
+    public void startSending() {
         this.connection.startSending();
         synchronized (this.messageSendingLock) {
             this.messageSendingScheduled.beginSending(this.messageSendingImmediate::queue);
@@ -742,7 +742,7 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    public void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
         if (this.userModes == null) {
             this.userModes = new HashMap<>();
         }
@@ -756,12 +756,12 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    void reconnect() {
+    public void reconnect() {
         this.connection.shutdown(DefaultMessageType.RECONNECT, true);
     }
 
     @Override
-    boolean isSSL() {
+    public boolean isSSL() {
         return this.config.getNotNull(Config.SSL);
     }
 

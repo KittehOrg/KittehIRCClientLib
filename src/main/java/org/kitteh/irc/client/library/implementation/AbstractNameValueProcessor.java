@@ -48,14 +48,14 @@ abstract class AbstractNameValueProcessor<NameValue> {
         }
     }
 
-    private final InternalClient client;
+    private final Client.WithManagement client;
     private final Map<String, Creator<NameValue>> registeredNames = new ConcurrentHashMap<>();
 
-    AbstractNameValueProcessor(InternalClient client) {
+    AbstractNameValueProcessor(Client.WithManagement client) {
         this.client = client;
     }
 
-    protected InternalClient getClient() {
+    protected Client.WithManagement getClient() {
         return this.client;
     }
 

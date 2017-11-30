@@ -310,7 +310,7 @@ final class ManagerISupport extends AbstractNameValueProcessor<ISupportParameter
         }
     }
 
-    ManagerISupport(InternalClient client) {
+    ManagerISupport(Client.WithManagement client) {
         super(client);
         this.registerParameter(ISupportParameter.CaseMapping.NAME, ISupportCaseMapping::new);
         this.registerParameter(ISupportParameter.ChannelLen.NAME, ISupportChannelLen::new);

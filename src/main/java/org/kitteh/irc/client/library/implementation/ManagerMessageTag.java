@@ -82,7 +82,7 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
 
     private static final Pattern TAG_ESCAPE = Pattern.compile("\\\\([\\\\s:])");
 
-    ManagerMessageTag(InternalClient client) {
+    ManagerMessageTag(Client.WithManagement client) {
         super(client);
         this.registerTagCreator("server-time", "time", IRCMessageTagTime.FUNCTION);
     }

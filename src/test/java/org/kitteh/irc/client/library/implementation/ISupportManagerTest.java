@@ -308,7 +308,7 @@ public class ISupportManagerTest {
     }
 
     private ManagerISupport getManager() {
-        InternalClient client = Mockito.mock(InternalClient.class);
+        Client.WithManagement client = Mockito.mock(Client.WithManagement.class);
         Mockito.when(client.getExceptionListener()).thenReturn(new Listener<>(new FakeClient(), null));
         return new ManagerISupport(client);
     }

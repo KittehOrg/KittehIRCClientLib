@@ -516,6 +516,53 @@ public interface Client {
     }
 
     /**
+     * A Client with management features.
+     */
+    interface WithManagement extends Client {
+        void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer);
+
+        void beginMessageSendingScheduled(@Nonnull Consumer<String> consumer);
+
+        @Nonnull
+        @Override
+        public CapabilityManager.WithManagement getCapabilityManager();
+
+        @Nonnull
+        Listener<String> getInputListener();
+
+        @Nonnull
+        Set<String> getIntendedChannels();
+
+        @Nonnull
+        Listener<String> getOutputListener();
+
+        @Nonnull
+        String getRequestedNick();
+
+        void pauseMessageSending();
+
+        void ping();
+
+        void processLine(@Nonnull String line);
+
+        void resetServerInfo();
+
+        void sendNickChange(@Nonnull String newNick);
+
+        void setCurrentNick(@Nonnull String nick);
+
+        void setUserModes(@Nonnull ModeStatusList<UserMode> userModes);
+
+        void startSending();
+
+        void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes);
+
+        void reconnect();
+
+        boolean isSSL();
+    }
+
+    /**
      * Creates a {@link Builder} to build clients.
      *
      * @return a client builder
