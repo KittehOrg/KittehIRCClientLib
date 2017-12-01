@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.feature.defaultmanager;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
@@ -32,12 +32,10 @@ import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.ServerInfo;
-import org.kitteh.irc.client.library.util.Resettable;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,8 +46,11 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-class IRCServerInfo implements Resettable, ServerInfo {
-    private final Client.WithManagement client;
+/**
+ * Default implementation for tracking server information.
+ */
+public class DefaultServerInfo implements ServerInfo.WithManagement {
+    private final Client client;
     private final Map<String, ISupportParameter> iSupportParameterMap = new ConcurrentHashMap<>();
     private final List<ChannelMode> defaultChannelModes;
     private final List<Character> defaultChannelPrefixes = Arrays.asList('#', '&', '!', '+');
@@ -64,7 +65,12 @@ class IRCServerInfo implements Resettable, ServerInfo {
     // New pattern: ([#!&\+][^ ,\07\r\n]+)
     private final Pattern channelPattern = Pattern.compile("([#!&+][^ ,\\07\\r\\n]+)");
 
-    IRCServerInfo(@Nonnull Client.WithManagement client) {
+    /**
+     * Constructs the server info.
+     *
+     * @param client client for which this manager will operate
+     */
+    public DefaultServerInfo(@Nonnull Client client) {
         this.client = client;
         // RFC 1459
         List<ChannelMode> defaultChannelModes = new ArrayList<>(9);
@@ -90,18 +96,14 @@ class IRCServerInfo implements Resettable, ServerInfo {
         this.userModes = Collections.unmodifiableList(defaultUserModes);
     }
 
-    @Override
-    public void reset() {
-        this.iSupportParameterMap.clear();
-    }
-
     @Nonnull
     @Override
     public Optional<String> getAddress() {
         return Optional.ofNullable(this.address);
     }
 
-    void setAddress(@Nonnull String serverAddress) {
+    @Override
+    public void setAddress(@Nonnull String serverAddress) {
         this.address = serverAddress;
     }
 
@@ -109,21 +111,21 @@ class IRCServerInfo implements Resettable, ServerInfo {
     @Override
     public List<ChannelMode> getChannelModes() {
         Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter(ISupportParameter.ChanModes.NAME, ISupportParameter.ChanModes.class);
-        return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.defaultChannelModes);
+        return new ArrayList<>(optional.map(ISupportParameter.ChanModes::getModes).orElse(this.defaultChannelModes));
     }
 
     @Nonnull
     @Override
     public List<Character> getChannelPrefixes() {
         Optional<ISupportParameter.ChanTypes> optional = this.getISupportParameter(ISupportParameter.ChanTypes.NAME, ISupportParameter.ChanTypes.class);
-        return new ArrayList<>(optional.isPresent() ? optional.get().getTypes() : this.defaultChannelPrefixes);
+        return new ArrayList<>(optional.map(ISupportParameter.ChanTypes::getTypes).orElse(this.defaultChannelPrefixes));
     }
 
     @Nonnull
     @Override
     public List<ChannelUserMode> getChannelUserModes() {
         Optional<ISupportParameter.Prefix> optional = this.getISupportParameter(ISupportParameter.Prefix.NAME, ISupportParameter.Prefix.class);
-        return new ArrayList<>(optional.isPresent() ? optional.get().getModes() : this.defaultChannelUserModes);
+        return new ArrayList<>(optional.map(ISupportParameter.Prefix::getModes).orElse(this.defaultChannelUserModes));
     }
 
     @Nonnull
@@ -139,7 +141,8 @@ class IRCServerInfo implements Resettable, ServerInfo {
         return Collections.unmodifiableMap(new HashMap<>(this.iSupportParameterMap));
     }
 
-    void addISupportParameter(@Nonnull ISupportParameter parameter) {
+    @Override
+    public void addISupportParameter(@Nonnull ISupportParameter parameter) {
         this.iSupportParameterMap.put(parameter.getName().toUpperCase(), parameter);
     }
 
@@ -149,7 +152,8 @@ class IRCServerInfo implements Resettable, ServerInfo {
         return Optional.ofNullable(this.motd);
     }
 
-    void setMOTD(@Nonnull List<String> motd) {
+    @Override
+    public void setMOTD(@Nonnull List<String> motd) {
         this.motd = Collections.unmodifiableList(motd);
     }
 
@@ -159,7 +163,8 @@ class IRCServerInfo implements Resettable, ServerInfo {
         return Optional.ofNullable(this.version);
     }
 
-    void setVersion(@Nonnull String version) {
+    @Override
+    public void setVersion(@Nonnull String version) {
         this.version = version;
     }
 
@@ -171,21 +176,22 @@ class IRCServerInfo implements Resettable, ServerInfo {
         return (name.length() > 1) && ((channelLengthLimit < 0) || (name.length() <= channelLengthLimit)) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
     }
 
-    @Nullable
-    ChannelUserMode getTargetedChannelInfo(@Nonnull String name) {
+    @Nonnull
+    @Override
+    public Optional<ChannelUserMode> getTargetedChannelInfo(@Nonnull String name) {
         if (name.length() < 2) {
-            return null;
+            return Optional.empty();
         }
         final char first = name.charAt(0);
         final String shorter = name.substring(1);
         if (!this.getChannelPrefixes().contains(first) && this.isValidChannel(shorter)) {
             for (ChannelUserMode mode : this.getChannelUserModes()) {
                 if (mode.getNickPrefix() == first) {
-                    return mode;
+                    return Optional.of(mode);
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -194,7 +200,8 @@ class IRCServerInfo implements Resettable, ServerInfo {
         return this.userModes;
     }
 
-    void setUserModes(@Nonnull List<UserMode> userModes) {
+    @Override
+    public void setUserModes(@Nonnull List<UserMode> userModes) {
         this.userModes = Collections.unmodifiableList(userModes);
     }
 

@@ -41,6 +41,24 @@ import java.util.Optional;
  */
 public interface ServerInfo {
     /**
+     * A server information provider with management features.
+     */
+    interface WithManagement extends ServerInfo {
+        void addISupportParameter(@Nonnull ISupportParameter parameter);
+
+        @Nonnull
+        Optional<ChannelUserMode> getTargetedChannelInfo(@Nonnull String name);
+
+        void setAddress(@Nonnull String serverAddress);
+
+        void setMOTD(@Nonnull List<String> motd);
+
+        void setUserModes(@Nonnull List<UserMode> userModes);
+
+        void setVersion(@Nonnull String version);
+    }
+
+    /**
      * Gets the server-stated address of the server.
      *
      * @return the server's address if known

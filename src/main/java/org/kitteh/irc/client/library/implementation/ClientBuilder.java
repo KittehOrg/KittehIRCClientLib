@@ -113,7 +113,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     @Nonnull
     public Client.Builder eventManagerSupplier(@Nonnull Function<Client, ? extends EventManager> supplier) {
-        this.config.set(Config.MANAGER_EVENT, Sanity.nullCheck(supplier, "Supplier cannot be null"));
+        this.config.set(Config.SERVER_INFO, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 

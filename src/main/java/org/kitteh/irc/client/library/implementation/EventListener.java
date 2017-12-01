@@ -138,7 +138,6 @@ class EventListener {
     @NumericFilter(4)
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void version(ClientReceiveNumericEvent event) {
-        this.client.resetServerInfo();
         boolean isTwitch = this.client.getEventManager().getRegisteredEventListeners().stream().anyMatch(listener -> (listener instanceof TwitchListener));
         if (event.getParameters().size() > 1) {
             this.client.getServerInfo().setAddress(event.getParameters().get(1));
@@ -1324,9 +1323,9 @@ class EventListener {
     @Nonnull
     private MessageTargetInfo getTypeByTarget(@Nonnull String target) {
         ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(target);
-        ChannelUserMode prefix = this.client.getServerInfo().getTargetedChannelInfo(target);
-        if (prefix != null) {
-            return new MessageTargetInfo.TargetedChannel(this.client.getActorProvider().getChannel(target.substring(1)), prefix);
+        Optional<ChannelUserMode> prefix = this.client.getServerInfo().getTargetedChannelInfo(target);
+        if (prefix.isPresent()) {
+            return new MessageTargetInfo.TargetedChannel(this.client.getActorProvider().getChannel(target.substring(1)), prefix.get());
         } else if (channel != null) {
             return new MessageTargetInfo.Channel(channel);
         }

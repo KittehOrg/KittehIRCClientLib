@@ -11,6 +11,7 @@ import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.mockito.ArgumentMatcher;
@@ -30,7 +31,7 @@ public class EventListenerTest {
     private ActorProvider actorProvider;
     private DefaultEventManager eventManager;
     private Listener<Exception> exceptionListener;
-    private IRCServerInfo serverInfo;
+    private DefaultServerInfo serverInfo;
 
     /**
      * And then Kitteh said, let there be test!
@@ -42,7 +43,7 @@ public class EventListenerTest {
         this.eventManager = Mockito.spy(new DefaultEventManager(this.client));
         this.eventManager.registerEventListener(new EventListener(this.client));
         this.exceptionListener = Mockito.mock(Listener.class);
-        this.serverInfo = Mockito.mock(IRCServerInfo.class);
+        this.serverInfo = Mockito.mock(DefaultServerInfo.class);
         Mockito.when(this.client.getServerInfo()).thenReturn(this.serverInfo);
         Mockito.when(this.client.getEventManager()).thenReturn(this.eventManager);
         Mockito.when(this.client.getExceptionListener()).thenReturn(this.exceptionListener);
@@ -151,7 +152,6 @@ public class EventListenerTest {
     @Test
     public void test4Version() {
         this.fireLine(":irc.network 004 Kitteh irc.network kittydis-1.3.3.7-dev DQRSZagiloswz CFILPQTbcefgijklmnopqrstvz bkloveqjfI");
-        Mockito.verify(this.client, Mockito.times(1)).resetServerInfo();
         Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setVersion("kittydis-1.3.3.7-dev");
         Mockito.verify(this.client, Mockito.times(1)).startSending();
@@ -164,7 +164,6 @@ public class EventListenerTest {
     @Test
     public void test4VersionNoVersion() {
         this.fireLine(":irc.network 004 Kitteh irc.network");
-        Mockito.verify(this.client, Mockito.times(1)).resetServerInfo();
         Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();
@@ -179,7 +178,6 @@ public class EventListenerTest {
     @Test
     public void test4VersionNoAddressOrVersion() {
         this.fireLine(":irc.network 004 Kitteh");
-        Mockito.verify(this.client, Mockito.times(1)).resetServerInfo();
         Mockito.verify(this.serverInfo, Mockito.times(0)).setAddress(Mockito.anyString());
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();

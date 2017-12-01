@@ -563,6 +563,10 @@ public interface Client {
         @Nonnull
         String getRequestedNick();
 
+        @Override
+        @Nonnull
+        ServerInfo.WithManagement getServerInfo();
+
         /**
          * Pauses message sending, waiting for next successful connection.
          */
@@ -579,11 +583,6 @@ public interface Client {
          * @param line line to process
          */
         void processLine(@Nonnull String line);
-
-        /**
-         * Resets the existing server information.
-         */
-        void resetServerInfo();
 
         /**
          * Sends a nick change request.

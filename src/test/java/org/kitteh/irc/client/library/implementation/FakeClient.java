@@ -11,6 +11,7 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
@@ -39,16 +40,11 @@ class FakeClient extends InternalClient {
     private final Listener<String> listenerOutput = new Listener<>(this, null);
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
-    private final IRCServerInfo serverInfo = new IRCServerInfo(this);
+    private final DefaultServerInfo serverInfo = new DefaultServerInfo(this);
     private DefaultMessageMap defaultMessageMap = new SimpleDefaultMessageMap(null);
 
     @Override
     public void processLine(@Nonnull String line) {
-
-    }
-
-    @Override
-    public void resetServerInfo() {
 
     }
 
@@ -291,7 +287,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public IRCServerInfo getServerInfo() {
+    public DefaultServerInfo getServerInfo() {
         return this.serverInfo;
     }
 

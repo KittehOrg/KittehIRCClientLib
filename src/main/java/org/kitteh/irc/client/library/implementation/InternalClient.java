@@ -40,8 +40,4 @@ abstract class InternalClient implements Client.WithManagement {
     @Override
     @Nonnull
     public abstract ManagerISupport getISupportManager();
-
-    @Override
-    @Nonnull
-    public abstract IRCServerInfo getServerInfo();
 }

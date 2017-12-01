@@ -49,6 +49,7 @@ import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
@@ -162,7 +163,7 @@ final class IRCClient extends InternalClient {
 
     private final Config config;
     private final InputProcessor processor;
-    private IRCServerInfo serverInfo = new IRCServerInfo(this);
+    private ServerInfo.WithManagement serverInfo;
 
     private String goalNick;
     private String currentNick;
@@ -201,7 +202,7 @@ final class IRCClient extends InternalClient {
         this.config = config;
 
         // Get event manager up and running immediately!
-        this.eventManager = ((Function<Client, EventManager>) this.config.getNotNull(Config.MANAGER_EVENT)).apply(this);
+        this.eventManager = ((Function<Client, EventManager>) this.config.getNotNull(Config.SERVER_INFO)).apply(this);
 
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
@@ -226,6 +227,7 @@ final class IRCClient extends InternalClient {
 
         this.authManager = ((Function<Client, AuthManager>) this.config.getNotNull(Config.MANAGER_AUTH)).apply(this);
         this.capabilityManager = ((Function<Client, CapabilityManager.WithManagement>) this.config.getNotNull(Config.MANAGER_CAPABILITY)).apply(this);
+        this.serverInfo = ((Function<Client, ServerInfo.WithManagement>) this.config.getNotNull(Config.SERVER_INFO)).apply(this);
 
         DefaultMessageMap defaultMessageMap = this.config.get(Config.DEFAULT_MESSAGE_MAP);
         if (defaultMessageMap == null) {
@@ -384,7 +386,7 @@ final class IRCClient extends InternalClient {
 
     @Nonnull
     @Override
-    public IRCServerInfo getServerInfo() {
+    public ServerInfo.WithManagement getServerInfo() {
         return this.serverInfo;
     }
 
@@ -706,11 +708,6 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void resetServerInfo() {
-        this.serverInfo = new IRCServerInfo(this);
-    }
-
-    @Override
     public void sendNickChange(@Nonnull String newNick) {
         this.requestedNick = newNick;
         this.sendRawLineImmediately("NICK " + newNick);
@@ -767,7 +764,7 @@ final class IRCClient extends InternalClient {
         if (line.isEmpty()) {
             this.actorProvider.reset();
             this.capabilityManager.reset();
-            this.serverInfo.reset();
+            this.serverInfo = ((Function<Client, ServerInfo.WithManagement>) this.config.getNotNull(Config.SERVER_INFO)).apply(this);
             return;
         }
 
