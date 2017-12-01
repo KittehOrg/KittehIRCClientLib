@@ -147,17 +147,6 @@ public interface Client {
         Builder capabilityManagerSupplier(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier);
 
         /**
-         * Sets if the client should connect on {@link #build()}.
-         *
-         * @param connect if the client should be connected when built
-         * @return this builder
-         * @deprecated temporary until {@link #build()} doesn't connect in version 4.0.0 - use {@link #buildAndConnect()}
-         */
-        @Deprecated
-        @Nonnull
-        Builder connectWhenBuilt(boolean connect);
-
-        /**
          * Sets default messages.
          *
          * @param defaultMessageMap default values for messages
