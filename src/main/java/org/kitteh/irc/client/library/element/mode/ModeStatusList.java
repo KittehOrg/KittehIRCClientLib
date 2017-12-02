@@ -151,7 +151,7 @@ public class ModeStatusList<ModeType extends Mode> {
      */
     public boolean containsMode(@Nonnull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
-        return this.statuses.stream().filter(status -> status.getMode().equals(mode)).count() > 0;
+        return this.statuses.stream().anyMatch(status -> status.getMode().equals(mode));
     }
 
     /**

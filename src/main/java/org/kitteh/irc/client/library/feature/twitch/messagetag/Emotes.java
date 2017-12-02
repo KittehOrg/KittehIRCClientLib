@@ -121,7 +121,8 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
                     if (split.length < 2) {
                         continue;
                     }
-                    int firstIndex, lastIndex;
+                    int firstIndex;
+                    int lastIndex;
                     try {
                         firstIndex = Integer.parseInt(split[0]);
                         lastIndex = Integer.parseInt(split[1]);

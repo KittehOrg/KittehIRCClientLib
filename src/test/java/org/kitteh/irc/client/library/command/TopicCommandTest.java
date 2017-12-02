@@ -32,10 +32,10 @@ public class TopicCommandTest {
      */
     @Test
     public void testNoNew() {
-        TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
+        TopicCommand topicCommand = new TopicCommand(this.client, CHANNEL);
         topicCommand.execute();
 
-        Mockito.verify(client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
+        Mockito.verify(this.client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
     }
 
     /**
@@ -43,12 +43,12 @@ public class TopicCommandTest {
      */
     @Test
     public void testNoNewAnymore() {
-        TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
+        TopicCommand topicCommand = new TopicCommand(this.client, CHANNEL);
         topicCommand.topic(TOPIC);
         topicCommand.query();
         topicCommand.execute();
 
-        Mockito.verify(client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
+        Mockito.verify(this.client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
     }
 
     /**
@@ -56,12 +56,12 @@ public class TopicCommandTest {
      */
     @Test
     public void testNoNewAnymoreNull() {
-        TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
+        TopicCommand topicCommand = new TopicCommand(this.client, CHANNEL);
         topicCommand.topic(TOPIC);
         topicCommand.topic(null);
         topicCommand.execute();
 
-        Mockito.verify(client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
+        Mockito.verify(this.client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL);
     }
 
     /**
@@ -69,7 +69,7 @@ public class TopicCommandTest {
      */
     @Test
     public void testToString() {
-        TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
+        TopicCommand topicCommand = new TopicCommand(this.client, CHANNEL);
         topicCommand.topic(TOPIC);
         topicCommand.execute();
 
@@ -81,10 +81,10 @@ public class TopicCommandTest {
      */
     @Test
     public void testSet() {
-        TopicCommand topicCommand = new TopicCommand(client, CHANNEL);
+        TopicCommand topicCommand = new TopicCommand(this.client, CHANNEL);
         topicCommand.topic(TOPIC);
         topicCommand.execute();
 
-        Mockito.verify(client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL + " :" + TOPIC);
+        Mockito.verify(this.client, Mockito.times(1)).sendRawLine("TOPIC " + CHANNEL + " :" + TOPIC);
     }
 }

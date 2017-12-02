@@ -120,14 +120,14 @@ final class NettyManager {
             // Outbound - Processed in pipeline back to front.
             this.channel.pipeline().addFirst("[OUTPUT] Output listener", new MessageToMessageEncoder<String>() {
                 @Override
-                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) {
                     ClientConnection.this.client.getOutputListener().queue(msg);
                     out.add(msg);
                 }
             });
             this.channel.pipeline().addFirst("[OUTPUT] Add line breaks", new MessageToMessageEncoder<String>() {
                 @Override
-                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+                protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) {
                     out.add(msg + "\r\n");
                 }
             });
@@ -137,7 +137,7 @@ final class NettyManager {
             this.channel.pipeline().addLast("[INPUT] Idle state handler", new IdleStateHandler(250, 0, 0));
             this.channel.pipeline().addLast("[INPUT] Catch idle", new ChannelDuplexHandler() {
                 @Override
-                public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
                     if (evt instanceof IdleStateEvent) {
                         IdleStateEvent e = (IdleStateEvent) evt;
                         if ((e.state() == IdleState.READER_IDLE) && e.isFirst()) {
@@ -152,7 +152,7 @@ final class NettyManager {
             this.channel.pipeline().addLast("[INPUT] String decoder", new StringDecoder(CharsetUtil.UTF_8));
             this.channel.pipeline().addLast("[INPUT] Send to client", new SimpleChannelInboundHandler<String>() {
                 @Override
-                protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+                protected void channelRead0(ChannelHandlerContext ctx, String msg) {
                     if (msg == null) {
                         return;
                     }
@@ -200,7 +200,7 @@ final class NettyManager {
             // Exception handling
             this.channel.pipeline().addLast("[INPUT] Exception handler", new ChannelInboundHandlerAdapter() {
                 @Override
-                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
                     if (cause instanceof Exception) {
                         ClientConnection.this.handleException((Exception) cause);
                     }
@@ -208,7 +208,7 @@ final class NettyManager {
             });
             this.channel.pipeline().addFirst("[OUTPUT] Exception handler", new ChannelOutboundHandlerAdapter() {
                 @Override
-                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
                     if (cause instanceof Exception) {
                         ClientConnection.this.handleException((Exception) cause);
                     }
@@ -309,7 +309,7 @@ final class NettyManager {
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
-                public void initChannel(SocketChannel channel) throws Exception {
+                public void initChannel(SocketChannel channel) {
                     // NOOP
                 }
             });

@@ -13,7 +13,6 @@ import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.util.Listener;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
@@ -166,7 +165,7 @@ public class CHGHOSTTest {
         final Listener<Exception> exceptionListener = Mockito.mock(Listener.class);
         Mockito.when(client.getActorProvider()).thenReturn(provider);
         Mockito.when(client.getExceptionListener()).thenReturn(exceptionListener);
-        Mockito.doAnswer(invocationOnMock -> exceptionList.add((Exception) invocationOnMock.getArguments()[0])).when(exceptionListener).queue(Matchers.any());
+        Mockito.doAnswer(invocationOnMock -> exceptionList.add((Exception) invocationOnMock.getArguments()[0])).when(exceptionListener).queue(Mockito.any());
         return new EventListener(client);
     }
 }

@@ -27,7 +27,7 @@ public class STSPropertiesStorageManagerTest {
      */
     @Test
     public void testSimpleOperations() throws IOException {
-        final File tempFile = temporaryFolder.newFile("sts.properties");
+        final File tempFile = this.temporaryFolder.newFile("sts.properties");
         final Path path = tempFile.toPath();
 
         STSPropertiesStorageManager sut = new STSPropertiesStorageManager(path);
@@ -38,7 +38,7 @@ public class STSPropertiesStorageManagerTest {
         Assert.assertTrue(optionalPolicy.isPresent());
         final STSPolicy policy = optionalPolicy.get();
         Assert.assertTrue(policy.getOptions().containsKey(STSPolicy.POLICY_OPTION_KEY_PORT));
-        Assert.assertTrue(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT).equals("6697"));
+        Assert.assertTrue("6697".equals(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT)));
         Assert.assertTrue(policy.getFlags().contains("cats"));
     }
 
@@ -48,7 +48,7 @@ public class STSPropertiesStorageManagerTest {
      */
     @Test
     public void testSimpleReading() throws IOException {
-        final File tempFile = temporaryFolder.newFile("sts.properties");
+        final File tempFile = this.temporaryFolder.newFile("sts.properties");
         final Path path = tempFile.toPath();
         STSPropertiesStorageManager sut1 = new STSPropertiesStorageManager(path);
         sut1.addEntry("kitteh.org", 500, STSUtil.getSTSPolicyFromString(",", STSPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
@@ -60,7 +60,7 @@ public class STSPropertiesStorageManagerTest {
         Assert.assertTrue(optionalPolicy.isPresent());
         final STSPolicy policy = optionalPolicy.get();
         Assert.assertTrue(policy.getOptions().containsKey(STSPolicy.POLICY_OPTION_KEY_PORT));
-        Assert.assertTrue(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT).equals("6697"));
+        Assert.assertTrue("6697".equals(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT)));
         Assert.assertTrue(policy.getFlags().contains("cats"));
     }
 
@@ -70,7 +70,7 @@ public class STSPropertiesStorageManagerTest {
      */
     @Test
     public void testDelay() throws InterruptedException, IOException {
-        final File tempFile = temporaryFolder.newFile("sts.properties");
+        final File tempFile = this.temporaryFolder.newFile("sts.properties");
         final Path path = tempFile.toPath();
         STSPropertiesStorageManager sut = new STSPropertiesStorageManager(path);
         sut.addEntry("kitteh.org", 0, STSUtil.getSTSPolicyFromString(",", STSPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
@@ -83,7 +83,7 @@ public class STSPropertiesStorageManagerTest {
 
     @Test
     public void testReloading() throws IOException {
-        final File tempFile = temporaryFolder.newFile("sts.properties");
+        final File tempFile = this.temporaryFolder.newFile("sts.properties");
         final Path path = tempFile.toPath();
         STSStorageManager sut1 = STSUtil.getDefaultStorageManager(path);
         sut1.addEntry("kitteh.org", 500, STSUtil.getSTSPolicyFromString(",", STSPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));

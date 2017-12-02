@@ -106,11 +106,11 @@ public class EventListenerTest {
     // END TODO
 
     private ArgumentMatcher<Exception> exception(Class<? extends Exception> clazz, String message) {
-        return o -> (o != null) && clazz.isAssignableFrom(o.getClass()) && ((message == null) ? (((Exception) o).getMessage() == null) : ((Exception) o).getMessage().contains(message));
+        return o -> (o != null) && clazz.isAssignableFrom(o.getClass()) && ((message == null) ? (o.getMessage() == null) : o.getMessage().contains(message));
     }
 
     private ArgumentMatcher<ISupportParameter> iSupportParameter(@Nonnull String name) {
-        return o -> (o != null) && ((ISupportParameter) o).getName().equals(name);
+        return o -> (o != null) && o.getName().equals(name);
     }
 
     private <T> ArgumentMatcher<T> match(Class<T> clazz, Function<T, Boolean>... functions) {
@@ -119,7 +119,7 @@ public class EventListenerTest {
                 return false;
             }
             for (Function<T, Boolean> function : functions) {
-                if (!function.apply((T) o)) {
+                if (!function.apply(o)) {
                     return false;
                 }
             }
@@ -202,7 +202,7 @@ public class EventListenerTest {
         this.fireLine(":irc.network 372 Kitteh :-   Hello                         ");
         this.fireLine(":irc.network 372 Kitteh");
         this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
-        Mockito.verify(this.serverInfo, Mockito.times(1)).setMOTD(Mockito.argThat(o -> (o != null) && (((List<String>) o).size() == 1) && ((List<String>) o).get(0).contains("Hello")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).setMOTD(Mockito.argThat(o -> (o != null) && (o.size() == 1) && o.get(0).contains("Hello")));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message too short")));
     }
 

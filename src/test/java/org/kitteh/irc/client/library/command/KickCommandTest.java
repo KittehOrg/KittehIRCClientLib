@@ -69,7 +69,7 @@ public class KickCommandTest {
         Mockito.when(this.user.getClient()).thenReturn(this.client);
 
         KickCommand command = new KickCommand(this.client, CHANNEL);
-        command.target(user);
+        command.target(this.user);
         command.reason(REASON);
         command.execute();
 

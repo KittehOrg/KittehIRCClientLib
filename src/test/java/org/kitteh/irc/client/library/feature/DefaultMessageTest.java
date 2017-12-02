@@ -26,7 +26,9 @@ public class DefaultMessageTest {
 
         Map<DefaultMessageType, String> defaultMessages = defaults.getDefaults();
 
-        int foos = 0, bars = 0, unknowns = 0;
+        int foos = 0;
+        int bars = 0;
+        int unknowns = 0;
         for (String message : defaultMessages.values()) {
             switch (message) {
                 case "bar":

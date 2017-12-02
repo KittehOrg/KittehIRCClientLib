@@ -61,7 +61,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
                 }
                 Optional<String> stateValue = state.get().getValue();
                 if (stateValue.isPresent()) {
-                    if (Arrays.stream(stateValue.get().split(",")).filter(mechanism -> mechanism.equalsIgnoreCase(AbstractSaslProtocol.this.saslType)).count() == 0) {
+                    if (Arrays.stream(stateValue.get().split(",")).noneMatch(mechanism -> mechanism.equalsIgnoreCase(AbstractSaslProtocol.this.saslType))) {
                         return; // Don't bother if it doesn't support our type
                     }
                 }
@@ -73,14 +73,14 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
 
         @Handler(priority = 1)
         public void capAck(CapabilitiesAcknowledgedEvent event) {
-            if (event.getAcknowledgedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase(CapabilityManager.Defaults.SASL)).count() > 0) {
+            if (event.getAcknowledgedCapabilities().stream().anyMatch(c -> c.getName().equalsIgnoreCase(CapabilityManager.Defaults.SASL))) {
                 AbstractSaslProtocol.this.startAuthentication();
             }
         }
 
         @Handler(priority = 1)
         public void capNak(CapabilitiesRejectedEvent event) {
-            if (event.getRejectedCapabilitiesRequest().stream().filter(c -> c.getName().equalsIgnoreCase(CapabilityManager.Defaults.SASL)).count() > 0) {
+            if (event.getRejectedCapabilitiesRequest().stream().anyMatch(c -> c.getName().equalsIgnoreCase(CapabilityManager.Defaults.SASL))) {
                 AbstractSaslProtocol.this.authenticating = false;
             }
         }

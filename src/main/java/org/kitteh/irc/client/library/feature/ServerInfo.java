@@ -75,7 +75,7 @@ public interface ServerInfo {
     @Nonnull
     default CaseMapping getCaseMapping() {
         Optional<ISupportParameter.CaseMapping> optional = this.getISupportParameter(ISupportParameter.CaseMapping.NAME, ISupportParameter.CaseMapping.class);
-        return optional.isPresent() ? optional.get().getCaseMapping() : CaseMapping.RFC1459;
+        return optional.map(ISupportParameter.CaseMapping::getCaseMapping).orElse(CaseMapping.RFC1459);
     }
 
     /**
@@ -85,7 +85,7 @@ public interface ServerInfo {
      */
     default int getChannelLengthLimit() {
         Optional<ISupportParameter.ChannelLen> optional = this.getISupportParameter(ISupportParameter.ChannelLen.NAME, ISupportParameter.ChannelLen.class);
-        return optional.isPresent() ? optional.get().getInteger() : -1;
+        return optional.map(ISupportParameter.IntegerParameter::getInteger).orElse(-1);
     }
 
     /**
@@ -96,7 +96,7 @@ public interface ServerInfo {
     @Nonnull
     default Map<Character, Integer> getChannelLimits() {
         Optional<ISupportParameter.ChanLimit> optional = this.getISupportParameter(ISupportParameter.ChanLimit.NAME, ISupportParameter.ChanLimit.class);
-        return optional.isPresent() ? optional.get().getLimits() : Collections.emptyMap();
+        return optional.map(ISupportParameter.ChanLimit::getLimits).orElseGet(Collections::emptyMap);
     }
 
     /**
@@ -202,7 +202,7 @@ public interface ServerInfo {
     @Nonnull
     default Optional<String> getNetworkName() {
         Optional<ISupportParameter.Network> optional = this.getISupportParameter(ISupportParameter.Network.NAME, ISupportParameter.Network.class);
-        return optional.isPresent() ? Optional.of(optional.get().getNetworkName()) : Optional.empty();
+        return optional.map(ISupportParameter.Network::getNetworkName);
     }
 
     /**
@@ -212,7 +212,7 @@ public interface ServerInfo {
      */
     default int getNickLengthLimit() {
         Optional<ISupportParameter.NickLen> optional = this.getISupportParameter(ISupportParameter.NickLen.NAME, ISupportParameter.NickLen.class);
-        return optional.isPresent() ? optional.get().getInteger() : -1;
+        return optional.map(ISupportParameter.IntegerParameter::getInteger).orElse(-1);
     }
 
     /**

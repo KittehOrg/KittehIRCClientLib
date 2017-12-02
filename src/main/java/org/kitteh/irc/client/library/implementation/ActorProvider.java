@@ -402,7 +402,9 @@ class ActorProvider implements Resettable {
             channel.trackedModes.stream().filter(character -> !this.modeInfoLists.containsKey(character)).forEach(character -> this.modeInfoLists.put(character, Collections.unmodifiableList(new ArrayList<>())));
             Map<String, SortedSet<ChannelUserMode>> newModes = new CIKeyMap<>(ActorProvider.this.client);
             Optional<ISupportParameter.Prefix> prefix = ActorProvider.this.client.getServerInfo().getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
-            Comparator<ChannelUserMode> comparator = prefix.isPresent() ? Comparator.comparingInt(prefix.get().getModes()::indexOf) : Comparator.comparing(ChannelUserMode::getChar);
+            Comparator<ChannelUserMode> comparator = prefix
+                    .<Comparator<ChannelUserMode>>map(prefix1 -> Comparator.comparingInt(prefix1.getModes()::indexOf))
+                    .orElseGet(() -> Comparator.comparing(ChannelUserMode::getChar));
             for (Map.Entry<String, Set<ChannelUserMode>> entry : channel.modes.entrySet()) {
                 SortedSet<ChannelUserMode> newSet = new TreeSet<>(comparator);
                 newSet.addAll(entry.getValue());

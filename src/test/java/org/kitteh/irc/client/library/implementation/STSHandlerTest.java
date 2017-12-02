@@ -46,10 +46,10 @@ public class STSHandlerTest {
 
         STSPolicy extractedPolicy = machine.getPolicy();
         final String port = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT);
-        Assert.assertTrue(port.equals("1234"));
+        Assert.assertTrue("1234".equals(port));
 
         final String duration = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION);
-        Assert.assertTrue(duration.equals("300"));
+        Assert.assertTrue("300".equals(duration));
 
         Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
     }
@@ -77,10 +77,10 @@ public class STSHandlerTest {
 
         STSPolicy extractedPolicy = machine.getPolicy();
         final String port = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT);
-        Assert.assertTrue(port.equals("1234"));
+        Assert.assertTrue("1234".equals(port));
 
         final String duration = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION);
-        Assert.assertTrue(duration.equals("300"));
+        Assert.assertTrue("300".equals(duration));
 
         Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
     }
@@ -154,7 +154,7 @@ public class STSHandlerTest {
         }
 
         STSPolicy getPolicy() {
-            return policy;
+            return this.policy;
         }
     }
 }

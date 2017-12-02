@@ -305,7 +305,7 @@ class FakeClient extends InternalClient {
     @Nonnull
     @Override
     public Optional<ModeStatusList<UserMode>> getUserModes() {
-        return null;
+        return Optional.empty();
     }
 
     @Override
