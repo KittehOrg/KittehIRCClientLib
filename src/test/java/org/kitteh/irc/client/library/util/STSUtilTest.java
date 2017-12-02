@@ -4,8 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.feature.sts.STSPolicy;
 
+/**
+ * Tests the STSUtil class.
+ */
 public class STSUtilTest {
-
     /**
      * Test the parseSeparatedKeyValueString function.
      */

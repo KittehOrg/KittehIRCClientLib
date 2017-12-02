@@ -45,6 +45,9 @@ public @interface ToSelfOnly {
      * {@inheritDoc}
      */
     class Processor implements FilterProcessor<PrivateEvent, ToSelfOnly>, IMessageFilter<PrivateEvent> {
+        /**
+         * Constructs the processor.
+         */
         public Processor() {
         }
 

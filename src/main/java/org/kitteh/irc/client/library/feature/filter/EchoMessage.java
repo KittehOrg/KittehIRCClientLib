@@ -48,6 +48,9 @@ public @interface EchoMessage {
      * {@inheritDoc}
      */
     class Processor implements FilterProcessor<ActorMessageEvent<? extends Actor>, EchoMessage>, IMessageFilter<ActorMessageEvent<? extends Actor>> {
+        /**
+         * Constructs the processor.
+         */
         public Processor() {
         }
 

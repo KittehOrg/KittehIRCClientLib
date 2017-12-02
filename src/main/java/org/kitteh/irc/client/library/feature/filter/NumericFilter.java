@@ -57,6 +57,9 @@ public @interface NumericFilter {
      * Processes this annotation-based filter.
      */
     class Processor implements FilterProcessor<ClientReceiveNumericEvent, NumericFilter>, IMessageFilter<ClientReceiveNumericEvent> {
+        /**
+         * Constructs the processor.
+         */
         public Processor() {
         }
 

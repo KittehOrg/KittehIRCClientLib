@@ -57,6 +57,9 @@ public @interface CommandFilter {
      * Processes this annotation-based filter.
      */
     class Processor implements FilterProcessor<ClientReceiveCommandEvent, CommandFilter>, IMessageFilter<ClientReceiveCommandEvent> {
+        /**
+         * Constructs the processor.
+         */
         public Processor() {
         }
 

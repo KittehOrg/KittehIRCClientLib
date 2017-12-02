@@ -44,17 +44,49 @@ public interface ServerInfo {
      * A server information provider with management features.
      */
     interface WithManagement extends ServerInfo {
+        /**
+         * Adds an ISUPPORT parameter to the list of supported parameters.
+         *
+         * @param parameter parameter to add
+         */
         void addISupportParameter(@Nonnull ISupportParameter parameter);
 
+        /**
+         * Gets the channel user mode for a targeted channel name, such as
+         * +#channel targeting voiced users.
+         *
+         * @param name channel name with mode tag
+         * @return user mode if a match is found
+         */
         @Nonnull
         Optional<ChannelUserMode> getTargetedChannelInfo(@Nonnull String name);
 
+        /**
+         * Sets the server address.
+         *
+         * @param serverAddress server address
+         */
         void setAddress(@Nonnull String serverAddress);
 
+        /**
+         * Sets the MOTD.
+         *
+         * @param motd motd
+         */
         void setMOTD(@Nonnull List<String> motd);
 
+        /**
+         * Sets the user modes.
+         *
+         * @param userModes user modes
+         */
         void setUserModes(@Nonnull List<UserMode> userModes);
 
+        /**
+         * Sets the version.
+         *
+         * @param version version
+         */
         void setVersion(@Nonnull String version);
     }
 

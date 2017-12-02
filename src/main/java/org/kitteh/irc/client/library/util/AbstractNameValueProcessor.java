@@ -68,6 +68,11 @@ public abstract class AbstractNameValueProcessor<NameValue> {
     private final Client.WithManagement client;
     private final Map<String, Creator<NameValue>> registeredNames = new ConcurrentHashMap<>();
 
+    /**
+     * Constructs the processor.
+     *
+     * @param client client this will be used for
+     */
     protected AbstractNameValueProcessor(Client.WithManagement client) {
         this.client = client;
     }
@@ -81,20 +86,44 @@ public abstract class AbstractNameValueProcessor<NameValue> {
         return this.client;
     }
 
+    /**
+     * Gets the actual registrations map, for manipulation.
+     *
+     * @return registration map
+     */
     protected final Map<String, Creator<NameValue>> getRegistrations() {
         return this.registeredNames;
     }
 
+    /**
+     * Gets a registered creator function by registered name.
+     *
+     * @param name name to find
+     * @return registered creator function
+     */
     @Nonnull
     protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
         return this.optional(this.registeredNames.get(Sanity.nullCheck(name, "Name cannot be null")));
     }
 
+    /**
+     * Registers a creator to a name.
+     *
+     * @param name name
+     * @param creator creator
+     * @return previous occupant of the name registration, if there was one
+     */
     @Nonnull
     protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
         return this.optional(this.registeredNames.put(Sanity.nullCheck(name, "Name cannot be null"), creator));
     }
 
+    /**
+     * Removes registration of a creator to a name.
+     *
+     * @param name name
+     * @return previous occupant of the name registration, if there was one
+     */
     @Nonnull
     protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
         return this.optional(this.registeredNames.remove(Sanity.nullCheck(name, "Name cannot be null")));
