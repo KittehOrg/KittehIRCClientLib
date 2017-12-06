@@ -51,6 +51,8 @@ import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultISupportManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
@@ -101,18 +103,6 @@ public interface Client {
         Builder afterBuildConsumer(@Nullable Consumer<Client> consumer);
 
         /**
-         * Sets the supplier of the authentication manager.
-         * <p>
-         * By default, the {@link DefaultAuthManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultAuthManager
-         */
-        @Nonnull
-        Builder authManagerSupplier(@Nonnull Function<Client, ? extends AuthManager> supplier);
-
-        /**
          * Binds the client to a host or IP locally.
          * <p>
          * By default, the host is not set which results in wildcard binding.
@@ -135,18 +125,6 @@ public interface Client {
         Builder bindPort(int port);
 
         /**
-         * Sets the supplier of the capability manager.
-         * <p>
-         * By default, the {@link DefaultCapabilityManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultCapabilityManager
-         */
-        @Nonnull
-        Builder capabilityManagerSupplier(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier);
-
-        /**
          * Sets default messages.
          *
          * @param defaultMessageMap default values for messages
@@ -155,18 +133,6 @@ public interface Client {
          */
         @Nonnull
         Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
-
-        /**
-         * Sets the supplier of the event manager.
-         * <p>
-         * By default, the {@link DefaultEventManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultEventManager
-         */
-        @Nonnull
-        Builder eventManagerSupplier(@Nonnull Function<Client, ? extends EventManager> supplier);
 
         /**
          * Sets a listener for all thrown exceptions on this client. By default,
@@ -349,6 +315,66 @@ public interface Client {
          */
         @Nonnull
         Builder serverPort(int port);
+
+        /**
+         * Sets the supplier of the authentication manager.
+         * <p>
+         * By default, the {@link DefaultAuthManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultAuthManager
+         */
+        @Nonnull
+        Builder supplierAuthManager(@Nonnull Function<Client, ? extends AuthManager> supplier);
+
+        /**
+         * Sets the supplier of the capability manager.
+         * <p>
+         * By default, the {@link DefaultCapabilityManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultCapabilityManager
+         */
+        @Nonnull
+        Builder supplierCapabilityManager(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier);
+
+        /**
+         * Sets the supplier of the event manager.
+         * <p>
+         * By default, the {@link DefaultEventManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultEventManager
+         */
+        @Nonnull
+        Builder supplierEventManager(@Nonnull Function<Client, ? extends EventManager> supplier);
+
+        /**
+         * Sets the supplier of the ISUPPORT manager.
+         * <p>
+         * By default, the {@link DefaultISupportManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultEventManager
+         */
+        @Nonnull
+        Builder supplierISupportManager(@Nonnull Function<Client, ? extends ISupportManager> supplier);
+
+        /**
+         * Sets the supplier of the server info.
+         * <p>
+         * By default, the {@link DefaultServerInfo} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultServerInfo
+         */
+        @Nonnull
+        Builder supplierServerInfo(@Nonnull Function<Client, ? extends ServerInfo.WithManagement> supplier);
 
         /**
          * Sets the user the client connects as.

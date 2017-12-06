@@ -21,19 +21,49 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.element.defaults;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
 
-/**
- * I'll be gone soon.
- */
-abstract class InternalClient implements Client.WithManagement {
-    @Nonnull
-    abstract ActorProvider getActorProvider();
+public class DefaultISupportParameter implements ISupportParameter {
+    private final Client client;
+    private final String name;
+    @Nullable
+    private final String value;
+
+    public DefaultISupportParameter(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        this.client = client;
+        this.name = name;
+        this.value = value;
+    }
 
     @Nonnull
-    abstract Config getConfig();
+    @Override
+    public Client getClient() {
+        return this.client;
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<String> getValue() {
+        return Optional.ofNullable(this.value);
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("name", this.name).add("value", this.value).toString();
+    }
 }

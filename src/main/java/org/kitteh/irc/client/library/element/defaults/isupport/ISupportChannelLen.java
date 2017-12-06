@@ -21,19 +21,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-/**
- * I'll be gone soon.
- */
-abstract class InternalClient implements Client.WithManagement {
-    @Nonnull
-    abstract ActorProvider getActorProvider();
-
-    @Nonnull
-    abstract Config getConfig();
+public class ISupportChannelLen extends DefaultISupportParameterInteger implements ISupportParameter.ChannelLen {
+    public ISupportChannelLen(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        super(client, name, value);
+    }
 }

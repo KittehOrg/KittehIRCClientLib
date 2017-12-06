@@ -21,19 +21,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-/**
- * I'll be gone soon.
- */
-abstract class InternalClient implements Client.WithManagement {
-    @Nonnull
-    abstract ActorProvider getActorProvider();
+public class ISupportNetwork extends DefaultISupportParameterValueRequired implements ISupportParameter.Network {
+    private final String networkName;
+
+    public ISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        super(client, name, value);
+        if (value == null) {
+            throw new KittehServerISupportException(name, "No network name defined");
+        }
+        this.networkName = value;
+    }
 
     @Nonnull
-    abstract Config getConfig();
+    @Override
+    public String getNetworkName() {
+        return this.networkName;
+    }
 }

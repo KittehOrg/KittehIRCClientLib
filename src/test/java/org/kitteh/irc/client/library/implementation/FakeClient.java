@@ -11,6 +11,7 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultISupportManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
@@ -139,7 +140,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public ManagerISupport getISupportManager() {
+    public DefaultISupportManager getISupportManager() {
         return null;
     }
 

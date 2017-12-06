@@ -35,6 +35,15 @@ import java.util.Optional;
  */
 public interface ISupportManager {
     /**
+     * Creates a {@link ISupportParameter} from given input.
+     *
+     * @param tag input
+     * @return a parameter based on the input
+     */
+    @Nonnull
+    ISupportParameter createParameter(@Nonnull String tag);
+
+    /**
      * Gets the registered ISUPPORT creator for a given parameter name.
      *
      * @param parameter parameter

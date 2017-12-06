@@ -11,6 +11,7 @@ import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultISupportManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.StringUtil;
@@ -48,7 +49,7 @@ public class EventListenerTest {
         Mockito.when(this.client.getEventManager()).thenReturn(this.eventManager);
         Mockito.when(this.client.getExceptionListener()).thenReturn(this.exceptionListener);
         Mockito.when(this.serverInfo.getCaseMapping()).thenReturn(CaseMapping.ASCII);
-        Mockito.when(this.client.getISupportManager()).thenReturn(new ManagerISupport(this.client));
+        Mockito.when(this.client.getISupportManager()).thenReturn(new DefaultISupportManager(this.client));
     }
 
     // BEGIN TODO - not have this be stolen from IRCClient

@@ -21,19 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
-
-import org.kitteh.irc.client.library.Client;
-
-import javax.annotation.Nonnull;
-
 /**
- * I'll be gone soon.
+ * Default ISUPPORT parameter implementations.
  */
-abstract class InternalClient implements Client.WithManagement {
-    @Nonnull
-    abstract ActorProvider getActorProvider();
-
-    @Nonnull
-    abstract Config getConfig();
-}
+package org.kitteh.irc.client.library.element.defaults.isupport;

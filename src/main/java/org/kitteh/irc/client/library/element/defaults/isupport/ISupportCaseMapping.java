@@ -21,19 +21,35 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
 
-/**
- * I'll be gone soon.
- */
-abstract class InternalClient implements Client.WithManagement {
-    @Nonnull
-    abstract ActorProvider getActorProvider();
+public class ISupportCaseMapping extends DefaultISupportParameterValueRequired implements ISupportParameter.CaseMapping {
+    private final org.kitteh.irc.client.library.feature.CaseMapping caseMapping;
+
+    public ISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        super(client, name, value);
+        if (value == null) {
+            throw new KittehServerISupportException(name, "No casemapping value");
+        }
+        Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value);
+        if (caseMapping.isPresent()) {
+            this.caseMapping = caseMapping.get();
+        } else {
+            throw new KittehServerISupportException(name, "Undefined casemapping");
+        }
+    }
 
     @Nonnull
-    abstract Config getConfig();
+    @Override
+    public org.kitteh.irc.client.library.feature.CaseMapping getCaseMapping() {
+        return this.caseMapping;
+    }
 }

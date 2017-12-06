@@ -21,19 +21,36 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-/**
- * I'll be gone soon.
- */
-abstract class InternalClient implements Client.WithManagement {
-    @Nonnull
-    abstract ActorProvider getActorProvider();
+public class ISupportChanTypes extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanTypes {
+    private final List<Character> prefixes;
+
+    public ISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        super(client, name, value);
+        if (value == null) {
+            throw new KittehServerISupportException(name, "No chantypes defined");
+        }
+        List<Character> prefixes = new ArrayList<>();
+        for (char c : value.toCharArray()) {
+            prefixes.add(c);
+        }
+        this.prefixes = Collections.unmodifiableList(prefixes);
+    }
 
     @Nonnull
-    abstract Config getConfig();
+    @Override
+    public List<Character> getTypes() {
+        return this.prefixes;
+    }
 }

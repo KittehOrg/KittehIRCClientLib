@@ -27,6 +27,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultISupportManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
@@ -146,6 +147,7 @@ final class Config {
     static final Entry<Function> MANAGER_AUTH = new Entry<>(getFunction(DefaultAuthManager::new), Function.class);
     static final Entry<Function> MANAGER_CAPABILITY = new Entry<>(getFunction(DefaultCapabilityManager::new), Function.class);
     static final Entry<Function> MANAGER_EVENT = new Entry<>(getFunction(DefaultEventManager::new), Function.class);
+    static final Entry<Function> MANAGER_ISUPPORT = new Entry<>(getFunction(DefaultISupportManager::new), Function.class);
     static final Entry<Function> MESSAGE_DELAY = new Entry<>(SingleDelaySender.getSupplier(SingleDelaySender.DEFAULT_MESSAGE_DELAY), Function.class);
     static final Entry<String> NICK = new Entry<>("Kitteh", String.class);
     static final Entry<Boolean> QUERY_CHANNEL_INFO = new Entry<>(true, Boolean.class);
@@ -171,7 +173,7 @@ final class Config {
      */
     private static final Object NULL = new Object();
 
-    private static Function<Client, ?> getFunction(Function<Client, ?> function) {
+    private static Function<Client.WithManagement, ?> getFunction(Function<Client.WithManagement, ?> function) {
         return function;
     }
 

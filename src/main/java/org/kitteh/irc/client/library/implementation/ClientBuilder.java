@@ -27,6 +27,8 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.ISupportManager;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
@@ -66,13 +68,6 @@ final class ClientBuilder implements Client.Builder, Cloneable {
         return this;
     }
 
-    @Override
-    @Nonnull
-    public Client.Builder authManagerSupplier(@Nonnull Function<Client, ? extends AuthManager> supplier) {
-        this.config.set(Config.MANAGER_AUTH, Sanity.nullCheck(supplier, "Supplier cannot be null"));
-        return this;
-    }
-
     @Nonnull
     @Override
     public ClientBuilder bindHost(@Nullable String host) {
@@ -89,22 +84,8 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder capabilityManagerSupplier(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier) {
-        this.config.set(Config.MANAGER_CAPABILITY, Sanity.nullCheck(supplier, "Supplier cannot be null"));
-        return this;
-    }
-
-    @Nonnull
-    @Override
     public ClientBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
         this.config.set(Config.DEFAULT_MESSAGE_MAP, defaultMessageMap);
-        return this;
-    }
-
-    @Override
-    @Nonnull
-    public Client.Builder eventManagerSupplier(@Nonnull Function<Client, ? extends EventManager> supplier) {
-        this.config.set(Config.SERVER_INFO, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 
@@ -219,6 +200,41 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public ClientBuilder serverPort(int port) {
         this.serverPort = this.validPort(port);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder supplierAuthManager(@Nonnull Function<Client, ? extends AuthManager> supplier) {
+        this.config.set(Config.MANAGER_AUTH, Sanity.nullCheck(supplier, "Supplier cannot be null"));
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public ClientBuilder supplierCapabilityManager(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier) {
+        this.config.set(Config.MANAGER_CAPABILITY, Sanity.nullCheck(supplier, "Supplier cannot be null"));
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder supplierEventManager(@Nonnull Function<Client, ? extends EventManager> supplier) {
+        this.config.set(Config.MANAGER_EVENT, Sanity.nullCheck(supplier, "Supplier cannot be null"));
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder supplierISupportManager(@Nonnull Function<Client, ? extends ISupportManager> supplier) {
+        this.config.set(Config.MANAGER_ISUPPORT, Sanity.nullCheck(supplier, "Supplier cannot be null"));
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder supplierServerInfo(@Nonnull Function<Client, ? extends ServerInfo.WithManagement> supplier) {
+        this.config.set(Config.SERVER_INFO, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 

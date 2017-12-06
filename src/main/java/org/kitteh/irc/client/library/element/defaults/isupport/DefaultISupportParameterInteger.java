@@ -21,19 +21,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-/**
- * I'll be gone soon.
- */
-abstract class InternalClient implements Client.WithManagement {
-    @Nonnull
-    abstract ActorProvider getActorProvider();
+public abstract class DefaultISupportParameterInteger extends DefaultISupportParameterValueRequired implements ISupportParameter.IntegerParameter {
+    private final int integer;
 
-    @Nonnull
-    abstract Config getConfig();
+    protected DefaultISupportParameterInteger(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        super(client, name, value);
+        try {
+            this.integer = Integer.parseInt(value);
+        } catch (Exception e) {
+            throw new KittehServerISupportException(name, "Could not parse value", e);
+        }
+    }
+
+    @Override
+    public int getInteger() {
+        return this.integer;
+    }
 }

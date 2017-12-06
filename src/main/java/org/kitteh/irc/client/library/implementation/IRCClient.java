@@ -48,6 +48,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
@@ -178,7 +179,7 @@ final class IRCClient extends InternalClient {
     private final AuthManager authManager;
     private final CapabilityManager.WithManagement capabilityManager;
     private final EventManager eventManager;
-    private final ManagerISupport iSupportManager = new ManagerISupport(this);
+    private final ISupportManager iSupportManager;
     private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
 
     private final Listener<Exception> exceptionListener;
@@ -202,7 +203,7 @@ final class IRCClient extends InternalClient {
         this.config = config;
 
         // Get event manager up and running immediately!
-        this.eventManager = ((Function<Client, EventManager>) this.config.getNotNull(Config.SERVER_INFO)).apply(this);
+        this.eventManager = ((Function<Client.WithManagement, EventManager>) this.config.getNotNull(Config.MANAGER_EVENT)).apply(this);
 
         this.currentNick = this.requestedNick = this.goalNick = this.config.get(Config.NICK);
 
@@ -225,9 +226,10 @@ final class IRCClient extends InternalClient {
         this.processor = new InputProcessor();
         this.eventManager.registerEventListener(new EventListener(this));
 
-        this.authManager = ((Function<Client, AuthManager>) this.config.getNotNull(Config.MANAGER_AUTH)).apply(this);
-        this.capabilityManager = ((Function<Client, CapabilityManager.WithManagement>) this.config.getNotNull(Config.MANAGER_CAPABILITY)).apply(this);
-        this.serverInfo = ((Function<Client, ServerInfo.WithManagement>) this.config.getNotNull(Config.SERVER_INFO)).apply(this);
+        this.authManager = ((Function<Client.WithManagement, AuthManager>) this.config.getNotNull(Config.MANAGER_AUTH)).apply(this);
+        this.capabilityManager = ((Function<Client.WithManagement, CapabilityManager.WithManagement>) this.config.getNotNull(Config.MANAGER_CAPABILITY)).apply(this);
+        this.iSupportManager = ((Function<Client.WithManagement, ISupportManager>) this.config.getNotNull(Config.MANAGER_ISUPPORT)).apply(this);
+        this.serverInfo = ((Function<Client.WithManagement, ServerInfo.WithManagement>) this.config.getNotNull(Config.SERVER_INFO)).apply(this);
 
         DefaultMessageMap defaultMessageMap = this.config.get(Config.DEFAULT_MESSAGE_MAP);
         if (defaultMessageMap == null) {
@@ -344,7 +346,7 @@ final class IRCClient extends InternalClient {
 
     @Nonnull
     @Override
-    public ManagerISupport getISupportManager() {
+    public ISupportManager getISupportManager() {
         return this.iSupportManager;
     }
 
