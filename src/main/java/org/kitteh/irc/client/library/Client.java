@@ -91,16 +91,16 @@ public interface Client {
      */
     interface Builder extends Cloneable {
         /**
-         * Sets up a Consumer to fire on the newly created client after it is
-         * built, prior to connection. Use this to register event listeners,
-         * but not any tasks requiring a connection such as sending a message
-         * or joining a channel.
+         * Sets the supplier of the authentication manager.
+         * <p>
+         * By default, the {@link DefaultAuthManager} is used.
          *
-         * @param consumer consumer or null to have no consumer
+         * @param supplier supplier
          * @return this builder
+         * @see DefaultAuthManager
          */
         @Nonnull
-        Builder afterBuildConsumer(@Nullable Consumer<Client> consumer);
+        Builder authManager(@Nonnull Function<Client, ? extends AuthManager> supplier);
 
         /**
          * Binds the client to a host or IP locally.
@@ -125,6 +125,18 @@ public interface Client {
         Builder bindPort(int port);
 
         /**
+         * Sets the supplier of the capability manager.
+         * <p>
+         * By default, the {@link DefaultCapabilityManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultCapabilityManager
+         */
+        @Nonnull
+        Builder capabilityManager(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier);
+
+        /**
          * Sets default messages.
          *
          * @param defaultMessageMap default values for messages
@@ -133,6 +145,18 @@ public interface Client {
          */
         @Nonnull
         Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
+
+        /**
+         * Sets the supplier of the event manager.
+         * <p>
+         * By default, the {@link DefaultEventManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultEventManager
+         */
+        @Nonnull
+        Builder eventManager(@Nonnull Function<Client, ? extends EventManager> supplier);
 
         /**
          * Sets a listener for all thrown exceptions on this client. By default,
@@ -145,7 +169,7 @@ public interface Client {
          * @return this builder
          */
         @Nonnull
-        Builder listenException(@Nullable Consumer<Exception> listener);
+        Builder exceptionListener(@Nullable Consumer<Exception> listener);
 
         /**
          * Sets a listener for all incoming messages from the server.
@@ -156,18 +180,19 @@ public interface Client {
          * @return this builder
          */
         @Nonnull
-        Builder listenInput(@Nullable Consumer<String> listener);
+        Builder inputListener(@Nullable Consumer<String> listener);
 
         /**
-         * Sets a listener for all outgoing messages to the server.
+         * Sets the supplier of the ISUPPORT manager.
          * <p>
-         * All messages are passed from a single, separate thread.
+         * By default, the {@link DefaultISupportManager} is used.
          *
-         * @param listener output listener or null to not listen
+         * @param supplier supplier
          * @return this builder
+         * @see DefaultEventManager
          */
         @Nonnull
-        Builder listenOutput(@Nullable Consumer<String> listener);
+        Builder iSupportManager(@Nonnull Function<Client, ? extends ISupportManager> supplier);
 
         /**
          * Sets the supplier of message sending queues, which dictate the
@@ -204,6 +229,17 @@ public interface Client {
          */
         @Nonnull
         Builder nick(@Nonnull String nick);
+
+        /**
+         * Sets a listener for all outgoing messages to the server.
+         * <p>
+         * All messages are passed from a single, separate thread.
+         *
+         * @param listener output listener or null to not listen
+         * @return this builder
+         */
+        @Nonnull
+        Builder outputListener(@Nullable Consumer<String> listener);
 
         /**
          * Sets if the Client will query WHO and MODE info on join.
@@ -316,53 +352,6 @@ public interface Client {
         @Nonnull
         Builder serverPort(int port);
 
-        /**
-         * Sets the supplier of the authentication manager.
-         * <p>
-         * By default, the {@link DefaultAuthManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultAuthManager
-         */
-        @Nonnull
-        Builder supplierAuthManager(@Nonnull Function<Client, ? extends AuthManager> supplier);
-
-        /**
-         * Sets the supplier of the capability manager.
-         * <p>
-         * By default, the {@link DefaultCapabilityManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultCapabilityManager
-         */
-        @Nonnull
-        Builder supplierCapabilityManager(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier);
-
-        /**
-         * Sets the supplier of the event manager.
-         * <p>
-         * By default, the {@link DefaultEventManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultEventManager
-         */
-        @Nonnull
-        Builder supplierEventManager(@Nonnull Function<Client, ? extends EventManager> supplier);
-
-        /**
-         * Sets the supplier of the ISUPPORT manager.
-         * <p>
-         * By default, the {@link DefaultISupportManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultEventManager
-         */
-        @Nonnull
-        Builder supplierISupportManager(@Nonnull Function<Client, ? extends ISupportManager> supplier);
 
         /**
          * Sets the supplier of the server info.
@@ -374,7 +363,7 @@ public interface Client {
          * @see DefaultServerInfo
          */
         @Nonnull
-        Builder supplierServerInfo(@Nonnull Function<Client, ? extends ServerInfo.WithManagement> supplier);
+        Builder serverInfo(@Nonnull Function<Client, ? extends ServerInfo.WithManagement> supplier);
 
         /**
          * Sets the user the client connects as.
@@ -441,9 +430,8 @@ public interface Client {
         Client build();
 
         /**
-         * Clientmaker, clientmaker, make me a client, build me the client and
-         * begin connection, block me until {@link #afterBuildConsumer(Consumer)}
-         * is run!
+         * Clientmaker, clientmaker, make me a client, build me the client,
+         * begin connection!
          *
          * @return a client designed to your liking
          */

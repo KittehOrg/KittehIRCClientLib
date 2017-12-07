@@ -49,8 +49,6 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     private static final int DEFAULT_SERVER_PORT = 6697;
     private Config config;
     @Nullable
-    private Consumer<Client> after;
-    @Nullable
     private String bindHost;
     private int bindPort;
     @Nullable
@@ -59,13 +57,6 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     ClientBuilder() {
         this.config = new Config();
-    }
-
-    @Override
-    @Nonnull
-    public Client.Builder afterBuildConsumer(@Nullable Consumer<Client> consumer) {
-        this.after = consumer;
-        return this;
     }
 
     @Nonnull
@@ -78,7 +69,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder bindPort(int port) {
-        this.bindPort = this.validPort(port);
+        this.bindPort = this.isValidPort(port);
         return this;
     }
 
@@ -91,21 +82,21 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder listenException(@Nullable Consumer<Exception> listener) {
+    public ClientBuilder exceptionListener(@Nullable Consumer<Exception> listener) {
         this.config.set(Config.LISTENER_EXCEPTION, (listener == null) ? null : new Config.ExceptionConsumerWrapper(listener));
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder listenInput(@Nullable Consumer<String> listener) {
+    public ClientBuilder inputListener(@Nullable Consumer<String> listener) {
         this.config.set(Config.LISTENER_INPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder listenOutput(@Nullable Consumer<String> listener) {
+    public ClientBuilder outputListener(@Nullable Consumer<String> listener) {
         this.config.set(Config.LISTENER_OUTPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
         return this;
     }
@@ -199,41 +190,41 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Nonnull
     @Override
     public ClientBuilder serverPort(int port) {
-        this.serverPort = this.validPort(port);
+        this.serverPort = this.isValidPort(port);
         return this;
     }
 
     @Nonnull
     @Override
-    public Client.Builder supplierAuthManager(@Nonnull Function<Client, ? extends AuthManager> supplier) {
+    public Client.Builder authManager(@Nonnull Function<Client, ? extends AuthManager> supplier) {
         this.config.set(Config.MANAGER_AUTH, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder supplierCapabilityManager(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier) {
+    public ClientBuilder capabilityManager(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier) {
         this.config.set(Config.MANAGER_CAPABILITY, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 
     @Nonnull
     @Override
-    public Client.Builder supplierEventManager(@Nonnull Function<Client, ? extends EventManager> supplier) {
+    public Client.Builder eventManager(@Nonnull Function<Client, ? extends EventManager> supplier) {
         this.config.set(Config.MANAGER_EVENT, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 
     @Nonnull
     @Override
-    public Client.Builder supplierISupportManager(@Nonnull Function<Client, ? extends ISupportManager> supplier) {
+    public Client.Builder iSupportManager(@Nonnull Function<Client, ? extends ISupportManager> supplier) {
         this.config.set(Config.MANAGER_ISUPPORT, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
 
     @Nonnull
     @Override
-    public Client.Builder supplierServerInfo(@Nonnull Function<Client, ? extends ServerInfo.WithManagement> supplier) {
+    public Client.Builder serverInfo(@Nonnull Function<Client, ? extends ServerInfo.WithManagement> supplier) {
         this.config.set(Config.SERVER_INFO, Sanity.nullCheck(supplier, "Supplier cannot be null"));
         return this;
     }
@@ -286,7 +277,6 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Override
     public ClientBuilder reset() {
-        this.after = null;
         this.bindHost = null;
         this.bindPort = 0;
         this.serverHost = null;
@@ -304,11 +294,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
         }
 
         this.updateInetEntries();
-        final Client client = new IRCClient(this.config.clone());
-        if (this.after != null) {
-            this.after.accept(client);
-        }
-        return client;
+        return new IRCClient(this.config.clone());
     }
 
     @Nonnull
@@ -335,7 +321,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public String toString() {
         this.updateInetEntries();
-        return new ToStringer(this).add("afterBuildConsumer", this.after).add("config", this.config).toString();
+        return new ToStringer(this).add("config", this.config).toString();
     }
 
     private void updateInetEntries() {
@@ -359,7 +345,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
      * @param port port provided
      * @return valid port
      */
-    private int validPort(int port) {
+    private int isValidPort(int port) {
         return ((port > 65535) || (port < 0)) ? 0 : port;
     }
 }
