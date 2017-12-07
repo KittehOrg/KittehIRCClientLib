@@ -21,10 +21,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.implementation;
+package org.kitteh.irc.client.library.feature.defaultmanager;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.element.defaults.messagetag.DefaultMessageTagTime;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.AbstractNameValueProcessor;
@@ -33,7 +34,6 @@ import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,24 +43,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
-    private static class IRCMessageTagTime extends DefaultMessageTag implements MessageTag.Time {
-        private static final TriFunction<Client, String, String, IRCMessageTagTime> FUNCTION = (client, name, value) -> new IRCMessageTagTime(name, value, Instant.parse(value));
-
-        private final Instant time;
-
-        private IRCMessageTagTime(@Nonnull String name, @Nonnull String value, @Nonnull Instant time) {
-            super(name, value);
-            this.time = time;
-        }
-
-        @Nonnull
-        @Override
-        public Instant getTime() {
-            return this.time;
-        }
-    }
-
+public class DefaultMessageTagManager extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
     protected static class TagCreator extends Creator<MessageTag> {
         private final String capability;
 
@@ -83,14 +66,14 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
 
     private static final Pattern TAG_ESCAPE = Pattern.compile("\\\\([\\\\s:])");
 
-    ManagerMessageTag(Client.WithManagement client) {
+    public DefaultMessageTagManager(Client.WithManagement client) {
         super(client);
-        this.registerTagCreator("server-time", "time", IRCMessageTagTime.FUNCTION);
+        this.registerTagCreator("server-time", "time", DefaultMessageTagTime.FUNCTION);
     }
 
     @Nonnull
     @Override
-    public Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability) {
+    public Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@Nonnull String capability) {
         return Collections.unmodifiableMap(this.getRegistrations().entrySet().stream().filter(e -> ((TagCreator) e.getValue()).getCapability().equals(capability)).collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFunction())));
     }
 
@@ -113,7 +96,8 @@ final class ManagerMessageTag extends AbstractNameValueProcessor<MessageTag> imp
     }
 
     @Nonnull
-    List<MessageTag> getTags(@Nonnull String tagList) {
+    @Override
+    public List<MessageTag> getCapabilityTags(@Nonnull String tagList) {
         String[] tags = tagList.split(";"); // Split up by semicolon
         List<MessageTag> list = new ArrayList<>();
         int index;

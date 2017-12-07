@@ -25,45 +25,47 @@ package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.defaults.mode.DefaultChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class ISupportChanLimit extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanLimit {
-    private final Map<Character, Integer> limits;
+public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired implements ISupportParameter.Prefix {
+    private final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
-    public ISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    private final List<ChannelUserMode> modes;
+
+    public DefaultISupportPrefix(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
-            throw new KittehServerISupportException(name, "No limits defined");
+            throw new KittehServerISupportException(name, "No prefixes defined");
         }
-        String[] pairs = value.split(",");
-        Map<Character, Integer> limits = new HashMap<>();
-        for (String p : pairs) {
-            String[] pair = p.split(":");
-            if (pair.length != 2) {
-                throw new KittehServerISupportException(name, "Invalid format");
-            }
-            int limit;
-            try {
-                limit = Integer.parseInt(pair[1]);
-            } catch (Exception e) {
-                throw new KittehServerISupportException(name, "Non-integer limit", e);
-            }
-            for (char prefix : pair[0].toCharArray()) {
-                limits.put(prefix, limit);
-            }
+        Matcher matcher = this.PATTERN.matcher(value);
+        if (!matcher.find()) {
+            throw new KittehServerISupportException(name, "Data does not match expected pattern");
         }
-        this.limits = Collections.unmodifiableMap(limits);
+        String modes = matcher.group(1);
+        String display = matcher.group(2);
+        if (modes.length() != display.length()) {
+            throw new KittehServerISupportException(name, "Prefix and mode size mismatch");
+        }
+        List<ChannelUserMode> prefixList = new ArrayList<>();
+        for (int index = 0; index < modes.length(); index++) {
+            prefixList.add(new DefaultChannelUserMode(client, modes.charAt(index), display.charAt(index)));
+        }
+        this.modes = Collections.unmodifiableList(prefixList);
     }
 
     @Nonnull
     @Override
-    public Map<Character, Integer> getLimits() {
-        return this.limits;
+    public List<ChannelUserMode> getModes() {
+        return this.modes;
     }
 }

@@ -25,47 +25,31 @@ package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
-import org.kitteh.irc.client.library.element.defaults.mode.DefaultChannelUserMode;
-import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
-public class ISupportPrefix extends DefaultISupportParameterValueRequired implements ISupportParameter.Prefix {
-    private final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
+public class DefaultISupportCaseMapping extends DefaultISupportParameterValueRequired implements ISupportParameter.CaseMapping {
+    private final org.kitteh.irc.client.library.feature.CaseMapping caseMapping;
 
-    private final List<ChannelUserMode> modes;
-
-    public ISupportPrefix(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
-            throw new KittehServerISupportException(name, "No prefixes defined");
+            throw new KittehServerISupportException(name, "No casemapping value");
         }
-        Matcher matcher = this.PATTERN.matcher(value);
-        if (!matcher.find()) {
-            throw new KittehServerISupportException(name, "Data does not match expected pattern");
+        Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value);
+        if (caseMapping.isPresent()) {
+            this.caseMapping = caseMapping.get();
+        } else {
+            throw new KittehServerISupportException(name, "Undefined casemapping");
         }
-        String modes = matcher.group(1);
-        String display = matcher.group(2);
-        if (modes.length() != display.length()) {
-            throw new KittehServerISupportException(name, "Prefix and mode size mismatch");
-        }
-        List<ChannelUserMode> prefixList = new ArrayList<>();
-        for (int index = 0; index < modes.length(); index++) {
-            prefixList.add(new DefaultChannelUserMode(client, modes.charAt(index), display.charAt(index)));
-        }
-        this.modes = Collections.unmodifiableList(prefixList);
     }
 
     @Nonnull
     @Override
-    public List<ChannelUserMode> getModes() {
-        return this.modes;
+    public org.kitteh.irc.client.library.feature.CaseMapping getCaseMapping() {
+        return this.caseMapping;
     }
 }

@@ -25,12 +25,45 @@ package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ISupportTopicLen extends DefaultISupportParameterInteger implements ISupportParameter.TopicLen {
-    public ISupportTopicLen(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+public class DefaultISupportChanLimit extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanLimit {
+    private final Map<Character, Integer> limits;
+
+    public DefaultISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
+        if (value == null) {
+            throw new KittehServerISupportException(name, "No limits defined");
+        }
+        String[] pairs = value.split(",");
+        Map<Character, Integer> limits = new HashMap<>();
+        for (String p : pairs) {
+            String[] pair = p.split(":");
+            if (pair.length != 2) {
+                throw new KittehServerISupportException(name, "Invalid format");
+            }
+            int limit;
+            try {
+                limit = Integer.parseInt(pair[1]);
+            } catch (Exception e) {
+                throw new KittehServerISupportException(name, "Non-integer limit", e);
+            }
+            for (char prefix : pair[0].toCharArray()) {
+                limits.put(prefix, limit);
+            }
+        }
+        this.limits = Collections.unmodifiableMap(limits);
+    }
+
+    @Nonnull
+    @Override
+    public Map<Character, Integer> getLimits() {
+        return this.limits;
     }
 }

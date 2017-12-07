@@ -29,8 +29,8 @@ import org.kitteh.irc.client.library.element.ISupportParameter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ISupportModes extends DefaultISupportParameterInteger implements ISupportParameter.Modes {
-    public ISupportModes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+public class DefaultISupportChannelLen extends DefaultISupportParameterInteger implements ISupportParameter.ChannelLen {
+    public DefaultISupportChannelLen(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
     }
 }

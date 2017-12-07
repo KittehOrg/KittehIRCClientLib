@@ -35,10 +35,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ISupportChanModes extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanModes {
+public class DefaultISupportChanModes extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanModes {
     private final List<ChannelMode> modes;
 
-    public ISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
             throw new KittehServerISupportException(name, "No modes defined");

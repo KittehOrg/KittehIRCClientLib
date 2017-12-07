@@ -16,7 +16,7 @@ public class MessageTagTest {
      */
     @Test
     public void multiTag() {
-        List<MessageTag> tags = new FakeClient().getMessageTagManager().getTags("aaa=bbb;ccc;example.com/ddd=eee");
+        List<MessageTag> tags = new FakeClient().getMessageTagManager().getCapabilityTags("aaa=bbb;ccc;example.com/ddd=eee");
         Assert.assertTrue("Failed to process multiple tags", tags.size() == 3);
         Assert.assertEquals("Failed to process valid tag name", tags.get(0).getName(), "aaa");
         Assert.assertEquals("Failed to process valid tag value", tags.get(0).getValue().get(), "bbb");
@@ -33,7 +33,7 @@ public class MessageTagTest {
      */
     @Test
     public void timeTag() {
-        List<MessageTag> tags = new FakeClient().getMessageTagManager().getTags("time=" + TIME);
+        List<MessageTag> tags = new FakeClient().getMessageTagManager().getCapabilityTags("time=" + TIME);
         Assert.assertTrue("Failed to process time tag", tags.size() == 1);
         Assert.assertTrue("Failed to process time tag as MessageTag.Time", tags.get(0) instanceof MessageTag.Time);
         Assert.assertEquals("Failed to process time tag", ((MessageTag.Time) tags.get(0)).getTime(), Instant.parse(TIME));

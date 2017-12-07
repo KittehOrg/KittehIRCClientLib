@@ -25,31 +25,12 @@ package org.kitteh.irc.client.library.element.defaults.isupport;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
-import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 
-public class ISupportCaseMapping extends DefaultISupportParameterValueRequired implements ISupportParameter.CaseMapping {
-    private final org.kitteh.irc.client.library.feature.CaseMapping caseMapping;
-
-    public ISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+public class DefaultISupportTopicLen extends DefaultISupportParameterInteger implements ISupportParameter.TopicLen {
+    public DefaultISupportTopicLen(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
-        if (value == null) {
-            throw new KittehServerISupportException(name, "No casemapping value");
-        }
-        Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value);
-        if (caseMapping.isPresent()) {
-            this.caseMapping = caseMapping.get();
-        } else {
-            throw new KittehServerISupportException(name, "Undefined casemapping");
-        }
-    }
-
-    @Nonnull
-    @Override
-    public org.kitteh.irc.client.library.feature.CaseMapping getCaseMapping() {
-        return this.caseMapping;
     }
 }

@@ -12,6 +12,7 @@ import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultISupportManager;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultMessageTagManager;
 import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
@@ -40,7 +41,7 @@ class FakeClient extends InternalClient {
     private final Listener<String> listenerInput = new Listener<>(this, null);
     private final Listener<String> listenerOutput = new Listener<>(this, null);
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
-    private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
+    private final DefaultMessageTagManager messageTagManager = new DefaultMessageTagManager(this);
     private final DefaultServerInfo serverInfo = new DefaultServerInfo(this);
     private DefaultMessageMap defaultMessageMap = new SimpleDefaultMessageMap(null);
 
@@ -265,7 +266,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public ManagerMessageTag getMessageTagManager() {
+    public DefaultMessageTagManager getMessageTagManager() {
         return this.messageTagManager;
     }
 

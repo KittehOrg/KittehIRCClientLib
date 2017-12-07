@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -91,7 +92,16 @@ public interface MessageTagManager {
      * @return mapping of tags to their creators for the given capability
      */
     @Nonnull
-    Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTags(@Nonnull String capability);
+    Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@Nonnull String capability);
+
+    /**
+     * Gets capability tags for a given raw tag list.
+     *
+     * @param tagList raw list
+     * @return tags for the given list
+     */
+    @Nonnull
+    List<MessageTag> getCapabilityTags(@Nonnull String tagList);
 
     /**
      * Gets the registered tag creator for a given tag name.

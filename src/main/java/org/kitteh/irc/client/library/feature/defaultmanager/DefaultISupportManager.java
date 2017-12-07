@@ -26,17 +26,17 @@ package org.kitteh.irc.client.library.feature.defaultmanager;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.defaults.DefaultISupportParameter;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportCaseMapping;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportChanLimit;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportChanModes;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportChanTypes;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportChannelLen;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportModes;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportNetwork;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportNickLen;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportPrefix;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportTopicLen;
-import org.kitteh.irc.client.library.element.defaults.isupport.ISupportWHOX;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportCaseMapping;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportChanLimit;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportChanModes;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportChanTypes;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportChannelLen;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportModes;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportNetwork;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportNickLen;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportPrefix;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportTopicLen;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportWHOX;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.util.AbstractNameValueProcessor;
@@ -57,17 +57,17 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
      */
     public DefaultISupportManager(Client.WithManagement client) {
         super(client);
-        this.registerParameter(ISupportParameter.CaseMapping.NAME, ISupportCaseMapping::new);
-        this.registerParameter(ISupportParameter.ChannelLen.NAME, ISupportChannelLen::new);
-        this.registerParameter(ISupportParameter.ChanLimit.NAME, ISupportChanLimit::new);
-        this.registerParameter(ISupportParameter.ChanModes.NAME, ISupportChanModes::new);
-        this.registerParameter(ISupportParameter.ChanTypes.NAME, ISupportChanTypes::new);
-        this.registerParameter(ISupportParameter.Modes.NAME, ISupportModes::new);
-        this.registerParameter(ISupportParameter.Network.NAME, ISupportNetwork::new);
-        this.registerParameter(ISupportParameter.NickLen.NAME, ISupportNickLen::new);
-        this.registerParameter(ISupportParameter.Prefix.NAME, ISupportPrefix::new);
-        this.registerParameter(ISupportParameter.TopicLen.NAME, ISupportTopicLen::new);
-        this.registerParameter(ISupportParameter.WHOX.NAME, ISupportWHOX::new);
+        this.registerParameter(ISupportParameter.CaseMapping.NAME, DefaultISupportCaseMapping::new);
+        this.registerParameter(ISupportParameter.ChannelLen.NAME, DefaultISupportChannelLen::new);
+        this.registerParameter(ISupportParameter.ChanLimit.NAME, DefaultISupportChanLimit::new);
+        this.registerParameter(ISupportParameter.ChanModes.NAME, DefaultISupportChanModes::new);
+        this.registerParameter(ISupportParameter.ChanTypes.NAME, DefaultISupportChanTypes::new);
+        this.registerParameter(ISupportParameter.Modes.NAME, DefaultISupportModes::new);
+        this.registerParameter(ISupportParameter.Network.NAME, DefaultISupportNetwork::new);
+        this.registerParameter(ISupportParameter.NickLen.NAME, DefaultISupportNickLen::new);
+        this.registerParameter(ISupportParameter.Prefix.NAME, DefaultISupportPrefix::new);
+        this.registerParameter(ISupportParameter.TopicLen.NAME, DefaultISupportTopicLen::new);
+        this.registerParameter(ISupportParameter.WHOX.NAME, DefaultISupportWHOX::new);
     }
 
     @Nonnull

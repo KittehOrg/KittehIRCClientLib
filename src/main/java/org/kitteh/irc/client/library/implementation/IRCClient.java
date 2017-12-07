@@ -51,6 +51,7 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
+import org.kitteh.irc.client.library.feature.defaultmanager.DefaultMessageTagManager;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
@@ -180,7 +181,7 @@ final class IRCClient extends InternalClient {
     private final CapabilityManager.WithManagement capabilityManager;
     private final EventManager eventManager;
     private final ISupportManager iSupportManager;
-    private final ManagerMessageTag messageTagManager = new ManagerMessageTag(this);
+    private final DefaultMessageTagManager messageTagManager = new DefaultMessageTagManager(this);
 
     private final Listener<Exception> exceptionListener;
     private final Listener<String> inputListener;
@@ -784,7 +785,7 @@ final class IRCClient extends InternalClient {
             if (tagSection.length() < 2) {
                 throw new KittehServerMessageTagException(line, "Server sent an empty tag section");
             }
-            tags = this.messageTagManager.getTags(tagSection.substring(1));
+            tags = this.messageTagManager.getCapabilityTags(tagSection.substring(1));
             // Skip more spaces just in case
             while ((next = line.indexOf(' ', position)) == position) {
                 position = next + 1;
