@@ -70,7 +70,7 @@ public class DefaultChannelMode extends DefaultModeBase implements ChannelMode {
 
     @Nonnull
     @Override
-    public String toString() {
-        return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar()).add("type", this.type).toString();
+    public ToStringer toStringer() {
+        return super.toStringer().add("type", this.type);
     }
 }

@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.element.defaults.mode;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.Mode;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
@@ -55,5 +56,16 @@ public abstract class DefaultModeBase implements Mode {
     @Override
     public char getChar() {
         return this.mode;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return this.toStringer().toString();
+    }
+
+    @Nonnull
+    protected ToStringer toStringer() {
+        return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar());
     }
 }

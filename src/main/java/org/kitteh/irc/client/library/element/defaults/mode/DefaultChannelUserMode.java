@@ -69,7 +69,7 @@ public class DefaultChannelUserMode extends DefaultModeBase implements ChannelUs
 
     @Nonnull
     @Override
-    public String toString() {
-        return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar()).add("prefix", this.prefix).toString();
+    public ToStringer toStringer() {
+        return super.toStringer().add("prefix", this.getNickPrefix());
     }
 }

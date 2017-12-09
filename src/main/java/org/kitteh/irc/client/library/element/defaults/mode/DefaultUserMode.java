@@ -25,7 +25,6 @@ package org.kitteh.irc.client.library.element.defaults.mode;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.UserMode;
-import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -56,11 +55,5 @@ public class DefaultUserMode extends DefaultModeBase implements UserMode {
     @Override
     public int hashCode() {
         return Objects.hash(this.getClient(), this.getChar());
-    }
-
-    @Nonnull
-    @Override
-    public String toString() {
-        return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar()).toString();
     }
 }

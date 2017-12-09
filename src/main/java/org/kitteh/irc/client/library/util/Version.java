@@ -29,16 +29,20 @@ import javax.annotation.Nonnull;
  * Holder of KICL version string.
  */
 public final class Version {
+    /**
+     * A string to indicate a missing version.
+     */
+    public static final String MISSINGNO = "MISSINGNO";
     private static final Version VERSION = new Version();
 
     /**
      * Gets the current version of the client library.
      *
-     * @return current KICL version or MISSINGNO if somehow not set
+     * @return current KICL version or {@link #MISSINGNO} if somehow not set
      */
     @Nonnull
     public static String getVersion() {
-        return (Version.VERSION.version == null) ? "MISSINGNO" : Version.VERSION.version; // Semantic satiation!
+        return (Version.VERSION.version == null) ? MISSINGNO : Version.VERSION.version; // Semantic satiation!
     }
 
     private Version() {

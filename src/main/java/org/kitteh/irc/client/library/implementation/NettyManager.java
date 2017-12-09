@@ -90,6 +90,7 @@ final class NettyManager {
         @Nullable
         private volatile ChannelFuture channelFuture;
 
+        @Nullable
         private ScheduledFuture<?> ping;
 
         private volatile String lastMessage;

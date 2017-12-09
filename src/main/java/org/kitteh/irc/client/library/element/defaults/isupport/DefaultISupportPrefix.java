@@ -38,7 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired implements ISupportParameter.Prefix {
-    private final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
+    private static final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
     private final List<ChannelUserMode> modes;
 
@@ -47,7 +47,7 @@ public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired
         if (value == null) {
             throw new KittehServerISupportException(name, "No prefixes defined");
         }
-        Matcher matcher = this.PATTERN.matcher(value);
+        Matcher matcher = PATTERN.matcher(value);
         if (!matcher.find()) {
             throw new KittehServerISupportException(name, "Data does not match expected pattern");
         }

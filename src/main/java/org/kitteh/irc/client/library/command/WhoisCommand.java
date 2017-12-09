@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 public class WhoisCommand extends Command {
     @Nullable
     private String server;
+    @Nullable
     private String target;
 
     /**

@@ -352,7 +352,6 @@ public interface Client {
         @Nonnull
         Builder serverPort(int port);
 
-
         /**
          * Sets the supplier of the server info.
          * <p>

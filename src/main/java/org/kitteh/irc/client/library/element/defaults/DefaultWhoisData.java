@@ -94,9 +94,7 @@ public class DefaultWhoisData implements WhoisData {
          * @param channels channels to add
          */
         public void addChannels(@Nonnull String channels) {
-            for (String channel : Sanity.nullCheck(channels, "Channels cannot be null").split(" ")) {
-                this.channels.add(channel);
-            }
+            Collections.addAll(this.channels, Sanity.nullCheck(channels, "Channels cannot be null").split(" "));
         }
 
         /**
