@@ -71,6 +71,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -166,8 +167,10 @@ final class NettyManager {
             // SSL
             if (this.client.isSSL()) {
                 try {
-                    File keyCertChainFile = this.client.getConfig().get(Config.SSL_KEY_CERT_CHAIN);
-                    File keyFile = this.client.getConfig().get(Config.SSL_KEY);
+                    Path keyCertChain = this.client.getConfig().get(Config.SSL_KEY_CERT_CHAIN);
+                    File keyCertChainFile = (keyCertChain == null) ? null : keyCertChain.toFile();
+                    Path key = this.client.getConfig().get(Config.SSL_KEY);
+                    File keyFile = (key == null) ? null : key.toFile();
                     String keyPassword = this.client.getConfig().get(Config.SSL_KEY_PASSWORD);
                     TrustManagerFactory factory = this.client.getConfig().get(Config.SSL_TRUST_MANAGER_FACTORY);
                     if (factory == null) {

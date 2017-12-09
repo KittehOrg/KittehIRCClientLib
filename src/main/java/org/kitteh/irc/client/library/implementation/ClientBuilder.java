@@ -39,9 +39,9 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -154,14 +154,14 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder secureKeyCertChain(@Nullable File keyCertChainFile) {
+    public ClientBuilder secureKeyCertChain(@Nullable Path keyCertChainFile) {
         this.config.set(Config.SSL_KEY_CERT_CHAIN, keyCertChainFile);
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureKey(@Nullable File keyFile) {
+    public ClientBuilder secureKey(@Nullable Path keyFile) {
         this.config.set(Config.SSL_KEY, keyFile);
         return this;
     }

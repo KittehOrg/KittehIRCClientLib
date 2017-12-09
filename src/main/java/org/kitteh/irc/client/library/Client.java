@@ -67,9 +67,9 @@ import org.kitteh.irc.client.library.util.Sanity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.net.InetAddress;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -297,7 +297,7 @@ public interface Client {
          * @see #secure(boolean)
          */
         @Nonnull
-        Builder secureKeyCertChain(@Nullable File keyCertChainFile);
+        Builder secureKeyCertChain(@Nullable Path keyCertChainFile);
 
         /**
          * Sets the private key for SSL connection.
@@ -307,7 +307,7 @@ public interface Client {
          * @see #secure(boolean)
          */
         @Nonnull
-        Builder secureKey(@Nullable File keyFile);
+        Builder secureKey(@Nullable Path keyFile);
 
         /**
          * Sets the private key password for SSL connection.
