@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  * A utility class for CTCP handling, though this is <i>done by KICL methods
  * already in pretty much all cases</i>.
  */
-public final class CTCPUtil {
+public final class CtcpUtil {
     private static final char CTCP_DELIMITER = '\u0001';
     private static final char CTCP_MQUOTE = '\u0016';
 
@@ -65,7 +65,7 @@ public final class CTCPUtil {
     private static final Pattern CTCP_ESCAPED_CHAR = Pattern.compile("([" + CTCP_MQUOTE + "\\\\])(.)");
     private static final Pattern CTCP_MESSAGE = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
 
-    private CTCPUtil() {
+    private CtcpUtil() {
     }
 
     /**
@@ -75,7 +75,7 @@ public final class CTCPUtil {
      * @return converted message
      */
     @Nonnull
-    public static String fromCTCP(@Nonnull String message) {
+    public static String fromCtcp(@Nonnull String message) {
         final String ctcpContent = message.substring(1, message.indexOf(CTCP_DELIMITER, 1)); // Strip the delimiters
         StringBuilder builder = new StringBuilder(ctcpContent.length());
         int currentIndex = 0;
@@ -126,7 +126,7 @@ public final class CTCPUtil {
      * @param message message to test
      * @return true if the message is a CTCP message
      */
-    public static boolean isCTCP(@Nonnull String message) {
+    public static boolean isCtcp(@Nonnull String message) {
         return CTCP_MESSAGE.matcher(message).matches();
     }
 
@@ -137,7 +137,7 @@ public final class CTCPUtil {
      * @return converted message
      */
     @Nonnull
-    public static String toCTCP(@Nonnull String message) {
+    public static String toCtcp(@Nonnull String message) {
         StringBuilder builder = new StringBuilder(message.length());
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;

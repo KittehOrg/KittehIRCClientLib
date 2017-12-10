@@ -28,13 +28,13 @@ import javax.annotation.Nonnull;
 /**
  * Indicates a problem has occurred with strict transport security.
  */
-public class KittehSTSException extends RuntimeException {
+public class KittehStsException extends RuntimeException {
     /**
      * Constructs the exception.
      *
      * @param message what went wrong.
      */
-    public KittehSTSException(@Nonnull String message) {
+    public KittehStsException(@Nonnull String message) {
         super(message);
     }
 
@@ -44,7 +44,7 @@ public class KittehSTSException extends RuntimeException {
      * @param message what went wrong.
      * @param thrown cause
      */
-    public KittehSTSException(@Nonnull String message, @Nonnull Throwable thrown) {
+    public KittehStsException(@Nonnull String message, @Nonnull Throwable thrown) {
         super(message, thrown);
     }
 }

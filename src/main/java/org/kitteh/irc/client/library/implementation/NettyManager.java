@@ -55,11 +55,11 @@ import org.kitteh.irc.client.library.event.client.ClientConnectionEstablishedEve
 import org.kitteh.irc.client.library.event.client.ClientConnectionFailedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehNagException;
-import org.kitteh.irc.client.library.exception.KittehSTSException;
+import org.kitteh.irc.client.library.exception.KittehStsException;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
-import org.kitteh.irc.client.library.feature.sts.STSClientState;
-import org.kitteh.irc.client.library.feature.sts.STSMachine;
-import org.kitteh.irc.client.library.feature.sts.STSPolicy;
+import org.kitteh.irc.client.library.feature.sts.StsClientState;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
+import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -165,7 +165,7 @@ final class NettyManager {
             });
 
             // SSL
-            if (this.client.isSSL()) {
+            if (this.client.isSecureConnection()) {
                 try {
                     Path keyCertChain = this.client.getConfig().get(Config.SSL_KEY_CERT_CHAIN);
                     File keyCertChainFile = (keyCertChain == null) ? null : keyCertChain.toFile();
@@ -184,12 +184,12 @@ final class NettyManager {
                     // The presence of the two latter arguments enables SNI.
                     final SslHandler sslHandler = sslContext.newHandler(this.channel.alloc(), addr.getHostString(), addr.getPort());
                     sslHandler.handshakeFuture().addListener(handshakeFuture -> {
-                        if (!handshakeFuture.isSuccess() && ClientConnection.this.client.getSTSMachine().isPresent()) {
-                            STSMachine machine = ClientConnection.this.client.getSTSMachine().get();
-                            if (machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
+                        if (!handshakeFuture.isSuccess() && ClientConnection.this.client.getStsMachine().isPresent()) {
+                            StsMachine machine = ClientConnection.this.client.getStsMachine().get();
+                            if (machine.getCurrentState() == StsClientState.STS_PRESENT_RECONNECTING) {
                                 ClientConnection.this.shutdown(DefaultMessageType.STS_FAILURE, false);
-                                machine.setCurrentState(STSClientState.STS_PRESENT_CANNOT_CONNECT);
-                                throw new KittehSTSException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
+                                machine.setCurrentState(StsClientState.STS_PRESENT_CANNOT_CONNECT);
+                                throw new KittehStsException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
                             }
                         }
                     });
@@ -298,13 +298,13 @@ final class NettyManager {
     static synchronized ClientConnection connect(@Nonnull InternalClient client) {
 
         // STS Override
-        if (client.getSTSMachine().isPresent() && !client.isSSL()) {
+        if (client.getStsMachine().isPresent() && !client.isSecureConnection()) {
             String hostname = client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
-            final STSMachine machine = client.getSTSMachine().get();
+            final StsMachine machine = client.getStsMachine().get();
             if (machine.getStorageManager().hasEntry(hostname)) {
-                STSPolicy policy = machine.getStorageManager().getEntry(hostname).get();
-                machine.setSTSPolicy(policy);
-                machine.setCurrentState(STSClientState.STS_POLICY_CACHED);
+                StsPolicy policy = machine.getStorageManager().getEntry(hostname).get();
+                machine.setStsPolicy(policy);
+                machine.setCurrentState(StsClientState.STS_POLICY_CACHED);
             }
         }
 

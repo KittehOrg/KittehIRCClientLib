@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Tests CHGHOST support.
  */
-public class CHGHOSTTest {
+public class ChghostTest {
     /**
      * Tests invalid actor.
      */
@@ -136,11 +136,11 @@ public class CHGHOSTTest {
         final ActorProvider actorProviderMock = Mockito.mock(ActorProvider.class);
         Mockito.when(internalClient.getActorProvider()).thenReturn(actorProviderMock);
 
-        ActorProvider.IRCUser ircUser = Mockito.mock(ActorProvider.IRCUser.class);
+        ActorProvider.IrcUser ircUser = Mockito.mock(ActorProvider.IrcUser.class);
         Mockito.when(ircUser.getNick()).thenReturn("Kitteh");
         Mockito.when(ircUser.getName()).thenReturn("Kitteh!~meow@kitteh.org");
 
-        final ActorProvider.IRCUserSnapshot snapshotMock = Mockito.mock(ActorProvider.IRCUserSnapshot.class);
+        final ActorProvider.IrcUserSnapshot snapshotMock = Mockito.mock(ActorProvider.IrcUserSnapshot.class);
         Mockito.when(snapshotMock.getClient()).thenReturn(internalClient);
         Mockito.when(snapshotMock.getHost()).thenReturn("kitteh.org");
         Mockito.when(snapshotMock.getNick()).thenReturn("Kitteh");

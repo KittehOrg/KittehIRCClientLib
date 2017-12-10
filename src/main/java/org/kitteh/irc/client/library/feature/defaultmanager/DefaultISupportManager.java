@@ -36,7 +36,7 @@ import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportNe
 import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportNickLen;
 import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportPrefix;
 import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportTopicLen;
-import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportWHOX;
+import org.kitteh.irc.client.library.element.defaults.isupport.DefaultISupportWhox;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.util.AbstractNameValueProcessor;
@@ -67,7 +67,7 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         this.registerParameter(ISupportParameter.NickLen.NAME, DefaultISupportNickLen::new);
         this.registerParameter(ISupportParameter.Prefix.NAME, DefaultISupportPrefix::new);
         this.registerParameter(ISupportParameter.TopicLen.NAME, DefaultISupportTopicLen::new);
-        this.registerParameter(ISupportParameter.WHOX.NAME, DefaultISupportWHOX::new);
+        this.registerParameter(ISupportParameter.Whox.NAME, DefaultISupportWhox::new);
     }
 
     @Nonnull

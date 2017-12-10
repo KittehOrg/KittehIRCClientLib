@@ -2,19 +2,19 @@ package org.kitteh.irc.client.library.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kitteh.irc.client.library.feature.sts.STSPolicy;
+import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 
 /**
  * Tests the STSUtil class.
  */
-public class STSUtilTest {
+public class StsUtilTest {
     /**
      * Test the parseSeparatedKeyValueString function.
      */
     @Test
     public void testParseSeparatedKeyValueString() {
         String myStr = "foo,bar=cat,kitten=dog";
-        STSPolicy retVal = STSUtil.getSTSPolicyFromString(",", myStr);
+        StsPolicy retVal = StsUtil.getStsPolicyFromString(",", myStr);
         Assert.assertTrue(retVal.getFlags().contains("foo"));
         Assert.assertTrue(retVal.getOptions().containsKey("bar"));
         Assert.assertTrue(retVal.getOptions().containsKey("kitten"));
@@ -28,6 +28,6 @@ public class STSUtilTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testParseSeparatedKeyValueStringWithNull() {
-        STSUtil.getSTSPolicyFromString(",", null);
+        StsUtil.getStsPolicyFromString(",", null);
     }
 }

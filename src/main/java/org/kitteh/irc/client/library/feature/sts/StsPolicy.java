@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Simple POJO to represent an STS policy.
  */
-public class STSPolicy {
+public class StsPolicy {
     /**
      * Name of the secure port key as defined in the spec.
      */
@@ -54,7 +54,7 @@ public class STSPolicy {
      * @param options the key-value options from the server-sent policy
      * @param flags the valueless flags from the server-sent policy
      */
-    public STSPolicy(@Nonnull Map<String, String> options, @Nonnull Set<String> flags) {
+    public StsPolicy(@Nonnull Map<String, String> options, @Nonnull Set<String> flags) {
         this.options = new ConcurrentHashMap<>(Sanity.nullCheck(options, "Must provide a valid options map"));
         this.flags = Collections.synchronizedSet(new HashSet<>(Sanity.nullCheck(flags, "Must provide a valid flags set")));
     }

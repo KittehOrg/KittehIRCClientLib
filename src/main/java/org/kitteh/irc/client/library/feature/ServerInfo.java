@@ -73,7 +73,7 @@ public interface ServerInfo {
          *
          * @param motd motd
          */
-        void setMOTD(@Nonnull List<String> motd);
+        void setMotd(@Nonnull List<String> motd);
 
         /**
          * Sets the user modes.
@@ -224,7 +224,7 @@ public interface ServerInfo {
      * @return motd if known
      */
     @Nonnull
-    Optional<List<String>> getMOTD();
+    Optional<List<String>> getMotd();
 
     /**
      * Gets the name of this network.
@@ -270,7 +270,7 @@ public interface ServerInfo {
      * @return true if WHOX is supported
      */
     default boolean hasWhoXSupport() {
-        return this.getISupportParameter(ISupportParameter.WHOX.NAME).isPresent();
+        return this.getISupportParameter(ISupportParameter.Whox.NAME).isPresent();
     }
 
     /**

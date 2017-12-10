@@ -48,7 +48,7 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesRejectedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelCTCPEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelCtcpEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelKickEvent;
@@ -59,7 +59,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelModeInfoListEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNamesUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelPartEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelTargetedCTCPEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelTargetedCtcpEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTargetedMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
@@ -70,7 +70,7 @@ import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaPart
 import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
-import org.kitteh.irc.client.library.event.client.ClientReceiveMOTDEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveMotdEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
@@ -80,8 +80,8 @@ import org.kitteh.irc.client.library.event.user.MonitoredNickListEvent;
 import org.kitteh.irc.client.library.event.user.MonitoredNickListFullEvent;
 import org.kitteh.irc.client.library.event.user.MonitoredNickOfflineEvent;
 import org.kitteh.irc.client.library.event.user.MonitoredNickOnlineEvent;
-import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
-import org.kitteh.irc.client.library.event.user.PrivateCTCPReplyEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCtcpQueryEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCtcpReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.ServerNoticeEvent;
@@ -99,7 +99,7 @@ import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.feature.twitch.TwitchListener;
-import org.kitteh.irc.client.library.util.CTCPUtil;
+import org.kitteh.irc.client.library.util.CtcpUtil;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -331,7 +331,7 @@ class EventListener {
         }
         WhoisData whois = this.getWhoisBuilder(event.getParameters().get(1)).build();
         if (this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(whois.getNick(), this.client.getNick()) && (this.client.getActorProvider().getUser(whois.getNick()) == null)) {
-            this.client.getActorProvider().trackUser((ActorProvider.IRCUser) this.client.getActorProvider().getActor(whois.getName()));
+            this.client.getActorProvider().trackUser((ActorProvider.IrcUser) this.client.getActorProvider().getActor(whois.getName()));
         }
         this.fire(new WhoisEvent(this.client, whois));
         this.whoisBuilder = null;
@@ -347,13 +347,13 @@ class EventListener {
             this.trackException(event, "WHO response too short");
             return;
         }
-        final ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        final ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
             final String ident = event.getParameters().get(2);
             final String host = event.getParameters().get(3);
             final String server = event.getParameters().get(4);
             final String nick = event.getParameters().get(5);
-            final ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(nick + '!' + ident + '@' + host);
+            final ActorProvider.IrcUser user = (ActorProvider.IrcUser) this.client.getActorProvider().getActor(nick + '!' + ident + '@' + host);
             user.setServer(server);
             final String status = event.getParameters().get(6);
             String realName;
@@ -398,7 +398,7 @@ class EventListener {
             this.trackException(event, "WHO response too short");
             return;
         }
-        ActorProvider.IRCChannel whoChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel whoChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (whoChannel != null) {
             whoChannel.setListReceived();
             this.whoMessages.add(event.getServerMessage());
@@ -414,7 +414,7 @@ class EventListener {
             this.trackException(event, "Channel mode info message too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
             ModeStatusList<ChannelMode> statusList;
             try {
@@ -436,7 +436,7 @@ class EventListener {
             this.trackException(event, "Topic message too short");
             return;
         }
-        ActorProvider.IRCChannel topicChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel topicChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (topicChannel != null) {
             topicChannel.setTopic(event.getParameters().get(2));
         } else {
@@ -451,7 +451,7 @@ class EventListener {
             this.trackException(event, "Topic message too short");
             return;
         }
-        ActorProvider.IRCChannel topicSetChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel topicSetChannel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (topicSetChannel != null) {
             topicSetChannel.setTopic(Long.parseLong(event.getParameters().get(3)) * 1000, this.client.getActorProvider().getActor(event.getParameters().get(2)).snapshot());
             this.fire(new ChannelTopicEvent(this.client, event.getOriginalMessages(), topicSetChannel.snapshot(), false));
@@ -469,7 +469,7 @@ class EventListener {
             this.trackException(event, "NAMES response too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(2));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(2));
         if (channel != null) {
             List<ChannelUserMode> channelUserModes = this.client.getServerInfo().getChannelUserModes();
             for (String combo : event.getParameters().get(3).split(" ")) {
@@ -498,7 +498,7 @@ class EventListener {
             this.trackException(event, "NAMES response too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
             this.namesMessages.add(event.getServerMessage());
             this.fire(new ChannelNamesUpdatedEvent(this.client, this.namesMessages, channel.snapshot()));
@@ -554,7 +554,7 @@ class EventListener {
             this.trackException(event, name + " response too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
             messageList.add(event.getServerMessage());
             String creator = (event.getParameters().size() > (3 + offset)) ? event.getParameters().get((3 + offset)) : null;
@@ -606,7 +606,7 @@ class EventListener {
             this.trackException(event, name + " response too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
             messageList.add(event.getServerMessage());
             Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
@@ -649,8 +649,8 @@ class EventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void motdEnd(ClientReceiveNumericEvent event) {
         this.motdMessages.add(event.getServerMessage());
-        this.client.getServerInfo().setMOTD(new ArrayList<>(this.motd));
-        this.fire(new ClientReceiveMOTDEvent(this.client, this.motdMessages));
+        this.client.getServerInfo().setMotd(new ArrayList<>(this.motd));
+        this.fire(new ClientReceiveMotdEvent(this.client, this.motdMessages));
     }
 
     @NumericFilter(431) // No nick given
@@ -670,9 +670,9 @@ class EventListener {
             this.trackException(event, "KNOCK message too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
-            ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getParameters().get(2));
+            ActorProvider.IrcUser user = (ActorProvider.IrcUser) this.client.getActorProvider().getActor(event.getParameters().get(2));
             this.fire(new ChannelKnockEvent(this.client, event.getOriginalMessages(), channel.snapshot(), user.snapshot()));
         } else {
             this.trackException(event, "KNOCK message sent for invalid channel name");
@@ -862,7 +862,7 @@ class EventListener {
         }
 
         User user = (User) event.getActor();
-        ActorProvider.IRCUser ircUser = this.client.getActorProvider().getUser(user.getNick());
+        ActorProvider.IrcUser ircUser = this.client.getActorProvider().getUser(user.getNick());
 
         if (ircUser == null) {
             this.trackException(event, "Null old user for nick");
@@ -924,7 +924,7 @@ class EventListener {
         String message = event.getParameters().get(1);
         if (!(event.getActor() instanceof User)) {
             if (event.getActor() instanceof Server) {
-                if (CTCPUtil.isCTCP(message)) {
+                if (CtcpUtil.isCtcp(message)) {
                     this.trackException(event, "Server sent a CTCP message and I panicked");
                     return;
                 }
@@ -934,7 +934,7 @@ class EventListener {
             }
             return;
         }
-        if (CTCPUtil.isCTCP(message)) {
+        if (CtcpUtil.isCtcp(message)) {
             this.ctcp(event);
             return;
         }
@@ -962,7 +962,7 @@ class EventListener {
             this.trackException(event, "Message from something other than a user");
             return;
         }
-        if (CTCPUtil.isCTCP(event.getParameters().get(1))) {
+        if (CtcpUtil.isCtcp(event.getParameters().get(1))) {
             this.ctcp(event);
             return;
         }
@@ -980,13 +980,13 @@ class EventListener {
     }
 
     public void ctcp(ClientReceiveCommandEvent event) {
-        final String ctcpMessage = CTCPUtil.fromCTCP(event.getParameters().get(1));
+        final String ctcpMessage = CtcpUtil.fromCtcp(event.getParameters().get(1));
         final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         User user = (User) event.getActor();
         switch (event.getCommand()) {
             case "NOTICE":
                 if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                    this.fire(new PrivateCTCPReplyEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage));
+                    this.fire(new PrivateCtcpReplyEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage));
                 }
                 break;
             case "PRIVMSG":
@@ -1006,18 +1006,18 @@ class EventListener {
                     if (ctcpMessage.startsWith("PING ")) {
                         reply = ctcpMessage;
                     }
-                    PrivateCTCPQueryEvent ctcpEvent = new PrivateCTCPQueryEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
+                    PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
                     this.fire(ctcpEvent);
                     Optional<String> replyMessage = ctcpEvent.getReply();
                     if (ctcpEvent.isToClient()) {
-                        replyMessage.ifPresent(message -> this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CTCPUtil.toCTCP(message)));
+                        replyMessage.ifPresent(message -> this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CtcpUtil.toCtcp(message)));
                     }
                 } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
                     MessageTargetInfo.Channel channelInfo = (MessageTargetInfo.Channel) messageTargetInfo;
-                    this.fire(new ChannelCTCPEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), ctcpMessage));
+                    this.fire(new ChannelCtcpEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), ctcpMessage));
                 } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
                     MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-                    this.fire(new ChannelTargetedCTCPEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), ctcpMessage));
+                    this.fire(new ChannelTargetedCtcpEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel().snapshot(), channelInfo.getPrefix(), ctcpMessage));
                 }
                 break;
         }
@@ -1042,7 +1042,7 @@ class EventListener {
             this.fire(new UserModeEvent(this.client, event.getOriginalMessages(), event.getActor(), event.getParameters().get(0), statusList));
             this.client.updateUserModes(statusList);
         } else if (messageTargetInfo instanceof MessageTargetInfo.Channel) {
-            ActorProvider.IRCChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
+            ActorProvider.IrcChannel channel = ((MessageTargetInfo.Channel) messageTargetInfo).getChannel();
             ModeStatusList<ChannelMode> statusList;
             try {
                 statusList = ModeStatusList.fromChannel(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
@@ -1066,10 +1066,10 @@ class EventListener {
             this.trackException(event, "JOIN message too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
         if (channel != null) {
             if (event.getActor() instanceof User) {
-                ActorProvider.IRCUser user = (ActorProvider.IRCUser) this.client.getActorProvider().getActor(event.getActor().getName());
+                ActorProvider.IrcUser user = (ActorProvider.IrcUser) this.client.getActorProvider().getActor(event.getActor().getName());
                 channel.trackUser(user, new HashSet<>());
                 ChannelJoinEvent joinEvent = null;
                 if (user.getNick().equals(this.client.getNick())) {
@@ -1107,7 +1107,7 @@ class EventListener {
             this.trackException(event, "PART message too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
         if (channel != null) {
             if (event.getActor() instanceof User) {
                 User user = (User) event.getActor();
@@ -1150,9 +1150,9 @@ class EventListener {
             this.trackException(event, "KICK message too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
         if (channel != null) {
-            ActorProvider.IRCUser kickedUser = this.client.getActorProvider().getUser(event.getParameters().get(1));
+            ActorProvider.IrcUser kickedUser = this.client.getActorProvider().getUser(event.getParameters().get(1));
             if ((kickedUser != null)) {
                 boolean isSelf = event.getParameters().get(1).equals(this.client.getNick());
                 ClientEvent kickEvent;
@@ -1184,7 +1184,7 @@ class EventListener {
         }
         if (event.getActor() instanceof User) {
             boolean isSelf = ((User) event.getActor()).getNick().equals(this.client.getNick());
-            ActorProvider.IRCUser user = this.client.getActorProvider().getUser(((User) event.getActor()).getNick());
+            ActorProvider.IrcUser user = this.client.getActorProvider().getUser(((User) event.getActor()).getNick());
             if (user == null) {
                 if (isSelf) {
                     this.client.setCurrentNick(event.getParameters().get(0));
@@ -1212,7 +1212,7 @@ class EventListener {
             this.trackException(event, "INVITE message too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(1));
         if (channel != null) {
             if (this.client.getNick().equalsIgnoreCase(event.getParameters().get(0)) && this.client.getIntendedChannels().contains(channel.getName())) {
                 this.client.sendRawLine("JOIN " + channel.getName());
@@ -1230,7 +1230,7 @@ class EventListener {
             this.trackException(event, "TOPIC message too short");
             return;
         }
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(event.getParameters().get(0));
         if (channel != null) {
             channel.setTopic(event.getParameters().get(1));
             channel.setTopic(System.currentTimeMillis(), event.getActor());
@@ -1252,14 +1252,14 @@ class EventListener {
 
     private static class MessageTargetInfo {
         private static class Channel extends MessageTargetInfo {
-            private final ActorProvider.IRCChannel channel;
+            private final ActorProvider.IrcChannel channel;
 
-            private Channel(ActorProvider.IRCChannel channel) {
+            private Channel(ActorProvider.IrcChannel channel) {
                 this.channel = channel;
             }
 
             @Nonnull
-            ActorProvider.IRCChannel getChannel() {
+            ActorProvider.IrcChannel getChannel() {
                 return this.channel;
             }
 
@@ -1271,16 +1271,16 @@ class EventListener {
         }
 
         private static class TargetedChannel extends MessageTargetInfo {
-            private final ActorProvider.IRCChannel channel;
+            private final ActorProvider.IrcChannel channel;
             private final ChannelUserMode prefix;
 
-            private TargetedChannel(ActorProvider.IRCChannel channel, ChannelUserMode prefix) {
+            private TargetedChannel(ActorProvider.IrcChannel channel, ChannelUserMode prefix) {
                 this.channel = channel;
                 this.prefix = prefix;
             }
 
             @Nonnull
-            ActorProvider.IRCChannel getChannel() {
+            ActorProvider.IrcChannel getChannel() {
                 return this.channel;
             }
 
@@ -1322,7 +1322,7 @@ class EventListener {
 
     @Nonnull
     private MessageTargetInfo getTypeByTarget(@Nonnull String target) {
-        ActorProvider.IRCChannel channel = this.client.getActorProvider().getChannel(target);
+        ActorProvider.IrcChannel channel = this.client.getActorProvider().getChannel(target);
         Optional<ChannelUserMode> prefix = this.client.getServerInfo().getTargetedChannelInfo(target);
         if (prefix.isPresent()) {
             return new MessageTargetInfo.TargetedChannel(this.client.getActorProvider().getChannel(target.substring(1)), prefix.get());

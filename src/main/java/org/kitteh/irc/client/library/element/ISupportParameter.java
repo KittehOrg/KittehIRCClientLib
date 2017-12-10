@@ -189,7 +189,7 @@ public interface ISupportParameter extends ClientLinked {
     /**
      * Represents support for WHOX.
      */
-    interface WHOX extends ISupportParameter {
+    interface Whox extends ISupportParameter {
         /**
          * Parameter name.
          */

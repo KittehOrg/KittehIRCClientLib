@@ -41,7 +41,7 @@ import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.helper.UnexpectedChannelLeaveEvent;
-import org.kitteh.irc.client.library.event.user.PrivateCTCPQueryEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCtcpQueryEvent;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.EventManager;
@@ -57,8 +57,8 @@ import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
-import org.kitteh.irc.client.library.feature.sts.STSMachine;
-import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
+import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
@@ -411,7 +411,7 @@ public interface Client {
          * @return this builder
          */
         @Nonnull
-        Builder stsStorageManager(@Nullable STSStorageManager storageManager);
+        Builder stsStorageManager(@Nullable StsStorageManager storageManager);
 
         /**
          * Resets this builder to the default values.
@@ -620,11 +620,11 @@ public interface Client {
         void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes);
 
         /**
-         * Gets if the client is confirgured for a secure connection.
+         * Gets if the client is configured for a secure connection.
          *
          * @return true if configured for secure
          */
-        boolean isSSL();
+        boolean isSecureConnection();
     }
 
     /**
@@ -774,7 +774,7 @@ public interface Client {
      * @return the machine, may not be present
      */
     @Nonnull
-    Optional<STSMachine> getSTSMachine();
+    Optional<StsMachine> getStsMachine();
 
     /**
      * Gets the manager of ISUPPORT info.
@@ -912,14 +912,14 @@ public interface Client {
      * need escaping when sending a CTCP message.
      * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
-     * with the {@link PrivateCTCPQueryEvent} and reply there or use
-     * {@link #sendCTCPReply(String, String)}</i>
+     * with the {@link PrivateCtcpQueryEvent} and reply there or use
+     * {@link #sendCtcpReply(String, String)}</i>
      *
      * @param target the destination of the message
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendCTCPMessage(@Nonnull String target, @Nonnull String message);
+    void sendCtcpMessage(@Nonnull String target, @Nonnull String message);
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
@@ -927,16 +927,16 @@ public interface Client {
      * need escaping when sending a CTCP message.
      * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
-     * with the {@link PrivateCTCPQueryEvent} and reply there or use
-     * {@link #sendCTCPReply(MessageReceiver, String)}</i>
+     * with the {@link PrivateCtcpQueryEvent} and reply there or use
+     * {@link #sendCtcpReply(MessageReceiver, String)}</i>
      *
      * @param target the destination of the message
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendCTCPMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+    default void sendCtcpMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
-        this.sendCTCPMessage(target.getMessagingName(), message);
+        this.sendCtcpMessage(target.getMessagingName(), message);
     }
 
     /**
@@ -948,7 +948,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendCTCPReply(@Nonnull String target, @Nonnull String message);
+    void sendCtcpReply(@Nonnull String target, @Nonnull String message);
 
     /**
      * Sends a CTCP reply to a target user or channel. Automagically adds
@@ -959,9 +959,9 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendCTCPReply(@Nonnull MessageReceiver target, @Nonnull String message) {
+    default void sendCtcpReply(@Nonnull MessageReceiver target, @Nonnull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
-        this.sendCTCPMessage(target.getMessagingName(), message);
+        this.sendCtcpMessage(target.getMessagingName(), message);
     }
 
     /**

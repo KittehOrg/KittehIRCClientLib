@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
-import org.kitteh.irc.client.library.exception.KittehSTSException;
-import org.kitteh.irc.client.library.util.STSUtil;
+import org.kitteh.irc.client.library.exception.KittehStsException;
+import org.kitteh.irc.client.library.util.StsUtil;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 /**
  * Simple example implementation of an STSStorageManager.
  */
-public class STSPropertiesStorageManager implements STSStorageManager {
+public class StsPropertiesStorageManager implements StsStorageManager {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private final Properties properties = new Properties();
     private final Path filePath;
@@ -57,7 +57,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      *
      * @param filePath the path to the properties file used to persist the data
      */
-    public STSPropertiesStorageManager(@Nonnull Path filePath) {
+    public StsPropertiesStorageManager(@Nonnull Path filePath) {
         this.filePath = Sanity.nullCheck(filePath, "Must provide a valid path to the properties file to use.");
         this.readData();
     }
@@ -70,7 +70,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
         try (BufferedReader bufferedReader = Files.newBufferedReader(this.filePath, StandardCharsets.UTF_8)) {
             this.properties.load(bufferedReader);
         } catch (IOException e) {
-            throw new KittehSTSException(e.getMessage(), e);
+            throw new KittehStsException(e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @param policy the STS policy instance, including all data sent from the server
      */
     @Override
-    public void addEntry(@Nonnull String hostname, long duration, @Nonnull STSPolicy policy) {
+    public void addEntry(@Nonnull String hostname, long duration, @Nonnull StsPolicy policy) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
         Sanity.nullCheck(policy, "A valid policy must be provided to be inserted.");
         if (!policy.getOptions().containsKey("duration")) {
@@ -99,7 +99,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(this.filePath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
             this.properties.store(bufferedWriter, "This file contains all the gathered STS policies.");
         } catch (IOException e) {
-            throw new KittehSTSException(e.getMessage());
+            throw new KittehStsException(e.getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      */
     @Override
     @Nonnull
-    public Optional<STSPolicy> getEntry(@Nonnull String hostname) {
+    public Optional<StsPolicy> getEntry(@Nonnull String hostname) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
 
         this.pruneEntries();
@@ -122,7 +122,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
         String value = this.properties.getProperty(hostname);
         String[] components = value.split("; ");
         String data = components[1];
-        return Optional.of(STSUtil.getSTSPolicyFromString(",", data));
+        return Optional.of(StsUtil.getStsPolicyFromString(",", data));
     }
 
     /**
@@ -179,7 +179,7 @@ public class STSPropertiesStorageManager implements STSStorageManager {
      * @param policy The map of keys -> optional string values
      * @return a serialized string
      */
-    private String reserializeData(STSPolicy policy) {
+    private String reserializeData(StsPolicy policy) {
         StringBuilder sb = new StringBuilder((policy.getOptions().size() * 10) + (policy.getFlags().size() * 5));
         sb.append(String.join(",", policy.getFlags()));
         if (!policy.getFlags().isEmpty()) {

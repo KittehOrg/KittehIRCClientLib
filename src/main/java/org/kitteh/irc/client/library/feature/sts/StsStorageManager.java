@@ -29,7 +29,7 @@ import java.util.Optional;
 /**
  * Represents a manager that can persist STS policies in some form.
  */
-public interface STSStorageManager {
+public interface StsStorageManager {
     /**
      * Adds an STS policy to the store.
      * <p>
@@ -39,7 +39,7 @@ public interface STSStorageManager {
      * @param duration the length (in seconds) until the expiry of this stored policy
      * @param policy the STS policy instance, including all data sent from the server
      */
-    void addEntry(@Nonnull String hostname, long duration, @Nonnull STSPolicy policy);
+    void addEntry(@Nonnull String hostname, long duration, @Nonnull StsPolicy policy);
 
     /**
      * Gets an STS policy from the store, looking it up via hostname.
@@ -48,7 +48,7 @@ public interface STSStorageManager {
      * @return all data sent by the server in the CAP LS "sts" value when we connected securely
      */
     @Nonnull
-    Optional<STSPolicy> getEntry(@Nonnull String hostname);
+    Optional<StsPolicy> getEntry(@Nonnull String hostname);
 
     /**
      * Checks if a policy has been stored for the hostname.

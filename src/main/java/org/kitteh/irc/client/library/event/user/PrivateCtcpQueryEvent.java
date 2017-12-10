@@ -43,9 +43,9 @@ import java.util.Optional;
  * unescaped message with the delimiter removed. Note that the reply is not
  * sent if the target is not the client.
  * <p>
- * See {@link PrivateCTCPReplyEvent} for received CTCP replies.
+ * See {@link PrivateCtcpReplyEvent} for received CTCP replies.
  */
-public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User> {
+public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User> {
     @Nullable
     private String reply;
 
@@ -59,7 +59,7 @@ public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> im
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCTCPQueryEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message, @Nullable String reply) {
+    public PrivateCtcpQueryEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message, @Nullable String reply) {
         super(client, originalMessages, sender, target, message);
         this.reply = reply;
     }
@@ -77,7 +77,7 @@ public class PrivateCTCPQueryEvent extends ActorPrivateMessageEventBase<User> im
     /**
      * Sets the reply to send to the CTCP sender. Note that this method will
      * not work if listening async. For async replies, set this to null and
-     * use {@link Client#sendCTCPReply(String, String)}.
+     * use {@link Client#sendCtcpReply(String, String)}.
      *
      * @param reply message to send back
      */

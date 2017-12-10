@@ -30,11 +30,11 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupported
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectionEndedEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
-import org.kitteh.irc.client.library.feature.sts.STSClientState;
-import org.kitteh.irc.client.library.feature.sts.STSMachine;
-import org.kitteh.irc.client.library.feature.sts.STSPolicy;
-import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
-import org.kitteh.irc.client.library.util.STSUtil;
+import org.kitteh.irc.client.library.feature.sts.StsClientState;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
+import org.kitteh.irc.client.library.feature.sts.StsPolicy;
+import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
+import org.kitteh.irc.client.library.util.StsUtil;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -44,11 +44,11 @@ import java.util.function.Predicate;
 /**
  * Class for handling the STS capability, returned in the CAP LS 302 response.
  */
-class STSHandler {
+class StsHandler {
     public static final String DRAFT = "draft/";
     private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals(DRAFT + "sts");
 
-    private final STSMachine machine;
+    private final StsMachine machine;
     private final InternalClient client;
     private boolean isSecure;
 
@@ -58,10 +58,10 @@ class STSHandler {
      * @param machine the STS FSM
      * @param client the IRC client
      */
-    STSHandler(STSMachine machine, InternalClient client) {
+    StsHandler(StsMachine machine, InternalClient client) {
         this.machine = machine;
         this.client = client;
-        this.isSecure = client.isSSL();
+        this.isSecure = client.isSecureConnection();
     }
 
     /**
@@ -73,18 +73,18 @@ class STSHandler {
     public void onCapLs(CapabilitiesSupportedListEvent event) {
         // stability not a concern, only one or zero result(s)
         final Optional<CapabilityState> potentialStsCapability = event.getSupportedCapabilities().stream()
-                .filter(STSHandler.STS_CAPABILITY_PREDICATE).findAny();
+                .filter(StsHandler.STS_CAPABILITY_PREDICATE).findAny();
 
         if (!potentialStsCapability.isPresent()) {
-            if (this.machine.getCurrentState() == STSClientState.STS_PRESENT_RECONNECTING) {
-                this.machine.setCurrentState(STSClientState.INVALID_STS_MISSING_ON_RECONNECT);
+            if (this.machine.getCurrentState() == StsClientState.STS_PRESENT_RECONNECTING) {
+                this.machine.setCurrentState(StsClientState.INVALID_STS_MISSING_ON_RECONNECT);
             }
             return;
         }
 
         // okay, we have an STS capability!
         final CapabilityState sts = potentialStsCapability.get();
-        this.handleSTSCapability(sts, event.getOriginalMessages());
+        this.handleStsCapability(sts, event.getOriginalMessages());
     }
 
     /**
@@ -105,8 +105,8 @@ class STSHandler {
 
         // okay, we have an STS capability!
         final CapabilityState sts = potentialStsCapability.get();
-        if (this.machine.getCurrentState() == STSClientState.UNKNOWN) {
-            this.handleSTSCapability(sts, event.getOriginalMessages());
+        if (this.machine.getCurrentState() == StsClientState.UNKNOWN) {
+            this.handleStsCapability(sts, event.getOriginalMessages());
         }
     }
 
@@ -121,34 +121,34 @@ class STSHandler {
         // at disconnection time...
         // Do this by removing and re-adding.
         String hostname = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
-        final STSStorageManager storageManager = this.machine.getStorageManager();
+        final StsStorageManager storageManager = this.machine.getStorageManager();
         storageManager.getEntry(hostname).ifPresent(policy -> {
-            long duration = Long.parseLong(policy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION));
+            long duration = Long.parseLong(policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_DURATION));
             storageManager.removeEntry(hostname);
             storageManager.addEntry(hostname, duration, policy);
         });
     }
 
-    private void handleSTSCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
-        this.isSecure = this.client.isSSL();
+    private void handleStsCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
+        this.isSecure = this.client.isSecureConnection();
         InetSocketAddress address = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS);
         if (!sts.getValue().isPresent()) {
             throw new KittehServerMessageException(originalMessages, "No value provided for sts capability.");
         }
 
         final String capabilityValue = sts.getValue().get();
-        final STSPolicy policy = STSUtil.getSTSPolicyFromString(",", capabilityValue);
-        if (policy.getFlags().contains(STSPolicy.POLICY_OPTION_KEY_PORT) || policy.getFlags().contains(STSPolicy.POLICY_OPTION_KEY_DURATION)) {
+        final StsPolicy policy = StsUtil.getStsPolicyFromString(",", capabilityValue);
+        if (policy.getFlags().contains(StsPolicy.POLICY_OPTION_KEY_PORT) || policy.getFlags().contains(StsPolicy.POLICY_OPTION_KEY_DURATION)) {
             throw new KittehServerMessageException(originalMessages, "Improper use of flag in required option context!");
         }
 
-        if (!policy.getOptions().containsKey(STSPolicy.POLICY_OPTION_KEY_PORT)) {
-            policy.getOptions().put(STSPolicy.POLICY_OPTION_KEY_PORT, Integer.toString(address.getPort())); // spec says port is optional
+        if (!policy.getOptions().containsKey(StsPolicy.POLICY_OPTION_KEY_PORT)) {
+            policy.getOptions().put(StsPolicy.POLICY_OPTION_KEY_PORT, Integer.toString(address.getPort())); // spec says port is optional
         }
 
         for (String key : policy.getOptions().keySet()) {
             // Unknown keys are ignored by the switches below
-            this.machine.setSTSPolicy(policy);
+            this.machine.setStsPolicy(policy);
             if (this.isSecure) {
                 this.handleSecureKey(key, policy, originalMessages);
             } else {
@@ -157,30 +157,30 @@ class STSHandler {
         }
     }
 
-    private void handleInsecureKey(String key, STSPolicy policy, List<ServerMessage> originalMessages) {
+    private void handleInsecureKey(String key, StsPolicy policy, List<ServerMessage> originalMessages) {
         final String value = policy.getOptions().get(key);
 
         switch (key) {
-            case STSPolicy.POLICY_OPTION_KEY_DURATION:
+            case StsPolicy.POLICY_OPTION_KEY_DURATION:
                 // Do NOT persist, because this policy could've been inserted by an active MitM
                 break;
-            case STSPolicy.POLICY_OPTION_KEY_PORT:
+            case StsPolicy.POLICY_OPTION_KEY_PORT:
                 try {
                     Integer.parseInt(value); // can't easily use a short because signed..
                 } catch (NumberFormatException nfe) {
                     throw new KittehServerMessageException(originalMessages, "Specified port could not be parsed: " + nfe.getMessage());
                 }
 
-                this.machine.setCurrentState(STSClientState.STS_PRESENT_RECONNECTING);
+                this.machine.setCurrentState(StsClientState.STS_PRESENT_RECONNECTING);
                 break;
         }
     }
 
-    private void handleSecureKey(String key, STSPolicy policy, List<ServerMessage> originalMessages) {
+    private void handleSecureKey(String key, StsPolicy policy, List<ServerMessage> originalMessages) {
         final String value = policy.getOptions().get(key);
 
         switch (key) {
-            case STSPolicy.POLICY_OPTION_KEY_DURATION:
+            case StsPolicy.POLICY_OPTION_KEY_DURATION:
                 // We can safely persist this.
 
                 long duration;
@@ -192,7 +192,7 @@ class STSHandler {
                     throw new KittehServerMessageException(originalMessages, "Invalid duration provided: " + nfe.getMessage());
                 }
 
-                final STSStorageManager storageMan = this.machine.getStorageManager();
+                final StsStorageManager storageMan = this.machine.getStorageManager();
                 String hostname = this.client.getConfig().getNotNull(Config.SERVER_ADDRESS).getHostName();
 
                 // A duration of 0 means the policy expires immediately.
@@ -209,9 +209,9 @@ class STSHandler {
                 }
 
                 storageMan.addEntry(hostname, duration, policy);
-                this.machine.setCurrentState(STSClientState.STS_PRESENT_NOW_SECURE);
+                this.machine.setCurrentState(StsClientState.STS_PRESENT_NOW_SECURE);
                 break;
-            case STSPolicy.POLICY_OPTION_KEY_PORT:
+            case StsPolicy.POLICY_OPTION_KEY_PORT:
                 // Ignored when already connected securely
         }
     }

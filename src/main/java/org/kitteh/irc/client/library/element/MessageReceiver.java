@@ -56,10 +56,10 @@ public interface MessageReceiver extends Actor {
      * Sends this actor a CTCP message.
      *
      * @param message the message to send
-     * @see Client#sendCTCPMessage(MessageReceiver, String)
+     * @see Client#sendCtcpMessage(MessageReceiver, String)
      */
-    default void sendCTCPMessage(@Nonnull String message) {
-        this.getClient().sendCTCPMessage(this, message);
+    default void sendCtcpMessage(@Nonnull String message) {
+        this.getClient().sendCtcpMessage(this, message);
     }
 
     /**

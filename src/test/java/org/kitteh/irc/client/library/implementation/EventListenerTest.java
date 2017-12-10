@@ -70,7 +70,7 @@ public class EventListenerTest {
         } else {
             actorName = "";
         }
-        final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
+        final ActorProvider.IrcActor actor = this.actorProvider.getActor(actorName);
 
         if (split.length <= index) {
             throw new KittehServerMessageException(new DefaultServerMessage(line, new ArrayList<>()), "Server sent a message without a command");
@@ -203,7 +203,7 @@ public class EventListenerTest {
         this.fireLine(":irc.network 372 Kitteh :-   Hello                         ");
         this.fireLine(":irc.network 372 Kitteh");
         this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
-        Mockito.verify(this.serverInfo, Mockito.times(1)).setMOTD(Mockito.argThat(o -> (o != null) && (o.size() == 1) && o.get(0).contains("Hello")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).setMotd(Mockito.argThat(o -> (o != null) && (o.size() == 1) && o.get(0).contains("Hello")));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message too short")));
     }
 

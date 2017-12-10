@@ -57,9 +57,9 @@ import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.QueueProcessingThreadSender;
-import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.util.CISet;
-import org.kitteh.irc.client.library.util.CTCPUtil;
+import org.kitteh.irc.client.library.util.CtcpUtil;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
@@ -82,80 +82,80 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-final class IRCClient extends InternalClient {
+final class IrcClient extends InternalClient {
     private final class ClientCommands implements Commands {
         @Nonnull
         @Override
         public AwayCommand away() {
-            return new AwayCommand(IRCClient.this);
+            return new AwayCommand(IrcClient.this);
         }
 
         @Nonnull
         @Override
         public CapabilityRequestCommand capabilityRequest() {
-            return new CapabilityRequestCommand(IRCClient.this);
+            return new CapabilityRequestCommand(IrcClient.this);
         }
 
         @Nonnull
         @Override
         public ChannelModeCommand mode(@Nonnull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
-            Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
-            return new ChannelModeCommand(IRCClient.this, channel.getMessagingName());
+            Sanity.truthiness(IrcClient.this == channel.getClient(), "Client mismatch");
+            return new ChannelModeCommand(IrcClient.this, channel.getMessagingName());
         }
 
         @Nonnull
         @Override
         public KickCommand kick(@Nonnull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
-            Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
-            return new KickCommand(IRCClient.this, channel.getMessagingName());
+            Sanity.truthiness(IrcClient.this == channel.getClient(), "Client mismatch");
+            return new KickCommand(IrcClient.this, channel.getMessagingName());
         }
 
         @Nonnull
         @Override
         public MonitorCommand monitor() {
-            return new MonitorCommand(IRCClient.this);
+            return new MonitorCommand(IrcClient.this);
         }
 
         @Nonnull
         @Override
         public OperCommand oper() {
-            return new OperCommand(IRCClient.this);
+            return new OperCommand(IrcClient.this);
         }
 
         @Nonnull
         @Override
         public TopicCommand topic(@Nonnull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
-            Sanity.truthiness(IRCClient.this == channel.getClient(), "Client mismatch");
-            return new TopicCommand(IRCClient.this, channel.getMessagingName());
+            Sanity.truthiness(IrcClient.this == channel.getClient(), "Client mismatch");
+            return new TopicCommand(IrcClient.this, channel.getMessagingName());
         }
 
         @Nonnull
         @Override
         public WallopsCommand wallops() {
-            return new WallopsCommand(IRCClient.this);
+            return new WallopsCommand(IrcClient.this);
         }
 
         @Nonnull
         @Override
         public WhoisCommand whois() {
-            return new WhoisCommand(IRCClient.this);
+            return new WhoisCommand(IrcClient.this);
         }
     }
 
     private final class InputProcessor extends QueueProcessingThread<String> {
         private InputProcessor() {
-            super("KICL Input Processor (" + IRCClient.this.getName() + ')');
+            super("KICL Input Processor (" + IrcClient.this.getName() + ')');
         }
 
         @Override
         protected void processElement(@Nonnull String element) {
             try {
-                IRCClient.this.handleLine(element);
+                IrcClient.this.handleLine(element);
             } catch (final Exception thrown) {
-                IRCClient.this.exceptionListener.queue(thrown);
+                IrcClient.this.exceptionListener.queue(thrown);
             }
         }
     }
@@ -192,7 +192,7 @@ final class IRCClient extends InternalClient {
     private DefaultMessageMap defaultMessageMap;
 
     private Map<Character, ModeStatus<UserMode>> userModes;
-    private STSMachine stsMachine;
+    private StsMachine stsMachine;
 
     private final ClientCommands commands = new ClientCommands();
 
@@ -200,7 +200,7 @@ final class IRCClient extends InternalClient {
     private MessageSendingQueue messageSendingScheduled;
     private final Object messageSendingLock = new Object();
 
-    IRCClient(@Nonnull Config config) {
+    IrcClient(@Nonnull Config config) {
         this.config = config;
 
         // Get event manager up and running immediately!
@@ -217,7 +217,7 @@ final class IRCClient extends InternalClient {
 
         if (this.config.get(Config.STS_STORAGE_MANAGER) != null) {
             this.configureSts();
-        } else if (!this.isSSL()) {
+        } else if (!this.isSecureConnection()) {
             this.exceptionListener.queue(new KittehNagException(
                     "Connection is insecure. If the server does not support SSL, consider enabling STS support to " +
                             "facilitate automatic SSL upgrades when it does."
@@ -243,8 +243,8 @@ final class IRCClient extends InternalClient {
     }
 
     private void configureSts() {
-        this.stsMachine = new MemorySTSMachine(this.config.getNotNull(Config.STS_STORAGE_MANAGER), this);
-        this.eventManager.registerEventListener(new STSHandler(this.stsMachine, this));
+        this.stsMachine = new MemoryStsMachine(this.config.getNotNull(Config.STS_STORAGE_MANAGER), this);
+        this.eventManager.registerEventListener(new StsHandler(this.stsMachine, this));
     }
 
     @Override
@@ -300,14 +300,14 @@ final class IRCClient extends InternalClient {
     @Override
     public Optional<Channel> getChannel(@Nonnull String name) {
         Sanity.nullCheck(name, "Channel name cannot be null");
-        ActorProvider.IRCChannel channel = this.actorProvider.getTrackedChannel(name);
+        ActorProvider.IrcChannel channel = this.actorProvider.getTrackedChannel(name);
         return (channel == null) ? Optional.empty() : Optional.of(channel.snapshot());
     }
 
     @Nonnull
     @Override
     public Set<Channel> getChannels() {
-        return this.actorProvider.getTrackedChannels().stream().map(ActorProvider.IRCChannel::snapshot).collect(Collectors.toSet());
+        return this.actorProvider.getTrackedChannels().stream().map(ActorProvider.IrcChannel::snapshot).collect(Collectors.toSet());
     }
 
     @Nonnull
@@ -317,7 +317,7 @@ final class IRCClient extends InternalClient {
                 .filter(Objects::nonNull)
                 .map(this.actorProvider::getTrackedChannel)
                 .filter(Objects::nonNull)
-                .map(ActorProvider.IRCChannel::snapshot)
+                .map(ActorProvider.IrcChannel::snapshot)
                 .collect(Collectors.toSet());
     }
 
@@ -353,7 +353,7 @@ final class IRCClient extends InternalClient {
 
     @Nonnull
     @Override
-    public Optional<STSMachine> getSTSMachine() {
+    public Optional<StsMachine> getStsMachine() {
         return Optional.ofNullable(this.stsMachine);
     }
 
@@ -396,7 +396,7 @@ final class IRCClient extends InternalClient {
     @Nonnull
     @Override
     public Optional<User> getUser() {
-        final ActorProvider.IRCUser user = this.actorProvider.getUser(this.getNick());
+        final ActorProvider.IrcUser user = this.actorProvider.getUser(this.getNick());
         if (user == null) {
             return Optional.empty();
         }
@@ -434,19 +434,19 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public void sendCTCPMessage(@Nonnull String target, @Nonnull String message) {
+    public void sendCtcpMessage(@Nonnull String target, @Nonnull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
-        this.sendRawLine("PRIVMSG " + target + " :" + CTCPUtil.toCTCP(message));
+        this.sendRawLine("PRIVMSG " + target + " :" + CtcpUtil.toCtcp(message));
     }
 
     @Override
-    public void sendCTCPReply(@Nonnull String target, @Nonnull String message) {
+    public void sendCtcpReply(@Nonnull String target, @Nonnull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
-        this.sendRawLine("NOTICE " + target + " :" + CTCPUtil.toCTCP(message));
+        this.sendRawLine("NOTICE " + target + " :" + CtcpUtil.toCtcp(message));
     }
 
     @Override
@@ -759,7 +759,7 @@ final class IRCClient extends InternalClient {
     }
 
     @Override
-    public boolean isSSL() {
+    public boolean isSecureConnection() {
         return this.config.getNotNull(Config.SSL);
     }
 
@@ -801,7 +801,7 @@ final class IRCClient extends InternalClient {
         } else {
             actorName = "";
         }
-        final ActorProvider.IRCActor actor = this.actorProvider.getActor(actorName);
+        final ActorProvider.IrcActor actor = this.actorProvider.getActor(actorName);
 
         String commandString = null;
         List<String> args = new ArrayList<>();

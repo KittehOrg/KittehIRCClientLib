@@ -37,7 +37,7 @@ import javax.annotation.Nonnull;
  * initiates a change. Actions are automatically taken
  * as a result of state transitions,
  */
-public interface STSMachine {
+public interface StsMachine {
     /**
      * Returns the current state in the enum that the
      * state machine is operating in.
@@ -45,14 +45,14 @@ public interface STSMachine {
      * @return one of STSClientState's members
      */
     @Nonnull
-    STSClientState getCurrentState();
+    StsClientState getCurrentState();
 
     /**
      * Changes the state of the FSM, triggering any state-specific work.
      *
      * @param newState a valid (non-UNKNOWN, non-null) state
      */
-    void setCurrentState(@Nonnull STSClientState newState);
+    void setCurrentState(@Nonnull StsClientState newState);
 
     /**
      * Gets the persistence/storage manager.
@@ -60,7 +60,7 @@ public interface STSMachine {
      * @return the storage manager instance
      */
     @Nonnull
-    STSStorageManager getStorageManager();
+    StsStorageManager getStorageManager();
 
     /**
      * Provides a key-&gt;value map of options and list of flags, making up the STS policy.
@@ -69,5 +69,5 @@ public interface STSMachine {
      *
      * @param policy the valid STS policy
      */
-    void setSTSPolicy(@Nonnull STSPolicy policy);
+    void setStsPolicy(@Nonnull StsPolicy policy);
 }

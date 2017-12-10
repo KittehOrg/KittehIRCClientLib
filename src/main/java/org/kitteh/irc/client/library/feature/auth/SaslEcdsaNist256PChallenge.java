@@ -51,7 +51,7 @@ import java.util.Base64;
  * SASL ECDSA-NIST256P-CHALLENGE authentication. Automatically attempts auth
  * during connection.
  */
-public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKey> {
+public class SaslEcdsaNist256PChallenge extends AbstractSaslProtocol<ECPrivateKey> {
     /**
      * Holds a private and public key.
      */
@@ -99,16 +99,16 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
             if (!event.getParameters().isEmpty()) {
                 String base64;
                 if ("+".equals(event.getParameters().get(0))) {
-                    base64 = Base64.getEncoder().encodeToString(SaslECDSANIST256PChallenge.this.getAuthLine().getBytes());
+                    base64 = Base64.getEncoder().encodeToString(SaslEcdsaNist256PChallenge.this.getAuthLine().getBytes());
                 } else {
                     String challenge = event.getParameters().get(0);
                     try {
-                        base64 = sign(SaslECDSANIST256PChallenge.this.getAuthValue(), challenge);
+                        base64 = sign(SaslEcdsaNist256PChallenge.this.getAuthValue(), challenge);
                     } catch (Exception e) {
                         throw new RuntimeException(e); // TODO make this better
                     }
                 }
-                SaslECDSANIST256PChallenge.this.getClient().sendRawLineImmediately("AUTHENTICATE " + base64);
+                SaslEcdsaNist256PChallenge.this.getClient().sendRawLineImmediately("AUTHENTICATE " + base64);
             }
         }
     }
@@ -122,7 +122,7 @@ public class SaslECDSANIST256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * @param accountName account name
      * @param privateKey private key
      */
-    public SaslECDSANIST256PChallenge(@Nonnull Client client, @Nonnull String accountName, @Nonnull ECPrivateKey privateKey) {
+    public SaslEcdsaNist256PChallenge(@Nonnull Client client, @Nonnull String accountName, @Nonnull ECPrivateKey privateKey) {
         super(client, accountName, privateKey, "ECDSA-NIST256P-CHALLENGE");
     }
 

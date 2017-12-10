@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.implementation;
 
-import org.kitteh.irc.client.library.feature.sts.STSClientState;
-import org.kitteh.irc.client.library.feature.sts.STSMachine;
-import org.kitteh.irc.client.library.feature.sts.STSPolicy;
-import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
+import org.kitteh.irc.client.library.feature.sts.StsClientState;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
+import org.kitteh.irc.client.library.feature.sts.StsPolicy;
+import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import javax.annotation.Nonnull;
@@ -39,25 +39,25 @@ import java.net.InetSocketAddress;
  * This class implements our FSM in an in-memory fashion,
  * using Java's data structures.
  */
-class MemorySTSMachine implements STSMachine {
-    private final STSStorageManager manager;
+class MemoryStsMachine implements StsMachine {
+    private final StsStorageManager manager;
     private final InternalClient client;
-    private STSClientState state = STSClientState.UNKNOWN;
-    private STSPolicy policy;
+    private StsClientState state = StsClientState.UNKNOWN;
+    private StsPolicy policy;
 
-    MemorySTSMachine(@Nonnull STSStorageManager manager, InternalClient client) {
+    MemoryStsMachine(@Nonnull StsStorageManager manager, InternalClient client) {
         this.client = Sanity.nullCheck(client, "Cannot have a null client.");
         this.manager = Sanity.nullCheck(manager, "Cannot have a null STS persistence manager.");
     }
 
     @Nonnull
     @Override
-    public STSClientState getCurrentState() {
+    public StsClientState getCurrentState() {
         return this.state;
     }
 
     @Override
-    public void setCurrentState(@Nonnull STSClientState newState) {
+    public void setCurrentState(@Nonnull StsClientState newState) {
         this.state = Sanity.nullCheck(newState, "Need a valid state for the state machine.");
         this.step();
     }
@@ -70,7 +70,7 @@ class MemorySTSMachine implements STSMachine {
             case STS_PRESENT_RECONNECTING:
                 this.client.getConfig().set(Config.SSL, true);
                 InetSocketAddress oldAddress = this.client.getConfig().get(Config.SERVER_ADDRESS);
-                InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault(STSPolicy.POLICY_OPTION_KEY_PORT, "6697")));
+                InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault(StsPolicy.POLICY_OPTION_KEY_PORT, "6697")));
 
                 this.client.getConfig().set(Config.SERVER_ADDRESS, newAddress);
                 break;
@@ -82,19 +82,19 @@ class MemorySTSMachine implements STSMachine {
                 break;
         }
 
-        if (this.state == STSClientState.STS_PRESENT_RECONNECTING) {
+        if (this.state == StsClientState.STS_PRESENT_RECONNECTING) {
             this.client.reconnect();
         }
     }
 
     @Nonnull
     @Override
-    public STSStorageManager getStorageManager() {
+    public StsStorageManager getStorageManager() {
         return this.manager;
     }
 
     @Override
-    public void setSTSPolicy(@Nonnull STSPolicy policy) {
+    public void setStsPolicy(@Nonnull StsPolicy policy) {
         this.policy = Sanity.nullCheck(policy, "Policy cannot be null");
     }
 }

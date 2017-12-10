@@ -21,17 +21,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element.defaults.isupport;
+package org.kitteh.irc.client.library.event.client;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ISupportParameter;
-import org.kitteh.irc.client.library.element.defaults.DefaultISupportParameter;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
 
-public class DefaultISupportWHOX extends DefaultISupportParameter implements ISupportParameter.WHOX {
-    public DefaultISupportWHOX(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
-        super(client, name, value);
+/**
+ * Indicates the Client has received a complete MOTD from the server.
+ */
+public class ClientReceiveMotdEvent extends ServerMessageEventBase {
+    /**
+     * Constructs the event.
+     *
+     * @param client the client
+     * @param originalMessages original messages
+     */
+    public ClientReceiveMotdEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
+        super(client, originalMessages);
+    }
+
+    /**
+     * Gets the MOTD.
+     *
+     * @return the motd if known
+     * @see ServerInfo#getMotd()
+     */
+    @Nonnull
+    public Optional<List<String>> getMotd() {
+        return this.getClient().getServerInfo().getMotd();
     }
 }

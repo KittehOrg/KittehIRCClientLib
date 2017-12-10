@@ -21,35 +21,33 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.channel;
+package org.kitteh.irc.client.library.event.user;
 
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * The client has received a CTCP message! The method {@link #getMessage()}
- * returns the message with the delimiter character (1) removed. Note that
- * the sender may be the client itself if the capability "echo-message" is
- * enabled.
+ * The client has received a reply to a CTCP query! The method
+ * {@link #getMessage()} returns the unescaped message with the delimiter
+ * removed.
  */
-public class ChannelCTCPEvent extends ActorChannelMessageEventBase<User> implements ActorMessageEvent<User> {
+public class PrivateCtcpReplyEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User> {
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
      * @param originalMessages original messages
-     * @param sender sender of the message
-     * @param channel channel in which it was sent
+     * @param sender sender of the reply
+     * @param target target of the reply
      * @param message message sent
      */
-    public ChannelCTCPEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull String message) {
-        super(client, originalMessages, sender, channel, message);
+    public PrivateCtcpReplyEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message) {
+        super(client, originalMessages, sender, target, message);
     }
 }

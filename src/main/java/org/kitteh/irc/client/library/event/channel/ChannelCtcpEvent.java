@@ -27,31 +27,29 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
-import org.kitteh.irc.client.library.event.abstractbase.TargetedUserChannelMessageEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Fires when a CTCP message is sent to a subset of users in a channel. The
- * method {@link #getMessage()} returns the message with the delimiter
- * character (1) removed. Note that the sender may be the client itself if
- * the capability "echo-message" is enabled.
+ * The client has received a CTCP message! The method {@link #getMessage()}
+ * returns the message with the delimiter character (1) removed. Note that
+ * the sender may be the client itself if the capability "echo-message" is
+ * enabled.
  */
-public class ChannelTargetedCTCPEvent extends TargetedUserChannelMessageEventBase implements ActorMessageEvent<User> {
+public class ChannelCtcpEvent extends ActorChannelMessageEventBase<User> implements ActorMessageEvent<User> {
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
      * @param originalMessages original messages
-     * @param sender who sent it
-     * @param channel channel receiving
-     * @param prefix targeted prefix
+     * @param sender sender of the message
+     * @param channel channel in which it was sent
      * @param message message sent
      */
-    public ChannelTargetedCTCPEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
-        super(client, originalMessages, sender, channel, prefix, message);
+    public ChannelCtcpEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull String message) {
+        super(client, originalMessages, sender, channel, message);
     }
 }

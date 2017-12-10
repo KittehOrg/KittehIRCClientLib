@@ -23,9 +23,9 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.kitteh.irc.client.library.feature.sts.STSPolicy;
-import org.kitteh.irc.client.library.feature.sts.STSPropertiesStorageManager;
-import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
+import org.kitteh.irc.client.library.feature.sts.StsPolicy;
+import org.kitteh.irc.client.library.feature.sts.StsPropertiesStorageManager;
+import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
@@ -38,13 +38,13 @@ import java.util.Set;
 /**
  * Utility methods for dealing with STS.
  */
-public final class STSUtil {
+public final class StsUtil {
     /**
      * Default filename to use for the properties file.
      */
     public static final String DEFAULT_FILENAME = ".kicl_sts.properties";
 
-    private STSUtil() {
+    private StsUtil() {
     }
 
     /**
@@ -53,8 +53,8 @@ public final class STSUtil {
      * @return an STSStorageManager implementer
      */
     @Nonnull
-    public static STSStorageManager getDefaultStorageManager() {
-        return STSUtil.getDefaultStorageManager(Paths.get(System.getProperty("user.home"), DEFAULT_FILENAME));
+    public static StsStorageManager getDefaultStorageManager() {
+        return StsUtil.getDefaultStorageManager(Paths.get(System.getProperty("user.home"), DEFAULT_FILENAME));
     }
 
     /**
@@ -64,8 +64,8 @@ public final class STSUtil {
      * @return an STSStorageManager implementer
      */
     @Nonnull
-    public static STSStorageManager getDefaultStorageManager(@Nonnull Path stsFile) {
-        return new STSPropertiesStorageManager(stsFile);
+    public static StsStorageManager getDefaultStorageManager(@Nonnull Path stsFile) {
+        return new StsPropertiesStorageManager(stsFile);
     }
 
     /**
@@ -76,7 +76,7 @@ public final class STSUtil {
      * @return the policy
      */
     @Nonnull
-    public static STSPolicy getSTSPolicyFromString(@Nonnull String delimiter, @Nonnull String str) {
+    public static StsPolicy getStsPolicyFromString(@Nonnull String delimiter, @Nonnull String str) {
         Sanity.nullCheck(delimiter, "Need a valid delimiter.");
         Sanity.nullCheck(str, "Need a valid string to parse.");
 
@@ -93,6 +93,6 @@ public final class STSUtil {
                 options.put(innerComponents[0], innerComponents[1]);
             }
         }
-        return new STSPolicy(options, flags);
+        return new StsPolicy(options, flags);
     }
 }

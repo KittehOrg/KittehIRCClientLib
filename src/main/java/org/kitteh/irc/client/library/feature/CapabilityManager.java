@@ -32,7 +32,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.client.library.event.user.UserHostnameChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
-import org.kitteh.irc.client.library.feature.auth.SaslECDSANIST256PChallenge;
+import org.kitteh.irc.client.library.feature.auth.SaslEcdsaNist256PChallenge;
 import org.kitteh.irc.client.library.feature.auth.SaslPlain;
 import org.kitteh.irc.client.library.util.Resettable;
 import org.kitteh.irc.client.library.util.RiskyBusiness;
@@ -136,7 +136,7 @@ public interface CapabilityManager {
          * protocol is enabled.
          *
          * @see SaslPlain
-         * @see SaslECDSANIST256PChallenge
+         * @see SaslEcdsaNist256PChallenge
          */
         public static final transient String SASL = "sasl";
 

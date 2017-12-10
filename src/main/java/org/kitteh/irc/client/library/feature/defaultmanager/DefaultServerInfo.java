@@ -148,12 +148,12 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
 
     @Nonnull
     @Override
-    public Optional<List<String>> getMOTD() {
+    public Optional<List<String>> getMotd() {
         return Optional.ofNullable(this.motd);
     }
 
     @Override
-    public void setMOTD(@Nonnull List<String> motd) {
+    public void setMotd(@Nonnull List<String> motd) {
         this.motd = Collections.unmodifiableList(motd);
     }
 

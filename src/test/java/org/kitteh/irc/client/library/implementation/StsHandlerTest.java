@@ -9,10 +9,10 @@ import org.kitteh.irc.client.library.element.defaults.DefaultServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
-import org.kitteh.irc.client.library.feature.sts.STSClientState;
-import org.kitteh.irc.client.library.feature.sts.STSMachine;
-import org.kitteh.irc.client.library.feature.sts.STSPolicy;
-import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
+import org.kitteh.irc.client.library.feature.sts.StsClientState;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
+import org.kitteh.irc.client.library.feature.sts.StsPolicy;
+import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Tests around the STS event handler and the underlying machine.
  */
-public class STSHandlerTest {
+public class StsHandlerTest {
 
     /**
      * Checks that the STS Handler works when we connect in a plaintext manner and give
@@ -32,23 +32,23 @@ public class STSHandlerTest {
         final FakeClient client = new FakeClient();
         client.getConfig().set(Config.SSL, false);
         final StubMachine machine = new StubMachine();
-        Assert.assertEquals(machine.getCurrentState(), STSClientState.UNKNOWN);
+        Assert.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
 
-        STSHandler handler = new STSHandler(machine, client);
+        StsHandler handler = new StsHandler(machine, client);
 
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
+        final String policyString = "draft/sts=" + StsPolicy.POLICY_OPTION_KEY_PORT + "=1234," + StsPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
         capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
-        Assert.assertEquals(machine.getCurrentState(), STSClientState.STS_PRESENT_RECONNECTING);
+        Assert.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
 
-        STSPolicy extractedPolicy = machine.getPolicy();
-        final String port = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT);
+        StsPolicy extractedPolicy = machine.getPolicy();
+        final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
         Assert.assertTrue("1234".equals(port));
 
-        final String duration = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION);
+        final String duration = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_DURATION);
         Assert.assertTrue("300".equals(duration));
 
         Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
@@ -63,23 +63,23 @@ public class STSHandlerTest {
         final FakeClient client = new FakeClient();
         client.getConfig().set(Config.SSL, false);
         final StubMachine machine = new StubMachine();
-        Assert.assertEquals(machine.getCurrentState(), STSClientState.UNKNOWN);
+        Assert.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
 
-        STSHandler handler = new STSHandler(machine, client);
+        StsHandler handler = new StsHandler(machine, client);
 
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=1234," + STSPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
+        final String policyString = "draft/sts=" + StsPolicy.POLICY_OPTION_KEY_PORT + "=1234," + StsPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
         capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapNew(new CapabilitiesNewSupportedEvent(client, messages, true, capabilities));
-        Assert.assertEquals(machine.getCurrentState(), STSClientState.STS_PRESENT_RECONNECTING);
+        Assert.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
 
-        STSPolicy extractedPolicy = machine.getPolicy();
-        final String port = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_PORT);
+        StsPolicy extractedPolicy = machine.getPolicy();
+        final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
         Assert.assertTrue("1234".equals(port));
 
-        final String duration = extractedPolicy.getOptions().get(STSPolicy.POLICY_OPTION_KEY_DURATION);
+        final String duration = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_DURATION);
         Assert.assertTrue("300".equals(duration));
 
         Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
@@ -93,9 +93,9 @@ public class STSHandlerTest {
         final FakeClient client = new FakeClient();
         client.getConfig().set(Config.SSL, false);
         final StubMachine machine = new StubMachine();
-        STSHandler handler = new STSHandler(machine, client);
+        StsHandler handler = new StsHandler(machine, client);
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT + "=cats";
+        final String policyString = "draft/sts=" + StsPolicy.POLICY_OPTION_KEY_PORT + "=cats";
         capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
@@ -110,34 +110,34 @@ public class STSHandlerTest {
         final FakeClient client = new FakeClient();
         client.getConfig().set(Config.SSL, false);
         final StubMachine machine = new StubMachine();
-        STSHandler handler = new STSHandler(machine, client);
+        StsHandler handler = new StsHandler(machine, client);
         List<CapabilityState> capabilities = new ArrayList<>();
-        final String policyString = "draft/sts=" + STSPolicy.POLICY_OPTION_KEY_PORT;
+        final String policyString = "draft/sts=" + StsPolicy.POLICY_OPTION_KEY_PORT;
         capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
     }
 
-    private class StubMachine implements STSMachine {
+    private class StubMachine implements StsMachine {
 
-        private STSClientState state = STSClientState.UNKNOWN;
-        private STSPolicy policy;
+        private StsClientState state = StsClientState.UNKNOWN;
+        private StsPolicy policy;
 
         @Nonnull
         @Override
-        public STSClientState getCurrentState() {
+        public StsClientState getCurrentState() {
             return this.state;
         }
 
         @Override
-        public void setCurrentState(@Nonnull STSClientState newState) {
+        public void setCurrentState(@Nonnull StsClientState newState) {
             this.state = newState;
         }
 
         @Nonnull
         @Override
-        public STSStorageManager getStorageManager() {
+        public StsStorageManager getStorageManager() {
             return null;
         }
 
@@ -149,11 +149,11 @@ public class STSHandlerTest {
          * @param policy the valid STS policy
          */
         @Override
-        public void setSTSPolicy(@Nonnull STSPolicy policy) {
+        public void setStsPolicy(@Nonnull StsPolicy policy) {
             this.policy = policy;
         }
 
-        STSPolicy getPolicy() {
+        StsPolicy getPolicy() {
             return this.policy;
         }
     }

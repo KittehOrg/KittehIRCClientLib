@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.feature.sts;
 /**
  * Enum to keep track of the STS implementation's state machine.
  */
-public enum STSClientState {
+public enum StsClientState {
     /**
      * A state is not yet available. Perhaps the CAP LS command has not yet been issued or
      * the IRCd does not support IRCv3.

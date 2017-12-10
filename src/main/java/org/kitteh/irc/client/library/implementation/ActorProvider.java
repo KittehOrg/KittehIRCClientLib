@@ -68,10 +68,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 class ActorProvider implements Resettable {
-    class IRCActor {
+    class IrcActor {
         private String name;
 
-        private IRCActor(@Nonnull String name) {
+        private IrcActor(@Nonnull String name) {
             this.name = name;
         }
 
@@ -85,8 +85,8 @@ class ActorProvider implements Resettable {
         }
 
         @Nonnull
-        IRCActorSnapshot snapshot() {
-            return new IRCActorSnapshot(this);
+        IrcActorSnapshot snapshot() {
+            return new IrcActorSnapshot(this);
         }
 
         @Nonnull
@@ -96,12 +96,12 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCActorSnapshot implements Actor {
+    class IrcActorSnapshot implements Actor {
         private final Client client;
         private final long creationTime = System.currentTimeMillis();
         private final String name;
 
-        private IRCActorSnapshot(@Nonnull IRCActor actor) {
+        private IrcActorSnapshot(@Nonnull IrcActor actor) {
             this.client = ActorProvider.this.client;
             this.name = actor.name;
         }
@@ -135,11 +135,11 @@ class ActorProvider implements Resettable {
         }
     }
 
-    private class IRCStaleable<T extends Staleable> extends IRCActor {
+    private class IrcStaleable<T extends Staleable> extends IrcActor {
         @Nullable
         private T snapshot;
 
-        IRCStaleable(@Nonnull String name) {
+        IrcStaleable(@Nonnull String name) {
             super(name);
         }
 
@@ -160,12 +160,12 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCChannel extends IRCStaleable<IRCChannelSnapshot> {
+    class IrcChannel extends IrcStaleable<IrcChannelSnapshot> {
         private final Map<Character, ModeStatus<ChannelMode>> channelModes = new HashMap<>();
         private final Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
         private final Set<Character> trackedModes = new HashSet<>();
         private final Map<String, Set<ChannelUserMode>> modes;
-        private final IRCChannelCommands commands;
+        private final IrcChannelCommands commands;
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
@@ -175,10 +175,10 @@ class ActorProvider implements Resettable {
         private Instant topicTime;
         private volatile boolean tracked;
 
-        private IRCChannel(@Nonnull String channel) {
+        private IrcChannel(@Nonnull String channel) {
             super(channel);
             this.modes = new CIKeyMap<>(ActorProvider.this.client);
-            this.commands = new IRCChannelCommands(channel);
+            this.commands = new IrcChannelCommands(channel);
             ActorProvider.this.trackedChannels.put(channel, this);
         }
 
@@ -208,7 +208,7 @@ class ActorProvider implements Resettable {
 
         @Override
         @Nonnull
-        IRCChannelSnapshot snapshot() {
+        IrcChannelSnapshot snapshot() {
             if (ActorProvider.this.client.getConfig().getNotNull(Config.QUERY_CHANNEL_INFO)) {
                 synchronized (this.modes) {
                     if (this.tracked && !this.fullListReceived) {
@@ -220,7 +220,7 @@ class ActorProvider implements Resettable {
                     }
                 }
             }
-            return super.snapshot(() -> new IRCChannelSnapshot(IRCChannel.this, new IRCChannelTopicSnapshot(IRCChannel.this.topicTime, IRCChannel.this.topic, IRCChannel.this.topicSetter)));
+            return super.snapshot(() -> new IrcChannelSnapshot(IrcChannel.this, new IrcChannelTopicSnapshot(IrcChannel.this.topicTime, IrcChannel.this.topic, IrcChannel.this.topicSetter)));
         }
 
         void trackMode(@Nonnull ChannelMode mode, boolean track) {
@@ -256,7 +256,7 @@ class ActorProvider implements Resettable {
             }
         }
 
-        void trackUser(@Nonnull IRCUser user, @Nonnull Set<ChannelUserMode> modes) {
+        void trackUser(@Nonnull IrcUser user, @Nonnull Set<ChannelUserMode> modes) {
             ActorProvider.this.trackUser(user);
             this.setModes(user.getNick(), modes);
             this.markStale();
@@ -269,9 +269,9 @@ class ActorProvider implements Resettable {
             if ((index = nick.indexOf('!')) >= 0) { // userhost-in-names
                 nickname = nick.substring(0, index);
                 if (!ActorProvider.this.trackedUsers.containsKey(nick)) {
-                    IRCActor actor = ActorProvider.this.getActor(nick);
-                    if (actor instanceof IRCUser) {
-                        IRCUser user = (IRCUser) actor;
+                    IrcActor actor = ActorProvider.this.getActor(nick);
+                    if (actor instanceof IrcUser) {
+                        IrcUser user = (IrcUser) actor;
                         ActorProvider.this.trackUser(user);
                     }
                 }
@@ -342,12 +342,12 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCChannelTopicSnapshot implements Channel.Topic {
+    class IrcChannelTopicSnapshot implements Channel.Topic {
         private final Actor setter;
         private final Instant time;
         private final String topic;
 
-        private IRCChannelTopicSnapshot(@Nullable Instant time, @Nullable String topic, @Nullable Actor setter) {
+        private IrcChannelTopicSnapshot(@Nullable Instant time, @Nullable String topic, @Nullable Actor setter) {
             this.time = time;
             this.topic = topic;
             this.setter = setter;
@@ -378,7 +378,7 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCChannelSnapshot extends IRCActorSnapshot implements Channel {
+    class IrcChannelSnapshot extends IrcActorSnapshot implements Channel {
         private final ModeStatusList<ChannelMode> channelModes;
         private final Map<Character, List<ModeInfo>> modeInfoLists;
         private final Map<String, SortedSet<ChannelUserMode>> modes;
@@ -387,9 +387,9 @@ class ActorProvider implements Resettable {
         private final List<User> users;
         private final boolean complete;
         private final Topic topic;
-        private final IRCChannelCommands commands;
+        private final IrcChannelCommands commands;
 
-        private IRCChannelSnapshot(@Nonnull IRCChannel channel, @Nonnull Topic topic) {
+        private IrcChannelSnapshot(@Nonnull IrcChannel channel, @Nonnull Topic topic) {
             super(channel);
             this.complete = channel.fullListReceived;
             this.channelModes = ModeStatusList.of(channel.channelModes.values());
@@ -412,14 +412,14 @@ class ActorProvider implements Resettable {
             }
             this.modes = Collections.unmodifiableMap(newModes);
             this.names = Collections.unmodifiableList(new ArrayList<>(this.modes.keySet()));
-            this.nickMap = Collections.unmodifiableMap(channel.modes.keySet().stream().map(ActorProvider.this.trackedUsers::get).filter(Objects::nonNull).map(IRCUser::snapshot).collect(Collectors.toMap(User::getNick, Function.identity())));
+            this.nickMap = Collections.unmodifiableMap(channel.modes.keySet().stream().map(ActorProvider.this.trackedUsers::get).filter(Objects::nonNull).map(IrcUser::snapshot).collect(Collectors.toMap(User::getNick, Function.identity())));
             this.users = Collections.unmodifiableList(new ArrayList<>(this.nickMap.values()));
         }
 
         @Override
         public boolean equals(Object o) {
             // RFC 2812 section 1.3 'Channel names are case insensitive.'
-            return (o instanceof IRCChannelSnapshot) && (((IRCChannelSnapshot) o).getClient() == this.getClient()) && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
+            return (o instanceof IrcChannelSnapshot) && (((IrcChannelSnapshot) o).getClient() == this.getClient()) && this.toLowerCase(((Channel) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
         @Nonnull
@@ -484,7 +484,7 @@ class ActorProvider implements Resettable {
             Sanity.nullCheck(mode, "Mode cannot be null");
             Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
             Sanity.truthiness((mode.getChar() == 'b') || (mode.getChar() == 'e') || (mode.getChar() == 'I') || (mode.getChar() == 'q'), "Only modes b, e, I, and q supported");
-            IRCChannel channel = ActorProvider.this.getTrackedChannel(this.getName());
+            IrcChannel channel = ActorProvider.this.getTrackedChannel(this.getName());
             if (channel == null) {
                 throw new IllegalStateException("Not currently in channel " + this.getName());
             }
@@ -505,7 +505,7 @@ class ActorProvider implements Resettable {
 
         @Override
         public boolean isStale() {
-            IRCChannel channel = ActorProvider.this.getTrackedChannel(this.getName());
+            IrcChannel channel = ActorProvider.this.getTrackedChannel(this.getName());
             return (channel == null) || channel.isStale(this);
         }
 
@@ -516,10 +516,10 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCChannelCommands implements Channel.Commands {
+    class IrcChannelCommands implements Channel.Commands {
         private final String channel;
 
-        IRCChannelCommands(@Nonnull String channel) {
+        IrcChannelCommands(@Nonnull String channel) {
             this.channel = channel;
         }
 
@@ -542,7 +542,7 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCUser extends IRCStaleable<IRCUserSnapshot> {
+    class IrcUser extends IrcStaleable<IrcUserSnapshot> {
         private String account;
         @Nullable
         private String awayMessage;
@@ -554,7 +554,7 @@ class ActorProvider implements Resettable {
         private String realName;
         private String server;
 
-        private IRCUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host) {
+        private IrcUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host) {
             super(mask);
             this.nick = nick;
             this.user = user;
@@ -623,8 +623,8 @@ class ActorProvider implements Resettable {
 
         @Override
         @Nonnull
-        IRCUserSnapshot snapshot() {
-            return super.snapshot(() -> new IRCUserSnapshot(this));
+        IrcUserSnapshot snapshot() {
+            return super.snapshot(() -> new IrcUserSnapshot(this));
         }
 
         @Nonnull
@@ -634,7 +634,7 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCUserSnapshot extends IRCActorSnapshot implements User {
+    class IrcUserSnapshot extends IrcActorSnapshot implements User {
         private final String account;
         private final String awayMessage;
         private final Set<String> channels;
@@ -646,7 +646,7 @@ class ActorProvider implements Resettable {
         private final String server;
         private final String user;
 
-        private IRCUserSnapshot(@Nonnull IRCUser user) {
+        private IrcUserSnapshot(@Nonnull IrcUser user) {
             super(user);
             this.account = user.account;
             this.awayMessage = user.awayMessage;
@@ -658,7 +658,7 @@ class ActorProvider implements Resettable {
             this.realName = user.realName;
             this.server = user.server;
             Set<String> chanSet = new HashSet<>();
-            for (ActorProvider.IRCChannel channel : ActorProvider.this.trackedChannels.values()) {
+            for (IrcChannel channel : ActorProvider.this.trackedChannels.values()) {
                 if (channel.modes.containsKey(this.nick)) {
                     chanSet.add(channel.getName());
                 }
@@ -668,7 +668,7 @@ class ActorProvider implements Resettable {
 
         @Override
         public boolean equals(Object o) {
-            return (o instanceof IRCUserSnapshot) && (((IRCUserSnapshot) o).getClient() == this.getClient()) && this.toLowerCase(((IRCUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
+            return (o instanceof IrcUserSnapshot) && (((IrcUserSnapshot) o).getClient() == this.getClient()) && this.toLowerCase(((IrcUserSnapshot) o).getName()).equals(this.toLowerCase((this.getName())));
         }
 
         @Nonnull
@@ -743,7 +743,7 @@ class ActorProvider implements Resettable {
 
         @Override
         public boolean isStale() {
-            IRCUser user = ActorProvider.this.getUser(this.getNick());
+            IrcUser user = ActorProvider.this.getUser(this.getNick());
             return (user == null) || user.isStale(this);
         }
 
@@ -754,20 +754,20 @@ class ActorProvider implements Resettable {
         }
     }
 
-    class IRCServer extends IRCActor {
-        private IRCServer(@Nonnull String name) {
+    class IrcServer extends IrcActor {
+        private IrcServer(@Nonnull String name) {
             super(name);
         }
 
         @Override
         @Nonnull
-        IRCServerSnapshot snapshot() {
-            return new IRCServerSnapshot(this);
+        IrcServerSnapshot snapshot() {
+            return new IrcServerSnapshot(this);
         }
     }
 
-    class IRCServerSnapshot extends IRCActorSnapshot implements Server {
-        private IRCServerSnapshot(@Nonnull IRCServer actor) {
+    class IrcServerSnapshot extends IrcActorSnapshot implements Server {
+        private IrcServerSnapshot(@Nonnull IrcServer actor) {
             super(actor);
         }
 
@@ -788,8 +788,8 @@ class ActorProvider implements Resettable {
 
     private final InternalClient client;
 
-    private final Map<String, IRCChannel> trackedChannels;
-    private final Map<String, IRCUser> trackedUsers;
+    private final Map<String, IrcChannel> trackedChannels;
+    private final Map<String, IrcUser> trackedUsers;
 
     ActorProvider(@Nonnull InternalClient client) {
         this.client = client;
@@ -803,48 +803,48 @@ class ActorProvider implements Resettable {
         this.trackedUsers.forEach((name, user) -> user.markStale());
     }
 
-    void trackChannel(@Nonnull IRCChannel channel) {
+    void trackChannel(@Nonnull IrcChannel channel) {
         this.trackedChannels.put(channel.getName(), channel);
         channel.setTracked(true);
     }
 
-    void unTrackChannel(@Nonnull IRCChannel channel) {
+    void unTrackChannel(@Nonnull IrcChannel channel) {
         this.trackedChannels.remove(channel.getName());
         channel.setTracked(false);
     }
 
     @Nonnull
-    IRCActor getActor(@Nonnull String name) {
+    IrcActor getActor(@Nonnull String name) {
         Matcher nickMatcher = NICK_PATTERN.matcher(name);
         if (nickMatcher.matches()) {
             String nick = nickMatcher.group(1);
-            IRCUser user = this.trackedUsers.get(nick);
+            IrcUser user = this.trackedUsers.get(nick);
             if (user != null) {
                 return user;
             }
-            return new IRCUser(name, nick, nickMatcher.group(2), nickMatcher.group(3));
+            return new IrcUser(name, nick, nickMatcher.group(2), nickMatcher.group(3));
         }
-        IRCChannel channel = this.getChannel(name);
+        IrcChannel channel = this.getChannel(name);
         if (channel != null) {
             return channel;
         }
         if (name.isEmpty() || SERVER_PATTERN.matcher(name).matches()) {
-            return new IRCServer(name);
+            return new IrcServer(name);
         }
-        return new IRCActor(name);
+        return new IrcActor(name);
     }
 
     @Nullable
-    IRCChannel getChannel(@Nonnull String name) {
-        IRCChannel channel = this.getTrackedChannel(name);
+    IrcChannel getChannel(@Nonnull String name) {
+        IrcChannel channel = this.getTrackedChannel(name);
         if ((channel == null) && this.client.getServerInfo().isValidChannel(name)) {
-            channel = new IRCChannel(name);
+            channel = new IrcChannel(name);
         }
         return channel;
     }
 
     @Nullable
-    IRCChannel getTrackedChannel(@Nonnull String name) {
+    IrcChannel getTrackedChannel(@Nonnull String name) {
         return this.trackedChannels.get(name);
     }
 
@@ -854,17 +854,17 @@ class ActorProvider implements Resettable {
     }
 
     @Nonnull
-    Collection<IRCChannel> getTrackedChannels() {
+    Collection<IrcChannel> getTrackedChannels() {
         return this.trackedChannels.values();
     }
 
     @Nullable
-    IRCUser getUser(@Nonnull String nick) {
+    IrcUser getUser(@Nonnull String nick) {
         return this.trackedUsers.get(nick);
     }
 
     private void staleUser(String nick) {
-        IRCUser user = this.getUser(nick);
+        IrcUser user = this.getUser(nick);
         if (user != null) {
             user.markStale();
         }
@@ -874,33 +874,33 @@ class ActorProvider implements Resettable {
         this.trackedUsers.get(nick).setAccount(account);
     }
 
-    void trackUser(@Nonnull IRCUser user) {
+    void trackUser(@Nonnull IrcUser user) {
         if (!this.trackedUsers.containsKey(user.getNick())) {
             this.trackedUsers.put(user.getNick(), user);
         }
     }
 
     void setUserAway(@Nonnull String nick, String message) {
-        IRCUser user = this.trackedUsers.get(nick);
+        IrcUser user = this.trackedUsers.get(nick);
         if (user != null) {
             user.setAway(message);
         }
     }
 
     void trackUserNickChange(@Nonnull String oldNick, @Nonnull String newNick) {
-        IRCUser user = this.trackedUsers.remove(oldNick);
+        IrcUser user = this.trackedUsers.remove(oldNick);
         user.setNick(newNick);
         this.trackedUsers.put(newNick, user);
         this.trackedChannels.values().forEach(channel -> channel.trackUserNick(oldNick, newNick));
     }
 
     void trackUserHostnameChange(@Nonnull String nick, @Nonnull String newHostname) {
-        IRCUser user = this.trackedUsers.get(nick);
+        IrcUser user = this.trackedUsers.get(nick);
         user.setHost(newHostname);
     }
 
     void trackUserUserStringChange(@Nonnull String nick, @Nonnull String newUserString) {
-        IRCUser user = this.trackedUsers.get(nick);
+        IrcUser user = this.trackedUsers.get(nick);
         user.setUser(newUserString);
     }
 
@@ -913,7 +913,7 @@ class ActorProvider implements Resettable {
     private void checkUserForTracking(@Nonnull String nick) {
         if (!this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(nick, this.client.getNick())
                 && this.trackedChannels.values().stream().noneMatch(channel -> channel.modes.containsKey(nick))) {
-            IRCUser removed = this.trackedUsers.remove(nick);
+            IrcUser removed = this.trackedUsers.remove(nick);
             if (removed != null) {
                 removed.markStale();
             }

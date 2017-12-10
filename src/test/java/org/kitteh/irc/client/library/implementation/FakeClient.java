@@ -17,7 +17,7 @@ import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
-import org.kitteh.irc.client.library.feature.sts.STSMachine;
+import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
@@ -86,7 +86,7 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    public boolean isSSL() {
+    public boolean isSecureConnection() {
         return false;
     }
 
@@ -147,7 +147,7 @@ class FakeClient extends InternalClient {
 
     @Nonnull
     @Override
-    public Optional<STSMachine> getSTSMachine() {
+    public Optional<StsMachine> getStsMachine() {
         return Optional.empty(); // No STS in FakeClient for testing
     }
 
@@ -326,17 +326,17 @@ class FakeClient extends InternalClient {
     }
 
     @Override
-    public void sendCTCPMessage(@Nonnull String target, @Nonnull String message) {
+    public void sendCtcpMessage(@Nonnull String target, @Nonnull String message) {
 
     }
 
     @Override
-    public void sendCTCPMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+    public void sendCtcpMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
 
     }
 
     @Override
-    public void sendCTCPReply(@Nonnull String target, @Nonnull String message) {
+    public void sendCtcpReply(@Nonnull String target, @Nonnull String message) {
 
     }
 

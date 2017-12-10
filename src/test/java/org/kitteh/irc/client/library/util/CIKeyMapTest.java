@@ -180,7 +180,7 @@ public class CIKeyMapTest {
 
         @Nonnull
         @Override
-        public Optional<List<String>> getMOTD() {
+        public Optional<List<String>> getMotd() {
             return Optional.empty();
         }
 

@@ -31,7 +31,7 @@ import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
-import org.kitteh.irc.client.library.feature.sts.STSStorageManager;
+import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -270,7 +270,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
 
     @Nonnull
     @Override
-    public ClientBuilder stsStorageManager(@Nullable STSStorageManager storageManager) {
+    public ClientBuilder stsStorageManager(@Nullable StsStorageManager storageManager) {
         this.config.set(Config.STS_STORAGE_MANAGER, storageManager);
         return this;
     }
@@ -294,7 +294,7 @@ final class ClientBuilder implements Client.Builder, Cloneable {
         }
 
         this.updateInetEntries();
-        return new IRCClient(this.config.clone());
+        return new IrcClient(this.config.clone());
     }
 
     @Nonnull
