@@ -35,6 +35,7 @@ import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -98,6 +99,13 @@ final class ClientBuilder implements Client.Builder, Cloneable {
     @Override
     public ClientBuilder outputListener(@Nullable Consumer<String> listener) {
         this.config.set(Config.LISTENER_OUTPUT, (listener == null) ? null : new Config.StringConsumerWrapper(listener));
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public ClientBuilder maskProvider(@Nonnull final Function<Client, ? extends MaskProvider> supplier) {
+        this.config.set(Config.MASK_PROVIDER, Sanity.nullCheck(supplier, "supplier"));
         return this;
     }
 

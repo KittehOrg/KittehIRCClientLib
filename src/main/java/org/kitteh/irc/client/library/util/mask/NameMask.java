@@ -27,8 +27,12 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A mask that cares about the nick, user string, and host.
@@ -46,11 +50,45 @@ public final class NameMask implements Mask.AsString {
         return new NameMask(user.getNick(), user.getUserString(), user.getHost());
     }
 
+    /**
+     * Creates a name mask from the given string.
+     *
+     * @param string the string
+     * @return the name mask from the string
+     */
+    @Nonnull
+    public static NameMask fromString(@Nonnull final String string) {
+        Sanity.nullCheck(string, "string");
+        @Nullable final String nick;
+        @Nullable final String userString;
+        @Nullable final String host;
+        final Matcher matcher = PATTERN.matcher(string);
+        if (matcher.matches()) {
+            nick = matcher.group(1);
+            userString = matcher.group(1);
+            host = matcher.group(1);
+        } else {
+            nick = null;
+            userString = null;
+            host = null;
+        }
+        return new NameMask(nick, userString, host);
+    }
+
+    // Valid nick chars: \w\[]^`{}|-_
+    // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
+    // You know what? Screw it.
+    // Let's just do it assuming no IRCD can handle following the rules.
+    // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
+    public static final Pattern PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+    @Nullable
     private final String nick;
+    @Nullable
     private final String userString;
+    @Nullable
     private final String host;
 
-    private NameMask(final String nick, final String userString, final String host) {
+    private NameMask(@Nullable final String nick, @Nullable final String userString, @Nullable final String host) {
         this.nick = nick;
         this.userString = userString;
         this.host = host;
@@ -62,8 +100,8 @@ public final class NameMask implements Mask.AsString {
      * @return the nick
      */
     @Nonnull
-    public String getNick() {
-        return this.nick;
+    public Optional<String> getNick() {
+        return Optional.ofNullable(this.nick);
     }
 
     /**
@@ -72,8 +110,8 @@ public final class NameMask implements Mask.AsString {
      * @return the user string
      */
     @Nonnull
-    public String getUserString() {
-        return this.userString;
+    public Optional<String> getUserString() {
+        return Optional.ofNullable(this.userString);
     }
 
     /**
@@ -82,8 +120,8 @@ public final class NameMask implements Mask.AsString {
      * @return the host
      */
     @Nonnull
-    public String getHost() {
-        return this.host;
+    public Optional<String> getHost() {
+        return Optional.ofNullable(this.host);
     }
 
     @Override
@@ -103,7 +141,7 @@ public final class NameMask implements Mask.AsString {
     @Nonnull
     @Override
     public String asString() {
-        return this.nick + '!' + this.userString + '@' + this.host;
+        return this.getNick().orElse(WILDCARD_STRING) + '!' + this.getUserString().orElse(WILDCARD_STRING) + '@' + this.getHost().orElse(WILDCARD_STRING);
     }
 
     @Override

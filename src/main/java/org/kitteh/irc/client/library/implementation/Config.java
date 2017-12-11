@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.Version;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -144,6 +145,7 @@ final class Config {
     static final Entry<ExceptionConsumerWrapper> LISTENER_EXCEPTION = new Entry<>(new ExceptionConsumerWrapper(Throwable::printStackTrace), ExceptionConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_INPUT = new Entry<>(null, StringConsumerWrapper.class);
     static final Entry<StringConsumerWrapper> LISTENER_OUTPUT = new Entry<>(null, StringConsumerWrapper.class);
+    static final Entry<Function> MASK_PROVIDER = new Entry<>(getFunction(client -> new MaskProvider.DefaultMaskProvider()), Function.class);
     static final Entry<Function> MANAGER_AUTH = new Entry<>(getFunction(DefaultAuthManager::new), Function.class);
     static final Entry<Function> MANAGER_CAPABILITY = new Entry<>(getFunction(DefaultCapabilityManager::new), Function.class);
     static final Entry<Function> MANAGER_EVENT = new Entry<>(getFunction(DefaultEventManager::new), Function.class);

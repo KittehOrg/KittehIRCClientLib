@@ -63,6 +63,7 @@ import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -193,6 +194,15 @@ public interface Client {
          */
         @Nonnull
         Builder iSupportManager(@Nonnull Function<Client, ? extends ISupportManager> supplier);
+
+        /**
+         * Sets the supplier of the mask provider.
+         *
+         * @param supplier supplier
+         * @return this builder
+         */
+        @Nonnull
+        Builder maskProvider(@Nonnull Function<Client, ? extends MaskProvider> supplier);
 
         /**
          * Sets the supplier of message sending queues, which dictate the
@@ -1231,4 +1241,12 @@ public interface Client {
      * @param reason quit message to send
      */
     void shutdown(@Nullable String reason);
+
+    /**
+     * Gets the mask provider.
+     *
+     * @return the mask provider
+     */
+    @Nonnull
+    MaskProvider getMaskProvider();
 }
