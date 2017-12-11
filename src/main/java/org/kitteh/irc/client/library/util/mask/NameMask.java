@@ -26,69 +26,50 @@ package org.kitteh.irc.client.library.util.mask;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 /**
- * A mask that only cares about matching the host.
+ * A mask that cares about the nick, user string, and host.
  */
-public final class HostMask implements Mask.AsString {
+public final class NameMask implements Mask.AsString {
     /**
-     * Creates a host mask from the given user.
+     * Creates a name mask from the given user.
      *
      * @param user the user
-     * @return the host mask from the user's host
+     * @return the name mask from the user's host
      */
     @Nonnull
-    public static HostMask fromUser(@Nonnull final User user) {
+    public static NameMask fromUser(@Nonnull final User user) {
         Sanity.nullCheck(user, "user");
-        return new HostMask(user.getHost());
+        return new NameMask(user.getNick(), user.getUserString(), user.getHost());
     }
 
-    /**
-     * Creates a host mask from the given host.
-     *
-     * @param host the host
-     * @return the host mask
-     */
-    @Nonnull
-    public static HostMask fromHost(@Nonnull final String host) {
-        Sanity.nullCheck(host, "host");
-        return new HostMask(host);
-    }
-
+    private final String nick;
+    private final String userString;
     private final String host;
 
-    private HostMask(@Nonnull final String host) {
-        this.host = Sanity.nullCheck(host, "host");
-    }
-
-    /**
-     * Gets the host.
-     *
-     * @return the host
-     */
-    @Nonnull
-    public String getHost() {
-        return this.host;
+    private NameMask(final String nick, final String userString, final String host) {
+        this.nick = nick;
+        this.userString = userString;
+        this.host = host;
     }
 
     @Override
-    public boolean test(@Nonnull final User user) {
-        Sanity.nullCheck(user, "user");
-        return user.getHost().equals(this.host);
+    public boolean test(@Nonnull User user) {
+        return false;
     }
 
     @Override
-    public boolean test(@Nonnull final String host) {
-        Sanity.nullCheck(host, "host");
-        return host.equals(this.host);
+    public boolean test(@Nonnull String string) {
+        return false;
     }
 
     @Nonnull
     @Override
     public String asString() {
-        return "*!*@" + this.host; // TODO(kashike)
+        return this.nick + '!' + this.userString + '@' + this.host;
     }
 
     @Override
@@ -99,12 +80,14 @@ public final class HostMask implements Mask.AsString {
         if (other == null || this.getClass() != other.getClass()) {
             return false;
         }
-        final HostMask that = (HostMask) other;
-        return Objects.equals(this.host, that.host);
+        final NameMask that = (NameMask) other;
+        return Objects.equals(this.nick, that.nick)
+            && Objects.equals(this.userString, that.userString)
+            && Objects.equals(this.host, that.host);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.host);
+        return Objects.hash(this.nick, this.userString, this.host);
     }
 }

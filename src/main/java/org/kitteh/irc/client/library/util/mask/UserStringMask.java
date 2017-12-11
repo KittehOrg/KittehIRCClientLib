@@ -32,7 +32,7 @@ import java.util.Objects;
 /**
  * A mask that only cares about matching the user string.
  */
-public final class UserStringMask implements Mask {
+public final class UserStringMask implements Mask.AsString {
     /**
      * Creates a user string mask from the given user.
      *

@@ -32,7 +32,7 @@ import java.util.Objects;
 /**
  * A mask that only cares about matching the nick.
  */
-public final class NickMask implements Mask {
+public final class NickMask implements Mask.AsString {
     /**
      * Creates a nick mask from the given user.
      *

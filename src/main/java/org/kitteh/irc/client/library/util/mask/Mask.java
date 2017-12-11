@@ -38,6 +38,19 @@ import javax.annotation.Nonnull;
  */
 public interface Mask extends Predicate<User> {
     /**
+     * Represents a mask that can be represented as a {@code String}.
+     */
+    interface AsString extends Mask {
+        /**
+         * Gets the string representation of this mask.
+         *
+         * @return the string representation
+         */
+        @Nonnull
+        String asString();
+    }
+
+    /**
      * Tests if the user matches this mask.
      *
      * @param user the user
@@ -54,6 +67,51 @@ public interface Mask extends Predicate<User> {
      */
     boolean test(@Nonnull final String string);
 
+    @Override
+    default Mask and(final Predicate<? super User> other) {
+        return new Mask() {
+            @Override
+            public boolean test(@Nonnull User user) {
+                return Mask.this.test(user) && other.test(user);
+            }
+
+            @Override
+            public boolean test(@Nonnull String string) {
+                return Mask.this.test(string) && ((!(other instanceof Mask)) || ((Mask) other).test(string));
+            }
+        };
+    }
+
+    @Override
+    default Mask negate() {
+        return new Mask() {
+            @Override
+            public boolean test(@Nonnull final User user) {
+                return !Mask.this.test(user);
+            }
+
+            @Override
+            public boolean test(@Nonnull final String string) {
+                return !Mask.this.test(string);
+            }
+        };
+    }
+
+    @Override
+    default Mask or(final Predicate<? super User> other) {
+        return new Mask() {
+            @Override
+            public boolean test(@Nonnull User user) {
+                return Mask.this.test(user) || other.test(user);
+            }
+
+            @Override
+            public boolean test(@Nonnull String string) {
+                return Mask.this.test(string) || ((!(other instanceof Mask)) || ((Mask) other).test(string));
+            }
+        };
+    }
+
     /**
      * Gets a list of users that match this mask in the provided channel.
      *
@@ -67,12 +125,4 @@ public interface Mask extends Predicate<User> {
             .filter(this)
             .collect(Collectors.toList());
     }
-
-    /**
-     * Gets the string representation of this mask.
-     *
-     * @return the string representation
-     */
-    @Nonnull
-    String asString();
 }
