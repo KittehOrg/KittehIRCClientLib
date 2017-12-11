@@ -21,6 +21,7 @@ import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -398,6 +399,12 @@ class FakeClient extends InternalClient {
     @Nonnull
     @Override
     public Commands commands() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public MaskProvider getMaskProvider() {
         return null;
     }
 }
