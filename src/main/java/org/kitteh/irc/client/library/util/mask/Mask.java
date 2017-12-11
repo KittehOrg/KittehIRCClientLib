@@ -26,6 +26,10 @@ package org.kitteh.irc.client.library.util.mask;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.mask.operation.AndMask;
+import org.kitteh.irc.client.library.util.mask.operation.NegateMask;
+import org.kitteh.irc.client.library.util.mask.operation.OrMask;
+import org.kitteh.irc.client.library.util.mask.operation.PredicateMask;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -51,6 +55,15 @@ public interface Mask extends Predicate<User> {
     }
 
     /**
+     * A character representing a wildcard.
+     */
+    char WILDCARD_CHAR = '*';
+    /**
+     * A string representing a wildcard.
+     */
+    String WILDCARD_STRING = String.valueOf(WILDCARD_CHAR);
+
+    /**
      * Tests if the user matches this mask.
      *
      * @param user the user
@@ -69,47 +82,17 @@ public interface Mask extends Predicate<User> {
 
     @Override
     default Mask and(final Predicate<? super User> other) {
-        return new Mask() {
-            @Override
-            public boolean test(@Nonnull User user) {
-                return Mask.this.test(user) && other.test(user);
-            }
-
-            @Override
-            public boolean test(@Nonnull String string) {
-                return Mask.this.test(string) && ((!(other instanceof Mask)) || ((Mask) other).test(string));
-            }
-        };
+        return new AndMask(this, PredicateMask.forPredicate(other));
     }
 
     @Override
     default Mask negate() {
-        return new Mask() {
-            @Override
-            public boolean test(@Nonnull final User user) {
-                return !Mask.this.test(user);
-            }
-
-            @Override
-            public boolean test(@Nonnull final String string) {
-                return !Mask.this.test(string);
-            }
-        };
+        return new NegateMask(this);
     }
 
     @Override
     default Mask or(final Predicate<? super User> other) {
-        return new Mask() {
-            @Override
-            public boolean test(@Nonnull User user) {
-                return Mask.this.test(user) || other.test(user);
-            }
-
-            @Override
-            public boolean test(@Nonnull String string) {
-                return Mask.this.test(string) || ((!(other instanceof Mask)) || ((Mask) other).test(string));
-            }
-        };
+        return new OrMask(this, PredicateMask.forPredicate(other));
     }
 
     /**

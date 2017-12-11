@@ -88,7 +88,7 @@ public final class NickMask implements Mask.AsString {
     @Nonnull
     @Override
     public String asString() {
-        return this.nick + "!*@*"; // TODO(kashike)
+        return this.nick + '!' + WILDCARD_STRING + '@' + WILDCARD_STRING;
     }
 
     @Override

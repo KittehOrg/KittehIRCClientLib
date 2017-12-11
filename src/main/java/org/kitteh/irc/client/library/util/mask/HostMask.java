@@ -88,7 +88,7 @@ public final class HostMask implements Mask.AsString {
     @Nonnull
     @Override
     public String asString() {
-        return "*!*@" + this.host; // TODO(kashike)
+        return WILDCARD_STRING + '!' + WILDCARD_STRING + '@' + this.host;
     }
 
     @Override

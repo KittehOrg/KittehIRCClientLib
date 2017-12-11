@@ -88,7 +88,7 @@ public final class UserStringMask implements Mask.AsString {
     @Nonnull
     @Override
     public String asString() {
-        return "*!" + this.userString + "@*"; // TODO(kashike)
+        return WILDCARD_STRING + '!' + this.userString + '@' + WILDCARD_STRING;
     }
 
     @Override
