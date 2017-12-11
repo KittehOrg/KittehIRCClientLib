@@ -52,9 +52,9 @@ public class MaskTest {
         final User user = new TestUser("mbaxter", "~mbax", "kitten.institute", null);
         final NameMask mask = NameMask.fromUser(user);
 
-        Assert.assertEquals("mbaxter", mask.getNick());
-        Assert.assertEquals("~mbax", mask.getUserString());
-        Assert.assertEquals("kitten.institute", mask.getHost());
+        Assert.assertEquals("mbaxter", mask.getNick().orElse(null));
+        Assert.assertEquals("~mbax", mask.getUserString().orElse(null));
+        Assert.assertEquals("kitten.institute", mask.getHost().orElse(null));
         Assert.assertEquals("mbaxter!~mbax@kitten.institute", mask.asString());
 
         MaskTest.assertContainsOnly(mask, Collections.singletonList(
@@ -71,6 +71,20 @@ public class MaskTest {
 
         Assert.assertEquals("mbaxter", mask.getNick());
         Assert.assertEquals("mbaxter!*@*", mask.asString());
+
+        MaskTest.assertContainsOnly(mask, Collections.singletonList(
+            new TestUser("mbaxter", "~mbax", "kitten.institute", null)
+        ), Collections.singletonList(
+            new TestUser("kashike", "kashike", "is.sleeping.in.the.kingdom.of.kandarin.xyz", null)
+        ));
+    }
+
+    @Test
+    public void testUserString() {
+        final UserStringMask mask = UserStringMask.fromUserString("~mbax");
+
+        Assert.assertEquals("~mbax", mask.getUserString());
+        Assert.assertEquals("*!~mbax@*", mask.asString());
 
         MaskTest.assertContainsOnly(mask, Collections.singletonList(
             new TestUser("mbaxter", "~mbax", "kitten.institute", null)
