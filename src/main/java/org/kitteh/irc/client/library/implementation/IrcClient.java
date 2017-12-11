@@ -66,6 +66,7 @@ import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.mask.MaskProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -188,6 +189,7 @@ final class IrcClient extends InternalClient {
     private final Listener<String> outputListener;
 
     private final ActorProvider actorProvider = new ActorProvider(this);
+    private MaskProvider maskProvider; // TODO(kashike): setter
 
     private DefaultMessageMap defaultMessageMap;
 
@@ -231,6 +233,7 @@ final class IrcClient extends InternalClient {
         this.capabilityManager = ((Function<Client.WithManagement, CapabilityManager.WithManagement>) this.config.getNotNull(Config.MANAGER_CAPABILITY)).apply(this);
         this.iSupportManager = ((Function<Client.WithManagement, ISupportManager>) this.config.getNotNull(Config.MANAGER_ISUPPORT)).apply(this);
         this.serverInfo = ((Function<Client.WithManagement, ServerInfo.WithManagement>) this.config.getNotNull(Config.SERVER_INFO)).apply(this);
+        this.maskProvider = ((Function<Client.WithManagement, MaskProvider>) this.config.getNotNull(Config.MASK_PROVIDER)).apply(this);
 
         DefaultMessageMap defaultMessageMap = this.config.get(Config.DEFAULT_MESSAGE_MAP);
         if (defaultMessageMap == null) {
@@ -847,5 +850,11 @@ final class IrcClient extends InternalClient {
     @Override
     public Commands commands() {
         return this.commands;
+    }
+
+    @Nonnull
+    @Override
+    public MaskProvider getMaskProvider() {
+        return this.maskProvider;
     }
 }

@@ -38,6 +38,13 @@ import javax.annotation.Nullable;
  * A mask that cares about the nick, user string, and host.
  */
 public final class NameMask implements Mask.AsString {
+    // Valid nick chars: \w\[]^`{}|-_
+    // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
+    // You know what? Screw it.
+    // Let's just do it assuming no IRCD can handle following the rules.
+    // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
+    public static final Pattern PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+
     /**
      * Creates a name mask from the given user.
      *
@@ -75,12 +82,17 @@ public final class NameMask implements Mask.AsString {
         return new NameMask(nick, userString, host);
     }
 
-    // Valid nick chars: \w\[]^`{}|-_
-    // Pattern unescaped: ([\w\\\[\]\^`\{\}\|\-_]+)!([~\w]+)@([\w\.\-:]+)
-    // You know what? Screw it.
-    // Let's just do it assuming no IRCD can handle following the rules.
-    // New pattern: ([^!@]+)!([^!@]+)@([^!@]+)
-    public static final Pattern PATTERN = Pattern.compile("([^!@]+)!([^!@]+)@([^!@]+)");
+    /**
+     * Tests if two strings are equal, defaulting to {@code true} if {@code b} is {@code null}.
+     *
+     * @param a the first string
+     * @param b the second string
+     * @return {@code true} if equal
+     */
+    private static boolean equals(@Nonnull final String a, @Nullable final String b) {
+        return (b == null) || a.equals(b);
+    }
+
     @Nullable
     private final String nick;
     @Nullable
@@ -127,9 +139,9 @@ public final class NameMask implements Mask.AsString {
     @Override
     public boolean test(@Nonnull final User user) {
         Sanity.nullCheck(user, "user");
-        return user.getNick().equals(this.nick)
-            && user.getUserString().equals(this.userString)
-            && user.getHost().equals(this.host);
+        return equals(user.getNick(), this.nick)
+            && equals(user.getUserString(), this.userString)
+            && equals(user.getHost(), this.host);
     }
 
     @Override
