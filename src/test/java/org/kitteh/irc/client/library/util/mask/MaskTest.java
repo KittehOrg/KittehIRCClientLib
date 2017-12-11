@@ -25,7 +25,7 @@ public class MaskTest {
         Assert.assertEquals("kitten.institute", mask.getHost());
         Assert.assertEquals("*!*@kitten.institute", mask.asString());
 
-        assertContainsOnly(mask, Collections.singletonList(
+        MaskTest.assertContainsOnly(mask, Collections.singletonList(
             new TestUser("mbaxter", "~mbax", "kitten.institute", null)
         ), Collections.singletonList(
             new TestUser("kashike", "kashike", "is.sleeping.in.the.kingdom.of.kandarin.xyz", null)
@@ -39,10 +39,28 @@ public class MaskTest {
         Assert.assertEquals("kitten.institute", mask.getHost());
         Assert.assertEquals("*!*@kitten.institute", mask.asString());
 
-        assertContainsOnly(mask, Arrays.asList(
+        MaskTest.assertContainsOnly(mask, Arrays.asList(
             new TestUser("mbaxter", "~mbax", "kitten.institute", null),
             new TestUser("kashike", "kashike", "kitten.institute", null)
         ), Collections.singletonList(
+            new TestUser("lol768", "lol768", "andy.in.toy.story", null)
+        ));
+    }
+
+    @Test
+    public void testName() {
+        final User user = new TestUser("mbaxter", "~mbax", "kitten.institute", null);
+        final NameMask mask = NameMask.fromUser(user);
+
+        Assert.assertEquals("mbaxter", mask.getNick());
+        Assert.assertEquals("~mbax", mask.getUserString());
+        Assert.assertEquals("kitten.institute", mask.getHost());
+        Assert.assertEquals("mbaxter!~mbax@kitten.institute", mask.asString());
+
+        MaskTest.assertContainsOnly(mask, Collections.singletonList(
+            new TestUser("mbaxter", "~mbax", "kitten.institute", null)
+        ), Arrays.asList(
+            new TestUser("kashike", "kashike", "kitten.institute", null),
             new TestUser("lol768", "lol768", "andy.in.toy.story", null)
         ));
     }
@@ -54,7 +72,7 @@ public class MaskTest {
         Assert.assertEquals("mbaxter", mask.getNick());
         Assert.assertEquals("mbaxter!*@*", mask.asString());
 
-        assertContainsOnly(mask, Collections.singletonList(
+        MaskTest.assertContainsOnly(mask, Collections.singletonList(
             new TestUser("mbaxter", "~mbax", "kitten.institute", null)
         ), Collections.singletonList(
             new TestUser("kashike", "kashike", "is.sleeping.in.the.kingdom.of.kandarin.xyz", null)

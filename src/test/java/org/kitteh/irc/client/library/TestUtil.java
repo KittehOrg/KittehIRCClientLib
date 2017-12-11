@@ -33,27 +33,27 @@ public class TestUtil {
         all.addAll(yes);
         all.addAll(no);
         stubbing.thenReturn(all);
-        final Collection<? extends T> matches = supplier.get();
-        Assert.assertTrue(matches.size() == yes.size());
-        yes.forEach(entry -> Assert.assertTrue("should contain " + entry, matches.contains(entry)));
-        no.forEach(entry -> Assert.assertFalse("should not contain " + entry, matches.contains(entry)));
+        final Collection<? extends T> result = supplier.get();
+        Assert.assertTrue(result.size() == yes.size());
+        yes.forEach(entry -> Assert.assertTrue("should contain " + entry, result.contains(entry)));
+        no.forEach(entry -> Assert.assertFalse("should not contain " + entry, result.contains(entry)));
     }
 
     @Test
     public void testPresentOptionalCorrectValue() {
         final Optional<String> optional = Optional.of("kittens");
-        assertOptionalEquals(optional, "kittens");
+        TestUtil.assertOptionalEquals(optional, "kittens");
     }
 
     @Test(expected = ComparisonFailure.class)
     public void testPresentOptionalWrongValue() {
         final Optional<String> optional = Optional.of("cats");
-        assertOptionalEquals(optional, "kittens");
+        TestUtil.assertOptionalEquals(optional, "kittens");
     }
 
     @Test(expected = AssertionError.class)
     public void testEmptyOptional() {
         final Optional<String> optional = Optional.empty();
-        assertOptionalEquals(optional, "kittens");
+        TestUtil.assertOptionalEquals(optional, "kittens");
     }
 }

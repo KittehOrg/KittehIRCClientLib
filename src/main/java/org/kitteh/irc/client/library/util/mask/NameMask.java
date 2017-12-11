@@ -56,14 +56,48 @@ public final class NameMask implements Mask.AsString {
         this.host = host;
     }
 
-    @Override
-    public boolean test(@Nonnull User user) {
-        return false;
+    /**
+     * Gets the nick.
+     *
+     * @return the nick
+     */
+    @Nonnull
+    public String getNick() {
+        return this.nick;
+    }
+
+    /**
+     * Gets the user string.
+     *
+     * @return the user string
+     */
+    @Nonnull
+    public String getUserString() {
+        return this.userString;
+    }
+
+    /**
+     * Gets the host.
+     *
+     * @return the host
+     */
+    @Nonnull
+    public String getHost() {
+        return this.host;
     }
 
     @Override
-    public boolean test(@Nonnull String string) {
-        return false;
+    public boolean test(@Nonnull final User user) {
+        Sanity.nullCheck(user, "user");
+        return user.getNick().equals(this.nick)
+            && user.getUserString().equals(this.userString)
+            && user.getHost().equals(this.host);
+    }
+
+    @Override
+    public boolean test(@Nonnull final String string) {
+        Sanity.nullCheck(string, "string");
+        return this.asString().equals(string);
     }
 
     @Nonnull
