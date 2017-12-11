@@ -27,10 +27,11 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
-import java.util.Set;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
 
 /**
  * Represents a mask that can match a {@link User}.
@@ -54,17 +55,17 @@ public interface Mask extends Predicate<User> {
     boolean test(@Nonnull final String string);
 
     /**
-     * Gets a set of users that match this mask in the provided channel.
+     * Gets a list of users that match this mask in the provided channel.
      *
      * @param channel the channel
-     * @return a set of users that match this mask
+     * @return a list of users that match this mask
      */
     @Nonnull
-    default Set<User> getMatches(@Nonnull final Channel channel) {
+    default List<User> getMatches(@Nonnull final Channel channel) {
         Sanity.nullCheck(channel, "Channel cannot be null");
         return channel.getUsers().stream()
             .filter(this)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toList());
     }
 
     /**

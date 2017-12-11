@@ -36,6 +36,7 @@ import org.kitteh.irc.client.library.event.channel.ChannelModeInfoListEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.mask.Mask;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;
@@ -177,6 +178,16 @@ public interface Channel extends MessageReceiver, Staleable {
      */
     @Nonnull
     List<User> getUsers();
+
+    /**
+     * Gets a list of users that match the mask in the channel.
+     *
+     * @param mask the mask
+     * @return a list of users that match thie mask
+     */
+    default List<User> getUsers(@Nonnull Mask mask) {
+        return Sanity.nullCheck(mask, "mask").getMatches(this);
+    }
 
     /**
      * Gets the user modes of a given nickname in the channel.

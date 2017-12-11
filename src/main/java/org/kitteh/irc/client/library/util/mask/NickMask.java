@@ -32,7 +32,7 @@ import java.util.Objects;
 /**
  * A mask that only cares about matching the nick.
  */
-public class NickMask implements Mask {
+public final class NickMask implements Mask {
     /**
      * Creates a nick mask from the given user.
      *
@@ -59,7 +59,7 @@ public class NickMask implements Mask {
 
     private final String nick;
 
-    public NickMask(@Nonnull final String nick) {
+    private NickMask(@Nonnull final String nick) {
         this.nick = Sanity.nullCheck(nick, "nick");
     }
 

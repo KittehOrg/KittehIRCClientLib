@@ -32,7 +32,7 @@ import java.util.Objects;
 /**
  * A mask that only cares about matching the host.
  */
-public class HostMask implements Mask {
+public final class HostMask implements Mask {
     /**
      * Creates a host mask from the given user.
      *
@@ -59,7 +59,7 @@ public class HostMask implements Mask {
 
     private final String host;
 
-    public HostMask(@Nonnull final String host) {
+    private HostMask(@Nonnull final String host) {
         this.host = Sanity.nullCheck(host, "host");
     }
 

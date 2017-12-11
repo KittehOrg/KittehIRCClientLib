@@ -32,7 +32,7 @@ import java.util.Objects;
 /**
  * A mask that only cares about matching the user string.
  */
-public class UserStringMask implements Mask {
+public final class UserStringMask implements Mask {
     /**
      * Creates a user string mask from the given user.
      *
@@ -59,7 +59,7 @@ public class UserStringMask implements Mask {
 
     private final String userString;
 
-    public UserStringMask(@Nonnull final String userString) {
+    private UserStringMask(@Nonnull final String userString) {
         this.userString = Sanity.nullCheck(userString, "userString");
     }
 
