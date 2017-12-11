@@ -102,6 +102,7 @@ import org.kitteh.irc.client.library.feature.twitch.TwitchListener;
 import org.kitteh.irc.client.library.util.CtcpUtil;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.mask.Mask;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -567,7 +568,8 @@ class EventListener {
             }
             Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
             if (channelMode.isPresent()) {
-                infoList.add(new ModeInfo.DefaultModeInfo(this.client, channel.snapshot(), channelMode.get(), this.client.getMaskProvider().getAsString(event.getParameters().get((2 + offset))), creator, creationTime));
+                final Mask.AsString mask = this.client.getMaskProvider().getAsString(event.getParameters().get((2 + offset)));
+                infoList.add(new ModeInfo.DefaultModeInfo(this.client, channel.snapshot(), channelMode.get(), mask, creator, creationTime));
             } else {
                 this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
             }
@@ -1052,7 +1054,10 @@ class EventListener {
             }
             Channel channelSnapshot = channel.snapshot();
             this.fire(new ChannelModeEvent(this.client, event.getOriginalMessages(), event.getActor(), channelSnapshot, statusList));
-            statusList.getStatuses().stream().filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK).forEach(status -> channel.trackModeInfo(status.isSetting(), new ModeInfo.DefaultModeInfo(this.client, channelSnapshot, status.getMode(), this.client.getMaskProvider().getAsString(status.getParameter().get()), event.getActor().getName(), Instant.now())));
+            statusList.getStatuses().stream().filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK).forEach(status -> {
+                final Mask.AsString mask = this.client.getMaskProvider().getAsString(status.getParameter().get());
+                channel.trackModeInfo(status.isSetting(), new ModeInfo.DefaultModeInfo(this.client, channelSnapshot, status.getMode(), mask, event.getActor().getName(), Instant.now()));
+            });
             channel.updateChannelModes(statusList);
         } else {
             this.trackException(event, "MODE message sent for invalid target");
