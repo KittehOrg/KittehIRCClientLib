@@ -21,29 +21,36 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.defaults.element.isupport;
+
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-/**
- * Represents an entity on an IRC server which can perform actions.
- */
-public interface Actor extends Snapshot {
-    /**
-     * Gets the Actor's name.
-     *
-     * @return the Actor's name
-     */
-    @Nonnull
-    String getName();
+public class DefaultISupportChanTypes extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanTypes {
+    private final List<Character> prefixes;
 
-    /**
-     * Gets the Actor's name in lower case based on the Client's information.
-     *
-     * @return lowercased Actor's name
-     */
+    public DefaultISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        super(client, name, value);
+        if (value == null) {
+            throw new KittehServerISupportException(name, "No chantypes defined");
+        }
+        List<Character> prefixes = new ArrayList<>();
+        for (char c : value.toCharArray()) {
+            prefixes.add(c);
+        }
+        this.prefixes = Collections.unmodifiableList(prefixes);
+    }
+
     @Nonnull
-    default String getLowerCaseName() {
-        return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
+    @Override
+    public List<Character> getTypes() {
+        return this.prefixes;
     }
 }

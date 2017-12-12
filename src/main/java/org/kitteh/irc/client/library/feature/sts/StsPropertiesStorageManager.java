@@ -24,8 +24,8 @@
 package org.kitteh.irc.client.library.feature.sts;
 
 import org.kitteh.irc.client.library.exception.KittehStsException;
-import org.kitteh.irc.client.library.util.StsUtil;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.StsUtil;
 
 import javax.annotation.Nonnull;
 import java.io.BufferedReader;

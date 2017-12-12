@@ -43,7 +43,7 @@ public class SingleDelaySender extends QueueProcessingThreadSender {
      * @param delay delay to set
      * @return supplier
      */
-    public static Function<Client, SingleDelaySender> getSupplier(int delay) {
+    public static Function<Client.WithManagement, SingleDelaySender> getSupplier(int delay) {
         return client -> new SingleDelaySender(client, "SingleDelay " + delay, delay);
     }
 

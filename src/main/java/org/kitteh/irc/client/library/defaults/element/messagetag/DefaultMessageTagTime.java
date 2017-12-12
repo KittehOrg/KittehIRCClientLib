@@ -21,29 +21,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.defaults.element.messagetag;
+
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
+import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 
-/**
- * Represents an entity on an IRC server which can perform actions.
- */
-public interface Actor extends Snapshot {
-    /**
-     * Gets the Actor's name.
-     *
-     * @return the Actor's name
-     */
-    @Nonnull
-    String getName();
+public class DefaultMessageTagTime extends MessageTagManager.DefaultMessageTag implements MessageTag.Time {
+    public static final TriFunction<Client, String, String, DefaultMessageTagTime> FUNCTION = (client, name, value) -> new DefaultMessageTagTime(name, value, Instant.parse(value));
 
-    /**
-     * Gets the Actor's name in lower case based on the Client's information.
-     *
-     * @return lowercased Actor's name
-     */
+    private final Instant time;
+
+    private DefaultMessageTagTime(@Nonnull String name, @Nonnull String value, @Nonnull Instant time) {
+        super(name, value);
+        this.time = time;
+    }
+
     @Nonnull
-    default String getLowerCaseName() {
-        return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
+    @Override
+    public Instant getTime() {
+        return this.time;
     }
 }

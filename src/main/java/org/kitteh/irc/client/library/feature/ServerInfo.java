@@ -270,7 +270,7 @@ public interface ServerInfo {
      * @return true if WHOX is supported
      */
     default boolean hasWhoXSupport() {
-        return this.getISupportParameter(ISupportParameter.Whox.NAME).isPresent();
+        return this.getISupportParameter(ISupportParameter.WhoX.NAME).isPresent();
     }
 
     /**

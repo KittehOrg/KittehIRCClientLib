@@ -21,29 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
-
-import javax.annotation.Nonnull;
-
 /**
- * Represents an entity on an IRC server which can perform actions.
+ * Defaults!
  */
-public interface Actor extends Snapshot {
-    /**
-     * Gets the Actor's name.
-     *
-     * @return the Actor's name
-     */
-    @Nonnull
-    String getName();
-
-    /**
-     * Gets the Actor's name in lower case based on the Client's information.
-     *
-     * @return lowercased Actor's name
-     */
-    @Nonnull
-    default String getLowerCaseName() {
-        return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
-    }
-}
+package org.kitteh.irc.client.library.defaults.feature;

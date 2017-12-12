@@ -33,6 +33,13 @@ import org.kitteh.irc.client.library.command.OperCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.command.WallopsCommand;
 import org.kitteh.irc.client.library.command.WhoisCommand;
+import org.kitteh.irc.client.library.defaults.feature.DefaultActorTracker;
+import org.kitteh.irc.client.library.defaults.feature.DefaultAuthManager;
+import org.kitteh.irc.client.library.defaults.feature.DefaultCapabilityManager;
+import org.kitteh.irc.client.library.defaults.feature.DefaultEventManager;
+import org.kitteh.irc.client.library.defaults.feature.DefaultISupportManager;
+import org.kitteh.irc.client.library.defaults.feature.DefaultMessageTagManager;
+import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
@@ -42,17 +49,13 @@ import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteE
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.helper.UnexpectedChannelLeaveEvent;
 import org.kitteh.irc.client.library.event.user.PrivateCtcpQueryEvent;
+import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
-import org.kitteh.irc.client.library.feature.defaultmanager.DefaultAuthManager;
-import org.kitteh.irc.client.library.feature.defaultmanager.DefaultCapabilityManager;
-import org.kitteh.irc.client.library.feature.defaultmanager.DefaultEventManager;
-import org.kitteh.irc.client.library.feature.defaultmanager.DefaultISupportManager;
-import org.kitteh.irc.client.library.feature.defaultmanager.DefaultServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
@@ -69,6 +72,7 @@ import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
 import java.lang.reflect.Constructor;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
@@ -89,7 +93,19 @@ public interface Client {
      * TrustManagerFactory relies on your local trust store. The default Oracle
      * trust store does not accept self-signed certificates.
      */
-    interface Builder extends Cloneable {
+    interface Builder {
+        /**
+         * Sets the supplier of the actor tracker.
+         * <p>
+         * By default, the {@link DefaultActorTracker} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see DefaultActorTracker
+         */
+        @Nonnull
+        Builder actorTracker(@Nonnull Function<Client.WithManagement, ? extends ActorTracker> supplier);
+
         /**
          * Sets the supplier of the authentication manager.
          * <p>
@@ -100,7 +116,7 @@ public interface Client {
          * @see DefaultAuthManager
          */
         @Nonnull
-        Builder authManager(@Nonnull Function<Client, ? extends AuthManager> supplier);
+        Builder authManager(@Nonnull Function<Client.WithManagement, ? extends AuthManager> supplier);
 
         /**
          * Binds the client to a host or IP locally.
@@ -134,7 +150,7 @@ public interface Client {
          * @see DefaultCapabilityManager
          */
         @Nonnull
-        Builder capabilityManager(@Nonnull Function<Client, ? extends CapabilityManager.WithManagement> supplier);
+        Builder capabilityManager(@Nonnull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier);
 
         /**
          * Sets default messages.
@@ -156,7 +172,7 @@ public interface Client {
          * @see DefaultEventManager
          */
         @Nonnull
-        Builder eventManager(@Nonnull Function<Client, ? extends EventManager> supplier);
+        Builder eventManager(@Nonnull Function<Client.WithManagement, ? extends EventManager> supplier);
 
         /**
          * Sets a listener for all thrown exceptions on this client. By default,
@@ -192,7 +208,7 @@ public interface Client {
          * @see DefaultEventManager
          */
         @Nonnull
-        Builder iSupportManager(@Nonnull Function<Client, ? extends ISupportManager> supplier);
+        Builder iSupportManager(@Nonnull Function<Client.WithManagement, ? extends ISupportManager> supplier);
 
         /**
          * Sets the supplier of message sending queues, which dictate the
@@ -206,7 +222,19 @@ public interface Client {
          * @see MessageSendingQueue
          */
         @Nonnull
-        Builder messageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier);
+        Builder messageSendingQueueSupplier(@Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
+
+        /**
+         * Sets the supplier of the message tag manager.
+         * <p>
+         * By default, the {@link DefaultMessageTagManager} is used.
+         *
+         * @param supplier supplier
+         * @return this builder
+         * @see MessageTagManager
+         */
+        @Nonnull
+        Builder messageTagManager(@Nonnull Function<Client.WithManagement, ? extends MessageTagManager> supplier);
 
         /**
          * Names the client, for internal labeling.
@@ -242,17 +270,6 @@ public interface Client {
         Builder outputListener(@Nullable Consumer<String> listener);
 
         /**
-         * Sets if the Client will query WHO and MODE info on join.
-         * <p>
-         * By default, the Client will do so (true).
-         *
-         * @param query true for querying
-         * @return this builder
-         */
-        @Nonnull
-        Builder queryChannelInformation(boolean query);
-
-        /**
          * Sets the realname the client uses.
          * <p>
          * By default, the realname is Kitteh.
@@ -276,18 +293,18 @@ public interface Client {
         Builder serverPassword(@Nullable String password);
 
         /**
-         * Sets whether the client connects via SSL.
+         * Sets whether the client connects via TLS/SSL.
          * <p>
          * Note that by default the TrustManager used does not accept the
          * certificates of many popular networks. You must use {@link
          * #secureTrustManagerFactory(TrustManagerFactory)} to set your own
          * TrustManagerFactory.
          *
-         * @param ssl true for ssl
+         * @param secure true for TLS/SSL
          * @return this builder
          */
         @Nonnull
-        Builder secure(boolean ssl);
+        Builder secure(boolean secure);
 
         /**
          * Sets the key for SSL connection.
@@ -362,7 +379,7 @@ public interface Client {
          * @see DefaultServerInfo
          */
         @Nonnull
-        Builder serverInfo(@Nonnull Function<Client, ? extends ServerInfo.WithManagement> supplier);
+        Builder serverInfo(@Nonnull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier);
 
         /**
          * Sets the user the client connects as.
@@ -412,13 +429,6 @@ public interface Client {
          */
         @Nonnull
         Builder stsStorageManager(@Nullable StsStorageManager storageManager);
-
-        /**
-         * Resets this builder to the default values.
-         *
-         * @return this builder
-         */
-        Builder reset();
 
         /**
          * Clientmaker, clientmaker, make me a client!
@@ -529,6 +539,22 @@ public interface Client {
          */
         void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer);
 
+        /**
+         * Gets the actor tracker.
+         *
+         * @return actor tracker
+         */
+        @Nonnull
+        ActorTracker getActorTracker();
+
+        /**
+         * Gets the bind address
+         *
+         * @return bind address
+         */
+        @Nonnull
+        InetSocketAddress getBindAddress();
+
         @Nonnull
         @Override
         CapabilityManager.WithManagement getCapabilityManager();
@@ -564,6 +590,46 @@ public interface Client {
          */
         @Nonnull
         String getRequestedNick();
+
+        /**
+         * Gets the TLS/SSL key.
+         *
+         * @return key
+         */
+        @Nullable
+        Path getSecureKey();
+
+        /**
+         * Gets the TLS/SSL key certificate chain.
+         *
+         * @return key cert chain
+         */
+        @Nullable
+        Path getSecureKeyCertChain();
+
+        /**
+         * Gets the TLS/SSL key password.
+         *
+         * @return password
+         */
+        @Nullable
+        String getSecureKeyPassword();
+
+        /**
+         * Gets the trust manager factory.
+         *
+         * @return trust manager factory
+         */
+        @Nullable
+        TrustManagerFactory getSecureTrustManagerFactory();
+
+        /**
+         * Gets the server address
+         *
+         * @return server address
+         */
+        @Nonnull
+        InetSocketAddress getServerAddress();
 
         @Override
         @Nonnull
@@ -601,6 +667,27 @@ public interface Client {
         void setCurrentNick(@Nonnull String nick);
 
         /**
+         * Sets the server address.
+         *
+         * @param address server address
+         */
+        void setServerAddress(@Nonnull InetSocketAddress address);
+
+        void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword,
+                        @Nullable InetSocketAddress bindAddress,
+                        @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
+                        @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager,
+                        @Nonnull EventManager eventManager, @Nonnull MessageTagManager messageTagManager,
+                        @Nonnull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
+                        @Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
+                        @Nonnull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
+                        @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener,
+                        @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain,
+                        @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory,
+                        @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost,
+                        @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser);
+
+        /**
          * Sets the client's user modes.
          *
          * @param userModes user modes to set
@@ -635,7 +722,7 @@ public interface Client {
     @Nonnull
     static Builder builder() {
         try {
-            Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".implementation.ClientBuilder").getDeclaredConstructor();
+            Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".defaults.ClientBuilder").getDeclaredConstructor();
             constructor.setAccessible(true);
             return (Builder) constructor.newInstance();
         } catch (Exception e) {
@@ -800,7 +887,7 @@ public interface Client {
      * @return the supplier
      */
     @Nonnull
-    Function<Client, ? extends MessageSendingQueue> getMessageSendingQueueSupplier();
+    Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier();
 
     /**
      * Gets the message tag manager.
@@ -1194,7 +1281,7 @@ public interface Client {
      *
      * @param supplier the supplier
      */
-    void setMessageSendingQueueSupplier(@Nonnull Function<Client, ? extends MessageSendingQueue> supplier);
+    void setMessageSendingQueueSupplier(@Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
 
     /**
      * Sets the nick the client wishes to use.

@@ -21,29 +21,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.defaults.element.mode;
+
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.mode.UserMode;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
- * Represents an entity on an IRC server which can perform actions.
+ * Default implementation of {@link UserMode}.
  */
-public interface Actor extends Snapshot {
+public class DefaultUserMode extends DefaultModeBase implements UserMode {
     /**
-     * Gets the Actor's name.
+     * Constructs this object.
      *
-     * @return the Actor's name
+     * @param client client
+     * @param mode mode
      */
-    @Nonnull
-    String getName();
+    public DefaultUserMode(@Nonnull Client client, char mode) {
+        super(client, mode);
+    }
 
-    /**
-     * Gets the Actor's name in lower case based on the Client's information.
-     *
-     * @return lowercased Actor's name
-     */
-    @Nonnull
-    default String getLowerCaseName() {
-        return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof DefaultUserMode)) {
+            return false;
+        }
+        DefaultUserMode other = (DefaultUserMode) o;
+        return (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getClient(), this.getChar());
     }
 }

@@ -21,29 +21,49 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.defaults.element;
+
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
 
-/**
- * Represents an entity on an IRC server which can perform actions.
- */
-public interface Actor extends Snapshot {
-    /**
-     * Gets the Actor's name.
-     *
-     * @return the Actor's name
-     */
-    @Nonnull
-    String getName();
+public class DefaultISupportParameter implements ISupportParameter {
+    private final Client client;
+    private final String name;
+    @Nullable
+    private final String value;
 
-    /**
-     * Gets the Actor's name in lower case based on the Client's information.
-     *
-     * @return lowercased Actor's name
-     */
+    public DefaultISupportParameter(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        this.client = client;
+        this.name = name;
+        this.value = value;
+    }
+
     @Nonnull
-    default String getLowerCaseName() {
-        return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
+    @Override
+    public Client getClient() {
+        return this.client;
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<String> getValue() {
+        return Optional.ofNullable(this.value);
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("name", this.name).add("value", this.value).toString();
     }
 }

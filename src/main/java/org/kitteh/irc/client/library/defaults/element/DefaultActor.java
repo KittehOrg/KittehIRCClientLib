@@ -21,29 +21,53 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.defaults.element;
+
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
 /**
- * Represents an entity on an IRC server which can perform actions.
+ * Default Actor implementation.
  */
-public interface Actor extends Snapshot {
-    /**
-     * Gets the Actor's name.
-     *
-     * @return the Actor's name
-     */
-    @Nonnull
-    String getName();
+public class DefaultActor implements Actor {
+    private final Client.WithManagement client;
+    private final long creationTime = System.currentTimeMillis();
+    private final String name;
 
     /**
-     * Gets the Actor's name in lower case based on the Client's information.
+     * Constructs this object.
      *
-     * @return lowercased Actor's name
+     * @param client client
+     * @param name name
      */
+    public DefaultActor(@Nonnull Client.WithManagement client, @Nonnull String name) {
+        this.client = client;
+        this.name = name;
+    }
+
     @Nonnull
-    default String getLowerCaseName() {
-        return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
+    @Override
+    public Client.WithManagement getClient() {
+        return this.client;
+    }
+
+    @Override
+    public long getCreationTime() {
+        return this.creationTime;
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return new ToStringer(this).add("client", this.client).add("name", this.name).toString();
     }
 }

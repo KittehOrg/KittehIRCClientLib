@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.util.Mask;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public interface ModeInfo extends ClientLinked {
          * @param creator creator, if known
          * @param creationTime creation time, if known
          */
-        public DefaultModeInfo(@Nonnull Client client, @Nonnull Channel channel, @Nonnull ChannelMode mode, @Nonnull String mask, @Nonnull String creator, @Nonnull Instant creationTime) {
+        public DefaultModeInfo(@Nonnull Client client, @Nonnull Channel channel, @Nonnull ChannelMode mode, @Nonnull String mask, @Nullable String creator, @Nullable Instant creationTime) {
             this.client = client;
             this.creator = creator;
             this.channel = channel;

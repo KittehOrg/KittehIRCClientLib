@@ -21,29 +21,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.defaults.element.isupport;
+
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-/**
- * Represents an entity on an IRC server which can perform actions.
- */
-public interface Actor extends Snapshot {
-    /**
-     * Gets the Actor's name.
-     *
-     * @return the Actor's name
-     */
-    @Nonnull
-    String getName();
+public abstract class DefaultISupportParameterInteger extends DefaultISupportParameterValueRequired implements ISupportParameter.IntegerParameter {
+    private final int integer;
 
-    /**
-     * Gets the Actor's name in lower case based on the Client's information.
-     *
-     * @return lowercased Actor's name
-     */
-    @Nonnull
-    default String getLowerCaseName() {
-        return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
+    protected DefaultISupportParameterInteger(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+        super(client, name, value);
+        try {
+            this.integer = Integer.parseInt(value);
+        } catch (Exception e) {
+            throw new KittehServerISupportException(name, "Could not parse value", e);
+        }
+    }
+
+    @Override
+    public int getInteger() {
+        return this.integer;
     }
 }

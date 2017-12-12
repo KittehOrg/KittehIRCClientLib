@@ -21,29 +21,51 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.defaults.element.mode;
+
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.mode.Mode;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
 /**
- * Represents an entity on an IRC server which can perform actions.
+ * Abstract base class for modes.
  */
-public interface Actor extends Snapshot {
-    /**
-     * Gets the Actor's name.
-     *
-     * @return the Actor's name
-     */
-    @Nonnull
-    String getName();
+public abstract class DefaultModeBase implements Mode {
+    private final Client client;
+    private final char mode;
 
     /**
-     * Gets the Actor's name in lower case based on the Client's information.
+     * Constructs and such.
      *
-     * @return lowercased Actor's name
+     * @param client client
+     * @param mode character
      */
+    protected DefaultModeBase(@Nonnull Client client, char mode) {
+        this.client = client;
+        this.mode = mode;
+    }
+
+    @Override
     @Nonnull
-    default String getLowerCaseName() {
-        return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
+    public Client getClient() {
+        return this.client;
+    }
+
+    @Override
+    public char getChar() {
+        return this.mode;
+    }
+
+    @Nonnull
+    @Override
+    public String toString() {
+        return this.toStringer().toString();
+    }
+
+    @Nonnull
+    protected ToStringer toStringer() {
+        return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar());
     }
 }
