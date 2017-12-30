@@ -169,17 +169,17 @@ public class DefaultActorTracker implements ActorTracker {
         @Override
         @Nonnull
         DefaultChannel snapshot() {
-            // TODO BEFORE 4.0.0 if (DefaultActorTracker.this.client.getConfig().getNotNull(Config.QUERY_CHANNEL_INFO)) {
-            synchronized (this.modes) {
-                if (this.tracked && !this.fullListReceived) {
-                    long now = System.currentTimeMillis();
-                    if ((now - this.lastWho) > 5000) {
-                        this.lastWho = now;
-                        DefaultActorTracker.this.client.sendRawLineAvoidingDuplication("WHO " + this.getName() + (DefaultActorTracker.this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+            if (DefaultActorTracker.this.queryChannelInformation) {
+                synchronized (this.modes) {
+                    if (this.tracked && !this.fullListReceived) {
+                        long now = System.currentTimeMillis();
+                        if ((now - this.lastWho) > 5000) {
+                            this.lastWho = now;
+                            DefaultActorTracker.this.client.sendRawLineAvoidingDuplication("WHO " + this.getName() + (DefaultActorTracker.this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+                        }
                     }
                 }
             }
-            // }
             ModeStatusList<ChannelMode> channelModes = ModeStatusList.of(this.channelModes.values());
             Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
             for (Map.Entry<Character, List<ModeInfo>> entry : this.modeInfoLists.entrySet()) {
@@ -452,6 +452,8 @@ public class DefaultActorTracker implements ActorTracker {
     private final Map<String, IrcChannel> trackedChannels;
     private final Map<String, IrcUser> trackedUsers;
 
+    private boolean queryChannelInformation;
+
     public DefaultActorTracker(@Nonnull Client.WithManagement client) {
         this.client = client;
         this.trackedChannels = new CIKeyMap<>(this.client);
@@ -555,6 +557,11 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
+    public void setQueryChannelInformation(boolean query) {
+        this.queryChannelInformation = query;
+    }
+
+    @Override
     public void setUserAccount(@Nonnull String nick, @Nullable String account) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
@@ -600,6 +607,11 @@ public class DefaultActorTracker implements ActorTracker {
         if (u != null) {
             u.setServer(server);
         }
+    }
+
+    @Override
+    public boolean shouldQueryChannelInformation() {
+        return this.queryChannelInformation;
     }
 
     @Override

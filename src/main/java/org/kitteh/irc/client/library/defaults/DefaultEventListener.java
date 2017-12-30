@@ -1080,10 +1080,10 @@ public class DefaultEventListener {
                 ChannelJoinEvent joinEvent = null;
                 if (user.getNick().equals(this.client.getNick())) {
                     this.getTracker().trackChannel(channel.get().getName());
-                    // TODO BEFORE 4.0.0 if (this.client.getConfig().getNotNull(Config.QUERY_CHANNEL_INFO)) {
-                    this.client.sendRawLine("MODE " + channel.get().getName());
-                    this.client.sendRawLine("WHO " + channel.get().getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
-                    //}
+                    if (this.client.getActorTracker().shouldQueryChannelInformation()) {
+                        this.client.sendRawLine("MODE " + channel.get().getName());
+                        this.client.sendRawLine("WHO " + channel.get().getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+                    }
                     if (this.client.getIntendedChannels().contains(channel.get().getName())) {
                         joinEvent = new RequestedChannelJoinCompleteEvent(this.client, event.getOriginalMessages(), channel.get(), user);
                     }

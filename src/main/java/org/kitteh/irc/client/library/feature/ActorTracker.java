@@ -62,6 +62,8 @@ public interface ActorTracker extends Resettable {
 
     void setChannelTopicInfo(@Nonnull String channel, long time, @Nonnull Actor actor);
 
+    void setQueryChannelInformation(boolean query);
+
     void setUserAccount(@Nonnull String nick, @Nullable String account);
 
     void setUserAway(@Nonnull String nick, @Nullable String message);
@@ -73,6 +75,8 @@ public interface ActorTracker extends Resettable {
     void setUserRealName(@Nonnull String nick, @Nonnull String realName);
 
     void setUserServer(@Nonnull String nick, @Nonnull String server);
+
+    boolean shouldQueryChannelInformation();
 
     void trackChannel(@Nonnull String channel);
 
