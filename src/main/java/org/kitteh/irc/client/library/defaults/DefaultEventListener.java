@@ -1072,20 +1072,21 @@ public class DefaultEventListener {
             this.trackException(event, "JOIN message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(0));
-        if (channel.isPresent()) {
+        String channelName = event.getParameters().get(0);
+        if (this.client.getServerInfo().isValidChannel(channelName)) {
             if (event.getActor() instanceof User) {
+                this.getTracker().trackChannel(channelName);
+                Channel channel = this.getTracker().getTrackedChannel(channelName).get();
                 User user = (User) event.getActor();
-                this.getTracker().trackChannelUser(channel.get().getName(), user, new HashSet<>());
+                this.getTracker().trackChannelUser(channelName, user, new HashSet<>());
                 ChannelJoinEvent joinEvent = null;
                 if (user.getNick().equals(this.client.getNick())) {
-                    this.getTracker().trackChannel(channel.get().getName());
                     if (this.client.getActorTracker().shouldQueryChannelInformation()) {
-                        this.client.sendRawLine("MODE " + channel.get().getName());
-                        this.client.sendRawLine("WHO " + channel.get().getName() + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+                        this.client.sendRawLine("MODE " + channelName);
+                        this.client.sendRawLine("WHO " + channelName + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
                     }
-                    if (this.client.getIntendedChannels().contains(channel.get().getName())) {
-                        joinEvent = new RequestedChannelJoinCompleteEvent(this.client, event.getOriginalMessages(), channel.get(), user);
+                    if (this.client.getIntendedChannels().contains(channelName)) {
+                        joinEvent = new RequestedChannelJoinCompleteEvent(this.client, event.getOriginalMessages(), channel, user);
                     }
                 }
                 if (event.getParameters().size() > 2) {
@@ -1095,7 +1096,7 @@ public class DefaultEventListener {
                     this.getTracker().setUserRealName(user.getNick(), event.getParameters().get(2));
                 }
                 if (joinEvent == null) {
-                    joinEvent = new ChannelJoinEvent(this.client, event.getOriginalMessages(), channel.get(), user);
+                    joinEvent = new ChannelJoinEvent(this.client, event.getOriginalMessages(), channel, user);
                 }
                 this.fire(joinEvent);
             } else {

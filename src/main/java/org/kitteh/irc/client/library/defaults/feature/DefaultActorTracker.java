@@ -616,9 +616,11 @@ public class DefaultActorTracker implements ActorTracker {
 
     @Override
     public void trackChannel(@Nonnull String channel) {
-        IrcChannel ch = new IrcChannel(channel);
-        this.trackedChannels.put(channel, ch);
-        ch.setTracked(true);
+        if (!this.trackedChannels.containsKey(channel)) {
+            IrcChannel ch = new IrcChannel(channel);
+            this.trackedChannels.put(channel, ch);
+            ch.setTracked(true);
+        }
     }
 
     @Override
