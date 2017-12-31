@@ -96,7 +96,7 @@ public class TwitchListener {
      */
     public TwitchListener(@Nonnull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
-        ((Client.WithManagement)client).getActorTracker().setQueryChannelInformation(false);
+        ((Client.WithManagement) client).getActorTracker().setQueryChannelInformation(false);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Badges.NAME, Badges.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BanDuration.NAME, BanDuration.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BanReason.NAME, BanReason.FUNCTION);

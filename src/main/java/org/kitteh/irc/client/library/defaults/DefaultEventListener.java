@@ -350,7 +350,7 @@ public class DefaultEventListener {
             return;
         }
         final Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
-        if (channel.isPresent()) {
+        channel.ifPresent(ch -> {
             final String ident = event.getParameters().get(2);
             final String host = event.getParameters().get(3);
             final String server = event.getParameters().get(4);
@@ -389,9 +389,9 @@ public class DefaultEventListener {
                     }
                 }
             }
-            this.getTracker().trackChannelUser(channel.get().getName(), user, modes);
+            this.getTracker().trackChannelUser(ch.getName(), user, modes);
             this.whoMessages.add(event.getServerMessage());
-        } // No else, server might send other WHO information about non-channels.
+        }); // No else, server might send other WHO information about non-channels.
     }
 
     @NumericFilter(315) // WHO completed
@@ -402,12 +402,12 @@ public class DefaultEventListener {
             return;
         }
         Optional<Channel> whoChannel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
-        if (whoChannel.isPresent()) {
-            this.getTracker().setChannelListReceived(whoChannel.get().getName());
+        whoChannel.ifPresent(channel -> {
+            this.getTracker().setChannelListReceived(channel.getName());
             this.whoMessages.add(event.getServerMessage());
-            this.fire(new ChannelUsersUpdatedEvent(this.client, this.whoMessages, whoChannel.get()));
+            this.fire(new ChannelUsersUpdatedEvent(this.client, this.whoMessages, channel));
             this.whoMessages.clear();
-        } // No else, server might send other WHO information about non-channels.
+        }); // No else, server might send other WHO information about non-channels.
     }
 
     @NumericFilter(324)

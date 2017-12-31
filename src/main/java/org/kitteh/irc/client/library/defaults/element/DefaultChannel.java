@@ -114,7 +114,7 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
                           @Nonnull Map<Character, List<ModeInfo>> modeInfoLists,
                           @Nonnull Map<String, SortedSet<ChannelUserMode>> modes, @Nonnull List<String> names,
                           @Nonnull Map<String, User> nickMap, @Nonnull List<User> users,
-                          @Nonnull boolean complete, @Nonnull DefaultChannelCommands commands) {
+                          boolean complete, @Nonnull DefaultChannelCommands commands) {
         super(client, name);
         this.complete = complete;
         this.channelModes = channelModes;
