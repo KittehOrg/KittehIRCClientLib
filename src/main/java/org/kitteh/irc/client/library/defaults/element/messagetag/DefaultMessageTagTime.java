@@ -31,7 +31,13 @@ import org.kitteh.irc.client.library.util.TriFunction;
 import javax.annotation.Nonnull;
 import java.time.Instant;
 
+/**
+ * Default implementation of {@link MessageTag.Time}.
+ */
 public class DefaultMessageTagTime extends MessageTagManager.DefaultMessageTag implements MessageTag.Time {
+    /**
+     * Function to create this message tag.
+     */
     @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, DefaultMessageTagTime> FUNCTION = (client, name, value) -> new DefaultMessageTagTime(name, value, Instant.parse(value));
 

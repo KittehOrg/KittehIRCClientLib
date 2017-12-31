@@ -83,9 +83,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Netty connectivity management.
- * TODO interface
  */
 public class NettyManager {
+    /**
+     * A connection by a client.
+     */
     public static final class ClientConnection {
         private static final int MAX_LINE_LENGTH = 4096;
 
@@ -248,14 +250,29 @@ public class NettyManager {
             }
         }
 
-        public void startSending() {
+        /**
+         * Starts sending pings.
+         */
+        public void startPing() {
             this.ping = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);
         }
 
+        /**
+         * Shuts down with a message type.
+         *
+         * @param messageType message type
+         * @param reconnect true to indicate desire to reconnect
+         */
         public void shutdown(DefaultMessageType messageType, boolean reconnect) {
             this.shutdown(this.client.getDefaultMessageMap().getDefault(messageType).orElse(null), reconnect);
         }
 
+        /**
+         * Shuts down with a message.
+         *
+         * @param message message
+         * @param reconnect true to indicate desire to reconnect
+         */
         public void shutdown(@Nullable String message, boolean reconnect) {
             this.reconnect = reconnect;
 
@@ -300,6 +317,12 @@ public class NettyManager {
         }
     }
 
+    /**
+     * Starts a connection for a particular client.
+     *
+     * @param client client to connect for
+     * @return connection
+     */
     public static synchronized ClientConnection connect(@Nonnull Client.WithManagement client) {
 
         // STS Override

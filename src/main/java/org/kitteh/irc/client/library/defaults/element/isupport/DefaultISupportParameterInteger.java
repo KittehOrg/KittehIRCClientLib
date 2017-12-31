@@ -30,9 +30,19 @@ import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Default implementation of {@link ISupportParameter.IntegerParameter}.
+ */
 public abstract class DefaultISupportParameterInteger extends DefaultISupportParameterValueRequired implements ISupportParameter.IntegerParameter {
     private final int integer;
 
+    /**
+     * Constructs the object.
+     *
+     * @param client client
+     * @param name parameter name
+     * @param value value
+     */
     protected DefaultISupportParameterInteger(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         try {

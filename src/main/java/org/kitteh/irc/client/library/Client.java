@@ -673,6 +673,7 @@ public interface Client {
          */
         void setServerAddress(@Nonnull InetSocketAddress address);
 
+        // TODO clean up before 4.0.0
         void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword,
                         @Nullable InetSocketAddress bindAddress,
                         @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,

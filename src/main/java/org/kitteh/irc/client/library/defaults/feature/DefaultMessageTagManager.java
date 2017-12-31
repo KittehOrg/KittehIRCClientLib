@@ -43,6 +43,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Default implementation of {@link MessageTagManager}.
+ */
 public class DefaultMessageTagManager extends AbstractNameValueProcessor<MessageTag> implements MessageTagManager {
     protected static class TagCreator extends Creator<MessageTag> {
         private final String capability;
@@ -52,6 +55,11 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
             this.capability = capability;
         }
 
+        /**
+         * Gets capability for which this is registered.
+         *
+         * @return capability
+         */
         @Nonnull
         protected String getCapability() {
             return this.capability;
@@ -66,6 +74,11 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
 
     private static final Pattern TAG_ESCAPE = Pattern.compile("\\\\([\\\\s:])");
 
+    /**
+     * Constructs the default tag manager.
+     *
+     * @param client client
+     */
     public DefaultMessageTagManager(Client.WithManagement client) {
         super(client);
         this.registerTagCreator("server-time", "time", DefaultMessageTagTime.FUNCTION);

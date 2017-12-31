@@ -33,9 +33,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Default implementation of {@link ISupportParameter.ChanLimit}.
+ */
 public class DefaultISupportChanLimit extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanLimit {
     private final Map<Character, Integer> limits;
 
+    /**
+     * Constructs the object.
+     *
+     * @param client client
+     * @param name parameter name
+     * @param value parameter value, if present
+     */
     public DefaultISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {

@@ -66,6 +66,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Default implementation of {@link ActorTracker}.
+ */
 public class DefaultActorTracker implements ActorTracker {
     private class IrcActor {
         private String name;
@@ -454,6 +457,11 @@ public class DefaultActorTracker implements ActorTracker {
 
     private boolean queryChannelInformation = true;
 
+    /**
+     * Constructs the tracker.
+     *
+     * @param client client
+     */
     public DefaultActorTracker(@Nonnull Client.WithManagement client) {
         this.client = client;
         this.trackedChannels = new CIKeyMap<>(this.client);

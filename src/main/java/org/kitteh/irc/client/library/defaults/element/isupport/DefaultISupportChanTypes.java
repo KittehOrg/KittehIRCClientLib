@@ -33,9 +33,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Default implementation of {@link ISupportParameter.ChanTypes}.
+ */
 public class DefaultISupportChanTypes extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanTypes {
     private final List<Character> prefixes;
 
+    /**
+     * Constructs the object.
+     *
+     * @param client client
+     * @param name parameter name
+     * @param value parameter value, if present
+     */
     public DefaultISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {

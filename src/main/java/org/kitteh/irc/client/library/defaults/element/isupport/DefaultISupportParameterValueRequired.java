@@ -25,12 +25,23 @@ package org.kitteh.irc.client.library.defaults.element.isupport;
 
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Default implementation of {@link ISupportParameter} with required value.
+ */
 abstract class DefaultISupportParameterValueRequired extends DefaultISupportParameter {
+    /**
+     * Constructs the object.
+     *
+     * @param client client
+     * @param name parameter name
+     * @param value parameter value, if present
+     */
     protected DefaultISupportParameterValueRequired(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {

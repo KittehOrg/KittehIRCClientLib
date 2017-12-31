@@ -35,9 +35,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Default implementation of {@link ISupportParameter.ChanModes}.
+ */
 public class DefaultISupportChanModes extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanModes {
     private final List<ChannelMode> modes;
 
+    /**
+     * Constructs the object.
+     *
+     * @param client client
+     * @param name parameter name
+     * @param value parameter value, if present
+     */
     public DefaultISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {

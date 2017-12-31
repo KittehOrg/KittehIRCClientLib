@@ -119,10 +119,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Default event listener.
+ */
+@SuppressWarnings("JavaDoc")
 @net.engio.mbassy.listener.Listener(references = References.Strong)
 public class DefaultEventListener {
     private final Client.WithManagement client;
 
+    /**
+     * Constructs the listener.
+     *
+     * @param client client
+     */
     public DefaultEventListener(Client.WithManagement client) {
         this.client = client;
     }

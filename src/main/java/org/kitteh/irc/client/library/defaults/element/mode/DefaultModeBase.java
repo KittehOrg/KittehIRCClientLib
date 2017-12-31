@@ -64,6 +64,11 @@ public abstract class DefaultModeBase implements Mode {
         return this.toStringer().toString();
     }
 
+    /**
+     * Helper method for toString.
+     *
+     * @return partially made ToStringer
+     */
     @Nonnull
     protected ToStringer toStringer() {
         return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar());

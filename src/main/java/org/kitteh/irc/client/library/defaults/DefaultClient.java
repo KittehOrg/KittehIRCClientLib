@@ -91,6 +91,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Default implementation of {@link Client}.
+ */
 public class DefaultClient implements Client.WithManagement {
     private final class ClientCommands implements Commands {
         @Nonnull
@@ -808,7 +811,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void startSending() {
-        this.connection.startSending();
+        this.connection.startPing();
         synchronized (this.messageSendingLock) {
             this.messageSendingScheduled.beginSending(this.messageSendingImmediate::queue);
         }

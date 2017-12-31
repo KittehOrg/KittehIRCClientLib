@@ -29,7 +29,17 @@ import org.kitteh.irc.client.library.element.ISupportParameter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Default implementation of {@link ISupportParameter.NickLen}.
+ */
 public class DefaultISupportNickLen extends DefaultISupportParameterInteger implements ISupportParameter.NickLen {
+    /**
+     * Constructs the object.
+     *
+     * @param client client
+     * @param name parameter name
+     * @param value parameter value, if present
+     */
     public DefaultISupportNickLen(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
     }

@@ -71,6 +71,7 @@ import java.util.stream.Collectors;
 /**
  * Helpful things.
  */
+@SuppressWarnings("JavaDoc")
 public class TwitchListener {
     /**
      * Capability to receive commands.

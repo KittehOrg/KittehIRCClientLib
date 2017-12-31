@@ -30,9 +30,19 @@ import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Default implementation of {@link ISupportParameter.Network}.
+ */
 public class DefaultISupportNetwork extends DefaultISupportParameterValueRequired implements ISupportParameter.Network {
     private final String networkName;
 
+    /**
+     * Constructs the object.
+     *
+     * @param client client
+     * @param name parameter name
+     * @param value parameter value, if present
+     */
     public DefaultISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {

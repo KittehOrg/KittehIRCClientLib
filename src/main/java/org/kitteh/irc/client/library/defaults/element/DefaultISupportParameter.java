@@ -31,12 +31,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+/**
+ * Default implementation of {@link ISupportParameter}.
+ */
 public class DefaultISupportParameter implements ISupportParameter {
     private final Client client;
     private final String name;
     @Nullable
     private final String value;
 
+    /**
+     * Constructs the object.
+     *
+     * @param client client
+     * @param name parameter name
+     * @param value parameter value, if present
+     */
     public DefaultISupportParameter(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
         this.client = client;
         this.name = name;

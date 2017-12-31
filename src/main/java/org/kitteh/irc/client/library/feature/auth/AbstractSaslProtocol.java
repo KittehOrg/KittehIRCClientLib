@@ -51,6 +51,7 @@ import java.util.Optional;
  * @param <AuthValue> authentication value type
  */
 public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountProtocol implements EventListening {
+    @SuppressWarnings("JavaDoc")
     protected class Listener {
         @Handler(priority = 1)
         public void capList(CapabilitiesSupportedListEvent event) {

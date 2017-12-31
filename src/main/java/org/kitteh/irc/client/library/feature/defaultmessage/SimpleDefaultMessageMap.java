@@ -39,6 +39,9 @@ import java.util.Optional;
  * @see DefaultMessageType
  */
 public class SimpleDefaultMessageMap implements DefaultMessageMap {
+    /**
+     * Defaults stored.
+     */
     protected final Map<DefaultMessageType, String> defaults = new EnumMap<>(DefaultMessageType.class);
 
     /**

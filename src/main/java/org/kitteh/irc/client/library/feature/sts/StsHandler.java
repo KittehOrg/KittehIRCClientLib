@@ -42,6 +42,9 @@ import java.util.function.Predicate;
  * Class for handling the STS capability, returned in the CAP LS 302 response.
  */
 public class StsHandler {
+    /**
+     * Draft prepend for capability.
+     */
     public static final String DRAFT = "draft/";
     private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals(DRAFT + "sts");
 
