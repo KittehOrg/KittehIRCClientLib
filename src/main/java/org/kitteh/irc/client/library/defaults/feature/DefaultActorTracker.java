@@ -452,7 +452,7 @@ public class DefaultActorTracker implements ActorTracker {
     private final Map<String, IrcChannel> trackedChannels;
     private final Map<String, IrcUser> trackedUsers;
 
-    private boolean queryChannelInformation;
+    private boolean queryChannelInformation = true;
 
     public DefaultActorTracker(@Nonnull Client.WithManagement client) {
         this.client = client;
