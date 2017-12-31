@@ -34,7 +34,7 @@ public class KittehServerMessageTagException extends RuntimeException {
      * @param problem why it couldn't be processed
      */
     public KittehServerMessageTagException(String tag, String problem) {
-        super("Error processing message tag: " + problem + ". Tag: " + tag);
+        super("Trouble processing message tag: " + problem + ". Tag: " + tag);
     }
 
     /**
@@ -45,6 +45,6 @@ public class KittehServerMessageTagException extends RuntimeException {
      * @param thrown cause
      */
     public KittehServerMessageTagException(String tag, String problem, Throwable thrown) {
-        super("Error processing message tag: " + problem + ". Tag: " + tag, thrown);
+        super("Trouble processing message tag: " + problem + ". Tag: " + tag, thrown);
     }
 }

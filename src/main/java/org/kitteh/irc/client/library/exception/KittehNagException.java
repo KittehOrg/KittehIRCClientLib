@@ -35,6 +35,6 @@ public class KittehNagException extends RuntimeException {
      * @param problem the advisory
      */
     public KittehNagException(@Nonnull String problem) {
-        super("Nag: " + problem);
+        super("Nag! This is not a fatal exception! Just a problem requiring your attention: " + problem);
     }
 }

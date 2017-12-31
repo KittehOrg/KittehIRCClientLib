@@ -54,7 +54,7 @@ public class KittehServerMessageException extends RuntimeException {
      * @param problem why it couldn't be processed
      */
     public KittehServerMessageException(List<ServerMessage> messages, String problem) {
-        super("Error processing message: " + problem + ". Messages: " + System.lineSeparator() + messages.stream().map(ServerMessage::getMessage).collect(Collectors.joining(System.lineSeparator())));
+        super("Trouble processing message: " + problem + ". Messages: " + System.lineSeparator() + messages.stream().map(ServerMessage::getMessage).collect(Collectors.joining(System.lineSeparator())));
         this.messages = Collections.unmodifiableList(new ArrayList<>(messages));
     }
 

@@ -34,7 +34,7 @@ public class KittehServerISupportException extends RuntimeException {
      * @param problem why it couldn't be processed
      */
     public KittehServerISupportException(String parameter, String problem) {
-        super("Error processing ISUPPORT: " + problem + ". Parameter: " + parameter);
+        super("Trouble processing ISUPPORT: " + problem + ". Parameter: " + parameter);
     }
 
     /**
@@ -45,6 +45,6 @@ public class KittehServerISupportException extends RuntimeException {
      * @param thrown cause
      */
     public KittehServerISupportException(String parameter, String problem, Throwable thrown) {
-        super("Error processing ISUPPORT: " + problem + ". Parameter: " + parameter, thrown);
+        super("Trouble processing ISUPPORT: " + problem + ". Parameter: " + parameter, thrown);
     }
 }

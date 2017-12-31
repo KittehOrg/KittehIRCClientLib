@@ -35,6 +35,6 @@ public class KittehEventException extends Exception {
      * @param cause thrown cause
      */
     public KittehEventException(@Nonnull Throwable cause) {
-        super(cause);
+        super("Trouble processing events!", cause);
     }
 }
