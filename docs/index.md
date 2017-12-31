@@ -7,17 +7,17 @@ and utilizes Java 8's Optional to avoid returning null in the API.
 Some niceties about KICL include:
 
 * Events model for handling information from the server.
-* [Full SSL support](advanced/ssl.md)
-* [WEBIRC authentication](advanced/webirc.md)
-* Fully featured CTCP support
+* [Full SSL support](advanced/ssl.md).
+* [WEBIRC authentication](advanced/webirc.md).
+* Fully featured CTCP support.
 * Rather comprehensive [IRCv3 support](ircv3.md) including:
-    * CAP negotiation
-    * Account tracking with combined power of account-notify, extended-join, and WHOX
-    * Away status tracking with away-notify
-    * More accurate mode tracking with multi-prefix
-* Flexible authentication
-    * SASL, NickServ, and GameSurge's AuthServ supported out-of-the-box
-    * Custom authentication protocols can be easily written and registered
+    * CAP negotiation.
+    * Account tracking with combined power of `account-notify`, `extended-join`, and WHOX.
+    * Away status tracking with `away-notify`.
+    * More accurate mode tracking with `multi-prefix`.
+* Flexible authentication:
+    * SASL, NickServ, and GameSurge's AuthServ supported out-of-the-box.
+    * Custom authentication protocols can be easily written and registered.
 
 
 ## Getting started
@@ -36,7 +36,8 @@ public class HelloKitteh {
 }
 ```
 
-*Note: By default KICL connects over [SSL, which requires additional setup on certain networks](advanced/ssl.md).*
+*Note: By default KICL connects over
+[SSL, which requires additional setup on certain networks](advanced/ssl.md).*
 
 ### Debugging
 
@@ -61,7 +62,8 @@ public class DebugKitteh {
 
 ## Using KICL in your Maven project
 
-KICL is built and deployed using Maven. Releases are available on Maven Central. Adding it as a dependency is simple as adding the lines below to your pom.xml file:
+KICL is built and deployed using Maven. Releases are available on Maven Central. Adding it as a dependency is
+simple as adding the lines below to your pom.xml file:
 
 ```xml
 <dependency>
