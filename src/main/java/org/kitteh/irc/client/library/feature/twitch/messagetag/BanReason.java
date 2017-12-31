@@ -41,6 +41,7 @@ public class BanReason extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, BanReason> FUNCTION = (client, name, value) -> new BanReason(name, value);
 
     private BanReason(@Nonnull String name, @Nonnull String value) {

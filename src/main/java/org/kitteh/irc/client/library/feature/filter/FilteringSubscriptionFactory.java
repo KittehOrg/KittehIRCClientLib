@@ -79,6 +79,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void dispatch(MessagePublication publication, Object message, Iterable listeners) {
             for (FilterProcessorWrapper filter : this.filters) {
                 if (!filter.filterProcessor.accepts(message, filter.annotations)) {

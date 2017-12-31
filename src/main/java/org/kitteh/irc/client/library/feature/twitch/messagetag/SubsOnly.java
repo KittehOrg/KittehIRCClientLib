@@ -41,6 +41,7 @@ public class SubsOnly extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, SubsOnly> FUNCTION = (client, name, value) -> new SubsOnly(name, value);
 
     /**

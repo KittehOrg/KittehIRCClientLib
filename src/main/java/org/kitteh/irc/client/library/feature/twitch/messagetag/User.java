@@ -41,6 +41,7 @@ public class User extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, User> FUNCTION = (client, name, value) -> new User(name, value);
 
     private User(@Nonnull String name, @Nonnull String value) {

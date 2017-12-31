@@ -41,6 +41,7 @@ public class RoomId extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, RoomId> FUNCTION = (client, name, value) -> new RoomId(name, value);
 
     private RoomId(@Nonnull String name, @Nonnull String value) {

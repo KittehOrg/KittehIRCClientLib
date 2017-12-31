@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 import java.time.Instant;
 
 public class DefaultMessageTagTime extends MessageTagManager.DefaultMessageTag implements MessageTag.Time {
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, DefaultMessageTagTime> FUNCTION = (client, name, value) -> new DefaultMessageTagTime(name, value, Instant.parse(value));
 
     private final Instant time;

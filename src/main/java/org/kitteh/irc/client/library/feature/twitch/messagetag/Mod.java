@@ -41,6 +41,7 @@ public class Mod extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, Mod> FUNCTION = (client, name, value) -> new Mod(name, value);
 
     /**

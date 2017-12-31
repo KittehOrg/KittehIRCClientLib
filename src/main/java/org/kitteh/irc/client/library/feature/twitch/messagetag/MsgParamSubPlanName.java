@@ -41,6 +41,7 @@ public class MsgParamSubPlanName extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, MsgParamSubPlanName> FUNCTION = (client, name, value) -> new MsgParamSubPlanName(name, value);
 
     private MsgParamSubPlanName(@Nonnull String name, @Nonnull String value) {

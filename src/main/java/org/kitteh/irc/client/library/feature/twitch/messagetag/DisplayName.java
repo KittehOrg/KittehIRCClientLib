@@ -41,6 +41,7 @@ public class DisplayName extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, DisplayName> FUNCTION = (client, name, value) -> new DisplayName(name, value);
 
     private DisplayName(@Nonnull String name, @Nonnull String value) {

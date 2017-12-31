@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 /**
  * Message tag for an ID.
  */
+@SuppressWarnings("ConstantConditions")
 public class Id extends MessageTagManager.DefaultMessageTag {
     /**
      * Name of this message tag.

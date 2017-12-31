@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +46,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, Badges> FUNCTION = (client, name, value) -> new Badges(name, value);
 
     /**
@@ -136,7 +138,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
 
     private final List<Badge> badges;
 
-    private Badges(@Nonnull String name, @Nonnull String value) {
+    private Badges(@Nonnull String name, @Nullable String value) {
         super(name, value);
         if (value == null) {
             this.badges = Collections.emptyList();

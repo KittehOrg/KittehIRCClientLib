@@ -41,6 +41,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, MsgId> FUNCTION = (client, name, value) -> new MsgId(name, value);
 
     /**

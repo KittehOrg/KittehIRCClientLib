@@ -41,6 +41,7 @@ public class Color extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, Color> FUNCTION = (client, name, value) -> new Color(name, value);
 
     private Color(@Nonnull String name, @Nonnull String value) {

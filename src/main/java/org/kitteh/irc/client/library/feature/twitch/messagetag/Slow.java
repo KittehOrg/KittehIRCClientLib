@@ -41,6 +41,7 @@ public class Slow extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, Slow> FUNCTION = (client, name, value) -> new Slow(name, value, Integer.parseInt(value));
 
     private final int delay;

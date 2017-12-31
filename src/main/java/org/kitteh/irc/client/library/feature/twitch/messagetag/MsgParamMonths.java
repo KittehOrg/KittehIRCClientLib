@@ -41,6 +41,7 @@ public class MsgParamMonths extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, MsgParamMonths> FUNCTION = (client, name, value) -> new MsgParamMonths(name, value, Integer.parseInt(value));
 
     private final int months;

@@ -41,6 +41,7 @@ public class BroadcasterLang extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, BroadcasterLang> FUNCTION = (client, name, value) -> new BroadcasterLang(name, value);
 
     private BroadcasterLang(@Nonnull String name, @Nonnull String value) {

@@ -41,6 +41,7 @@ public class Bits extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, Bits> FUNCTION = (client, name, value) -> new Bits(name, value, Integer.parseInt(value));
 
     private final int amount;

@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +46,7 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, Emotes> FUNCTION = (client, name, value) -> new Emotes(name, value);
 
     /**
@@ -97,7 +99,7 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
 
     private final List<Emote> emotes;
 
-    private Emotes(@Nonnull String name, @Nonnull String value) {
+    private Emotes(@Nonnull String name, @Nullable String value) {
         super(name, value);
         if (value == null) {
             this.emotes = Collections.emptyList();

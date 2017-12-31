@@ -95,6 +95,7 @@ public interface ServerMessage {
      * @return message tag if present
      */
     @Nonnull
+    @SuppressWarnings("unchecked")
     default <Tag extends MessageTag> Optional<Tag> getTag(@Nonnull String name, @Nonnull Class<Tag> clazz) {
         Sanity.nullCheck(name, "Name cannot be null");
         Sanity.nullCheck(clazz, "Class cannot be null");

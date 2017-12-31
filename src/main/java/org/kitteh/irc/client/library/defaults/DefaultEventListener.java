@@ -140,7 +140,7 @@ public class DefaultEventListener {
     @NumericFilter(4)
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void version(ClientReceiveNumericEvent event) {
-        boolean isTwitch = this.client.getEventManager().getRegisteredEventListeners().stream().anyMatch(listener -> (listener instanceof TwitchListener));
+        boolean isNotTwitch = this.client.getEventManager().getRegisteredEventListeners().stream().noneMatch(listener -> (listener instanceof TwitchListener));
         if (event.getParameters().size() > 1) {
             this.client.getServerInfo().setAddress(event.getParameters().get(1));
             if (event.getParameters().size() > 2) {
@@ -154,13 +154,13 @@ public class DefaultEventListener {
                 } else {
                     this.trackException(event, "Server user modes missing");
                 }
-            } else if (!isTwitch) {
+            } else if (isNotTwitch) {
                 this.trackException(event, "Server version and user modes missing");
             }
         } else {
             this.trackException(event, "Server address, version, and user modes missing");
         }
-        if (!isTwitch) {
+        if (isNotTwitch) {
             this.client.sendRawLineImmediately("WHOIS " + this.client.getNick());
         }
         this.fire(new ClientNegotiationCompleteEvent(this.client, event.getActor(), this.client.getServerInfo()));

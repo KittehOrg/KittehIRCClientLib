@@ -33,6 +33,9 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Default implementation of {@link User}.
+ */
 public class DefaultUser extends DefaultStaleable implements User {
     private final String account;
     private final String awayMessage;
@@ -45,6 +48,22 @@ public class DefaultUser extends DefaultStaleable implements User {
     private final String server;
     private final String user;
 
+    /**
+     * Constructs the object.
+     *
+     * @param client client from which this came
+     * @param name full mask name
+     * @param account account, if known
+     * @param awayMessage away message, if known
+     * @param nick nick
+     * @param user user string (ident)
+     * @param host host
+     * @param isAway true if away
+     * @param operString oper info, if known
+     * @param realName real name, if known
+     * @param server server info, if known
+     * @param channels channels they are in
+     */
     public DefaultUser(@Nonnull Client.WithManagement client, @Nonnull String name, @Nullable String account, @Nullable String awayMessage,
                        @Nonnull String nick, @Nonnull String user, @Nonnull String host, boolean isAway,
                        @Nullable String operString, @Nullable String realName, @Nullable String server, @Nonnull Set<String> channels) {

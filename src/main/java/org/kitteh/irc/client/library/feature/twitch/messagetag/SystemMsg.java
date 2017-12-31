@@ -41,6 +41,7 @@ public class SystemMsg extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, SystemMsg> FUNCTION = (client, name, value) -> new SystemMsg(name, value);
 
     private SystemMsg(@Nonnull String name, @Nonnull String value) {

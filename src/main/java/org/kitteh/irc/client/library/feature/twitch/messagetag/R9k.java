@@ -41,6 +41,7 @@ public class R9k extends MessageTagManager.DefaultMessageTag {
     /**
      * Function to create this message tag.
      */
+    @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, R9k> FUNCTION = (client, name, value) -> new R9k(name, value);
 
     /**
