@@ -6,6 +6,7 @@ pages:
 - IRCv3 Support: ircv3.md
 - Advanced:
   - Account Tracking: advanced/accounts.md
+  - Twitch: advanced/twitch.md
   - SSL: advanced/ssl.md
   - SSL root import: advanced/ssl_import.md
   - STS: advanced/sts.md

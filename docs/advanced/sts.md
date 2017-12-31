@@ -23,27 +23,28 @@ a secure connection if they haven't yet rolled out TLS.
 #### Getting started with KICL and STS
 
 To use STS, the client needs some way to persist information about the policies it encounters during the connection
-process. Within the codebase, an interface [org.kitteh.irc.client.library.feature.sts.STSStorageManager](http://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/feature/sts/STSStorageManager.html)
+process. Within the codebase, an interface
+[org.kitteh.irc.client.library.feature.sts.StsStorageManager](http://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/feature/sts/StsStorageManager.html)
 is available which you can implement yourself for complete control over policy storage.
 
-Alternatively, a default class (currently `STSPropertiesStorageManager`) which stores the STS policies in a properties
+Alternatively, a default class (currently `StsPropertiesStorageManager`) which stores the STS policies in a properties
 file is available to use and built-in to KICL. A utility method makes using this default implementation very straightforward:
 
 ```java
-Client client = Client.builder().serverHost("irc.kitteh.org").stsStorageManager(STSUtil.getDefaultStorageManager()).build();
+Client client = Client.builder().serverHost("irc.kitteh.org").stsStorageManager(StsUtil.getDefaultStorageManager()).build();
 client.addChannel("#kicl");
 ```
 
 The STS policies will be persisted in a file in the home directory with name `.kicl_sts.properties`. If you'd prefer to
-store them elsewhere, you can specify a `java.nio.Path` instance when calling `STSUtil.getDefaultStorageManager`.
+store them elsewhere, you can specify a `java.nio.Path` instance when calling `StsUtil.getDefaultStorageManager`.
 
 Now, when the client connects it will automatically obey any relevant policies it has found.
 
 #### Adding your own policies
 
 ```java
-STSPolicy policy = STSUtil.getSTSPolicyFromString(",", "port=6697");
-client.getSTSMachine().get().getStorageManager().addEntry("irc.kitteh.org", 5000, policy);
+StsPolicy policy = StsUtil.getStsPolicyFromString(",", "port=6697");
+client.getStsMachine().get().getStorageManager().addEntry("irc.kitteh.org", 5000, policy);
 ```
 
 ### Testing STS

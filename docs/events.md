@@ -6,7 +6,7 @@ Listening to an event is as simple as follows:
 
 ```java
 @Handler
-public void meow(ClientConnectedEvent event) {
+public void meow(ClientNegotiationCompleteEvent event) {
     System.out.println("I am connected!");
 }
 ```

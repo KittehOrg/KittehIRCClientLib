@@ -4,17 +4,17 @@ on [port 6697](https://tools.ietf.org/html/rfc7194).
 ### Client Certificates
 You can set the public and private key utilized in the connection using the following methods:
 
-`ClientBuilder#secureKeyCertChain(File) // X.509 certificate chain file in PEM format`
+`Client.Builder#secureKeyCertChain(File) // X.509 certificate chain file in PEM format`
 
-`ClientBuilder#secureKey(File) // PKCS#8 private key file in PEM format`
+`Client.Builder#secureKey(File) // PKCS#8 private key file in PEM format`
 
-`ClientBuilder#secureKeyPassword(String) // private key password`
+`Client.Builder#secureKeyPassword(String) // private key password`
 
 ### Validating the Server
 
 By default, when connecting securely, KICL will utilize the default `TrustManagerFactory`
-provided by the JRE you're using. This factory *does not* accept certificates issued by
-many common certificate authorities (such as StartCom, which is used by many IRC networks)
+provided by the JRE you're using. This factory *does not* necessarily accept certificates
+issued by all certificate authorities (such as StartCom, which is still used by some IRC networks)
 and self-signed certificates. If possible, you should consider [importing](ssl_import.md)
 the root certificates for these certificate authorities which will allow connections to be
 made.

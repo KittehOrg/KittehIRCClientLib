@@ -26,10 +26,14 @@ KICL is designed with a simple and intuitive API.
 A hello world is as simple as:
 
 ```java
-Client client = Client.builder().nick("KittehBot").serverHost("127.0.0.1").build();
+public class HelloKitteh {
+    public static void main(String[] args) {
+        Client client = Client.builder().nick("KittehBot").serverHost("127.0.0.1").buildAndConnect();
 
-client.addChannel("#kitteh.org");
-client.sendMessage("#kitteh.org", "Hello World!");
+        client.addChannel("#kitteh.org");
+        client.sendMessage("#kitteh.org", "Hello World!");
+    }
+}
 ```
 
 *Note: By default KICL connects over [SSL, which requires additional setup on certain networks](advanced/ssl.md).*
@@ -42,10 +46,17 @@ Use the `ClientBuilder` methods `listenInput`, `listenOutput`, and `listenExcept
 Here is a simple example, printing all of the info to the console:
 
 ```java
-SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-builder.listenInput(line -> System.out.println(sdf.format(new Date()) + ' ' + "[I] " + line));
-builder.listenOutput(line -> System.out.println(sdf.format(new Date()) + ' ' + "[O] " + line));
-builder.listenException(Throwable::printStackTrace);
+public class DebugKitteh {
+    public static void main(String[] args) {
+        Client.Builder builder = Client.builder();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+        builder.inputListener(line -> System.out.println(sdf.format(new Date()) + ' ' + "[I] " + line));
+        builder.outputListener(line -> System.out.println(sdf.format(new Date()) + ' ' + "[O] " + line));
+        builder.exceptionListener(Throwable::printStackTrace);
+        // and then build() or buildAndConnect()
+    }
+}
 ```
 
 ## Using KICL in your Maven project
@@ -56,7 +67,7 @@ KICL is built and deployed using Maven. Releases are available on Maven Central.
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>3.3.1</version>
+    <version>4.0.0</version>
     <scope>...</scope>
 </dependency>
 ```
@@ -72,7 +83,7 @@ public class FriendlyBot {
     private Client client;
 
     public void connect() {
-        ...; // Setting up this.client
+        // Set up this.client before the below line!
 
         this.client.getEventManager().registerEventListener(this);
     }

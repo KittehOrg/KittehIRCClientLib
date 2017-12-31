@@ -50,6 +50,7 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
   * `STSPropertiesStorageManager` as default implementation.
 * SNI
   * Draft spec supported.
+* [Twitch capabilities optionally supported](advanced/twitch.md)
 * WEBIRC
   * Supported in the client builder.
   * For more information see [here](advanced/webirc.md).
