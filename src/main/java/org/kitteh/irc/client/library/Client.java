@@ -673,7 +673,39 @@ public interface Client {
          */
         void setServerAddress(@Nonnull InetSocketAddress address);
 
-        // TODO clean up before 4.0.0
+        /**
+         * Initialize with pre-connection information.
+         *
+         * @param name name
+         * @param serverAddress serverAddress
+         * @param serverPassword serverPassword
+         * @param bindAddress bindAddress
+         * @param nick nick
+         * @param userString userString
+         * @param realName realName
+         * @param actorTracker actorTracker
+         * @param authManager authManager
+         * @param capabilityManager capabilityManager
+         * @param eventManager eventManager
+         * @param messageTagManager messageTagManager
+         * @param iSupportManager iSupportManager
+         * @param defaultMessageMap defaultMessageMap
+         * @param messageSendingQueue messageSendingQueue
+         * @param serverInfo serverInfo
+         * @param exceptionListener exceptionListener
+         * @param inputListener inputListener
+         * @param outputListener outputListener
+         * @param secure secure
+         * @param secureKeyCertChain secureKeyCertChain
+         * @param secureKey secureKey
+         * @param secureKeyPassword secureKeyPassword
+         * @param trustManagerFactory trustManagerFactory
+         * @param stsStorageManager stsStorageManager
+         * @param webircHost webircHost
+         * @param webircIP webircIP
+         * @param webircPassword webircPassword
+         * @param webircUser webircUser
+         */
         void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword,
                         @Nullable InetSocketAddress bindAddress,
                         @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
