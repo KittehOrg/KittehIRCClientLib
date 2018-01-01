@@ -59,7 +59,7 @@ import java.util.function.Function;
 /**
  * Default {@link Client.Builder}.
  */
-public class ClientBuilder implements Client.Builder {
+public class DefaultBuilder implements Client.Builder {
     private static final int DEFAULT_SERVER_PORT = 6697;
     private static final String DEFAULT_SERVER_HOST = "localhost";
 
@@ -120,70 +120,70 @@ public class ClientBuilder implements Client.Builder {
 
     @Nonnull
     @Override
-    public ClientBuilder bindHost(@Nullable String host) {
+    public DefaultBuilder bindHost(@Nullable String host) {
         this.bindHost = host;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder bindPort(int port) {
+    public DefaultBuilder bindPort(int port) {
         this.bindPort = this.isValidPort(port);
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
+    public DefaultBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
         this.defaultMessageMap = defaultMessageMap;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder exceptionListener(@Nullable Consumer<Exception> listener) {
+    public DefaultBuilder exceptionListener(@Nullable Consumer<Exception> listener) {
         this.exceptionListener = listener;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder inputListener(@Nullable Consumer<String> listener) {
+    public DefaultBuilder inputListener(@Nullable Consumer<String> listener) {
         this.inputListener = listener;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder outputListener(@Nullable Consumer<String> listener) {
+    public DefaultBuilder outputListener(@Nullable Consumer<String> listener) {
         this.outputListener = listener;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder messageSendingQueueSupplier(@Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
+    public DefaultBuilder messageSendingQueueSupplier(@Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
         this.messageSendingQueue = Sanity.nullCheck(supplier, "Supplier cannot be null");
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder messageTagManager(@Nonnull Function<Client.WithManagement, ? extends MessageTagManager> supplier) {
+    public DefaultBuilder messageTagManager(@Nonnull Function<Client.WithManagement, ? extends MessageTagManager> supplier) {
         this.messageTagManager = supplier;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder name(@Nonnull String name) {
+    public DefaultBuilder name(@Nonnull String name) {
         this.name = Sanity.safeMessageCheck(name, "Name");
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder nick(@Nonnull String nick) {
+    public DefaultBuilder nick(@Nonnull String nick) {
         Sanity.safeMessageCheck(nick, "Nick");
         Sanity.truthiness(!nick.contains(" "), "Nick cannot contain spaces");
         this.nick = nick;
@@ -192,63 +192,63 @@ public class ClientBuilder implements Client.Builder {
 
     @Nonnull
     @Override
-    public ClientBuilder serverPassword(@Nullable String password) {
+    public DefaultBuilder serverPassword(@Nullable String password) {
         this.serverPassword = password;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder realName(@Nonnull String name) {
+    public DefaultBuilder realName(@Nonnull String name) {
         this.realName = Sanity.safeMessageCheck(name, "Real name");
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secure(boolean secure) {
+    public DefaultBuilder secure(boolean secure) {
         this.secure = secure;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureKeyCertChain(@Nullable Path keyCertChainFile) {
+    public DefaultBuilder secureKeyCertChain(@Nullable Path keyCertChainFile) {
         this.secureKeyCertChain = keyCertChainFile;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureKey(@Nullable Path keyFile) {
+    public DefaultBuilder secureKey(@Nullable Path keyFile) {
         this.secureKey = keyFile;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureKeyPassword(@Nullable String password) {
+    public DefaultBuilder secureKeyPassword(@Nullable String password) {
         this.secureKeyPassword = password;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder secureTrustManagerFactory(@Nullable TrustManagerFactory factory) {
+    public DefaultBuilder secureTrustManagerFactory(@Nullable TrustManagerFactory factory) {
         this.secureTrustManagerFactory = factory;
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder serverHost(@Nonnull String host) {
+    public DefaultBuilder serverHost(@Nonnull String host) {
         this.serverHost = Sanity.nullCheck(host, "Host cannot be null");
         return this;
     }
 
     @Nonnull
     @Override
-    public ClientBuilder serverPort(int port) {
+    public DefaultBuilder serverPort(int port) {
         this.serverPort = this.isValidPort(port);
         return this;
     }
@@ -262,7 +262,7 @@ public class ClientBuilder implements Client.Builder {
 
     @Nonnull
     @Override
-    public ClientBuilder capabilityManager(@Nonnull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier) {
+    public DefaultBuilder capabilityManager(@Nonnull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier) {
         this.capabilityManager = Sanity.nullCheck(supplier, "Supplier cannot be null");
         return this;
     }
@@ -290,7 +290,7 @@ public class ClientBuilder implements Client.Builder {
 
     @Nonnull
     @Override
-    public ClientBuilder user(@Nonnull String user) {
+    public DefaultBuilder user(@Nonnull String user) {
         Sanity.safeMessageCheck(user, "User");
         Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
         this.userString = user;
@@ -299,7 +299,7 @@ public class ClientBuilder implements Client.Builder {
 
     @Nonnull
     @Override
-    public ClientBuilder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip) {
+    public DefaultBuilder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip) {
         Sanity.safeMessageCheck(password, "Password");
         Sanity.safeMessageCheck(user, "User");
         Sanity.safeMessageCheck(host, "Host");
@@ -319,7 +319,7 @@ public class ClientBuilder implements Client.Builder {
 
     @Nonnull
     @Override
-    public ClientBuilder webircRemove() {
+    public DefaultBuilder webircRemove() {
         this.webircPassword = null;
         this.webircUser = null;
         this.webircHost = null;
@@ -329,7 +329,7 @@ public class ClientBuilder implements Client.Builder {
 
     @Nonnull
     @Override
-    public ClientBuilder stsStorageManager(@Nullable StsStorageManager storageManager) {
+    public DefaultBuilder stsStorageManager(@Nullable StsStorageManager storageManager) {
         this.stsStorageManager = storageManager;
         return this;
     }

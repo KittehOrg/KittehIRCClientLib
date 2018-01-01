@@ -5,7 +5,7 @@ import org.junit.Test;
 /**
  * Test building a builder.
  */
-public final class ClientBuilderTest {
+public final class DefaultBuilderTest {
     /**
      * Tries to create a builder. Blows up otherwise.
      */
