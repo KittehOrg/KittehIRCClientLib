@@ -723,7 +723,7 @@ public interface Client {
     @Nonnull
     static Builder builder() {
         try {
-            Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".defaults.ClientBuilder").getDeclaredConstructor();
+            Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".defaults.DefaultBuilder").getDeclaredConstructor();
             constructor.setAccessible(true);
             return (Builder) constructor.newInstance();
         } catch (Exception e) {
