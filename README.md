@@ -31,8 +31,7 @@ public class Example {
     }
 
     public static void main(String[] args) {
-        // Calling build() starts connecting.
-        Client client = Client.builder().nick("Kitteh").serverHost("127.0.0.1").build();
+        Client client = Client.builder().nick("Kitteh").serverHost("127.0.0.1").buildAndConnect();
         client.getEventManager().registerEventListener(new Listener());
         client.addChannel("#kicl");
     }
@@ -44,7 +43,7 @@ public class Example {
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>3.3.1</version>
+    <version>4.0.0</version>
 </dependency>
 ```
 
