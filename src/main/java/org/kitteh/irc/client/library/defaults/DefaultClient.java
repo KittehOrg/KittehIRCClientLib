@@ -743,7 +743,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void connect() {
-        if (this.connection != null) {
+        if ((this.connection != null) && this.connection.isAlive()) {
             throw new IllegalStateException("Client is already connecting");
         }
 

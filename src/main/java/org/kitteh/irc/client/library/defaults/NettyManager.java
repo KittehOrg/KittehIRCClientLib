@@ -103,6 +103,8 @@ public class NettyManager {
 
         private volatile String lastMessage;
 
+        private boolean alive = true;
+
         private ClientConnection(@Nonnull final Client.WithManagement client, @Nonnull ChannelFuture channelFuture) {
             this.client = client;
             this.channel = channelFuture.channel();
@@ -115,6 +117,7 @@ public class NettyManager {
                     this.client.getEventManager().callEvent(new ClientConnectionEstablishedEvent(this.client));
                     this.client.beginMessageSendingImmediate(this.channel::writeAndFlush);
                 } else {
+                    ClientConnection.this.alive = false;
                     ClientConnectionFailedEvent event = new ClientConnectionFailedEvent(this.client, this.reconnect, future.cause());
                     this.client.getEventManager().callEvent(event);
                     this.client.getExceptionListener().queue(new KittehConnectionException(future.cause(), false));
@@ -231,6 +234,7 @@ public class NettyManager {
                 if (this.ping != null) {
                     this.ping.cancel(true);
                 }
+                ClientConnection.this.alive = false;
                 ClientConnectionClosedEvent event = new ClientConnectionClosedEvent(ClientConnection.this.client, ClientConnection.this.reconnect, future.cause(), this.lastMessage);
                 ClientConnection.this.client.getEventManager().callEvent(event);
                 if (event.willAttemptReconnect()) {
@@ -248,6 +252,15 @@ public class NettyManager {
             if (thrown instanceof IOException) {
                 this.shutdown(DefaultMessageType.QUIT_INTERNAL_EXCEPTION, true);
             }
+        }
+
+        /**
+         * Gets if the connection is alive.
+         *
+         * @return true if alive
+         */
+        public boolean isAlive() {
+            return this.alive;
         }
 
         /**
