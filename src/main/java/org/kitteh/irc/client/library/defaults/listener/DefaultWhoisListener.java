@@ -8,6 +8,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.WhoisEvent;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -26,8 +27,10 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
         super(client);
     }
 
-    private DefaultWhoisData.Builder getWhoisBuilder(String nick) {
-        if ((this.whoisBuilder == null) || !this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(this.whoisBuilder.getNick(), nick)) {
+    private DefaultWhoisData.Builder getWhoisBuilder(@Nonnull ClientReceiveNumericEvent event) {
+        String nick = event.getParameters().get(1);
+        if ((this.whoisBuilder == null) ||
+                !this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(this.whoisBuilder.getNick(), nick)) { // If suddenly a nick change, discard old
             this.whoisBuilder = new DefaultWhoisData.Builder(this.getClient(), nick);
         }
         return this.whoisBuilder;
@@ -40,7 +43,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS AWAY response too short");
             return;
         }
-        this.getWhoisBuilder(event.getParameters().get(1)).setAway(event.getParameters().get((event.getParameters().size() == 3) ? 2 : 3));
+        this.getWhoisBuilder(event).setAway(event.getParameters().get((event.getParameters().size() == 3) ? 2 : 3));
     }
 
     @NumericFilter(311) // WHOISUSER
@@ -50,13 +53,13 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS USER response too short");
             return;
         }
-        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event);
         switch (event.getParameters().size()) {
-            case 6:
+            case 6: // If long enough for real name, grab real name
                 whoisBuilder.setRealName(event.getParameters().get(5));
-            case 4:
+            case 4: // If long enough for host, grab host
                 whoisBuilder.setHost(event.getParameters().get(3));
-            case 3:
+            case 3: // If long enough for user string, grab user string. Though this one is kinda expected.
                 whoisBuilder.setUserString(event.getParameters().get(2));
         }
     }
@@ -68,7 +71,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS SERVER response too short");
             return;
         }
-        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event);
         whoisBuilder.setServer(event.getParameters().get(2));
         if (event.getParameters().size() > 3) {
             whoisBuilder.setServerDescription(event.getParameters().get(3));
@@ -82,7 +85,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS OPERATOR response too short");
             return;
         }
-        this.getWhoisBuilder(event.getParameters().get(1)).setOperatorInformation(event.getParameters().get(2));
+        this.getWhoisBuilder(event).setOperatorInformation(event.getParameters().get(2));
     }
 
     @NumericFilter(317) // WHOISIDLE
@@ -92,7 +95,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS IDLE response too short");
             return;
         }
-        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
+        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event);
         long idleTime;
         try {
             idleTime = Long.parseLong(event.getParameters().get(2));
@@ -120,7 +123,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS ACCOUNT response too short");
             return;
         }
-        this.getWhoisBuilder(event.getParameters().get(1)).setAccount(event.getParameters().get(2));
+        this.getWhoisBuilder(event).setAccount(event.getParameters().get(2));
     }
 
     @NumericFilter(319) // WHOISCHANNELS
@@ -130,7 +133,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS CHANNELS response too short");
             return;
         }
-        this.getWhoisBuilder(event.getParameters().get(1)).addChannels(event.getParameters().get(2));
+        this.getWhoisBuilder(event).addChannels(event.getParameters().get(2));
     }
 
     @NumericFilter(671) // WHOISSECURE
@@ -140,7 +143,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS SECURE response too short");
             return;
         }
-        this.getWhoisBuilder(event.getParameters().get(1)).setSecure();
+        this.getWhoisBuilder(event).setSecure();
     }
 
     @NumericFilter(318) // ENDOFWHOIS
@@ -150,8 +153,9 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHOIS END response too short");
             return;
         }
-        WhoisData whois = this.getWhoisBuilder(event.getParameters().get(1)).build();
-        if (this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(whois.getNick(), this.getClient().getNick()) && (!this.getTracker().getTrackedUser(whois.getNick()).isPresent())) {
+        WhoisData whois = this.getWhoisBuilder(event).build();
+        if (this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(whois.getNick(), this.getClient().getNick()) &&
+                (!this.getTracker().getTrackedUser(whois.getNick()).isPresent())) {
             this.getTracker().trackUser(whois);
         }
         this.fire(new WhoisEvent(this.getClient(), whois));
