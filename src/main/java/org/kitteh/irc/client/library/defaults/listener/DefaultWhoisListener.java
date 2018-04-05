@@ -23,7 +23,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
      *
      * @param client client
      */
-    public DefaultWhoisListener(Client.WithManagement client) {
+    public DefaultWhoisListener(@Nonnull Client.WithManagement client) {
         super(client);
     }
 
