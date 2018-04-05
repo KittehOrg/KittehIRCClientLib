@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.command.WallopsCommand;
 import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.defaults.element.DefaultServerMessage;
+import org.kitteh.irc.client.library.defaults.listener.DefaultWhoisListener;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
@@ -282,6 +283,10 @@ public class DefaultClient implements Client.WithManagement {
         this.webircUser = webircUser;
 
         this.eventManager.registerEventListener(new DefaultEventListener(this));
+
+        // TODO Customizable
+        this.eventManager.registerEventListener(new DefaultWhoisListener(this));
+        // END
 
         this.serverInfo = this.serverInfoSupplier.apply(this);
 

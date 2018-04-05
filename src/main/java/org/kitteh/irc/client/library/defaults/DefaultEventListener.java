@@ -28,14 +28,13 @@ import net.engio.mbassy.listener.References;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.defaults.element.DefaultCapabilityState;
-import org.kitteh.irc.client.library.defaults.element.DefaultWhoisData;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultUserMode;
+import org.kitteh.irc.client.library.defaults.listener.AbstractDefaultListenerBase;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.element.WhoisData;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ModeInfo;
@@ -75,7 +74,6 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveMotdEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
-import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
 import org.kitteh.irc.client.library.event.user.MonitoredNickListEvent;
 import org.kitteh.irc.client.library.event.user.MonitoredNickListFullEvent;
@@ -94,9 +92,6 @@ import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.UserQuitEvent;
 import org.kitteh.irc.client.library.event.user.UserUserStringChangeEvent;
 import org.kitteh.irc.client.library.event.user.WallopsEvent;
-import org.kitteh.irc.client.library.event.user.WhoisEvent;
-import org.kitteh.irc.client.library.exception.KittehServerMessageException;
-import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
@@ -106,7 +101,6 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -124,23 +118,21 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("JavaDoc")
 @net.engio.mbassy.listener.Listener(references = References.Strong)
-public class DefaultEventListener {
-    private final Client.WithManagement client;
-
+public class DefaultEventListener extends AbstractDefaultListenerBase {
     /**
      * Constructs the listener.
      *
      * @param client client
      */
     public DefaultEventListener(Client.WithManagement client) {
-        this.client = client;
+        super(client);
     }
 
     @NumericFilter(1)
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void welcome(ClientReceiveNumericEvent event) {
         if (!event.getParameters().isEmpty()) {
-            this.client.setCurrentNick(event.getParameters().get(0));
+            this.getClient().setCurrentNick(event.getParameters().get(0));
         } else {
             this.trackException(event, "Nickname missing; can't confirm");
         }
@@ -149,17 +141,17 @@ public class DefaultEventListener {
     @NumericFilter(4)
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void version(ClientReceiveNumericEvent event) {
-        boolean isNotTwitch = this.client.getEventManager().getRegisteredEventListeners().stream().noneMatch(listener -> (listener instanceof TwitchListener));
+        boolean isNotTwitch = this.getClient().getEventManager().getRegisteredEventListeners().stream().noneMatch(listener -> (listener instanceof TwitchListener));
         if (event.getParameters().size() > 1) {
-            this.client.getServerInfo().setAddress(event.getParameters().get(1));
+            this.getClient().getServerInfo().setAddress(event.getParameters().get(1));
             if (event.getParameters().size() > 2) {
-                this.client.getServerInfo().setVersion(event.getParameters().get(2));
+                this.getClient().getServerInfo().setVersion(event.getParameters().get(2));
                 if (event.getParameters().size() > 3) {
                     List<UserMode> modes = new ArrayList<>(event.getParameters().get(3).length());
                     for (char mode : event.getParameters().get(3).toCharArray()) {
-                        modes.add(new DefaultUserMode(this.client, mode));
+                        modes.add(new DefaultUserMode(this.getClient(), mode));
                     }
-                    this.client.getServerInfo().setUserModes(modes);
+                    this.getClient().getServerInfo().setUserModes(modes);
                 } else {
                     this.trackException(event, "Server user modes missing");
                 }
@@ -170,17 +162,17 @@ public class DefaultEventListener {
             this.trackException(event, "Server address, version, and user modes missing");
         }
         if (isNotTwitch) {
-            this.client.sendRawLineImmediately("WHOIS " + this.client.getNick());
+            this.getClient().sendRawLineImmediately("WHOIS " + this.getClient().getNick());
         }
-        this.fire(new ClientNegotiationCompleteEvent(this.client, event.getActor(), this.client.getServerInfo()));
-        this.client.startSending();
+        this.fire(new ClientNegotiationCompleteEvent(this.getClient(), event.getActor(), this.getClient().getServerInfo()));
+        this.getClient().startSending();
     }
 
     @NumericFilter(5)
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void iSupport(ClientReceiveNumericEvent event) {
         for (int i = 1; i < event.getParameters().size(); i++) {
-            this.client.getServerInfo().addISupportParameter(this.client.getISupportManager().createParameter(event.getParameters().get(i)));
+            this.getClient().getServerInfo().addISupportParameter(this.getClient().getISupportManager().createParameter(event.getParameters().get(i)));
         }
     }
 
@@ -192,160 +184,25 @@ public class DefaultEventListener {
             return;
         }
 
-        if (!this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(event.getParameters().get(0), this.client.getNick())) {
+        if (!this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(event.getParameters().get(0), this.getClient().getNick())) {
             this.trackException(event, "UMODE response for another user");
             return;
         }
         ModeStatusList<UserMode> modes;
         try {
-            modes = ModeStatusList.fromUser(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+            modes = ModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
         } catch (IllegalArgumentException e) {
             this.trackException(event, e.getMessage());
             return;
         }
-        this.client.setUserModes(modes);
+        this.getClient().setUserModes(modes);
     }
 
     @NumericFilter(305) // UNAWAY
     @NumericFilter(306) // NOWAWAY
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveNumericEvent event) {
-        this.fire(new ClientAwayStatusChangeEvent(this.client, event.getOriginalMessages(), event.getNumeric() == 306));
-    }
-
-    @Nullable
-    private DefaultWhoisData.Builder whoisBuilder;
-
-    private DefaultWhoisData.Builder getWhoisBuilder(String nick) {
-        if ((this.whoisBuilder == null) || !this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(this.whoisBuilder.getNick(), nick)) {
-            this.whoisBuilder = new DefaultWhoisData.Builder(this.client, nick);
-        }
-        return this.whoisBuilder;
-    }
-
-    @NumericFilter(301) // WHOISAWAY
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisAway(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS AWAY response too short");
-            return;
-        }
-        this.getWhoisBuilder(event.getParameters().get(1)).setAway(event.getParameters().get((event.getParameters().size() == 3) ? 2 : 3));
-    }
-
-    @NumericFilter(311) // WHOISUSER
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisUser(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 2) {
-            this.trackException(event, "WHOIS USER response too short");
-            return;
-        }
-        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
-        switch (event.getParameters().size()) {
-            case 6:
-                whoisBuilder.setRealName(event.getParameters().get(5));
-            case 4:
-                whoisBuilder.setHost(event.getParameters().get(3));
-            case 3:
-                whoisBuilder.setUserString(event.getParameters().get(2));
-        }
-    }
-
-    @NumericFilter(312) // WHOISSERVER
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisServer(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS SERVER response too short");
-            return;
-        }
-        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
-        whoisBuilder.setServer(event.getParameters().get(2));
-        if (event.getParameters().size() > 3) {
-            whoisBuilder.setServerDescription(event.getParameters().get(3));
-        }
-    }
-
-    @NumericFilter(313) // WHOISOPERATOR
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisOperator(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS OPERATOR response too short");
-            return;
-        }
-        this.getWhoisBuilder(event.getParameters().get(1)).setOperatorInformation(event.getParameters().get(2));
-    }
-
-    @NumericFilter(317) // WHOISIDLE
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisIdle(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 4) {
-            this.trackException(event, "WHOIS IDLE response too short");
-            return;
-        }
-        DefaultWhoisData.Builder whoisBuilder = this.getWhoisBuilder(event.getParameters().get(1));
-        long idleTime;
-        try {
-            idleTime = Long.parseLong(event.getParameters().get(2));
-        } catch (NumberFormatException e) {
-            this.trackException(event, "WHOIS IDLE idle time not a number");
-            return;
-        }
-        whoisBuilder.setIdleTime(idleTime);
-        if (event.getParameters().size() > 4) {
-            long signOnTime;
-            try {
-                signOnTime = Long.parseLong(event.getParameters().get(3));
-            } catch (NumberFormatException e) {
-                this.trackException(event, "WHOIS IDLE sign on time not a number");
-                return;
-            }
-            whoisBuilder.setSignOnTime(signOnTime);
-        }
-    }
-
-    @NumericFilter(330) // WHOISACCOUNT
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisAccount(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS ACCOUNT response too short");
-            return;
-        }
-        this.getWhoisBuilder(event.getParameters().get(1)).setAccount(event.getParameters().get(2));
-    }
-
-    @NumericFilter(319) // WHOISCHANNELS
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisChannels(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 3) {
-            this.trackException(event, "WHOIS CHANNELS response too short");
-            return;
-        }
-        this.getWhoisBuilder(event.getParameters().get(1)).addChannels(event.getParameters().get(2));
-    }
-
-    @NumericFilter(671) // WHOISSECURE
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisSecure(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 2) {
-            this.trackException(event, "WHOIS SECURE response too short");
-            return;
-        }
-        this.getWhoisBuilder(event.getParameters().get(1)).setSecure();
-    }
-
-    @NumericFilter(318) // ENDOFWHOIS
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void whoisEnd(ClientReceiveNumericEvent event) {
-        if (event.getParameters().size() < 2) {
-            this.trackException(event, "WHOIS END response too short");
-            return;
-        }
-        WhoisData whois = this.getWhoisBuilder(event.getParameters().get(1)).build();
-        if (this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(whois.getNick(), this.client.getNick()) && (!this.getTracker().getTrackedUser(whois.getNick()).isPresent())) {
-            this.getTracker().trackUser(whois);
-        }
-        this.fire(new WhoisEvent(this.client, whois));
-        this.whoisBuilder = null;
+        this.fire(new ClientAwayStatusChangeEvent(this.getClient(), event.getOriginalMessages(), event.getNumeric() == 306));
     }
 
     private final List<ServerMessage> whoMessages = new ArrayList<>();
@@ -391,7 +248,7 @@ public class DefaultEventListener {
                     this.getTracker().setUserOperString(nick, "*");
                     continue;
                 }
-                for (ChannelUserMode mode : this.client.getServerInfo().getChannelUserModes()) {
+                for (ChannelUserMode mode : this.getClient().getServerInfo().getChannelUserModes()) {
                     if (mode.getNickPrefix() == prefix) {
                         modes.add(mode);
                         break;
@@ -414,7 +271,7 @@ public class DefaultEventListener {
         whoChannel.ifPresent(channel -> {
             this.getTracker().setChannelListReceived(channel.getName());
             this.whoMessages.add(event.getServerMessage());
-            this.fire(new ChannelUsersUpdatedEvent(this.client, this.whoMessages, channel));
+            this.fire(new ChannelUsersUpdatedEvent(this.getClient(), this.whoMessages, channel));
             this.whoMessages.clear();
         }); // No else, server might send other WHO information about non-channels.
     }
@@ -430,7 +287,7 @@ public class DefaultEventListener {
         if (channel.isPresent()) {
             ModeStatusList<ChannelMode> statusList;
             try {
-                statusList = ModeStatusList.fromChannel(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+                statusList = ModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;
@@ -466,7 +323,7 @@ public class DefaultEventListener {
         Optional<Channel> topicSetChannel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
         if (topicSetChannel.isPresent()) {
             this.getTracker().setChannelTopicInfo(topicSetChannel.get().getName(), Long.parseLong(event.getParameters().get(3)) * 1000, this.getTracker().getActor(event.getParameters().get(2)));
-            this.fire(new ChannelTopicEvent(this.client, event.getOriginalMessages(), topicSetChannel.get(), false));
+            this.fire(new ChannelTopicEvent(this.getClient(), event.getOriginalMessages(), topicSetChannel.get(), false));
         } else {
             this.trackException(event, "Topic message sent for invalid channel name");
         }
@@ -483,7 +340,7 @@ public class DefaultEventListener {
         }
         Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(2));
         if (channel.isPresent()) {
-            List<ChannelUserMode> channelUserModes = this.client.getServerInfo().getChannelUserModes();
+            List<ChannelUserMode> channelUserModes = this.getClient().getServerInfo().getChannelUserModes();
             for (String combo : event.getParameters().get(3).split(" ")) {
                 Set<ChannelUserMode> modes = new HashSet<>();
                 for (int i = 0; i < combo.length(); i++) {
@@ -513,7 +370,7 @@ public class DefaultEventListener {
         Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             this.namesMessages.add(event.getServerMessage());
-            this.fire(new ChannelNamesUpdatedEvent(this.client, this.namesMessages, channel.get()));
+            this.fire(new ChannelNamesUpdatedEvent(this.getClient(), this.namesMessages, channel.get()));
             this.namesMessages.clear();
         } else {
             this.trackException(event, "NAMES response sent for invalid channel name");
@@ -577,9 +434,9 @@ public class DefaultEventListener {
                 } catch (NumberFormatException | DateTimeException ignored) {
                 }
             }
-            Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
+            Optional<ChannelMode> channelMode = this.getClient().getServerInfo().getChannelMode(mode);
             if (channelMode.isPresent()) {
-                infoList.add(new ModeInfo.DefaultModeInfo(this.client, channel.get(), channelMode.get(), event.getParameters().get((2 + offset)), creator, creationTime));
+                infoList.add(new ModeInfo.DefaultModeInfo(this.getClient(), channel.get(), channelMode.get(), event.getParameters().get((2 + offset)), creator, creationTime));
             } else {
                 this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
             }
@@ -621,10 +478,10 @@ public class DefaultEventListener {
         Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             messageList.add(event.getServerMessage());
-            Optional<ChannelMode> channelMode = this.client.getServerInfo().getChannelMode(mode);
+            Optional<ChannelMode> channelMode = this.getClient().getServerInfo().getChannelMode(mode);
             if (channelMode.isPresent()) {
                 List<ModeInfo> modeInfos = new ArrayList<>(infoList);
-                this.fire(new ChannelModeInfoListEvent(this.client, messageList, channel.get(), channelMode.get(), modeInfos));
+                this.fire(new ChannelModeInfoListEvent(this.getClient(), messageList, channel.get(), channelMode.get(), modeInfos));
                 this.getTracker().setChannelModeInfoList(channel.get().getName(), mode, modeInfos);
             } else {
                 this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
@@ -661,8 +518,8 @@ public class DefaultEventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void motdEnd(ClientReceiveNumericEvent event) {
         this.motdMessages.add(event.getServerMessage());
-        this.client.getServerInfo().setMotd(new ArrayList<>(this.motd));
-        this.fire(new ClientReceiveMotdEvent(this.client, this.motdMessages));
+        this.getClient().getServerInfo().setMotd(new ArrayList<>(this.motd));
+        this.fire(new ClientReceiveMotdEvent(this.getClient(), this.motdMessages));
     }
 
     @NumericFilter(431) // No nick given
@@ -670,9 +527,9 @@ public class DefaultEventListener {
     @NumericFilter(433) // Nick in use
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void nickInUse(ClientReceiveNumericEvent event) {
-        NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.client, event.getOriginalMessages(), this.client.getRequestedNick(), this.client.getRequestedNick() + '`');
+        NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getRequestedNick(), this.getClient().getRequestedNick() + '`');
         this.fire(nickRejectedEvent);
-        this.client.sendNickChange(nickRejectedEvent.getNewNick());
+        this.getClient().sendNickChange(nickRejectedEvent.getNewNick());
     }
 
     @NumericFilter(710) // Knock
@@ -685,7 +542,7 @@ public class DefaultEventListener {
         Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             User user = (User) this.getTracker().getActor(event.getParameters().get(2));
-            this.fire(new ChannelKnockEvent(this.client, event.getOriginalMessages(), channel.get(), user));
+            this.fire(new ChannelKnockEvent(this.getClient(), event.getOriginalMessages(), channel.get(), user));
         } else {
             this.trackException(event, "KNOCK message sent for invalid channel name");
         }
@@ -703,9 +560,9 @@ public class DefaultEventListener {
         for (String nick : event.getParameters().get(1).split(",")) {
             MonitoredNickStatusEvent monitorEvent;
             if (event.getNumeric() == 730) {
-                monitorEvent = new MonitoredNickOnlineEvent(this.client, originalMessages, nick);
+                monitorEvent = new MonitoredNickOnlineEvent(this.getClient(), originalMessages, nick);
             } else {
-                monitorEvent = new MonitoredNickOfflineEvent(this.client, originalMessages, nick);
+                monitorEvent = new MonitoredNickOfflineEvent(this.getClient(), originalMessages, nick);
             }
             this.fire(monitorEvent);
         }
@@ -728,7 +585,7 @@ public class DefaultEventListener {
     @NumericFilter(733) // Monitor list end
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void monitorListEnd(ClientReceiveNumericEvent event) {
-        this.fire(new MonitoredNickListEvent(this.client, this.monitorListMessages, this.monitorList));
+        this.fire(new MonitoredNickListEvent(this.getClient(), this.monitorListMessages, this.monitorList));
         this.monitorList.clear();
         this.monitorListMessages.clear();
     }
@@ -747,7 +604,7 @@ public class DefaultEventListener {
             this.trackException(event, "MONITOR list full message using non-int limit");
             return;
         }
-        this.fire(new MonitoredNickListFullEvent(this.client, event.getOriginalMessages(), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
+        this.fire(new MonitoredNickListFullEvent(this.getClient(), event.getOriginalMessages(), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
     }
 
     private final List<CapabilityState> capList = new ArrayList<>();
@@ -774,11 +631,11 @@ public class DefaultEventListener {
         } else {
             capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT;
         }
-        List<CapabilityState> capabilityStateList = Arrays.stream(event.getParameters().get(capabilityListIndex).split(" ")).filter(string -> !string.isEmpty()).map(capability -> new DefaultCapabilityState(this.client, capability)).collect(Collectors.toCollection(ArrayList::new));
+        List<CapabilityState> capabilityStateList = Arrays.stream(event.getParameters().get(capabilityListIndex).split(" ")).filter(string -> !string.isEmpty()).map(capability -> new DefaultCapabilityState(this.getClient(), capability)).collect(Collectors.toCollection(ArrayList::new));
         switch (event.getParameters().get(1).toLowerCase()) {
             case "ack":
-                this.client.getCapabilityManager().updateCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesAcknowledgedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                this.getClient().getCapabilityManager().updateCapabilities(capabilityStateList);
+                responseEvent = new CapabilitiesAcknowledgedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
             case "list":
@@ -793,8 +650,8 @@ public class DefaultEventListener {
                         states = this.capList;
                         states.addAll(capabilityStateList);
                     }
-                    this.client.getCapabilityManager().setCapabilities(states);
-                    this.fire(new CapabilitiesListEvent(this.client, this.capListMessages, states));
+                    this.getClient().getCapabilityManager().setCapabilities(states);
+                    this.fire(new CapabilitiesListEvent(this.getClient(), this.capListMessages, states));
                     states.clear();
                 }
                 break;
@@ -810,43 +667,43 @@ public class DefaultEventListener {
                         states = this.capLs;
                         states.addAll(capabilityStateList);
                     }
-                    this.client.getCapabilityManager().setSupportedCapabilities(states);
-                    responseEvent = new CapabilitiesSupportedListEvent(this.client, this.capLsMessages, this.client.getCapabilityManager().isNegotiating(), states);
+                    this.getClient().getCapabilityManager().setSupportedCapabilities(states);
+                    responseEvent = new CapabilitiesSupportedListEvent(this.getClient(), this.capLsMessages, this.getClient().getCapabilityManager().isNegotiating(), states);
                     this.fireAndCapReq((CapabilitiesSupportedListEvent) responseEvent);
                 }
                 break;
             case "nak":
-                this.client.getCapabilityManager().updateCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesRejectedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                this.getClient().getCapabilityManager().updateCapabilities(capabilityStateList);
+                responseEvent = new CapabilitiesRejectedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
             case "new":
-                List<CapabilityState> statesAdded = new ArrayList<>(this.client.getCapabilityManager().getSupportedCapabilities());
+                List<CapabilityState> statesAdded = new ArrayList<>(this.getClient().getCapabilityManager().getSupportedCapabilities());
                 statesAdded.addAll(capabilityStateList);
-                this.client.getCapabilityManager().setSupportedCapabilities(statesAdded);
-                responseEvent = new CapabilitiesNewSupportedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                this.getClient().getCapabilityManager().setSupportedCapabilities(statesAdded);
+                responseEvent = new CapabilitiesNewSupportedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fireAndCapReq((CapabilitiesNewSupportedEvent) responseEvent);
                 break;
             case "del":
-                List<CapabilityState> statesRemaining = new ArrayList<>(this.client.getCapabilityManager().getSupportedCapabilities());
+                List<CapabilityState> statesRemaining = new ArrayList<>(this.getClient().getCapabilityManager().getSupportedCapabilities());
                 statesRemaining.removeAll(capabilityStateList);
-                this.client.getCapabilityManager().setSupportedCapabilities(statesRemaining);
-                responseEvent = new CapabilitiesDeletedSupportedEvent(this.client, event.getOriginalMessages(), this.client.getCapabilityManager().isNegotiating(), capabilityStateList);
+                this.getClient().getCapabilityManager().setSupportedCapabilities(statesRemaining);
+                responseEvent = new CapabilitiesDeletedSupportedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
         }
         if (responseEvent != null) {
             if (responseEvent.isNegotiating() && responseEvent.isEndingNegotiation()) {
-                this.client.sendRawLineImmediately("CAP END");
-                this.client.getCapabilityManager().endNegotiation();
+                this.getClient().sendRawLineImmediately("CAP END");
+                this.getClient().getCapabilityManager().endNegotiation();
             }
         }
     }
 
     private void fireAndCapReq(@Nonnull CapabilityNegotiationResponseEventWithRequestBase responseEvent) {
-        Set<String> capabilities = this.client.getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
+        Set<String> capabilities = this.getClient().getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
         capabilities.retainAll(CapabilityManager.Defaults.getDefaults());
-        capabilities.removeAll(this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
+        capabilities.removeAll(this.getClient().getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
         if (!capabilities.isEmpty()) {
             responseEvent.setEndingNegotiation(false);
             capabilities.forEach(responseEvent::addRequest);
@@ -854,7 +711,7 @@ public class DefaultEventListener {
         this.fire(responseEvent);
         List<String> requests = responseEvent.getRequests();
         if (!requests.isEmpty()) {
-            CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.client);
+            CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.getClient());
             requests.forEach(capabilityRequestCommand::enable);
             capabilityRequestCommand.execute();
         }
@@ -888,12 +745,12 @@ public class DefaultEventListener {
 
         if (!user.getHost().equals(newHostString)) {
             this.getTracker().trackUserHostnameChange(user.getNick(), newHostString);
-            this.fire(new UserHostnameChangeEvent(this.client, event.getOriginalMessages(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
+            this.fire(new UserHostnameChangeEvent(this.getClient(), event.getOriginalMessages(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
         }
 
         if (!user.getUserString().equals(newUserString)) {
             this.getTracker().trackUserUserStringChange(user.getNick(), newUserString);
-            this.fire(new UserUserStringChangeEvent(this.client, event.getOriginalMessages(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
+            this.fire(new UserUserStringChangeEvent(this.getClient(), event.getOriginalMessages(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
         }
     }
 
@@ -910,7 +767,7 @@ public class DefaultEventListener {
         }
         String accountParameter = event.getParameters().get(0);
         String accountName = "*".equals(accountParameter) ? null : accountParameter;
-        this.fire(new UserAccountStatusEvent(this.client, event.getOriginalMessages(), (User) event.getActor(), accountName));
+        this.fire(new UserAccountStatusEvent(this.getClient(), event.getOriginalMessages(), (User) event.getActor(), accountName));
         this.getTracker().setUserAccount(((User) event.getActor()).getNick(), accountName);
     }
 
@@ -922,7 +779,7 @@ public class DefaultEventListener {
             return;
         }
         String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0);
-        this.fire(new UserAwayMessageEvent(this.client, event.getOriginalMessages(), (User) event.getActor(), awayMessage));
+        this.fire(new UserAwayMessageEvent(this.getClient(), event.getOriginalMessages(), (User) event.getActor(), awayMessage));
         this.getTracker().setUserAway(((User) event.getActor()).getNick(), awayMessage);
     }
 
@@ -940,7 +797,7 @@ public class DefaultEventListener {
                     this.trackException(event, "Server sent a CTCP message and I panicked");
                     return;
                 }
-                this.fire(new ServerNoticeEvent(this.client, event.getOriginalMessages(), (Server) event.getActor(), message));
+                this.fire(new ServerNoticeEvent(this.getClient(), event.getOriginalMessages(), (Server) event.getActor(), message));
             } else {
                 this.trackException(event, "Message from neither server nor user");
             }
@@ -953,13 +810,13 @@ public class DefaultEventListener {
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateNoticeEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), message));
+            this.fire(new PrivateNoticeEvent(this.getClient(), event.getOriginalMessages(), user, event.getParameters().get(0), message));
         } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
             MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
-            this.fire(new ChannelNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel(), message));
+            this.fire(new ChannelNoticeEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), message));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.fire(new ChannelTargetedNoticeEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel(), channelInfo.getPrefix(), message));
+            this.fire(new ChannelTargetedNoticeEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), channelInfo.getPrefix(), message));
         }
     }
 
@@ -981,13 +838,13 @@ public class DefaultEventListener {
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateMessageEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), event.getParameters().get(1)));
+            this.fire(new PrivateMessageEvent(this.getClient(), event.getOriginalMessages(), user, event.getParameters().get(0), event.getParameters().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
             MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
-            this.fire(new ChannelMessageEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel(), event.getParameters().get(1)));
+            this.fire(new ChannelMessageEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), event.getParameters().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.fire(new ChannelTargetedMessageEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel(), channelInfo.getPrefix(), event.getParameters().get(1)));
+            this.fire(new ChannelTargetedMessageEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), channelInfo.getPrefix(), event.getParameters().get(1)));
         }
     }
 
@@ -998,7 +855,7 @@ public class DefaultEventListener {
         switch (event.getCommand()) {
             case "NOTICE":
                 if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                    this.fire(new PrivateCtcpReplyEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage));
+                    this.fire(new PrivateCtcpReplyEvent(this.getClient(), event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage));
                 }
                 break;
             case "PRIVMSG":
@@ -1018,18 +875,18 @@ public class DefaultEventListener {
                     if (ctcpMessage.startsWith("PING ")) {
                         reply = ctcpMessage;
                     }
-                    PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.client, event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
+                    PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.getClient(), event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
                     this.fire(ctcpEvent);
                     Optional<String> replyMessage = ctcpEvent.getReply();
                     if (ctcpEvent.isToClient()) {
-                        replyMessage.ifPresent(message -> this.client.sendRawLine("NOTICE " + user.getNick() + " :" + CtcpUtil.toCtcp(message)));
+                        replyMessage.ifPresent(message -> this.getClient().sendRawLine("NOTICE " + user.getNick() + " :" + CtcpUtil.toCtcp(message)));
                     }
                 } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
                     MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
-                    this.fire(new ChannelCtcpEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel(), ctcpMessage));
+                    this.fire(new ChannelCtcpEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), ctcpMessage));
                 } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
                     MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-                    this.fire(new ChannelTargetedCtcpEvent(this.client, event.getOriginalMessages(), user, channelInfo.getChannel(), channelInfo.getPrefix(), ctcpMessage));
+                    this.fire(new ChannelTargetedCtcpEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), channelInfo.getPrefix(), ctcpMessage));
                 }
                 break;
         }
@@ -1046,27 +903,27 @@ public class DefaultEventListener {
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
             ModeStatusList<UserMode> statusList;
             try {
-                statusList = ModeStatusList.fromUser(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+                statusList = ModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;
             }
-            this.fire(new UserModeEvent(this.client, event.getOriginalMessages(), event.getActor(), event.getParameters().get(0), statusList));
-            this.client.updateUserModes(statusList);
+            this.fire(new UserModeEvent(this.getClient(), event.getOriginalMessages(), event.getActor(), event.getParameters().get(0), statusList));
+            this.getClient().updateUserModes(statusList);
         } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
             Channel channel = ((MessageTargetInfo.ChannelInfo) messageTargetInfo).getChannel();
             ModeStatusList<ChannelMode> statusList;
             try {
-                statusList = ModeStatusList.fromChannel(this.client, StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+                statusList = ModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;
             }
-            this.fire(new ChannelModeEvent(this.client, event.getOriginalMessages(), event.getActor(), channel, statusList));
+            this.fire(new ChannelModeEvent(this.getClient(), event.getOriginalMessages(), event.getActor(), channel, statusList));
             statusList.getStatuses().stream()
                     .filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK)
                     .forEach(status -> this.getTracker().trackChannelModeInfo(channel.getName(), status.isSetting(),
-                            new ModeInfo.DefaultModeInfo(this.client, channel, status.getMode(), status.getParameter().get(), event.getActor().getName(), Instant.now())
+                            new ModeInfo.DefaultModeInfo(this.getClient(), channel, status.getMode(), status.getParameter().get(), event.getActor().getName(), Instant.now())
                     ));
             this.getTracker().updateChannelModes(channel.getName(), statusList);
         } else {
@@ -1082,20 +939,20 @@ public class DefaultEventListener {
             return;
         }
         String channelName = event.getParameters().get(0);
-        if (this.client.getServerInfo().isValidChannel(channelName)) {
+        if (this.getClient().getServerInfo().isValidChannel(channelName)) {
             if (event.getActor() instanceof User) {
                 this.getTracker().trackChannel(channelName);
                 Channel channel = this.getTracker().getTrackedChannel(channelName).get();
                 User user = (User) event.getActor();
                 this.getTracker().trackChannelUser(channelName, user, new HashSet<>());
                 ChannelJoinEvent joinEvent = null;
-                if (user.getNick().equals(this.client.getNick())) {
-                    if (this.client.getActorTracker().shouldQueryChannelInformation()) {
-                        this.client.sendRawLine("MODE " + channelName);
-                        this.client.sendRawLine("WHO " + channelName + (this.client.getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+                if (user.getNick().equals(this.getClient().getNick())) {
+                    if (this.getClient().getActorTracker().shouldQueryChannelInformation()) {
+                        this.getClient().sendRawLine("MODE " + channelName);
+                        this.getClient().sendRawLine("WHO " + channelName + (this.getClient().getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
                     }
-                    if (this.client.getIntendedChannels().contains(channelName)) {
-                        joinEvent = new RequestedChannelJoinCompleteEvent(this.client, event.getOriginalMessages(), channel, user);
+                    if (this.getClient().getIntendedChannels().contains(channelName)) {
+                        joinEvent = new RequestedChannelJoinCompleteEvent(this.getClient(), event.getOriginalMessages(), channel, user);
                     }
                 }
                 if (event.getParameters().size() > 2) {
@@ -1105,7 +962,7 @@ public class DefaultEventListener {
                     this.getTracker().setUserRealName(user.getNick(), event.getParameters().get(2));
                 }
                 if (joinEvent == null) {
-                    joinEvent = new ChannelJoinEvent(this.client, event.getOriginalMessages(), channel, user);
+                    joinEvent = new ChannelJoinEvent(this.getClient(), event.getOriginalMessages(), channel, user);
                 }
                 this.fire(joinEvent);
             } else {
@@ -1127,13 +984,13 @@ public class DefaultEventListener {
         if (channel.isPresent()) {
             if (event.getActor() instanceof User) {
                 User user = (User) event.getActor();
-                boolean isSelf = user.getNick().equals(this.client.getNick());
+                boolean isSelf = user.getNick().equals(this.getClient().getNick());
                 String partReason = (event.getParameters().size() > 1) ? event.getParameters().get(1) : "";
                 ChannelPartEvent partEvent;
-                if (isSelf && this.client.getIntendedChannels().contains(channel.get().getName())) {
-                    partEvent = new UnexpectedChannelLeaveViaPartEvent(this.client, event.getOriginalMessages(), channel.get(), user, partReason);
+                if (isSelf && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
+                    partEvent = new UnexpectedChannelLeaveViaPartEvent(this.getClient(), event.getOriginalMessages(), channel.get(), user, partReason);
                 } else {
-                    partEvent = new ChannelPartEvent(this.client, event.getOriginalMessages(), channel.get(), user, partReason);
+                    partEvent = new ChannelPartEvent(this.getClient(), event.getOriginalMessages(), channel.get(), user, partReason);
                 }
                 this.fire(partEvent);
                 this.getTracker().trackUserPart(channel.get().getName(), user.getNick());
@@ -1152,7 +1009,7 @@ public class DefaultEventListener {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void quit(ClientReceiveCommandEvent event) {
         if (event.getActor() instanceof User) {
-            this.fire(new UserQuitEvent(this.client, event.getOriginalMessages(), (User) event.getActor(), (event.getParameters().isEmpty()) ? "" : event.getParameters().get(0)));
+            this.fire(new UserQuitEvent(this.getClient(), event.getOriginalMessages(), (User) event.getActor(), (event.getParameters().isEmpty()) ? "" : event.getParameters().get(0)));
             this.getTracker().trackUserQuit(((User) event.getActor()).getNick());
         } else {
             this.trackException(event, "QUIT message sent for non-user");
@@ -1170,13 +1027,13 @@ public class DefaultEventListener {
         if (channel.isPresent()) {
             Optional<User> kickedUser = this.getTracker().getTrackedUser(event.getParameters().get(1));
             if (kickedUser.isPresent()) {
-                boolean isSelf = event.getParameters().get(1).equals(this.client.getNick());
+                boolean isSelf = event.getParameters().get(1).equals(this.getClient().getNick());
                 ClientEvent kickEvent;
                 String kickReason = (event.getParameters().size() > 2) ? event.getParameters().get(2) : "";
-                if (isSelf && this.client.getIntendedChannels().contains(channel.get().getName())) {
-                    kickEvent = new UnexpectedChannelLeaveViaKickEvent(this.client, event.getOriginalMessages(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
+                if (isSelf && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
+                    kickEvent = new UnexpectedChannelLeaveViaKickEvent(this.getClient(), event.getOriginalMessages(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
                 } else {
-                    kickEvent = new ChannelKickEvent(this.client, event.getOriginalMessages(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
+                    kickEvent = new ChannelKickEvent(this.getClient(), event.getOriginalMessages(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
                 }
                 this.fire(kickEvent);
                 this.getTracker().trackUserPart(channel.get().getName(), event.getParameters().get(1));
@@ -1199,11 +1056,11 @@ public class DefaultEventListener {
             return;
         }
         if (event.getActor() instanceof User) {
-            boolean isSelf = ((User) event.getActor()).getNick().equals(this.client.getNick());
+            boolean isSelf = ((User) event.getActor()).getNick().equals(this.getClient().getNick());
             Optional<User> user = this.getTracker().getTrackedUser(((User) event.getActor()).getNick());
             if (!user.isPresent()) {
                 if (isSelf) {
-                    this.client.setCurrentNick(event.getParameters().get(0));
+                    this.getClient().setCurrentNick(event.getParameters().get(0));
                     return; // Don't fail if NICK changes while not in a channel!
                 }
                 this.trackException(event, "NICK message sent for user not in tracked channels");
@@ -1212,9 +1069,9 @@ public class DefaultEventListener {
             User oldUser = user.get();
             this.getTracker().trackUserNickChange(user.get().getNick(), event.getParameters().get(0));
             User newUser = user.get();
-            this.fire(new UserNickChangeEvent(this.client, event.getOriginalMessages(), oldUser, newUser));
+            this.fire(new UserNickChangeEvent(this.getClient(), event.getOriginalMessages(), oldUser, newUser));
             if (isSelf) {
-                this.client.setCurrentNick(event.getParameters().get(0));
+                this.getClient().setCurrentNick(event.getParameters().get(0));
             }
         } else {
             this.trackException(event, "NICK message sent for non-user");
@@ -1230,10 +1087,10 @@ public class DefaultEventListener {
         }
         Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
-            if (this.client.getNick().equalsIgnoreCase(event.getParameters().get(0)) && this.client.getIntendedChannels().contains(channel.get().getName())) {
-                this.client.sendRawLine("JOIN " + channel.get().getName());
+            if (this.getClient().getNick().equalsIgnoreCase(event.getParameters().get(0)) && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
+                this.getClient().sendRawLine("JOIN " + channel.get().getName());
             }
-            this.fire(new ChannelInviteEvent(this.client, event.getOriginalMessages(), channel.get(), event.getActor(), event.getParameters().get(0)));
+            this.fire(new ChannelInviteEvent(this.getClient(), event.getOriginalMessages(), channel.get(), event.getActor(), event.getParameters().get(0)));
         } else {
             this.trackException(event, "INVITE message sent for invalid channel name");
         }
@@ -1250,7 +1107,7 @@ public class DefaultEventListener {
         if (channel.isPresent()) {
             this.getTracker().setChannelTopic(channel.get().getName(), event.getParameters().get(1));
             this.getTracker().setChannelTopicInfo(channel.get().getName(), System.currentTimeMillis(), event.getActor());
-            this.fire(new ChannelTopicEvent(this.client, event.getOriginalMessages(), channel.get(), true));
+            this.fire(new ChannelTopicEvent(this.getClient(), event.getOriginalMessages(), channel.get(), true));
         } else {
             this.trackException(event, "TOPIC message sent for invalid channel name");
         }
@@ -1263,7 +1120,7 @@ public class DefaultEventListener {
             this.trackException(event, "WALLOPS message too short");
             return;
         }
-        this.fire(new WallopsEvent(this.client, event.getOriginalMessages(), event.getActor(), event.getParameters().get(0)));
+        this.fire(new WallopsEvent(this.getClient(), event.getOriginalMessages(), event.getActor(), event.getParameters().get(0)));
     }
 
     protected static class MessageTargetInfo {
@@ -1327,32 +1184,14 @@ public class DefaultEventListener {
     }
 
     @Nonnull
-    @Override
-    public String toString() {
-        return new ToStringer(this).toString();
-    }
-
-    protected void fire(ClientEvent event) {
-        this.client.getEventManager().callEvent(event);
-    }
-
-    @Nonnull
     protected MessageTargetInfo getTypeByTarget(@Nonnull String target) {
         Optional<Channel> channel = this.getTracker().getTrackedChannel(target);
-        Optional<ChannelUserMode> prefix = this.client.getServerInfo().getTargetedChannelInfo(target);
+        Optional<ChannelUserMode> prefix = this.getClient().getServerInfo().getTargetedChannelInfo(target);
         if (prefix.isPresent()) {
             return new MessageTargetInfo.TargetedChannel(this.getTracker().getTrackedChannel(target.substring(1)).get(), prefix.get());
         } else if (channel.isPresent()) {
             return new MessageTargetInfo.ChannelInfo(channel.get());
         }
         return MessageTargetInfo.Private.INSTANCE;
-    }
-
-    protected void trackException(ClientReceiveServerMessageEvent event, String reason) {
-        this.client.getExceptionListener().queue(new KittehServerMessageException(event.getServerMessage(), reason));
-    }
-
-    protected ActorTracker getTracker() {
-        return this.client.getActorTracker();
     }
 }
