@@ -34,7 +34,7 @@ import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.command.WallopsCommand;
 import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.defaults.element.DefaultServerMessage;
-import org.kitteh.irc.client.library.defaults.listener.DefaultWhoisListener;
+import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
@@ -243,7 +243,8 @@ public class DefaultClient implements Client.WithManagement {
                            @Nullable InetSocketAddress bindAddress,
                            @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
                            @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager,
-                           @Nonnull EventManager eventManager, @Nonnull MessageTagManager messageTagManager,
+                           @Nonnull EventManager eventManager, @Nonnull List<EventListenerSupplier> listenerSuppliers,
+                           @Nonnull MessageTagManager messageTagManager,
                            @Nonnull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
                            @Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
                            @Nonnull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
@@ -282,11 +283,9 @@ public class DefaultClient implements Client.WithManagement {
         this.webircPassword = webircPassword;
         this.webircUser = webircUser;
 
-        this.eventManager.registerEventListener(new DefaultEventListener(this));
-
-        // TODO Customizable
-        this.eventManager.registerEventListener(new DefaultWhoisListener(this));
-        // END
+        for (EventListenerSupplier eventListenerSupplier : listenerSuppliers) {
+            this.eventManager.registerEventListener(eventListenerSupplier.getConstructingFunction().apply(this));
+        }
 
         this.serverInfo = this.serverInfoSupplier.apply(this);
 

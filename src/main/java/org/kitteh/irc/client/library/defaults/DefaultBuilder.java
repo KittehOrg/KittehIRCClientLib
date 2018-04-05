@@ -31,6 +31,8 @@ import org.kitteh.irc.client.library.defaults.feature.DefaultEventManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultISupportManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultMessageTagManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
+import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
+import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
@@ -53,6 +55,8 @@ import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -72,6 +76,7 @@ public class DefaultBuilder implements Client.Builder {
     private String name = "Unnamed";
     @Nullable
     private DefaultMessageMap defaultMessageMap = null;
+    private List<EventListenerSupplier> listenerSuppliers = Arrays.asList(DefaultListeners.values());
     @Nullable
     private Consumer<Exception> exceptionListener = Throwable::printStackTrace;
     @Nullable
@@ -136,6 +141,13 @@ public class DefaultBuilder implements Client.Builder {
     @Override
     public DefaultBuilder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap) {
         this.defaultMessageMap = defaultMessageMap;
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public DefaultBuilder eventListeners(@Nonnull List<EventListenerSupplier> listenerSuppliers) {
+        this.listenerSuppliers = listenerSuppliers;
         return this;
     }
 
@@ -346,7 +358,8 @@ public class DefaultBuilder implements Client.Builder {
                 this.getInetSocketAddress(this.bindHost, this.bindPort), this.nick, this.userString, this.realName,
                 this.actorTracker.apply(client),
                 this.authManager.apply(client), this.capabilityManager.apply(client), this.eventManager.apply(client),
-                this.messageTagManager.apply(client), this.iSupportManager.apply(client), this.defaultMessageMap, this.messageSendingQueue,
+                this.listenerSuppliers, this.messageTagManager.apply(client),
+                this.iSupportManager.apply(client), this.defaultMessageMap, this.messageSendingQueue,
                 this.serverInfo, this.exceptionListener, this.inputListener, this.outputListener, this.secure,
                 this.secureKeyCertChain, this.secureKey, this.secureKeyPassword, this.secureTrustManagerFactory, this.stsStorageManager,
                 this.webircHost, this.webircIP, this.webircPassword, this.webircUser

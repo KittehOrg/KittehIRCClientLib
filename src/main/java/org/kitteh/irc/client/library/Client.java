@@ -41,6 +41,8 @@ import org.kitteh.irc.client.library.defaults.feature.DefaultEventManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultISupportManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultMessageTagManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
+import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
+import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
@@ -75,6 +77,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -161,6 +164,17 @@ public interface Client {
          */
         @Nonnull
         Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
+
+        /**
+         * Sets the suppliers of event listeners to be registered by the
+         * event manager upon construction.
+         * <p>
+         * By default, a list of {@link DefaultListeners} values is used.
+         * @param listenerSuppliers
+         * @return
+         */
+        @Nonnull
+        Builder eventListeners(@Nonnull List<EventListenerSupplier> listenerSuppliers);
 
         /**
          * Sets the supplier of the event manager.
@@ -710,7 +724,8 @@ public interface Client {
                         @Nullable InetSocketAddress bindAddress,
                         @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
                         @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager,
-                        @Nonnull EventManager eventManager, @Nonnull MessageTagManager messageTagManager,
+                        @Nonnull EventManager eventManager, @Nonnull List<EventListenerSupplier> listenerSuppliers,
+                        @Nonnull MessageTagManager messageTagManager,
                         @Nonnull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
                         @Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
                         @Nonnull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
