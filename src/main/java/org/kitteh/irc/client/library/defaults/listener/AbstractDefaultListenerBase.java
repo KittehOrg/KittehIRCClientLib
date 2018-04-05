@@ -10,6 +10,9 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A base for listening to server message events.
+ */
 public class AbstractDefaultListenerBase {
     private final Client.WithManagement client;
 
@@ -18,7 +21,7 @@ public class AbstractDefaultListenerBase {
      *
      * @param client client
      */
-    public AbstractDefaultListenerBase(Client.WithManagement client) {
+    public AbstractDefaultListenerBase(@Nonnull Client.WithManagement client) {
         this.client = client;
     }
 
@@ -28,6 +31,7 @@ public class AbstractDefaultListenerBase {
         return new ToStringer(this).toString();
     }
 
+    @Nonnull
     protected Client.WithManagement getClient() {
         return this.client;
     }
@@ -38,7 +42,7 @@ public class AbstractDefaultListenerBase {
      * @param event event to fire
      * @see EventManager#callEvent(Object)
      */
-    protected void fire(ClientEvent event) {
+    protected void fire(@Nonnull ClientEvent event) {
         this.client.getEventManager().callEvent(event);
     }
 
@@ -48,7 +52,7 @@ public class AbstractDefaultListenerBase {
      * @param event event causing trouble
      * @param reason reason for the trouble
      */
-    protected void trackException(ClientReceiveServerMessageEvent event, String reason) {
+    protected void trackException(@Nonnull ClientReceiveServerMessageEvent event, @Nonnull String reason) {
         this.client.getExceptionListener().queue(new KittehServerMessageException(event.getServerMessage(), reason));
     }
 
@@ -58,6 +62,7 @@ public class AbstractDefaultListenerBase {
      * @return actor tracker
      * @see Client.WithManagement#getActorTracker()
      */
+    @Nonnull
     protected ActorTracker getTracker() {
         return this.client.getActorTracker();
     }
