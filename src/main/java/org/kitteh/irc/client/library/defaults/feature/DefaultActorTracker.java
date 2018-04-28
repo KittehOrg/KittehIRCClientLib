@@ -688,7 +688,7 @@ public class DefaultActorTracker implements ActorTracker {
 
     @Override
     public void trackUserPart(@Nonnull String channel, @Nonnull String nick) {
-        IrcChannel ch = this.trackedChannels.remove(channel);
+        IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.trackUserPart(nick);
         }
