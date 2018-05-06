@@ -59,7 +59,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugin.javadocs.version>3.0.0</plugin.javadocs.version>
         <plugin.source.version>3.0.1</plugin.source.version>
-        <dependency.netty.version>4.1.19.Final</dependency.netty.version>
+        <dependency.netty.version>4.1.24.Final</dependency.netty.version>
     </properties>
 
     <dependencies>
