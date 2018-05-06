@@ -36,6 +36,7 @@ import org.kitteh.irc.client.library.feature.twitch.event.GlobalUserStateEvent;
 import org.kitteh.irc.client.library.feature.twitch.event.RoomStateEvent;
 import org.kitteh.irc.client.library.feature.twitch.event.UserNoticeEvent;
 import org.kitteh.irc.client.library.feature.twitch.event.UserStateEvent;
+import org.kitteh.irc.client.library.feature.twitch.event.WhisperEvent;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.Badges;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason;
@@ -171,6 +172,25 @@ public class TwitchListener {
     @Handler(priority = Integer.MAX_VALUE - 2)
     public void userState(ClientReceiveCommandEvent event) {
         this.client.getEventManager().callEvent(new UserStateEvent(this.client, event.getOriginalMessages(), this.getChannel(event)));
+    }
+
+    @CommandFilter("WHISPER")
+    @Handler(priority = Integer.MAX_VALUE - 2)
+    public void whisper(ClientReceiveCommandEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.client.getExceptionListener().queue(new KittehServerMessageException(event.getOriginalMessages(), "WHISPER didn't contain enough parameters"));
+            return;
+        }
+
+        if (!(event.getActor() instanceof org.kitteh.irc.client.library.element.User)) {
+            this.client.getExceptionListener().queue(new KittehServerMessageException(event.getOriginalMessages(), "Received WHISPER from non-user"));
+            return;
+        }
+
+        final String target = event.getParameters().get(0);
+        final String message = event.getParameters().get(1);
+        final org.kitteh.irc.client.library.element.User sender = (org.kitteh.irc.client.library.element.User) event.getActor();
+        this.client.getEventManager().callEvent(new WhisperEvent(this.client, event.getOriginalMessages(), sender, target, message));
     }
 
     @Nonnull
