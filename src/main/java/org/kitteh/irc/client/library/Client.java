@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.command.OperCommand;
 import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.command.WallopsCommand;
 import org.kitteh.irc.client.library.command.WhoisCommand;
+import org.kitteh.irc.client.library.defaults.DefaultBuilder;
 import org.kitteh.irc.client.library.defaults.feature.DefaultActorTracker;
 import org.kitteh.irc.client.library.defaults.feature.DefaultAuthManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultCapabilityManager;
@@ -70,7 +71,6 @@ import org.kitteh.irc.client.library.util.Sanity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
-import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
@@ -754,13 +754,7 @@ public interface Client {
      */
     @Nonnull
     static Builder builder() {
-        try {
-            Constructor<?> constructor = Class.forName(Client.class.getPackage().getName() + ".defaults.DefaultBuilder").getDeclaredConstructor();
-            constructor.setAccessible(true);
-            return (Builder) constructor.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Kitteh IRC Client Library cannot create a Client builder.", e);
-        }
+        return new DefaultBuilder();
     }
 
     /**
