@@ -29,11 +29,11 @@ for Twitch-specific events like commands.
 With `TwitchListener`, KICL requests the following capabilities:
 
 * `twitch.tv/commands`
-  * Enables Twitch-specific commands.
+    * Enables Twitch-specific commands.
 * `twitch.tv/membership`
-  * Enables receiving JOIN/MODE/NAMES/PART.
+    * Enables receiving JOIN/MODE/NAMES/PART.
 * `twitch.tv/tags`
-  * Enables receiving Twitch-specific message tags.
+    * Enables receiving Twitch-specific message tags.
 
 The various Twitch features in KICL can be found in the package
 `org.kitteh.irc.client.library.feature.twitch`
