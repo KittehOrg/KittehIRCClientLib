@@ -57,15 +57,13 @@ public class CapabilityManagerTest {
      * Stubby manager.
      */
     public class StubCapabilityManager implements CapabilityManager {
-        @NonNull
         @Override
-        public List<CapabilityState> getCapabilities() {
+        public @NonNull List<CapabilityState> getCapabilities() {
             return Arrays.asList(new TestCapabilityState1(), new TestCapabilityState2());
         }
 
-        @NonNull
         @Override
-        public List<CapabilityState> getSupportedCapabilities() {
+        public @NonNull List<CapabilityState> getSupportedCapabilities() {
             return Collections.singletonList(new TestCapabilityState1());
         }
 
@@ -75,21 +73,18 @@ public class CapabilityManagerTest {
                 return false;
             }
 
-            @NonNull
             @Override
-            public String getName() {
+            public @NonNull String getName() {
                 return "Test1";
             }
 
-            @NonNull
             @Override
-            public Optional<String> getValue() {
+            public @NonNull Optional<String> getValue() {
                 return Optional.empty();
             }
 
-            @NonNull
             @Override
-            public Client getClient() {
+            public @NonNull Client getClient() {
                 return null;
             }
 
@@ -105,21 +100,18 @@ public class CapabilityManagerTest {
                 return false;
             }
 
-            @NonNull
             @Override
-            public String getName() {
+            public @NonNull String getName() {
                 return "Test2";
             }
 
-            @NonNull
             @Override
-            public Optional<String> getValue() {
+            public @NonNull Optional<String> getValue() {
                 return Optional.empty();
             }
 
-            @NonNull
             @Override
-            public Client getClient() {
+            public @NonNull Client getClient() {
                 return null;
             }
 

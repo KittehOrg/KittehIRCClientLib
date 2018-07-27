@@ -62,20 +62,17 @@ public class UserModeEvent extends ActorEventBase<Actor> {
      *
      * @return status list
      */
-    @NonNull
-    public ModeStatusList<UserMode> getStatusList() {
+    public @NonNull ModeStatusList<UserMode> getStatusList() {
         return this.statusList;
     }
 
     @Override
-    @NonNull
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.getClient()).add("actor", this.getActor()).add("statusList", this.statusList).add("target", this.target).toString();
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("target", this.target).add("statusList", this.statusList);
     }
 }

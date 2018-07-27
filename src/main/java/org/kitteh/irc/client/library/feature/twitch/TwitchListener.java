@@ -193,8 +193,7 @@ public class TwitchListener {
         this.client.getEventManager().callEvent(new WhisperEvent(this.client, event.getOriginalMessages(), sender, target, message));
     }
 
-    @NonNull
-    private Channel getChannel(ClientReceiveCommandEvent event) {
+    private @NonNull Channel getChannel(ClientReceiveCommandEvent event) {
         Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
         if (!channel.isPresent()) {
             throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");

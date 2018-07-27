@@ -33,8 +33,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <Right> Type of the second object
  */
 public final class Pair<Left, Right> {
-    private final Left left;
-    private final Right right;
+    private final @Nullable Left left;
+    private final @Nullable Right right;
 
     /**
      * Creates a Pair from given objects.
@@ -45,8 +45,7 @@ public final class Pair<Left, Right> {
      * @param <Right> type of the second object
      * @return pair of the objects
      */
-    @NonNull
-    public static <Left, Right> Pair<Left, Right> of(@Nullable Left left, @Nullable Right right) {
+    public @NonNull static <Left, Right> Pair<Left, Right> of(@Nullable Left left, @Nullable Right right) {
         return new Pair<>(left, right);
     }
 
@@ -66,8 +65,7 @@ public final class Pair<Left, Right> {
      *
      * @return first object
      */
-    @Nullable
-    public Left getLeft() {
+    public @Nullable Left getLeft() {
         return this.left;
     }
 
@@ -76,14 +74,12 @@ public final class Pair<Left, Right> {
      *
      * @return second object
      */
-    @Nullable
-    public Right getRight() {
+    public @Nullable Right getRight() {
         return this.right;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("left", this.left).add("right", this.right).toString();
     }
 }

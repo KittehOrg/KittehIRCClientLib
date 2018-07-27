@@ -33,10 +33,8 @@ import org.kitteh.irc.client.library.util.ToStringer;
  * Sends a WHOIS request to the server.
  */
 public class WhoisCommand extends Command {
-    @Nullable
-    private String server;
-    @Nullable
-    private String target;
+    private @Nullable String server;
+    private @Nullable String target;
 
     /**
      * Constructs the command.
@@ -58,8 +56,7 @@ public class WhoisCommand extends Command {
      * @param server server to query or null to not specify one
      * @return this command
      */
-    @NonNull
-    public WhoisCommand server(@Nullable String server) {
+    public @NonNull WhoisCommand server(@Nullable String server) {
         this.server = (server == null) ? null : Sanity.safeMessageCheck(server, "server");
         return this;
     }
@@ -71,8 +68,7 @@ public class WhoisCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid target
      */
-    @NonNull
-    public WhoisCommand target(@NonNull String target) {
+    public @NonNull WhoisCommand target(@NonNull String target) {
         this.target = Sanity.safeMessageCheck(target, "target");
         return this;
     }

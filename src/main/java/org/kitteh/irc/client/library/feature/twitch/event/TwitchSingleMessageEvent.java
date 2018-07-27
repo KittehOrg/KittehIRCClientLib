@@ -49,8 +49,7 @@ public interface TwitchSingleMessageEvent extends ServerMessageEvent {
      * @param name tag name
      * @return tag if present
      */
-    @NonNull
-    default Optional<MessageTag> getTag(@NonNull String name) {
+    default @NonNull Optional<MessageTag> getTag(@NonNull String name) {
         return this.getOriginalMessage().getTag(name);
     }
 
@@ -62,8 +61,7 @@ public interface TwitchSingleMessageEvent extends ServerMessageEvent {
      * @param <Tag> message tag type
      * @return message tag if present
      */
-    @NonNull
-    default <Tag extends MessageTag> Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
+    default <Tag extends MessageTag> @NonNull Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
         return this.getOriginalMessage().getTag(name, clazz);
     }
 }

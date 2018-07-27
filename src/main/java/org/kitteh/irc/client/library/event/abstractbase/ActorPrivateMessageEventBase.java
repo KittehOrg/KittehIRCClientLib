@@ -64,8 +64,7 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
     }
 
     @Override
-    @NonNull
-    public String getTarget() {
+    public @NonNull String getTarget() {
         return this.target;
     }
 
@@ -75,8 +74,7 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("isToClient", this.isToClient).add("target", this.target);
     }
 }

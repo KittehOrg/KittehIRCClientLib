@@ -64,14 +64,12 @@ public abstract class ActorChannelMessageEventBase<A extends Actor> extends Acto
     }
 
     @Override
-    @NonNull
-    public final String getMessage() {
+    public @NonNull final String getMessage() {
         return this.message;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("message", this.message);
     }
 }

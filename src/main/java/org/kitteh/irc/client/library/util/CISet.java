@@ -87,21 +87,18 @@ public class CISet implements Set<String> {
         return (o instanceof String) && this.map.containsKey(this.toLowerCase((String) o));
     }
 
-    @NonNull
     @Override
-    public Iterator<String> iterator() {
+    public @NonNull Iterator<String> iterator() {
         return this.map.values().iterator();
     }
 
-    @NonNull
     @Override
-    public Object[] toArray() {
+    public @NonNull Object[] toArray() {
         return this.map.values().toArray();
     }
 
-    @NonNull
     @Override
-    public <T> T[] toArray(@NonNull T[] a) {
+    public @NonNull <T> T[] toArray(@NonNull T[] a) {
         return this.map.values().toArray(a);
     }
 
@@ -152,9 +149,8 @@ public class CISet implements Set<String> {
         this.map.clear();
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.client).add("set", this.map.values()).toString();
     }
 }

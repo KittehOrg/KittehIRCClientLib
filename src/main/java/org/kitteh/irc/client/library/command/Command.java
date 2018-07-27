@@ -51,8 +51,7 @@ public abstract class Command implements ClientLinked {
      * @return the client
      */
     @Override
-    @NonNull
-    public Client getClient() {
+    public @NonNull Client getClient() {
         return this.client;
     }
 
@@ -71,8 +70,7 @@ public abstract class Command implements ClientLinked {
      *
      * @return the partial toString generator
      */
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return new ToStringer(this).add("client", this.getClient());
     }
 }

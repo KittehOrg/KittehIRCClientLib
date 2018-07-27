@@ -62,8 +62,7 @@ public enum CaseMapping {
      * @param name the name of the CaseMapping to get
      * @return the matching CaseMapping if one exists
      */
-    @NonNull
-    public static Optional<CaseMapping> getByName(@Nullable String name) {
+    public @NonNull static Optional<CaseMapping> getByName(@Nullable String name) {
         return (name == null) ? Optional.empty() : Optional.ofNullable(nameMap.get(name.toUpperCase()));
     }
 
@@ -92,8 +91,7 @@ public enum CaseMapping {
      * @return lowercased string
      * @throws IllegalArgumentException if input is null
      */
-    @NonNull
-    public String toLowerCase(@NonNull String input) {
+    public @NonNull String toLowerCase(@NonNull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
         char[] arr = input.toCharArray();
         for (int i = 0; i < arr.length; i++) {

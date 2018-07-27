@@ -52,8 +52,7 @@ public class ClientReceiveMotdEvent extends ServerMessageEventBase {
      * @return the motd if known
      * @see ServerInfo#getMotd()
      */
-    @NonNull
-    public Optional<List<String>> getMotd() {
+    public @NonNull Optional<List<String>> getMotd() {
         return this.getClient().getServerInfo().getMotd();
     }
 }

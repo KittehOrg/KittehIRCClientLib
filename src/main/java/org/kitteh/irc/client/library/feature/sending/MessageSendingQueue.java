@@ -53,8 +53,7 @@ public interface MessageSendingQueue {
      *
      * @return current consumer if present
      */
-    @NonNull
-    Optional<Consumer<String>> getConsumer();
+    @NonNull Optional<Consumer<String>> getConsumer();
 
     /**
      * Pauses message sending.
@@ -73,6 +72,5 @@ public interface MessageSendingQueue {
      *
      * @return the remaining messages
      */
-    @NonNull
-    Queue<String> shutdown();
+    @NonNull Queue<String> shutdown();
 }

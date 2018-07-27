@@ -133,9 +133,8 @@ public class FakeClient implements Client.WithManagement {
         this.defaultMessageMap = defaults;
     }
 
-    @NonNull
     @Override
-    public Listener<Exception> getExceptionListener() {
+    public @NonNull Listener<Exception> getExceptionListener() {
         return this.listenerException;
     }
 
@@ -144,9 +143,8 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @NonNull
     @Override
-    public Listener<String> getInputListener() {
+    public @NonNull Listener<String> getInputListener() {
         return this.listenerInput;
     }
 
@@ -165,39 +163,33 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @NonNull
     @Override
-    public Set<String> getIntendedChannels() {
+    public @NonNull Set<String> getIntendedChannels() {
         return new HashSet<>();
     }
 
-    @NonNull
     @Override
-    public DefaultISupportManager getISupportManager() {
+    public @NonNull DefaultISupportManager getISupportManager() {
         return null;
     }
 
-    @NonNull
     @Override
-    public Optional<StsMachine> getStsMachine() {
+    public @NonNull Optional<StsMachine> getStsMachine() {
         return Optional.empty(); // No STS in FakeClient for testing
     }
 
-    @NonNull
     @Override
-    public Cutter getMessageCutter() {
+    public @NonNull Cutter getMessageCutter() {
         return this.messageCutter;
     }
 
-    @NonNull
     @Override
-    public Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier() {
+    public @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier() {
         return null;
     }
 
-    @NonNull
     @Override
-    public Listener<String> getOutputListener() {
+    public @NonNull Listener<String> getOutputListener() {
         return this.listenerOutput;
     }
 
@@ -206,39 +198,33 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @NonNull
     @Override
-    public String getRequestedNick() {
+    public @NonNull String getRequestedNick() {
         return "";
     }
 
-    @Nullable
     @Override
-    public Path getSecureKey() {
+    public @Nullable Path getSecureKey() {
         return null;
     }
 
-    @Nullable
     @Override
-    public Path getSecureKeyCertChain() {
+    public @Nullable Path getSecureKeyCertChain() {
         return null;
     }
 
-    @Nullable
     @Override
-    public String getSecureKeyPassword() {
+    public @Nullable String getSecureKeyPassword() {
         return null;
     }
 
-    @Nullable
     @Override
-    public TrustManagerFactory getSecureTrustManagerFactory() {
+    public @Nullable TrustManagerFactory getSecureTrustManagerFactory() {
         return null;
     }
 
-    @NonNull
     @Override
-    public InetSocketAddress getServerAddress() {
+    public @NonNull InetSocketAddress getServerAddress() {
         return null;
     }
 
@@ -252,15 +238,13 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @NonNull
     @Override
-    public ActorTracker getActorTracker() {
+    public @NonNull ActorTracker getActorTracker() {
         return null;
     }
 
-    @NonNull
     @Override
-    public InetSocketAddress getBindAddress() {
+    public @NonNull InetSocketAddress getBindAddress() {
         return null;
     }
 
@@ -284,69 +268,58 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @NonNull
     @Override
-    public AuthManager getAuthManager() {
+    public @NonNull AuthManager getAuthManager() {
         return this.authManager;
     }
 
-    @NonNull
     @Override
-    public DefaultCapabilityManager getCapabilityManager() {
+    public @NonNull DefaultCapabilityManager getCapabilityManager() {
         return this.capabilityManager;
     }
 
-    @NonNull
     @Override
-    public Optional<Channel> getChannel(@NonNull String name) {
+    public @NonNull Optional<Channel> getChannel(@NonNull String name) {
         return Optional.empty();
     }
 
-    @NonNull
     @Override
-    public Set<Channel> getChannels() {
+    public @NonNull Set<Channel> getChannels() {
         return Collections.emptySet();
     }
 
-    @NonNull
     @Override
-    public Set<Channel> getChannels(@NonNull Collection<String> channels) {
+    public @NonNull Set<Channel> getChannels(@NonNull Collection<String> channels) {
         return null;
     }
 
-    @NonNull
     @Override
-    public DefaultMessageMap getDefaultMessageMap() {
+    public @NonNull DefaultMessageMap getDefaultMessageMap() {
         return this.defaultMessageMap;
     }
 
-    @NonNull
     @Override
-    public EventManager getEventManager() {
+    public @NonNull EventManager getEventManager() {
         return this.eventManager;
     }
 
-    @NonNull
     @Override
-    public String getIntendedNick() {
+    public @NonNull String getIntendedNick() {
         return null;
     }
 
-    @NonNull
     @Override
-    public DefaultMessageTagManager getMessageTagManager() {
+    public @NonNull DefaultMessageTagManager getMessageTagManager() {
         return this.messageTagManager;
     }
 
-    @NonNull
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return null;
     }
 
-    @NonNull
     @Override
-    public String getNick() {
+    public @NonNull String getNick() {
         return null;
     }
 
@@ -355,9 +328,8 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @NonNull
     @Override
-    public DefaultServerInfo getServerInfo() {
+    public @NonNull DefaultServerInfo getServerInfo() {
         return this.serverInfo;
     }
 
@@ -366,15 +338,13 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @NonNull
     @Override
-    public Optional<User> getUser() {
+    public @NonNull Optional<User> getUser() {
         return Optional.empty();
     }
 
-    @NonNull
     @Override
-    public Optional<ModeStatusList<UserMode>> getUserModes() {
+    public @NonNull Optional<ModeStatusList<UserMode>> getUserModes() {
         return Optional.empty();
     }
 
@@ -463,9 +433,8 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @NonNull
     @Override
-    public Commands commands() {
+    public @NonNull Commands commands() {
         return null;
     }
 }

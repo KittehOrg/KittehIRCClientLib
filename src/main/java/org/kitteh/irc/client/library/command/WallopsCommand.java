@@ -51,8 +51,7 @@ public class WallopsCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid target
      */
-    @NonNull
-    public WallopsCommand message(@NonNull String message) {
+    public @NonNull WallopsCommand message(@NonNull String message) {
         this.message = Sanity.safeMessageCheck(message, "message");
         return this;
     }

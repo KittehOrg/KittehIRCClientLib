@@ -37,24 +37,21 @@ public interface WhoisData extends User {
      *
      * @return idle time, in seconds
      */
-    @NonNull
-    Optional<Long> getIdleTime();
+    @NonNull Optional<Long> getIdleTime();
 
     /**
      * Gets the description of the server the user is on.
      *
      * @return description or empty if none present
      */
-    @NonNull
-    Optional<String> getServerDescription();
+    @NonNull Optional<String> getServerDescription();
 
     /**
      * Gets the time at which this user signed on to the server.
      *
      * @return time of arrival
      */
-    @NonNull
-    Optional<Long> getSignOnTime();
+    @NonNull Optional<Long> getSignOnTime();
 
     /**
      * Gets if the user is connected securely.

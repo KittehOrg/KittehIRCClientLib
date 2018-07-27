@@ -41,8 +41,7 @@ public interface MessageTag {
          *
          * @return instant in time
          */
-        @NonNull
-        Instant getTime();
+        @NonNull Instant getTime();
     }
 
     /**
@@ -50,14 +49,12 @@ public interface MessageTag {
      *
      * @return tag name
      */
-    @NonNull
-    String getName();
+    @NonNull String getName();
 
     /**
      * Gets the unescaped, but otherwise unprocessed, value of the tag.
      *
      * @return tag value if set
      */
-    @NonNull
-    Optional<String> getValue();
+    @NonNull Optional<String> getValue();
 }

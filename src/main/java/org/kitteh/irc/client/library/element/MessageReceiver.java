@@ -37,8 +37,7 @@ public interface MessageReceiver extends Actor {
      *
      * @return the name by which you can message this receiver
      */
-    @NonNull
-    String getMessagingName();
+    @NonNull String getMessagingName();
 
     /**
      * Gets the lowercase version of the name used when sending messages.
@@ -46,8 +45,7 @@ public interface MessageReceiver extends Actor {
      * @return the lowercase version of the name by which you can message this
      * receiver
      */
-    @NonNull
-    default String getLowerCaseMessagingName() {
+    default @NonNull String getLowerCaseMessagingName() {
         return StringUtil.toLowerCase(this, this.getMessagingName());
     }
 

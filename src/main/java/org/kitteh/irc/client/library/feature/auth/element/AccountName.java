@@ -35,8 +35,7 @@ public interface AccountName extends AuthProtocol {
      *
      * @return account name
      */
-    @NonNull
-    String getAccountName();
+    @NonNull String getAccountName();
 
     /**
      * Sets the account name to use.

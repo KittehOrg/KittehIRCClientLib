@@ -62,28 +62,24 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
     }
 
     @Override
-    @NonNull
-    public SimpleDefaultMessageMap setDefault(@NonNull DefaultMessageType key, @Nullable String defaultString) {
+    public @NonNull SimpleDefaultMessageMap setDefault(@NonNull DefaultMessageType key, @Nullable String defaultString) {
         this.defaults.put(Sanity.nullCheck(key, "Key cannot be null"), defaultString);
         return this;
     }
 
     @Override
-    @NonNull
-    public Optional<String> getDefault(DefaultMessageType key) {
+    public @NonNull Optional<String> getDefault(DefaultMessageType key) {
         return this.getDefault(Sanity.nullCheck(key, "Key cannot be null"), key.getFallback());
     }
 
     @Override
-    @NonNull
-    public Optional<String> getDefault(@NonNull DefaultMessageType key, @Nullable String defaultValue) {
+    public @NonNull Optional<String> getDefault(@NonNull DefaultMessageType key, @Nullable String defaultValue) {
         Sanity.nullCheck(key, "Key cannot be null");
         return Optional.ofNullable(this.defaults.getOrDefault(key, defaultValue));
     }
 
     @Override
-    @NonNull
-    public Map<DefaultMessageType, String> getDefaults() {
+    public @NonNull Map<DefaultMessageType, String> getDefaults() {
         return Collections.unmodifiableMap(new EnumMap<>(this.defaults));
     }
 }

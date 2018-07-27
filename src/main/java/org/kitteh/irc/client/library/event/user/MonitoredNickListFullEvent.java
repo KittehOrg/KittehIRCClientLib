@@ -69,14 +69,12 @@ public class MonitoredNickListFullEvent extends ServerMessageEventBase {
      *
      * @return rejected nicknames
      */
-    @NonNull
-    public List<String> getRejectedNicks() {
+    public @NonNull List<String> getRejectedNicks() {
         return this.rejectedNicks;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("limit", this.limit).add("rejectedNicks", this.rejectedNicks);
     }
 }

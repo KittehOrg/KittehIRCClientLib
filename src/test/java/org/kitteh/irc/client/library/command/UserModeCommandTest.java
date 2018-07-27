@@ -122,9 +122,8 @@ public class UserModeCommandTest {
                 return c;
             }
 
-            @NonNull
             @Override
-            public Client getClient() {
+            public @NonNull Client getClient() {
                 return client;
             }
         };

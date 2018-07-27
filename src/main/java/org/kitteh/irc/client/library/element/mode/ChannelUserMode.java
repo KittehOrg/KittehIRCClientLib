@@ -36,9 +36,8 @@ public interface ChannelUserMode extends ChannelMode {
      */
     char getNickPrefix();
 
-    @NonNull
     @Override
-    default Type getType() {
+    default @NonNull Type getType() {
         return Type.B_PARAMETER_ALWAYS;
     }
 }

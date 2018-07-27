@@ -65,14 +65,12 @@ public class CapabilitiesDeletedSupportedEvent extends CapabilityNegotiationResp
      *
      * @return no longer supported capabilities
      */
-    @NonNull
-    public List<CapabilityState> getDeletedCapabilities() {
+    public @NonNull List<CapabilityState> getDeletedCapabilities() {
         return this.deletedCapabilities;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("deletedCapabilities", this.deletedCapabilities);
     }
 }

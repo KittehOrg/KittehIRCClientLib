@@ -60,8 +60,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      * @param input input to convert
      * @return lower cased input
      */
-    @NonNull
-    protected final synchronized String toLowerCase(@NonNull String input) {
+    protected final synchronized @NonNull String toLowerCase(@NonNull String input) {
         CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
         if (caseMapping != this.lastCaseMapping) {
             Set<Entry<String, Value>> entrySet = this.entrySet();
@@ -97,9 +96,8 @@ public class CIKeyMap<Value> implements Map<String, Value> {
         return false;
     }
 
-    @Nullable
     @Override
-    public Value get(@Nullable Object key) {
+    public @Nullable Value get(@Nullable Object key) {
         if (key instanceof String) {
             Pair<String, Value> pair = this.map.get(this.toLowerCase((String) key));
             return (pair == null) ? null : pair.getRight();
@@ -107,17 +105,15 @@ public class CIKeyMap<Value> implements Map<String, Value> {
         return null;
     }
 
-    @Nullable
     @Override
-    public Value put(@NonNull String key, @Nullable Value value) {
+    public @Nullable Value put(@NonNull String key, @Nullable Value value) {
         Sanity.nullCheck(key, "Key cannot be null");
         Pair<String, Value> pair = this.map.put(this.toLowerCase(key), new Pair<>(key, value));
         return (pair == null) ? null : pair.getRight();
     }
 
-    @Nullable
     @Override
-    public Value remove(@Nullable Object key) {
+    public @Nullable Value remove(@Nullable Object key) {
         if (key instanceof String) {
             Pair<String, Value> pair = this.map.remove(this.toLowerCase((String) key));
             return (pair == null) ? null : pair.getRight();
@@ -141,9 +137,8 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return set of keys
      */
-    @NonNull
     @Override
-    public Set<String> keySet() {
+    public @NonNull Set<String> keySet() {
         return this.map.values().stream().map(Pair::getLeft).collect(Collectors.toSet());
     }
 
@@ -152,9 +147,8 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return list of values
      */
-    @NonNull
     @Override
-    public Collection<Value> values() {
+    public @NonNull Collection<Value> values() {
         return this.map.values().stream().map(Pair::getRight).collect(Collectors.toList());
     }
 
@@ -163,15 +157,13 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return set of entries
      */
-    @NonNull
     @Override
-    public Set<Entry<String, Value>> entrySet() {
+    public @NonNull Set<Entry<String, Value>> entrySet() {
         return this.map.values().stream().map(pair -> new AbstractMap.SimpleImmutableEntry<>(pair.getLeft(), pair.getRight())).collect(Collectors.toSet());
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.client).add("map", this.map.values().stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight))).toString();
     }
 }

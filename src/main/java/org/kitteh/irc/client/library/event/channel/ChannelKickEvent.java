@@ -58,15 +58,13 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<Actor> implem
         this.target = Sanity.nullCheck(target, "Target cannot be null");
     }
 
-    @NonNull
     @Override
-    public Optional<Channel> getAffectedChannel() {
+    public @NonNull Optional<Channel> getAffectedChannel() {
         return Optional.of(this.getChannel());
     }
 
-    @NonNull
     @Override
-    public Change getChange() {
+    public @NonNull Change getChange() {
         return Change.LEAVE;
     }
 
@@ -75,20 +73,17 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<Actor> implem
      *
      * @return the nickname of the kicked user
      */
-    @NonNull
-    public User getTarget() {
+    public @NonNull User getTarget() {
         return this.target;
     }
 
-    @NonNull
     @Override
-    public User getUser() {
+    public @NonNull User getUser() {
         return this.getTarget();
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("target", this.target);
     }
 }

@@ -67,22 +67,17 @@ public class DefaultBuilder implements Client.Builder {
     private static final int DEFAULT_SERVER_PORT = 6697;
     private static final String DEFAULT_SERVER_HOST = "localhost";
 
-    @Nullable
-    private String bindHost;
+    private @Nullable String bindHost;
     private int bindPort;
     private String serverHost = DEFAULT_SERVER_HOST;
     private int serverPort = DEFAULT_SERVER_PORT;
 
     private String name = "Unnamed";
-    @Nullable
-    private DefaultMessageMap defaultMessageMap = null;
+    private @Nullable DefaultMessageMap defaultMessageMap = null;
     private List<EventListenerSupplier> listenerSuppliers = Arrays.asList(DefaultListeners.values());
-    @Nullable
-    private Consumer<Exception> exceptionListener = Throwable::printStackTrace;
-    @Nullable
-    private Consumer<String> inputListener = null;
-    @Nullable
-    private Consumer<String> outputListener = null;
+    private @Nullable Consumer<Exception> exceptionListener = Throwable::printStackTrace;
+    private @Nullable Consumer<String> inputListener = null;
+    private @Nullable Consumer<String> outputListener = null;
     private Function<Client.WithManagement, ? extends ActorTracker> actorTracker = DefaultActorTracker::new;
     private Function<Client.WithManagement, ? extends AuthManager> authManager = DefaultAuthManager::new;
     private Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> capabilityManager = DefaultCapabilityManager::new;
@@ -93,28 +88,18 @@ public class DefaultBuilder implements Client.Builder {
     private String nick = "Kitteh";
     private String realName = "KICL " + Version.getVersion() + " - kitteh.org";
     private Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo = DefaultServerInfo::new;
-    @Nullable
-    private String serverPassword = null;
+    private @Nullable String serverPassword = null;
     private boolean secure = true;
-    @Nullable
-    private Path secureKeyCertChain = null;
-    @Nullable
-    private Path secureKey = null;
-    @Nullable
-    private String secureKeyPassword = null;
-    @Nullable
-    private TrustManagerFactory secureTrustManagerFactory = null;
-    @Nullable
-    private StsStorageManager stsStorageManager = null;
+    private @Nullable Path secureKeyCertChain = null;
+    private @Nullable Path secureKey = null;
+    private @Nullable String secureKeyPassword = null;
+    private @Nullable TrustManagerFactory secureTrustManagerFactory = null;
+    private @Nullable StsStorageManager stsStorageManager = null;
     private String userString = "Kitteh";
-    @Nullable
-    private String webircHost = null;
-    @Nullable
-    private InetAddress webircIP = null;
-    @Nullable
-    private String webircPassword = null;
-    @Nullable
-    private String webircUser = null;
+    private @Nullable String webircHost = null;
+    private @Nullable InetAddress webircIP = null;
+    private @Nullable String webircPassword = null;
+    private @Nullable String webircUser = null;
 
     @Override
     public Client.@NonNull Builder actorTracker(@NonNull Function<Client.WithManagement, ? extends ActorTracker> supplier) {
@@ -122,144 +107,124 @@ public class DefaultBuilder implements Client.Builder {
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder bindHost(@Nullable String host) {
+    public @NonNull DefaultBuilder bindHost(@Nullable String host) {
         this.bindHost = host;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder bindPort(int port) {
+    public @NonNull DefaultBuilder bindPort(int port) {
         this.bindPort = this.isValidPort(port);
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder defaultMessageMap(@NonNull DefaultMessageMap defaultMessageMap) {
+    public @NonNull DefaultBuilder defaultMessageMap(@NonNull DefaultMessageMap defaultMessageMap) {
         this.defaultMessageMap = defaultMessageMap;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder eventListeners(@NonNull List<EventListenerSupplier> listenerSuppliers) {
+    public @NonNull DefaultBuilder eventListeners(@NonNull List<EventListenerSupplier> listenerSuppliers) {
         this.listenerSuppliers = listenerSuppliers;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder exceptionListener(@Nullable Consumer<Exception> listener) {
+    public @NonNull DefaultBuilder exceptionListener(@Nullable Consumer<Exception> listener) {
         this.exceptionListener = listener;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder inputListener(@Nullable Consumer<String> listener) {
+    public @NonNull DefaultBuilder inputListener(@Nullable Consumer<String> listener) {
         this.inputListener = listener;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder outputListener(@Nullable Consumer<String> listener) {
+    public @NonNull DefaultBuilder outputListener(@Nullable Consumer<String> listener) {
         this.outputListener = listener;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder messageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
+    public @NonNull DefaultBuilder messageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
         this.messageSendingQueue = Sanity.nullCheck(supplier, "Supplier cannot be null");
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder messageTagManager(@NonNull Function<Client.WithManagement, ? extends MessageTagManager> supplier) {
+    public @NonNull DefaultBuilder messageTagManager(@NonNull Function<Client.WithManagement, ? extends MessageTagManager> supplier) {
         this.messageTagManager = supplier;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder name(@NonNull String name) {
+    public @NonNull DefaultBuilder name(@NonNull String name) {
         this.name = Sanity.safeMessageCheck(name, "Name");
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder nick(@NonNull String nick) {
+    public @NonNull DefaultBuilder nick(@NonNull String nick) {
         Sanity.safeMessageCheck(nick, "Nick");
         Sanity.truthiness(!nick.contains(" "), "Nick cannot contain spaces");
         this.nick = nick;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder serverPassword(@Nullable String password) {
+    public @NonNull DefaultBuilder serverPassword(@Nullable String password) {
         this.serverPassword = password;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder realName(@NonNull String name) {
+    public @NonNull DefaultBuilder realName(@NonNull String name) {
         this.realName = Sanity.safeMessageCheck(name, "Real name");
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder secure(boolean secure) {
+    public @NonNull DefaultBuilder secure(boolean secure) {
         this.secure = secure;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder secureKeyCertChain(@Nullable Path keyCertChainFile) {
+    public @NonNull DefaultBuilder secureKeyCertChain(@Nullable Path keyCertChainFile) {
         this.secureKeyCertChain = keyCertChainFile;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder secureKey(@Nullable Path keyFile) {
+    public @NonNull DefaultBuilder secureKey(@Nullable Path keyFile) {
         this.secureKey = keyFile;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder secureKeyPassword(@Nullable String password) {
+    public @NonNull DefaultBuilder secureKeyPassword(@Nullable String password) {
         this.secureKeyPassword = password;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder secureTrustManagerFactory(@Nullable TrustManagerFactory factory) {
+    public @NonNull DefaultBuilder secureTrustManagerFactory(@Nullable TrustManagerFactory factory) {
         this.secureTrustManagerFactory = factory;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder serverHost(@NonNull String host) {
+    public @NonNull DefaultBuilder serverHost(@NonNull String host) {
         this.serverHost = Sanity.nullCheck(host, "Host cannot be null");
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder serverPort(int port) {
+    public @NonNull DefaultBuilder serverPort(int port) {
         this.serverPort = this.isValidPort(port);
         return this;
     }
@@ -270,9 +235,8 @@ public class DefaultBuilder implements Client.Builder {
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder capabilityManager(@NonNull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier) {
+    public @NonNull DefaultBuilder capabilityManager(@NonNull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier) {
         this.capabilityManager = Sanity.nullCheck(supplier, "Supplier cannot be null");
         return this;
     }
@@ -295,18 +259,16 @@ public class DefaultBuilder implements Client.Builder {
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder user(@NonNull String user) {
+    public @NonNull DefaultBuilder user(@NonNull String user) {
         Sanity.safeMessageCheck(user, "User");
         Sanity.truthiness(!user.contains(" "), "User cannot contain spaces");
         this.userString = user;
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder webirc(@NonNull String password, @NonNull String user, @NonNull String host, @NonNull InetAddress ip) {
+    public @NonNull DefaultBuilder webirc(@NonNull String password, @NonNull String user, @NonNull String host, @NonNull InetAddress ip) {
         Sanity.safeMessageCheck(password, "Password");
         Sanity.safeMessageCheck(user, "User");
         Sanity.safeMessageCheck(host, "Host");
@@ -324,9 +286,8 @@ public class DefaultBuilder implements Client.Builder {
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder webircRemove() {
+    public @NonNull DefaultBuilder webircRemove() {
         this.webircPassword = null;
         this.webircUser = null;
         this.webircHost = null;
@@ -334,16 +295,14 @@ public class DefaultBuilder implements Client.Builder {
         return this;
     }
 
-    @NonNull
     @Override
-    public DefaultBuilder stsStorageManager(@Nullable StsStorageManager storageManager) {
+    public @NonNull DefaultBuilder stsStorageManager(@Nullable StsStorageManager storageManager) {
         this.stsStorageManager = storageManager;
         return this;
     }
 
-    @NonNull
     @Override
-    public Client build() {
+    public @NonNull Client build() {
         if (this.stsStorageManager != null) {
             Sanity.truthiness(!AcceptingTrustManagerFactory.isInsecure(this.secureTrustManagerFactory), "Cannot use STS with an insecure trust manager.");
         }
@@ -363,17 +322,15 @@ public class DefaultBuilder implements Client.Builder {
         return client;
     }
 
-    @NonNull
     @Override
-    public Client buildAndConnect() {
+    public @NonNull Client buildAndConnect() {
         final Client client = this.build();
         client.connect();
         return client;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).toString();
     }
 

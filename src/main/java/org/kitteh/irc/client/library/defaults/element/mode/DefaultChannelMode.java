@@ -57,9 +57,8 @@ public class DefaultChannelMode extends DefaultModeBase implements ChannelMode {
         return (other.getType() == this.getType()) && (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
     }
 
-    @NonNull
     @Override
-    public Type getType() {
+    public @NonNull Type getType() {
         return this.type;
     }
 
@@ -68,9 +67,8 @@ public class DefaultChannelMode extends DefaultModeBase implements ChannelMode {
         return Objects.hash(this.getClient(), this.getChar(), this.type);
     }
 
-    @NonNull
     @Override
-    public ToStringer toStringer() {
+    public @NonNull ToStringer toStringer() {
         return super.toStringer().add("type", this.type);
     }
 }

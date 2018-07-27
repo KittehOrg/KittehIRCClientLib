@@ -114,8 +114,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
          *
          * @return badge name
          */
-        @NonNull
-        public String getName() {
+        public @NonNull String getName() {
             return this.name;
         }
 
@@ -124,14 +123,12 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
          *
          * @return badge version
          */
-        @NonNull
-        public String getVersion() {
+        public @NonNull String getVersion() {
             return this.version;
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).add("name", this.name).add("version", this.version).toString();
         }
     }
@@ -165,14 +162,12 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
      *
      * @return list of badges
      */
-    @NonNull
-    public List<Badge> getBadges() {
+    public @NonNull List<Badge> getBadges() {
         return this.badges;
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("badges", this.badges);
     }
 }

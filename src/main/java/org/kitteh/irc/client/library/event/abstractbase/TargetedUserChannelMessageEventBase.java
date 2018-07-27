@@ -71,15 +71,13 @@ public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMe
      *
      * @return the prefix targeted
      */
-    @NonNull
     @Override
-    public final ChannelUserMode getPrefix() {
+    public @NonNull final ChannelUserMode getPrefix() {
         return this.prefix;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("channelPrefix", this.prefix);
     }
 }

@@ -88,9 +88,8 @@ public class DefaultEventManager implements EventManager {
             this.client.getExceptionListener().queue(exceptional);
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).toString();
         }
     }
@@ -131,15 +130,13 @@ public class DefaultEventManager implements EventManager {
         this.bus.publish(event);
     }
 
-    @NonNull
     @Override
-    public synchronized Set<Object> getRegisteredEventListeners() {
+    public @NonNull synchronized Set<Object> getRegisteredEventListeners() {
         return new HashSet<>(this.listeners);
     }
 
-    @NonNull
     @Override
-    public Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters() {
+    public @NonNull Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters() {
         return Collections.unmodifiableMap(new HashMap<>(this.filters));
     }
 
@@ -174,9 +171,8 @@ public class DefaultEventManager implements EventManager {
         }
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.client).toString();
     }
 }

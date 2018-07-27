@@ -106,8 +106,7 @@ public interface Client {
          * @return this builder
          * @see DefaultActorTracker
          */
-        @NonNull
-        Builder actorTracker(@NonNull Function<Client.WithManagement, ? extends ActorTracker> supplier);
+        @NonNull Builder actorTracker(@NonNull Function<Client.WithManagement, ? extends ActorTracker> supplier);
 
         /**
          * Sets the supplier of the authentication manager.
@@ -118,8 +117,7 @@ public interface Client {
          * @return this builder
          * @see DefaultAuthManager
          */
-        @NonNull
-        Builder authManager(@NonNull Function<Client.WithManagement, ? extends AuthManager> supplier);
+        @NonNull Builder authManager(@NonNull Function<Client.WithManagement, ? extends AuthManager> supplier);
 
         /**
          * Binds the client to a host or IP locally.
@@ -129,8 +127,7 @@ public interface Client {
          * @param host host to bind to, or null for wildcard binding
          * @return this builder
          */
-        @NonNull
-        Builder bindHost(@Nullable String host);
+        @NonNull Builder bindHost(@Nullable String host);
 
         /**
          * Binds the client to the specified port. Invalid ports are set to 0.
@@ -140,8 +137,7 @@ public interface Client {
          * @param port port to bind to
          * @return this builder
          */
-        @NonNull
-        Builder bindPort(int port);
+        @NonNull Builder bindPort(int port);
 
         /**
          * Sets the supplier of the capability manager.
@@ -152,8 +148,7 @@ public interface Client {
          * @return this builder
          * @see DefaultCapabilityManager
          */
-        @NonNull
-        Builder capabilityManager(@NonNull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier);
+        @NonNull Builder capabilityManager(@NonNull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier);
 
         /**
          * Sets default messages.
@@ -162,8 +157,7 @@ public interface Client {
          * @return this builder
          * @see DefaultMessageMap
          */
-        @NonNull
-        Builder defaultMessageMap(@NonNull DefaultMessageMap defaultMessageMap);
+        @NonNull Builder defaultMessageMap(@NonNull DefaultMessageMap defaultMessageMap);
 
         /**
          * Sets the suppliers of event listeners to be registered by the
@@ -173,8 +167,7 @@ public interface Client {
          * @param listenerSuppliers
          * @return
          */
-        @NonNull
-        Builder eventListeners(@NonNull List<EventListenerSupplier> listenerSuppliers);
+        @NonNull Builder eventListeners(@NonNull List<EventListenerSupplier> listenerSuppliers);
 
         /**
          * Sets the supplier of the event manager.
@@ -185,8 +178,7 @@ public interface Client {
          * @return this builder
          * @see DefaultEventManager
          */
-        @NonNull
-        Builder eventManager(@NonNull Function<Client.WithManagement, ? extends EventManager> supplier);
+        @NonNull Builder eventManager(@NonNull Function<Client.WithManagement, ? extends EventManager> supplier);
 
         /**
          * Sets a listener for all thrown exceptions on this client. By default,
@@ -198,8 +190,7 @@ public interface Client {
          * @param listener catcher of throwable objects or null to not listen
          * @return this builder
          */
-        @NonNull
-        Builder exceptionListener(@Nullable Consumer<Exception> listener);
+        @NonNull Builder exceptionListener(@Nullable Consumer<Exception> listener);
 
         /**
          * Sets a listener for all incoming messages from the server.
@@ -209,8 +200,7 @@ public interface Client {
          * @param listener input listener or null to not listen
          * @return this builder
          */
-        @NonNull
-        Builder inputListener(@Nullable Consumer<String> listener);
+        @NonNull Builder inputListener(@Nullable Consumer<String> listener);
 
         /**
          * Sets the supplier of the ISUPPORT manager.
@@ -221,8 +211,7 @@ public interface Client {
          * @return this builder
          * @see DefaultEventManager
          */
-        @NonNull
-        Builder iSupportManager(@NonNull Function<Client.WithManagement, ? extends ISupportManager> supplier);
+        @NonNull Builder iSupportManager(@NonNull Function<Client.WithManagement, ? extends ISupportManager> supplier);
 
         /**
          * Sets the supplier of message sending queues, which dictate the
@@ -235,8 +224,7 @@ public interface Client {
          * @return this builder
          * @see MessageSendingQueue
          */
-        @NonNull
-        Builder messageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
+        @NonNull Builder messageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
 
         /**
          * Sets the supplier of the message tag manager.
@@ -247,8 +235,7 @@ public interface Client {
          * @return this builder
          * @see MessageTagManager
          */
-        @NonNull
-        Builder messageTagManager(@NonNull Function<Client.WithManagement, ? extends MessageTagManager> supplier);
+        @NonNull Builder messageTagManager(@NonNull Function<Client.WithManagement, ? extends MessageTagManager> supplier);
 
         /**
          * Names the client, for internal labeling.
@@ -257,8 +244,7 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException if name is null
          */
-        @NonNull
-        Builder name(@NonNull String name);
+        @NonNull Builder name(@NonNull String name);
 
         /**
          * Sets the client's nick.
@@ -269,8 +255,7 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException if nick is null
          */
-        @NonNull
-        Builder nick(@NonNull String nick);
+        @NonNull Builder nick(@NonNull String nick);
 
         /**
          * Sets a listener for all outgoing messages to the server.
@@ -280,8 +265,7 @@ public interface Client {
          * @param listener output listener or null to not listen
          * @return this builder
          */
-        @NonNull
-        Builder outputListener(@Nullable Consumer<String> listener);
+        @NonNull Builder outputListener(@Nullable Consumer<String> listener);
 
         /**
          * Sets the realname the client uses.
@@ -292,8 +276,7 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException for null realname
          */
-        @NonNull
-        Builder realName(@NonNull String name);
+        @NonNull Builder realName(@NonNull String name);
 
         /**
          * Sets the server password.
@@ -303,8 +286,7 @@ public interface Client {
          * @param password server password or null to not send one
          * @return this builder
          */
-        @NonNull
-        Builder serverPassword(@Nullable String password);
+        @NonNull Builder serverPassword(@Nullable String password);
 
         /**
          * Sets whether the client connects via TLS/SSL.
@@ -317,8 +299,7 @@ public interface Client {
          * @param secure true for TLS/SSL
          * @return this builder
          */
-        @NonNull
-        Builder secure(boolean secure);
+        @NonNull Builder secure(boolean secure);
 
         /**
          * Sets the key for SSL connection.
@@ -327,8 +308,7 @@ public interface Client {
          * @return this builder
          * @see #secure(boolean)
          */
-        @NonNull
-        Builder secureKeyCertChain(@Nullable Path keyCertChainFile);
+        @NonNull Builder secureKeyCertChain(@Nullable Path keyCertChainFile);
 
         /**
          * Sets the private key for SSL connection.
@@ -337,8 +317,7 @@ public interface Client {
          * @return this builder
          * @see #secure(boolean)
          */
-        @NonNull
-        Builder secureKey(@Nullable Path keyFile);
+        @NonNull Builder secureKey(@Nullable Path keyFile);
 
         /**
          * Sets the private key password for SSL connection.
@@ -347,8 +326,7 @@ public interface Client {
          * @return this builder
          * @see #secure(boolean)
          */
-        @NonNull
-        Builder secureKeyPassword(@Nullable String password);
+        @NonNull Builder secureKeyPassword(@Nullable String password);
 
         /**
          * Sets the {@link TrustManagerFactory} for SSL connection.
@@ -357,8 +335,7 @@ public interface Client {
          * @return this builder
          * @see #secure(boolean)
          */
-        @NonNull
-        Builder secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
+        @NonNull Builder secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
 
         /**
          * Sets the server host to which the client will connect.
@@ -369,8 +346,7 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException for null host
          */
-        @NonNull
-        Builder serverHost(@NonNull String host);
+        @NonNull Builder serverHost(@NonNull String host);
 
         /**
          * Sets the server port to which the client will connect.
@@ -380,8 +356,7 @@ public interface Client {
          * @param port IRC server port
          * @return this builder
          */
-        @NonNull
-        Builder serverPort(int port);
+        @NonNull Builder serverPort(int port);
 
         /**
          * Sets the supplier of the server info.
@@ -392,8 +367,7 @@ public interface Client {
          * @return this builder
          * @see DefaultServerInfo
          */
-        @NonNull
-        Builder serverInfo(@NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier);
+        @NonNull Builder serverInfo(@NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier);
 
         /**
          * Sets the user the client connects as.
@@ -404,8 +378,7 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException for null user
          */
-        @NonNull
-        Builder user(@NonNull String user);
+        @NonNull Builder user(@NonNull String user);
 
         /**
          * Sets all the information for, and enables, WebIRC.
@@ -420,8 +393,7 @@ public interface Client {
          * @throws IllegalArgumentException for any null parameters
          * @see #webircRemove()
          */
-        @NonNull
-        Builder webirc(@NonNull String password, @NonNull String user, @NonNull String host, @NonNull InetAddress ip);
+        @NonNull Builder webirc(@NonNull String password, @NonNull String user, @NonNull String host, @NonNull InetAddress ip);
 
         /**
          * Removes WEBIRC settings from this builder.
@@ -429,8 +401,7 @@ public interface Client {
          * @return this builder
          * @see #webirc(String, String, String, InetAddress)
          */
-        @NonNull
-        Builder webircRemove();
+        @NonNull Builder webircRemove();
 
         /**
          * Sets the storage manager for STS (strict transport security) support.
@@ -441,16 +412,14 @@ public interface Client {
          * @param storageManager storage system to persist STS information per host
          * @return this builder
          */
-        @NonNull
-        Builder stsStorageManager(@Nullable StsStorageManager storageManager);
+        @NonNull Builder stsStorageManager(@Nullable StsStorageManager storageManager);
 
         /**
          * Clientmaker, clientmaker, make me a client!
          *
          * @return a client designed to your liking
          */
-        @NonNull
-        Client build();
+        @NonNull Client build();
 
         /**
          * Clientmaker, clientmaker, make me a client, build me the client,
@@ -458,8 +427,7 @@ public interface Client {
          *
          * @return a client designed to your liking
          */
-        @NonNull
-        Client buildAndConnect();
+        @NonNull Client buildAndConnect();
     }
 
     /**
@@ -471,16 +439,14 @@ public interface Client {
          *
          * @return new away command
          */
-        @NonNull
-        AwayCommand away();
+        @NonNull AwayCommand away();
 
         /**
          * Provides a new CAP REQ command.
          *
          * @return new capability request command
          */
-        @NonNull
-        CapabilityRequestCommand capabilityRequest();
+        @NonNull CapabilityRequestCommand capabilityRequest();
 
         /**
          * Provides a new channel MODE command.
@@ -488,8 +454,7 @@ public interface Client {
          * @param channel channel in which the mode is being changed
          * @return new mode command
          */
-        @NonNull
-        ChannelModeCommand mode(@NonNull Channel channel);
+        @NonNull ChannelModeCommand mode(@NonNull Channel channel);
 
         /**
          * Provides a new KICK command.
@@ -497,24 +462,21 @@ public interface Client {
          * @param channel channel in which the kick is happening
          * @return new kick command
          */
-        @NonNull
-        KickCommand kick(@NonNull Channel channel);
+        @NonNull KickCommand kick(@NonNull Channel channel);
 
         /**
          * Provides a new MONITOR command.
          *
          * @return new monitor command
          */
-        @NonNull
-        MonitorCommand monitor();
+        @NonNull MonitorCommand monitor();
 
         /**
          * Provides a new OPER command.
          *
          * @return new oper command
          */
-        @NonNull
-        OperCommand oper();
+        @NonNull OperCommand oper();
 
         /**
          * Provides a new TOPIC command.
@@ -522,24 +484,21 @@ public interface Client {
          * @param channel channel in which the topic is being changed
          * @return new topic command
          */
-        @NonNull
-        TopicCommand topic(@NonNull Channel channel);
+        @NonNull TopicCommand topic(@NonNull Channel channel);
 
         /**
          * Provides a new WALLOPS command.
          *
          * @return new wallops command
          */
-        @NonNull
-        WallopsCommand wallops();
+        @NonNull WallopsCommand wallops();
 
         /**
          * Provides a new WHOIS command.
          *
          * @return new whois command
          */
-        @NonNull
-        WhoisCommand whois();
+        @NonNull WhoisCommand whois();
     }
 
     /**
@@ -558,16 +517,14 @@ public interface Client {
          *
          * @return actor tracker
          */
-        @NonNull
-        ActorTracker getActorTracker();
+        @NonNull ActorTracker getActorTracker();
 
         /**
          * Gets the bind address
          *
          * @return bind address
          */
-        @NonNull
-        InetSocketAddress getBindAddress();
+        @NonNull InetSocketAddress getBindAddress();
 
         @Override
         CapabilityManager.@NonNull WithManagement getCapabilityManager();
@@ -577,72 +534,63 @@ public interface Client {
          *
          * @return input listener
          */
-        @NonNull
-        Listener<String> getInputListener();
+        @NonNull Listener<String> getInputListener();
 
         /**
          * Gets the channels the client intends to join.
          *
          * @return intended channels
          */
-        @NonNull
-        Set<String> getIntendedChannels();
+        @NonNull Set<String> getIntendedChannels();
 
         /**
          * Gets the currently set output listener.
          *
          * @return output listener
          */
-        @NonNull
-        Listener<String> getOutputListener();
+        @NonNull Listener<String> getOutputListener();
 
         /**
          * Gets the nickname the client has last requested.
          *
          * @return requested nick
          */
-        @NonNull
-        String getRequestedNick();
+        @NonNull String getRequestedNick();
 
         /**
          * Gets the TLS/SSL key.
          *
          * @return key
          */
-        @Nullable
-        Path getSecureKey();
+        @Nullable Path getSecureKey();
 
         /**
          * Gets the TLS/SSL key certificate chain.
          *
          * @return key cert chain
          */
-        @Nullable
-        Path getSecureKeyCertChain();
+        @Nullable Path getSecureKeyCertChain();
 
         /**
          * Gets the TLS/SSL key password.
          *
          * @return password
          */
-        @Nullable
-        String getSecureKeyPassword();
+        @Nullable String getSecureKeyPassword();
 
         /**
          * Gets the trust manager factory.
          *
          * @return trust manager factory
          */
-        @Nullable
-        TrustManagerFactory getSecureTrustManagerFactory();
+        @Nullable TrustManagerFactory getSecureTrustManagerFactory();
 
         /**
          * Gets the server address
          *
          * @return server address
          */
-        @NonNull
-        InetSocketAddress getServerAddress();
+        @NonNull InetSocketAddress getServerAddress();
 
         @Override
         ServerInfo.@NonNull WithManagement getServerInfo();
@@ -765,8 +713,7 @@ public interface Client {
      *
      * @return a client builder
      */
-    @NonNull
-    static Builder builder() {
+    static @NonNull Builder builder() {
         return new DefaultBuilder();
     }
 
@@ -808,24 +755,21 @@ public interface Client {
      *
      * @return commands
      */
-    @NonNull
-    Commands commands();
+    @NonNull Commands commands();
 
     /**
      * Gets the authentication manager.
      *
      * @return auth manager
      */
-    @NonNull
-    AuthManager getAuthManager();
+    @NonNull AuthManager getAuthManager();
 
     /**
      * Gets the capability manager.
      *
      * @return the capability manager
      */
-    @NonNull
-    CapabilityManager getCapabilityManager();
+    @NonNull CapabilityManager getCapabilityManager();
 
     /**
      * Gets the named channel.
@@ -836,16 +780,14 @@ public interface Client {
      * @throws IllegalArgumentException if name is null
      * @see #getChannels()
      */
-    @NonNull
-    Optional<Channel> getChannel(@NonNull String name);
+    @NonNull Optional<Channel> getChannel(@NonNull String name);
 
     /**
      * Gets the channels in which the client is currently present.
      *
      * @return the client's current channels
      */
-    @NonNull
-    Set<Channel> getChannels();
+    @NonNull Set<Channel> getChannels();
 
     /**
      * Gets the channels on the given collection in which the client is
@@ -854,8 +796,7 @@ public interface Client {
      * @param channels collection of channel names to get
      * @return the client's current channels that are named in the collection
      */
-    @NonNull
-    Set<Channel> getChannels(@NonNull Collection<String> channels);
+    @NonNull Set<Channel> getChannels(@NonNull Collection<String> channels);
 
     /**
      * Gets the message manager for default messages to reply with
@@ -864,24 +805,21 @@ public interface Client {
      *
      * @return the DefaultMessageMap
      */
-    @NonNull
-    DefaultMessageMap getDefaultMessageMap();
+    @NonNull DefaultMessageMap getDefaultMessageMap();
 
     /**
      * Gets the client's event manager.
      *
      * @return the event manager for this client
      */
-    @NonNull
-    EventManager getEventManager();
+    @NonNull EventManager getEventManager();
 
     /**
      * Gets the exception listener.
      *
      * @return the exception listener
      */
-    @NonNull
-    Listener<Exception> getExceptionListener();
+    @NonNull Listener<Exception> getExceptionListener();
 
     /**
      * Gets the nickname the client intends to possess. May not reflect
@@ -892,32 +830,28 @@ public interface Client {
      *
      * @return the nickname the client tries to maintain
      */
-    @NonNull
-    String getIntendedNick();
+    @NonNull String getIntendedNick();
 
     /**
      * Gets the STS machine instance, if one is in use.
      *
      * @return the machine, may not be present
      */
-    @NonNull
-    Optional<StsMachine> getStsMachine();
+    @NonNull Optional<StsMachine> getStsMachine();
 
     /**
      * Gets the manager of ISUPPORT info.
      *
      * @return the ISUPPORT manager
      */
-    @NonNull
-    ISupportManager getISupportManager();
+    @NonNull ISupportManager getISupportManager();
 
     /**
      * Gets the current message cutter for multi-line messages.
      *
      * @return message cutter
      */
-    @NonNull
-    Cutter getMessageCutter();
+    @NonNull Cutter getMessageCutter();
 
     /**
      * Gets the message sending queue supplier. Default supplies a
@@ -926,16 +860,14 @@ public interface Client {
      *
      * @return the supplier
      */
-    @NonNull
-    Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier();
+    @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier();
 
     /**
      * Gets the message tag manager.
      *
      * @return message tag manager
      */
-    @NonNull
-    MessageTagManager getMessageTagManager();
+    @NonNull MessageTagManager getMessageTagManager();
 
     /**
      * Gets the client name. This name is just an internal name for reference
@@ -943,16 +875,14 @@ public interface Client {
      *
      * @return the client name
      */
-    @NonNull
-    String getName();
+    @NonNull String getName();
 
     /**
      * Gets the current nickname the client has.
      *
      * @return the current nick
      */
-    @NonNull
-    String getNick();
+    @NonNull String getNick();
 
     /**
      * Gets information about the server to which the client is currently
@@ -963,8 +893,7 @@ public interface Client {
      *
      * @return the server information object
      */
-    @NonNull
-    ServerInfo getServerInfo();
+    @NonNull ServerInfo getServerInfo();
 
     /**
      * Gets the User that the client is represented by. Will return {@link
@@ -973,8 +902,7 @@ public interface Client {
      *
      * @return the user of this client if known
      */
-    @NonNull
-    Optional<User> getUser();
+    @NonNull Optional<User> getUser();
 
     /**
      * Gets the user's modes. Will return {@link Optional#empty()} until the
@@ -983,8 +911,7 @@ public interface Client {
      *
      * @return user modes of this client if known
      */
-    @NonNull
-    Optional<ModeStatusList<UserMode>> getUserModes();
+    @NonNull Optional<ModeStatusList<UserMode>> getUserModes();
 
     /**
      * Checks to see if this client is the same as the given user.

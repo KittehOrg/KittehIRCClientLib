@@ -91,8 +91,7 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
      *
      * @return the client
      */
-    @NonNull
-    protected Client getClient() {
+    protected @NonNull Client getClient() {
         return this.client;
     }
 
@@ -106,9 +105,8 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
         }
     }
 
-    @NonNull
     @Override
-    public Optional<Consumer<String>> getConsumer() {
+    public @NonNull Optional<Consumer<String>> getConsumer() {
         return Optional.ofNullable(this.consumer);
     }
 
@@ -119,9 +117,8 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
         }
     }
 
-    @NonNull
     @Override
-    public Queue<String> shutdown() {
+    public @NonNull Queue<String> shutdown() {
         synchronized (this.sendingLock) {
             this.interrupt();
             this.sendingLock.notify();

@@ -48,8 +48,7 @@ public abstract class ClientEventBase implements ClientEvent {
     }
 
     @Override
-    @NonNull
-    public final Client getClient() {
+    public @NonNull final Client getClient() {
         return this.client;
     }
 
@@ -63,8 +62,7 @@ public abstract class ClientEventBase implements ClientEvent {
      *
      * @return the partial toString generator
      */
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return new ToStringer(this).add("client", this.getClient());
     }
 }

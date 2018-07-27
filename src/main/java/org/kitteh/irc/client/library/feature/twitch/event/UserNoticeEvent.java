@@ -75,8 +75,7 @@ public class UserNoticeEvent extends ChannelEventBase implements TwitchSingleMes
      *
      * @return message or {@link Optional#empty()} if no message
      */
-    @NonNull
-    public Optional<String> getMessage() {
+    public @NonNull Optional<String> getMessage() {
         return Optional.ofNullable(this.message);
     }
 }

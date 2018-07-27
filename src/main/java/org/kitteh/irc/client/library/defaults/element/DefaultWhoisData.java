@@ -74,8 +74,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @return nick
          */
-        @NonNull
-        public String getNick() {
+        public @NonNull String getNick() {
             return this.nick;
         }
 
@@ -190,8 +189,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @return new WhoisData
          */
-        @NonNull
-        public WhoisData build() {
+        public @NonNull WhoisData build() {
             return new DefaultWhoisData(this.client, this.account, this.channels, this.nick, this.userString, this.host, this.realName, this.server, this.serverDescription, this.secure, this.operatorInformation, this.idleTime, this.signOnTime, this.awayMessage);
         }
     }
@@ -254,51 +252,43 @@ public class DefaultWhoisData implements WhoisData {
         this.creationTime = System.currentTimeMillis();
     }
 
-    @NonNull
     @Override
-    public Optional<String> getAccount() {
+    public @NonNull Optional<String> getAccount() {
         return Optional.ofNullable(this.account);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getAwayMessage() {
+    public @NonNull Optional<String> getAwayMessage() {
         return Optional.ofNullable(this.awayMessage);
     }
 
-    @NonNull
     @Override
-    public Set<String> getChannels() {
+    public @NonNull Set<String> getChannels() {
         return this.channels;
     }
 
-    @NonNull
     @Override
-    public String getHost() {
+    public @NonNull String getHost() {
         return this.host;
     }
 
-    @NonNull
     @Override
-    public String getNick() {
+    public @NonNull String getNick() {
         return this.nick;
     }
 
-    @NonNull
     @Override
-    public Optional<String> getRealName() {
+    public @NonNull Optional<String> getRealName() {
         return Optional.ofNullable(this.realName);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getServer() {
+    public @NonNull Optional<String> getServer() {
         return Optional.ofNullable(this.server);
     }
 
-    @NonNull
     @Override
-    public String getUserString() {
+    public @NonNull String getUserString() {
         return this.userString;
     }
 
@@ -307,21 +297,18 @@ public class DefaultWhoisData implements WhoisData {
         return this.away;
     }
 
-    @NonNull
     @Override
-    public String getMessagingName() {
+    public @NonNull String getMessagingName() {
         return this.nick;
     }
 
-    @NonNull
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return this.name;
     }
 
-    @NonNull
     @Override
-    public Client getClient() {
+    public @NonNull Client getClient() {
         return this.client;
     }
 
@@ -330,27 +317,23 @@ public class DefaultWhoisData implements WhoisData {
         return this.creationTime;
     }
 
-    @NonNull
     @Override
-    public Optional<Long> getIdleTime() {
+    public @NonNull Optional<Long> getIdleTime() {
         return Optional.ofNullable(this.idleTime);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getOperatorInformation() {
+    public @NonNull Optional<String> getOperatorInformation() {
         return Optional.ofNullable(this.operatorInformation);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getServerDescription() {
+    public @NonNull Optional<String> getServerDescription() {
         return Optional.ofNullable(this.serverDescription);
     }
 
-    @NonNull
     @Override
-    public Optional<Long> getSignOnTime() {
+    public @NonNull Optional<Long> getSignOnTime() {
         return Optional.ofNullable(this.signOnTime);
     }
 
@@ -359,9 +342,8 @@ public class DefaultWhoisData implements WhoisData {
         return this.secureConnection;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this)
                 .add("client", this.client)
                 .add("account", this.account)

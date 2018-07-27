@@ -33,8 +33,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
  * TOPICal command support.
  */
 public class TopicCommand extends ChannelCommand {
-    @Nullable
-    private String topic;
+    private @Nullable String topic;
 
     /**
      * Constructs a TOPIC command for a given channel.
@@ -54,8 +53,7 @@ public class TopicCommand extends ChannelCommand {
      * @return this TopicCommand
      * @throws IllegalArgumentException if topic invalid
      */
-    @NonNull
-    public TopicCommand topic(@Nullable String topic) {
+    public @NonNull TopicCommand topic(@Nullable String topic) {
         this.topic = (topic == null) ? null : Sanity.safeMessageCheck(topic, "Topic");
         return this;
     }
@@ -65,8 +63,7 @@ public class TopicCommand extends ChannelCommand {
      *
      * @return this TopicCommand
      */
-    @NonNull
-    public TopicCommand query() {
+    public @NonNull TopicCommand query() {
         this.topic = null;
         return this;
     }
@@ -76,9 +73,8 @@ public class TopicCommand extends ChannelCommand {
         this.getClient().sendRawLine("TOPIC " + this.getChannel() + (this.topic == null ? "" : (" :" + this.topic)));
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("topic", this.topic);
     }
 }

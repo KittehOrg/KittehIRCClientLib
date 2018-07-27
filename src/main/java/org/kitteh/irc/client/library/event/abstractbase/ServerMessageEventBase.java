@@ -54,15 +54,13 @@ public abstract class ServerMessageEventBase extends ClientEventBase implements 
         this.originalMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(originalMessages, "Original messages cannot be null")));
     }
 
-    @NonNull
     @Override
-    public List<ServerMessage> getOriginalMessages() {
+    public @NonNull List<ServerMessage> getOriginalMessages() {
         return this.originalMessages;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("originalMessages", this.originalMessages);
     }
 }

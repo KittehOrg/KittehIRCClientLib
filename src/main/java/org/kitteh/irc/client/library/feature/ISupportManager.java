@@ -40,8 +40,7 @@ public interface ISupportManager {
      * @param tag input
      * @return a parameter based on the input
      */
-    @NonNull
-    ISupportParameter createParameter(@NonNull String tag);
+    @NonNull ISupportParameter createParameter(@NonNull String tag);
 
     /**
      * Gets the registered ISUPPORT creator for a given parameter name.
@@ -49,8 +48,7 @@ public interface ISupportManager {
      * @param parameter parameter
      * @return registered creator if present
      */
-    @NonNull
-    Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> getCreator(@NonNull String parameter);
+    @NonNull Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> getCreator(@NonNull String parameter);
 
     /**
      * Registers a function that creates an {@link ISupportParameter} from a
@@ -60,8 +58,7 @@ public interface ISupportManager {
      * @param creator function that creates tags
      * @return displaced creator if one existed for the given parameter
      */
-    @NonNull
-    Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> registerParameter(@NonNull String parameter, @NonNull TriFunction<Client, String, String, ? extends ISupportParameter> creator);
+    @NonNull Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> registerParameter(@NonNull String parameter, @NonNull TriFunction<Client, String, String, ? extends ISupportParameter> creator);
 
     /**
      * Removes the registered creator for a given parameter.
@@ -69,6 +66,5 @@ public interface ISupportManager {
      * @param parameter parameter
      * @return registered creator if present
      */
-    @NonNull
-    Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> unregisterParameter(@NonNull String parameter);
+    @NonNull Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> unregisterParameter(@NonNull String parameter);
 }

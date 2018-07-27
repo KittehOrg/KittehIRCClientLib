@@ -64,14 +64,12 @@ public class CapabilitiesAcknowledgedEvent extends CapabilityNegotiationResponse
      *
      * @return ACK'd capabilities
      */
-    @NonNull
-    public List<CapabilityState> getAcknowledgedCapabilities() {
+    public @NonNull List<CapabilityState> getAcknowledgedCapabilities() {
         return this.acknowledgedCapabilities;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("acknowledgedCapabilities", this.acknowledgedCapabilities);
     }
 }

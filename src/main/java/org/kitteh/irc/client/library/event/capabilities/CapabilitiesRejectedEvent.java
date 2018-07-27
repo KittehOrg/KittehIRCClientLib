@@ -64,14 +64,12 @@ public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEven
      *
      * @return rejected request list
      */
-    @NonNull
-    public List<CapabilityState> getRejectedCapabilitiesRequest() {
+    public @NonNull List<CapabilityState> getRejectedCapabilitiesRequest() {
         return this.rejectedCapabilitiesRequest;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("rejectedCapabilitiesRequest", this.rejectedCapabilitiesRequest);
     }
 }

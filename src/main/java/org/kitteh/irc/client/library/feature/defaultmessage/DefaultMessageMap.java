@@ -40,8 +40,7 @@ public interface DefaultMessageMap {
      * @param defaultString default value
      * @return self to permit chaining
      */
-    @NonNull
-    DefaultMessageMap setDefault(DefaultMessageType key, @Nullable String defaultString);
+    @NonNull DefaultMessageMap setDefault(DefaultMessageType key, @Nullable String defaultString);
 
     /**
      * Retrieves the default string value for the specified default message
@@ -51,8 +50,7 @@ public interface DefaultMessageMap {
      * @param key message type
      * @return default message
      */
-    @NonNull
-    Optional<String> getDefault(DefaultMessageType key);
+    @NonNull Optional<String> getDefault(DefaultMessageType key);
 
     /**
      * Retrieves the default string value for the specified default message
@@ -62,8 +60,7 @@ public interface DefaultMessageMap {
      * @param defaultValue a fallback value for if no default is set
      * @return default message
      */
-    @NonNull
-    Optional<String> getDefault(DefaultMessageType key, String defaultValue);
+    @NonNull Optional<String> getDefault(DefaultMessageType key, String defaultValue);
 
     /**
      * Retrieves the full list of all {@link DefaultMessageType} to String
@@ -71,6 +68,5 @@ public interface DefaultMessageMap {
      *
      * @return an immutable copy of the map
      */
-    @NonNull
-    Map<DefaultMessageType, String> getDefaults();
+    @NonNull Map<DefaultMessageType, String> getDefaults();
 }

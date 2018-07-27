@@ -52,14 +52,12 @@ public class WhoisEvent extends ClientEventBase {
      *
      * @return the WHOIS data
      */
-    @NonNull
-    public WhoisData getWhoisData() {
+    public @NonNull WhoisData getWhoisData() {
         return this.whoisData;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("whoisData", this.whoisData);
     }
 }

@@ -50,9 +50,8 @@ public class DefaultISupportNetwork extends DefaultISupportParameterValueRequire
         this.networkName = value;
     }
 
-    @NonNull
     @Override
-    public String getNetworkName() {
+    public @NonNull String getNetworkName() {
         return this.networkName;
     }
 }

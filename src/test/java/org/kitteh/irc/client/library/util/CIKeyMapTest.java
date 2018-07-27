@@ -125,15 +125,13 @@ public class CIKeyMapTest {
             this.caseMapping = caseMapping;
         }
 
-        @NonNull
         @Override
-        public Optional<String> getAddress() {
+        public @NonNull Optional<String> getAddress() {
             return Optional.empty();
         }
 
-        @NonNull
         @Override
-        public CaseMapping getCaseMapping() {
+        public @NonNull CaseMapping getCaseMapping() {
             return this.caseMapping;
         }
 
@@ -142,51 +140,43 @@ public class CIKeyMapTest {
             return 0;
         }
 
-        @NonNull
         @Override
-        public Map<Character, Integer> getChannelLimits() {
+        public @NonNull Map<Character, Integer> getChannelLimits() {
             return Collections.emptyMap();
         }
 
-        @NonNull
         @Override
-        public List<ChannelMode> getChannelModes() {
+        public @NonNull List<ChannelMode> getChannelModes() {
             return Collections.emptyList();
         }
 
-        @NonNull
         @Override
-        public List<Character> getChannelPrefixes() {
+        public @NonNull List<Character> getChannelPrefixes() {
             return Collections.emptyList();
         }
 
-        @NonNull
         @Override
-        public List<ChannelUserMode> getChannelUserModes() {
+        public @NonNull List<ChannelUserMode> getChannelUserModes() {
             return Collections.emptyList();
         }
 
-        @NonNull
         @Override
-        public Optional<ISupportParameter> getISupportParameter(@NonNull String name) {
+        public @NonNull Optional<ISupportParameter> getISupportParameter(@NonNull String name) {
             return Optional.empty();
         }
 
-        @NonNull
         @Override
-        public Map<String, ISupportParameter> getISupportParameters() {
+        public @NonNull Map<String, ISupportParameter> getISupportParameters() {
             return null;
         }
 
-        @NonNull
         @Override
-        public Optional<List<String>> getMotd() {
+        public @NonNull Optional<List<String>> getMotd() {
             return Optional.empty();
         }
 
-        @NonNull
         @Override
-        public Optional<String> getNetworkName() {
+        public @NonNull Optional<String> getNetworkName() {
             return Optional.empty();
         }
 
@@ -195,15 +185,13 @@ public class CIKeyMapTest {
             return 0;
         }
 
-        @NonNull
         @Override
-        public List<UserMode> getUserModes() {
+        public @NonNull List<UserMode> getUserModes() {
             return null;
         }
 
-        @NonNull
         @Override
-        public Optional<String> getVersion() {
+        public @NonNull Optional<String> getVersion() {
             return Optional.empty();
         }
 

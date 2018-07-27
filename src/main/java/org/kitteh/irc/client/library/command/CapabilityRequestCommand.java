@@ -57,8 +57,7 @@ public class CapabilityRequestCommand extends Command {
      * @see CapabilityManager#getCapabilities()
      * @see CapabilityManager#getSupportedCapabilities()
      */
-    @NonNull
-    public synchronized CapabilityRequestCommand enable(@NonNull String capability) {
+    public synchronized @NonNull CapabilityRequestCommand enable(@NonNull String capability) {
         this.requests.add(Sanity.safeMessageCheck(capability, "Capability"));
         return this;
     }
@@ -71,8 +70,7 @@ public class CapabilityRequestCommand extends Command {
      * @throws IllegalArgumentException if capability is null
      * @see CapabilityManager#getCapabilities()
      */
-    @NonNull
-    public synchronized CapabilityRequestCommand disable(@NonNull String capability) {
+    public synchronized @NonNull CapabilityRequestCommand disable(@NonNull String capability) {
         this.requests.add('-' + Sanity.safeMessageCheck(capability, "Capability"));
         return this;
     }
@@ -94,9 +92,8 @@ public class CapabilityRequestCommand extends Command {
         this.getClient().sendRawLineImmediately("CAP REQ :" + requests);
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("requests", this.requests);
     }
 }

@@ -46,8 +46,7 @@ import java.util.Optional;
  * See {@link PrivateCtcpReplyEvent} for received CTCP replies.
  */
 public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User> {
-    @Nullable
-    private String reply;
+    private @Nullable String reply;
 
     /**
      * Creates the event
@@ -69,8 +68,7 @@ public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> im
      *
      * @return the reply if one is set
      */
-    @NonNull
-    public Optional<String> getReply() {
+    public @NonNull Optional<String> getReply() {
         return Optional.ofNullable(this.reply);
     }
 
@@ -86,8 +84,7 @@ public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> im
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("reply", this.reply);
     }
 }

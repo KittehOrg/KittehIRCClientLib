@@ -66,15 +66,13 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      *
      * @return arguments
      */
-    @NonNull
     @Override
-    public List<String> getParameters() {
+    public @NonNull List<String> getParameters() {
         return this.parameters;
     }
 
-    @NonNull
     @Override
-    public String getCommand() {
+    public @NonNull String getCommand() {
         return this.command;
     }
 
@@ -83,9 +81,8 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      *
      * @return message tags
      */
-    @NonNull
     @Override
-    public List<MessageTag> getMessageTags() {
+    public @NonNull List<MessageTag> getMessageTags() {
         return this.message.getTags();
     }
 
@@ -94,21 +91,18 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      *
      * @return unprocessed, original message
      */
-    @NonNull
     @Override
-    public String getOriginalMessage() {
+    public @NonNull String getOriginalMessage() {
         return this.message.getMessage();
     }
 
-    @NonNull
     @Override
-    public ServerMessage getServerMessage() {
+    public @NonNull ServerMessage getServerMessage() {
         return this.message;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("message", this.message);
     }
 }

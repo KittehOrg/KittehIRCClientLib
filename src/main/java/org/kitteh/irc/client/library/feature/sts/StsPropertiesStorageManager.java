@@ -110,8 +110,7 @@ public class StsPropertiesStorageManager implements StsStorageManager {
      * @return all data sent by the server in the CAP LS "sts" value when we connected securely
      */
     @Override
-    @NonNull
-    public Optional<StsPolicy> getEntry(@NonNull String hostname) {
+    public @NonNull Optional<StsPolicy> getEntry(@NonNull String hostname) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
 
         this.pruneEntries();

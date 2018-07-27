@@ -58,9 +58,8 @@ public class DefaultISupportChanTypes extends DefaultISupportParameterValueRequi
         this.prefixes = Collections.unmodifiableList(prefixes);
     }
 
-    @NonNull
     @Override
-    public List<Character> getTypes() {
+    public @NonNull List<Character> getTypes() {
         return this.prefixes;
     }
 }

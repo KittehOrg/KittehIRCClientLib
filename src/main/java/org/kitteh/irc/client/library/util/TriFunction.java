@@ -43,6 +43,5 @@ public interface TriFunction<First, Second, Third, Result> {
      * @param third the third function argument
      * @return the function result
      */
-    @Nullable
-    Result apply(@Nullable First first, @Nullable Second second, @Nullable Third third);
+    @Nullable Result apply(@Nullable First first, @Nullable Second second, @Nullable Third third);
 }

@@ -61,14 +61,12 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      *
      * @return status list
      */
-    @NonNull
-    public ModeStatusList<ChannelMode> getStatusList() {
+    public @NonNull ModeStatusList<ChannelMode> getStatusList() {
         return this.statusList;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("statusList", this.statusList);
     }
 }

@@ -43,8 +43,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     public static final int DEFAULT_RECONNECTION_DELAY_MILLIS = 5000;
 
     private final boolean canReconnect;
-    @Nullable
-    private final Throwable cause;
+    private final @Nullable Throwable cause;
     private int reconnectionDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
     private boolean attemptReconnect;
 
@@ -67,8 +66,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      *
      * @return exception or empty if no exception
      */
-    @NonNull
-    public Optional<Throwable> getCause() {
+    public @NonNull Optional<Throwable> getCause() {
         return Optional.ofNullable(this.cause);
     }
 
@@ -131,8 +129,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer()
                 .add("canAttemptReconnect", this.canReconnect)
                 .add("willAttemptReconnect", this.attemptReconnect)

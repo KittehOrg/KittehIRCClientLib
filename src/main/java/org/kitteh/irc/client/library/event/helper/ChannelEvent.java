@@ -35,6 +35,5 @@ public interface ChannelEvent extends ServerMessageEvent {
      *
      * @return the channel
      */
-    @NonNull
-    Channel getChannel();
+    @NonNull Channel getChannel();
 }

@@ -34,6 +34,5 @@ public interface MessageEvent extends ServerMessageEvent {
      *
      * @return the message
      */
-    @NonNull
-    String getMessage();
+    @NonNull String getMessage();
 }

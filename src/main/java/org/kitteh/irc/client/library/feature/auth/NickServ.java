@@ -56,9 +56,8 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
             }
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).toString();
         }
     }
@@ -76,15 +75,13 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
         super(client, accountName, password);
     }
 
-    @NonNull
     @Override
-    protected String getAuthentication() {
+    protected @NonNull String getAuthentication() {
         return "PRIVMSG " + this.getNickServNick() + " :IDENTIFY " + this.getAccountName() + ' ' + this.getPassword();
     }
 
-    @NonNull
     @Override
-    public Object getEventListener() {
+    public @NonNull Object getEventListener() {
         return this.listener;
     }
 
@@ -93,8 +90,7 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
      *
      * @return nick of NickServ
      */
-    @NonNull
-    protected String getNickServNick() {
+    protected @NonNull String getNickServNick() {
         return "NickServ";
     }
 }

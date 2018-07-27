@@ -44,8 +44,7 @@ public interface StsMachine {
      *
      * @return one of STSClientState's members
      */
-    @NonNull
-    StsClientState getCurrentState();
+    @NonNull StsClientState getCurrentState();
 
     /**
      * Changes the state of the FSM, triggering any state-specific work.
@@ -59,8 +58,7 @@ public interface StsMachine {
      *
      * @return the storage manager instance
      */
-    @NonNull
-    StsStorageManager getStorageManager();
+    @NonNull StsStorageManager getStorageManager();
 
     /**
      * Provides a key-&gt;value map of options and list of flags, making up the STS policy.

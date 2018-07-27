@@ -56,24 +56,21 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return new mode command
          */
-        @NonNull
-        ChannelModeCommand mode();
+        @NonNull ChannelModeCommand mode();
 
         /**
          * Provides a new KICK command.
          *
          * @return new kick command
          */
-        @NonNull
-        KickCommand kick();
+        @NonNull KickCommand kick();
 
         /**
          * Provides a new TOPIC command.
          *
          * @return new topic command
          */
-        @NonNull
-        TopicCommand topic();
+        @NonNull TopicCommand topic();
     }
 
     /**
@@ -85,24 +82,21 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return topic setter if known
          */
-        @NonNull
-        Optional<Actor> getSetter();
+        @NonNull Optional<Actor> getSetter();
 
         /**
          * Gets the time the topic was set.
          *
          * @return the time of setting if known
          */
-        @NonNull
-        Optional<Instant> getTime();
+        @NonNull Optional<Instant> getTime();
 
         /**
          * Gets the channel topic.
          *
          * @return the topic if known
          */
-        @NonNull
-        Optional<String> getValue();
+        @NonNull Optional<String> getValue();
     }
 
     /**
@@ -111,8 +105,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return an updated snapshot if the channel is currently tracked by
      * the client
      */
-    @NonNull
-    default Optional<Channel> getLatest() {
+    default @NonNull Optional<Channel> getLatest() {
         return this.getClient().getChannel(this.getName());
     }
 
@@ -123,16 +116,14 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return list of mode info if tracked, empty if not tracked
      * @throws IllegalArgumentException for null or non-type-A mode
      */
-    @NonNull
-    Optional<List<ModeInfo>> getModeInfoList(@NonNull ChannelMode mode);
+    @NonNull Optional<List<ModeInfo>> getModeInfoList(@NonNull ChannelMode mode);
 
     /**
      * Gets the channel's current known modes.
      *
      * @return known modes
      */
-    @NonNull
-    ModeStatusList<ChannelMode> getModes();
+    @NonNull ModeStatusList<ChannelMode> getModes();
 
     /**
      * Gets the nicknames of users in the channel, if the client is in the
@@ -140,16 +131,14 @@ public interface Channel extends MessageReceiver, Staleable {
      *
      * @return nicks in the channel
      */
-    @NonNull
-    List<String> getNicknames();
+    @NonNull List<String> getNicknames();
 
     /**
      * Gets the channel's topic.
      *
      * @return channel topic
      */
-    @NonNull
-    Topic getTopic();
+    @NonNull Topic getTopic();
 
     /**
      * Gets a user by their nick, if they are known to the client. Note that
@@ -162,8 +151,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @see #hasCompleteUserData()
      * @see ChannelUsersUpdatedEvent
      */
-    @NonNull
-    Optional<User> getUser(@NonNull String nick);
+    @NonNull Optional<User> getUser(@NonNull String nick);
 
     /**
      * Gets all Users known to be in the channel. Note that the server may
@@ -175,8 +163,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @see #hasCompleteUserData()
      * @see ChannelUsersUpdatedEvent
      */
-    @NonNull
-    List<User> getUsers();
+    @NonNull List<User> getUsers();
 
     /**
      * Gets the user modes of a given nickname in the channel.
@@ -184,8 +171,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param nick user's nick
      * @return a set of modes the user is known to have, if the user is known
      */
-    @NonNull
-    Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull String nick);
+    @NonNull Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull String nick);
 
     /**
      * Gets the user modes of a given user in the channel.
@@ -193,8 +179,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param user user
      * @return a set of modes the user is known to have, if the user is known
      */
-    @NonNull
-    default Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull User user) {
+    default @NonNull Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull User user) {
         return this.getUserModes(Sanity.nullCheck(user, "User cannot be null").getNick());
     }
 
@@ -250,8 +235,7 @@ public interface Channel extends MessageReceiver, Staleable {
      *
      * @return commands
      */
-    @NonNull
-    Commands commands();
+    @NonNull Commands commands();
 
     /**
      * Parts the channel without stating a reason.

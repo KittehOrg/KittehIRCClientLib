@@ -42,8 +42,7 @@ public interface ServerMessage {
          *
          * @return the command present in this message
          */
-        @NonNull
-        String getCommand();
+        @NonNull String getCommand();
     }
 
     /**
@@ -64,16 +63,14 @@ public interface ServerMessage {
      *
      * @return full message content
      */
-    @NonNull
-    String getMessage();
+    @NonNull String getMessage();
 
     /**
      * Gets the processed message tags, if any, contained in the message.
      *
      * @return message tags or empty if none sent.
      */
-    @NonNull
-    List<MessageTag> getTags();
+    @NonNull List<MessageTag> getTags();
 
     /**
      * Gets the named tag if present
@@ -94,9 +91,8 @@ public interface ServerMessage {
      * @param <Tag> message tag type
      * @return message tag if present
      */
-    @NonNull
     @SuppressWarnings("unchecked")
-    default <Tag extends MessageTag> Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
+    default <Tag extends MessageTag> @NonNull Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
         Sanity.nullCheck(name, "Name cannot be null");
         Sanity.nullCheck(clazz, "Class cannot be null");
         return this.getTags().stream()

@@ -39,38 +39,33 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
      *
      * @return command, upper-case
      */
-    @NonNull
-    String getCommand();
+    @NonNull String getCommand();
 
     /**
      * Gets the message tags.
      *
      * @return message tags
      */
-    @NonNull
-    List<MessageTag> getMessageTags();
+    @NonNull List<MessageTag> getMessageTags();
 
     /**
      * Gets the original message received by the server.
      *
      * @return unprocessed, original message
      */
-    @NonNull
-    String getOriginalMessage();
+    @NonNull String getOriginalMessage();
 
     /**
      * Gets the subsequent parameters after the command.
      *
      * @return arguments
      */
-    @NonNull
-    List<String> getParameters();
+    @NonNull List<String> getParameters();
 
     /**
      * Gets the server message received.
      *
      * @return the server message
      */
-    @NonNull
-    ServerMessage getServerMessage();
+    @NonNull ServerMessage getServerMessage();
 }

@@ -60,27 +60,23 @@ public class UserInfoChangeEventBase<Type> extends ActorEventBase<User> implemen
         this.change = new Change<>(changedInfoGetter.apply(oldUser), changedInfoGetter.apply(newUser));
     }
 
-    @NonNull
     @Override
-    public User getOldUser() {
+    public @NonNull User getOldUser() {
         return this.getActor();
     }
 
-    @NonNull
     @Override
-    public User getNewUser() {
+    public @NonNull User getNewUser() {
         return this.newUser;
     }
 
-    @NonNull
     @Override
-    public Change<Type> getChange() {
+    public @NonNull Change<Type> getChange() {
         return this.change;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("newUser", this.newUser).add("change", this.change);
     }
 }

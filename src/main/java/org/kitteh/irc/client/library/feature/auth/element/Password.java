@@ -35,8 +35,7 @@ public interface Password extends AuthProtocol {
      *
      * @return password
      */
-    @NonNull
-    String getPassword();
+    @NonNull String getPassword();
 
     /**
      * Sets the password to use.

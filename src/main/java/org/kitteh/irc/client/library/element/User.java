@@ -43,40 +43,35 @@ public interface User extends MessageReceiver, Staleable {
      * @see CapabilityManager#getCapabilities()
      * @see ServerInfo#hasWhoXSupport()
      */
-    @NonNull
-    Optional<String> getAccount();
+    @NonNull Optional<String> getAccount();
 
     /**
      * Gets, if one is set and known, the away message for the user.
      *
      * @return away message if known
      */
-    @NonNull
-    Optional<String> getAwayMessage();
+    @NonNull Optional<String> getAwayMessage();
 
     /**
      * Gets the user's channels.
      *
      * @return channel names the user is in
      */
-    @NonNull
-    Set<String> getChannels();
+    @NonNull Set<String> getChannels();
 
     /**
      * Gets the user's host.
      *
      * @return user host
      */
-    @NonNull
-    String getHost();
+    @NonNull String getHost();
 
     /**
      * Gets the user's nick.
      *
      * @return user nick
      */
-    @NonNull
-    String getNick();
+    @NonNull String getNick();
 
     /**
      * Gets a user's operator information, if they have any privileges, noting
@@ -87,32 +82,28 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return operator info, or empty if none known
      */
-    @NonNull
-    Optional<String> getOperatorInformation();
+    @NonNull Optional<String> getOperatorInformation();
 
     /**
      * Gets the user's real name
      *
      * @return real name if known
      */
-    @NonNull
-    Optional<String> getRealName();
+    @NonNull Optional<String> getRealName();
 
     /**
      * Gets the name of the server the user is on.
      *
      * @return user's server if known
      */
-    @NonNull
-    Optional<String> getServer();
+    @NonNull Optional<String> getServer();
 
     /**
      * Gets the user's user string.
      *
      * @return user
      */
-    @NonNull
-    String getUserString();
+    @NonNull String getUserString();
 
     /**
      * Gets if the user is away.

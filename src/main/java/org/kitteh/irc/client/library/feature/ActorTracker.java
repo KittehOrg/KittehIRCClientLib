@@ -52,8 +52,7 @@ public interface ActorTracker extends Resettable {
      * @param name name
      * @return actor based on input
      */
-    @NonNull
-    Actor getActor(@NonNull String name);
+    @NonNull Actor getActor(@NonNull String name);
 
     /**
      * Gets a tracked channel.
@@ -61,16 +60,14 @@ public interface ActorTracker extends Resettable {
      * @param channel channel name
      * @return channel if tracked
      */
-    @NonNull
-    Optional<Channel> getTrackedChannel(@NonNull String channel);
+    @NonNull Optional<Channel> getTrackedChannel(@NonNull String channel);
 
     /**
      * Gets all tracked channels.
      *
      * @return tracked channels
      */
-    @NonNull
-    Set<Channel> getTrackedChannels();
+    @NonNull Set<Channel> getTrackedChannels();
 
     /**
      * Gets a tracked user.
@@ -78,8 +75,7 @@ public interface ActorTracker extends Resettable {
      * @param nick nickname of the user
      * @return user if tracked
      */
-    @NonNull
-    Optional<User> getTrackedUser(@NonNull String nick);
+    @NonNull Optional<User> getTrackedUser(@NonNull String nick);
 
     /**
      * Gets if the given staleable object is considered stale by the tracker.

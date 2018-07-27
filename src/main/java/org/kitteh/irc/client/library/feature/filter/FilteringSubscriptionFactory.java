@@ -100,9 +100,8 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
         }
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).toString();
     }
 }

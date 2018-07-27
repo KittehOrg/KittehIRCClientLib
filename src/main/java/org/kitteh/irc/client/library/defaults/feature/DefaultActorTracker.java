@@ -77,8 +77,7 @@ public class DefaultActorTracker implements ActorTracker {
             this.name = name;
         }
 
-        @NonNull
-        String getName() {
+        @NonNull String getName() {
             return this.name;
         }
 
@@ -86,21 +85,18 @@ public class DefaultActorTracker implements ActorTracker {
             this.name = name;
         }
 
-        @NonNull
-        DefaultActor snapshot() {
+        @NonNull DefaultActor snapshot() {
             return new DefaultActor(DefaultActorTracker.this.client, this.name);
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).toString();
         }
     }
 
     private class IrcStaleable<T extends Staleable> extends IrcActor {
-        @Nullable
-        private T snapshot;
+        private @Nullable T snapshot;
 
         IrcStaleable(@NonNull String name) {
             super(name);
@@ -114,8 +110,7 @@ public class DefaultActorTracker implements ActorTracker {
             this.snapshot = null;
         }
 
-        @NonNull
-        synchronized T snapshot(@NonNull Supplier<T> supplier) {
+        synchronized @NonNull T snapshot(@NonNull Supplier<T> supplier) {
             if (this.snapshot != null) {
                 return this.snapshot;
             }
@@ -132,10 +127,8 @@ public class DefaultActorTracker implements ActorTracker {
         private volatile boolean fullListReceived;
         private long lastWho = System.currentTimeMillis();
         private String topic;
-        @Nullable
-        private Actor topicSetter;
-        @Nullable
-        private Instant topicTime;
+        private @Nullable Actor topicSetter;
+        private @Nullable Instant topicTime;
         private volatile boolean tracked;
 
         private IrcChannel(@NonNull String channel) {
@@ -170,8 +163,7 @@ public class DefaultActorTracker implements ActorTracker {
         }
 
         @Override
-        @NonNull
-        DefaultChannel snapshot() {
+        @NonNull DefaultChannel snapshot() {
             if (DefaultActorTracker.this.queryChannelInformation) {
                 synchronized (this.modes) {
                     if (this.tracked && !this.fullListReceived) {
@@ -295,8 +287,7 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        @NonNull
-        private Set<ChannelUserMode> getModes(@NonNull String nick) {
+        private @NonNull Set<ChannelUserMode> getModes(@NonNull String nick) {
             return this.modes.computeIfAbsent(nick, k -> new HashSet<>());
         }
 
@@ -323,17 +314,15 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).toString();
         }
     }
 
     class IrcUser extends IrcStaleable<DefaultUser> {
         private String account;
-        @Nullable
-        private String awayMessage;
+        private @Nullable String awayMessage;
         private String host;
         private String nick;
         private String user;
@@ -349,8 +338,7 @@ public class DefaultActorTracker implements ActorTracker {
             this.host = host;
         }
 
-        @NonNull
-        String getNick() {
+        @NonNull String getNick() {
             return this.nick;
         }
 
@@ -410,8 +398,7 @@ public class DefaultActorTracker implements ActorTracker {
         }
 
         @Override
-        @NonNull
-        DefaultUser snapshot() {
+        @NonNull DefaultUser snapshot() {
             Set<String> chanSet = new HashSet<>();
             for (IrcChannel channel : DefaultActorTracker.this.trackedChannels.values()) {
                 if (channel.modes.containsKey(this.nick)) {
@@ -422,9 +409,8 @@ public class DefaultActorTracker implements ActorTracker {
                     this.awayMessage, this.nick, this.user, this.host, this.isAway, this.operString, this.realName, this.server, chanSet));
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).toString();
         }
     }
@@ -436,8 +422,7 @@ public class DefaultActorTracker implements ActorTracker {
         }
 
         @Override
-        @NonNull
-        DefaultServer snapshot() {
+        @NonNull DefaultServer snapshot() {
             return new DefaultServer(DefaultActorTracker.this.client, this.getName());
         }
     }
@@ -468,9 +453,8 @@ public class DefaultActorTracker implements ActorTracker {
         this.trackedUsers = new CIKeyMap<>(this.client);
     }
 
-    @NonNull
     @Override
-    public Actor getActor(@NonNull String name) {
+    public @NonNull Actor getActor(@NonNull String name) {
         IrcUser user = this.getUserByName(name);
         if (user != null) {
             return user.snapshot();
@@ -500,22 +484,19 @@ public class DefaultActorTracker implements ActorTracker {
         return null;
     }
 
-    @NonNull
     @Override
-    public Optional<Channel> getTrackedChannel(@NonNull String channel) {
+    public @NonNull Optional<Channel> getTrackedChannel(@NonNull String channel) {
         IrcChannel ch = this.trackedChannels.get(channel);
         return (ch == null) ? Optional.empty() : Optional.of(ch.snapshot());
     }
 
-    @NonNull
     @Override
-    public Set<Channel> getTrackedChannels() {
+    public @NonNull Set<Channel> getTrackedChannels() {
         return this.trackedChannels.values().stream().map(IrcChannel::snapshot).collect(Collectors.toSet());
     }
 
-    @NonNull
     @Override
-    public Optional<User> getTrackedUser(@NonNull String nick) {
+    public @NonNull Optional<User> getTrackedUser(@NonNull String nick) {
         IrcUser u = this.trackedUsers.get(nick);
         return (u == null) ? Optional.empty() : Optional.of(u.snapshot());
     }

@@ -47,8 +47,7 @@ public abstract class DefaultModeBase implements Mode {
     }
 
     @Override
-    @NonNull
-    public Client getClient() {
+    public @NonNull Client getClient() {
         return this.client;
     }
 
@@ -57,9 +56,8 @@ public abstract class DefaultModeBase implements Mode {
         return this.mode;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return this.toStringer().toString();
     }
 
@@ -68,8 +66,7 @@ public abstract class DefaultModeBase implements Mode {
      *
      * @return partially made ToStringer
      */
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar());
     }
 }

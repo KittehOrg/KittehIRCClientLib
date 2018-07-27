@@ -34,8 +34,7 @@ import java.util.Optional;
  * The {@link Client} has had a working connection cease.
  */
 public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
-    @Nullable
-    private final String lastMessage;
+    private final @Nullable String lastMessage;
 
     /**
      * Constructs the event.
@@ -57,14 +56,12 @@ public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
      *
      * @return last message, or empty, sent by the server
      */
-    @NonNull
-    public Optional<String> getLastMessage() {
+    public @NonNull Optional<String> getLastMessage() {
         return Optional.ofNullable(this.lastMessage);
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("lastMessage", this.lastMessage);
     }
 }

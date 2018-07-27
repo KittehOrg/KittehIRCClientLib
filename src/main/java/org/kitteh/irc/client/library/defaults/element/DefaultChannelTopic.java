@@ -53,27 +53,23 @@ public class DefaultChannelTopic implements Channel.Topic {
         this.setter = setter;
     }
 
-    @NonNull
     @Override
-    public Optional<Actor> getSetter() {
+    public @NonNull Optional<Actor> getSetter() {
         return Optional.ofNullable(this.setter);
     }
 
-    @NonNull
     @Override
-    public Optional<Instant> getTime() {
+    public @NonNull Optional<Instant> getTime() {
         return Optional.ofNullable(this.time);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getValue() {
+    public @NonNull Optional<String> getValue() {
         return Optional.ofNullable(this.topic);
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("topic", this.topic).add("setter", this.setter).add("time", this.time).toString();
     }
 }

@@ -98,8 +98,7 @@ public class MonitorCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for null action
      */
-    @NonNull
-    public MonitorCommand action(@NonNull Action action) {
+    public @NonNull MonitorCommand action(@NonNull Action action) {
         this.action = Sanity.nullCheck(action, "Action cannot be null");
         return this;
     }
@@ -113,8 +112,7 @@ public class MonitorCommand extends Command {
      * @throws IllegalArgumentException for \n, \r, \0, or comma in target or
      * null target
      */
-    @NonNull
-    public MonitorCommand target(@NonNull String... targets) {
+    public @NonNull MonitorCommand target(@NonNull String... targets) {
         return this.target(Arrays.asList(Sanity.nullCheck(targets, "Targets cannot be null")));
     }
 
@@ -127,8 +125,7 @@ public class MonitorCommand extends Command {
      * @throws IllegalArgumentException for \n, \r, \0, or comma in target or
      * null target
      */
-    @NonNull
-    public synchronized MonitorCommand target(@NonNull Collection<String> targets) {
+    public @NonNull synchronized MonitorCommand target(@NonNull Collection<String> targets) {
         Sanity.nullCheck(targets, "Targets cannot be null");
         Set<String> targetSet = new LinkedHashSet<>();
         for (String target : targets) {
@@ -174,9 +171,8 @@ public class MonitorCommand extends Command {
         this.getClient().sendRawLine("MONITOR " + action.getCharacter() + ' ' + targets);
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("action", this.action).add("targets", this.targets);
     }
 }

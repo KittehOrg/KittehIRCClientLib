@@ -53,9 +53,8 @@ public class MemoryStsMachine implements StsMachine {
         this.manager = Sanity.nullCheck(manager, "Cannot have a null STS persistence manager.");
     }
 
-    @NonNull
     @Override
-    public StsClientState getCurrentState() {
+    public @NonNull StsClientState getCurrentState() {
         return this.state;
     }
 
@@ -90,9 +89,8 @@ public class MemoryStsMachine implements StsMachine {
         }
     }
 
-    @NonNull
     @Override
-    public StsStorageManager getStorageManager() {
+    public @NonNull StsStorageManager getStorageManager() {
         return this.manager;
     }
 
