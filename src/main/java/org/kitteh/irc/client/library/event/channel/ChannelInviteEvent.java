@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
@@ -32,7 +33,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -50,7 +50,7 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
      * @param actor the actor inviting another
      * @param target the nick invited
      */
-    public ChannelInviteEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull Actor actor, @Nonnull String target) {
+    public ChannelInviteEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull Actor actor, @NonNull String target) {
         super(client, originalMessages, actor, channel);
         this.target = Sanity.nullCheck(target, "Target cannot be null");
     }
@@ -60,13 +60,13 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
      *
      * @return the nickname of the invited user
      */
-    @Nonnull
+    @NonNull
     public String getTarget() {
         return this.target;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("target", this.target);
     }

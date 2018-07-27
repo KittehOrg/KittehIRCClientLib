@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.command.AwayCommand;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
@@ -42,7 +44,6 @@ import org.kitteh.irc.client.library.defaults.feature.DefaultISupportManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultMessageTagManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
 import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
-import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
@@ -55,6 +56,7 @@ import org.kitteh.irc.client.library.event.user.PrivateCtcpQueryEvent;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
+import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
@@ -70,8 +72,6 @@ import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -106,8 +106,8 @@ public interface Client {
          * @return this builder
          * @see DefaultActorTracker
          */
-        @Nonnull
-        Builder actorTracker(@Nonnull Function<Client.WithManagement, ? extends ActorTracker> supplier);
+        @NonNull
+        Builder actorTracker(@NonNull Function<Client.WithManagement, ? extends ActorTracker> supplier);
 
         /**
          * Sets the supplier of the authentication manager.
@@ -118,8 +118,8 @@ public interface Client {
          * @return this builder
          * @see DefaultAuthManager
          */
-        @Nonnull
-        Builder authManager(@Nonnull Function<Client.WithManagement, ? extends AuthManager> supplier);
+        @NonNull
+        Builder authManager(@NonNull Function<Client.WithManagement, ? extends AuthManager> supplier);
 
         /**
          * Binds the client to a host or IP locally.
@@ -129,7 +129,7 @@ public interface Client {
          * @param host host to bind to, or null for wildcard binding
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder bindHost(@Nullable String host);
 
         /**
@@ -140,7 +140,7 @@ public interface Client {
          * @param port port to bind to
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder bindPort(int port);
 
         /**
@@ -152,8 +152,8 @@ public interface Client {
          * @return this builder
          * @see DefaultCapabilityManager
          */
-        @Nonnull
-        Builder capabilityManager(@Nonnull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier);
+        @NonNull
+        Builder capabilityManager(@NonNull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier);
 
         /**
          * Sets default messages.
@@ -162,8 +162,8 @@ public interface Client {
          * @return this builder
          * @see DefaultMessageMap
          */
-        @Nonnull
-        Builder defaultMessageMap(@Nonnull DefaultMessageMap defaultMessageMap);
+        @NonNull
+        Builder defaultMessageMap(@NonNull DefaultMessageMap defaultMessageMap);
 
         /**
          * Sets the suppliers of event listeners to be registered by the
@@ -173,8 +173,8 @@ public interface Client {
          * @param listenerSuppliers
          * @return
          */
-        @Nonnull
-        Builder eventListeners(@Nonnull List<EventListenerSupplier> listenerSuppliers);
+        @NonNull
+        Builder eventListeners(@NonNull List<EventListenerSupplier> listenerSuppliers);
 
         /**
          * Sets the supplier of the event manager.
@@ -185,8 +185,8 @@ public interface Client {
          * @return this builder
          * @see DefaultEventManager
          */
-        @Nonnull
-        Builder eventManager(@Nonnull Function<Client.WithManagement, ? extends EventManager> supplier);
+        @NonNull
+        Builder eventManager(@NonNull Function<Client.WithManagement, ? extends EventManager> supplier);
 
         /**
          * Sets a listener for all thrown exceptions on this client. By default,
@@ -198,7 +198,7 @@ public interface Client {
          * @param listener catcher of throwable objects or null to not listen
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder exceptionListener(@Nullable Consumer<Exception> listener);
 
         /**
@@ -209,7 +209,7 @@ public interface Client {
          * @param listener input listener or null to not listen
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder inputListener(@Nullable Consumer<String> listener);
 
         /**
@@ -221,8 +221,8 @@ public interface Client {
          * @return this builder
          * @see DefaultEventManager
          */
-        @Nonnull
-        Builder iSupportManager(@Nonnull Function<Client.WithManagement, ? extends ISupportManager> supplier);
+        @NonNull
+        Builder iSupportManager(@NonNull Function<Client.WithManagement, ? extends ISupportManager> supplier);
 
         /**
          * Sets the supplier of message sending queues, which dictate the
@@ -235,8 +235,8 @@ public interface Client {
          * @return this builder
          * @see MessageSendingQueue
          */
-        @Nonnull
-        Builder messageSendingQueueSupplier(@Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
+        @NonNull
+        Builder messageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
 
         /**
          * Sets the supplier of the message tag manager.
@@ -247,8 +247,8 @@ public interface Client {
          * @return this builder
          * @see MessageTagManager
          */
-        @Nonnull
-        Builder messageTagManager(@Nonnull Function<Client.WithManagement, ? extends MessageTagManager> supplier);
+        @NonNull
+        Builder messageTagManager(@NonNull Function<Client.WithManagement, ? extends MessageTagManager> supplier);
 
         /**
          * Names the client, for internal labeling.
@@ -257,8 +257,8 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException if name is null
          */
-        @Nonnull
-        Builder name(@Nonnull String name);
+        @NonNull
+        Builder name(@NonNull String name);
 
         /**
          * Sets the client's nick.
@@ -269,8 +269,8 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException if nick is null
          */
-        @Nonnull
-        Builder nick(@Nonnull String nick);
+        @NonNull
+        Builder nick(@NonNull String nick);
 
         /**
          * Sets a listener for all outgoing messages to the server.
@@ -280,7 +280,7 @@ public interface Client {
          * @param listener output listener or null to not listen
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder outputListener(@Nullable Consumer<String> listener);
 
         /**
@@ -292,8 +292,8 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException for null realname
          */
-        @Nonnull
-        Builder realName(@Nonnull String name);
+        @NonNull
+        Builder realName(@NonNull String name);
 
         /**
          * Sets the server password.
@@ -303,7 +303,7 @@ public interface Client {
          * @param password server password or null to not send one
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder serverPassword(@Nullable String password);
 
         /**
@@ -317,7 +317,7 @@ public interface Client {
          * @param secure true for TLS/SSL
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder secure(boolean secure);
 
         /**
@@ -327,7 +327,7 @@ public interface Client {
          * @return this builder
          * @see #secure(boolean)
          */
-        @Nonnull
+        @NonNull
         Builder secureKeyCertChain(@Nullable Path keyCertChainFile);
 
         /**
@@ -337,7 +337,7 @@ public interface Client {
          * @return this builder
          * @see #secure(boolean)
          */
-        @Nonnull
+        @NonNull
         Builder secureKey(@Nullable Path keyFile);
 
         /**
@@ -347,7 +347,7 @@ public interface Client {
          * @return this builder
          * @see #secure(boolean)
          */
-        @Nonnull
+        @NonNull
         Builder secureKeyPassword(@Nullable String password);
 
         /**
@@ -357,7 +357,7 @@ public interface Client {
          * @return this builder
          * @see #secure(boolean)
          */
-        @Nonnull
+        @NonNull
         Builder secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
 
         /**
@@ -369,8 +369,8 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException for null host
          */
-        @Nonnull
-        Builder serverHost(@Nonnull String host);
+        @NonNull
+        Builder serverHost(@NonNull String host);
 
         /**
          * Sets the server port to which the client will connect.
@@ -380,7 +380,7 @@ public interface Client {
          * @param port IRC server port
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder serverPort(int port);
 
         /**
@@ -392,8 +392,8 @@ public interface Client {
          * @return this builder
          * @see DefaultServerInfo
          */
-        @Nonnull
-        Builder serverInfo(@Nonnull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier);
+        @NonNull
+        Builder serverInfo(@NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier);
 
         /**
          * Sets the user the client connects as.
@@ -404,8 +404,8 @@ public interface Client {
          * @return this builder
          * @throws IllegalArgumentException for null user
          */
-        @Nonnull
-        Builder user(@Nonnull String user);
+        @NonNull
+        Builder user(@NonNull String user);
 
         /**
          * Sets all the information for, and enables, WebIRC.
@@ -420,8 +420,8 @@ public interface Client {
          * @throws IllegalArgumentException for any null parameters
          * @see #webircRemove()
          */
-        @Nonnull
-        Builder webirc(@Nonnull String password, @Nonnull String user, @Nonnull String host, @Nonnull InetAddress ip);
+        @NonNull
+        Builder webirc(@NonNull String password, @NonNull String user, @NonNull String host, @NonNull InetAddress ip);
 
         /**
          * Removes WEBIRC settings from this builder.
@@ -429,7 +429,7 @@ public interface Client {
          * @return this builder
          * @see #webirc(String, String, String, InetAddress)
          */
-        @Nonnull
+        @NonNull
         Builder webircRemove();
 
         /**
@@ -441,7 +441,7 @@ public interface Client {
          * @param storageManager storage system to persist STS information per host
          * @return this builder
          */
-        @Nonnull
+        @NonNull
         Builder stsStorageManager(@Nullable StsStorageManager storageManager);
 
         /**
@@ -449,7 +449,7 @@ public interface Client {
          *
          * @return a client designed to your liking
          */
-        @Nonnull
+        @NonNull
         Client build();
 
         /**
@@ -458,7 +458,7 @@ public interface Client {
          *
          * @return a client designed to your liking
          */
-        @Nonnull
+        @NonNull
         Client buildAndConnect();
     }
 
@@ -471,7 +471,7 @@ public interface Client {
          *
          * @return new away command
          */
-        @Nonnull
+        @NonNull
         AwayCommand away();
 
         /**
@@ -479,7 +479,7 @@ public interface Client {
          *
          * @return new capability request command
          */
-        @Nonnull
+        @NonNull
         CapabilityRequestCommand capabilityRequest();
 
         /**
@@ -488,8 +488,8 @@ public interface Client {
          * @param channel channel in which the mode is being changed
          * @return new mode command
          */
-        @Nonnull
-        ChannelModeCommand mode(@Nonnull Channel channel);
+        @NonNull
+        ChannelModeCommand mode(@NonNull Channel channel);
 
         /**
          * Provides a new KICK command.
@@ -497,15 +497,15 @@ public interface Client {
          * @param channel channel in which the kick is happening
          * @return new kick command
          */
-        @Nonnull
-        KickCommand kick(@Nonnull Channel channel);
+        @NonNull
+        KickCommand kick(@NonNull Channel channel);
 
         /**
          * Provides a new MONITOR command.
          *
          * @return new monitor command
          */
-        @Nonnull
+        @NonNull
         MonitorCommand monitor();
 
         /**
@@ -513,7 +513,7 @@ public interface Client {
          *
          * @return new oper command
          */
-        @Nonnull
+        @NonNull
         OperCommand oper();
 
         /**
@@ -522,15 +522,15 @@ public interface Client {
          * @param channel channel in which the topic is being changed
          * @return new topic command
          */
-        @Nonnull
-        TopicCommand topic(@Nonnull Channel channel);
+        @NonNull
+        TopicCommand topic(@NonNull Channel channel);
 
         /**
          * Provides a new WALLOPS command.
          *
          * @return new wallops command
          */
-        @Nonnull
+        @NonNull
         WallopsCommand wallops();
 
         /**
@@ -538,7 +538,7 @@ public interface Client {
          *
          * @return new whois command
          */
-        @Nonnull
+        @NonNull
         WhoisCommand whois();
     }
 
@@ -551,14 +551,14 @@ public interface Client {
          *
          * @param consumer consumer with which to handle this queue
          */
-        void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer);
+        void beginMessageSendingImmediate(@NonNull Consumer<String> consumer);
 
         /**
          * Gets the actor tracker.
          *
          * @return actor tracker
          */
-        @Nonnull
+        @NonNull
         ActorTracker getActorTracker();
 
         /**
@@ -566,19 +566,18 @@ public interface Client {
          *
          * @return bind address
          */
-        @Nonnull
+        @NonNull
         InetSocketAddress getBindAddress();
 
-        @Nonnull
         @Override
-        CapabilityManager.WithManagement getCapabilityManager();
+        CapabilityManager.@NonNull WithManagement getCapabilityManager();
 
         /**
          * Gets the currently set input listener.
          *
          * @return input listener
          */
-        @Nonnull
+        @NonNull
         Listener<String> getInputListener();
 
         /**
@@ -586,7 +585,7 @@ public interface Client {
          *
          * @return intended channels
          */
-        @Nonnull
+        @NonNull
         Set<String> getIntendedChannels();
 
         /**
@@ -594,7 +593,7 @@ public interface Client {
          *
          * @return output listener
          */
-        @Nonnull
+        @NonNull
         Listener<String> getOutputListener();
 
         /**
@@ -602,7 +601,7 @@ public interface Client {
          *
          * @return requested nick
          */
-        @Nonnull
+        @NonNull
         String getRequestedNick();
 
         /**
@@ -642,12 +641,11 @@ public interface Client {
          *
          * @return server address
          */
-        @Nonnull
+        @NonNull
         InetSocketAddress getServerAddress();
 
         @Override
-        @Nonnull
-        ServerInfo.WithManagement getServerInfo();
+        ServerInfo.@NonNull WithManagement getServerInfo();
 
         /**
          * Pauses message sending, waiting for next successful connection.
@@ -664,28 +662,28 @@ public interface Client {
          *
          * @param line line to process
          */
-        void processLine(@Nonnull String line);
+        void processLine(@NonNull String line);
 
         /**
          * Sends a nick change request.
          *
          * @param newNick new nickname
          */
-        void sendNickChange(@Nonnull String newNick);
+        void sendNickChange(@NonNull String newNick);
 
         /**
          * Sets the current nickname the client knows it has.
          *
          * @param nick nickname
          */
-        void setCurrentNick(@Nonnull String nick);
+        void setCurrentNick(@NonNull String nick);
 
         /**
          * Sets the server address.
          *
          * @param address server address
          */
-        void setServerAddress(@Nonnull InetSocketAddress address);
+        void setServerAddress(@NonNull InetSocketAddress address);
 
         /**
          * Initialize with pre-connection information.
@@ -720,15 +718,15 @@ public interface Client {
          * @param webircPassword webircPassword
          * @param webircUser webircUser
          */
-        void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword,
+        void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword,
                         @Nullable InetSocketAddress bindAddress,
-                        @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
-                        @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager,
-                        @Nonnull EventManager eventManager, @Nonnull List<EventListenerSupplier> listenerSuppliers,
-                        @Nonnull MessageTagManager messageTagManager,
-                        @Nonnull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
-                        @Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
-                        @Nonnull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
+                        @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
+                        @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
+                        @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
+                        @NonNull MessageTagManager messageTagManager,
+                        @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
+                        @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
+                        @NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
                         @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener,
                         @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain,
                         @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory,
@@ -740,7 +738,7 @@ public interface Client {
          *
          * @param userModes user modes to set
          */
-        void setUserModes(@Nonnull ModeStatusList<UserMode> userModes);
+        void setUserModes(@NonNull ModeStatusList<UserMode> userModes);
 
         /**
          * Starts sending queued messages.
@@ -752,7 +750,7 @@ public interface Client {
          *
          * @param userModes mode changes
          */
-        void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes);
+        void updateUserModes(@NonNull ModeStatusList<UserMode> userModes);
 
         /**
          * Gets if the client is configured for a secure connection.
@@ -767,7 +765,7 @@ public interface Client {
      *
      * @return a client builder
      */
-    @Nonnull
+    @NonNull
     static Builder builder() {
         return new DefaultBuilder();
     }
@@ -782,7 +780,7 @@ public interface Client {
      * @see RequestedChannelJoinCompleteEvent
      * @see UnexpectedChannelLeaveEvent
      */
-    void addChannel(@Nonnull String... channels);
+    void addChannel(@NonNull String... channels);
 
     /**
      * Adds a key-protected channel to this client.
@@ -793,7 +791,7 @@ public interface Client {
      * @param key channel key
      * @throws IllegalArgumentException if null or invalid
      */
-    void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key);
+    void addKeyProtectedChannel(@NonNull String channel, @NonNull String key);
 
     /**
      * Adds key-protected channels to this client.
@@ -803,14 +801,14 @@ public interface Client {
      * @param channelsAndKeys pairs of channel, key
      * @throws IllegalArgumentException if null or invalid
      */
-    void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys);
+    void addKeyProtectedChannel(@NonNull Pair<String, String>... channelsAndKeys);
 
     /**
      * Provides access to {@link Command}s.
      *
      * @return commands
      */
-    @Nonnull
+    @NonNull
     Commands commands();
 
     /**
@@ -818,7 +816,7 @@ public interface Client {
      *
      * @return auth manager
      */
-    @Nonnull
+    @NonNull
     AuthManager getAuthManager();
 
     /**
@@ -826,7 +824,7 @@ public interface Client {
      *
      * @return the capability manager
      */
-    @Nonnull
+    @NonNull
     CapabilityManager getCapabilityManager();
 
     /**
@@ -838,15 +836,15 @@ public interface Client {
      * @throws IllegalArgumentException if name is null
      * @see #getChannels()
      */
-    @Nonnull
-    Optional<Channel> getChannel(@Nonnull String name);
+    @NonNull
+    Optional<Channel> getChannel(@NonNull String name);
 
     /**
      * Gets the channels in which the client is currently present.
      *
      * @return the client's current channels
      */
-    @Nonnull
+    @NonNull
     Set<Channel> getChannels();
 
     /**
@@ -856,8 +854,8 @@ public interface Client {
      * @param channels collection of channel names to get
      * @return the client's current channels that are named in the collection
      */
-    @Nonnull
-    Set<Channel> getChannels(@Nonnull Collection<String> channels);
+    @NonNull
+    Set<Channel> getChannels(@NonNull Collection<String> channels);
 
     /**
      * Gets the message manager for default messages to reply with
@@ -866,7 +864,7 @@ public interface Client {
      *
      * @return the DefaultMessageMap
      */
-    @Nonnull
+    @NonNull
     DefaultMessageMap getDefaultMessageMap();
 
     /**
@@ -874,7 +872,7 @@ public interface Client {
      *
      * @return the event manager for this client
      */
-    @Nonnull
+    @NonNull
     EventManager getEventManager();
 
     /**
@@ -882,7 +880,7 @@ public interface Client {
      *
      * @return the exception listener
      */
-    @Nonnull
+    @NonNull
     Listener<Exception> getExceptionListener();
 
     /**
@@ -894,7 +892,7 @@ public interface Client {
      *
      * @return the nickname the client tries to maintain
      */
-    @Nonnull
+    @NonNull
     String getIntendedNick();
 
     /**
@@ -902,7 +900,7 @@ public interface Client {
      *
      * @return the machine, may not be present
      */
-    @Nonnull
+    @NonNull
     Optional<StsMachine> getStsMachine();
 
     /**
@@ -910,7 +908,7 @@ public interface Client {
      *
      * @return the ISUPPORT manager
      */
-    @Nonnull
+    @NonNull
     ISupportManager getISupportManager();
 
     /**
@@ -918,7 +916,7 @@ public interface Client {
      *
      * @return message cutter
      */
-    @Nonnull
+    @NonNull
     Cutter getMessageCutter();
 
     /**
@@ -928,7 +926,7 @@ public interface Client {
      *
      * @return the supplier
      */
-    @Nonnull
+    @NonNull
     Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier();
 
     /**
@@ -936,7 +934,7 @@ public interface Client {
      *
      * @return message tag manager
      */
-    @Nonnull
+    @NonNull
     MessageTagManager getMessageTagManager();
 
     /**
@@ -945,7 +943,7 @@ public interface Client {
      *
      * @return the client name
      */
-    @Nonnull
+    @NonNull
     String getName();
 
     /**
@@ -953,7 +951,7 @@ public interface Client {
      *
      * @return the current nick
      */
-    @Nonnull
+    @NonNull
     String getNick();
 
     /**
@@ -965,7 +963,7 @@ public interface Client {
      *
      * @return the server information object
      */
-    @Nonnull
+    @NonNull
     ServerInfo getServerInfo();
 
     /**
@@ -975,7 +973,7 @@ public interface Client {
      *
      * @return the user of this client if known
      */
-    @Nonnull
+    @NonNull
     Optional<User> getUser();
 
     /**
@@ -985,7 +983,7 @@ public interface Client {
      *
      * @return user modes of this client if known
      */
-    @Nonnull
+    @NonNull
     Optional<ModeStatusList<UserMode>> getUserModes();
 
     /**
@@ -1003,7 +1001,7 @@ public interface Client {
      *
      * @param channelName the channel to send the KNOCK for.
      */
-    void knockChannel(@Nonnull String channelName);
+    void knockChannel(@NonNull String channelName);
 
     /**
      * Triggers a reconnect, quitting with the default {@link
@@ -1024,7 +1022,7 @@ public interface Client {
      * @param channel channel to leave
      * @throws IllegalArgumentException if arguments are null
      */
-    void removeChannel(@Nonnull String channel);
+    void removeChannel(@NonNull String channel);
 
     /**
      * Removes a channel from the client, leaving as necessary.
@@ -1033,7 +1031,7 @@ public interface Client {
      * @param reason part reason
      * @throws IllegalArgumentException if channel is null
      */
-    void removeChannel(@Nonnull String channel, @Nullable String reason);
+    void removeChannel(@NonNull String channel, @Nullable String reason);
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
@@ -1048,7 +1046,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendCtcpMessage(@Nonnull String target, @Nonnull String message);
+    void sendCtcpMessage(@NonNull String target, @NonNull String message);
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
@@ -1063,7 +1061,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendCtcpMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+    default void sendCtcpMessage(@NonNull MessageReceiver target, @NonNull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendCtcpMessage(target.getMessagingName(), message);
     }
@@ -1077,7 +1075,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendCtcpReply(@Nonnull String target, @Nonnull String message);
+    void sendCtcpReply(@NonNull String target, @NonNull String message);
 
     /**
      * Sends a CTCP reply to a target user or channel. Automagically adds
@@ -1088,7 +1086,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendCtcpReply(@Nonnull MessageReceiver target, @Nonnull String message) {
+    default void sendCtcpReply(@NonNull MessageReceiver target, @NonNull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendCtcpMessage(target.getMessagingName(), message);
     }
@@ -1100,7 +1098,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendMessage(@Nonnull String target, @Nonnull String message);
+    void sendMessage(@NonNull String target, @NonNull String message);
 
     /**
      * Sends a message to a target user or channel.
@@ -1109,7 +1107,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+    default void sendMessage(@NonNull MessageReceiver target, @NonNull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendMessage(target.getMessagingName(), message);
     }
@@ -1121,7 +1119,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    void sendNotice(@Nonnull String target, @Nonnull String message);
+    void sendNotice(@NonNull String target, @NonNull String message);
 
     /**
      * Sends a notice to a target user or channel.
@@ -1130,7 +1128,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendNotice(@Nonnull MessageReceiver target, @Nonnull String message) {
+    default void sendNotice(@NonNull MessageReceiver target, @NonNull String message) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendNotice(target.getMessagingName(), message);
     }
@@ -1146,7 +1144,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMultiLineMessage(@Nonnull String target, @Nonnull String message) {
+    default void sendMultiLineMessage(@NonNull String target, @NonNull String message) {
         this.sendMultiLineMessage(target, message, this.getMessageCutter());
     }
 
@@ -1162,7 +1160,7 @@ public interface Client {
      * @param cutter cutter to utilize
      * @throws IllegalArgumentException for null parameters
      */
-    void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter);
+    void sendMultiLineMessage(@NonNull String target, @NonNull String message, @NonNull Cutter cutter);
 
     /**
      * Sends a potentially multi-line message to a target user or channel
@@ -1175,7 +1173,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMultiLineMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+    default void sendMultiLineMessage(@NonNull MessageReceiver target, @NonNull String message) {
         this.sendMultiLineMessage(target, message, this.getMessageCutter());
     }
 
@@ -1191,7 +1189,7 @@ public interface Client {
      * @param cutter cutter to utilize
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMultiLineMessage(@Nonnull MessageReceiver target, @Nonnull String message, @Nonnull Cutter cutter) {
+    default void sendMultiLineMessage(@NonNull MessageReceiver target, @NonNull String message, @NonNull Cutter cutter) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendMultiLineMessage(target.getMessagingName(), message, cutter);
     }
@@ -1207,7 +1205,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMultiLineNotice(@Nonnull String target, @Nonnull String message) {
+    default void sendMultiLineNotice(@NonNull String target, @NonNull String message) {
         this.sendMultiLineNotice(target, message, this.getMessageCutter());
     }
 
@@ -1223,7 +1221,7 @@ public interface Client {
      * @param cutter cutter to utilize
      * @throws IllegalArgumentException for null parameters
      */
-    void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter);
+    void sendMultiLineNotice(@NonNull String target, @NonNull String message, @NonNull Cutter cutter);
 
     /**
      * Sends a potentially multi-line notice to a target user or channel
@@ -1236,7 +1234,7 @@ public interface Client {
      * @param message the message to send
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMultiLineNotice(@Nonnull MessageReceiver target, @Nonnull String message) {
+    default void sendMultiLineNotice(@NonNull MessageReceiver target, @NonNull String message) {
         this.sendMultiLineNotice(target, message, this.getMessageCutter());
     }
 
@@ -1252,7 +1250,7 @@ public interface Client {
      * @param cutter cutter to utilize
      * @throws IllegalArgumentException for null parameters
      */
-    default void sendMultiLineNotice(@Nonnull MessageReceiver target, @Nonnull String message, @Nonnull Cutter cutter) {
+    default void sendMultiLineNotice(@NonNull MessageReceiver target, @NonNull String message, @NonNull Cutter cutter) {
         Sanity.nullCheck(target, "Target cannot be null");
         this.sendMultiLineNotice(target.getMessagingName(), message, cutter);
     }
@@ -1263,7 +1261,7 @@ public interface Client {
      * @param message message to send
      * @throws IllegalArgumentException if message is null
      */
-    void sendRawLine(@Nonnull String message);
+    void sendRawLine(@NonNull String message);
 
     /**
      * Sends a raw IRC message, unless the exact same message is already in
@@ -1272,7 +1270,7 @@ public interface Client {
      * @param message message to send
      * @throws IllegalArgumentException if message is null
      */
-    void sendRawLineAvoidingDuplication(@Nonnull String message);
+    void sendRawLineAvoidingDuplication(@NonNull String message);
 
     /**
      * Sends a raw IRC message, disregarding message delays and all sanity.
@@ -1282,7 +1280,7 @@ public interface Client {
      * @param message message to send dangerously, you monster
      * @throws IllegalArgumentException if message is null
      */
-    void sendRawLineImmediately(@Nonnull String message);
+    void sendRawLineImmediately(@NonNull String message);
 
     /**
      * Sets a listener for all thrown exceptions on this client.
@@ -1300,7 +1298,7 @@ public interface Client {
      *
      * @param defaults DefaultMessageMap to set
      */
-    void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults);
+    void setDefaultMessageMap(@NonNull DefaultMessageMap defaults);
 
     /**
      * Sets a listener for all incoming messages from the server.
@@ -1316,14 +1314,14 @@ public interface Client {
      *
      * @param cutter cutter to set
      */
-    void setMessageCutter(@Nonnull Cutter cutter);
+    void setMessageCutter(@NonNull Cutter cutter);
 
     /**
      * Sets the message sending queue supplier.
      *
      * @param supplier the supplier
      */
-    void setMessageSendingQueueSupplier(@Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
+    void setMessageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
 
     /**
      * Sets the nick the client wishes to use.
@@ -1331,7 +1329,7 @@ public interface Client {
      * @param nick new nickname
      * @throws IllegalArgumentException if nick is null
      */
-    void setNick(@Nonnull String nick);
+    void setNick(@NonNull String nick);
 
     /**
      * Sets a listener for all outgoing messages to the server.

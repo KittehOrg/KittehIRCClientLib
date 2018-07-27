@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.Optional;
 
 /**
@@ -42,7 +43,7 @@ public interface CapabilityState extends Snapshot {
      *
      * @return capability name
      */
-    @Nonnull
+    @NonNull
     String getName();
 
     /**
@@ -50,6 +51,6 @@ public interface CapabilityState extends Snapshot {
      *
      * @return capability value if set
      */
-    @Nonnull
+    @NonNull
     Optional<String> getValue();
 }

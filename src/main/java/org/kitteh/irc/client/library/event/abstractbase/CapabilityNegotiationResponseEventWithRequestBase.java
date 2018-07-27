@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
@@ -31,7 +32,6 @@ import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationRequestEv
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,23 +52,23 @@ public abstract class CapabilityNegotiationResponseEventWithRequestBase extends 
      * @param originalMessages original messages
      * @param negotiating if we are negotiating right now
      */
-    protected CapabilityNegotiationResponseEventWithRequestBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating) {
+    protected CapabilityNegotiationResponseEventWithRequestBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating) {
         super(client, originalMessages, negotiating);
     }
 
     @Override
-    public void addRequest(@Nonnull String capability) {
+    public void addRequest(@NonNull String capability) {
         this.requests.add(Sanity.safeMessageCheck(capability, "capability"));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<String> getRequests() {
         return Collections.unmodifiableList(new ArrayList<>(this.requests));
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("requests", this.requests);
     }

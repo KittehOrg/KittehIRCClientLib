@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -44,7 +44,7 @@ public class ClientAwayStatusChangeEvent extends ServerMessageEventBase {
      * @param originalMessages original messages
      * @param isNowAway true if now away, false if now back
      */
-    public ClientAwayStatusChangeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean isNowAway) {
+    public ClientAwayStatusChangeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean isNowAway) {
         super(client, originalMessages);
         this.isNowAway = isNowAway;
     }
@@ -59,7 +59,7 @@ public class ClientAwayStatusChangeEvent extends ServerMessageEventBase {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("isNowAway", this.isNowAway);
     }

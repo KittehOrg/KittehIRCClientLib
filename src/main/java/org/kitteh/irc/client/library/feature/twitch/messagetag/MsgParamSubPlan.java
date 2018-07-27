@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Message tag for subscription plan.
@@ -69,7 +68,7 @@ public class MsgParamSubPlan extends MessageTagManager.DefaultMessageTag {
         public static final String PRIME = "prime";
     }
 
-    private MsgParamSubPlan(@Nonnull String name, @Nonnull String value) {
+    private MsgParamSubPlan(@NonNull String name, @NonNull String value) {
         super(name, value);
     }
 }

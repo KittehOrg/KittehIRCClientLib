@@ -1,5 +1,6 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
@@ -9,7 +10,6 @@ import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
 import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 import org.mockito.Mockito;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -34,7 +34,7 @@ public class AuthManagerTest {
         final Client client = new FakeClient();
         DefaultAuthManager sut = new DefaultAuthManager(client);
         final AuthProtocol ap = new AuthProtocol() {
-            @Nonnull
+            @NonNull
             @Override
             public Client getClient() {
                 return client;
@@ -68,7 +68,7 @@ public class AuthManagerTest {
         Assert.assertTrue(ret.isPresent());
         Assert.assertTrue(ret.get() == stub1);
         Optional<AuthProtocol> removed = sut.addProtocol(new AuthProtocol() {
-            @Nonnull
+            @NonNull
             @Override
             public Client getClient() {
                 return client;
@@ -103,7 +103,7 @@ public class AuthManagerTest {
             this.client = Mockito.mock(Client.WithManagement.class);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Client getClient() {
             return this.client;
@@ -114,7 +114,7 @@ public class AuthManagerTest {
 
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Object getEventListener() {
             this.tripped = true;

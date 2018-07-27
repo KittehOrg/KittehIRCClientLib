@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Sends an AWAY request to the server.
@@ -43,7 +42,7 @@ public class AwayCommand extends Command {
      * @param client the client
      * @throws IllegalArgumentException if client is null
      */
-    public AwayCommand(@Nonnull Client client) {
+    public AwayCommand(@NonNull Client client) {
         super(client);
     }
 
@@ -54,7 +53,7 @@ public class AwayCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid message
      */
-    @Nonnull
+    @NonNull
     public AwayCommand message(@Nullable String message) {
         this.message = (message == null) ? null : Sanity.safeMessageCheck(message);
         return this;
@@ -66,7 +65,7 @@ public class AwayCommand extends Command {
      *
      * @return this command
      */
-    @Nonnull
+    @NonNull
     public AwayCommand messageRemove() {
         this.message = null;
         return this;
@@ -81,7 +80,7 @@ public class AwayCommand extends Command {
         this.getClient().sendRawLine(exec);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("message", this.message);

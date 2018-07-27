@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.defaults.element.mode;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -43,7 +43,7 @@ public class DefaultChannelMode extends DefaultModeBase implements ChannelMode {
      * @param mode mode
      * @param type mode type
      */
-    public DefaultChannelMode(@Nonnull Client client, char mode, @Nonnull Type type) {
+    public DefaultChannelMode(@NonNull Client client, char mode, @NonNull Type type) {
         super(client, mode);
         this.type = type;
     }
@@ -57,7 +57,7 @@ public class DefaultChannelMode extends DefaultModeBase implements ChannelMode {
         return (other.getType() == this.getType()) && (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Type getType() {
         return this.type;
@@ -68,7 +68,7 @@ public class DefaultChannelMode extends DefaultModeBase implements ChannelMode {
         return Objects.hash(this.getClient(), this.getChar(), this.type);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ToStringer toStringer() {
         return super.toStringer().add("type", this.type);

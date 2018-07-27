@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.feature.twitch;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;
@@ -64,7 +65,6 @@ import org.kitteh.irc.client.library.feature.twitch.messagetag.UserId;
 import org.kitteh.irc.client.library.feature.twitch.messagetag.UserType;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -96,7 +96,7 @@ public class TwitchListener {
      *
      * @param client the client for which it will be registered
      */
-    public TwitchListener(@Nonnull Client client) {
+    public TwitchListener(@NonNull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
         ((Client.WithManagement) client).getActorTracker().setQueryChannelInformation(false);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Badges.NAME, Badges.FUNCTION);
@@ -127,7 +127,7 @@ public class TwitchListener {
     }
 
     @Handler
-    public void capList(@Nonnull CapabilitiesSupportedListEvent event) {
+    public void capList(@NonNull CapabilitiesSupportedListEvent event) {
         List<String> already = this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList());
         if (!already.contains(CAPABILITY_COMMANDS)) {
             event.addRequest(CAPABILITY_COMMANDS);
@@ -193,7 +193,7 @@ public class TwitchListener {
         this.client.getEventManager().callEvent(new WhisperEvent(this.client, event.getOriginalMessages(), sender, target, message));
     }
 
-    @Nonnull
+    @NonNull
     private Channel getChannel(ClientReceiveCommandEvent event) {
         Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
         if (!channel.isPresent()) {

@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ public class ClientReceiveMotdEvent extends ServerMessageEventBase {
      * @param client the client
      * @param originalMessages original messages
      */
-    public ClientReceiveMotdEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
+    public ClientReceiveMotdEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages) {
         super(client, originalMessages);
     }
 
@@ -52,7 +52,7 @@ public class ClientReceiveMotdEvent extends ServerMessageEventBase {
      * @return the motd if known
      * @see ServerInfo#getMotd()
      */
-    @Nonnull
+    @NonNull
     public Optional<List<String>> getMotd() {
         return this.getClient().getServerInfo().getMotd();
     }

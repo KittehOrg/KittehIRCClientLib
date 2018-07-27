@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * Sends a WALLOPS message to the server.
@@ -41,7 +40,7 @@ public class WallopsCommand extends Command {
      * @param client the client
      * @throws IllegalArgumentException if client is null
      */
-    public WallopsCommand(@Nonnull Client client) {
+    public WallopsCommand(@NonNull Client client) {
         super(client);
     }
 
@@ -52,8 +51,8 @@ public class WallopsCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid target
      */
-    @Nonnull
-    public WallopsCommand message(@Nonnull String message) {
+    @NonNull
+    public WallopsCommand message(@NonNull String message) {
         this.message = Sanity.safeMessageCheck(message, "message");
         return this;
     }

@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -47,7 +47,7 @@ public class PrivateCtcpReplyEvent extends ActorPrivateMessageEventBase<User> im
      * @param target target of the reply
      * @param message message sent
      */
-    public PrivateCtcpReplyEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message) {
+    public PrivateCtcpReplyEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message) {
         super(client, originalMessages, sender, target, message);
     }
 }

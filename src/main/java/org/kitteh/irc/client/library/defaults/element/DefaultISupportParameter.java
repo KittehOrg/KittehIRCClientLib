@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -47,31 +47,31 @@ public class DefaultISupportParameter implements ISupportParameter {
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportParameter(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportParameter(@NonNull Client client, @NonNull String name, @Nullable String value) {
         this.client = client;
         this.name = name;
         this.value = value;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Client getClient() {
         return this.client;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getValue() {
         return Optional.ofNullable(this.value);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("name", this.name).add("value", this.value).toString();

@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Default implementation of {@link ISupportParameter.TopicLen}.
@@ -40,7 +39,7 @@ public class DefaultISupportTopicLen extends DefaultISupportParameterInteger imp
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportTopicLen(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportTopicLen(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
     }
 }

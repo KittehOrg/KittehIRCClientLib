@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.event;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -44,12 +44,12 @@ public class WhisperEvent extends PrivateMessageEvent implements TwitchSingleMes
      * @param target who received it
      * @param message message sent
      */
-    public WhisperEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message) {
+    public WhisperEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message) {
         super(client, originalMessages, sender, target, message);
     }
 
     @Override
-    public void sendReply(@Nonnull String message) {
+    public void sendReply(@NonNull String message) {
         this.getClient().sendMessage("#jtv", "/w " + this.getActor().getNick() + " " + message);
     }
 }

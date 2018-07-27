@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * Abstract base class for events involving a Client. Use the helper events
@@ -44,12 +43,12 @@ public abstract class ClientEventBase implements ClientEvent {
      *
      * @param client the client
      */
-    protected ClientEventBase(@Nonnull Client client) {
+    protected ClientEventBase(@NonNull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public final Client getClient() {
         return this.client;
     }
@@ -64,7 +63,7 @@ public abstract class ClientEventBase implements ClientEvent {
      *
      * @return the partial toString generator
      */
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return new ToStringer(this).add("client", this.getClient());
     }

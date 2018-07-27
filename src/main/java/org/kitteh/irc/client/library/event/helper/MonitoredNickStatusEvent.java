@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A tracked nick has come online or offline.
@@ -34,6 +34,6 @@ public interface MonitoredNickStatusEvent extends ServerMessageEvent {
      *
      * @return nick
      */
-    @Nonnull
+    @NonNull
     String getNick();
 }

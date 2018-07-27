@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.defaults.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportCaseMapping;
@@ -42,8 +44,6 @@ import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.util.AbstractNameValueProcessor;
 import org.kitteh.irc.client.library.util.TriFunction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -70,27 +70,27 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         this.registerParameter(ISupportParameter.WhoX.NAME, DefaultISupportWhoX::new);
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> getCreator(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> getCreator(@NonNull String tagName) {
         return this.getCreatorByName(tagName);
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> registerParameter(@Nonnull String tagName, @Nonnull TriFunction<Client, String, String, ? extends ISupportParameter> function) {
+    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> registerParameter(@NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends ISupportParameter> function) {
         return this.registerCreator(tagName, new Creator<>(function));
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> unregisterParameter(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> unregisterParameter(@NonNull String tagName) {
         return this.unregisterCreator(tagName);
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public ISupportParameter createParameter(@Nonnull String tag) {
+    public ISupportParameter createParameter(@NonNull String tag) {
         int index;
         Creator<ISupportParameter> creator;
         String tagName;

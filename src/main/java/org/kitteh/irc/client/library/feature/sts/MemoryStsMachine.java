@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 
 /**
@@ -48,19 +48,19 @@ public class MemoryStsMachine implements StsMachine {
      * @param manager STS manager
      * @param client client
      */
-    public MemoryStsMachine(@Nonnull StsStorageManager manager, Client.WithManagement client) {
+    public MemoryStsMachine(@NonNull StsStorageManager manager, Client.WithManagement client) {
         this.client = Sanity.nullCheck(client, "Cannot have a null client.");
         this.manager = Sanity.nullCheck(manager, "Cannot have a null STS persistence manager.");
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public StsClientState getCurrentState() {
         return this.state;
     }
 
     @Override
-    public void setCurrentState(@Nonnull StsClientState newState) {
+    public void setCurrentState(@NonNull StsClientState newState) {
         this.state = Sanity.nullCheck(newState, "Need a valid state for the state machine.");
         this.step();
     }
@@ -90,14 +90,14 @@ public class MemoryStsMachine implements StsMachine {
         }
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public StsStorageManager getStorageManager() {
         return this.manager;
     }
 
     @Override
-    public void setStsPolicy(@Nonnull StsPolicy policy) {
+    public void setStsPolicy(@NonNull StsPolicy policy) {
         this.policy = Sanity.nullCheck(policy, "Policy cannot be null");
     }
 }

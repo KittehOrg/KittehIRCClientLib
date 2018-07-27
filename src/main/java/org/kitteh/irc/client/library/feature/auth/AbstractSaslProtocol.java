@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
@@ -40,7 +41,6 @@ import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
@@ -130,7 +130,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
             AbstractSaslProtocol.this.getClient().sendRawLineImmediately("CAP END"); // TODO event decision
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).toString();
@@ -150,19 +150,19 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
      * @param authValue authentication value
      * @param saslType type of SASL auth
      */
-    protected AbstractSaslProtocol(@Nonnull Client client, @Nonnull String accountName, @Nonnull AuthValue authValue, @Nonnull String saslType) {
+    protected AbstractSaslProtocol(@NonNull Client client, @NonNull String accountName, @NonNull AuthValue authValue, @NonNull String saslType) {
         super(client, accountName);
         this.saslType = Sanity.nullCheck(saslType, "SASL type cannot be null");
         this.authValue = Sanity.nullCheck(authValue, "Auth value cannot be null");
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected final String getAuthentication() {
         return "AUTHENTICATE " + this.saslType;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Object getEventListener() {
         return (this.listener == null) ? (this.listener = new Listener()) : this.listener;
@@ -173,7 +173,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
      *
      * @return the authentication value
      */
-    @Nonnull
+    @NonNull
     protected final AuthValue getAuthValue() {
         return this.authValue;
     }
@@ -184,7 +184,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
      * @param authValue the authentication value
      * @throws IllegalArgumentException if the value is null
      */
-    protected final void setAuthValue(@Nonnull AuthValue authValue) {
+    protected final void setAuthValue(@NonNull AuthValue authValue) {
         this.authValue = Sanity.nullCheck(authValue, "Auth value cannot be null");
     }
 
@@ -193,6 +193,6 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
      *
      * @return value to encode
      */
-    @Nonnull
+    @NonNull
     protected abstract String getAuthLine();
 }

@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * A command only executed on a channel.
@@ -42,7 +41,7 @@ public abstract class ChannelCommand extends Command {
      * @param channel channel targeted
      * @throws IllegalArgumentException if null parameters
      */
-    protected ChannelCommand(@Nonnull Client client, @Nonnull String channel) {
+    protected ChannelCommand(@NonNull Client client, @NonNull String channel) {
         super(client);
         Sanity.safeMessageCheck(channel, "Channel");
         Sanity.truthiness(client.getServerInfo().isValidChannel(channel), "Invalid channel name '" + channel + '\'');
@@ -54,12 +53,12 @@ public abstract class ChannelCommand extends Command {
      *
      * @return channel relevant to this command
      */
-    @Nonnull
+    @NonNull
     public String getChannel() {
         return this.channel;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("channel", this.getChannel());

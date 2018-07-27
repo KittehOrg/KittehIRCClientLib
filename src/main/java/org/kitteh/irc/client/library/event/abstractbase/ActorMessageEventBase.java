@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -31,7 +32,6 @@ import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -53,19 +53,19 @@ public abstract class ActorMessageEventBase<A extends Actor> extends ActorEventB
      * @param actor the actor
      * @param message the message
      */
-    protected ActorMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull String message) {
+    protected ActorMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull A actor, @NonNull String message) {
         super(client, originalMessages, actor);
         this.message = Sanity.nullCheck(message, "Message cannot be null");
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public final String getMessage() {
         return this.message;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("message", this.message);
     }

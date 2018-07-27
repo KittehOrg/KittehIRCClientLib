@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Sends a WHOIS request to the server.
@@ -45,7 +44,7 @@ public class WhoisCommand extends Command {
      * @param client the client
      * @throws IllegalArgumentException if client is null
      */
-    public WhoisCommand(@Nonnull Client client) {
+    public WhoisCommand(@NonNull Client client) {
         super(client);
     }
 
@@ -59,7 +58,7 @@ public class WhoisCommand extends Command {
      * @param server server to query or null to not specify one
      * @return this command
      */
-    @Nonnull
+    @NonNull
     public WhoisCommand server(@Nullable String server) {
         this.server = (server == null) ? null : Sanity.safeMessageCheck(server, "server");
         return this;
@@ -72,8 +71,8 @@ public class WhoisCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid target
      */
-    @Nonnull
-    public WhoisCommand target(@Nonnull String target) {
+    @NonNull
+    public WhoisCommand target(@NonNull String target) {
         this.target = Sanity.safeMessageCheck(target, "target");
         return this;
     }

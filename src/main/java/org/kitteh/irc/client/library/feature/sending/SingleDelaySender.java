@@ -23,9 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.sending;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 
-import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 /**
@@ -57,13 +57,13 @@ public class SingleDelaySender extends QueueProcessingThreadSender {
      * @param name name of this sending queue
      * @param delay initial delay
      */
-    public SingleDelaySender(@Nonnull Client client, @Nonnull String name, int delay) {
+    public SingleDelaySender(@NonNull Client client, @NonNull String name, int delay) {
         super(client, name);
         this.delay = delay;
     }
 
     @Override
-    protected boolean checkReady(@Nonnull String message) {
+    protected boolean checkReady(@NonNull String message) {
         int currentDelay = this.delay;
         if (currentDelay == 0) {
             return true; // Get out as fast as possible OMG!

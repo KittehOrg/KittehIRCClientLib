@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.defaults.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultChannelMode;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultChannelUserMode;
@@ -35,7 +36,6 @@ import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,7 +70,7 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
      *
      * @param client client for which this manager will operate
      */
-    public DefaultServerInfo(@Nonnull Client client) {
+    public DefaultServerInfo(@NonNull Client client) {
         this.client = client;
         // RFC 1459
         List<ChannelMode> defaultChannelModes = new ArrayList<>(9);
@@ -96,89 +96,89 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         this.userModes = Collections.unmodifiableList(defaultUserModes);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getAddress() {
         return Optional.ofNullable(this.address);
     }
 
     @Override
-    public void setAddress(@Nonnull String serverAddress) {
+    public void setAddress(@NonNull String serverAddress) {
         this.address = serverAddress;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<ChannelMode> getChannelModes() {
         Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter(ISupportParameter.ChanModes.NAME, ISupportParameter.ChanModes.class);
         return new ArrayList<>(optional.map(ISupportParameter.ChanModes::getModes).orElse(this.defaultChannelModes));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<Character> getChannelPrefixes() {
         Optional<ISupportParameter.ChanTypes> optional = this.getISupportParameter(ISupportParameter.ChanTypes.NAME, ISupportParameter.ChanTypes.class);
         return new ArrayList<>(optional.map(ISupportParameter.ChanTypes::getTypes).orElse(this.defaultChannelPrefixes));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<ChannelUserMode> getChannelUserModes() {
         Optional<ISupportParameter.Prefix> optional = this.getISupportParameter(ISupportParameter.Prefix.NAME, ISupportParameter.Prefix.class);
         return new ArrayList<>(optional.map(ISupportParameter.Prefix::getModes).orElse(this.defaultChannelUserModes));
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<ISupportParameter> getISupportParameter(@Nonnull String name) {
+    public Optional<ISupportParameter> getISupportParameter(@NonNull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
         return Optional.ofNullable(this.iSupportParameterMap.get(name.toUpperCase()));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Map<String, ISupportParameter> getISupportParameters() {
         return Collections.unmodifiableMap(new HashMap<>(this.iSupportParameterMap));
     }
 
     @Override
-    public void addISupportParameter(@Nonnull ISupportParameter parameter) {
+    public void addISupportParameter(@NonNull ISupportParameter parameter) {
         this.iSupportParameterMap.put(parameter.getName().toUpperCase(), parameter);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<List<String>> getMotd() {
         return Optional.ofNullable(this.motd);
     }
 
     @Override
-    public void setMotd(@Nonnull List<String> motd) {
+    public void setMotd(@NonNull List<String> motd) {
         this.motd = Collections.unmodifiableList(motd);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getVersion() {
         return Optional.ofNullable(this.version);
     }
 
     @Override
-    public void setVersion(@Nonnull String version) {
+    public void setVersion(@NonNull String version) {
         this.version = version;
     }
 
     // Util stuffs
     @Override
-    public boolean isValidChannel(@Nonnull String name) {
+    public boolean isValidChannel(@NonNull String name) {
         Sanity.nullCheck(name, "Channel name cannot be null");
         int channelLengthLimit = this.getChannelLengthLimit();
         return (name.length() > 1) && ((channelLengthLimit < 0) || (name.length() <= channelLengthLimit)) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<ChannelUserMode> getTargetedChannelInfo(@Nonnull String name) {
+    public Optional<ChannelUserMode> getTargetedChannelInfo(@NonNull String name) {
         if (name.length() < 2) {
             return Optional.empty();
         }
@@ -195,17 +195,17 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public List<UserMode> getUserModes() {
         return this.userModes;
     }
 
     @Override
-    public void setUserModes(@Nonnull List<UserMode> userModes) {
+    public void setUserModes(@NonNull List<UserMode> userModes) {
         this.userModes = Collections.unmodifiableList(userModes);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this)

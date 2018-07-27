@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.capabilities;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
@@ -32,7 +33,6 @@ import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +53,7 @@ public class CapabilitiesListEvent extends ServerMessageEventBase {
      * @param originalMessages original messages
      * @param capabilities capabilities listed
      */
-    public CapabilitiesListEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull List<CapabilityState> capabilities) {
+    public CapabilitiesListEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull List<CapabilityState> capabilities) {
         super(client, originalMessages);
         Sanity.nullCheck(capabilities, "Capabilities list cannot be null");
         this.capabilities = Collections.unmodifiableList(new ArrayList<>(capabilities));
@@ -64,13 +64,13 @@ public class CapabilitiesListEvent extends ServerMessageEventBase {
      *
      * @return list of capabilities
      */
-    @Nonnull
+    @NonNull
     public List<CapabilityState> getCapabilities() {
         return this.capabilities;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("capabilities", this.capabilities);
     }

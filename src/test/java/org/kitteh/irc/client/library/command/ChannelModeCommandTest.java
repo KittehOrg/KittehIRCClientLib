@@ -1,5 +1,6 @@
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -172,13 +172,13 @@ public class ChannelModeCommandTest {
                 return c;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Client getClient() {
                 return client;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Type getType() {
                 return type;
@@ -193,7 +193,7 @@ public class ChannelModeCommandTest {
                 return c;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Client getClient() {
                 return client;
@@ -204,7 +204,7 @@ public class ChannelModeCommandTest {
                 return '\u039b';
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Type getType() {
                 return type;

@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.capabilities;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
@@ -32,7 +33,6 @@ import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +54,7 @@ public class CapabilitiesSupportedListEvent extends CapabilityNegotiationRespons
      * @param negotiating if we are negotiating right now
      * @param supportedCapabilities supported capabilities
      */
-    public CapabilitiesSupportedListEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating, @Nonnull List<CapabilityState> supportedCapabilities) {
+    public CapabilitiesSupportedListEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating, @NonNull List<CapabilityState> supportedCapabilities) {
         super(client, originalMessages, negotiating);
         Sanity.nullCheck(supportedCapabilities, "Capabilities list cannot be null");
         this.supportedCapabilities = Collections.unmodifiableList(new ArrayList<>(supportedCapabilities));
@@ -65,13 +65,13 @@ public class CapabilitiesSupportedListEvent extends CapabilityNegotiationRespons
      *
      * @return supported capabilities
      */
-    @Nonnull
+    @NonNull
     public List<CapabilityState> getSupportedCapabilities() {
         return this.supportedCapabilities;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("supportedCapabilities", this.supportedCapabilities);
     }

@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,8 +62,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return casemapping
          */
-        @Nonnull
-        org.kitteh.irc.client.library.feature.CaseMapping getCaseMapping();
+        org.kitteh.irc.client.library.feature.@NonNull CaseMapping getCaseMapping();
     }
 
     /**
@@ -90,7 +89,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return limits by prefix
          */
-        @Nonnull
+        @NonNull
         Map<Character, Integer> getLimits();
     }
 
@@ -108,7 +107,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return channel modes
          */
-        @Nonnull
+        @NonNull
         List<ChannelMode> getModes();
     }
 
@@ -126,7 +125,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return supported prefixes
          */
-        @Nonnull
+        @NonNull
         List<Character> getTypes();
     }
 
@@ -154,7 +153,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return network name
          */
-        @Nonnull
+        @NonNull
         String getNetworkName();
     }
 
@@ -182,7 +181,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return channel user modes
          */
-        @Nonnull
+        @NonNull
         List<ChannelUserMode> getModes();
     }
 
@@ -211,7 +210,7 @@ public interface ISupportParameter extends ClientLinked {
      *
      * @return parameter name
      */
-    @Nonnull
+    @NonNull
     String getName();
 
     /**
@@ -219,6 +218,6 @@ public interface ISupportParameter extends ClientLinked {
      *
      * @return parameter value if set
      */
-    @Nonnull
+    @NonNull
     Optional<String> getValue();
 }

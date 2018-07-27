@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -90,7 +90,7 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
             return this.lastIndex;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).add("id", this.id).add("firstIndex", this.firstIndex).add("lastIndex", this.lastIndex).toString();
@@ -99,7 +99,7 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
 
     private final List<Emote> emotes;
 
-    private Emotes(@Nonnull String name, @Nullable String value) {
+    private Emotes(@NonNull String name, @Nullable String value) {
         super(name, value);
         if (value == null) {
             this.emotes = Collections.emptyList();
@@ -143,12 +143,12 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
      *
      * @return list of emotes
      */
-    @Nonnull
+    @NonNull
     public List<Emote> getEmotes() {
         return this.emotes;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("emotes", this.emotes);

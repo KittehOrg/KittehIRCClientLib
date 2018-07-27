@@ -1,5 +1,6 @@
 package org.kitteh.irc.client.library.defaults;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
@@ -22,7 +23,6 @@ import org.kitteh.irc.client.library.util.StringUtil;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,7 +92,7 @@ public class DefaultEventListenerTest {
         }
     }
 
-    private List<String> handleArgs(@Nonnull String[] split, int start) {
+    private List<String> handleArgs(@NonNull String[] split, int start) {
         final List<String> argsList = new LinkedList<>();
 
         int index = start;
@@ -114,7 +114,7 @@ public class DefaultEventListenerTest {
         return o -> (o != null) && clazz.isAssignableFrom(o.getClass()) && ((message == null) ? (o.getMessage() == null) : o.getMessage().contains(message));
     }
 
-    private ArgumentMatcher<ISupportParameter> iSupportParameter(@Nonnull String name) {
+    private ArgumentMatcher<ISupportParameter> iSupportParameter(@NonNull String name) {
         return o -> (o != null) && o.getName().equals(name);
     }
 

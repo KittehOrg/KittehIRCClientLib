@@ -23,14 +23,14 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +49,7 @@ public class UserAccountStatusEvent extends ActorEventBase<User> {
      * @param user user
      * @param account account the user is signed into
      */
-    public UserAccountStatusEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nullable String account) {
+    public UserAccountStatusEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User user, @Nullable String account) {
         super(client, originalMessages, user);
         this.account = account;
     }
@@ -59,13 +59,13 @@ public class UserAccountStatusEvent extends ActorEventBase<User> {
      *
      * @return account or empty if no account
      */
-    @Nonnull
+    @NonNull
     public Optional<String> getAccount() {
         return Optional.ofNullable(this.account);
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("account", this.account);
     }

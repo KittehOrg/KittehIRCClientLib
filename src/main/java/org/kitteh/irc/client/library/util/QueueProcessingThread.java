@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -41,7 +42,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @param name name of the thread
      */
-    protected QueueProcessingThread(@Nonnull String name) {
+    protected QueueProcessingThread(@NonNull String name) {
         this.setName(name);
         this.start();
     }
@@ -70,7 +71,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @param remainingQueue the queue
      */
-    protected void cleanup(@Nonnull Queue<Type> remainingQueue) {
+    protected void cleanup(@NonNull Queue<Type> remainingQueue) {
         // NOOP
     }
 
@@ -79,7 +80,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @param element next element from the queue
      */
-    protected abstract void processElement(@Nonnull Type element);
+    protected abstract void processElement(@NonNull Type element);
 
     /**
      * Gets if the queue contains a specified item.
@@ -87,7 +88,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      * @param item the item
      * @return true if the item is in the queue
      */
-    public boolean contains(@Nonnull Type item) {
+    public boolean contains(@NonNull Type item) {
         return this.queue.contains(Sanity.nullCheck(item, "Item cannot be null"));
     }
 
@@ -96,7 +97,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @return a queue copy
      */
-    @Nonnull
+    @NonNull
     public Queue<Type> getQueue() {
         return new ArrayDeque<>(this.queue);
     }
@@ -106,7 +107,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @param item item to queue
      */
-    public void queue(@Nonnull Type item) {
+    public void queue(@NonNull Type item) {
         Sanity.nullCheck(item, "Item cannot be null");
         synchronized (this.queue) {
             this.queue.add(item);

@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Describes a channel mode that a user can have, such as op.
@@ -36,7 +36,7 @@ public interface ChannelUserMode extends ChannelMode {
      */
     char getNickPrefix();
 
-    @Nonnull
+    @NonNull
     @Override
     default Type getType() {
         return Type.B_PARAMETER_ALWAYS;

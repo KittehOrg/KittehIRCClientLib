@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents an entity on an IRC server which can perform actions.
@@ -34,7 +34,7 @@ public interface Actor extends Snapshot {
      *
      * @return the Actor's name
      */
-    @Nonnull
+    @NonNull
     String getName();
 
     /**
@@ -42,7 +42,7 @@ public interface Actor extends Snapshot {
      *
      * @return lowercased Actor's name
      */
-    @Nonnull
+    @NonNull
     default String getLowerCaseName() {
         return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
     }

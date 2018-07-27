@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -62,7 +62,7 @@ public enum CaseMapping {
      * @param name the name of the CaseMapping to get
      * @return the matching CaseMapping if one exists
      */
-    @Nonnull
+    @NonNull
     public static Optional<CaseMapping> getByName(@Nullable String name) {
         return (name == null) ? Optional.empty() : Optional.ofNullable(nameMap.get(name.toUpperCase()));
     }
@@ -81,7 +81,7 @@ public enum CaseMapping {
      * @param two two string, red string, blue string
      * @return true if equal ignoring case using this case mapping
      */
-    public boolean areEqualIgnoringCase(@Nonnull String one, @Nonnull String two) {
+    public boolean areEqualIgnoringCase(@NonNull String one, @NonNull String two) {
         return this.toLowerCase(one).equals(this.toLowerCase(two));
     }
 
@@ -92,8 +92,8 @@ public enum CaseMapping {
      * @return lowercased string
      * @throws IllegalArgumentException if input is null
      */
-    @Nonnull
-    public String toLowerCase(@Nonnull String input) {
+    @NonNull
+    public String toLowerCase(@NonNull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
         char[] arr = input.toCharArray();
         for (int i = 0; i < arr.length; i++) {

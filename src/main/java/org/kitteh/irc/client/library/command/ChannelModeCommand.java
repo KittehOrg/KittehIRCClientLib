@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.User;
@@ -33,8 +35,6 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +54,7 @@ public class ChannelModeCommand extends ChannelCommand {
      * @param channel channel targeted
      * @throws IllegalArgumentException if null parameters
      */
-    public ChannelModeCommand(@Nonnull Client client, @Nonnull String channel) {
+    public ChannelModeCommand(@NonNull Client client, @NonNull String channel) {
         super(client, channel);
     }
 
@@ -66,8 +66,8 @@ public class ChannelModeCommand extends ChannelCommand {
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid
      */
-    @Nonnull
-    public ChannelModeCommand add(boolean add, @Nonnull ChannelMode mode) {
+    @NonNull
+    public ChannelModeCommand add(boolean add, @NonNull ChannelMode mode) {
         return this.addChange(add, mode, null);
     }
 
@@ -81,8 +81,8 @@ public class ChannelModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if mode invalid comes from a
      * different client or parameter is null
      */
-    @Nonnull
-    public ChannelModeCommand add(boolean add, @Nonnull ChannelMode mode, @Nonnull String parameter) {
+    @NonNull
+    public ChannelModeCommand add(boolean add, @NonNull ChannelMode mode, @NonNull String parameter) {
         return this.addChange(add, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
     }
 
@@ -96,15 +96,15 @@ public class ChannelModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if mode invalid or either mode or
      * user comes from a different client or parameter is null
      */
-    @Nonnull
-    public ChannelModeCommand add(boolean add, @Nonnull ChannelUserMode mode, @Nonnull User parameter) {
+    @NonNull
+    public ChannelModeCommand add(boolean add, @NonNull ChannelUserMode mode, @NonNull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
         Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
         return this.addChange(add, mode, parameter.getNick());
     }
 
-    @Nonnull
-    private synchronized ChannelModeCommand addChange(boolean add, @Nonnull ChannelMode mode, @Nullable String parameter) {
+    @NonNull
+    private synchronized ChannelModeCommand addChange(boolean add, @NonNull ChannelMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
@@ -146,12 +146,12 @@ public class ChannelModeCommand extends ChannelCommand {
         }
     }
 
-    private void send(@Nonnull List<ModeStatus<ChannelMode>> queue) {
+    private void send(@NonNull List<ModeStatus<ChannelMode>> queue) {
         this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + ModeStatusList.of(new ArrayList<>(queue)).getStatusString());
         queue.clear();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("changes", this.changes);

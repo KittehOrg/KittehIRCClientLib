@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.event.helper.ConnectionEvent;
-
-import javax.annotation.Nonnull;
 
 /**
  * The {@link Client} has connected to the server and is about to begin IRC
@@ -39,7 +38,7 @@ public class ClientConnectionEstablishedEvent extends ClientEventBase implements
      *
      * @param client client for which this is occurring
      */
-    public ClientConnectionEstablishedEvent(@Nonnull Client client) {
+    public ClientConnectionEstablishedEvent(@NonNull Client client) {
         super(client);
     }
 }

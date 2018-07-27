@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;
@@ -38,7 +39,6 @@ import org.kitteh.irc.client.library.util.Resettable;
 import org.kitteh.irc.client.library.util.RiskyBusiness;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -174,7 +174,7 @@ public interface CapabilityManager {
          * @return the capability extension name
          */
         @SuppressWarnings("ConstantConditions")
-        private static String getStringForCapabilityField(@Nonnull Field field) {
+        private static String getStringForCapabilityField(@NonNull Field field) {
             return RiskyBusiness.assertSafe(f -> (String) f.get(null), field);
         }
     }
@@ -202,7 +202,7 @@ public interface CapabilityManager {
          *
          * @param capabilityStates capability states
          */
-        void updateCapabilities(@Nonnull List<CapabilityState> capabilityStates);
+        void updateCapabilities(@NonNull List<CapabilityState> capabilityStates);
 
         /**
          * Wipes the previously known active capabilities, setting only those
@@ -210,14 +210,14 @@ public interface CapabilityManager {
          *
          * @param capabilityStates fresh set of capability states
          */
-        void setCapabilities(@Nonnull List<CapabilityState> capabilityStates);
+        void setCapabilities(@NonNull List<CapabilityState> capabilityStates);
 
         /**
          * Sets the supported capabilities as reported by the server.
          *
          * @param capabilityStates supported capabilities
          */
-        void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates);
+        void setSupportedCapabilities(@NonNull List<CapabilityState> capabilityStates);
     }
 
     /**
@@ -226,7 +226,7 @@ public interface CapabilityManager {
      * @return the capabilities currently enabled
      * @see CapabilityRequestCommand
      */
-    @Nonnull
+    @NonNull
     List<CapabilityState> getCapabilities();
 
     /**
@@ -235,8 +235,8 @@ public interface CapabilityManager {
      * @param name capability name
      * @return the named capability if enabled
      */
-    @Nonnull
-    default Optional<CapabilityState> getCapability(@Nonnull String name) {
+    @NonNull
+    default Optional<CapabilityState> getCapability(@NonNull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
         return this.getCapabilities().stream().filter(capabilityState -> capabilityState.getName().equals(name)).findFirst();
     }
@@ -247,7 +247,7 @@ public interface CapabilityManager {
      * @return the capabilities supported
      * @see CapabilityRequestCommand
      */
-    @Nonnull
+    @NonNull
     List<CapabilityState> getSupportedCapabilities();
 
     /**
@@ -256,8 +256,8 @@ public interface CapabilityManager {
      * @param name capability name
      * @return the named capability if supported
      */
-    @Nonnull
-    default Optional<CapabilityState> getSupportedCapability(@Nonnull String name) {
+    @NonNull
+    default Optional<CapabilityState> getSupportedCapability(@NonNull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
         return this.getSupportedCapabilities().stream().filter(capabilityState -> capabilityState.getName().equals(name)).findFirst();
     }

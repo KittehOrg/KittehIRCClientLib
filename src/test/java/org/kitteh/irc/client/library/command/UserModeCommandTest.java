@@ -1,13 +1,12 @@
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-
-import javax.annotation.Nonnull;
 
 /**
  * @see UserModeCommand
@@ -123,7 +122,7 @@ public class UserModeCommandTest {
                 return c;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Client getClient() {
                 return client;

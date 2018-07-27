@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -53,25 +53,25 @@ public class DefaultChannelTopic implements Channel.Topic {
         this.setter = setter;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<Actor> getSetter() {
         return Optional.ofNullable(this.setter);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<Instant> getTime() {
         return Optional.ofNullable(this.time);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getValue() {
         return Optional.ofNullable(this.topic);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("topic", this.topic).add("setter", this.setter).add("time", this.time).toString();

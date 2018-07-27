@@ -30,10 +30,10 @@ import net.engio.mbassy.dispatch.IHandlerInvocation;
 import net.engio.mbassy.dispatch.IMessageDispatcher;
 import net.engio.mbassy.subscription.SubscriptionContext;
 import net.engio.mbassy.subscription.SubscriptionFactory;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
      *
      * @param filters the filters
      */
-    public FilteringSubscriptionFactory(@Nonnull Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> filters) {
+    public FilteringSubscriptionFactory(@NonNull Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> filters) {
         this.filters = Sanity.nullCheck(filters, "filters");
     }
 
@@ -100,7 +100,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
         }
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).toString();

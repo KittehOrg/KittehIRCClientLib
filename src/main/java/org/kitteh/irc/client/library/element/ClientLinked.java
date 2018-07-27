@@ -23,9 +23,8 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-
-import javax.annotation.Nonnull;
 
 /**
  * Represents something which has a {@link Client}.
@@ -36,6 +35,6 @@ public interface ClientLinked {
      *
      * @return the client
      */
-    @Nonnull
+    @NonNull
     Client getClient();
 }

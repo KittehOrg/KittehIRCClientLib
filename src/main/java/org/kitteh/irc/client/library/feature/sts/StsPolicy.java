@@ -23,9 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class StsPolicy {
      * @param options the key-value options from the server-sent policy
      * @param flags the valueless flags from the server-sent policy
      */
-    public StsPolicy(@Nonnull Map<String, String> options, @Nonnull Set<String> flags) {
+    public StsPolicy(@NonNull Map<String, String> options, @NonNull Set<String> flags) {
         this.options = new ConcurrentHashMap<>(Sanity.nullCheck(options, "Must provide a valid options map"));
         this.flags = Collections.synchronizedSet(new HashSet<>(Sanity.nullCheck(flags, "Must provide a valid flags set")));
     }
@@ -64,7 +64,7 @@ public class StsPolicy {
      *
      * @return the valueless flags from the server-sent policy
      */
-    @Nonnull
+    @NonNull
     public Set<String> getFlags() {
         return this.flags;
     }
@@ -74,7 +74,7 @@ public class StsPolicy {
      *
      * @return the key-value options from the server-sent policy
      */
-    @Nonnull
+    @NonNull
     public Map<String, String> getOptions() {
         return this.options;
     }

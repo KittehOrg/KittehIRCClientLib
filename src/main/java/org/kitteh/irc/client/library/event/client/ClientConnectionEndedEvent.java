@@ -23,14 +23,14 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.event.helper.ConnectionEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -55,7 +55,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      * @param canReconnect true if the client plans to reconnect
      * @param cause cause, if there was one, closing it
      */
-    protected ClientConnectionEndedEvent(@Nonnull Client client, boolean canReconnect, @Nullable Throwable cause) {
+    protected ClientConnectionEndedEvent(@NonNull Client client, boolean canReconnect, @Nullable Throwable cause) {
         super(client);
         this.canReconnect = canReconnect;
         this.attemptReconnect = canReconnect;
@@ -67,7 +67,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
      *
      * @return exception or empty if no exception
      */
-    @Nonnull
+    @NonNull
     public Optional<Throwable> getCause() {
         return Optional.ofNullable(this.cause);
     }
@@ -131,7 +131,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer()
                 .add("canAttemptReconnect", this.canReconnect)

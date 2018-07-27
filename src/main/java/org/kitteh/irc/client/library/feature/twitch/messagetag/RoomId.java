@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Message tag for room ID.
@@ -44,7 +43,7 @@ public class RoomId extends MessageTagManager.DefaultMessageTag {
     @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, RoomId> FUNCTION = (client, name, value) -> new RoomId(name, value);
 
-    private RoomId(@Nonnull String name, @Nonnull String value) {
+    private RoomId(@NonNull String name, @NonNull String value) {
         super(name, value);
     }
 }

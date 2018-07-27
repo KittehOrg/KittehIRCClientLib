@@ -1,5 +1,6 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
@@ -11,7 +12,6 @@ import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.TriFunction;
 import org.mockito.Mockito;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -242,19 +242,19 @@ public class ISupportManagerTest {
             }
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Client getClient() {
             return null;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getName() {
             return "Meow";
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<String> getValue() {
             return Optional.empty();
@@ -304,7 +304,7 @@ public class ISupportManagerTest {
         Assert.assertEquals(DefaultISupportManager.class.getSimpleName() + " ()", this.getManager().toString());
     }
 
-    private void verifyException(@Nonnull DefaultISupportManager manager) {
+    private void verifyException(@NonNull DefaultISupportManager manager) {
         Mockito.verify(manager.getClient()).getExceptionListener();
     }
 

@@ -23,9 +23,9 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ public interface ServerMessage {
          *
          * @return the command present in this message
          */
-        @Nonnull
+        @NonNull
         String getCommand();
     }
 
@@ -64,7 +64,7 @@ public interface ServerMessage {
      *
      * @return full message content
      */
-    @Nonnull
+    @NonNull
     String getMessage();
 
     /**
@@ -72,7 +72,7 @@ public interface ServerMessage {
      *
      * @return message tags or empty if none sent.
      */
-    @Nonnull
+    @NonNull
     List<MessageTag> getTags();
 
     /**
@@ -81,7 +81,7 @@ public interface ServerMessage {
      * @param name tag name
      * @return tag if present
      */
-    default Optional<MessageTag> getTag(@Nonnull String name) {
+    default Optional<MessageTag> getTag(@NonNull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
         return this.getTags().stream().filter(tag -> tag.getName().equals(name)).findAny();
     }
@@ -94,9 +94,9 @@ public interface ServerMessage {
      * @param <Tag> message tag type
      * @return message tag if present
      */
-    @Nonnull
+    @NonNull
     @SuppressWarnings("unchecked")
-    default <Tag extends MessageTag> Optional<Tag> getTag(@Nonnull String name, @Nonnull Class<Tag> clazz) {
+    default <Tag extends MessageTag> Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
         Sanity.nullCheck(name, "Name cannot be null");
         Sanity.nullCheck(clazz, "Class cannot be null");
         return this.getTags().stream()

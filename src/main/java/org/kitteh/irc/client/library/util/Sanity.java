@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Do you know the definition of sanity?
@@ -42,8 +42,8 @@ public final class Sanity {
      * @return the sane object
      * @throws IllegalArgumentException if the object is null
      */
-    @Nonnull
-    public static <Type> Type nullCheck(@Nullable Type object, @Nonnull String failMessage) {
+    @NonNull
+    public static <Type> Type nullCheck(@Nullable Type object, @NonNull String failMessage) {
         if (object == null) {
             throw new IllegalArgumentException(failMessage);
         }
@@ -59,8 +59,8 @@ public final class Sanity {
      * @return the sane object
      * @throws IllegalArgumentException if null or contains null elements
      */
-    @Nonnull
-    public static <Type> Type[] nullCheck(@Nullable Type[] array, @Nonnull String failMessage) {
+    @NonNull
+    public static <Type> Type[] nullCheck(@Nullable Type[] array, @NonNull String failMessage) {
         Sanity.nullCheck((Object) array, failMessage);
         for (Object element : array) {
             Sanity.nullCheck(element, failMessage);
@@ -75,7 +75,7 @@ public final class Sanity {
      * @param failMessage message to throw
      * @throws IllegalArgumentException if false
      */
-    public static void truthiness(boolean bool, @Nonnull String failMessage) {
+    public static void truthiness(boolean bool, @NonNull String failMessage) {
         if (!bool) {
             throw new IllegalArgumentException(failMessage);
         }
@@ -88,8 +88,8 @@ public final class Sanity {
      * @return the safe message
      * @throws IllegalArgumentException if found
      */
-    @Nonnull
-    public static String safeMessageCheck(@Nonnull String message) {
+    @NonNull
+    public static String safeMessageCheck(@NonNull String message) {
         return Sanity.safeMessageCheck(message, "Message");
     }
 
@@ -101,8 +101,8 @@ public final class Sanity {
      * @return the safe message
      * @throws IllegalArgumentException if found
      */
-    @Nonnull
-    public static String safeMessageCheck(@Nullable String message, @Nonnull String name) {
+    @NonNull
+    public static String safeMessageCheck(@Nullable String message, @NonNull String name) {
         Sanity.nullCheck(message, name + " cannot be null");
         for (char ch : message.toCharArray()) {
             if ((ch == '\n') || (ch == '\r') || (ch == '\0')) {

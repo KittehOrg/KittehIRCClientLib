@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Interface representing the STS FSM.
@@ -44,7 +44,7 @@ public interface StsMachine {
      *
      * @return one of STSClientState's members
      */
-    @Nonnull
+    @NonNull
     StsClientState getCurrentState();
 
     /**
@@ -52,14 +52,14 @@ public interface StsMachine {
      *
      * @param newState a valid (non-UNKNOWN, non-null) state
      */
-    void setCurrentState(@Nonnull StsClientState newState);
+    void setCurrentState(@NonNull StsClientState newState);
 
     /**
      * Gets the persistence/storage manager.
      *
      * @return the storage manager instance
      */
-    @Nonnull
+    @NonNull
     StsStorageManager getStorageManager();
 
     /**
@@ -69,5 +69,5 @@ public interface StsMachine {
      *
      * @param policy the valid STS policy
      */
-    void setStsPolicy(@Nonnull StsPolicy policy);
+    void setStsPolicy(@NonNull StsPolicy policy);
 }

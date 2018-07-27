@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Message tag for message IDs.
@@ -153,7 +152,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
         public static final String UNRECOGNIZED_CMD = "unrecognized_cmd";
     }
 
-    private MsgId(@Nonnull String name, @Nonnull String value) {
+    private MsgId(@NonNull String name, @NonNull String value) {
         super(name, value);
     }
 }

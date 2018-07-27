@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.capabilities;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
@@ -32,7 +33,6 @@ import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +54,7 @@ public class CapabilitiesDeletedSupportedEvent extends CapabilityNegotiationResp
      * @param negotiating if we are negotiating right now
      * @param deletedCapabilities no longer supported capabilities
      */
-    public CapabilitiesDeletedSupportedEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating, @Nonnull List<CapabilityState> deletedCapabilities) {
+    public CapabilitiesDeletedSupportedEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating, @NonNull List<CapabilityState> deletedCapabilities) {
         super(client, originalMessages, negotiating);
         Sanity.nullCheck(deletedCapabilities, "Capabilities list cannot be null");
         this.deletedCapabilities = Collections.unmodifiableList(new ArrayList<>(deletedCapabilities));
@@ -65,13 +65,13 @@ public class CapabilitiesDeletedSupportedEvent extends CapabilityNegotiationResp
      *
      * @return no longer supported capabilities
      */
-    @Nonnull
+    @NonNull
     public List<CapabilityState> getDeletedCapabilities() {
         return this.deletedCapabilities;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("deletedCapabilities", this.deletedCapabilities);
     }

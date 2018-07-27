@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.exception;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Indicates a problem has occurred with strict transport security.
@@ -34,7 +34,7 @@ public class KittehStsException extends RuntimeException {
      *
      * @param message what went wrong.
      */
-    public KittehStsException(@Nonnull String message) {
+    public KittehStsException(@NonNull String message) {
         super(message);
     }
 
@@ -44,7 +44,7 @@ public class KittehStsException extends RuntimeException {
      * @param message what went wrong.
      * @param thrown cause
      */
-    public KittehStsException(@Nonnull String message, @Nonnull Throwable thrown) {
+    public KittehStsException(@NonNull String message, @NonNull Throwable thrown) {
         super(message, thrown);
     }
 }

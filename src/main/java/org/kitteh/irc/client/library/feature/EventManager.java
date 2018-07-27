@@ -24,10 +24,10 @@
 package org.kitteh.irc.client.library.feature;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
@@ -43,14 +43,14 @@ public interface EventManager {
      * @param event event to call
      * @throws IllegalArgumentException for a null event
      */
-    void callEvent(@Nonnull Object event);
+    void callEvent(@NonNull Object event);
 
     /**
      * Gets all registered listener objects.
      *
      * @return a set of objects
      */
-    @Nonnull
+    @NonNull
     Set<Object> getRegisteredEventListeners();
 
     /**
@@ -58,7 +58,7 @@ public interface EventManager {
      *
      * @return a map of annotations to annotation filter processors
      */
-    @Nonnull
+    @NonNull
     Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters();
 
     /**
@@ -80,7 +80,7 @@ public interface EventManager {
      * @param listener listener in which to register events
      * @throws IllegalArgumentException for a null listener
      */
-    void registerEventListener(@Nonnull Object listener);
+    void registerEventListener(@NonNull Object listener);
 
     /**
      * Unregisters a listener.
@@ -88,5 +88,5 @@ public interface EventManager {
      * @param listener listener to unregister
      * @throws IllegalArgumentException for a null listener
      */
-    void unregisterEventListener(@Nonnull Object listener);
+    void unregisterEventListener(@NonNull Object listener);
 }

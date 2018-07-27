@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -30,7 +31,6 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -49,7 +49,7 @@ public class ChannelCtcpEvent extends ActorChannelMessageEventBase<User> impleme
      * @param channel channel in which it was sent
      * @param message message sent
      */
-    public ChannelCtcpEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull Channel channel, @Nonnull String message) {
+    public ChannelCtcpEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
         super(client, originalMessages, sender, channel, message);
     }
 }

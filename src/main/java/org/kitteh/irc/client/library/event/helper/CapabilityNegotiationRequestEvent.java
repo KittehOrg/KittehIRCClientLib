@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.List;
 
 /**
@@ -35,13 +36,13 @@ public interface CapabilityNegotiationRequestEvent extends CapabilityNegotiation
      *
      * @param capability capability to be requested
      */
-    void addRequest(@Nonnull String capability);
+    void addRequest(@NonNull String capability);
 
     /**
      * Gets the capabilities to be requested.
      *
      * @return capabilities
      */
-    @Nonnull
+    @NonNull
     List<String> getRequests();
 }

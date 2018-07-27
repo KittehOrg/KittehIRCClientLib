@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.defaultmessage;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -62,27 +62,27 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
     }
 
     @Override
-    @Nonnull
-    public SimpleDefaultMessageMap setDefault(@Nonnull DefaultMessageType key, @Nullable String defaultString) {
+    @NonNull
+    public SimpleDefaultMessageMap setDefault(@NonNull DefaultMessageType key, @Nullable String defaultString) {
         this.defaults.put(Sanity.nullCheck(key, "Key cannot be null"), defaultString);
         return this;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public Optional<String> getDefault(DefaultMessageType key) {
         return this.getDefault(Sanity.nullCheck(key, "Key cannot be null"), key.getFallback());
     }
 
     @Override
-    @Nonnull
-    public Optional<String> getDefault(@Nonnull DefaultMessageType key, @Nullable String defaultValue) {
+    @NonNull
+    public Optional<String> getDefault(@NonNull DefaultMessageType key, @Nullable String defaultValue) {
         Sanity.nullCheck(key, "Key cannot be null");
         return Optional.ofNullable(this.defaults.getOrDefault(key, defaultValue));
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public Map<DefaultMessageType, String> getDefaults() {
         return Collections.unmodifiableMap(new EnumMap<>(this.defaults));
     }

@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -49,7 +49,7 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * @param updated if this is a new change
      * @see Channel#getTopic()
      */
-    public ChannelTopicEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, boolean updated) {
+    public ChannelTopicEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, boolean updated) {
         super(client, originalMessages, channel);
         this.updated = updated;
     }
@@ -60,8 +60,7 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * @return the channel topic
      * @see Channel#getTopic()
      */
-    @Nonnull
-    public Channel.Topic getTopic() {
+    public Channel.@NonNull Topic getTopic() {
         return this.getChannel().getTopic();
     }
 
@@ -76,7 +75,7 @@ public class ChannelTopicEvent extends ChannelEventBase {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("isNew", this.updated);
     }

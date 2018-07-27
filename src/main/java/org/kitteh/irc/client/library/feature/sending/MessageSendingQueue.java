@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.feature.sending;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.Optional;
 import java.util.Queue;
 import java.util.function.Consumer;
@@ -37,7 +38,7 @@ public interface MessageSendingQueue {
      *
      * @param consumer the consumer to consume
      */
-    void beginSending(@Nonnull Consumer<String> consumer);
+    void beginSending(@NonNull Consumer<String> consumer);
 
     /**
      * Gets if the queue currently has within it a particular message.
@@ -45,14 +46,14 @@ public interface MessageSendingQueue {
      * @param message the message to check for
      * @return true if the message is not yet sent
      */
-    boolean contains(@Nonnull String message);
+    boolean contains(@NonNull String message);
 
     /**
      * Gets the queue's currently set consumer.
      *
      * @return current consumer if present
      */
-    @Nonnull
+    @NonNull
     Optional<Consumer<String>> getConsumer();
 
     /**
@@ -65,13 +66,13 @@ public interface MessageSendingQueue {
      *
      * @param message the message to queue
      */
-    void queue(@Nonnull String message);
+    void queue(@NonNull String message);
 
     /**
      * Closes down shop, interrupts all threads. No further messages.
      *
      * @return the remaining messages
      */
-    @Nonnull
+    @NonNull
     Queue<String> shutdown();
 }

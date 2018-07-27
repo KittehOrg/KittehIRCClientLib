@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.time.Instant;
 import java.util.Optional;
 
@@ -40,7 +41,7 @@ public interface MessageTag {
          *
          * @return instant in time
          */
-        @Nonnull
+        @NonNull
         Instant getTime();
     }
 
@@ -49,7 +50,7 @@ public interface MessageTag {
      *
      * @return tag name
      */
-    @Nonnull
+    @NonNull
     String getName();
 
     /**
@@ -57,6 +58,6 @@ public interface MessageTag {
      *
      * @return tag value if set
      */
-    @Nonnull
+    @NonNull
     Optional<String> getValue();
 }

@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @param client the client to which this map is tied
      */
-    public CIKeyMap(@Nonnull Client client) {
+    public CIKeyMap(@NonNull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
     }
 
@@ -60,8 +60,8 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      * @param input input to convert
      * @return lower cased input
      */
-    @Nonnull
-    protected final synchronized String toLowerCase(@Nonnull String input) {
+    @NonNull
+    protected final synchronized String toLowerCase(@NonNull String input) {
         CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
         if (caseMapping != this.lastCaseMapping) {
             Set<Entry<String, Value>> entrySet = this.entrySet();
@@ -109,7 +109,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
 
     @Nullable
     @Override
-    public Value put(@Nonnull String key, @Nullable Value value) {
+    public Value put(@NonNull String key, @Nullable Value value) {
         Sanity.nullCheck(key, "Key cannot be null");
         Pair<String, Value> pair = this.map.put(this.toLowerCase(key), new Pair<>(key, value));
         return (pair == null) ? null : pair.getRight();
@@ -126,7 +126,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
     }
 
     @Override
-    public void putAll(@Nonnull Map<? extends String, ? extends Value> m) {
+    public void putAll(@NonNull Map<? extends String, ? extends Value> m) {
         Sanity.nullCheck(m, "Map cannot be null");
         m.forEach(this::put);
     }
@@ -141,7 +141,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return set of keys
      */
-    @Nonnull
+    @NonNull
     @Override
     public Set<String> keySet() {
         return this.map.values().stream().map(Pair::getLeft).collect(Collectors.toSet());
@@ -152,7 +152,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return list of values
      */
-    @Nonnull
+    @NonNull
     @Override
     public Collection<Value> values() {
         return this.map.values().stream().map(Pair::getRight).collect(Collectors.toList());
@@ -163,13 +163,13 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      *
      * @return set of entries
      */
-    @Nonnull
+    @NonNull
     @Override
     public Set<Entry<String, Value>> entrySet() {
         return this.map.values().stream().map(pair -> new AbstractMap.SimpleImmutableEntry<>(pair.getLeft(), pair.getRight())).collect(Collectors.toSet());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("client", this.client).add("map", this.map.values().stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight))).toString();

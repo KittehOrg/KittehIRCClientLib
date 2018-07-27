@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.defaults.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagTime;
 import org.kitteh.irc.client.library.element.MessageTag;
@@ -32,8 +34,6 @@ import org.kitteh.irc.client.library.util.AbstractNameValueProcessor;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +50,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
     protected static class TagCreator extends Creator<MessageTag> {
         private final String capability;
 
-        private TagCreator(@Nonnull String capability, @Nonnull TriFunction<Client, String, String, ? extends MessageTag> function) {
+        private TagCreator(@NonNull String capability, @NonNull TriFunction<Client, String, String, ? extends MessageTag> function) {
             super(function);
             this.capability = capability;
         }
@@ -60,12 +60,12 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
          *
          * @return capability
          */
-        @Nonnull
+        @NonNull
         protected String getCapability() {
             return this.capability;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).add("capability", this.capability).add("function", this.getFunction()).toString();
@@ -84,33 +84,33 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
         this.registerTagCreator("server-time", "time", DefaultMessageTagTime.FUNCTION);
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@Nonnull String capability) {
+    public Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@NonNull String capability) {
         return Collections.unmodifiableMap(this.getRegistrations().entrySet().stream().filter(e -> ((TagCreator) e.getValue()).getCapability().equals(capability)).collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFunction())));
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@NonNull String tagName) {
         return this.getCreatorByName(tagName);
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, String, ? extends MessageTag> function) {
+    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@NonNull String capability, @NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends MessageTag> function) {
         return this.registerCreator(tagName, new TagCreator(capability, function));
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@Nonnull String tagName) {
+    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@NonNull String tagName) {
         return this.unregisterCreator(tagName);
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public List<MessageTag> getCapabilityTags(@Nonnull String tagList) {
+    public List<MessageTag> getCapabilityTags(@NonNull String tagList) {
         String[] tags = tagList.split(";"); // Split up by semicolon
         List<MessageTag> list = new ArrayList<>();
         int index;
@@ -144,8 +144,8 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
         return Collections.unmodifiableList(list);
     }
 
-    @Nonnull
-    private String getTagValue(@Nonnull String tag) {
+    @NonNull
+    private String getTagValue(@NonNull String tag) {
         StringBuilder builder = new StringBuilder(tag.length());
         int currentIndex = 0;
         Matcher matcher = TAG_ESCAPE.matcher(tag);

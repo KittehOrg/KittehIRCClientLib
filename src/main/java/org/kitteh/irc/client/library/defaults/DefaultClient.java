@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.defaults;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.AwayCommand;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
@@ -34,7 +36,6 @@ import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.command.WallopsCommand;
 import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.defaults.element.DefaultServerMessage;
-import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
@@ -50,6 +51,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
+import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
@@ -72,8 +74,6 @@ import org.kitteh.irc.client.library.util.QueueProcessingThread;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -97,61 +97,61 @@ import java.util.stream.Stream;
  */
 public class DefaultClient implements Client.WithManagement {
     private final class ClientCommands implements Commands {
-        @Nonnull
+        @NonNull
         @Override
         public AwayCommand away() {
             return new AwayCommand(DefaultClient.this);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public CapabilityRequestCommand capabilityRequest() {
             return new CapabilityRequestCommand(DefaultClient.this);
         }
 
-        @Nonnull
+        @NonNull
         @Override
-        public ChannelModeCommand mode(@Nonnull Channel channel) {
+        public ChannelModeCommand mode(@NonNull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new ChannelModeCommand(DefaultClient.this, channel.getMessagingName());
         }
 
-        @Nonnull
+        @NonNull
         @Override
-        public KickCommand kick(@Nonnull Channel channel) {
+        public KickCommand kick(@NonNull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new KickCommand(DefaultClient.this, channel.getMessagingName());
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public MonitorCommand monitor() {
             return new MonitorCommand(DefaultClient.this);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public OperCommand oper() {
             return new OperCommand(DefaultClient.this);
         }
 
-        @Nonnull
+        @NonNull
         @Override
-        public TopicCommand topic(@Nonnull Channel channel) {
+        public TopicCommand topic(@NonNull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new TopicCommand(DefaultClient.this, channel.getMessagingName());
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public WallopsCommand wallops() {
             return new WallopsCommand(DefaultClient.this);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public WhoisCommand whois() {
             return new WhoisCommand(DefaultClient.this);
@@ -164,7 +164,7 @@ public class DefaultClient implements Client.WithManagement {
         }
 
         @Override
-        protected void processElement(@Nonnull String element) {
+        protected void processElement(@NonNull String element) {
             try {
                 DefaultClient.this.handleLine(element);
             } catch (final Exception thrown) {
@@ -239,15 +239,15 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword,
+    public void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword,
                            @Nullable InetSocketAddress bindAddress,
-                           @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
-                           @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager,
-                           @Nonnull EventManager eventManager, @Nonnull List<EventListenerSupplier> listenerSuppliers,
-                           @Nonnull MessageTagManager messageTagManager,
-                           @Nonnull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
-                           @Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
-                           @Nonnull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
+                           @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
+                           @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
+                           @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
+                           @NonNull MessageTagManager messageTagManager,
+                           @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
+                           @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
+                           @NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
                            @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener,
                            @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain,
                            @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory,
@@ -307,7 +307,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void addChannel(@Nonnull String... channels) {
+    public void addChannel(@NonNull String... channels) {
         Sanity.nullCheck(channels, "Channels cannot be null");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (String channelName : channels) {
@@ -320,7 +320,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key) {
+    public void addKeyProtectedChannel(@NonNull String channel, @NonNull String key) {
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.nullCheck(key, "Key cannot be null");
         Sanity.truthiness(this.serverInfo.isValidChannel(channel), "Invalid channel name " + channel);
@@ -329,7 +329,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys) {
+    public void addKeyProtectedChannel(@NonNull Pair<String, String>... channelsAndKeys) {
         Sanity.nullCheck(channelsAndKeys, "Channel/key pairs cannot be null");
         Sanity.truthiness(channelsAndKeys.length > 0, "Channel/key pairs cannot be empty array");
         for (Pair<String, String> channelAndKey : channelsAndKeys) {
@@ -344,38 +344,37 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public AuthManager getAuthManager() {
         return this.authManager;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public InetSocketAddress getBindAddress() {
         return this.bindAddress;
     }
 
     @Override
-    @Nonnull
-    public CapabilityManager.WithManagement getCapabilityManager() {
+    public CapabilityManager.@NonNull WithManagement getCapabilityManager() {
         return this.capabilityManager;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<Channel> getChannel(@Nonnull String name) {
+    public Optional<Channel> getChannel(@NonNull String name) {
         return this.actorTracker.getTrackedChannel(Sanity.nullCheck(name, "Channel name cannot be null"));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Set<Channel> getChannels() {
         return this.actorTracker.getTrackedChannels();
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Set<Channel> getChannels(@Nonnull Collection<String> channels) {
+    public Set<Channel> getChannels(@NonNull Collection<String> channels) {
         return Sanity.nullCheck(channels, "Channels collection cannot be null").stream()
                 .filter(Objects::nonNull)
                 .map(this.actorTracker::getTrackedChannel)
@@ -383,106 +382,105 @@ public class DefaultClient implements Client.WithManagement {
                 .collect(Collectors.toSet());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public DefaultMessageMap getDefaultMessageMap() {
         return this.defaultMessageMap;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public EventManager getEventManager() {
         return this.eventManager;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Listener<Exception> getExceptionListener() {
         return this.exceptionListener;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getIntendedNick() {
         return this.goalNick;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ISupportManager getISupportManager() {
         return this.iSupportManager;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<StsMachine> getStsMachine() {
         return Optional.ofNullable(this.stsMachine);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Cutter getMessageCutter() {
         return this.messageCutter;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier() {
         return this.messageSendingQueueSupplier;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public MessageTagManager getMessageTagManager() {
         return this.messageTagManager;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getNick() {
         return this.currentNick;
     }
 
-    @Nonnull
     @Override
-    public ServerInfo.WithManagement getServerInfo() {
+    public ServerInfo.@NonNull WithManagement getServerInfo() {
         return this.serverInfo;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<User> getUser() {
         return this.actorTracker.getTrackedUser(this.getNick());
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public Optional<ModeStatusList<UserMode>> getUserModes() {
         return (this.userModes == null) ? Optional.empty() : Optional.of(ModeStatusList.of(this.userModes.values()));
     }
 
     @Override
-    public void knockChannel(@Nonnull String channelName) {
+    public void knockChannel(@NonNull String channelName) {
         this.sendRawLine("KNOCK " + Sanity.nullCheck(channelName, "Channel cannot be null"));
     }
 
     @Override
-    public void removeChannel(@Nonnull String channelName) {
+    public void removeChannel(@NonNull String channelName) {
         this.removeChannelPlease(channelName, this.defaultMessageMap.getDefault(DefaultMessageType.PART).orElse(null));
     }
 
     @Override
-    public void removeChannel(@Nonnull String channelName, @Nullable String reason) {
+    public void removeChannel(@NonNull String channelName, @Nullable String reason) {
         this.removeChannelPlease(channelName, reason);
     }
 
-    private void removeChannelPlease(@Nonnull String channelName, @Nullable String reason) {
+    private void removeChannelPlease(@NonNull String channelName, @Nullable String reason) {
         Sanity.truthiness(this.serverInfo.isValidChannel(channelName), "Invalid channel name " + channelName);
         if (reason != null) {
             Sanity.safeMessageCheck(reason, "Part reason");
@@ -492,7 +490,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void sendCtcpMessage(@Nonnull String target, @Nonnull String message) {
+    public void sendCtcpMessage(@NonNull String target, @NonNull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
@@ -500,7 +498,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void sendCtcpReply(@Nonnull String target, @Nonnull String message) {
+    public void sendCtcpReply(@NonNull String target, @NonNull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
@@ -508,7 +506,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void sendMessage(@Nonnull String target, @Nonnull String message) {
+    public void sendMessage(@NonNull String target, @NonNull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
@@ -516,7 +514,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+    public void sendMultiLineMessage(@NonNull String target, @NonNull String message, @NonNull Cutter cutter) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.nullCheck(cutter, "Cutter cannot be null");
@@ -524,14 +522,14 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+    public void sendMultiLineNotice(@NonNull String target, @NonNull String message, @NonNull Cutter cutter) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.nullCheck(cutter, "Cutter cannot be null");
         cutter.split(message, this.getRemainingLength("NOTICE", target)).forEach(line -> this.sendNotice(target, line));
     }
 
-    private int getRemainingLength(@Nonnull String type, @Nonnull String target) {
+    private int getRemainingLength(@NonNull String type, @NonNull String target) {
         // :nick!name@host PRIVMSG/NOTICE TARGET :MESSAGE\r\n
         // So that's two colons, three spaces, CR, and LF. 7 chars.
         // 512 - 7 = 505
@@ -566,14 +564,14 @@ public class DefaultClient implements Client.WithManagement {
         return this.secureTrustManagerFactory;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public InetSocketAddress getServerAddress() {
         return this.serverAddress;
     }
 
     @Override
-    public void sendNotice(@Nonnull String target, @Nonnull String message) {
+    public void sendNotice(@NonNull String target, @NonNull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
         Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
@@ -581,21 +579,21 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void sendRawLine(@Nonnull String message) {
+    public void sendRawLine(@NonNull String message) {
         this.sendRawLine(message, false, false);
     }
 
     @Override
-    public void sendRawLineAvoidingDuplication(@Nonnull String message) {
+    public void sendRawLineAvoidingDuplication(@NonNull String message) {
         this.sendRawLine(message, false, true);
     }
 
     @Override
-    public void sendRawLineImmediately(@Nonnull String message) {
+    public void sendRawLineImmediately(@NonNull String message) {
         this.sendRawLine(message, true, false);
     }
 
-    private void sendRawLine(@Nonnull String message, boolean priority, boolean avoidDuplicates) {
+    private void sendRawLine(@NonNull String message, boolean priority, boolean avoidDuplicates) {
         Sanity.safeMessageCheck(message);
         if (!message.isEmpty() && (message.length() > ((message.charAt(0) == '@') ? 1022 : 510))) {
             throw new IllegalArgumentException("Message too long: " + message.length());
@@ -619,7 +617,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
+    public void setDefaultMessageMap(@NonNull DefaultMessageMap defaults) {
         Sanity.nullCheck(defaults, "Defaults cannot be null");
         this.defaultMessageMap = defaults;
     }
@@ -634,12 +632,12 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void setMessageCutter(@Nonnull Cutter cutter) {
+    public void setMessageCutter(@NonNull Cutter cutter) {
         this.messageCutter = Sanity.nullCheck(cutter, "Cutter cannot be null");
     }
 
     @Override
-    public void setMessageSendingQueueSupplier(@Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
+    public void setMessageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
         this.messageSendingQueueSupplier = Sanity.nullCheck(supplier, "Supplier cannot be null");
         synchronized (this.messageSendingLock) {
             MessageSendingQueue newQueue = this.getMessageSendingQueueSupplier().apply(this);
@@ -651,7 +649,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void setNick(@Nonnull String nick) {
+    public void setNick(@NonNull String nick) {
         Sanity.safeMessageCheck(nick, "Nick");
         this.goalNick = nick.trim();
         this.sendNickChange(this.goalNick);
@@ -696,7 +694,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public String toString() {
         return new ToStringer(this).add("name", this.getName()).add("server", this.serverAddress).toString();
     }
@@ -707,7 +705,7 @@ public class DefaultClient implements Client.WithManagement {
      * @param line line to be processed
      */
     @Override
-    public void processLine(@Nonnull String line) {
+    public void processLine(@NonNull String line) {
         if (line.startsWith("PING ")) {
             this.sendRawLineImmediately("PONG " + line.substring(5));
         } else if (!line.isEmpty()) {
@@ -715,31 +713,31 @@ public class DefaultClient implements Client.WithManagement {
         }
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ActorTracker getActorTracker() {
         return this.actorTracker;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Listener<String> getInputListener() {
         return this.inputListener;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Set<String> getIntendedChannels() {
         return this.channelsIntended;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Listener<String> getOutputListener() {
         return this.outputListener;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getRequestedNick() {
         return this.requestedNick;
@@ -773,7 +771,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
+    public void beginMessageSendingImmediate(@NonNull Consumer<String> consumer) {
         synchronized (this.messageSendingLock) {
             this.messageSendingImmediate.beginSending(consumer);
         }
@@ -793,23 +791,23 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void sendNickChange(@Nonnull String newNick) {
+    public void sendNickChange(@NonNull String newNick) {
         this.requestedNick = newNick;
         this.sendRawLineImmediately("NICK " + newNick);
     }
 
     @Override
-    public void setCurrentNick(@Nonnull String nick) {
+    public void setCurrentNick(@NonNull String nick) {
         this.currentNick = nick;
     }
 
     @Override
-    public void setServerAddress(@Nonnull InetSocketAddress address) {
+    public void setServerAddress(@NonNull InetSocketAddress address) {
         this.serverAddress = address;
     }
 
     @Override
-    public void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    public void setUserModes(@NonNull ModeStatusList<UserMode> userModes) {
         this.userModes = new HashMap<>(userModes.getStatuses().stream().collect(Collectors.toMap(modeStatus -> modeStatus.getMode().getChar(), Function.identity())));
     }
 
@@ -822,7 +820,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    public void updateUserModes(@NonNull ModeStatusList<UserMode> userModes) {
         if (this.userModes == null) {
             this.userModes = new HashMap<>();
         }
@@ -850,7 +848,7 @@ public class DefaultClient implements Client.WithManagement {
         return this.secure;
     }
 
-    private void handleLine(@Nonnull final String line) {
+    private void handleLine(@NonNull final String line) {
         if (line.isEmpty()) {
             this.actorTracker.reset();
             this.capabilityManager.reset();
@@ -932,7 +930,7 @@ public class DefaultClient implements Client.WithManagement {
         }
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Commands commands() {
         return this.commands;

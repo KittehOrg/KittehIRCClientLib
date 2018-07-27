@@ -23,9 +23,8 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.Channel;
-
-import javax.annotation.Nonnull;
 
 /**
  * An event involving a {@link Channel}.
@@ -36,6 +35,6 @@ public interface ChannelEvent extends ServerMessageEvent {
      *
      * @return the channel
      */
-    @Nonnull
+    @NonNull
     Channel getChannel();
 }

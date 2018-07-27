@@ -23,10 +23,9 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * The {@link Client} has had a connection failure.
@@ -39,7 +38,7 @@ public class ClientConnectionFailedEvent extends ClientConnectionEndedEvent {
      * @param reconnecting true if the client plans to reconnect
      * @param cause cause, if there was one, closing it
      */
-    public ClientConnectionFailedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Throwable cause) {
+    public ClientConnectionFailedEvent(@NonNull Client client, boolean reconnecting, @Nullable Throwable cause) {
         super(client, reconnecting, cause);
     }
 }

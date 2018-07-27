@@ -23,14 +23,14 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +52,7 @@ public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportPrefix(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportPrefix(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
             throw new KittehServerISupportException(name, "No prefixes defined");
@@ -73,7 +73,7 @@ public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired
         this.modes = Collections.unmodifiableList(prefixList);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<ChannelUserMode> getModes() {
         return this.modes;

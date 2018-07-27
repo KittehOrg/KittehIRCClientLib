@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.sending.QueueProcessingThreadSender;
 
-import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 /**
@@ -73,7 +73,7 @@ public class TwitchDelaySender extends QueueProcessingThreadSender {
      * @param name name of this sending queue
      * @param perThirtySeconds messages per thirty seconds
      */
-    public TwitchDelaySender(@Nonnull Client client, @Nonnull String name, int perThirtySeconds) {
+    public TwitchDelaySender(@NonNull Client client, @NonNull String name, int perThirtySeconds) {
         super(client, name);
         this.timestamps = new long[perThirtySeconds];
     }
@@ -82,7 +82,7 @@ public class TwitchDelaySender extends QueueProcessingThreadSender {
     private final long[] timestamps;
 
     @Override
-    protected boolean checkReady(@Nonnull String message) {
+    protected boolean checkReady(@NonNull String message) {
         long now;
         long remaining;
         do {

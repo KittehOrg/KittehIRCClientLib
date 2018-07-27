@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.defaults.listener;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -33,7 +34,6 @@ import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,7 +51,7 @@ public class DefaultWhoListener extends AbstractDefaultListenerBase {
      *
      * @param client client
      */
-    public DefaultWhoListener(@Nonnull Client.WithManagement client) {
+    public DefaultWhoListener(Client.@NonNull WithManagement client) {
         super(client);
     }
 

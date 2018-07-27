@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.MonitoredNickEventBase;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -41,7 +41,7 @@ public class MonitoredNickOnlineEvent extends MonitoredNickEventBase {
      * @param originalMessages original messages
      * @param nick the tracked nick
      */
-    public MonitoredNickOnlineEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull String nick) {
+    public MonitoredNickOnlineEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull String nick) {
         super(client, originalMessages, nick);
     }
 }

@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Message tag for user types.
@@ -73,7 +72,7 @@ public class UserType extends MessageTagManager.DefaultMessageTag {
         public static final String STAFF = "staff";
     }
 
-    private UserType(@Nonnull String name, @Nonnull String value) {
+    private UserType(@NonNull String name, @NonNull String value) {
         super(name, value);
     }
 }

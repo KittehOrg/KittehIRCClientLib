@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -104,7 +104,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
         private final String name;
         private final String version;
 
-        private Badge(@Nonnull String name, @Nonnull String version) {
+        private Badge(@NonNull String name, @NonNull String version) {
             this.name = name;
             this.version = version;
         }
@@ -114,7 +114,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
          *
          * @return badge name
          */
-        @Nonnull
+        @NonNull
         public String getName() {
             return this.name;
         }
@@ -124,12 +124,12 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
          *
          * @return badge version
          */
-        @Nonnull
+        @NonNull
         public String getVersion() {
             return this.version;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).add("name", this.name).add("version", this.version).toString();
@@ -138,7 +138,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
 
     private final List<Badge> badges;
 
-    private Badges(@Nonnull String name, @Nullable String value) {
+    private Badges(@NonNull String name, @Nullable String value) {
         super(name, value);
         if (value == null) {
             this.badges = Collections.emptyList();
@@ -165,12 +165,12 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
      *
      * @return list of badges
      */
-    @Nonnull
+    @NonNull
     public List<Badge> getBadges() {
         return this.badges;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("badges", this.badges);

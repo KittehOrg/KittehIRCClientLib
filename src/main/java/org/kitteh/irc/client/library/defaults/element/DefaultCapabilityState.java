@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -48,7 +48,7 @@ public class DefaultCapabilityState implements CapabilityState {
      * @param client client
      * @param capabilityListItem capability list item including modifiers
      */
-    public DefaultCapabilityState(@Nonnull Client client, @Nonnull String capabilityListItem) {
+    public DefaultCapabilityState(@NonNull Client client, @NonNull String capabilityListItem) {
         this.client = client;
         this.creationTime = System.currentTimeMillis();
         this.disable = capabilityListItem.charAt(0) == '-';
@@ -77,7 +77,7 @@ public class DefaultCapabilityState implements CapabilityState {
         return this.disable;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Client getClient() {
         return this.client;
@@ -88,13 +88,13 @@ public class DefaultCapabilityState implements CapabilityState {
         return this.creationTime;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getValue() {
         return Optional.ofNullable(this.value);
@@ -105,7 +105,7 @@ public class DefaultCapabilityState implements CapabilityState {
         return (2 * this.name.hashCode()) + (this.disable ? 1 : 0);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("name", this.name).add("disabled", this.disable).add("value", this.value).toString();

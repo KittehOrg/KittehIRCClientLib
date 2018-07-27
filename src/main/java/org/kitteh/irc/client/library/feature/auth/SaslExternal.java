@@ -24,11 +24,10 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
-
-import javax.annotation.Nonnull;
 
 /**
  * SASL EXTERNAL authentication. Automatically attempts auth during connection.
@@ -50,17 +49,17 @@ public class SaslExternal extends AbstractSaslProtocol<Object> {
      *
      * @param client client
      */
-    public SaslExternal(@Nonnull Client client) {
+    public SaslExternal(@NonNull Client client) {
         super(client, "", new Object(), "EXTERNAL"); // hacky?
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected String getAuthLine() {
         return "";
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Object getEventListener() {
         return (this.listener == null) ? (this.listener = new Listener()) : this.listener;

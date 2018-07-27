@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * It's not personal, Kitteh. It's strictly business.
@@ -63,7 +63,7 @@ public final class RiskyBusiness {
      * @return output of the function
      */
     @Nullable
-    public static <Input, Output> Output assertSafe(@Nonnull CheckedFunction<Input, Output> function, @Nullable Input input) {
+    public static <Input, Output> Output assertSafe(@NonNull CheckedFunction<Input, Output> function, @Nullable Input input) {
         Sanity.nullCheck(function, "Function cannot be null");
         try {
             return function.apply(input);

@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.feature.filter;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.lang.annotation.Annotation;
 
 /**
@@ -38,5 +39,5 @@ public interface FilterProcessor<Event, A extends Annotation> {
      * @param annotations the annotations
      * @return true if the event continues
      */
-    boolean accepts(@Nonnull Event event, @Nonnull A[] annotations);
+    boolean accepts(@NonNull Event event, @NonNull A[] annotations);
 }

@@ -24,13 +24,12 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * GameSurge's AuthServ protocol. Automatically attempts to identify upon connection.
@@ -43,7 +42,7 @@ public class GameSurge extends AbstractAccountPassProtocol implements EventListe
             GameSurge.this.startAuthentication();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).toString();
@@ -59,17 +58,17 @@ public class GameSurge extends AbstractAccountPassProtocol implements EventListe
      * @param accountName account name
      * @param password password
      */
-    public GameSurge(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
+    public GameSurge(@NonNull Client client, @NonNull String accountName, @NonNull String password) {
         super(client, accountName, password);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected String getAuthentication() {
         return "PRIVMSG AuthServ@services.gamesurge.net :auth " + this.getAccountName() + ' ' + this.getPassword();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Object getEventListener() {
         return this.listener;

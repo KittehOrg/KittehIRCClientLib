@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,7 @@ public class DefaultISupportChanTypes extends DefaultISupportParameterValueRequi
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportChanTypes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportChanTypes(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
             throw new KittehServerISupportException(name, "No chantypes defined");
@@ -58,7 +58,7 @@ public class DefaultISupportChanTypes extends DefaultISupportParameterValueRequi
         this.prefixes = Collections.unmodifiableList(prefixes);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<Character> getTypes() {
         return this.prefixes;

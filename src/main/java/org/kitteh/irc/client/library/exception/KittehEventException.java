@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.exception;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Thrown in reaction to exceptions in event processing.
@@ -34,7 +34,7 @@ public class KittehEventException extends Exception {
      *
      * @param cause thrown cause
      */
-    public KittehEventException(@Nonnull Throwable cause) {
+    public KittehEventException(@NonNull Throwable cause) {
         super("Trouble processing events!", cause);
     }
 }

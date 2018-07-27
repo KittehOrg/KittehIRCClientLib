@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
 import org.kitteh.irc.client.library.element.ISupportParameter;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Default implementation of {@link ISupportParameter.WhoX}.
@@ -41,7 +40,7 @@ public class DefaultISupportWhoX extends DefaultISupportParameter implements ISu
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportWhoX(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportWhoX(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
     }
 }

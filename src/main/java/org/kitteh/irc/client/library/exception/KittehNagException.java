@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.exception;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Indicates a problem that requires the developer's or user's attention.
@@ -34,7 +34,7 @@ public class KittehNagException extends RuntimeException {
      *
      * @param problem the advisory
      */
-    public KittehNagException(@Nonnull String problem) {
+    public KittehNagException(@NonNull String problem) {
         super("Nag! This is not a fatal exception! Just a problem requiring your attention: " + problem);
     }
 }

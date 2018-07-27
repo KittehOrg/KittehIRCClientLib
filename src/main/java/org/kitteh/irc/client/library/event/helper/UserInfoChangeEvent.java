@@ -23,10 +23,9 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.Change;
-
-import javax.annotation.Nonnull;
 
 /**
  * A {@link User} is having their information changed.
@@ -39,7 +38,7 @@ public interface UserInfoChangeEvent<Type> {
      *
      * @return the User instance
      */
-    @Nonnull
+    @NonNull
     User getOldUser();
 
     /**
@@ -47,7 +46,7 @@ public interface UserInfoChangeEvent<Type> {
      *
      * @return the User instance
      */
-    @Nonnull
+    @NonNull
     User getNewUser();
 
     /**
@@ -55,6 +54,6 @@ public interface UserInfoChangeEvent<Type> {
      *
      * @return the Change instance
      */
-    @Nonnull
+    @NonNull
     Change<Type> getChange();
 }

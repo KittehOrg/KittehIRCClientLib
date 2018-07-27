@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -50,7 +50,7 @@ public class ClientReceiveCommandEvent extends ClientReceiveServerMessageEventBa
      * @param command command
      * @param args args
      */
-    public ClientReceiveCommandEvent(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor actor, @Nonnull String command, @Nonnull List<String> args) {
+    public ClientReceiveCommandEvent(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor actor, @NonNull String command, @NonNull List<String> args) {
         super(client, serverMessage, actor, command, args);
     }
 }

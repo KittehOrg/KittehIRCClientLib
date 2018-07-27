@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Indicates chatting is for subscribers only.
@@ -62,7 +61,7 @@ public class SubsOnly extends MessageTagManager.DefaultMessageTag {
         public static final String ENABLED = "1";
     }
 
-    private SubsOnly(@Nonnull String name, @Nonnull String value) {
+    private SubsOnly(@NonNull String name, @NonNull String value) {
         super(name, value);
     }
 }

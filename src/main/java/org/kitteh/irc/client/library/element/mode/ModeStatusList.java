@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,8 +52,8 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param string string to parse
      * @return list
      */
-    @Nonnull
-    public static ModeStatusList<ChannelMode> fromChannel(@Nonnull Client client, @Nonnull String string) {
+    @NonNull
+    public static ModeStatusList<ChannelMode> fromChannel(@NonNull Client client, @NonNull String string) {
         Map<Character, ChannelMode> modes = new HashMap<>();
         client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
         client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));
@@ -67,13 +67,13 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param string string to parse
      * @return list
      */
-    @Nonnull
-    public static ModeStatusList<UserMode> fromUser(@Nonnull Client client, @Nonnull String string) {
+    @NonNull
+    public static ModeStatusList<UserMode> fromUser(@NonNull Client client, @NonNull String string) {
         return from(string, client.getServerInfo().getUserModes().stream().collect(Collectors.toMap(UserMode::getChar, Function.identity())));
     }
 
-    @Nonnull
-    private static <ModeType extends Mode> ModeStatusList<ModeType> from(@Nonnull String string, @Nonnull Map<Character, ModeType> modes) {
+    @NonNull
+    private static <ModeType extends Mode> ModeStatusList<ModeType> from(@NonNull String string, @NonNull Map<Character, ModeType> modes) {
         Sanity.safeMessageCheck(string, "String");
         List<ModeStatus<ModeType>> list = new ArrayList<>();
         String[] args = string.split(" ");
@@ -115,8 +115,8 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param <ModeType> type of modes being listed
      * @return list
      */
-    @Nonnull
-    public static <ModeType extends Mode> ModeStatusList<ModeType> of(@Nonnull ModeStatus<ModeType>... statuses) {
+    @NonNull
+    public static <ModeType extends Mode> ModeStatusList<ModeType> of(@NonNull ModeStatus<ModeType>... statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
         Sanity.truthiness((statuses.length <= 1) || (Arrays.stream(statuses).map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
         return new ModeStatusList<>(Arrays.asList(statuses));
@@ -129,8 +129,8 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param <ModeType> type of modes being listed
      * @return list
      */
-    @Nonnull
-    public static <ModeType extends Mode> ModeStatusList<ModeType> of(@Nonnull Collection<ModeStatus<ModeType>> statuses) {
+    @NonNull
+    public static <ModeType extends Mode> ModeStatusList<ModeType> of(@NonNull Collection<ModeStatus<ModeType>> statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
         List<ModeStatus<ModeType>> list = new ArrayList<>(statuses);
         Sanity.truthiness((list.size() <= 1) || (list.stream().map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
@@ -149,7 +149,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param mode mode to check
      * @return true if present at least once
      */
-    public boolean containsMode(@Nonnull ModeType mode) {
+    public boolean containsMode(@NonNull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         return this.statuses.stream().anyMatch(status -> status.getMode().equals(mode));
     }
@@ -160,8 +160,8 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param mode mode to check
      * @return all matching modes or empty if none match
      */
-    @Nonnull
-    public List<ModeStatus<ModeType>> getStatusByMode(@Nonnull ModeType mode) {
+    @NonNull
+    public List<ModeStatus<ModeType>> getStatusByMode(@NonNull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().equals(mode)).collect(Collectors.toList()));
     }
@@ -171,7 +171,7 @@ public class ModeStatusList<ModeType extends Mode> {
      *
      * @return status list
      */
-    @Nonnull
+    @NonNull
     public List<ModeStatus<ModeType>> getStatuses() {
         return Collections.unmodifiableList(this.statuses);
     }
@@ -181,7 +181,7 @@ public class ModeStatusList<ModeType extends Mode> {
      *
      * @return string of modes
      */
-    @Nonnull
+    @NonNull
     public String getStatusString() {
         StringBuilder modes = new StringBuilder(this.statuses.size() * 2);
         StringBuilder parameters = new StringBuilder(100); // Golly, that's arbitrary.
@@ -198,7 +198,7 @@ public class ModeStatusList<ModeType extends Mode> {
         return modes.toString() + parameters;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("list", this.statuses).toString();

@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public class WallopsEvent extends ActorMessageEventBase<Actor> {
      * @param actor the actor
      * @param message the message
      */
-    public WallopsEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Actor actor, @Nonnull String message) {
+    public WallopsEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor actor, @NonNull String message) {
         super(client, originalMessages, actor, message);
     }
 }

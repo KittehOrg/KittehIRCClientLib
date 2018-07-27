@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
@@ -30,7 +31,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.UnexpectedChannelLeaveEvent;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -47,7 +47,7 @@ public class UnexpectedChannelLeaveViaKickEvent extends ChannelKickEvent impleme
      * @param target targeted user
      * @param message message the user left
      */
-    public UnexpectedChannelLeaveViaKickEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull Actor actor, @Nonnull User target, @Nonnull String message) {
+    public UnexpectedChannelLeaveViaKickEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
         super(client, originalMessages, channel, actor, target, message);
     }
 }

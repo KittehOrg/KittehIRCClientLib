@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -44,7 +44,7 @@ public class DefaultISupportCaseMapping extends DefaultISupportParameterValueReq
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportCaseMapping(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportCaseMapping(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
             throw new KittehServerISupportException(name, "No casemapping value");
@@ -57,9 +57,8 @@ public class DefaultISupportCaseMapping extends DefaultISupportParameterValueReq
         }
     }
 
-    @Nonnull
     @Override
-    public org.kitteh.irc.client.library.feature.CaseMapping getCaseMapping() {
+    public org.kitteh.irc.client.library.feature.@NonNull CaseMapping getCaseMapping() {
         return this.caseMapping;
     }
 }

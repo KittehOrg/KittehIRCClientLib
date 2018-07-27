@@ -23,8 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.defaultmessage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public interface DefaultMessageMap {
      * @param defaultString default value
      * @return self to permit chaining
      */
-    @Nonnull
+    @NonNull
     DefaultMessageMap setDefault(DefaultMessageType key, @Nullable String defaultString);
 
     /**
@@ -50,7 +51,7 @@ public interface DefaultMessageMap {
      * @param key message type
      * @return default message
      */
-    @Nonnull
+    @NonNull
     Optional<String> getDefault(DefaultMessageType key);
 
     /**
@@ -61,7 +62,7 @@ public interface DefaultMessageMap {
      * @param defaultValue a fallback value for if no default is set
      * @return default message
      */
-    @Nonnull
+    @NonNull
     Optional<String> getDefault(DefaultMessageType key, String defaultValue);
 
     /**
@@ -70,6 +71,6 @@ public interface DefaultMessageMap {
      *
      * @return an immutable copy of the map
      */
-    @Nonnull
+    @NonNull
     Map<DefaultMessageType, String> getDefaults();
 }

@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -39,7 +39,7 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
      *
      * @return command, upper-case
      */
-    @Nonnull
+    @NonNull
     String getCommand();
 
     /**
@@ -47,7 +47,7 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
      *
      * @return message tags
      */
-    @Nonnull
+    @NonNull
     List<MessageTag> getMessageTags();
 
     /**
@@ -55,7 +55,7 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
      *
      * @return unprocessed, original message
      */
-    @Nonnull
+    @NonNull
     String getOriginalMessage();
 
     /**
@@ -63,7 +63,7 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
      *
      * @return arguments
      */
-    @Nonnull
+    @NonNull
     List<String> getParameters();
 
     /**
@@ -71,6 +71,6 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
      *
      * @return the server message
      */
-    @Nonnull
+    @NonNull
     ServerMessage getServerMessage();
 }

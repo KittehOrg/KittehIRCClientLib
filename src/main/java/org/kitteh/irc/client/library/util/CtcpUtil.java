@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,8 +75,8 @@ public final class CtcpUtil {
      * @param message message to convert
      * @return converted message
      */
-    @Nonnull
-    public static String fromCtcp(@Nonnull String message) {
+    @NonNull
+    public static String fromCtcp(@NonNull String message) {
         final String ctcpContent = message.substring(1, message.indexOf(CTCP_DELIMITER, 1)); // Strip the delimiters
         StringBuilder builder = new StringBuilder(ctcpContent.length());
         int currentIndex = 0;
@@ -126,7 +127,7 @@ public final class CtcpUtil {
      * @param message message to test
      * @return true if the message is a CTCP message
      */
-    public static boolean isCtcp(@Nonnull String message) {
+    public static boolean isCtcp(@NonNull String message) {
         return CTCP_MESSAGE.matcher(message).matches();
     }
 
@@ -136,8 +137,8 @@ public final class CtcpUtil {
      * @param message message to convert
      * @return converted message
      */
-    @Nonnull
-    public static String toCtcp(@Nonnull String message) {
+    @NonNull
+    public static String toCtcp(@NonNull String message) {
         StringBuilder builder = new StringBuilder(message.length());
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;

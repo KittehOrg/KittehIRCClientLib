@@ -23,9 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.User;
-
-import javax.annotation.Nonnull;
 
 /**
  * Represents a mask that can match a {@link User}.
@@ -37,14 +36,14 @@ public class Mask {
      * @param string string
      * @return mask from string
      */
-    @Nonnull
-    public static Mask fromString(@Nonnull String string) {
+    @NonNull
+    public static Mask fromString(@NonNull String string) {
         return new Mask(Sanity.nullCheck(string, "String cannot be null"));
     }
 
     private final String string;
 
-    private Mask(@Nonnull String string) {
+    private Mask(@NonNull String string) {
         this.string = string;
     }
 
@@ -53,7 +52,7 @@ public class Mask {
      *
      * @return string
      */
-    @Nonnull
+    @NonNull
     public String asString() {
         return this.string;
     }
@@ -68,7 +67,7 @@ public class Mask {
         return (o instanceof Mask) && ((Mask) o).string.equals(this.string);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("string", this.string).toString();

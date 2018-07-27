@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.defaults.listener;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.DefaultEventListener;
 import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 
-import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 /**
@@ -55,7 +55,7 @@ public enum DefaultListeners implements EventListenerSupplier {
 
     private final Function<Client.WithManagement, Object> function;
 
-    DefaultListeners(@Nonnull Function<Client.WithManagement, Object> function) {
+    DefaultListeners(@NonNull Function<Client.WithManagement, Object> function) {
         this.function = function;
     }
 

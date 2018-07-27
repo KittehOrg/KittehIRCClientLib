@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Default implementation of {@link ISupportParameter.IntegerParameter}.
@@ -43,7 +42,7 @@ public abstract class DefaultISupportParameterInteger extends DefaultISupportPar
      * @param name parameter name
      * @param value value
      */
-    protected DefaultISupportParameterInteger(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    protected DefaultISupportParameterInteger(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
         try {
             this.integer = Integer.parseInt(value);

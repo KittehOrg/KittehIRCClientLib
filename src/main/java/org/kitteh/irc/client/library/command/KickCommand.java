@@ -23,15 +23,14 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Get your KICKs on Route 66.
@@ -50,7 +49,7 @@ public class KickCommand extends ChannelCommand {
      * @see Channel#kick(User)
      * @see Channel#kick(User, String)
      */
-    public KickCommand(@Nonnull Client client, @Nonnull String channel) {
+    public KickCommand(@NonNull Client client, @NonNull String channel) {
         super(client, channel);
         this.reason = this.getClient().getDefaultMessageMap().getDefault(DefaultMessageType.KICK).orElse(null);
     }
@@ -62,8 +61,8 @@ public class KickCommand extends ChannelCommand {
      * @return this command
      * @throws IllegalArgumentException if target is null or contains invalid characters
      */
-    @Nonnull
-    public KickCommand target(@Nonnull String target) {
+    @NonNull
+    public KickCommand target(@NonNull String target) {
         this.target = Sanity.safeMessageCheck(target, "Target");
         return this;
     }
@@ -75,8 +74,8 @@ public class KickCommand extends ChannelCommand {
      * @return this command
      * @throws IllegalArgumentException if target is null or from a different Client
      */
-    @Nonnull
-    public KickCommand target(@Nonnull User target) {
+    @NonNull
+    public KickCommand target(@NonNull User target) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.truthiness(target.getClient() == this.getClient(), "User comes from a different client");
         this.target(target.getNick());
@@ -90,7 +89,7 @@ public class KickCommand extends ChannelCommand {
      * @return this command
      * @throws IllegalArgumentException if reason contains invalid characters
      */
-    @Nonnull
+    @NonNull
     public KickCommand reason(@Nullable String reason) {
         this.reason = (reason == null) ? null : Sanity.safeMessageCheck(reason, "Reason");
         return this;
@@ -109,7 +108,7 @@ public class KickCommand extends ChannelCommand {
         this.getClient().sendRawLine("KICK " + this.getChannel() + ' ' + this.target + (this.reason != null ? (" :" + this.reason) : ""));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("target", this.target).add("reason", this.reason);

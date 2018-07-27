@@ -26,9 +26,9 @@ package org.kitteh.irc.client.library.feature.filter;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.IMessageFilter;
 import net.engio.mbassy.subscription.SubscriptionContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -64,7 +64,7 @@ public @interface NumericFilter {
         }
 
         @Override
-        public boolean accepts(@Nonnull ClientReceiveNumericEvent event, @Nonnull NumericFilter[] numericFilters) {
+        public boolean accepts(@NonNull ClientReceiveNumericEvent event, @NonNull NumericFilter[] numericFilters) {
             for (NumericFilter numericFilter : numericFilters) {
                 if (numericFilter.value() == event.getNumeric()) {
                     return true;
@@ -91,7 +91,7 @@ public @interface NumericFilter {
          *
          * @return stored annotations
          */
-        @Nonnull NumericFilter[] value();
+        @NonNull NumericFilter[] value();
     }
 
     /**

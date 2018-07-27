@@ -1,5 +1,6 @@
 package org.kitteh.irc.client.library.defaults.feature.sts;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.FakeClient;
@@ -16,7 +17,6 @@ import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,18 +126,18 @@ public class StsHandlerTest {
         private StsClientState state = StsClientState.UNKNOWN;
         private StsPolicy policy;
 
-        @Nonnull
+        @NonNull
         @Override
         public StsClientState getCurrentState() {
             return this.state;
         }
 
         @Override
-        public void setCurrentState(@Nonnull StsClientState newState) {
+        public void setCurrentState(@NonNull StsClientState newState) {
             this.state = newState;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public StsStorageManager getStorageManager() {
             return null;
@@ -151,7 +151,7 @@ public class StsHandlerTest {
          * @param policy the valid STS policy
          */
         @Override
-        public void setStsPolicy(@Nonnull StsPolicy policy) {
+        public void setStsPolicy(@NonNull StsPolicy policy) {
             this.policy = policy;
         }
 

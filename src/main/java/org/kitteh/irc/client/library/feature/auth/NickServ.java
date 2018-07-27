@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
@@ -32,8 +33,6 @@ import org.kitteh.irc.client.library.feature.auth.element.NickReclamation;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.util.Format;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * NickServ protocol. Automatically attempts to identify upon connection.
@@ -57,7 +56,7 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
             }
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).toString();
@@ -73,17 +72,17 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
      * @param accountName account name
      * @param password password
      */
-    public NickServ(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
+    public NickServ(@NonNull Client client, @NonNull String accountName, @NonNull String password) {
         super(client, accountName, password);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected String getAuthentication() {
         return "PRIVMSG " + this.getNickServNick() + " :IDENTIFY " + this.getAccountName() + ' ' + this.getPassword();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Object getEventListener() {
         return this.listener;
@@ -94,7 +93,7 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
      *
      * @return nick of NickServ
      */
-    @Nonnull
+    @NonNull
     protected String getNickServNick() {
         return "NickServ";
     }

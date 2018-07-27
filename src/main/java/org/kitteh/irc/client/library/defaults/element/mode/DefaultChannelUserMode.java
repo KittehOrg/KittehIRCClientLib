@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.defaults.element.mode;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -43,7 +43,7 @@ public class DefaultChannelUserMode extends DefaultModeBase implements ChannelUs
      * @param mode mode
      * @param prefix prefix used for this mode
      */
-    public DefaultChannelUserMode(@Nonnull Client client, char mode, char prefix) {
+    public DefaultChannelUserMode(@NonNull Client client, char mode, char prefix) {
         super(client, mode);
         this.prefix = prefix;
     }
@@ -67,7 +67,7 @@ public class DefaultChannelUserMode extends DefaultModeBase implements ChannelUs
         return Objects.hash(this.getClient(), this.getChar(), this.getType(), this.getNickPrefix());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ToStringer toStringer() {
         return super.toStringer().add("prefix", this.getNickPrefix());

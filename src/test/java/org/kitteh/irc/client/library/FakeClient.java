@@ -1,5 +1,7 @@
 package org.kitteh.irc.client.library;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.defaults.feature.DefaultAuthManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultCapabilityManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultEventManager;
@@ -28,8 +30,6 @@ import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -57,35 +57,35 @@ public class FakeClient implements Client.WithManagement {
     boolean secure = true;
 
     @Override
-    public void processLine(@Nonnull String line) {
+    public void processLine(@NonNull String line) {
 
     }
 
     @Override
-    public void sendNickChange(@Nonnull String newNick) {
+    public void sendNickChange(@NonNull String newNick) {
 
     }
 
     @Override
-    public void setCurrentNick(@Nonnull String nick) {
+    public void setCurrentNick(@NonNull String nick) {
 
     }
 
     @Override
-    public void setServerAddress(@Nonnull InetSocketAddress address) {
+    public void setServerAddress(@NonNull InetSocketAddress address) {
 
     }
 
     @Override
-    public void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword,
+    public void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword,
                            @Nullable InetSocketAddress bindAddress,
-                           @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
-                           @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager,
-                           @Nonnull EventManager eventManager, @Nonnull List<EventListenerSupplier> listenerSuppliers,
-                           @Nonnull MessageTagManager messageTagManager,
-                           @Nonnull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
-                           @Nonnull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
-                           @Nonnull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
+                           @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
+                           @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
+                           @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
+                           @NonNull MessageTagManager messageTagManager,
+                           @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
+                           @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
+                           @NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
                            @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener,
                            @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain,
                            @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory,
@@ -95,7 +95,7 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
-    public void setUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    public void setUserModes(@NonNull ModeStatusList<UserMode> userModes) {
 
     }
 
@@ -105,7 +105,7 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
-    public void updateUserModes(@Nonnull ModeStatusList<UserMode> userModes) {
+    public void updateUserModes(@NonNull ModeStatusList<UserMode> userModes) {
 
     }
 
@@ -129,11 +129,11 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
-    public void setDefaultMessageMap(@Nonnull DefaultMessageMap defaults) {
+    public void setDefaultMessageMap(@NonNull DefaultMessageMap defaults) {
         this.defaultMessageMap = defaults;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Listener<Exception> getExceptionListener() {
         return this.listenerException;
@@ -144,7 +144,7 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Listener<String> getInputListener() {
         return this.listenerInput;
@@ -156,46 +156,46 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
-    public void setMessageCutter(@Nonnull Cutter cutter) {
+    public void setMessageCutter(@NonNull Cutter cutter) {
         this.messageCutter = cutter;
     }
 
     @Override
-    public void setMessageSendingQueueSupplier(@Nonnull Function<WithManagement, ? extends MessageSendingQueue> supplier) {
+    public void setMessageSendingQueueSupplier(@NonNull Function<WithManagement, ? extends MessageSendingQueue> supplier) {
 
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Set<String> getIntendedChannels() {
         return new HashSet<>();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public DefaultISupportManager getISupportManager() {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<StsMachine> getStsMachine() {
         return Optional.empty(); // No STS in FakeClient for testing
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Cutter getMessageCutter() {
         return this.messageCutter;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier() {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Listener<String> getOutputListener() {
         return this.listenerOutput;
@@ -206,7 +206,7 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getRequestedNick() {
         return "";
@@ -236,7 +236,7 @@ public class FakeClient implements Client.WithManagement {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public InetSocketAddress getServerAddress() {
         return null;
@@ -248,17 +248,17 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
-    public void beginMessageSendingImmediate(@Nonnull Consumer<String> consumer) {
+    public void beginMessageSendingImmediate(@NonNull Consumer<String> consumer) {
 
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ActorTracker getActorTracker() {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public InetSocketAddress getBindAddress() {
         return null;
@@ -270,92 +270,92 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
-    public void addChannel(@Nonnull String... channel) {
+    public void addChannel(@NonNull String... channel) {
 
     }
 
     @Override
-    public void addKeyProtectedChannel(@Nonnull String channel, @Nonnull String key) {
+    public void addKeyProtectedChannel(@NonNull String channel, @NonNull String key) {
 
     }
 
     @Override
-    public void addKeyProtectedChannel(@Nonnull Pair<String, String>... channelsAndKeys) {
+    public void addKeyProtectedChannel(@NonNull Pair<String, String>... channelsAndKeys) {
 
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public AuthManager getAuthManager() {
         return this.authManager;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public DefaultCapabilityManager getCapabilityManager() {
         return this.capabilityManager;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<Channel> getChannel(@Nonnull String name) {
+    public Optional<Channel> getChannel(@NonNull String name) {
         return Optional.empty();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Set<Channel> getChannels() {
         return Collections.emptySet();
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Set<Channel> getChannels(@Nonnull Collection<String> channels) {
+    public Set<Channel> getChannels(@NonNull Collection<String> channels) {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public DefaultMessageMap getDefaultMessageMap() {
         return this.defaultMessageMap;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public EventManager getEventManager() {
         return this.eventManager;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getIntendedNick() {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public DefaultMessageTagManager getMessageTagManager() {
         return this.messageTagManager;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getNick() {
         return null;
     }
 
     @Override
-    public void setNick(@Nonnull String nick) {
+    public void setNick(@NonNull String nick) {
 
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public DefaultServerInfo getServerInfo() {
         return this.serverInfo;
@@ -366,90 +366,90 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<User> getUser() {
         return Optional.empty();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<ModeStatusList<UserMode>> getUserModes() {
         return Optional.empty();
     }
 
     @Override
-    public void knockChannel(@Nonnull String channelName) {
+    public void knockChannel(@NonNull String channelName) {
 
     }
 
     @Override
-    public void removeChannel(@Nonnull String channel) {
+    public void removeChannel(@NonNull String channel) {
 
     }
 
     @Override
-    public void removeChannel(@Nonnull String channel, @Nullable String reason) {
+    public void removeChannel(@NonNull String channel, @Nullable String reason) {
 
     }
 
     @Override
-    public void sendCtcpMessage(@Nonnull String target, @Nonnull String message) {
+    public void sendCtcpMessage(@NonNull String target, @NonNull String message) {
 
     }
 
     @Override
-    public void sendCtcpMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+    public void sendCtcpMessage(@NonNull MessageReceiver target, @NonNull String message) {
 
     }
 
     @Override
-    public void sendCtcpReply(@Nonnull String target, @Nonnull String message) {
+    public void sendCtcpReply(@NonNull String target, @NonNull String message) {
 
     }
 
     @Override
-    public void sendMessage(@Nonnull String target, @Nonnull String message) {
+    public void sendMessage(@NonNull String target, @NonNull String message) {
 
     }
 
     @Override
-    public void sendMessage(@Nonnull MessageReceiver target, @Nonnull String message) {
+    public void sendMessage(@NonNull MessageReceiver target, @NonNull String message) {
 
     }
 
     @Override
-    public void sendNotice(@Nonnull String target, @Nonnull String message) {
+    public void sendNotice(@NonNull String target, @NonNull String message) {
 
     }
 
     @Override
-    public void sendNotice(@Nonnull MessageReceiver target, @Nonnull String message) {
+    public void sendNotice(@NonNull MessageReceiver target, @NonNull String message) {
 
     }
 
     @Override
-    public void sendMultiLineMessage(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+    public void sendMultiLineMessage(@NonNull String target, @NonNull String message, @NonNull Cutter cutter) {
 
     }
 
     @Override
-    public void sendMultiLineNotice(@Nonnull String target, @Nonnull String message, @Nonnull Cutter cutter) {
+    public void sendMultiLineNotice(@NonNull String target, @NonNull String message, @NonNull Cutter cutter) {
 
     }
 
     @Override
-    public void sendRawLine(@Nonnull String message) {
+    public void sendRawLine(@NonNull String message) {
 
     }
 
     @Override
-    public void sendRawLineAvoidingDuplication(@Nonnull String message) {
+    public void sendRawLineAvoidingDuplication(@NonNull String message) {
 
     }
 
     @Override
-    public void sendRawLineImmediately(@Nonnull String message) {
+    public void sendRawLineImmediately(@NonNull String message) {
 
     }
 
@@ -463,7 +463,7 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Commands commands() {
         return null;

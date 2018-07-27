@@ -26,9 +26,9 @@ package org.kitteh.irc.client.library.feature.filter;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.IMessageFilter;
 import net.engio.mbassy.subscription.SubscriptionContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -64,7 +64,7 @@ public @interface CommandFilter {
         }
 
         @Override
-        public boolean accepts(@Nonnull ClientReceiveCommandEvent event, @Nonnull CommandFilter[] commandFilters) {
+        public boolean accepts(@NonNull ClientReceiveCommandEvent event, @NonNull CommandFilter[] commandFilters) {
             for (CommandFilter commandFilter : commandFilters) {
                 if (commandFilter.value().equalsIgnoreCase(event.getCommand())) {
                     return true;
@@ -91,7 +91,7 @@ public @interface CommandFilter {
          *
          * @return stored annotations
          */
-        @Nonnull CommandFilter[] value();
+        @NonNull CommandFilter[] value();
     }
 
     /**
@@ -99,5 +99,5 @@ public @interface CommandFilter {
      *
      * @return the command
      */
-    @Nonnull String value();
+    @NonNull String value();
 }
