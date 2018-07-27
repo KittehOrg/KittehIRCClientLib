@@ -71,8 +71,7 @@ public abstract class CapabilityNegotiationResponseEventBase extends ServerMessa
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("isEndingNegotiation", this.endNegotiation).add("isNegotiating", this.isNegotiating());
     }
 }

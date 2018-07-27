@@ -55,24 +55,21 @@ public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactor
             // Allow ALL the things!
         }
 
-        @NonNull
         @Override
-        public X509Certificate[] getAcceptedIssuers() {
+        public @NonNull X509Certificate[] getAcceptedIssuers() {
             return EmptyArrays.EMPTY_X509_CERTIFICATES;
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).toString();
         }
     }
 
     private final TrustManager trustManager = new TrustingManager();
 
-    @NonNull
     @Override
-    protected TrustManager[] engineGetTrustManagers() {
+    protected @NonNull TrustManager[] engineGetTrustManagers() {
         return new TrustManager[]{this.trustManager};
     }
 

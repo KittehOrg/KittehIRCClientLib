@@ -33,8 +33,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
  * Sends an AWAY request to the server.
  */
 public class AwayCommand extends Command {
-    @Nullable
-    private String message;
+    private @Nullable String message;
 
     /**
      * Constructs the command.
@@ -53,8 +52,7 @@ public class AwayCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid message
      */
-    @NonNull
-    public AwayCommand message(@Nullable String message) {
+    public @NonNull AwayCommand message(@Nullable String message) {
         this.message = (message == null) ? null : Sanity.safeMessageCheck(message);
         return this;
     }
@@ -65,8 +63,7 @@ public class AwayCommand extends Command {
      *
      * @return this command
      */
-    @NonNull
-    public AwayCommand messageRemove() {
+    public @NonNull AwayCommand messageRemove() {
         this.message = null;
         return this;
     }
@@ -80,9 +77,8 @@ public class AwayCommand extends Command {
         this.getClient().sendRawLine(exec);
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("message", this.message);
     }
 }

@@ -85,63 +85,53 @@ public class DefaultUser extends DefaultStaleable implements User {
         return (o instanceof DefaultUser) && (((DefaultUser) o).getClient() == this.getClient()) && ((DefaultUser) o).getLowerCaseName().equals(this.getLowerCaseName());
     }
 
-    @NonNull
     @Override
-    public Optional<String> getAccount() {
+    public @NonNull Optional<String> getAccount() {
         return Optional.ofNullable(this.account);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getAwayMessage() {
+    public @NonNull Optional<String> getAwayMessage() {
         return Optional.ofNullable(this.awayMessage);
     }
 
-    @NonNull
     @Override
-    public Set<String> getChannels() {
+    public @NonNull Set<String> getChannels() {
         return this.channels;
     }
 
-    @NonNull
     @Override
-    public String getHost() {
+    public @NonNull String getHost() {
         return this.host;
     }
 
-    @NonNull
     @Override
-    public String getMessagingName() {
+    public @NonNull String getMessagingName() {
         return this.getNick();
     }
 
-    @NonNull
     @Override
-    public String getNick() {
+    public @NonNull String getNick() {
         return this.nick;
     }
 
-    @NonNull
     @Override
-    public Optional<String> getOperatorInformation() {
+    public @NonNull Optional<String> getOperatorInformation() {
         return Optional.ofNullable(this.operString);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getRealName() {
+    public @NonNull Optional<String> getRealName() {
         return Optional.ofNullable(this.realName);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getServer() {
+    public @NonNull Optional<String> getServer() {
         return Optional.ofNullable(this.server);
     }
 
-    @NonNull
     @Override
-    public String getUserString() {
+    public @NonNull String getUserString() {
         return this.user;
     }
 
@@ -156,8 +146,7 @@ public class DefaultUser extends DefaultStaleable implements User {
     }
 
     @Override
-    @NonNull
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.getClient()).add("nick", this.nick).add("user", this.user).add("host", this.host).add("channels", this.channels.size()).toString();
     }
 }

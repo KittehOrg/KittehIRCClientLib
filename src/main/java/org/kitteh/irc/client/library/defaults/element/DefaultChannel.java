@@ -65,21 +65,18 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
             this.channel = channel;
         }
 
-        @NonNull
         @Override
-        public ChannelModeCommand mode() {
+        public @NonNull ChannelModeCommand mode() {
             return new ChannelModeCommand(this.client, this.channel);
         }
 
-        @NonNull
         @Override
-        public KickCommand kick() {
+        public @NonNull KickCommand kick() {
             return new KickCommand(this.client, this.channel);
         }
 
-        @NonNull
         @Override
-        public TopicCommand topic() {
+        public @NonNull TopicCommand topic() {
             return new TopicCommand(this.client, this.channel);
         }
     }
@@ -133,55 +130,47 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
         return (o instanceof DefaultChannel) && (((DefaultChannel) o).getClient() == this.getClient()) && ((Channel) o).getLowerCaseName().equals(this.getLowerCaseName());
     }
 
-    @NonNull
     @Override
-    public String getMessagingName() {
+    public @NonNull String getMessagingName() {
         return this.getName();
     }
 
-    @NonNull
     @Override
-    public Optional<List<ModeInfo>> getModeInfoList(@NonNull ChannelMode mode) {
+    public @NonNull Optional<List<ModeInfo>> getModeInfoList(@NonNull ChannelMode mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
         return Optional.ofNullable(this.modeInfoLists.get(mode.getChar()));
     }
 
     @Override
-    @NonNull
-    public ModeStatusList<ChannelMode> getModes() {
+    public @NonNull ModeStatusList<ChannelMode> getModes() {
         return this.channelModes;
     }
 
-    @NonNull
     @Override
-    public List<String> getNicknames() {
+    public @NonNull List<String> getNicknames() {
         return this.names;
     }
 
-    @NonNull
     @Override
-    public Topic getTopic() {
+    public @NonNull Topic getTopic() {
         return this.topic;
     }
 
-    @NonNull
     @Override
-    public Optional<User> getUser(@NonNull String nick) {
+    public @NonNull Optional<User> getUser(@NonNull String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
         return Optional.ofNullable(this.nickMap.get(nick));
     }
 
-    @NonNull
     @Override
-    public Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull String nick) {
+    public @NonNull Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
         return Optional.ofNullable(this.modes.get(nick));
     }
 
-    @NonNull
     @Override
-    public List<User> getUsers() {
+    public @NonNull List<User> getUsers() {
         return this.users;
     }
 
@@ -202,9 +191,8 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
         this.getClient().getActorTracker().trackChannelMode(channel.get().getName(), mode, track);
     }
 
-    @NonNull
     @Override
-    public Commands commands() {
+    public @NonNull Commands commands() {
         return this.commands;
     }
 
@@ -215,8 +203,7 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
     }
 
     @Override
-    @NonNull
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.getClient()).add("name", this.getName()).add("complete", this.complete).add("users", this.users.size()).toString();
     }
 }

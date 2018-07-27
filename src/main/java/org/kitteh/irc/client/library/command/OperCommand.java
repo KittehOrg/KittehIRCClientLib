@@ -52,8 +52,7 @@ public class OperCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid target
      */
-    @NonNull
-    public OperCommand user(@NonNull String user) {
+    public @NonNull OperCommand user(@NonNull String user) {
         this.user = Sanity.safeMessageCheck(user, "user");
         return this;
     }
@@ -64,8 +63,7 @@ public class OperCommand extends Command {
      * @param password password for the user
      * @return this command
      */
-    @NonNull
-    public OperCommand password(@NonNull String password) {
+    public @NonNull OperCommand password(@NonNull String password) {
         this.password = Sanity.safeMessageCheck(password, "password");
         return this;
     }
@@ -81,9 +79,8 @@ public class OperCommand extends Command {
         this.getClient().sendRawLine("OPER " + this.user + ' ' + this.password);
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("user", (this.user == null) ? null : "AzureDiamond").add("password", (this.password == null) ? null : "hunter2");
     }
 }

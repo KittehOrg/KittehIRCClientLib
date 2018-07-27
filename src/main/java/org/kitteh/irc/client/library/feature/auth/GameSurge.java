@@ -42,9 +42,8 @@ public class GameSurge extends AbstractAccountPassProtocol implements EventListe
             GameSurge.this.startAuthentication();
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).toString();
         }
     }
@@ -62,15 +61,13 @@ public class GameSurge extends AbstractAccountPassProtocol implements EventListe
         super(client, accountName, password);
     }
 
-    @NonNull
     @Override
-    protected String getAuthentication() {
+    protected @NonNull String getAuthentication() {
         return "PRIVMSG AuthServ@services.gamesurge.net :auth " + this.getAccountName() + ' ' + this.getPassword();
     }
 
-    @NonNull
     @Override
-    public Object getEventListener() {
+    public @NonNull Object getEventListener() {
         return this.listener;
     }
 }

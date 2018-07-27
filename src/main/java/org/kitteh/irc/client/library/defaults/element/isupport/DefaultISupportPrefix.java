@@ -73,9 +73,8 @@ public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired
         this.modes = Collections.unmodifiableList(prefixList);
     }
 
-    @NonNull
     @Override
-    public List<ChannelUserMode> getModes() {
+    public @NonNull List<ChannelUserMode> getModes() {
         return this.modes;
     }
 }

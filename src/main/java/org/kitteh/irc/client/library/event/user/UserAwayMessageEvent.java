@@ -72,14 +72,12 @@ public class UserAwayMessageEvent extends ActorEventBase<User> {
      *
      * @return away message or empty if no longer away
      */
-    @NonNull
-    public Optional<String> getAwayMessage() {
+    public @NonNull Optional<String> getAwayMessage() {
         return Optional.ofNullable(this.message);
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("awayMessage", this.message).add("isAway", this.isAway);
     }
 }

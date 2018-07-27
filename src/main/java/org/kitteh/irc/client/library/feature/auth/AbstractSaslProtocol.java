@@ -130,9 +130,8 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
             AbstractSaslProtocol.this.getClient().sendRawLineImmediately("CAP END"); // TODO event decision
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).toString();
         }
     }
@@ -156,15 +155,13 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
         this.authValue = Sanity.nullCheck(authValue, "Auth value cannot be null");
     }
 
-    @NonNull
     @Override
-    protected final String getAuthentication() {
+    protected final @NonNull String getAuthentication() {
         return "AUTHENTICATE " + this.saslType;
     }
 
-    @NonNull
     @Override
-    public Object getEventListener() {
+    public @NonNull Object getEventListener() {
         return (this.listener == null) ? (this.listener = new Listener()) : this.listener;
     }
 
@@ -173,8 +170,7 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
      *
      * @return the authentication value
      */
-    @NonNull
-    protected final AuthValue getAuthValue() {
+    protected final @NonNull AuthValue getAuthValue() {
         return this.authValue;
     }
 
@@ -193,6 +189,5 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
      *
      * @return value to encode
      */
-    @NonNull
-    protected abstract String getAuthLine();
+    protected abstract @NonNull String getAuthLine();
 }

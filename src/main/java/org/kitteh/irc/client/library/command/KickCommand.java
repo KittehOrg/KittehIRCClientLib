@@ -37,8 +37,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
  */
 public class KickCommand extends ChannelCommand {
     private String target;
-    @Nullable
-    private String reason;
+    private @Nullable String reason;
 
     /**
      * Constructs a KICK command for a given channel.
@@ -61,8 +60,7 @@ public class KickCommand extends ChannelCommand {
      * @return this command
      * @throws IllegalArgumentException if target is null or contains invalid characters
      */
-    @NonNull
-    public KickCommand target(@NonNull String target) {
+    public @NonNull KickCommand target(@NonNull String target) {
         this.target = Sanity.safeMessageCheck(target, "Target");
         return this;
     }
@@ -74,8 +72,7 @@ public class KickCommand extends ChannelCommand {
      * @return this command
      * @throws IllegalArgumentException if target is null or from a different Client
      */
-    @NonNull
-    public KickCommand target(@NonNull User target) {
+    public @NonNull KickCommand target(@NonNull User target) {
         Sanity.nullCheck(target, "Target cannot be null");
         Sanity.truthiness(target.getClient() == this.getClient(), "User comes from a different client");
         this.target(target.getNick());
@@ -89,8 +86,7 @@ public class KickCommand extends ChannelCommand {
      * @return this command
      * @throws IllegalArgumentException if reason contains invalid characters
      */
-    @NonNull
-    public KickCommand reason(@Nullable String reason) {
+    public @NonNull KickCommand reason(@Nullable String reason) {
         this.reason = (reason == null) ? null : Sanity.safeMessageCheck(reason, "Reason");
         return this;
     }
@@ -108,9 +104,8 @@ public class KickCommand extends ChannelCommand {
         this.getClient().sendRawLine("KICK " + this.getChannel() + ' ' + this.target + (this.reason != null ? (" :" + this.reason) : ""));
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("target", this.target).add("reason", this.reason);
     }
 }

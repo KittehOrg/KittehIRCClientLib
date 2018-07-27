@@ -68,8 +68,7 @@ public class Listener<Type> {
     }
 
     private final String clientName;
-    @Nullable
-    private ListenerThread thread;
+    private @Nullable ListenerThread thread;
 
     /**
      * @param client the client
@@ -124,9 +123,8 @@ public class Listener<Type> {
         }
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("clientName", this.clientName).toString();
     }
 }

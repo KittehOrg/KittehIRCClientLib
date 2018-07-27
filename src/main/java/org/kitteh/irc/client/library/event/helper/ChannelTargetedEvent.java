@@ -36,16 +36,14 @@ public interface ChannelTargetedEvent extends ChannelEvent {
      *
      * @return the prefix targeted
      */
-    @NonNull
-    ChannelUserMode getPrefix();
+    @NonNull ChannelUserMode getPrefix();
 
     /**
      * Gets the full targeted name, such as "+#channel".
      *
      * @return targeted name
      */
-    @NonNull
-    default String getTargetedName() {
+    default @NonNull String getTargetedName() {
         return this.getPrefix().getNickPrefix() + this.getChannel().getMessagingName();
     }
 }

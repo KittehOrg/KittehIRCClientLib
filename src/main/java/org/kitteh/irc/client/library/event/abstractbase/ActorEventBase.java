@@ -58,14 +58,12 @@ public abstract class ActorEventBase<A extends Actor> extends ServerMessageEvent
     }
 
     @Override
-    @NonNull
-    public final A getActor() {
+    public @NonNull final A getActor() {
         return this.actor;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("actor", this.actor);
     }
 }

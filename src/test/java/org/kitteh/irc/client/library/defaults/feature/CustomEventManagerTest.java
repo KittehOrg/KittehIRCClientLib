@@ -32,15 +32,13 @@ public class CustomEventManagerTest {
             this.bus.publish(event);
         }
 
-        @NonNull
         @Override
-        public Set<Object> getRegisteredEventListeners() {
+        public @NonNull Set<Object> getRegisteredEventListeners() {
             return Collections.emptySet();
         }
 
-        @NonNull
         @Override
-        public Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters() {
+        public @NonNull Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters() {
             return Collections.emptyMap();
         }
 

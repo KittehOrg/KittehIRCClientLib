@@ -149,8 +149,7 @@ public enum Format {
      * @see #stripColor(String)
      * @see #stripFormatting(String)
      */
-    @NonNull
-    public static String stripAll(@NonNull String input) {
+    public @NonNull static String stripAll(@NonNull String input) {
         return stripColor(stripFormatting(input));
     }
 
@@ -160,8 +159,7 @@ public enum Format {
      * @param input input to strip
      * @return stripped input
      */
-    @NonNull
-    public static String stripColor(@NonNull String input) {
+    public @NonNull static String stripColor(@NonNull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
         return COLOR_REGEX.matcher(input).replaceAll("");
     }
@@ -172,8 +170,7 @@ public enum Format {
      * @param input input to strip
      * @return stripped input
      */
-    @NonNull
-    public static String stripFormatting(@NonNull String input) {
+    public @NonNull static String stripFormatting(@NonNull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
         return FORMAT_REGEX.matcher(input).replaceAll("");
     }
@@ -197,9 +194,8 @@ public enum Format {
         return this.color;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return this.toString;
     }
 
@@ -210,8 +206,7 @@ public enum Format {
      * @return the color string
      * @throws IllegalArgumentException if using or providing a non-color
      */
-    @NonNull
-    public String withBackground(@NonNull Format background) {
+    public @NonNull String withBackground(@NonNull Format background) {
         Sanity.nullCheck(background, "Background cannot be null");
         Sanity.truthiness(this.isColor, "Cannot use non-color foreground.");
         Sanity.truthiness(background.isColor, "Cannot use non-color background");

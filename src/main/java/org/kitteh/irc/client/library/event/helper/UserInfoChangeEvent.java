@@ -38,22 +38,19 @@ public interface UserInfoChangeEvent<Type> {
      *
      * @return the User instance
      */
-    @NonNull
-    User getOldUser();
+    @NonNull User getOldUser();
 
     /**
      * Gets the new user instance after the change took place.
      *
      * @return the User instance
      */
-    @NonNull
-    User getNewUser();
+    @NonNull User getNewUser();
 
     /**
      * Gets the changed information.
      *
      * @return the Change instance
      */
-    @NonNull
-    Change<Type> getChange();
+    @NonNull Change<Type> getChange();
 }

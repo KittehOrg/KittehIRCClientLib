@@ -58,8 +58,7 @@ public class ClientNegotiationCompleteEvent extends ClientEventBase {
      *
      * @return the server the client is connected to
      */
-    @NonNull
-    public Actor getServer() {
+    public @NonNull Actor getServer() {
         return this.server;
     }
 
@@ -74,14 +73,12 @@ public class ClientNegotiationCompleteEvent extends ClientEventBase {
      * @see ServerInfo#getAddress()
      * @see ServerInfo#getVersion()
      */
-    @NonNull
-    public ServerInfo getServerInfo() {
+    public @NonNull ServerInfo getServerInfo() {
         return this.serverInfo;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("server", this.server);
     }
 }

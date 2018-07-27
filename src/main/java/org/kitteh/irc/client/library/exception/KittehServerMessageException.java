@@ -63,8 +63,7 @@ public class KittehServerMessageException extends RuntimeException {
      *
      * @return message
      */
-    @NonNull
-    public List<ServerMessage> getServerMessages() {
+    public @NonNull List<ServerMessage> getServerMessages() {
         return this.messages;
     }
 }

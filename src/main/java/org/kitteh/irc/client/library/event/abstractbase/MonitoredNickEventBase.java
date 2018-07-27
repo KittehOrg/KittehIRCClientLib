@@ -50,15 +50,13 @@ public abstract class MonitoredNickEventBase extends ServerMessageEventBase impl
         this.nick = Sanity.nullCheck(nick, "Nick cannot be null");
     }
 
-    @NonNull
     @Override
-    public String getNick() {
+    public @NonNull String getNick() {
         return this.nick;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("nick", this.nick);
     }
 }

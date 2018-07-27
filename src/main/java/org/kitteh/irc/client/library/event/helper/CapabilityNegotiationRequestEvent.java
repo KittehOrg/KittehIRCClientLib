@@ -43,6 +43,5 @@ public interface CapabilityNegotiationRequestEvent extends CapabilityNegotiation
      *
      * @return capabilities
      */
-    @NonNull
-    List<String> getRequests();
+    @NonNull List<String> getRequests();
 }

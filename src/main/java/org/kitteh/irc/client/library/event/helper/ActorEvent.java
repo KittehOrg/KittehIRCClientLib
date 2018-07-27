@@ -35,6 +35,5 @@ public interface ActorEvent<A extends Actor> extends ServerMessageEvent {
      *
      * @return the actor
      */
-    @NonNull
-    A getActor();
+    @NonNull A getActor();
 }

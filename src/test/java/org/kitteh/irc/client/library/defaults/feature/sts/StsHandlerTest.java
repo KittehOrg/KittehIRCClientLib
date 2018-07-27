@@ -126,9 +126,8 @@ public class StsHandlerTest {
         private StsClientState state = StsClientState.UNKNOWN;
         private StsPolicy policy;
 
-        @NonNull
         @Override
-        public StsClientState getCurrentState() {
+        public @NonNull StsClientState getCurrentState() {
             return this.state;
         }
 
@@ -137,9 +136,8 @@ public class StsHandlerTest {
             this.state = newState;
         }
 
-        @NonNull
         @Override
-        public StsStorageManager getStorageManager() {
+        public @NonNull StsStorageManager getStorageManager() {
             return null;
         }
 

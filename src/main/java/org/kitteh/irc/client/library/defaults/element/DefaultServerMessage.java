@@ -80,9 +80,8 @@ public class DefaultServerMessage implements ServerMessage {
             this.command = command;
         }
 
-        @NonNull
         @Override
-        public String getCommand() {
+        public @NonNull String getCommand() {
             return this.command;
         }
     }
@@ -104,21 +103,18 @@ public class DefaultServerMessage implements ServerMessage {
         this.tags = Collections.unmodifiableList(new ArrayList<>(tags));
     }
 
-    @NonNull
     @Override
-    public String getMessage() {
+    public @NonNull String getMessage() {
         return this.message;
     }
 
-    @NonNull
     @Override
-    public final List<MessageTag> getTags() {
+    public @NonNull final List<MessageTag> getTags() {
         return this.tags;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("message", this.message).add("tags", this.tags).toString();
     }
 }

@@ -48,8 +48,7 @@ public interface StsStorageManager {
      * @param hostname the hostname (as sent in the SNI by the client)
      * @return all data sent by the server in the CAP LS "sts" value when we connected securely
      */
-    @NonNull
-    Optional<StsPolicy> getEntry(@NonNull String hostname);
+    @NonNull Optional<StsPolicy> getEntry(@NonNull String hostname);
 
     /**
      * Checks if a policy has been stored for the hostname.

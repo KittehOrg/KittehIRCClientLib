@@ -67,9 +67,8 @@ public class DefaultChannelUserMode extends DefaultModeBase implements ChannelUs
         return Objects.hash(this.getClient(), this.getChar(), this.getType(), this.getNickPrefix());
     }
 
-    @NonNull
     @Override
-    public ToStringer toStringer() {
+    public @NonNull ToStringer toStringer() {
         return super.toStringer().add("prefix", this.getNickPrefix());
     }
 }

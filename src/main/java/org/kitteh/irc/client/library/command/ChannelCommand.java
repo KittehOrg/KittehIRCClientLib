@@ -53,14 +53,12 @@ public abstract class ChannelCommand extends Command {
      *
      * @return channel relevant to this command
      */
-    @NonNull
-    public String getChannel() {
+    public @NonNull String getChannel() {
         return this.channel;
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("channel", this.getChannel());
     }
 }

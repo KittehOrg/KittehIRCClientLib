@@ -52,8 +52,7 @@ public final class StsUtil {
      *
      * @return an STSStorageManager implementer
      */
-    @NonNull
-    public static StsStorageManager getDefaultStorageManager() {
+    public @NonNull static StsStorageManager getDefaultStorageManager() {
         return StsUtil.getDefaultStorageManager(Paths.get(System.getProperty("user.home"), DEFAULT_FILENAME));
     }
 
@@ -63,8 +62,7 @@ public final class StsUtil {
      * @param stsFile File instance
      * @return an STSStorageManager implementer
      */
-    @NonNull
-    public static StsStorageManager getDefaultStorageManager(@NonNull Path stsFile) {
+    public @NonNull static StsStorageManager getDefaultStorageManager(@NonNull Path stsFile) {
         return new StsPropertiesStorageManager(stsFile);
     }
 
@@ -75,8 +73,7 @@ public final class StsUtil {
      * @param str the whole string
      * @return the policy
      */
-    @NonNull
-    public static StsPolicy getStsPolicyFromString(@NonNull String delimiter, @NonNull String str) {
+    public @NonNull static StsPolicy getStsPolicyFromString(@NonNull String delimiter, @NonNull String str) {
         Sanity.nullCheck(delimiter, "Need a valid delimiter.");
         Sanity.nullCheck(str, "Need a valid string to parse.");
 

@@ -66,8 +66,7 @@ public class ChannelModeCommand extends ChannelCommand {
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid
      */
-    @NonNull
-    public ChannelModeCommand add(boolean add, @NonNull ChannelMode mode) {
+    public @NonNull ChannelModeCommand add(boolean add, @NonNull ChannelMode mode) {
         return this.addChange(add, mode, null);
     }
 
@@ -81,8 +80,7 @@ public class ChannelModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if mode invalid comes from a
      * different client or parameter is null
      */
-    @NonNull
-    public ChannelModeCommand add(boolean add, @NonNull ChannelMode mode, @NonNull String parameter) {
+    public @NonNull ChannelModeCommand add(boolean add, @NonNull ChannelMode mode, @NonNull String parameter) {
         return this.addChange(add, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
     }
 
@@ -96,15 +94,13 @@ public class ChannelModeCommand extends ChannelCommand {
      * @throws IllegalArgumentException if mode invalid or either mode or
      * user comes from a different client or parameter is null
      */
-    @NonNull
-    public ChannelModeCommand add(boolean add, @NonNull ChannelUserMode mode, @NonNull User parameter) {
+    public @NonNull ChannelModeCommand add(boolean add, @NonNull ChannelUserMode mode, @NonNull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
         Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
         return this.addChange(add, mode, parameter.getNick());
     }
 
-    @NonNull
-    private synchronized ChannelModeCommand addChange(boolean add, @NonNull ChannelMode mode, @Nullable String parameter) {
+    private synchronized @NonNull ChannelModeCommand addChange(boolean add, @NonNull ChannelMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
@@ -151,9 +147,8 @@ public class ChannelModeCommand extends ChannelCommand {
         queue.clear();
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("changes", this.changes);
     }
 }

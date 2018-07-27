@@ -82,6 +82,5 @@ public interface ChannelMode extends Mode {
      *
      * @return type
      */
-    @NonNull
-    Type getType();
+    @NonNull Type getType();
 }

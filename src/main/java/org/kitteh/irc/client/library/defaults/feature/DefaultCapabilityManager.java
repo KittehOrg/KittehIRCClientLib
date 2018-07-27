@@ -58,15 +58,13 @@ public class DefaultCapabilityManager implements CapabilityManager.WithManagemen
         this.negotiating = true;
     }
 
-    @NonNull
     @Override
-    public List<CapabilityState> getCapabilities() {
+    public @NonNull List<CapabilityState> getCapabilities() {
         return new ArrayList<>(this.capabilities.values());
     }
 
-    @NonNull
     @Override
-    public List<CapabilityState> getSupportedCapabilities() {
+    public @NonNull List<CapabilityState> getSupportedCapabilities() {
         return new ArrayList<>(this.supportedCapabilities);
     }
 
@@ -102,9 +100,8 @@ public class DefaultCapabilityManager implements CapabilityManager.WithManagemen
         this.supportedCapabilities = new ArrayList<>(capabilityStates);
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this)
                 .add("client", this.client)
                 .add("capabilities", this.capabilities)

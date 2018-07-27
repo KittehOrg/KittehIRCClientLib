@@ -36,8 +36,7 @@ public class Mask {
      * @param string string
      * @return mask from string
      */
-    @NonNull
-    public static Mask fromString(@NonNull String string) {
+    public @NonNull static Mask fromString(@NonNull String string) {
         return new Mask(Sanity.nullCheck(string, "String cannot be null"));
     }
 
@@ -52,8 +51,7 @@ public class Mask {
      *
      * @return string
      */
-    @NonNull
-    public String asString() {
+    public @NonNull String asString() {
         return this.string;
     }
 
@@ -67,9 +65,8 @@ public class Mask {
         return (o instanceof Mask) && ((Mask) o).string.equals(this.string);
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("string", this.string).toString();
     }
 }

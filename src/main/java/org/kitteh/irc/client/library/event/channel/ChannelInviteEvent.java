@@ -60,14 +60,12 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
      *
      * @return the nickname of the invited user
      */
-    @NonNull
-    public String getTarget() {
+    public @NonNull String getTarget() {
         return this.target;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("target", this.target);
     }
 }

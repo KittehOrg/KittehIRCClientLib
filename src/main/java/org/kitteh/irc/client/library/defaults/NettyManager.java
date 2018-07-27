@@ -95,11 +95,9 @@ public class NettyManager {
         private final Channel channel;
         private boolean reconnect = true;
 
-        @Nullable
-        private volatile ChannelFuture channelFuture;
+        private volatile @Nullable ChannelFuture channelFuture;
 
-        @Nullable
-        private ScheduledFuture<?> ping;
+        private @Nullable ScheduledFuture<?> ping;
 
         private volatile String lastMessage;
 
@@ -302,17 +300,14 @@ public class NettyManager {
             }
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).add("client", this.client).toString();
         }
     }
 
-    @Nullable
-    private static Bootstrap bootstrap;
-    @Nullable
-    private static EventLoopGroup eventLoopGroup;
+    private static @Nullable Bootstrap bootstrap;
+    private static @Nullable EventLoopGroup eventLoopGroup;
     private static final Set<Client.WithManagement> clients = new HashSet<>();
 
     private NettyManager() {
@@ -369,9 +364,8 @@ public class NettyManager {
         return clientConnection;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).toString();
     }
 }

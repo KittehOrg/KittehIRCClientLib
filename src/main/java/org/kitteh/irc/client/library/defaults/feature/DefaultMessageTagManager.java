@@ -60,14 +60,12 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
          *
          * @return capability
          */
-        @NonNull
-        protected String getCapability() {
+        protected @NonNull String getCapability() {
             return this.capability;
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).add("capability", this.capability).add("function", this.getFunction()).toString();
         }
     }
@@ -84,41 +82,35 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
         this.registerTagCreator("server-time", "time", DefaultMessageTagTime.FUNCTION);
     }
 
-    @NonNull
     @Override
-    public Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@NonNull String capability) {
+    public @NonNull Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@NonNull String capability) {
         return Collections.unmodifiableMap(this.getRegistrations().entrySet().stream().filter(e -> ((TagCreator) e.getValue()).getCapability().equals(capability)).collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getFunction())));
     }
 
-    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@NonNull String tagName) {
+    public @NonNull Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@NonNull String tagName) {
         return this.getCreatorByName(tagName);
     }
 
-    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@NonNull String capability, @NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends MessageTag> function) {
+    public @NonNull Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@NonNull String capability, @NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends MessageTag> function) {
         return this.registerCreator(tagName, new TagCreator(capability, function));
     }
 
-    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@NonNull String tagName) {
+    public @NonNull Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@NonNull String tagName) {
         return this.unregisterCreator(tagName);
     }
 
-    @NonNull
     @Override
-    public List<MessageTag> getCapabilityTags(@NonNull String tagList) {
+    public @NonNull List<MessageTag> getCapabilityTags(@NonNull String tagList) {
         String[] tags = tagList.split(";"); // Split up by semicolon
         List<MessageTag> list = new ArrayList<>();
         int index;
         TagCreator tagCreator;
         for (String tag : tags) {
             String tagName;
-            @Nullable
-            String value;
+            @Nullable String value;
             // Split out value if present
             if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
                 tagName = tag.substring(0, index);
@@ -144,8 +136,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
         return Collections.unmodifiableList(list);
     }
 
-    @NonNull
-    private String getTagValue(@NonNull String tag) {
+    private @NonNull String getTagValue(@NonNull String tag) {
         StringBuilder builder = new StringBuilder(tag.length());
         int currentIndex = 0;
         Matcher matcher = TAG_ESCAPE.matcher(tag);

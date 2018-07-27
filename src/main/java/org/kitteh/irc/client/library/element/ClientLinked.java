@@ -35,6 +35,5 @@ public interface ClientLinked {
      *
      * @return the client
      */
-    @NonNull
-    Client getClient();
+    @NonNull Client getClient();
 }

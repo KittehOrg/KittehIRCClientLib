@@ -96,9 +96,8 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         this.userModes = Collections.unmodifiableList(defaultUserModes);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getAddress() {
+    public @NonNull Optional<String> getAddress() {
         return Optional.ofNullable(this.address);
     }
 
@@ -107,37 +106,32 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         this.address = serverAddress;
     }
 
-    @NonNull
     @Override
-    public List<ChannelMode> getChannelModes() {
+    public @NonNull List<ChannelMode> getChannelModes() {
         Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter(ISupportParameter.ChanModes.NAME, ISupportParameter.ChanModes.class);
         return new ArrayList<>(optional.map(ISupportParameter.ChanModes::getModes).orElse(this.defaultChannelModes));
     }
 
-    @NonNull
     @Override
-    public List<Character> getChannelPrefixes() {
+    public @NonNull List<Character> getChannelPrefixes() {
         Optional<ISupportParameter.ChanTypes> optional = this.getISupportParameter(ISupportParameter.ChanTypes.NAME, ISupportParameter.ChanTypes.class);
         return new ArrayList<>(optional.map(ISupportParameter.ChanTypes::getTypes).orElse(this.defaultChannelPrefixes));
     }
 
-    @NonNull
     @Override
-    public List<ChannelUserMode> getChannelUserModes() {
+    public @NonNull List<ChannelUserMode> getChannelUserModes() {
         Optional<ISupportParameter.Prefix> optional = this.getISupportParameter(ISupportParameter.Prefix.NAME, ISupportParameter.Prefix.class);
         return new ArrayList<>(optional.map(ISupportParameter.Prefix::getModes).orElse(this.defaultChannelUserModes));
     }
 
-    @NonNull
     @Override
-    public Optional<ISupportParameter> getISupportParameter(@NonNull String name) {
+    public @NonNull Optional<ISupportParameter> getISupportParameter(@NonNull String name) {
         Sanity.nullCheck(name, "Name cannot be null");
         return Optional.ofNullable(this.iSupportParameterMap.get(name.toUpperCase()));
     }
 
-    @NonNull
     @Override
-    public Map<String, ISupportParameter> getISupportParameters() {
+    public @NonNull Map<String, ISupportParameter> getISupportParameters() {
         return Collections.unmodifiableMap(new HashMap<>(this.iSupportParameterMap));
     }
 
@@ -146,9 +140,8 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         this.iSupportParameterMap.put(parameter.getName().toUpperCase(), parameter);
     }
 
-    @NonNull
     @Override
-    public Optional<List<String>> getMotd() {
+    public @NonNull Optional<List<String>> getMotd() {
         return Optional.ofNullable(this.motd);
     }
 
@@ -157,9 +150,8 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         this.motd = Collections.unmodifiableList(motd);
     }
 
-    @NonNull
     @Override
-    public Optional<String> getVersion() {
+    public @NonNull Optional<String> getVersion() {
         return Optional.ofNullable(this.version);
     }
 
@@ -176,9 +168,8 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         return (name.length() > 1) && ((channelLengthLimit < 0) || (name.length() <= channelLengthLimit)) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
     }
 
-    @NonNull
     @Override
-    public Optional<ChannelUserMode> getTargetedChannelInfo(@NonNull String name) {
+    public @NonNull Optional<ChannelUserMode> getTargetedChannelInfo(@NonNull String name) {
         if (name.length() < 2) {
             return Optional.empty();
         }
@@ -195,8 +186,7 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     }
 
     @Override
-    @NonNull
-    public List<UserMode> getUserModes() {
+    public @NonNull List<UserMode> getUserModes() {
         return this.userModes;
     }
 
@@ -205,9 +195,8 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         this.userModes = Collections.unmodifiableList(userModes);
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this)
                 .add("client", this.client)
                 .add("address", this.address)

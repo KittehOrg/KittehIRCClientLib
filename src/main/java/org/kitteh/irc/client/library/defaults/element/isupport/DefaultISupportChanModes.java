@@ -78,9 +78,8 @@ public class DefaultISupportChanModes extends DefaultISupportParameterValueRequi
         this.modes = Collections.unmodifiableList(modesList);
     }
 
-    @NonNull
     @Override
-    public List<ChannelMode> getModes() {
+    public @NonNull List<ChannelMode> getModes() {
         return this.modes;
     }
 }

@@ -97,8 +97,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      *
      * @return a queue copy
      */
-    @NonNull
-    public Queue<Type> getQueue() {
+    public @NonNull Queue<Type> getQueue() {
         return new ArrayDeque<>(this.queue);
     }
 

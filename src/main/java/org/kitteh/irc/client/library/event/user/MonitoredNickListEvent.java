@@ -63,8 +63,7 @@ public class MonitoredNickListEvent extends ServerMessageEventBase {
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("nicks", this.nicks);
     }
 }

@@ -69,45 +69,38 @@ public interface ModeInfo extends ClientLinked {
             this.mode = mode;
         }
 
-        @NonNull
         @Override
-        public Optional<String> getCreator() {
+        public @NonNull Optional<String> getCreator() {
             return Optional.ofNullable(this.creator);
         }
 
-        @NonNull
         @Override
-        public Channel getChannel() {
+        public @NonNull Channel getChannel() {
             return this.channel;
         }
 
-        @NonNull
         @Override
-        public Client getClient() {
+        public @NonNull Client getClient() {
             return this.client;
         }
 
-        @NonNull
         @Override
-        public Mask getMask() {
+        public @NonNull Mask getMask() {
             return this.mask;
         }
 
-        @NonNull
         @Override
-        public ChannelMode getMode() {
+        public @NonNull ChannelMode getMode() {
             return this.mode;
         }
 
-        @NonNull
         @Override
-        public Optional<Instant> getCreationTime() {
+        public @NonNull Optional<Instant> getCreationTime() {
             return Optional.ofNullable(this.creationTime);
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).add("client", this.client).add("channel", this.channel).add("mode", this.mode).add("mask", this.mask).add("creator", this.creator).add("creationTime", this.creationTime).toString();
         }
     }
@@ -118,40 +111,35 @@ public interface ModeInfo extends ClientLinked {
      *
      * @return name, if known, of who created this entry
      */
-    @NonNull
-    Optional<String> getCreator();
+    @NonNull Optional<String> getCreator();
 
     /**
      * Gets the channel for which this entry exists.
      *
      * @return the channel
      */
-    @NonNull
-    Channel getChannel();
+    @NonNull Channel getChannel();
 
     /**
      * Gets the mask.
      *
      * @return the mask
      */
-    @NonNull
-    Mask getMask();
+    @NonNull Mask getMask();
 
     /**
      * Gets the mode for which this info exists.
      *
      * @return the mode
      */
-    @NonNull
-    ChannelMode getMode();
+    @NonNull ChannelMode getMode();
 
     /**
      * Gets the time at which this entry was created.
      *
      * @return creation time, if known
      */
-    @NonNull
-    Optional<Instant> getCreationTime();
+    @NonNull Optional<Instant> getCreationTime();
 
     /**
      * Attempts to remove this item from the channel.

@@ -59,8 +59,7 @@ public class ClientAwayStatusChangeEvent extends ServerMessageEventBase {
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("isNowAway", this.isNowAway);
     }
 }

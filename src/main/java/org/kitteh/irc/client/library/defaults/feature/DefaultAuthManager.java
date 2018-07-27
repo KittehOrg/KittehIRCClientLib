@@ -54,9 +54,8 @@ public class DefaultAuthManager implements AuthManager {
         this.client = client;
     }
 
-    @NonNull
     @Override
-    public synchronized Optional<AuthProtocol> addProtocol(@NonNull AuthProtocol protocol) {
+    public @NonNull synchronized Optional<AuthProtocol> addProtocol(@NonNull AuthProtocol protocol) {
         Sanity.nullCheck(protocol, "Protocol cannot be null");
         List<AuthProtocol> matching = this.protocols.stream().filter(p -> p.getClass() == protocol.getClass()).collect(Collectors.toList());
         Optional<AuthProtocol> removed = Optional.ofNullable(matching.isEmpty() ? null : matching.get(0));
@@ -68,9 +67,8 @@ public class DefaultAuthManager implements AuthManager {
         return removed;
     }
 
-    @NonNull
     @Override
-    public synchronized Set<AuthProtocol> getProtocols() {
+    public @NonNull synchronized Set<AuthProtocol> getProtocols() {
         return Collections.unmodifiableSet(new HashSet<>(this.protocols));
     }
 
@@ -83,9 +81,8 @@ public class DefaultAuthManager implements AuthManager {
         }
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.client).toString();
     }
 }

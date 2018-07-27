@@ -39,8 +39,7 @@ public class DefaultCapabilityState implements CapabilityState {
     private final long creationTime;
     private final boolean disable;
     private final String name;
-    @Nullable
-    private final String value;
+    private final @Nullable String value;
 
     /**
      * Constructs a capability state.
@@ -77,9 +76,8 @@ public class DefaultCapabilityState implements CapabilityState {
         return this.disable;
     }
 
-    @NonNull
     @Override
-    public Client getClient() {
+    public @NonNull Client getClient() {
         return this.client;
     }
 
@@ -88,15 +86,13 @@ public class DefaultCapabilityState implements CapabilityState {
         return this.creationTime;
     }
 
-    @NonNull
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return this.name;
     }
 
-    @NonNull
     @Override
-    public Optional<String> getValue() {
+    public @NonNull Optional<String> getValue() {
         return Optional.ofNullable(this.value);
     }
 
@@ -105,9 +101,8 @@ public class DefaultCapabilityState implements CapabilityState {
         return (2 * this.name.hashCode()) + (this.disable ? 1 : 0);
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("name", this.name).add("disabled", this.disable).add("value", this.value).toString();
     }
 }

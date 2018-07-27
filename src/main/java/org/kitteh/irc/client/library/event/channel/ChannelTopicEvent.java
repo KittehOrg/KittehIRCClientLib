@@ -75,8 +75,7 @@ public class ChannelTopicEvent extends ChannelEventBase {
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("isNew", this.updated);
     }
 }

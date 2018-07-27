@@ -65,14 +65,12 @@ public class CapabilitiesSupportedListEvent extends CapabilityNegotiationRespons
      *
      * @return supported capabilities
      */
-    @NonNull
-    public List<CapabilityState> getSupportedCapabilities() {
+    public @NonNull List<CapabilityState> getSupportedCapabilities() {
         return this.supportedCapabilities;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("supportedCapabilities", this.supportedCapabilities);
     }
 }

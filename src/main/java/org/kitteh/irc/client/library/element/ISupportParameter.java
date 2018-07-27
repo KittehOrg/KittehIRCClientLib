@@ -89,8 +89,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return limits by prefix
          */
-        @NonNull
-        Map<Character, Integer> getLimits();
+        @NonNull Map<Character, Integer> getLimits();
     }
 
     /**
@@ -107,8 +106,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return channel modes
          */
-        @NonNull
-        List<ChannelMode> getModes();
+        @NonNull List<ChannelMode> getModes();
     }
 
     /**
@@ -125,8 +123,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return supported prefixes
          */
-        @NonNull
-        List<Character> getTypes();
+        @NonNull List<Character> getTypes();
     }
 
     /**
@@ -153,8 +150,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return network name
          */
-        @NonNull
-        String getNetworkName();
+        @NonNull String getNetworkName();
     }
 
     /**
@@ -181,8 +177,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return channel user modes
          */
-        @NonNull
-        List<ChannelUserMode> getModes();
+        @NonNull List<ChannelUserMode> getModes();
     }
 
     /**
@@ -210,14 +205,12 @@ public interface ISupportParameter extends ClientLinked {
      *
      * @return parameter name
      */
-    @NonNull
-    String getName();
+    @NonNull String getName();
 
     /**
      * Gets the unprocessed value of the parameter if provided.
      *
      * @return parameter value if set
      */
-    @NonNull
-    Optional<String> getValue();
+    @NonNull Optional<String> getValue();
 }

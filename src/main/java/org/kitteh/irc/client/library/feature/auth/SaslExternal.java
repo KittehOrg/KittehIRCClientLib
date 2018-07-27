@@ -53,15 +53,13 @@ public class SaslExternal extends AbstractSaslProtocol<Object> {
         super(client, "", new Object(), "EXTERNAL"); // hacky?
     }
 
-    @NonNull
     @Override
-    protected String getAuthLine() {
+    protected @NonNull String getAuthLine() {
         return "";
     }
 
-    @NonNull
     @Override
-    public Object getEventListener() {
+    public @NonNull Object getEventListener() {
         return (this.listener == null) ? (this.listener = new Listener()) : this.listener;
     }
 }

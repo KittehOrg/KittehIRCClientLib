@@ -59,14 +59,12 @@ public class UserAccountStatusEvent extends ActorEventBase<User> {
      *
      * @return account or empty if no account
      */
-    @NonNull
-    public Optional<String> getAccount() {
+    public @NonNull Optional<String> getAccount() {
         return Optional.ofNullable(this.account);
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("account", this.account);
     }
 }

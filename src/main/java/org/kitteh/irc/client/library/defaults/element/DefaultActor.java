@@ -57,15 +57,13 @@ public class DefaultActor implements Actor {
         return this.creationTime;
     }
 
-    @NonNull
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return this.name;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.client).add("name", this.name).toString();
     }
 }

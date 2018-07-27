@@ -50,8 +50,7 @@ public class Change<Type> {
      *
      * @return the old data
      */
-    @NonNull
-    public Type getOld() {
+    public @NonNull Type getOld() {
         return this.oldData;
     }
 
@@ -60,8 +59,7 @@ public class Change<Type> {
      *
      * @return the new data
      */
-    @NonNull
-    public Type getNew() {
+    public @NonNull Type getNew() {
         return this.newData;
     }
 }

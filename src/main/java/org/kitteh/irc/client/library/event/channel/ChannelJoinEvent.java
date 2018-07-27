@@ -50,21 +50,18 @@ public class ChannelJoinEvent extends ActorChannelEventBase<User> implements Cha
         super(client, originalMessages, user, channel);
     }
 
-    @NonNull
     @Override
-    public Optional<Channel> getAffectedChannel() {
+    public @NonNull Optional<Channel> getAffectedChannel() {
         return Optional.of(this.getChannel());
     }
 
-    @NonNull
     @Override
-    public Change getChange() {
+    public @NonNull Change getChange() {
         return Change.JOIN;
     }
 
-    @NonNull
     @Override
-    public User getUser() {
+    public @NonNull User getUser() {
         return this.getActor();
     }
 }

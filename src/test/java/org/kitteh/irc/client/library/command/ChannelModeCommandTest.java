@@ -172,15 +172,13 @@ public class ChannelModeCommandTest {
                 return c;
             }
 
-            @NonNull
             @Override
-            public Client getClient() {
+            public @NonNull Client getClient() {
                 return client;
             }
 
-            @NonNull
             @Override
-            public Type getType() {
+            public @NonNull Type getType() {
                 return type;
             }
         };
@@ -193,9 +191,8 @@ public class ChannelModeCommandTest {
                 return c;
             }
 
-            @NonNull
             @Override
-            public Client getClient() {
+            public @NonNull Client getClient() {
                 return client;
             }
 
@@ -204,9 +201,8 @@ public class ChannelModeCommandTest {
                 return '\u039b';
             }
 
-            @NonNull
             @Override
-            public Type getType() {
+            public @NonNull Type getType() {
                 return type;
             }
         };

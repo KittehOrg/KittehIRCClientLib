@@ -62,14 +62,12 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
      *
      * @return list of integers, at least containing 0.
      */
-    @NonNull
-    public List<Integer> getEmoteSets() {
+    public @NonNull List<Integer> getEmoteSets() {
         return this.emoteSets;
     }
 
-    @NonNull
     @Override
-    public ToStringer toStringer() {
+    public @NonNull ToStringer toStringer() {
         return super.toStringer().add("emoteSets", this.emoteSets);
     }
 }

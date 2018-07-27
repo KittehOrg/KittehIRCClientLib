@@ -61,15 +61,13 @@ public abstract class CapabilityNegotiationResponseEventWithRequestBase extends 
         this.requests.add(Sanity.safeMessageCheck(capability, "capability"));
     }
 
-    @NonNull
     @Override
-    public List<String> getRequests() {
+    public @NonNull List<String> getRequests() {
         return Collections.unmodifiableList(new ArrayList<>(this.requests));
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("requests", this.requests);
     }
 }

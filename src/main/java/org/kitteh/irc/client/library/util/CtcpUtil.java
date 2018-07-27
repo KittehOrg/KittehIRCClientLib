@@ -75,8 +75,7 @@ public final class CtcpUtil {
      * @param message message to convert
      * @return converted message
      */
-    @NonNull
-    public static String fromCtcp(@NonNull String message) {
+    public @NonNull static String fromCtcp(@NonNull String message) {
         final String ctcpContent = message.substring(1, message.indexOf(CTCP_DELIMITER, 1)); // Strip the delimiters
         StringBuilder builder = new StringBuilder(ctcpContent.length());
         int currentIndex = 0;
@@ -137,8 +136,7 @@ public final class CtcpUtil {
      * @param message message to convert
      * @return converted message
      */
-    @NonNull
-    public static String toCtcp(@NonNull String message) {
+    public @NonNull static String toCtcp(@NonNull String message) {
         StringBuilder builder = new StringBuilder(message.length());
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;

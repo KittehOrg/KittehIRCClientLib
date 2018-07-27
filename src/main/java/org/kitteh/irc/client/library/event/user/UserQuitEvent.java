@@ -50,21 +50,18 @@ public class UserQuitEvent extends ActorMessageEventBase<User> implements Channe
         super(client, originalMessages, user, message);
     }
 
-    @NonNull
     @Override
-    public Optional<Channel> getAffectedChannel() {
+    public @NonNull Optional<Channel> getAffectedChannel() {
         return Optional.empty();
     }
 
-    @NonNull
     @Override
-    public Change getChange() {
+    public @NonNull Change getChange() {
         return Change.LEAVE;
     }
 
-    @NonNull
     @Override
-    public User getUser() {
+    public @NonNull User getUser() {
         return this.getActor();
     }
 }

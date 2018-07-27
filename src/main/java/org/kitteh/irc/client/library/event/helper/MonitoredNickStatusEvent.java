@@ -34,6 +34,5 @@ public interface MonitoredNickStatusEvent extends ServerMessageEvent {
      *
      * @return nick
      */
-    @NonNull
-    String getNick();
+    @NonNull String getNick();
 }

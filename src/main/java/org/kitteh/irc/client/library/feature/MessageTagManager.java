@@ -56,21 +56,18 @@ public interface MessageTagManager {
             this.value = value;
         }
 
-        @NonNull
         @Override
-        public String getName() {
+        public @NonNull String getName() {
             return this.name;
         }
 
-        @NonNull
         @Override
-        public Optional<String> getValue() {
+        public @NonNull Optional<String> getValue() {
             return Optional.ofNullable(this.value);
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return this.toStringer().toString();
         }
 
@@ -79,8 +76,7 @@ public interface MessageTagManager {
          *
          * @return a usable toString that will be used in {@link #toString()}
          */
-        @NonNull
-        protected ToStringer toStringer() {
+        protected @NonNull ToStringer toStringer() {
             return new ToStringer(this).add("name", this.name).add("value", this.value);
         }
     }
@@ -91,8 +87,7 @@ public interface MessageTagManager {
      * @param capability capability name
      * @return mapping of tags to their creators for the given capability
      */
-    @NonNull
-    Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@NonNull String capability);
+    @NonNull Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@NonNull String capability);
 
     /**
      * Gets capability tags for a given raw tag list.
@@ -100,8 +95,7 @@ public interface MessageTagManager {
      * @param tagList raw list
      * @return tags for the given list
      */
-    @NonNull
-    List<MessageTag> getCapabilityTags(@NonNull String tagList);
+    @NonNull List<MessageTag> getCapabilityTags(@NonNull String tagList);
 
     /**
      * Gets the registered tag creator for a given tag name.
@@ -109,8 +103,7 @@ public interface MessageTagManager {
      * @param tagName tag name
      * @return registered creator if present
      */
-    @NonNull
-    Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@NonNull String tagName);
+    @NonNull Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@NonNull String tagName);
 
     /**
      * Registers a function that creates a tag from given tag name and tag
@@ -121,8 +114,7 @@ public interface MessageTagManager {
      * @param tagCreator function that creates tags
      * @return displaced tag creator if one existed for the given tag name
      */
-    @NonNull
-    Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@NonNull String capability, @NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends MessageTag> tagCreator);
+    @NonNull Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@NonNull String capability, @NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends MessageTag> tagCreator);
 
     /**
      * Removes the registered tag creator for a given tag name.
@@ -130,6 +122,5 @@ public interface MessageTagManager {
      * @param tagName tag name
      * @return registered creator if present
      */
-    @NonNull
-    Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@NonNull String tagName);
+    @NonNull Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@NonNull String tagName);
 }

@@ -48,9 +48,8 @@ public class DefaultMessageTagTime extends MessageTagManager.DefaultMessageTag i
         this.time = time;
     }
 
-    @NonNull
     @Override
-    public Instant getTime() {
+    public @NonNull Instant getTime() {
         return this.time;
     }
 }

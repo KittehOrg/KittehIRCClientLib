@@ -37,8 +37,7 @@ import java.util.Optional;
  */
 public class ModeStatus<ModeType extends Mode> implements ClientLinked {
     private final ModeType mode;
-    @Nullable
-    private final String parameter;
+    private final @Nullable String parameter;
     private final boolean setting;
 
     /**
@@ -67,8 +66,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
     }
 
     @Override
-    @NonNull
-    public Client getClient() {
+    public @NonNull Client getClient() {
         return this.getMode().getClient();
     }
 
@@ -77,8 +75,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      *
      * @return the mode
      */
-    @NonNull
-    public ModeType getMode() {
+    public @NonNull ModeType getMode() {
         return this.mode;
     }
 
@@ -87,8 +84,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      *
      * @return parameter if present
      */
-    @NonNull
-    public Optional<String> getParameter() {
+    public @NonNull Optional<String> getParameter() {
         return Optional.ofNullable(this.parameter);
     }
 
@@ -101,9 +97,8 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
         return this.setting;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("client", this.getClient()).add("mode", this.mode).add("setting", this.setting).add("parameter", this.parameter).toString();
     }
 }

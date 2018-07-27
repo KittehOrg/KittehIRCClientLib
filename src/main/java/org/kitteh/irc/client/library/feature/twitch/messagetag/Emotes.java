@@ -90,9 +90,8 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
             return this.lastIndex;
         }
 
-        @NonNull
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return new ToStringer(this).add("id", this.id).add("firstIndex", this.firstIndex).add("lastIndex", this.lastIndex).toString();
         }
     }
@@ -143,14 +142,12 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
      *
      * @return list of emotes
      */
-    @NonNull
-    public List<Emote> getEmotes() {
+    public @NonNull List<Emote> getEmotes() {
         return this.emotes;
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("emotes", this.emotes);
     }
 }

@@ -59,8 +59,7 @@ public class UserModeCommand extends Command {
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid
      */
-    @NonNull
-    public UserModeCommand add(boolean add, @NonNull UserMode mode) {
+    public @NonNull UserModeCommand add(boolean add, @NonNull UserMode mode) {
         return this.addChange(add, mode, null);
     }
 
@@ -74,13 +73,11 @@ public class UserModeCommand extends Command {
      * @throws IllegalArgumentException if mode invalid comes from a
      * different client or parameter is null
      */
-    @NonNull
-    public UserModeCommand add(boolean add, @NonNull UserMode mode, @NonNull String parameter) {
+    public @NonNull UserModeCommand add(boolean add, @NonNull UserMode mode, @NonNull String parameter) {
         return this.addChange(add, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
     }
 
-    @NonNull
-    private synchronized UserModeCommand addChange(boolean add, @NonNull UserMode mode, @Nullable String parameter) {
+    private synchronized @NonNull UserModeCommand addChange(boolean add, @NonNull UserMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
@@ -101,9 +98,8 @@ public class UserModeCommand extends Command {
         this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + ModeStatusList.of(new ArrayList<>(this.changes)).getStatusString());
     }
 
-    @NonNull
     @Override
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("changes", this.changes);
     }
 }

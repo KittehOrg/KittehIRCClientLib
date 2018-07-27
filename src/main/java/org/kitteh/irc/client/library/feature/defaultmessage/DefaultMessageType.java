@@ -79,8 +79,7 @@ public enum DefaultMessageType {
      *
      * @return value used
      */
-    @Nullable
-    public String getFallback() {
+    public @Nullable String getFallback() {
         return this.fallback;
     }
 }

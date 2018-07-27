@@ -97,63 +97,54 @@ import java.util.stream.Stream;
  */
 public class DefaultClient implements Client.WithManagement {
     private final class ClientCommands implements Commands {
-        @NonNull
         @Override
-        public AwayCommand away() {
+        public @NonNull AwayCommand away() {
             return new AwayCommand(DefaultClient.this);
         }
 
-        @NonNull
         @Override
-        public CapabilityRequestCommand capabilityRequest() {
+        public @NonNull CapabilityRequestCommand capabilityRequest() {
             return new CapabilityRequestCommand(DefaultClient.this);
         }
 
-        @NonNull
         @Override
-        public ChannelModeCommand mode(@NonNull Channel channel) {
+        public @NonNull ChannelModeCommand mode(@NonNull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new ChannelModeCommand(DefaultClient.this, channel.getMessagingName());
         }
 
-        @NonNull
         @Override
-        public KickCommand kick(@NonNull Channel channel) {
+        public @NonNull KickCommand kick(@NonNull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new KickCommand(DefaultClient.this, channel.getMessagingName());
         }
 
-        @NonNull
         @Override
-        public MonitorCommand monitor() {
+        public @NonNull MonitorCommand monitor() {
             return new MonitorCommand(DefaultClient.this);
         }
 
-        @NonNull
         @Override
-        public OperCommand oper() {
+        public @NonNull OperCommand oper() {
             return new OperCommand(DefaultClient.this);
         }
 
-        @NonNull
         @Override
-        public TopicCommand topic(@NonNull Channel channel) {
+        public @NonNull TopicCommand topic(@NonNull Channel channel) {
             Sanity.nullCheck(channel, "Channel cannot be null");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new TopicCommand(DefaultClient.this, channel.getMessagingName());
         }
 
-        @NonNull
         @Override
-        public WallopsCommand wallops() {
+        public @NonNull WallopsCommand wallops() {
             return new WallopsCommand(DefaultClient.this);
         }
 
-        @NonNull
         @Override
-        public WhoisCommand whois() {
+        public @NonNull WhoisCommand whois() {
             return new WhoisCommand(DefaultClient.this);
         }
     }
@@ -344,14 +335,12 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    @NonNull
-    public AuthManager getAuthManager() {
+    public @NonNull AuthManager getAuthManager() {
         return this.authManager;
     }
 
     @Override
-    @NonNull
-    public InetSocketAddress getBindAddress() {
+    public @NonNull InetSocketAddress getBindAddress() {
         return this.bindAddress;
     }
 
@@ -360,21 +349,18 @@ public class DefaultClient implements Client.WithManagement {
         return this.capabilityManager;
     }
 
-    @NonNull
     @Override
-    public Optional<Channel> getChannel(@NonNull String name) {
+    public @NonNull Optional<Channel> getChannel(@NonNull String name) {
         return this.actorTracker.getTrackedChannel(Sanity.nullCheck(name, "Channel name cannot be null"));
     }
 
-    @NonNull
     @Override
-    public Set<Channel> getChannels() {
+    public @NonNull Set<Channel> getChannels() {
         return this.actorTracker.getTrackedChannels();
     }
 
-    @NonNull
     @Override
-    public Set<Channel> getChannels(@NonNull Collection<String> channels) {
+    public @NonNull Set<Channel> getChannels(@NonNull Collection<String> channels) {
         return Sanity.nullCheck(channels, "Channels collection cannot be null").stream()
                 .filter(Objects::nonNull)
                 .map(this.actorTracker::getTrackedChannel)
@@ -382,69 +368,58 @@ public class DefaultClient implements Client.WithManagement {
                 .collect(Collectors.toSet());
     }
 
-    @NonNull
     @Override
-    public DefaultMessageMap getDefaultMessageMap() {
+    public @NonNull DefaultMessageMap getDefaultMessageMap() {
         return this.defaultMessageMap;
     }
 
-    @NonNull
     @Override
-    public EventManager getEventManager() {
+    public @NonNull EventManager getEventManager() {
         return this.eventManager;
     }
 
-    @NonNull
     @Override
-    public Listener<Exception> getExceptionListener() {
+    public @NonNull Listener<Exception> getExceptionListener() {
         return this.exceptionListener;
     }
 
-    @NonNull
     @Override
-    public String getIntendedNick() {
+    public @NonNull String getIntendedNick() {
         return this.goalNick;
     }
 
-    @NonNull
     @Override
-    public ISupportManager getISupportManager() {
+    public @NonNull ISupportManager getISupportManager() {
         return this.iSupportManager;
     }
 
-    @NonNull
     @Override
-    public Optional<StsMachine> getStsMachine() {
+    public @NonNull Optional<StsMachine> getStsMachine() {
         return Optional.ofNullable(this.stsMachine);
     }
 
-    @NonNull
     @Override
-    public Cutter getMessageCutter() {
+    public @NonNull Cutter getMessageCutter() {
         return this.messageCutter;
     }
 
-    @NonNull
     @Override
-    public Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier() {
+    public @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> getMessageSendingQueueSupplier() {
         return this.messageSendingQueueSupplier;
     }
 
-    @NonNull
     @Override
-    public MessageTagManager getMessageTagManager() {
+    public @NonNull MessageTagManager getMessageTagManager() {
         return this.messageTagManager;
     }
 
-    @NonNull
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return this.name;
     }
 
-    @NonNull
     @Override
-    public String getNick() {
+    public @NonNull String getNick() {
         return this.currentNick;
     }
 
@@ -453,15 +428,13 @@ public class DefaultClient implements Client.WithManagement {
         return this.serverInfo;
     }
 
-    @NonNull
     @Override
-    public Optional<User> getUser() {
+    public @NonNull Optional<User> getUser() {
         return this.actorTracker.getTrackedUser(this.getNick());
     }
 
     @Override
-    @NonNull
-    public Optional<ModeStatusList<UserMode>> getUserModes() {
+    public @NonNull Optional<ModeStatusList<UserMode>> getUserModes() {
         return (this.userModes == null) ? Optional.empty() : Optional.of(ModeStatusList.of(this.userModes.values()));
     }
 
@@ -540,33 +513,28 @@ public class DefaultClient implements Client.WithManagement {
         return 505 - this.getUser().map(user -> user.getName().length()).orElse(100) - target.length() - type.length();
     }
 
-    @Nullable
     @Override
-    public Path getSecureKey() {
+    public @Nullable Path getSecureKey() {
         return this.secureKey;
     }
 
-    @Nullable
     @Override
-    public Path getSecureKeyCertChain() {
+    public @Nullable Path getSecureKeyCertChain() {
         return this.secureKeyCertChain;
     }
 
-    @Nullable
     @Override
-    public String getSecureKeyPassword() {
+    public @Nullable String getSecureKeyPassword() {
         return this.secureKeyPassword;
     }
 
-    @Nullable
     @Override
-    public TrustManagerFactory getSecureTrustManagerFactory() {
+    public @Nullable TrustManagerFactory getSecureTrustManagerFactory() {
         return this.secureTrustManagerFactory;
     }
 
-    @NonNull
     @Override
-    public InetSocketAddress getServerAddress() {
+    public @NonNull InetSocketAddress getServerAddress() {
         return this.serverAddress;
     }
 
@@ -694,8 +662,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    @NonNull
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("name", this.getName()).add("server", this.serverAddress).toString();
     }
 
@@ -713,33 +680,28 @@ public class DefaultClient implements Client.WithManagement {
         }
     }
 
-    @NonNull
     @Override
-    public ActorTracker getActorTracker() {
+    public @NonNull ActorTracker getActorTracker() {
         return this.actorTracker;
     }
 
-    @NonNull
     @Override
-    public Listener<String> getInputListener() {
+    public @NonNull Listener<String> getInputListener() {
         return this.inputListener;
     }
 
-    @NonNull
     @Override
-    public Set<String> getIntendedChannels() {
+    public @NonNull Set<String> getIntendedChannels() {
         return this.channelsIntended;
     }
 
-    @NonNull
     @Override
-    public Listener<String> getOutputListener() {
+    public @NonNull Listener<String> getOutputListener() {
         return this.outputListener;
     }
 
-    @NonNull
     @Override
-    public String getRequestedNick() {
+    public @NonNull String getRequestedNick() {
         return this.requestedNick;
     }
 
@@ -928,9 +890,8 @@ public class DefaultClient implements Client.WithManagement {
         }
     }
 
-    @NonNull
     @Override
-    public Commands commands() {
+    public @NonNull Commands commands() {
         return this.commands;
     }
 }

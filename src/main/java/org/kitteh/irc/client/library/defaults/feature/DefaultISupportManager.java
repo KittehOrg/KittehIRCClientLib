@@ -70,32 +70,27 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         this.registerParameter(ISupportParameter.WhoX.NAME, DefaultISupportWhoX::new);
     }
 
-    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> getCreator(@NonNull String tagName) {
+    public @NonNull Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> getCreator(@NonNull String tagName) {
         return this.getCreatorByName(tagName);
     }
 
-    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> registerParameter(@NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends ISupportParameter> function) {
+    public @NonNull Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> registerParameter(@NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends ISupportParameter> function) {
         return this.registerCreator(tagName, new Creator<>(function));
     }
 
-    @NonNull
     @Override
-    public Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> unregisterParameter(@NonNull String tagName) {
+    public @NonNull Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> unregisterParameter(@NonNull String tagName) {
         return this.unregisterCreator(tagName);
     }
 
-    @NonNull
     @Override
-    public ISupportParameter createParameter(@NonNull String tag) {
+    public @NonNull ISupportParameter createParameter(@NonNull String tag) {
         int index;
         Creator<ISupportParameter> creator;
         String tagName;
-        @Nullable
-        String value;
+        @Nullable String value;
         // Split out value if present
         if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
             tagName = tag.substring(0, index);

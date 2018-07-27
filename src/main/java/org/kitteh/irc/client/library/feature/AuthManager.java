@@ -43,16 +43,14 @@ public interface AuthManager {
      * @return displaced protocol of same class
      * @throws IllegalArgumentException if the protocol is for another Client
      */
-    @NonNull
-    Optional<AuthProtocol> addProtocol(@NonNull AuthProtocol protocol);
+    @NonNull Optional<AuthProtocol> addProtocol(@NonNull AuthProtocol protocol);
 
     /**
      * Gets all protocols currently registered to the manager.
      *
      * @return all protocols
      */
-    @NonNull
-    Set<AuthProtocol> getProtocols();
+    @NonNull Set<AuthProtocol> getProtocols();
 
     /**
      * Removes a protocol if it was registered, unregistering event handlers

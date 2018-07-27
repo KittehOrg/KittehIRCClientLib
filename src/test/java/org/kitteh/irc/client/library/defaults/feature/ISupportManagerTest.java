@@ -242,21 +242,18 @@ public class ISupportManagerTest {
             }
         }
 
-        @NonNull
         @Override
-        public Client getClient() {
+        public @NonNull Client getClient() {
             return null;
         }
 
-        @NonNull
         @Override
-        public String getName() {
+        public @NonNull String getName() {
             return "Meow";
         }
 
-        @NonNull
         @Override
-        public Optional<String> getValue() {
+        public @NonNull Optional<String> getValue() {
             return Optional.empty();
         }
     }

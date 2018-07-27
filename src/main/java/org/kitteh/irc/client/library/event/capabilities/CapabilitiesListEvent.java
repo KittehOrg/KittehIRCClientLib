@@ -64,14 +64,12 @@ public class CapabilitiesListEvent extends ServerMessageEventBase {
      *
      * @return list of capabilities
      */
-    @NonNull
-    public List<CapabilityState> getCapabilities() {
+    public @NonNull List<CapabilityState> getCapabilities() {
         return this.capabilities;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("capabilities", this.capabilities);
     }
 }

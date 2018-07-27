@@ -64,8 +64,7 @@ public class StsPolicy {
      *
      * @return the valueless flags from the server-sent policy
      */
-    @NonNull
-    public Set<String> getFlags() {
+    public @NonNull Set<String> getFlags() {
         return this.flags;
     }
 
@@ -74,8 +73,7 @@ public class StsPolicy {
      *
      * @return the key-value options from the server-sent policy
      */
-    @NonNull
-    public Map<String, String> getOptions() {
+    public @NonNull Map<String, String> getOptions() {
         return this.options;
     }
 }

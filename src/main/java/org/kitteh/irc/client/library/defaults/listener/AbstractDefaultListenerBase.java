@@ -47,9 +47,8 @@ public class AbstractDefaultListenerBase {
         this.client = client;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).toString();
     }
 
@@ -83,8 +82,7 @@ public class AbstractDefaultListenerBase {
      * @return actor tracker
      * @see Client.WithManagement#getActorTracker()
      */
-    @NonNull
-    protected ActorTracker getTracker() {
+    protected @NonNull ActorTracker getTracker() {
         return this.client.getActorTracker();
     }
 }

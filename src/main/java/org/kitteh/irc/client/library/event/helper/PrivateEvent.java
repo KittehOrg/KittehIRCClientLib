@@ -35,8 +35,7 @@ public interface PrivateEvent extends MessageEvent {
      *
      * @return the message target
      */
-    @NonNull
-    String getTarget();
+    @NonNull String getTarget();
 
     /**
      * Gets if the target of the message is this client.

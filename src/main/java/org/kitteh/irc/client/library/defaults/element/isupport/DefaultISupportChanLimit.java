@@ -71,9 +71,8 @@ public class DefaultISupportChanLimit extends DefaultISupportParameterValueRequi
         this.limits = Collections.unmodifiableMap(limits);
     }
 
-    @NonNull
     @Override
-    public Map<Character, Integer> getLimits() {
+    public @NonNull Map<Character, Integer> getLimits() {
         return this.limits;
     }
 }

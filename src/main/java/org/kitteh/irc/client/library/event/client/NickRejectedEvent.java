@@ -58,8 +58,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      *
      * @return the attempted nick
      */
-    @NonNull
-    public String getAttemptedNick() {
+    public @NonNull String getAttemptedNick() {
         return this.attemptedNick;
     }
 
@@ -69,8 +68,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      *
      * @return new nick to attempt
      */
-    @NonNull
-    public String getNewNick() {
+    public @NonNull String getNewNick() {
         return this.newNick;
     }
 
@@ -90,8 +88,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("attemptedNick", this.attemptedNick).add("newNick", this.newNick);
     }
 }

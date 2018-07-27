@@ -34,6 +34,5 @@ public interface EventListening {
      *
      * @return listener
      */
-    @NonNull
-    Object getEventListener();
+    @NonNull Object getEventListener();
 }

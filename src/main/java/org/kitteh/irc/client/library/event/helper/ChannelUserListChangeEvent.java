@@ -53,22 +53,19 @@ public interface ChannelUserListChangeEvent extends ServerMessageEvent {
      *
      * @return channel or empty if all channels affected
      */
-    @NonNull
-    Optional<Channel> getAffectedChannel();
+    @NonNull Optional<Channel> getAffectedChannel();
 
     /**
      * Gets the type of change occurring.
      *
      * @return type of change
      */
-    @NonNull
-    Change getChange();
+    @NonNull Change getChange();
 
     /**
      * Gets the current user affected.
      *
      * @return user
      */
-    @NonNull
-    User getUser();
+    @NonNull User getUser();
 }

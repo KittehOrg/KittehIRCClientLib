@@ -47,15 +47,13 @@ public abstract class AbstractAccountProtocol implements AccountName {
         this.accountName = Sanity.safeMessageCheck(accountName, "Account name");
     }
 
-    @NonNull
     @Override
-    public Client getClient() {
+    public @NonNull Client getClient() {
         return this.client;
     }
 
-    @NonNull
     @Override
-    public String getAccountName() {
+    public @NonNull String getAccountName() {
         return this.accountName;
     }
 
@@ -74,12 +72,10 @@ public abstract class AbstractAccountProtocol implements AccountName {
      *
      * @return auth string
      */
-    @NonNull
-    protected abstract String getAuthentication();
+    protected abstract @NonNull String getAuthentication();
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("account", this.getAccountName()).toString();
     }
 }

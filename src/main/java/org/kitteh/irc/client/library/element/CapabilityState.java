@@ -43,14 +43,12 @@ public interface CapabilityState extends Snapshot {
      *
      * @return capability name
      */
-    @NonNull
-    String getName();
+    @NonNull String getName();
 
     /**
      * Gets the value of the capability.
      *
      * @return capability value if set
      */
-    @NonNull
-    Optional<String> getValue();
+    @NonNull Optional<String> getValue();
 }

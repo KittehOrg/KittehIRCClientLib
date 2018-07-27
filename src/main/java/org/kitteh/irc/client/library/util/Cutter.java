@@ -39,9 +39,8 @@ public interface Cutter {
      * Cuts by words, unless word is too long.
      */
     class DefaultWordCutter implements Cutter {
-        @NonNull
         @Override
-        public List<String> split(@NonNull String message, @NonNegative int size) {
+        public @NonNull List<String> split(@NonNull String message, @NonNegative int size) {
             Sanity.nullCheck(message, "Message cannot be null");
             Sanity.truthiness(size > 0, "Size must be positive");
             List<String> list = new ArrayList<>();
@@ -88,6 +87,5 @@ public interface Cutter {
      * @throws IllegalArgumentException if size is less than 1 or if
      * message is null
      */
-    @NonNull
-    List<String> split(@NonNull String message, @NonNegative int size);
+    @NonNull List<String> split(@NonNull String message, @NonNegative int size);
 }

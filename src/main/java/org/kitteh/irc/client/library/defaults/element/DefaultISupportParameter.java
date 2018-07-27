@@ -37,8 +37,7 @@ import java.util.Optional;
 public class DefaultISupportParameter implements ISupportParameter {
     private final Client client;
     private final String name;
-    @Nullable
-    private final String value;
+    private final @Nullable String value;
 
     /**
      * Constructs the object.
@@ -53,27 +52,23 @@ public class DefaultISupportParameter implements ISupportParameter {
         this.value = value;
     }
 
-    @NonNull
     @Override
-    public Client getClient() {
+    public @NonNull Client getClient() {
         return this.client;
     }
 
-    @NonNull
     @Override
-    public String getName() {
+    public @NonNull String getName() {
         return this.name;
     }
 
-    @NonNull
     @Override
-    public Optional<String> getValue() {
+    public @NonNull Optional<String> getValue() {
         return Optional.ofNullable(this.value);
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("name", this.name).add("value", this.value).toString();
     }
 }

@@ -63,8 +63,7 @@ public class ChannelModeInfoListEvent extends ChannelEventBase {
      *
      * @return mode
      */
-    @NonNull
-    public ChannelMode getMode() {
+    public @NonNull ChannelMode getMode() {
         return this.mode;
     }
 
@@ -73,14 +72,12 @@ public class ChannelModeInfoListEvent extends ChannelEventBase {
      *
      * @return info
      */
-    @NonNull
-    public List<ModeInfo> getModeInfo() {
+    public @NonNull List<ModeInfo> getModeInfo() {
         return this.info;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("mode", this.mode).add("info", this.info);
     }
 }

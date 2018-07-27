@@ -57,14 +57,12 @@ public abstract class ChannelEventBase extends ServerMessageEventBase implements
     }
 
     @Override
-    @NonNull
-    public final Channel getChannel() {
+    public @NonNull final Channel getChannel() {
         return this.channel;
     }
 
     @Override
-    @NonNull
-    protected ToStringer toStringer() {
+    protected @NonNull ToStringer toStringer() {
         return super.toStringer().add("channel", this.channel);
     }
 }

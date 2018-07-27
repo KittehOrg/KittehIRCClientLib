@@ -1059,14 +1059,12 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
                 this.channel = channel;
             }
 
-            @NonNull
-            protected Channel getChannel() {
+            protected @NonNull Channel getChannel() {
                 return this.channel;
             }
 
-            @NonNull
             @Override
-            public String toString() {
+            public @NonNull String toString() {
                 return new ToStringer(this).toString();
             }
         }
@@ -1080,19 +1078,16 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
                 this.prefix = prefix;
             }
 
-            @NonNull
-            protected Channel getChannel() {
+            protected @NonNull Channel getChannel() {
                 return this.channel;
             }
 
-            @NonNull
-            protected ChannelUserMode getPrefix() {
+            protected @NonNull ChannelUserMode getPrefix() {
                 return this.prefix;
             }
 
-            @NonNull
             @Override
-            public String toString() {
+            public @NonNull String toString() {
                 return new ToStringer(this).toString();
             }
         }
@@ -1103,16 +1098,14 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
             protected Private() {
             }
 
-            @NonNull
             @Override
-            public String toString() {
+            public @NonNull String toString() {
                 return new ToStringer(this).toString();
             }
         }
     }
 
-    @NonNull
-    protected MessageTargetInfo getTypeByTarget(@NonNull String target) {
+    protected @NonNull MessageTargetInfo getTypeByTarget(@NonNull String target) {
         Optional<Channel> channel = this.getTracker().getTrackedChannel(target);
         Optional<ChannelUserMode> prefix = this.getClient().getServerInfo().getTargetedChannelInfo(target);
         if (prefix.isPresent()) {

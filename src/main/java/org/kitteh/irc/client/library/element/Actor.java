@@ -34,16 +34,14 @@ public interface Actor extends Snapshot {
      *
      * @return the Actor's name
      */
-    @NonNull
-    String getName();
+    @NonNull String getName();
 
     /**
      * Gets the Actor's name in lower case based on the Client's information.
      *
      * @return lowercased Actor's name
      */
-    @NonNull
-    default String getLowerCaseName() {
+    default @NonNull String getLowerCaseName() {
         return this.getClient().getServerInfo().getCaseMapping().toLowerCase(this.getName());
     }
 }

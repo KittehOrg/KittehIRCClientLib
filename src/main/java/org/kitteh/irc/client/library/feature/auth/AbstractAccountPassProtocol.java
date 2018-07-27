@@ -47,9 +47,8 @@ public abstract class AbstractAccountPassProtocol extends AbstractAccountProtoco
         this.password = Sanity.safeMessageCheck(password, "Password");
     }
 
-    @NonNull
     @Override
-    public String getPassword() {
+    public @NonNull String getPassword() {
         return this.password;
     }
 
@@ -58,9 +57,8 @@ public abstract class AbstractAccountPassProtocol extends AbstractAccountProtoco
         this.password = Sanity.safeMessageCheck(password, "Password");
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return new ToStringer(this).add("account", this.getAccountName()).add("pass", this.getPassword()).toString();
     }
 }
