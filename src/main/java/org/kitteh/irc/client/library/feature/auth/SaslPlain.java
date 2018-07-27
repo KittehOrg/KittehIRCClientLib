@@ -23,10 +23,9 @@
  */
 package org.kitteh.irc.client.library.feature.auth;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.auth.element.Password;
-
-import javax.annotation.Nonnull;
 
 /**
  * SASL PLAIN authentication. Automatically attempts auth during connection.
@@ -39,24 +38,24 @@ public class SaslPlain extends AbstractSaslProtocol<String> implements Password 
      * @param accountName account name
      * @param password password
      */
-    public SaslPlain(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
+    public SaslPlain(@NonNull Client client, @NonNull String accountName, @NonNull String password) {
         super(client, accountName, password, "PLAIN");
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected String getAuthLine() {
         return this.getAccountName() + '\u0000' + this.getAccountName() + '\u0000' + this.getPassword();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getPassword() {
         return this.getAuthValue();
     }
 
     @Override
-    public void setPassword(@Nonnull String password) {
+    public void setPassword(@NonNull String password) {
         this.setAuthValue(password);
     }
 }

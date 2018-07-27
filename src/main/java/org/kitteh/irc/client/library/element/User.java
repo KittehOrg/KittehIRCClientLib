@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.Set;
 
@@ -43,7 +43,7 @@ public interface User extends MessageReceiver, Staleable {
      * @see CapabilityManager#getCapabilities()
      * @see ServerInfo#hasWhoXSupport()
      */
-    @Nonnull
+    @NonNull
     Optional<String> getAccount();
 
     /**
@@ -51,7 +51,7 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return away message if known
      */
-    @Nonnull
+    @NonNull
     Optional<String> getAwayMessage();
 
     /**
@@ -59,7 +59,7 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return channel names the user is in
      */
-    @Nonnull
+    @NonNull
     Set<String> getChannels();
 
     /**
@@ -67,7 +67,7 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return user host
      */
-    @Nonnull
+    @NonNull
     String getHost();
 
     /**
@@ -75,7 +75,7 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return user nick
      */
-    @Nonnull
+    @NonNull
     String getNick();
 
     /**
@@ -87,7 +87,7 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return operator info, or empty if none known
      */
-    @Nonnull
+    @NonNull
     Optional<String> getOperatorInformation();
 
     /**
@@ -95,7 +95,7 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return real name if known
      */
-    @Nonnull
+    @NonNull
     Optional<String> getRealName();
 
     /**
@@ -103,7 +103,7 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return user's server if known
      */
-    @Nonnull
+    @NonNull
     Optional<String> getServer();
 
     /**
@@ -111,7 +111,7 @@ public interface User extends MessageReceiver, Staleable {
      *
      * @return user
      */
-    @Nonnull
+    @NonNull
     String getUserString();
 
     /**

@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature;
 
-
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
 import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.Set;
 
@@ -44,15 +43,15 @@ public interface AuthManager {
      * @return displaced protocol of same class
      * @throws IllegalArgumentException if the protocol is for another Client
      */
-    @Nonnull
-    Optional<AuthProtocol> addProtocol(@Nonnull AuthProtocol protocol);
+    @NonNull
+    Optional<AuthProtocol> addProtocol(@NonNull AuthProtocol protocol);
 
     /**
      * Gets all protocols currently registered to the manager.
      *
      * @return all protocols
      */
-    @Nonnull
+    @NonNull
     Set<AuthProtocol> getProtocols();
 
     /**
@@ -61,5 +60,5 @@ public interface AuthManager {
      *
      * @param protocol protocol to remove
      */
-    void removeProtocol(@Nonnull AuthProtocol protocol);
+    void removeProtocol(@NonNull AuthProtocol protocol);
 }

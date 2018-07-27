@@ -23,9 +23,8 @@
  */
 package org.kitteh.irc.client.library.feature.auth.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
-
-import javax.annotation.Nonnull;
 
 /**
  * Utilizing a password for authentication.
@@ -36,7 +35,7 @@ public interface Password extends AuthProtocol {
      *
      * @return password
      */
-    @Nonnull
+    @NonNull
     String getPassword();
 
     /**
@@ -44,5 +43,5 @@ public interface Password extends AuthProtocol {
      *
      * @param password password
      */
-    void setPassword(@Nonnull String password);
+    void setPassword(@NonNull String password);
 }

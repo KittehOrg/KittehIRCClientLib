@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.WhoisData;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -64,7 +64,7 @@ public class DefaultWhoisData implements WhoisData {
          * @param client client
          * @param nick nick of the user
          */
-        public Builder(@Nonnull Client client, @Nonnull String nick) {
+        public Builder(@NonNull Client client, @NonNull String nick) {
             this.client = client;
             this.nick = nick;
         }
@@ -74,7 +74,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @return nick
          */
-        @Nonnull
+        @NonNull
         public String getNick() {
             return this.nick;
         }
@@ -84,7 +84,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param account account
          */
-        public void setAccount(@Nonnull String account) {
+        public void setAccount(@NonNull String account) {
             this.account = account;
         }
 
@@ -93,7 +93,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param channels channels to add
          */
-        public void addChannels(@Nonnull String channels) {
+        public void addChannels(@NonNull String channels) {
             Collections.addAll(this.channels, Sanity.nullCheck(channels, "Channels cannot be null").split(" "));
         }
 
@@ -102,7 +102,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param awayMessage away message
          */
-        public void setAway(@Nonnull String awayMessage) {
+        public void setAway(@NonNull String awayMessage) {
             this.awayMessage = awayMessage;
         }
 
@@ -111,7 +111,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param userString user string
          */
-        public void setUserString(@Nonnull String userString) {
+        public void setUserString(@NonNull String userString) {
             this.userString = userString;
         }
 
@@ -120,7 +120,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param host host
          */
-        public void setHost(@Nonnull String host) {
+        public void setHost(@NonNull String host) {
             this.host = host;
         }
 
@@ -129,7 +129,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param realName real name
          */
-        public void setRealName(@Nonnull String realName) {
+        public void setRealName(@NonNull String realName) {
             this.realName = realName;
         }
 
@@ -138,7 +138,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param server server
          */
-        public void setServer(@Nonnull String server) {
+        public void setServer(@NonNull String server) {
             this.server = server;
         }
 
@@ -147,7 +147,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param serverDescription server description
          */
-        public void setServerDescription(@Nonnull String serverDescription) {
+        public void setServerDescription(@NonNull String serverDescription) {
             this.serverDescription = serverDescription;
         }
 
@@ -163,7 +163,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @param operatorInformation operator information
          */
-        public void setOperatorInformation(@Nonnull String operatorInformation) {
+        public void setOperatorInformation(@NonNull String operatorInformation) {
             this.operatorInformation = operatorInformation;
         }
 
@@ -190,7 +190,7 @@ public class DefaultWhoisData implements WhoisData {
          *
          * @return new WhoisData
          */
-        @Nonnull
+        @NonNull
         public WhoisData build() {
             return new DefaultWhoisData(this.client, this.account, this.channels, this.nick, this.userString, this.host, this.realName, this.server, this.serverDescription, this.secure, this.operatorInformation, this.idleTime, this.signOnTime, this.awayMessage);
         }
@@ -232,8 +232,8 @@ public class DefaultWhoisData implements WhoisData {
      * @param signOnTime when the user signed on, if known
      * @param awayMessage user away message, if known
      */
-    public DefaultWhoisData(@Nonnull Client client, @Nullable String account, @Nonnull Set<String> channels, @Nonnull String nick, @Nonnull String userString,
-                            @Nonnull String host, @Nullable String realName, @Nullable String server, @Nullable String serverDescription, boolean secureConnection,
+    public DefaultWhoisData(@NonNull Client client, @Nullable String account, @NonNull Set<String> channels, @NonNull String nick, @NonNull String userString,
+                            @NonNull String host, @Nullable String realName, @Nullable String server, @Nullable String serverDescription, boolean secureConnection,
                             @Nullable String operatorInformation, @Nullable Long idleTime, @Nullable Long signOnTime, @Nullable String awayMessage) {
         this.client = client;
         this.account = account;
@@ -254,49 +254,49 @@ public class DefaultWhoisData implements WhoisData {
         this.creationTime = System.currentTimeMillis();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getAccount() {
         return Optional.ofNullable(this.account);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getAwayMessage() {
         return Optional.ofNullable(this.awayMessage);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Set<String> getChannels() {
         return this.channels;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getHost() {
         return this.host;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getNick() {
         return this.nick;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getRealName() {
         return Optional.ofNullable(this.realName);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getServer() {
         return Optional.ofNullable(this.server);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getUserString() {
         return this.userString;
@@ -307,19 +307,19 @@ public class DefaultWhoisData implements WhoisData {
         return this.away;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getMessagingName() {
         return this.nick;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Client getClient() {
         return this.client;
@@ -330,25 +330,25 @@ public class DefaultWhoisData implements WhoisData {
         return this.creationTime;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<Long> getIdleTime() {
         return Optional.ofNullable(this.idleTime);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getOperatorInformation() {
         return Optional.ofNullable(this.operatorInformation);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getServerDescription() {
         return Optional.ofNullable(this.serverDescription);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<Long> getSignOnTime() {
         return Optional.ofNullable(this.signOnTime);
@@ -359,7 +359,7 @@ public class DefaultWhoisData implements WhoisData {
         return this.secureConnection;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this)

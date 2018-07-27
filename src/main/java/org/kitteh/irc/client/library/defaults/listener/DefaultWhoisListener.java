@@ -24,6 +24,8 @@
 package org.kitteh.irc.client.library.defaults.listener;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultWhoisData;
 import org.kitteh.irc.client.library.element.WhoisData;
@@ -31,26 +33,22 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.WhoisEvent;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 /**
  * Default WHOIS listener, producing events using default classes.
  */
 public class DefaultWhoisListener extends AbstractDefaultListenerBase {
-    @Nullable
-    private DefaultWhoisData.Builder whoisBuilder;
+    private DefaultWhoisData.@Nullable Builder whoisBuilder;
 
     /**
      * Constructs the listener.
      *
      * @param client client
      */
-    public DefaultWhoisListener(@Nonnull Client.WithManagement client) {
+    public DefaultWhoisListener(Client.@NonNull WithManagement client) {
         super(client);
     }
 
-    private DefaultWhoisData.Builder getWhoisBuilder(@Nonnull ClientReceiveNumericEvent event) {
+    private DefaultWhoisData.Builder getWhoisBuilder(@NonNull ClientReceiveNumericEvent event) {
         String nick = event.getParameters().get(1);
         if ((this.whoisBuilder == null) ||
                 !this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(this.whoisBuilder.getNick(), nick)) { // If suddenly a nick change, discard old

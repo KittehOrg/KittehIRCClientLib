@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Queue;
 import java.util.function.Consumer;
 
@@ -41,13 +41,13 @@ public class Listener<Type> {
     private final class ListenerThread extends QueueProcessingThread<Type> {
         private volatile Consumer<Type> consumer;
 
-        private ListenerThread(@Nonnull String clientName, @Nonnull Consumer<Type> consumer) {
+        private ListenerThread(@NonNull String clientName, @NonNull Consumer<Type> consumer) {
             super("KICL Listener (" + clientName + ')');
             this.consumer = consumer;
         }
 
         @Override
-        protected void processElement(@Nonnull Type element) {
+        protected void processElement(@NonNull Type element) {
             try {
                 this.consumer.accept(element);
             } catch (final Throwable thrown) {
@@ -56,7 +56,7 @@ public class Listener<Type> {
         }
 
         @Override
-        protected void cleanup(@Nonnull Queue<Type> remainingQueue) {
+        protected void cleanup(@NonNull Queue<Type> remainingQueue) {
             while (!remainingQueue.isEmpty()) {
                 try {
                     this.consumer.accept(remainingQueue.poll());
@@ -75,7 +75,7 @@ public class Listener<Type> {
      * @param client the client
      * @param consumer consumer or null for no consumer
      */
-    public Listener(@Nonnull Client client, @Nullable Consumer<Type> consumer) {
+    public Listener(@NonNull Client client, @Nullable Consumer<Type> consumer) {
         this.clientName = Sanity.nullCheck(client, "Client cannot be null").getName();
         this.thread = (consumer == null) ? null : new ListenerThread(this.clientName, consumer);
     }
@@ -85,7 +85,7 @@ public class Listener<Type> {
      *
      * @param item item to queue
      */
-    public void queue(@Nonnull Type item) {
+    public void queue(@NonNull Type item) {
         if (this.thread != null) {
             this.thread.queue(item);
         }
@@ -105,7 +105,7 @@ public class Listener<Type> {
      *
      * @param consumer new consumer
      */
-    public void setConsumer(@Nonnull Consumer<Type> consumer) {
+    public void setConsumer(@NonNull Consumer<Type> consumer) {
         if (this.thread == null) {
             this.thread = new ListenerThread(this.clientName, consumer);
         } else {
@@ -124,7 +124,7 @@ public class Listener<Type> {
         }
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("clientName", this.clientName).toString();

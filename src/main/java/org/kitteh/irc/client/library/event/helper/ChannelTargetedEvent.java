@@ -23,10 +23,9 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
-
-import javax.annotation.Nonnull;
 
 /**
  * An event involving a {@link Channel}, targeted at specific users by mode.
@@ -37,7 +36,7 @@ public interface ChannelTargetedEvent extends ChannelEvent {
      *
      * @return the prefix targeted
      */
-    @Nonnull
+    @NonNull
     ChannelUserMode getPrefix();
 
     /**
@@ -45,7 +44,7 @@ public interface ChannelTargetedEvent extends ChannelEvent {
      *
      * @return targeted name
      */
-    @Nonnull
+    @NonNull
     default String getTargetedName() {
         return this.getPrefix().getNickPrefix() + this.getChannel().getMessagingName();
     }

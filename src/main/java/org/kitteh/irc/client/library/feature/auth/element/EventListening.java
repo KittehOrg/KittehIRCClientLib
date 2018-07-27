@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.auth.element;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Listens to events
@@ -34,6 +34,6 @@ public interface EventListening {
      *
      * @return listener
      */
-    @Nonnull
+    @NonNull
     Object getEventListener();
 }

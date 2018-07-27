@@ -50,6 +50,8 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.ScheduledFuture;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientConnectionClosedEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectionEstablishedEvent;
@@ -64,8 +66,6 @@ import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
@@ -105,7 +105,7 @@ public class NettyManager {
 
         private boolean alive = true;
 
-        private ClientConnection(@Nonnull final Client.WithManagement client, @Nonnull ChannelFuture channelFuture) {
+        private ClientConnection(final Client.@NonNull WithManagement client, @NonNull ChannelFuture channelFuture) {
             this.client = client;
             this.channel = channelFuture.channel();
             this.channelFuture = channelFuture;
@@ -302,7 +302,7 @@ public class NettyManager {
             }
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).add("client", this.client).toString();
@@ -319,7 +319,7 @@ public class NettyManager {
 
     }
 
-    private static synchronized void removeClientConnection(@Nonnull Client.WithManagement client) {
+    private static synchronized void removeClientConnection(Client.@NonNull WithManagement client) {
         clients.remove(client);
         if (clients.isEmpty()) {
             if (eventLoopGroup != null) {
@@ -336,7 +336,7 @@ public class NettyManager {
      * @param client client to connect for
      * @return connection
      */
-    public static synchronized ClientConnection connect(@Nonnull Client.WithManagement client) {
+    public static synchronized ClientConnection connect(Client.@NonNull WithManagement client) {
 
         // STS Override
         if (client.getStsMachine().isPresent() && !client.isSecureConnection()) {
@@ -369,7 +369,7 @@ public class NettyManager {
         return clientConnection;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).toString();

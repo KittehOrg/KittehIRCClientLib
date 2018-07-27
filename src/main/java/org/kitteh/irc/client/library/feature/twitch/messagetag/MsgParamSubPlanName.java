@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Message tag for subscription plan name.
@@ -44,7 +43,7 @@ public class MsgParamSubPlanName extends MessageTagManager.DefaultMessageTag {
     @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, MsgParamSubPlanName> FUNCTION = (client, name, value) -> new MsgParamSubPlanName(name, value);
 
-    private MsgParamSubPlanName(@Nonnull String name, @Nonnull String value) {
+    private MsgParamSubPlanName(@NonNull String name, @NonNull String value) {
         super(name, value);
     }
 }

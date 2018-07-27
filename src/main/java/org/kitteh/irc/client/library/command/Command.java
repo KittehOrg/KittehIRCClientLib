@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * Represents a command which is executable on the server by the client.
@@ -42,7 +41,7 @@ public abstract class Command implements ClientLinked {
      * @param client the client
      * @throws IllegalArgumentException if client is null
      */
-    protected Command(@Nonnull Client client) {
+    protected Command(@NonNull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
     }
 
@@ -52,7 +51,7 @@ public abstract class Command implements ClientLinked {
      * @return the client
      */
     @Override
-    @Nonnull
+    @NonNull
     public Client getClient() {
         return this.client;
     }
@@ -72,7 +71,7 @@ public abstract class Command implements ClientLinked {
      *
      * @return the partial toString generator
      */
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return new ToStringer(this).add("client", this.getClient());
     }

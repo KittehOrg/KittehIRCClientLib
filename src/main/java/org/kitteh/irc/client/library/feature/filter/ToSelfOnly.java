@@ -26,9 +26,9 @@ package org.kitteh.irc.client.library.feature.filter;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.IMessageFilter;
 import net.engio.mbassy.subscription.SubscriptionContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -52,7 +52,7 @@ public @interface ToSelfOnly {
         }
 
         @Override
-        public boolean accepts(@Nonnull PrivateEvent privateEvent, @Nonnull ToSelfOnly[] annotations) {
+        public boolean accepts(@NonNull PrivateEvent privateEvent, @NonNull ToSelfOnly[] annotations) {
             return privateEvent.isToClient();
         }
 

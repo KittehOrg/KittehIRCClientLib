@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,7 @@ public class DefaultServerMessage implements ServerMessage {
          * @param message full message
          * @param tags message tags
          */
-        public NumericCommand(int command, @Nonnull String message, @Nonnull List<MessageTag> tags) {
+        public NumericCommand(int command, @NonNull String message, @NonNull List<MessageTag> tags) {
             super(message, tags);
             this.command = command;
         }
@@ -75,12 +75,12 @@ public class DefaultServerMessage implements ServerMessage {
          * @param message full message
          * @param tags message tags
          */
-        public StringCommand(@Nonnull String command, @Nonnull String message, @Nonnull List<MessageTag> tags) {
+        public StringCommand(@NonNull String command, @NonNull String message, @NonNull List<MessageTag> tags) {
             super(message, tags);
             this.command = command;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getCommand() {
             return this.command;
@@ -97,26 +97,26 @@ public class DefaultServerMessage implements ServerMessage {
      * @param message full message
      * @param tags parsed tags
      */
-    public DefaultServerMessage(@Nonnull String message, @Nonnull List<MessageTag> tags) {
+    public DefaultServerMessage(@NonNull String message, @NonNull List<MessageTag> tags) {
         Sanity.nullCheck(message, "Message cannot be null");
         Sanity.nullCheck(tags, "Tags cannot be null");
         this.message = message;
         this.tags = Collections.unmodifiableList(new ArrayList<>(tags));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getMessage() {
         return this.message;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public final List<MessageTag> getTags() {
         return this.tags;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("message", this.message).add("tags", this.tags).toString();

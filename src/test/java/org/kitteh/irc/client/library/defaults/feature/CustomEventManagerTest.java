@@ -2,6 +2,7 @@ package org.kitteh.irc.client.library.defaults.feature;
 
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.FakeClient;
@@ -13,7 +14,6 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Map;
@@ -28,17 +28,17 @@ public class CustomEventManagerTest {
         private final MBassador<Object> bus = new MBassador<>();
 
         @Override
-        public void callEvent(@Nonnull Object event) {
+        public void callEvent(@NonNull Object event) {
             this.bus.publish(event);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Set<Object> getRegisteredEventListeners() {
             return Collections.emptySet();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters() {
             return Collections.emptyMap();
@@ -50,12 +50,12 @@ public class CustomEventManagerTest {
         }
 
         @Override
-        public void registerEventListener(@Nonnull Object listener) {
+        public void registerEventListener(@NonNull Object listener) {
             this.bus.subscribe(listener);
         }
 
         @Override
-        public void unregisterEventListener(@Nonnull Object listener) {
+        public void unregisterEventListener(@NonNull Object listener) {
             this.bus.unsubscribe(listener);
         }
     }

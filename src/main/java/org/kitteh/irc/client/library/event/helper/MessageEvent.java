@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An event involving a message.
@@ -34,6 +34,6 @@ public interface MessageEvent extends ServerMessageEvent {
      *
      * @return the message
      */
-    @Nonnull
+    @NonNull
     String getMessage();
 }

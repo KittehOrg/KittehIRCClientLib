@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -32,7 +33,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class ChannelModeInfoListEvent extends ChannelEventBase {
      * @param mode mode for which the info exists
      * @param info list of info
      */
-    public ChannelModeInfoListEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull ChannelMode mode, @Nonnull List<ModeInfo> info) {
+    public ChannelModeInfoListEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull ChannelMode mode, @NonNull List<ModeInfo> info) {
         super(client, originalMessages, channel);
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
         this.info = Collections.unmodifiableList(Sanity.nullCheck(info, "Info cannot be null"));
@@ -63,7 +63,7 @@ public class ChannelModeInfoListEvent extends ChannelEventBase {
      *
      * @return mode
      */
-    @Nonnull
+    @NonNull
     public ChannelMode getMode() {
         return this.mode;
     }
@@ -73,13 +73,13 @@ public class ChannelModeInfoListEvent extends ChannelEventBase {
      *
      * @return info
      */
-    @Nonnull
+    @NonNull
     public List<ModeInfo> getModeInfo() {
         return this.info;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("mode", this.mode).add("info", this.info);
     }

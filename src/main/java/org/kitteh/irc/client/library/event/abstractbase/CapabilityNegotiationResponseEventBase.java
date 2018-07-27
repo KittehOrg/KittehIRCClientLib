@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -50,7 +50,7 @@ public abstract class CapabilityNegotiationResponseEventBase extends ServerMessa
      * @param originalMessages original messages
      * @param negotiating if we are negotiating right now
      */
-    protected CapabilityNegotiationResponseEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, boolean negotiating) {
+    protected CapabilityNegotiationResponseEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating) {
         super(client, originalMessages);
         this.negotiating = negotiating;
     }
@@ -71,7 +71,7 @@ public abstract class CapabilityNegotiationResponseEventBase extends ServerMessa
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("isEndingNegotiation", this.endNegotiation).add("isNegotiating", this.isNegotiating());
     }

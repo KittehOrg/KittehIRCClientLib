@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Holder of KICL version string.
@@ -40,7 +40,7 @@ public final class Version {
      *
      * @return current KICL version or {@link #MISSINGNO} if somehow not set
      */
-    @Nonnull
+    @NonNull
     public static String getVersion() {
         return (Version.VERSION.version == null) ? MISSINGNO : Version.VERSION.version; // Semantic satiation!
     }

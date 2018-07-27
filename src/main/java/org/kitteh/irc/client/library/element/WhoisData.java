@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.Optional;
 
 /**
@@ -36,7 +37,7 @@ public interface WhoisData extends User {
      *
      * @return idle time, in seconds
      */
-    @Nonnull
+    @NonNull
     Optional<Long> getIdleTime();
 
     /**
@@ -44,7 +45,7 @@ public interface WhoisData extends User {
      *
      * @return description or empty if none present
      */
-    @Nonnull
+    @NonNull
     Optional<String> getServerDescription();
 
     /**
@@ -52,7 +53,7 @@ public interface WhoisData extends User {
      *
      * @return time of arrival
      */
-    @Nonnull
+    @NonNull
     Optional<Long> getSignOnTime();
 
     /**

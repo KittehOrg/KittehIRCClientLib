@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Message tag for ban duration.
@@ -46,7 +45,7 @@ public class BanDuration extends MessageTagManager.DefaultMessageTag {
 
     private final int duration;
 
-    private BanDuration(@Nonnull String name, @Nonnull String value, int duration) {
+    private BanDuration(@NonNull String name, @NonNull String value, int duration) {
         super(name, value);
         this.duration = duration;
     }

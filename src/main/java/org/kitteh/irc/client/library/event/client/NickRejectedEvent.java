@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -47,7 +47,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      * @param attemptedNick the nick that failed
      * @param newNick the new nick to attempt
      */
-    public NickRejectedEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull String attemptedNick, @Nonnull String newNick) {
+    public NickRejectedEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull String attemptedNick, @NonNull String newNick) {
         super(client, originalMessages);
         this.attemptedNick = Sanity.nullCheck(attemptedNick, "Attempted nick cannot be null");
         this.newNick = Sanity.nullCheck(newNick, "New nick cannot be null");
@@ -58,7 +58,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      *
      * @return the attempted nick
      */
-    @Nonnull
+    @NonNull
     public String getAttemptedNick() {
         return this.attemptedNick;
     }
@@ -69,7 +69,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      *
      * @return new nick to attempt
      */
-    @Nonnull
+    @NonNull
     public String getNewNick() {
         return this.newNick;
     }
@@ -82,7 +82,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      * nickname this events reports has failed, contains invalid characters,
      * or contains spaces
      */
-    public void setNewNick(@Nonnull String newNick) {
+    public void setNewNick(@NonNull String newNick) {
         Sanity.safeMessageCheck(newNick, "Nick");
         Sanity.truthiness(!newNick.equals(this.attemptedNick), "Cannot set new nick to the currently failing nick");
         Sanity.truthiness(!newNick.contains(" "), "Nick cannot contain spaces");
@@ -90,7 +90,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("attemptedNick", this.attemptedNick).add("newNick", this.newNick);
     }

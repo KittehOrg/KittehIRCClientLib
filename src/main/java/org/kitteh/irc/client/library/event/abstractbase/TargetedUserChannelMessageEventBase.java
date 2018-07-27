@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -35,7 +36,6 @@ import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -61,7 +61,7 @@ public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMe
      * @param prefix the targeted prefix
      * @param message the message
      */
-    protected TargetedUserChannelMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nonnull Channel channel, @Nonnull ChannelUserMode prefix, @Nonnull String message) {
+    protected TargetedUserChannelMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User user, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
         super(client, originalMessages, user, channel, message);
         this.prefix = Sanity.nullCheck(prefix, "Prefix cannot be null");
     }
@@ -71,14 +71,14 @@ public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMe
      *
      * @return the prefix targeted
      */
-    @Nonnull
+    @NonNull
     @Override
     public final ChannelUserMode getPrefix() {
         return this.prefix;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("channelPrefix", this.prefix);
     }

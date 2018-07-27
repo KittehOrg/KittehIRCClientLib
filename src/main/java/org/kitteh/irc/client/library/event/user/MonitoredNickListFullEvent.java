@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +49,7 @@ public class MonitoredNickListFullEvent extends ServerMessageEventBase {
      * @param limit limit
      * @param rejectedNicks rejected nicks
      */
-    public MonitoredNickListFullEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, int limit, @Nonnull List<String> rejectedNicks) {
+    public MonitoredNickListFullEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, int limit, @NonNull List<String> rejectedNicks) {
         super(client, originalMessages);
         this.limit = limit;
         this.rejectedNicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(rejectedNicks, "Rejected nicks cannot be null")));
@@ -69,13 +69,13 @@ public class MonitoredNickListFullEvent extends ServerMessageEventBase {
      *
      * @return rejected nicknames
      */
-    @Nonnull
+    @NonNull
     public List<String> getRejectedNicks() {
         return this.rejectedNicks;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("limit", this.limit).add("rejectedNicks", this.rejectedNicks);
     }

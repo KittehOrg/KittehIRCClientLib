@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.defaults.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.defaults.element.DefaultActor;
@@ -44,8 +46,6 @@ import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,25 +73,25 @@ public class DefaultActorTracker implements ActorTracker {
     private class IrcActor {
         private String name;
 
-        private IrcActor(@Nonnull String name) {
+        private IrcActor(@NonNull String name) {
             this.name = name;
         }
 
-        @Nonnull
+        @NonNull
         String getName() {
             return this.name;
         }
 
-        void setName(@Nonnull String name) {
+        void setName(@NonNull String name) {
             this.name = name;
         }
 
-        @Nonnull
+        @NonNull
         DefaultActor snapshot() {
             return new DefaultActor(DefaultActorTracker.this.client, this.name);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).toString();
@@ -102,11 +102,11 @@ public class DefaultActorTracker implements ActorTracker {
         @Nullable
         private T snapshot;
 
-        IrcStaleable(@Nonnull String name) {
+        IrcStaleable(@NonNull String name) {
             super(name);
         }
 
-        boolean isStale(@Nonnull Object potentiallyStale) {
+        boolean isStale(@NonNull Object potentiallyStale) {
             return this.snapshot != potentiallyStale;
         }
 
@@ -114,8 +114,8 @@ public class DefaultActorTracker implements ActorTracker {
             this.snapshot = null;
         }
 
-        @Nonnull
-        synchronized T snapshot(@Nonnull Supplier<T> supplier) {
+        @NonNull
+        synchronized T snapshot(@NonNull Supplier<T> supplier) {
             if (this.snapshot != null) {
                 return this.snapshot;
             }
@@ -138,7 +138,7 @@ public class DefaultActorTracker implements ActorTracker {
         private Instant topicTime;
         private volatile boolean tracked;
 
-        private IrcChannel(@Nonnull String channel) {
+        private IrcChannel(@NonNull String channel) {
             super(channel);
             this.modes = new CIKeyMap<>(DefaultActorTracker.this.client);
             this.commands = new DefaultChannel.DefaultChannelCommands(DefaultActorTracker.this.client, channel);
@@ -156,21 +156,21 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        void setTopic(@Nonnull String topic) {
+        void setTopic(@NonNull String topic) {
             this.topic = topic;
             this.topicTime = null;
             this.topicSetter = null;
             this.markStale();
         }
 
-        void setTopic(long time, @Nonnull Actor actor) {
+        void setTopic(long time, @NonNull Actor actor) {
             this.topicTime = Instant.ofEpochMilli(time);
             this.topicSetter = actor;
             this.markStale();
         }
 
         @Override
-        @Nonnull
+        @NonNull
         DefaultChannel snapshot() {
             if (DefaultActorTracker.this.queryChannelInformation) {
                 synchronized (this.modes) {
@@ -212,7 +212,7 @@ public class DefaultActorTracker implements ActorTracker {
                     nickMap, new ArrayList<>(nickMap.values()), this.fullListReceived, this.commands));
         }
 
-        void trackMode(@Nonnull ChannelMode mode, boolean track) {
+        void trackMode(@NonNull ChannelMode mode, boolean track) {
             if (track && this.trackedModes.add(mode.getChar())) {
                 new ChannelModeCommand(DefaultActorTracker.this.client, this.getName()).add(true, mode).execute();
             } else if (!track) {
@@ -220,7 +220,7 @@ public class DefaultActorTracker implements ActorTracker {
             }
         }
 
-        void setModeInfoList(char character, @Nonnull List<ModeInfo> modeInfoList) {
+        void setModeInfoList(char character, @NonNull List<ModeInfo> modeInfoList) {
             if (!this.trackedModes.contains(character)) {
                 return;
             }
@@ -228,7 +228,7 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        void trackModeInfo(boolean add, @Nonnull ModeInfo modeInfo) {
+        void trackModeInfo(boolean add, @NonNull ModeInfo modeInfo) {
             if (!this.trackedModes.contains(modeInfo.getMode().getChar())) {
                 return;
             }
@@ -245,14 +245,14 @@ public class DefaultActorTracker implements ActorTracker {
             }
         }
 
-        void trackUser(@Nonnull User user, @Nonnull Set<ChannelUserMode> modes) {
+        void trackUser(@NonNull User user, @NonNull Set<ChannelUserMode> modes) {
             DefaultActorTracker.this.trackUser(user);
             this.setModes(user.getNick(), modes);
             this.markStale();
             DefaultActorTracker.this.staleUser(user.getNick());
         }
 
-        void trackNick(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
+        void trackNick(@NonNull String nick, @NonNull Set<ChannelUserMode> modes) {
             String nickname = nick;
             int index;
             if ((index = nick.indexOf('!')) >= 0) { // userhost-in-names
@@ -270,17 +270,17 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        void trackUserModeAdd(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
+        void trackUserModeAdd(@NonNull String nick, @NonNull ChannelUserMode mode) {
             this.getModes(nick).add(mode);
             this.markStale();
         }
 
-        void trackUserModeRemove(@Nonnull String nick, @Nonnull ChannelUserMode mode) {
+        void trackUserModeRemove(@NonNull String nick, @NonNull ChannelUserMode mode) {
             this.getModes(nick).remove(mode);
             this.markStale();
         }
 
-        private void trackUserNick(@Nonnull String oldNick, @Nonnull String newNick) {
+        private void trackUserNick(@NonNull String oldNick, @NonNull String newNick) {
             Set<ChannelUserMode> modes = this.modes.remove(oldNick);
             if (modes != null) {
                 this.setModes(newNick, modes);
@@ -288,19 +288,19 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        void trackUserPart(@Nonnull String nick) {
+        void trackUserPart(@NonNull String nick) {
             this.modes.remove(nick);
             DefaultActorTracker.this.checkUserForTracking(nick);
             DefaultActorTracker.this.staleUser(nick);
             this.markStale();
         }
 
-        @Nonnull
-        private Set<ChannelUserMode> getModes(@Nonnull String nick) {
+        @NonNull
+        private Set<ChannelUserMode> getModes(@NonNull String nick) {
             return this.modes.computeIfAbsent(nick, k -> new HashSet<>());
         }
 
-        private void setModes(@Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
+        private void setModes(@NonNull String nick, @NonNull Set<ChannelUserMode> modes) {
             this.modes.put(nick, new HashSet<>(modes));
             this.markStale();
         }
@@ -323,7 +323,7 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).toString();
@@ -342,19 +342,19 @@ public class DefaultActorTracker implements ActorTracker {
         private String realName;
         private String server;
 
-        private IrcUser(@Nonnull String mask, @Nonnull String nick, @Nonnull String user, @Nonnull String host) {
+        private IrcUser(@NonNull String mask, @NonNull String nick, @NonNull String user, @NonNull String host) {
             super(mask);
             this.nick = nick;
             this.user = user;
             this.host = host;
         }
 
-        @Nonnull
+        @NonNull
         String getNick() {
             return this.nick;
         }
 
-        private void setNick(@Nonnull String newNick) {
+        private void setNick(@NonNull String newNick) {
             this.nick = newNick;
             this.updateName();
         }
@@ -380,26 +380,26 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        void setOperString(@Nonnull String operString) {
+        void setOperString(@NonNull String operString) {
             this.operString = operString;
         }
 
-        void setRealName(@Nonnull String realName) {
+        void setRealName(@NonNull String realName) {
             this.realName = realName;
             this.markStale();
         }
 
-        void setHost(@Nonnull String host) {
+        void setHost(@NonNull String host) {
             this.host = host;
             this.updateName();
         }
 
-        void setUser(@Nonnull String user) {
+        void setUser(@NonNull String user) {
             this.user = user;
             this.updateName();
         }
 
-        void setServer(@Nonnull String server) {
+        void setServer(@NonNull String server) {
             this.server = server;
             this.markStale();
         }
@@ -410,7 +410,7 @@ public class DefaultActorTracker implements ActorTracker {
         }
 
         @Override
-        @Nonnull
+        @NonNull
         DefaultUser snapshot() {
             Set<String> chanSet = new HashSet<>();
             for (IrcChannel channel : DefaultActorTracker.this.trackedChannels.values()) {
@@ -422,7 +422,7 @@ public class DefaultActorTracker implements ActorTracker {
                     this.awayMessage, this.nick, this.user, this.host, this.isAway, this.operString, this.realName, this.server, chanSet));
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).toString();
@@ -431,12 +431,12 @@ public class DefaultActorTracker implements ActorTracker {
 
 
     class IrcServer extends IrcActor {
-        private IrcServer(@Nonnull String name) {
+        private IrcServer(@NonNull String name) {
             super(name);
         }
 
         @Override
-        @Nonnull
+        @NonNull
         DefaultServer snapshot() {
             return new DefaultServer(DefaultActorTracker.this.client, this.getName());
         }
@@ -462,15 +462,15 @@ public class DefaultActorTracker implements ActorTracker {
      *
      * @param client client
      */
-    public DefaultActorTracker(@Nonnull Client.WithManagement client) {
+    public DefaultActorTracker(Client.@NonNull WithManagement client) {
         this.client = client;
         this.trackedChannels = new CIKeyMap<>(this.client);
         this.trackedUsers = new CIKeyMap<>(this.client);
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Actor getActor(@Nonnull String name) {
+    public Actor getActor(@NonNull String name) {
         IrcUser user = this.getUserByName(name);
         if (user != null) {
             return user.snapshot();
@@ -487,7 +487,7 @@ public class DefaultActorTracker implements ActorTracker {
         return new IrcActor(name).snapshot();
     }
 
-    private IrcUser getUserByName(@Nonnull String name) {
+    private IrcUser getUserByName(@NonNull String name) {
         Matcher nickMatcher = NICK_PATTERN.matcher(name);
         if (nickMatcher.matches()) {
             String nick = nickMatcher.group(1);
@@ -500,28 +500,28 @@ public class DefaultActorTracker implements ActorTracker {
         return null;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<Channel> getTrackedChannel(@Nonnull String channel) {
+    public Optional<Channel> getTrackedChannel(@NonNull String channel) {
         IrcChannel ch = this.trackedChannels.get(channel);
         return (ch == null) ? Optional.empty() : Optional.of(ch.snapshot());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Set<Channel> getTrackedChannels() {
         return this.trackedChannels.values().stream().map(IrcChannel::snapshot).collect(Collectors.toSet());
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<User> getTrackedUser(@Nonnull String nick) {
+    public Optional<User> getTrackedUser(@NonNull String nick) {
         IrcUser u = this.trackedUsers.get(nick);
         return (u == null) ? Optional.empty() : Optional.of(u.snapshot());
     }
 
     @Override
-    public boolean isStale(@Nonnull Staleable staleable) {
+    public boolean isStale(@NonNull Staleable staleable) {
         if (staleable instanceof Channel) {
             IrcChannel channel = this.trackedChannels.get(((Channel) staleable).getName());
             return (channel == null) || channel.isStale(staleable);
@@ -533,7 +533,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setChannelListReceived(@Nonnull String channel) {
+    public void setChannelListReceived(@NonNull String channel) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.setListReceived();
@@ -541,7 +541,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setChannelModeInfoList(@Nonnull String channel, char mode, List<ModeInfo> modeInfo) {
+    public void setChannelModeInfoList(@NonNull String channel, char mode, List<ModeInfo> modeInfo) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.setModeInfoList(mode, modeInfo);
@@ -549,7 +549,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setChannelTopic(@Nonnull String channel, @Nonnull String topic) {
+    public void setChannelTopic(@NonNull String channel, @NonNull String topic) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.setTopic(topic);
@@ -557,7 +557,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setChannelTopicInfo(@Nonnull String channel, long time, @Nonnull Actor actor) {
+    public void setChannelTopicInfo(@NonNull String channel, long time, @NonNull Actor actor) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.setTopic(time, actor);
@@ -570,7 +570,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setUserAccount(@Nonnull String nick, @Nullable String account) {
+    public void setUserAccount(@NonNull String nick, @Nullable String account) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
             u.setAccount(account);
@@ -578,7 +578,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setUserAway(@Nonnull String nick, @Nullable String message) {
+    public void setUserAway(@NonNull String nick, @Nullable String message) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
             u.setAway(message);
@@ -586,7 +586,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setUserAway(@Nonnull String nick, boolean away) {
+    public void setUserAway(@NonNull String nick, boolean away) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
             u.setAway(away);
@@ -594,7 +594,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setUserOperString(@Nonnull String nick, @Nonnull String operString) {
+    public void setUserOperString(@NonNull String nick, @NonNull String operString) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
             u.setOperString(operString);
@@ -602,7 +602,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setUserRealName(@Nonnull String nick, @Nonnull String realName) {
+    public void setUserRealName(@NonNull String nick, @NonNull String realName) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
             u.setRealName(realName);
@@ -610,7 +610,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void setUserServer(@Nonnull String nick, @Nonnull String server) {
+    public void setUserServer(@NonNull String nick, @NonNull String server) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
             u.setServer(server);
@@ -623,7 +623,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackChannel(@Nonnull String channel) {
+    public void trackChannel(@NonNull String channel) {
         if (!this.trackedChannels.containsKey(channel)) {
             IrcChannel ch = new IrcChannel(channel);
             this.trackedChannels.put(channel, ch);
@@ -632,7 +632,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackChannelMode(@Nonnull String channel, @Nonnull ChannelMode mode, boolean track) {
+    public void trackChannelMode(@NonNull String channel, @NonNull ChannelMode mode, boolean track) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.trackMode(mode, track);
@@ -640,7 +640,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackChannelModeInfo(@Nonnull String channel, boolean add, @Nonnull ModeInfo modeInfo) {
+    public void trackChannelModeInfo(@NonNull String channel, boolean add, @NonNull ModeInfo modeInfo) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.trackModeInfo(add, modeInfo);
@@ -648,7 +648,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackChannelNick(@Nonnull String channel, @Nonnull String nick, @Nonnull Set<ChannelUserMode> modes) {
+    public void trackChannelNick(@NonNull String channel, @NonNull String nick, @NonNull Set<ChannelUserMode> modes) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.trackNick(nick, modes);
@@ -656,7 +656,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackChannelUser(@Nonnull String channel, @Nonnull User user, @Nonnull Set<ChannelUserMode> modes) {
+    public void trackChannelUser(@NonNull String channel, @NonNull User user, @NonNull Set<ChannelUserMode> modes) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.trackUser(user, modes);
@@ -664,14 +664,14 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackUser(@Nonnull User user) {
+    public void trackUser(@NonNull User user) {
         if (!this.trackedUsers.containsKey(user.getNick())) {
             this.trackedUsers.put(user.getNick(), new IrcUser(user.getName(), user.getNick(), user.getUserString(), user.getHost()));
         }
     }
 
     @Override
-    public void trackUserHostnameChange(@Nonnull String nick, @Nonnull String newHostname) {
+    public void trackUserHostnameChange(@NonNull String nick, @NonNull String newHostname) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
             u.setHost(newHostname);
@@ -679,7 +679,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackUserNickChange(@Nonnull String oldNick, @Nonnull String newNick) {
+    public void trackUserNickChange(@NonNull String oldNick, @NonNull String newNick) {
         IrcUser user = this.trackedUsers.remove(oldNick);
         user.setNick(newNick);
         this.trackedUsers.put(newNick, user);
@@ -687,7 +687,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackUserPart(@Nonnull String channel, @Nonnull String nick) {
+    public void trackUserPart(@NonNull String channel, @NonNull String nick) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.trackUserPart(nick);
@@ -695,13 +695,13 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void trackUserQuit(@Nonnull String nick) {
+    public void trackUserQuit(@NonNull String nick) {
         this.trackedUsers.remove(nick);
         this.trackedChannels.values().forEach(channel -> channel.trackUserPart(nick));
     }
 
     @Override
-    public void trackUserUserStringChange(@Nonnull String nick, @Nonnull String newUserString) {
+    public void trackUserUserStringChange(@NonNull String nick, @NonNull String newUserString) {
         IrcUser u = this.trackedUsers.get(nick);
         if (u != null) {
             u.setUser(newUserString);
@@ -709,7 +709,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void unTrackChannel(@Nonnull String channel) {
+    public void unTrackChannel(@NonNull String channel) {
         IrcChannel ch = this.trackedChannels.remove(channel);
         if (ch != null) {
             ch.setTracked(false);
@@ -717,7 +717,7 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
-    public void updateChannelModes(@Nonnull String channel, @Nonnull ModeStatusList<ChannelMode> statusList) {
+    public void updateChannelModes(@NonNull String channel, @NonNull ModeStatusList<ChannelMode> statusList) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {
             ch.updateChannelModes(statusList);
@@ -735,7 +735,7 @@ public class DefaultActorTracker implements ActorTracker {
      *
      * @param nick nickname
      */
-    private void checkUserForTracking(@Nonnull String nick) {
+    private void checkUserForTracking(@NonNull String nick) {
         if (!this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(nick, this.client.getNick())
                 && this.trackedChannels.values().stream().noneMatch(channel -> channel.modes.containsKey(nick))) {
             IrcUser removed = this.trackedUsers.remove(nick);

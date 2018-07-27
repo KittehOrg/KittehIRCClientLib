@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.StringUtil;
-
-import javax.annotation.Nonnull;
 
 /**
  * Represents an {@link Actor} capable of receiving messages.
@@ -38,7 +37,7 @@ public interface MessageReceiver extends Actor {
      *
      * @return the name by which you can message this receiver
      */
-    @Nonnull
+    @NonNull
     String getMessagingName();
 
     /**
@@ -47,7 +46,7 @@ public interface MessageReceiver extends Actor {
      * @return the lowercase version of the name by which you can message this
      * receiver
      */
-    @Nonnull
+    @NonNull
     default String getLowerCaseMessagingName() {
         return StringUtil.toLowerCase(this, this.getMessagingName());
     }
@@ -58,7 +57,7 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendCtcpMessage(MessageReceiver, String)
      */
-    default void sendCtcpMessage(@Nonnull String message) {
+    default void sendCtcpMessage(@NonNull String message) {
         this.getClient().sendCtcpMessage(this, message);
     }
 
@@ -68,7 +67,7 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendMessage(MessageReceiver, String)
      */
-    default void sendMessage(@Nonnull String message) {
+    default void sendMessage(@NonNull String message) {
         this.getClient().sendMessage(this, message);
     }
 
@@ -82,7 +81,7 @@ public interface MessageReceiver extends Actor {
      * @param message message to send
      * @see Client#sendMultiLineMessage(MessageReceiver, String)
      */
-    default void sendMultiLineMessage(@Nonnull String message) {
+    default void sendMultiLineMessage(@NonNull String message) {
         this.getClient().sendMultiLineMessage(this, message);
     }
 
@@ -97,7 +96,7 @@ public interface MessageReceiver extends Actor {
      * @param cutter cutter to utilize
      * @see Client#sendMultiLineMessage(MessageReceiver, String, Cutter)
      */
-    default void sendMultiLineMessage(@Nonnull String message, @Nonnull Cutter cutter) {
+    default void sendMultiLineMessage(@NonNull String message, @NonNull Cutter cutter) {
         this.getClient().sendMultiLineMessage(this, message, cutter);
     }
 
@@ -107,7 +106,7 @@ public interface MessageReceiver extends Actor {
      * @param message the message to send
      * @see Client#sendNotice(MessageReceiver, String)
      */
-    default void sendNotice(@Nonnull String message) {
+    default void sendNotice(@NonNull String message) {
         this.getClient().sendNotice(this, message);
     }
 
@@ -121,7 +120,7 @@ public interface MessageReceiver extends Actor {
      * @param message message to send
      * @see Client#sendMultiLineNotice(MessageReceiver, String)
      */
-    default void sendMultiLineNotice(@Nonnull String message) {
+    default void sendMultiLineNotice(@NonNull String message) {
         this.getClient().sendMultiLineNotice(this, message);
     }
 
@@ -136,7 +135,7 @@ public interface MessageReceiver extends Actor {
      * @param cutter cutter to utilize
      * @see Client#sendMultiLineNotice(MessageReceiver, String, Cutter)
      */
-    default void sendMultiLineNotice(@Nonnull String message, @Nonnull Cutter cutter) {
+    default void sendMultiLineNotice(@NonNull String message, @NonNull Cutter cutter) {
         this.getClient().sendMultiLineNotice(this, message, cutter);
     }
 }

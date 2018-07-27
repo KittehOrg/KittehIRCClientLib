@@ -29,6 +29,7 @@ import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientConnectionEndedEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
@@ -45,7 +46,6 @@ import org.kitteh.irc.client.library.feature.filter.ToSelfOnly;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -70,12 +70,12 @@ public class DefaultEventManager implements EventManager {
          *
          * @param client client to send exceptions to
          */
-        public Exceptional(@Nonnull Client client) {
+        public Exceptional(@NonNull Client client) {
             this.client = client;
         }
 
         @Override
-        public void handleError(@Nonnull PublicationError publicationError) {
+        public void handleError(@NonNull PublicationError publicationError) {
             Exception exceptional;
             Throwable thrown = publicationError.getCause();
             if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehServerMessageException)) {
@@ -88,7 +88,7 @@ public class DefaultEventManager implements EventManager {
             this.client.getExceptionListener().queue(exceptional);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).toString();
@@ -105,7 +105,7 @@ public class DefaultEventManager implements EventManager {
      *
      * @param client client for which this manager will operate
      */
-    public DefaultEventManager(@Nonnull Client client) {
+    public DefaultEventManager(@NonNull Client client) {
         BusConfiguration configuration = new BusConfiguration()
                 .addFeature(Feature.SyncPubSub.Default().setSubscriptionFactory(new FilteringSubscriptionFactory(this.filters)))
                 .addFeature(Feature.AsynchronousHandlerInvocation.Default())
@@ -123,7 +123,7 @@ public class DefaultEventManager implements EventManager {
     }
 
     @Override
-    public void callEvent(@Nonnull Object event) {
+    public void callEvent(@NonNull Object event) {
         Sanity.nullCheck(event, "Event cannot be null");
         if (event instanceof ClientEvent) {
             Sanity.truthiness(((ClientEvent) event).getClient() == this.client, "Event cannot be from another client!");
@@ -131,13 +131,13 @@ public class DefaultEventManager implements EventManager {
         this.bus.publish(event);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public synchronized Set<Object> getRegisteredEventListeners() {
         return new HashSet<>(this.listeners);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters() {
         return Collections.unmodifiableMap(new HashMap<>(this.filters));
@@ -149,14 +149,14 @@ public class DefaultEventManager implements EventManager {
     }
 
     @Override
-    public synchronized void registerEventListener(@Nonnull Object listener) {
+    public synchronized void registerEventListener(@NonNull Object listener) {
         Sanity.nullCheck(listener, "Listener cannot be null");
         this.listeners.add(listener);
         this.bus.subscribe(listener);
     }
 
     @Override
-    public synchronized void unregisterEventListener(@Nonnull Object listener) {
+    public synchronized void unregisterEventListener(@NonNull Object listener) {
         Sanity.nullCheck(listener, "Listener cannot be null");
         this.listeners.remove(listener);
         this.bus.unsubscribe(listener);
@@ -174,7 +174,7 @@ public class DefaultEventManager implements EventManager {
         }
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("client", this.client).toString();

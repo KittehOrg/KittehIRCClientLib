@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * Default Actor implementation.
@@ -43,14 +42,13 @@ public class DefaultActor implements Actor {
      * @param client client
      * @param name name
      */
-    public DefaultActor(@Nonnull Client.WithManagement client, @Nonnull String name) {
+    public DefaultActor(Client.@NonNull WithManagement client, @NonNull String name) {
         this.client = client;
         this.name = name;
     }
 
-    @Nonnull
     @Override
-    public Client.WithManagement getClient() {
+    public Client.@NonNull WithManagement getClient() {
         return this.client;
     }
 
@@ -59,13 +57,13 @@ public class DefaultActor implements Actor {
         return this.creationTime;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("client", this.client).add("name", this.name).toString();

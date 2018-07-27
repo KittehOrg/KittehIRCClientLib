@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Channel;
@@ -30,8 +32,6 @@ import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.util.Mask;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -60,7 +60,7 @@ public interface ModeInfo extends ClientLinked {
          * @param creator creator, if known
          * @param creationTime creation time, if known
          */
-        public DefaultModeInfo(@Nonnull Client client, @Nonnull Channel channel, @Nonnull ChannelMode mode, @Nonnull String mask, @Nullable String creator, @Nullable Instant creationTime) {
+        public DefaultModeInfo(@NonNull Client client, @NonNull Channel channel, @NonNull ChannelMode mode, @NonNull String mask, @Nullable String creator, @Nullable Instant creationTime) {
             this.client = client;
             this.creator = creator;
             this.channel = channel;
@@ -69,43 +69,43 @@ public interface ModeInfo extends ClientLinked {
             this.mode = mode;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<String> getCreator() {
             return Optional.ofNullable(this.creator);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Channel getChannel() {
             return this.channel;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Client getClient() {
             return this.client;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Mask getMask() {
             return this.mask;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public ChannelMode getMode() {
             return this.mode;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<Instant> getCreationTime() {
             return Optional.ofNullable(this.creationTime);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).add("client", this.client).add("channel", this.channel).add("mode", this.mode).add("mask", this.mask).add("creator", this.creator).add("creationTime", this.creationTime).toString();
@@ -118,7 +118,7 @@ public interface ModeInfo extends ClientLinked {
      *
      * @return name, if known, of who created this entry
      */
-    @Nonnull
+    @NonNull
     Optional<String> getCreator();
 
     /**
@@ -126,7 +126,7 @@ public interface ModeInfo extends ClientLinked {
      *
      * @return the channel
      */
-    @Nonnull
+    @NonNull
     Channel getChannel();
 
     /**
@@ -134,7 +134,7 @@ public interface ModeInfo extends ClientLinked {
      *
      * @return the mask
      */
-    @Nonnull
+    @NonNull
     Mask getMask();
 
     /**
@@ -142,7 +142,7 @@ public interface ModeInfo extends ClientLinked {
      *
      * @return the mode
      */
-    @Nonnull
+    @NonNull
     ChannelMode getMode();
 
     /**
@@ -150,7 +150,7 @@ public interface ModeInfo extends ClientLinked {
      *
      * @return creation time, if known
      */
-    @Nonnull
+    @NonNull
     Optional<Instant> getCreationTime();
 
     /**

@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.exception;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Thrown in reaction to exceptions related to the connection.
@@ -37,7 +37,7 @@ public class KittehConnectionException extends Exception {
      * @param cause the cause
      * @param fatal true if the exception indicates death of the connection
      */
-    public KittehConnectionException(@Nonnull Throwable cause, boolean fatal) {
+    public KittehConnectionException(@NonNull Throwable cause, boolean fatal) {
         super(cause);
         this.fatal = fatal;
     }

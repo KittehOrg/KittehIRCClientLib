@@ -23,9 +23,9 @@
  */
 package org.kitteh.irc.client.library.exception;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.ServerMessage;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +63,7 @@ public class KittehServerMessageException extends RuntimeException {
      *
      * @return message
      */
-    @Nonnull
+    @NonNull
     public List<ServerMessage> getServerMessages() {
         return this.messages;
     }

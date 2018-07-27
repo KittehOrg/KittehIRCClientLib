@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.defaultmessage;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An enum that maps out all possible outbound messages between KICL and the

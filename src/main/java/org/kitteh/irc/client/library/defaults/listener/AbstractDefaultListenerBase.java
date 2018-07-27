@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.defaults.listener;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
@@ -30,8 +31,6 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * A base for listening to server message events.
@@ -44,18 +43,17 @@ public class AbstractDefaultListenerBase {
      *
      * @param client client
      */
-    public AbstractDefaultListenerBase(@Nonnull Client.WithManagement client) {
+    public AbstractDefaultListenerBase(Client.@NonNull WithManagement client) {
         this.client = client;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).toString();
     }
 
-    @Nonnull
-    protected Client.WithManagement getClient() {
+    protected Client.@NonNull WithManagement getClient() {
         return this.client;
     }
 
@@ -65,7 +63,7 @@ public class AbstractDefaultListenerBase {
      * @param event event to fire
      * @see EventManager#callEvent(Object)
      */
-    protected void fire(@Nonnull ClientEvent event) {
+    protected void fire(@NonNull ClientEvent event) {
         this.client.getEventManager().callEvent(event);
     }
 
@@ -75,7 +73,7 @@ public class AbstractDefaultListenerBase {
      * @param event event causing trouble
      * @param reason reason for the trouble
      */
-    protected void trackException(@Nonnull ClientReceiveServerMessageEvent event, @Nonnull String reason) {
+    protected void trackException(@NonNull ClientReceiveServerMessageEvent event, @NonNull String reason) {
         this.client.getExceptionListener().queue(new KittehServerMessageException(event.getServerMessage(), reason));
     }
 
@@ -85,7 +83,7 @@ public class AbstractDefaultListenerBase {
      * @return actor tracker
      * @see Client.WithManagement#getActorTracker()
      */
-    @Nonnull
+    @NonNull
     protected ActorTracker getTracker() {
         return this.client.getActorTracker();
     }

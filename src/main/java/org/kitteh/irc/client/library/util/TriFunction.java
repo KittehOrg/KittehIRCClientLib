@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a function that accepts three arguments and produces a result.

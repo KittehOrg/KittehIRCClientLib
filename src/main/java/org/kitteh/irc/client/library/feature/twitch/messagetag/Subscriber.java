@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * User has a subscriber badge or not.
@@ -62,7 +61,7 @@ public class Subscriber extends MessageTagManager.DefaultMessageTag {
         public static final String BADGE = "1";
     }
 
-    private Subscriber(@Nonnull String name, @Nonnull String value) {
+    private Subscriber(@NonNull String name, @NonNull String value) {
         super(name, value);
     }
 }

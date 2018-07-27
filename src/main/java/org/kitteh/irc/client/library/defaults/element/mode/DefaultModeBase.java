@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.defaults.element.mode;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.Mode;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * Abstract base class for modes.
@@ -42,13 +41,13 @@ public abstract class DefaultModeBase implements Mode {
      * @param client client
      * @param mode character
      */
-    protected DefaultModeBase(@Nonnull Client client, char mode) {
+    protected DefaultModeBase(@NonNull Client client, char mode) {
         this.client = client;
         this.mode = mode;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public Client getClient() {
         return this.client;
     }
@@ -58,7 +57,7 @@ public abstract class DefaultModeBase implements Mode {
         return this.mode;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return this.toStringer().toString();
@@ -69,7 +68,7 @@ public abstract class DefaultModeBase implements Mode {
      *
      * @return partially made ToStringer
      */
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return new ToStringer(this).add("client", this.getClient()).add("char", this.getChar());
     }

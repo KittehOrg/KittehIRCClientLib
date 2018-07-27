@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -31,7 +32,6 @@ import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -57,14 +57,14 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
      * @param target target of the message
      * @param message the message
      */
-    protected ActorPrivateMessageEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull A actor, @Nonnull String target, @Nonnull String message) {
+    protected ActorPrivateMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull A actor, @NonNull String target, @NonNull String message) {
         super(client, originalMessages, actor, message);
         this.target = target;
         this.isToClient = client.getServerInfo().getCaseMapping().areEqualIgnoringCase(client.getNick(), target);
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public String getTarget() {
         return this.target;
     }
@@ -75,7 +75,7 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("isToClient", this.isToClient).add("target", this.target);
     }

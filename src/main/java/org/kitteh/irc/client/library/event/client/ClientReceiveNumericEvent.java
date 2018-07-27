@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -53,7 +53,7 @@ public class ClientReceiveNumericEvent extends ClientReceiveServerMessageEventBa
      * @param numeric numeric
      * @param args args
      */
-    public ClientReceiveNumericEvent(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, String command, int numeric, @Nonnull List<String> args) {
+    public ClientReceiveNumericEvent(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor server, String command, int numeric, @NonNull List<String> args) {
         super(client, serverMessage, server, command, args);
         this.numeric = numeric;
     }

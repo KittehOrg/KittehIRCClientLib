@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.feature.auth;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.auth.element.Password;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * Abstract general account/password protocol.
@@ -43,23 +42,23 @@ public abstract class AbstractAccountPassProtocol extends AbstractAccountProtoco
      * @param accountName account name
      * @param password password
      */
-    protected AbstractAccountPassProtocol(@Nonnull Client client, @Nonnull String accountName, @Nonnull String password) {
+    protected AbstractAccountPassProtocol(@NonNull Client client, @NonNull String accountName, @NonNull String password) {
         super(client, accountName);
         this.password = Sanity.safeMessageCheck(password, "Password");
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getPassword() {
         return this.password;
     }
 
     @Override
-    public void setPassword(@Nonnull String password) {
+    public void setPassword(@NonNull String password) {
         this.password = Sanity.safeMessageCheck(password, "Password");
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("account", this.getAccountName()).add("pass", this.getPassword()).toString();

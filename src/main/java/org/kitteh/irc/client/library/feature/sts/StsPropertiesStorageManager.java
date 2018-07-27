@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.exception.KittehStsException;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.StsUtil;
 
-import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class StsPropertiesStorageManager implements StsStorageManager {
      *
      * @param filePath the path to the properties file used to persist the data
      */
-    public StsPropertiesStorageManager(@Nonnull Path filePath) {
+    public StsPropertiesStorageManager(@NonNull Path filePath) {
         this.filePath = Sanity.nullCheck(filePath, "Must provide a valid path to the properties file to use.");
         this.readData();
     }
@@ -82,7 +82,7 @@ public class StsPropertiesStorageManager implements StsStorageManager {
      * @param policy the STS policy instance, including all data sent from the server
      */
     @Override
-    public void addEntry(@Nonnull String hostname, long duration, @Nonnull StsPolicy policy) {
+    public void addEntry(@NonNull String hostname, long duration, @NonNull StsPolicy policy) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
         Sanity.nullCheck(policy, "A valid policy must be provided to be inserted.");
         if (!policy.getOptions().containsKey("duration")) {
@@ -110,8 +110,8 @@ public class StsPropertiesStorageManager implements StsStorageManager {
      * @return all data sent by the server in the CAP LS "sts" value when we connected securely
      */
     @Override
-    @Nonnull
-    public Optional<StsPolicy> getEntry(@Nonnull String hostname) {
+    @NonNull
+    public Optional<StsPolicy> getEntry(@NonNull String hostname) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
 
         this.pruneEntries();
@@ -132,7 +132,7 @@ public class StsPropertiesStorageManager implements StsStorageManager {
      * @return whether the entry exists in the store
      */
     @Override
-    public boolean hasEntry(@Nonnull String hostname) {
+    public boolean hasEntry(@NonNull String hostname) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
 
         this.pruneEntries();
@@ -166,7 +166,7 @@ public class StsPropertiesStorageManager implements StsStorageManager {
      * @param hostname the hostname to remove the policy for
      */
     @Override
-    public void removeEntry(@Nonnull String hostname) {
+    public void removeEntry(@NonNull String hostname) {
         Sanity.nullCheck(hostname, "A valid hostname must be provided for this entry.");
 
         this.pruneEntries();

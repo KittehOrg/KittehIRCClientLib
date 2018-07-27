@@ -26,9 +26,9 @@ package org.kitteh.irc.client.library.util;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.ssl.util.SimpleTrustManagerFactory;
 import io.netty.util.internal.EmptyArrays;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 
-import javax.annotation.Nonnull;
 import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -50,18 +50,18 @@ public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactor
         }
 
         @Override
-        public void checkServerTrusted(@Nonnull X509Certificate[] chain, @Nonnull String authType) throws CertificateException {
+        public void checkServerTrusted(@NonNull X509Certificate[] chain, @NonNull String authType) throws CertificateException {
             // NOOP
             // Allow ALL the things!
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public X509Certificate[] getAcceptedIssuers() {
             return EmptyArrays.EMPTY_X509_CERTIFICATES;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return new ToStringer(this).toString();
@@ -70,7 +70,7 @@ public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactor
 
     private final TrustManager trustManager = new TrustingManager();
 
-    @Nonnull
+    @NonNull
     @Override
     protected TrustManager[] engineGetTrustManagers() {
         return new TrustManager[]{this.trustManager};

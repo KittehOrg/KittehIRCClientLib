@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +50,7 @@ public abstract class AbstractNameValueProcessor<NameValue> {
          *
          * @param function function to do the work
          */
-        public Creator(@Nonnull TriFunction<Client, String, String, ? extends NameValue> function) {
+        public Creator(@NonNull TriFunction<Client, String, String, ? extends NameValue> function) {
             this.function = Sanity.nullCheck(function, "Function cannot be null");
         }
 
@@ -59,7 +59,7 @@ public abstract class AbstractNameValueProcessor<NameValue> {
          *
          * @return function
          */
-        @Nonnull
+        @NonNull
         public TriFunction<Client, String, String, ? extends NameValue> getFunction() {
             return this.function;
         }
@@ -101,8 +101,8 @@ public abstract class AbstractNameValueProcessor<NameValue> {
      * @param name name to find
      * @return registered creator function
      */
-    @Nonnull
-    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> getCreatorByName(@Nonnull String name) {
+    @NonNull
+    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> getCreatorByName(@NonNull String name) {
         return this.optional(this.registeredNames.get(Sanity.nullCheck(name, "Name cannot be null")));
     }
 
@@ -113,8 +113,8 @@ public abstract class AbstractNameValueProcessor<NameValue> {
      * @param creator creator
      * @return previous occupant of the name registration, if there was one
      */
-    @Nonnull
-    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> registerCreator(@Nonnull String name, @Nonnull Creator<NameValue> creator) {
+    @NonNull
+    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> registerCreator(@NonNull String name, @NonNull Creator<NameValue> creator) {
         return this.optional(this.registeredNames.put(Sanity.nullCheck(name, "Name cannot be null"), creator));
     }
 
@@ -124,17 +124,17 @@ public abstract class AbstractNameValueProcessor<NameValue> {
      * @param name name
      * @return previous occupant of the name registration, if there was one
      */
-    @Nonnull
-    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> unregisterCreator(@Nonnull String name) {
+    @NonNull
+    protected final Optional<TriFunction<Client, String, String, ? extends NameValue>> unregisterCreator(@NonNull String name) {
         return this.optional(this.registeredNames.remove(Sanity.nullCheck(name, "Name cannot be null")));
     }
 
-    @Nonnull
+    @NonNull
     private Optional<TriFunction<Client, String, String, ? extends NameValue>> optional(@Nullable Creator<NameValue> creator) {
         return (creator == null) ? Optional.empty() : Optional.of(creator.getFunction());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).toString();

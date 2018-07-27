@@ -23,9 +23,8 @@
  */
 package org.kitteh.irc.client.library.feature.auth.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
-
-import javax.annotation.Nonnull;
 
 /**
  * Utilizing an account name for authentication.
@@ -36,7 +35,7 @@ public interface AccountName extends AuthProtocol {
      *
      * @return account name
      */
-    @Nonnull
+    @NonNull
     String getAccountName();
 
     /**
@@ -44,5 +43,5 @@ public interface AccountName extends AuthProtocol {
      *
      * @param accountName account name
      */
-    void setAccountName(@Nonnull String accountName);
+    void setAccountName(@NonNull String accountName);
 }

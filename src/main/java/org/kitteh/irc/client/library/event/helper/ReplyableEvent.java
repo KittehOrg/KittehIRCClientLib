@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An event that can be replied to.
@@ -34,5 +34,5 @@ public interface ReplyableEvent extends MessageEvent {
      *
      * @param message message to send back
      */
-    void sendReply(@Nonnull String message);
+    void sendReply(@NonNull String message);
 }

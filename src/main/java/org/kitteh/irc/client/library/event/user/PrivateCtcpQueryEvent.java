@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
@@ -31,8 +33,6 @@ import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +59,7 @@ public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> im
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCtcpQueryEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User sender, @Nonnull String target, @Nonnull String message, @Nullable String reply) {
+    public PrivateCtcpQueryEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message, @Nullable String reply) {
         super(client, originalMessages, sender, target, message);
         this.reply = reply;
     }
@@ -69,7 +69,7 @@ public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> im
      *
      * @return the reply if one is set
      */
-    @Nonnull
+    @NonNull
     public Optional<String> getReply() {
         return Optional.ofNullable(this.reply);
     }
@@ -86,7 +86,7 @@ public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> im
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("reply", this.reply);
     }

@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
@@ -33,7 +34,6 @@ import org.kitteh.irc.client.library.event.helper.ChannelUserListChangeEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,18 +53,18 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<Actor> implem
      * @param target targeted user
      * @param message message the user left
      */
-    public ChannelKickEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull Actor actor, @Nonnull User target, @Nonnull String message) {
+    public ChannelKickEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
         super(client, originalMessages, actor, channel, message);
         this.target = Sanity.nullCheck(target, "Target cannot be null");
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<Channel> getAffectedChannel() {
         return Optional.of(this.getChannel());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Change getChange() {
         return Change.LEAVE;
@@ -75,19 +75,19 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<Actor> implem
      *
      * @return the nickname of the kicked user
      */
-    @Nonnull
+    @NonNull
     public User getTarget() {
         return this.target;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public User getUser() {
         return this.getTarget();
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("target", this.target);
     }

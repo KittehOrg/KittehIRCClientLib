@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.UserInfoChangeEventBase;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public class UserNickChangeEvent extends UserInfoChangeEventBase<String> {
      * @param oldUser oldUser changing name
      * @param newUser the new nickname
      */
-    public UserNickChangeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User oldUser, @Nonnull User newUser) {
+    public UserNickChangeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User oldUser, @NonNull User newUser) {
         super(client, originalMessages, oldUser, newUser, User::getNick);
     }
 }

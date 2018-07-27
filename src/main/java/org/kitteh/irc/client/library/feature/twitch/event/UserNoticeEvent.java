@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.event;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +65,7 @@ public class UserNoticeEvent extends ChannelEventBase implements TwitchSingleMes
      * @param channel channel
      * @param message message from user
      */
-    public UserNoticeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nullable String message) {
+    public UserNoticeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @Nullable String message) {
         super(client, originalMessages, channel);
         this.message = message;
     }
@@ -75,7 +75,7 @@ public class UserNoticeEvent extends ChannelEventBase implements TwitchSingleMes
      *
      * @return message or {@link Optional#empty()} if no message
      */
-    @Nonnull
+    @NonNull
     public Optional<String> getMessage() {
         return Optional.ofNullable(this.message);
     }

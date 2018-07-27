@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.command.Command;
@@ -37,7 +38,6 @@ import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +56,7 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return new mode command
          */
-        @Nonnull
+        @NonNull
         ChannelModeCommand mode();
 
         /**
@@ -64,7 +64,7 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return new kick command
          */
-        @Nonnull
+        @NonNull
         KickCommand kick();
 
         /**
@@ -72,7 +72,7 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return new topic command
          */
-        @Nonnull
+        @NonNull
         TopicCommand topic();
     }
 
@@ -85,7 +85,7 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return topic setter if known
          */
-        @Nonnull
+        @NonNull
         Optional<Actor> getSetter();
 
         /**
@@ -93,7 +93,7 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return the time of setting if known
          */
-        @Nonnull
+        @NonNull
         Optional<Instant> getTime();
 
         /**
@@ -101,7 +101,7 @@ public interface Channel extends MessageReceiver, Staleable {
          *
          * @return the topic if known
          */
-        @Nonnull
+        @NonNull
         Optional<String> getValue();
     }
 
@@ -111,7 +111,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return an updated snapshot if the channel is currently tracked by
      * the client
      */
-    @Nonnull
+    @NonNull
     default Optional<Channel> getLatest() {
         return this.getClient().getChannel(this.getName());
     }
@@ -123,15 +123,15 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return list of mode info if tracked, empty if not tracked
      * @throws IllegalArgumentException for null or non-type-A mode
      */
-    @Nonnull
-    Optional<List<ModeInfo>> getModeInfoList(@Nonnull ChannelMode mode);
+    @NonNull
+    Optional<List<ModeInfo>> getModeInfoList(@NonNull ChannelMode mode);
 
     /**
      * Gets the channel's current known modes.
      *
      * @return known modes
      */
-    @Nonnull
+    @NonNull
     ModeStatusList<ChannelMode> getModes();
 
     /**
@@ -140,7 +140,7 @@ public interface Channel extends MessageReceiver, Staleable {
      *
      * @return nicks in the channel
      */
-    @Nonnull
+    @NonNull
     List<String> getNicknames();
 
     /**
@@ -148,7 +148,7 @@ public interface Channel extends MessageReceiver, Staleable {
      *
      * @return channel topic
      */
-    @Nonnull
+    @NonNull
     Topic getTopic();
 
     /**
@@ -162,8 +162,8 @@ public interface Channel extends MessageReceiver, Staleable {
      * @see #hasCompleteUserData()
      * @see ChannelUsersUpdatedEvent
      */
-    @Nonnull
-    Optional<User> getUser(@Nonnull String nick);
+    @NonNull
+    Optional<User> getUser(@NonNull String nick);
 
     /**
      * Gets all Users known to be in the channel. Note that the server may
@@ -175,7 +175,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @see #hasCompleteUserData()
      * @see ChannelUsersUpdatedEvent
      */
-    @Nonnull
+    @NonNull
     List<User> getUsers();
 
     /**
@@ -184,8 +184,8 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param nick user's nick
      * @return a set of modes the user is known to have, if the user is known
      */
-    @Nonnull
-    Optional<SortedSet<ChannelUserMode>> getUserModes(@Nonnull String nick);
+    @NonNull
+    Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull String nick);
 
     /**
      * Gets the user modes of a given user in the channel.
@@ -193,8 +193,8 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param user user
      * @return a set of modes the user is known to have, if the user is known
      */
-    @Nonnull
-    default Optional<SortedSet<ChannelUserMode>> getUserModes(@Nonnull User user) {
+    @NonNull
+    default Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull User user) {
         return this.getUserModes(Sanity.nullCheck(user, "User cannot be null").getNick());
     }
 
@@ -222,7 +222,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param key channel key
      * @see Client#addKeyProtectedChannel(String, String)
      */
-    default void join(@Nonnull String key) {
+    default void join(@NonNull String key) {
         this.getClient().addKeyProtectedChannel(this.getName(), key);
     }
 
@@ -232,7 +232,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param user user to kick
      * @param reason reason for the kick
      */
-    default void kick(@Nonnull User user, @Nonnull String reason) {
+    default void kick(@NonNull User user, @NonNull String reason) {
         this.commands().kick().target(user).reason(reason).execute();
     }
 
@@ -241,7 +241,7 @@ public interface Channel extends MessageReceiver, Staleable {
      *
      * @param user user to kick
      */
-    default void kick(@Nonnull User user) {
+    default void kick(@NonNull User user) {
         this.commands().kick().target(user).execute();
     }
 
@@ -250,7 +250,7 @@ public interface Channel extends MessageReceiver, Staleable {
      *
      * @return commands
      */
-    @Nonnull
+    @NonNull
     Commands commands();
 
     /**
@@ -268,7 +268,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @param reason leaving reason
      * @see Client#removeChannel(String, String)
      */
-    default void part(@Nonnull String reason) {
+    default void part(@NonNull String reason) {
         this.getClient().removeChannel(this.getName(), reason);
     }
 
@@ -285,14 +285,14 @@ public interface Channel extends MessageReceiver, Staleable {
      * @throws IllegalStateException if not in channel
      * @see ChannelModeInfoListEvent
      */
-    void setModeInfoTracking(@Nonnull ChannelMode mode, boolean track);
+    void setModeInfoTracking(@NonNull ChannelMode mode, boolean track);
 
     /**
      * Attempts to set the topic of the channel.
      *
      * @param topic new topic
      */
-    default void setTopic(@Nonnull String topic) {
+    default void setTopic(@NonNull String topic) {
         this.commands().topic().topic(topic).execute();
     }
 }

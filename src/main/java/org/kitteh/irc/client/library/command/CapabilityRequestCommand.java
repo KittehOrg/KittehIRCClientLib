@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class CapabilityRequestCommand extends Command {
      * @param client the client
      * @throws IllegalArgumentException if client is null
      */
-    public CapabilityRequestCommand(@Nonnull Client client) {
+    public CapabilityRequestCommand(@NonNull Client client) {
         super(client);
     }
 
@@ -57,8 +57,8 @@ public class CapabilityRequestCommand extends Command {
      * @see CapabilityManager#getCapabilities()
      * @see CapabilityManager#getSupportedCapabilities()
      */
-    @Nonnull
-    public synchronized CapabilityRequestCommand enable(@Nonnull String capability) {
+    @NonNull
+    public synchronized CapabilityRequestCommand enable(@NonNull String capability) {
         this.requests.add(Sanity.safeMessageCheck(capability, "Capability"));
         return this;
     }
@@ -71,8 +71,8 @@ public class CapabilityRequestCommand extends Command {
      * @throws IllegalArgumentException if capability is null
      * @see CapabilityManager#getCapabilities()
      */
-    @Nonnull
-    public synchronized CapabilityRequestCommand disable(@Nonnull String capability) {
+    @NonNull
+    public synchronized CapabilityRequestCommand disable(@NonNull String capability) {
         this.requests.add('-' + Sanity.safeMessageCheck(capability, "Capability"));
         return this;
     }
@@ -90,11 +90,11 @@ public class CapabilityRequestCommand extends Command {
         this.send(builder.toString());
     }
 
-    private void send(@Nonnull String requests) {
+    private void send(@NonNull String requests) {
         this.getClient().sendRawLineImmediately("CAP REQ :" + requests);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("requests", this.requests);

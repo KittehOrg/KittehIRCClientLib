@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.MessageTag;
@@ -31,7 +32,6 @@ import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEven
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +54,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * @param command command
      * @param parameters parameters
      */
-    public ClientReceiveServerMessageEventBase(@Nonnull Client client, @Nonnull ServerMessage serverMessage, @Nonnull Actor server, @Nonnull String command, @Nonnull List<String> parameters) {
+    public ClientReceiveServerMessageEventBase(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor server, @NonNull String command, @NonNull List<String> parameters) {
         super(client, Collections.singletonList(Sanity.nullCheck(serverMessage, "Server message cannot be null")), server);
         this.parameters = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(parameters, "Parameters cannot be null")));
         this.message = serverMessage;
@@ -66,13 +66,13 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      *
      * @return arguments
      */
-    @Nonnull
+    @NonNull
     @Override
     public List<String> getParameters() {
         return this.parameters;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getCommand() {
         return this.command;
@@ -83,7 +83,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      *
      * @return message tags
      */
-    @Nonnull
+    @NonNull
     @Override
     public List<MessageTag> getMessageTags() {
         return this.message.getTags();
@@ -94,20 +94,20 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      *
      * @return unprocessed, original message
      */
-    @Nonnull
+    @NonNull
     @Override
     public String getOriginalMessage() {
         return this.message.getMessage();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ServerMessage getServerMessage() {
         return this.message;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("message", this.message);
     }

@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Message tag for subscription months.
@@ -46,7 +45,7 @@ public class MsgParamMonths extends MessageTagManager.DefaultMessageTag {
 
     private final int months;
 
-    private MsgParamMonths(@Nonnull String name, @Nonnull String value, int months) {
+    private MsgParamMonths(@NonNull String name, @NonNull String value, int months) {
         super(name, value);
         this.months = months;
     }

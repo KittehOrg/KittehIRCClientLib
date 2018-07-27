@@ -1,11 +1,11 @@
 package org.kitteh.irc.client.library;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -57,13 +57,13 @@ public class CapabilityManagerTest {
      * Stubby manager.
      */
     public class StubCapabilityManager implements CapabilityManager {
-        @Nonnull
+        @NonNull
         @Override
         public List<CapabilityState> getCapabilities() {
             return Arrays.asList(new TestCapabilityState1(), new TestCapabilityState2());
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public List<CapabilityState> getSupportedCapabilities() {
             return Collections.singletonList(new TestCapabilityState1());
@@ -75,19 +75,19 @@ public class CapabilityManagerTest {
                 return false;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public String getName() {
                 return "Test1";
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Optional<String> getValue() {
                 return Optional.empty();
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Client getClient() {
                 return null;
@@ -105,19 +105,19 @@ public class CapabilityManagerTest {
                 return false;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public String getName() {
                 return "Test2";
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Optional<String> getValue() {
                 return Optional.empty();
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public Client getClient() {
                 return null;

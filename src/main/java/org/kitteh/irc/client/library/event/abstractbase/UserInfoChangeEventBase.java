@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
@@ -31,7 +32,6 @@ import org.kitteh.irc.client.library.util.Change;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Function;
 
@@ -54,32 +54,32 @@ public class UserInfoChangeEventBase<Type> extends ActorEventBase<User> implemen
      * @param newUser the new actor
      * @param changedInfoGetter getter for the changed info
      */
-    protected UserInfoChangeEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User oldUser, @Nonnull User newUser, @Nonnull Function<User, Type> changedInfoGetter) {
+    protected UserInfoChangeEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User oldUser, @NonNull User newUser, @NonNull Function<User, Type> changedInfoGetter) {
         super(client, originalMessages, oldUser);
         this.newUser = Sanity.nullCheck(newUser, "New user cannot be null");
         this.change = new Change<>(changedInfoGetter.apply(oldUser), changedInfoGetter.apply(newUser));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public User getOldUser() {
         return this.getActor();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public User getNewUser() {
         return this.newUser;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Change<Type> getChange() {
         return this.change;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("newUser", this.newUser).add("change", this.change);
     }

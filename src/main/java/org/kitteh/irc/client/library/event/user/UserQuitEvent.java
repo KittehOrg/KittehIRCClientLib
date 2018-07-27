@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -30,7 +31,6 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelUserListChangeEvent;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,23 +46,23 @@ public class UserQuitEvent extends ActorMessageEventBase<User> implements Channe
      * @param user user quitting
      * @param message message the user left
      */
-    public UserQuitEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull User user, @Nonnull String message) {
+    public UserQuitEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User user, @NonNull String message) {
         super(client, originalMessages, user, message);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<Channel> getAffectedChannel() {
         return Optional.empty();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Change getChange() {
         return Change.LEAVE;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public User getUser() {
         return this.getActor();

@@ -23,14 +23,14 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultChannelMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +48,7 @@ public class DefaultISupportChanModes extends DefaultISupportParameterValueRequi
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportChanModes(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportChanModes(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
             throw new KittehServerISupportException(name, "No modes defined");
@@ -78,7 +78,7 @@ public class DefaultISupportChanModes extends DefaultISupportParameterValueRequi
         this.modes = Collections.unmodifiableList(modesList);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<ChannelMode> getModes() {
         return this.modes;

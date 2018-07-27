@@ -23,7 +23,8 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.Optional;
 
 /**
@@ -39,7 +40,7 @@ public interface StsStorageManager {
      * @param duration the length (in seconds) until the expiry of this stored policy
      * @param policy the STS policy instance, including all data sent from the server
      */
-    void addEntry(@Nonnull String hostname, long duration, @Nonnull StsPolicy policy);
+    void addEntry(@NonNull String hostname, long duration, @NonNull StsPolicy policy);
 
     /**
      * Gets an STS policy from the store, looking it up via hostname.
@@ -47,8 +48,8 @@ public interface StsStorageManager {
      * @param hostname the hostname (as sent in the SNI by the client)
      * @return all data sent by the server in the CAP LS "sts" value when we connected securely
      */
-    @Nonnull
-    Optional<StsPolicy> getEntry(@Nonnull String hostname);
+    @NonNull
+    Optional<StsPolicy> getEntry(@NonNull String hostname);
 
     /**
      * Checks if a policy has been stored for the hostname.
@@ -56,7 +57,7 @@ public interface StsStorageManager {
      * @param hostname the hostname to check
      * @return whether the entry exists in the store
      */
-    boolean hasEntry(@Nonnull String hostname);
+    boolean hasEntry(@NonNull String hostname);
 
     /**
      * Deletes an entry from the store (used for 0 duration policies).
@@ -65,5 +66,5 @@ public interface StsStorageManager {
      *
      * @param hostname the hostname to remove the policy for
      */
-    void removeEntry(@Nonnull String hostname);
+    void removeEntry(@NonNull String hostname);
 }

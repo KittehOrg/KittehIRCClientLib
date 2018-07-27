@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -45,7 +45,7 @@ public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
      * @param cause cause, if there was one, closing it
      * @param lastMessage last message received
      */
-    public ClientConnectionClosedEvent(@Nonnull Client client, boolean reconnecting, @Nullable Throwable cause, @Nullable String lastMessage) {
+    public ClientConnectionClosedEvent(@NonNull Client client, boolean reconnecting, @Nullable Throwable cause, @Nullable String lastMessage) {
         super(client, reconnecting, cause);
         this.lastMessage = lastMessage;
     }
@@ -57,13 +57,13 @@ public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
      *
      * @return last message, or empty, sent by the server
      */
-    @Nonnull
+    @NonNull
     public Optional<String> getLastMessage() {
         return Optional.ofNullable(this.lastMessage);
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("lastMessage", this.lastMessage);
     }

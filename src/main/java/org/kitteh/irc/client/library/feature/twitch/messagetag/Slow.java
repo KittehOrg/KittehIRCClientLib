@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * Message tag slow, indicating non-moderators have to wait between messages.
@@ -46,7 +45,7 @@ public class Slow extends MessageTagManager.DefaultMessageTag {
 
     private final int delay;
 
-    private Slow(@Nonnull String name, @Nonnull String value, int delay) {
+    private Slow(@NonNull String name, @NonNull String value, int delay) {
         super(name, value);
         this.delay = delay;
     }

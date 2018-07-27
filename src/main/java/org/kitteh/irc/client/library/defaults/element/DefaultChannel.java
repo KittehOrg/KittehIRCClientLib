@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.command.KickCommand;
@@ -36,7 +37,6 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -60,24 +60,24 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
          * @param client client
          * @param channel channel name
          */
-        public DefaultChannelCommands(@Nonnull Client client, @Nonnull String channel) {
+        public DefaultChannelCommands(@NonNull Client client, @NonNull String channel) {
             this.client = client;
             this.channel = channel;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public ChannelModeCommand mode() {
             return new ChannelModeCommand(this.client, this.channel);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public KickCommand kick() {
             return new KickCommand(this.client, this.channel);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public TopicCommand topic() {
             return new TopicCommand(this.client, this.channel);
@@ -109,12 +109,12 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
      * @param complete true if WHO completed
      * @param commands commands object
      */
-    public DefaultChannel(@Nonnull Client.WithManagement client, @Nonnull String name, @Nonnull Topic topic,
-                          @Nonnull ModeStatusList<ChannelMode> channelModes,
-                          @Nonnull Map<Character, List<ModeInfo>> modeInfoLists,
-                          @Nonnull Map<String, SortedSet<ChannelUserMode>> modes, @Nonnull List<String> names,
-                          @Nonnull Map<String, User> nickMap, @Nonnull List<User> users,
-                          boolean complete, @Nonnull DefaultChannelCommands commands) {
+    public DefaultChannel(Client.@NonNull WithManagement client, @NonNull String name, @NonNull Topic topic,
+                          @NonNull ModeStatusList<ChannelMode> channelModes,
+                          @NonNull Map<Character, List<ModeInfo>> modeInfoLists,
+                          @NonNull Map<String, SortedSet<ChannelUserMode>> modes, @NonNull List<String> names,
+                          @NonNull Map<String, User> nickMap, @NonNull List<User> users,
+                          boolean complete, @NonNull DefaultChannelCommands commands) {
         super(client, name);
         this.complete = complete;
         this.channelModes = channelModes;
@@ -133,53 +133,53 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
         return (o instanceof DefaultChannel) && (((DefaultChannel) o).getClient() == this.getClient()) && ((Channel) o).getLowerCaseName().equals(this.getLowerCaseName());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getMessagingName() {
         return this.getName();
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<List<ModeInfo>> getModeInfoList(@Nonnull ChannelMode mode) {
+    public Optional<List<ModeInfo>> getModeInfoList(@NonNull ChannelMode mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
         return Optional.ofNullable(this.modeInfoLists.get(mode.getChar()));
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public ModeStatusList<ChannelMode> getModes() {
         return this.channelModes;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<String> getNicknames() {
         return this.names;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Topic getTopic() {
         return this.topic;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<User> getUser(@Nonnull String nick) {
+    public Optional<User> getUser(@NonNull String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
         return Optional.ofNullable(this.nickMap.get(nick));
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public Optional<SortedSet<ChannelUserMode>> getUserModes(@Nonnull String nick) {
+    public Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull String nick) {
         Sanity.nullCheck(nick, "Nick cannot be null");
         return Optional.ofNullable(this.modes.get(nick));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<User> getUsers() {
         return this.users;
@@ -191,7 +191,7 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
     }
 
     @Override
-    public void setModeInfoTracking(@Nonnull ChannelMode mode, boolean track) {
+    public void setModeInfoTracking(@NonNull ChannelMode mode, boolean track) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
         Sanity.truthiness((mode.getChar() == 'b') || (mode.getChar() == 'e') || (mode.getChar() == 'I') || (mode.getChar() == 'q'), "Only modes b, e, I, and q supported");
@@ -202,7 +202,7 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
         this.getClient().getActorTracker().trackChannelMode(channel.get().getName(), mode, track);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Commands commands() {
         return this.commands;
@@ -215,7 +215,7 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public String toString() {
         return new ToStringer(this).add("client", this.getClient()).add("name", this.getName()).add("complete", this.complete).add("users", this.users.size()).toString();
     }

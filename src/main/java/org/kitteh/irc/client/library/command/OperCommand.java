@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * Sends an OPER request to the server - MAKE SURE IT'S YOUR SERVER!
@@ -42,7 +41,7 @@ public class OperCommand extends Command {
      * @param client the client
      * @throws IllegalArgumentException if client is null
      */
-    public OperCommand(@Nonnull Client client) {
+    public OperCommand(@NonNull Client client) {
         super(client);
     }
 
@@ -53,8 +52,8 @@ public class OperCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid target
      */
-    @Nonnull
-    public OperCommand user(@Nonnull String user) {
+    @NonNull
+    public OperCommand user(@NonNull String user) {
         this.user = Sanity.safeMessageCheck(user, "user");
         return this;
     }
@@ -65,8 +64,8 @@ public class OperCommand extends Command {
      * @param password password for the user
      * @return this command
      */
-    @Nonnull
-    public OperCommand password(@Nonnull String password) {
+    @NonNull
+    public OperCommand password(@NonNull String password) {
         this.password = Sanity.safeMessageCheck(password, "password");
         return this;
     }
@@ -82,7 +81,7 @@ public class OperCommand extends Command {
         this.getClient().sendRawLine("OPER " + this.user + ' ' + this.password);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("user", (this.user == null) ? null : "AzureDiamond").add("password", (this.password == null) ? null : "hunter2");

@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A channel mode.
@@ -82,6 +82,6 @@ public interface ChannelMode extends Mode {
      *
      * @return type
      */
-    @Nonnull
+    @NonNull
     Type getType();
 }

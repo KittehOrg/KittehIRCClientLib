@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,24 +51,24 @@ public interface MessageTagManager {
          * @param name tag name
          * @param value tag value or {@link Optional#empty()}
          */
-        public DefaultMessageTag(@Nonnull String name, @Nullable String value) {
+        public DefaultMessageTag(@NonNull String name, @Nullable String value) {
             this.name = name;
             this.value = value;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getName() {
             return this.name;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<String> getValue() {
             return Optional.ofNullable(this.value);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String toString() {
             return this.toStringer().toString();
@@ -79,7 +79,7 @@ public interface MessageTagManager {
          *
          * @return a usable toString that will be used in {@link #toString()}
          */
-        @Nonnull
+        @NonNull
         protected ToStringer toStringer() {
             return new ToStringer(this).add("name", this.name).add("value", this.value);
         }
@@ -91,8 +91,8 @@ public interface MessageTagManager {
      * @param capability capability name
      * @return mapping of tags to their creators for the given capability
      */
-    @Nonnull
-    Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@Nonnull String capability);
+    @NonNull
+    Map<String, TriFunction<Client, String, String, ? extends MessageTag>> getCapabilityTagCreators(@NonNull String capability);
 
     /**
      * Gets capability tags for a given raw tag list.
@@ -100,8 +100,8 @@ public interface MessageTagManager {
      * @param tagList raw list
      * @return tags for the given list
      */
-    @Nonnull
-    List<MessageTag> getCapabilityTags(@Nonnull String tagList);
+    @NonNull
+    List<MessageTag> getCapabilityTags(@NonNull String tagList);
 
     /**
      * Gets the registered tag creator for a given tag name.
@@ -109,8 +109,8 @@ public interface MessageTagManager {
      * @param tagName tag name
      * @return registered creator if present
      */
-    @Nonnull
-    Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@Nonnull String tagName);
+    @NonNull
+    Optional<TriFunction<Client, String, String, ? extends MessageTag>> getTagCreator(@NonNull String tagName);
 
     /**
      * Registers a function that creates a tag from given tag name and tag
@@ -121,8 +121,8 @@ public interface MessageTagManager {
      * @param tagCreator function that creates tags
      * @return displaced tag creator if one existed for the given tag name
      */
-    @Nonnull
-    Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@Nonnull String capability, @Nonnull String tagName, @Nonnull TriFunction<Client, String, String, ? extends MessageTag> tagCreator);
+    @NonNull
+    Optional<TriFunction<Client, String, String, ? extends MessageTag>> registerTagCreator(@NonNull String capability, @NonNull String tagName, @NonNull TriFunction<Client, String, String, ? extends MessageTag> tagCreator);
 
     /**
      * Removes the registered tag creator for a given tag name.
@@ -130,6 +130,6 @@ public interface MessageTagManager {
      * @param tagName tag name
      * @return registered creator if present
      */
-    @Nonnull
-    Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@Nonnull String tagName);
+    @NonNull
+    Optional<TriFunction<Client, String, String, ? extends MessageTag>> unregisterTag(@NonNull String tagName);
 }

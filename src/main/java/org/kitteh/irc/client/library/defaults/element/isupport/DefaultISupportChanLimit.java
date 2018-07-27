@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class DefaultISupportChanLimit extends DefaultISupportParameterValueRequi
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportChanLimit(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportChanLimit(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
             throw new KittehServerISupportException(name, "No limits defined");
@@ -71,7 +71,7 @@ public class DefaultISupportChanLimit extends DefaultISupportParameterValueRequi
         this.limits = Collections.unmodifiableMap(limits);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Map<Character, Integer> getLimits() {
         return this.limits;

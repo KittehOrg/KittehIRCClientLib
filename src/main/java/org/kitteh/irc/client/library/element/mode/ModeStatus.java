@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -47,7 +47,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      * @param setting true for setting mode, false for removing
      * @param mode mode to set
      */
-    public ModeStatus(boolean setting, @Nonnull ModeType mode) {
+    public ModeStatus(boolean setting, @NonNull ModeType mode) {
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
         this.parameter = null;
         this.setting = setting;
@@ -60,14 +60,14 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      * @param mode mode to set
      * @param parameter parameter
      */
-    public ModeStatus(boolean setting, @Nonnull ModeType mode, @Nonnull String parameter) {
+    public ModeStatus(boolean setting, @NonNull ModeType mode, @NonNull String parameter) {
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
         this.parameter = Sanity.safeMessageCheck(parameter, "Parameter");
         this.setting = setting;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public Client getClient() {
         return this.getMode().getClient();
     }
@@ -77,7 +77,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      *
      * @return the mode
      */
-    @Nonnull
+    @NonNull
     public ModeType getMode() {
         return this.mode;
     }
@@ -87,7 +87,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
      *
      * @return parameter if present
      */
-    @Nonnull
+    @NonNull
     public Optional<String> getParameter() {
         return Optional.ofNullable(this.parameter);
     }
@@ -101,7 +101,7 @@ public class ModeStatus<ModeType extends Mode> implements ClientLinked {
         return this.setting;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("client", this.getClient()).add("mode", this.mode).add("setting", this.setting).add("parameter", this.parameter).toString();

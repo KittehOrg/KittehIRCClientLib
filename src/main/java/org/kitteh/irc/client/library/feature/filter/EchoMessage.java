@@ -26,11 +26,11 @@ package org.kitteh.irc.client.library.feature.filter;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.IMessageFilter;
 import net.engio.mbassy.subscription.SubscriptionContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -55,7 +55,7 @@ public @interface EchoMessage {
         }
 
         @Override
-        public boolean accepts(@Nonnull ActorMessageEvent<? extends Actor> event, @Nonnull EchoMessage[] annotations) {
+        public boolean accepts(@NonNull ActorMessageEvent<? extends Actor> event, @NonNull EchoMessage[] annotations) {
             Optional<User> client = event.getClient().getUser();
             return client.isPresent() && client.get().equals(event.getActor());
         }

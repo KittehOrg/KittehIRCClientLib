@@ -1,5 +1,6 @@
 package org.kitteh.irc.client.library.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
@@ -11,7 +12,6 @@ import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.mockito.Mockito;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -111,13 +111,13 @@ public class CISetTest {
             this.caseMapping = caseMapping;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<String> getAddress() {
             return Optional.empty();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public CaseMapping getCaseMapping() {
             return this.caseMapping;
@@ -128,49 +128,49 @@ public class CISetTest {
             return 0;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Map<Character, Integer> getChannelLimits() {
             return Collections.emptyMap();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public List<ChannelMode> getChannelModes() {
             return Collections.emptyList();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public List<Character> getChannelPrefixes() {
             return Collections.emptyList();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public List<ChannelUserMode> getChannelUserModes() {
             return Collections.emptyList();
         }
 
-        @Nonnull
+        @NonNull
         @Override
-        public Optional<ISupportParameter> getISupportParameter(@Nonnull String name) {
+        public Optional<ISupportParameter> getISupportParameter(@NonNull String name) {
             return Optional.empty();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Map<String, ISupportParameter> getISupportParameters() {
             return null;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<List<String>> getMotd() {
             return Optional.empty();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<String> getNetworkName() {
             return Optional.empty();
@@ -181,13 +181,13 @@ public class CISetTest {
             return 0;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public List<UserMode> getUserModes() {
             return null;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<String> getVersion() {
             return Optional.empty();
@@ -199,7 +199,7 @@ public class CISetTest {
         }
 
         @Override
-        public boolean isValidChannel(@Nonnull String name) {
+        public boolean isValidChannel(@NonNull String name) {
             return false;
         }
     }

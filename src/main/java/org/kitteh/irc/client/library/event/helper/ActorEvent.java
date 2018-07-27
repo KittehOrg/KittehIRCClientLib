@@ -23,9 +23,8 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.Actor;
-
-import javax.annotation.Nonnull;
 
 /**
  * An event involving an {@link Actor}.
@@ -36,6 +35,6 @@ public interface ActorEvent<A extends Actor> extends ServerMessageEvent {
      *
      * @return the actor
      */
-    @Nonnull
+    @NonNull
     A getActor();
 }

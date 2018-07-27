@@ -23,13 +23,12 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.WhoisData;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * The server has sent WHOIS data on a user.
@@ -43,7 +42,7 @@ public class WhoisEvent extends ClientEventBase {
      * @param client the client
      * @param whoisData the WHOIS data
      */
-    public WhoisEvent(@Nonnull Client client, @Nonnull WhoisData whoisData) {
+    public WhoisEvent(@NonNull Client client, @NonNull WhoisData whoisData) {
         super(client);
         this.whoisData = Sanity.nullCheck(whoisData, "Whois data cannot be null");
     }
@@ -53,13 +52,13 @@ public class WhoisEvent extends ClientEventBase {
      *
      * @return the WHOIS data
      */
-    @Nonnull
+    @NonNull
     public WhoisData getWhoisData() {
         return this.whoisData;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("whoisData", this.whoisData);
     }

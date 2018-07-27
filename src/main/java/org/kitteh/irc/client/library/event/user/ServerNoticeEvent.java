@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.event.user;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public class ServerNoticeEvent extends ActorMessageEventBase<Server> {
      * @param message message sent
      * @param sender who sent it
      */
-    public ServerNoticeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Server sender, @Nonnull String message) {
+    public ServerNoticeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Server sender, @NonNull String message) {
         super(client, originalMessages, sender, message);
     }
 }

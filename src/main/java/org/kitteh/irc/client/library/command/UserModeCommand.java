@@ -23,6 +23,8 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
@@ -30,8 +32,6 @@ import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class UserModeCommand extends Command {
      * @param client the client on which this command is executing
      * @throws IllegalArgumentException if null parameters
      */
-    public UserModeCommand(@Nonnull Client client) {
+    public UserModeCommand(@NonNull Client client) {
         super(client);
     }
 
@@ -59,8 +59,8 @@ public class UserModeCommand extends Command {
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid
      */
-    @Nonnull
-    public UserModeCommand add(boolean add, @Nonnull UserMode mode) {
+    @NonNull
+    public UserModeCommand add(boolean add, @NonNull UserMode mode) {
         return this.addChange(add, mode, null);
     }
 
@@ -74,13 +74,13 @@ public class UserModeCommand extends Command {
      * @throws IllegalArgumentException if mode invalid comes from a
      * different client or parameter is null
      */
-    @Nonnull
-    public UserModeCommand add(boolean add, @Nonnull UserMode mode, @Nonnull String parameter) {
+    @NonNull
+    public UserModeCommand add(boolean add, @NonNull UserMode mode, @NonNull String parameter) {
         return this.addChange(add, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
     }
 
-    @Nonnull
-    private synchronized UserModeCommand addChange(boolean add, @Nonnull UserMode mode, @Nullable String parameter) {
+    @NonNull
+    private synchronized UserModeCommand addChange(boolean add, @NonNull UserMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
@@ -101,7 +101,7 @@ public class UserModeCommand extends Command {
         this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + ModeStatusList.of(new ArrayList<>(this.changes)).getStatusString());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("changes", this.changes);

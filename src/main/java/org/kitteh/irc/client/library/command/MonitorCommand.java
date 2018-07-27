@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -87,7 +87,7 @@ public class MonitorCommand extends Command {
      * @param client the client
      * @throws IllegalArgumentException if client is null
      */
-    public MonitorCommand(@Nonnull Client client) {
+    public MonitorCommand(@NonNull Client client) {
         super(client);
     }
 
@@ -98,8 +98,8 @@ public class MonitorCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for null action
      */
-    @Nonnull
-    public MonitorCommand action(@Nonnull Action action) {
+    @NonNull
+    public MonitorCommand action(@NonNull Action action) {
         this.action = Sanity.nullCheck(action, "Action cannot be null");
         return this;
     }
@@ -113,8 +113,8 @@ public class MonitorCommand extends Command {
      * @throws IllegalArgumentException for \n, \r, \0, or comma in target or
      * null target
      */
-    @Nonnull
-    public MonitorCommand target(@Nonnull String... targets) {
+    @NonNull
+    public MonitorCommand target(@NonNull String... targets) {
         return this.target(Arrays.asList(Sanity.nullCheck(targets, "Targets cannot be null")));
     }
 
@@ -127,8 +127,8 @@ public class MonitorCommand extends Command {
      * @throws IllegalArgumentException for \n, \r, \0, or comma in target or
      * null target
      */
-    @Nonnull
-    public synchronized MonitorCommand target(@Nonnull Collection<String> targets) {
+    @NonNull
+    public synchronized MonitorCommand target(@NonNull Collection<String> targets) {
         Sanity.nullCheck(targets, "Targets cannot be null");
         Set<String> targetSet = new LinkedHashSet<>();
         for (String target : targets) {
@@ -166,15 +166,15 @@ public class MonitorCommand extends Command {
         }
     }
 
-    private void monitorCommand(@Nonnull Action action) {
+    private void monitorCommand(@NonNull Action action) {
         this.getClient().sendRawLine("MONITOR " + action.getCharacter());
     }
 
-    private void monitorCommand(@Nonnull Action action, @Nonnull String targets) {
+    private void monitorCommand(@NonNull Action action, @NonNull String targets) {
         this.getClient().sendRawLine("MONITOR " + action.getCharacter() + ' ' + targets);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("action", this.action).add("targets", this.targets);

@@ -23,9 +23,8 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.feature.filter.ToSelfOnly;
-
-import javax.annotation.Nonnull;
 
 /**
  * An event representing a message sent privately.
@@ -36,7 +35,7 @@ public interface PrivateEvent extends MessageEvent {
      *
      * @return the message target
      */
-    @Nonnull
+    @NonNull
     String getTarget();
 
     /**

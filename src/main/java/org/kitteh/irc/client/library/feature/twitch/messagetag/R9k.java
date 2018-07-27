@@ -23,11 +23,10 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
-
-import javax.annotation.Nonnull;
 
 /**
  * R9K mode where messages over 9 characters must be unique.
@@ -62,7 +61,7 @@ public class R9k extends MessageTagManager.DefaultMessageTag {
         public static final String ENABLED = "1";
     }
 
-    private R9k(@Nonnull String name, @Nonnull String value) {
+    private R9k(@NonNull String name, @NonNull String value) {
         super(name, value);
     }
 }

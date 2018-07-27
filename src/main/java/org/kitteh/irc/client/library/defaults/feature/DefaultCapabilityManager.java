@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.defaults.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,13 +58,13 @@ public class DefaultCapabilityManager implements CapabilityManager.WithManagemen
         this.negotiating = true;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<CapabilityState> getCapabilities() {
         return new ArrayList<>(this.capabilities.values());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public List<CapabilityState> getSupportedCapabilities() {
         return new ArrayList<>(this.supportedCapabilities);
@@ -81,7 +81,7 @@ public class DefaultCapabilityManager implements CapabilityManager.WithManagemen
     }
 
     @Override
-    public void updateCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
+    public void updateCapabilities(@NonNull List<CapabilityState> capabilityStates) {
         for (CapabilityState capabilityState : capabilityStates) {
             if (capabilityState.isDisabled()) {
                 this.capabilities.remove(capabilityState.getName());
@@ -92,17 +92,17 @@ public class DefaultCapabilityManager implements CapabilityManager.WithManagemen
     }
 
     @Override
-    public void setCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
+    public void setCapabilities(@NonNull List<CapabilityState> capabilityStates) {
         this.capabilities.clear();
         this.updateCapabilities(capabilityStates);
     }
 
     @Override
-    public void setSupportedCapabilities(@Nonnull List<CapabilityState> capabilityStates) {
+    public void setSupportedCapabilities(@NonNull List<CapabilityState> capabilityStates) {
         this.supportedCapabilities = new ArrayList<>(capabilityStates);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this)

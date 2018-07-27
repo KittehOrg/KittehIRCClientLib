@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Default implementation of {@link ISupportParameter.Network}.
@@ -43,7 +42,7 @@ public class DefaultISupportNetwork extends DefaultISupportParameterValueRequire
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportNetwork(@Nonnull Client client, @Nonnull String name, @Nullable String value) {
+    public DefaultISupportNetwork(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
         if (value == null) {
             throw new KittehServerISupportException(name, "No network name defined");
@@ -51,7 +50,7 @@ public class DefaultISupportNetwork extends DefaultISupportParameterValueRequire
         this.networkName = value;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getNetworkName() {
         return this.networkName;

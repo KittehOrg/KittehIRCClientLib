@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.feature;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.util.Sanity;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +49,7 @@ public interface ServerInfo {
          *
          * @param parameter parameter to add
          */
-        void addISupportParameter(@Nonnull ISupportParameter parameter);
+        void addISupportParameter(@NonNull ISupportParameter parameter);
 
         /**
          * Gets the channel user mode for a targeted channel name, such as
@@ -58,36 +58,36 @@ public interface ServerInfo {
          * @param name channel name with mode tag
          * @return user mode if a match is found
          */
-        @Nonnull
-        Optional<ChannelUserMode> getTargetedChannelInfo(@Nonnull String name);
+        @NonNull
+        Optional<ChannelUserMode> getTargetedChannelInfo(@NonNull String name);
 
         /**
          * Sets the server address.
          *
          * @param serverAddress server address
          */
-        void setAddress(@Nonnull String serverAddress);
+        void setAddress(@NonNull String serverAddress);
 
         /**
          * Sets the MOTD.
          *
          * @param motd motd
          */
-        void setMotd(@Nonnull List<String> motd);
+        void setMotd(@NonNull List<String> motd);
 
         /**
          * Sets the user modes.
          *
          * @param userModes user modes
          */
-        void setUserModes(@Nonnull List<UserMode> userModes);
+        void setUserModes(@NonNull List<UserMode> userModes);
 
         /**
          * Sets the version.
          *
          * @param version version
          */
-        void setVersion(@Nonnull String version);
+        void setVersion(@NonNull String version);
     }
 
     /**
@@ -95,7 +95,7 @@ public interface ServerInfo {
      *
      * @return the server's address if known
      */
-    @Nonnull
+    @NonNull
     Optional<String> getAddress();
 
     /**
@@ -104,7 +104,7 @@ public interface ServerInfo {
      *
      * @return the casemapping
      */
-    @Nonnull
+    @NonNull
     default CaseMapping getCaseMapping() {
         Optional<ISupportParameter.CaseMapping> optional = this.getISupportParameter(ISupportParameter.CaseMapping.NAME, ISupportParameter.CaseMapping.class);
         return optional.map(ISupportParameter.CaseMapping::getCaseMapping).orElse(CaseMapping.RFC1459);
@@ -125,7 +125,7 @@ public interface ServerInfo {
      *
      * @return a map of channel prefixes to limits
      */
-    @Nonnull
+    @NonNull
     default Map<Character, Integer> getChannelLimits() {
         Optional<ISupportParameter.ChanLimit> optional = this.getISupportParameter(ISupportParameter.ChanLimit.NAME, ISupportParameter.ChanLimit.class);
         return optional.map(ISupportParameter.ChanLimit::getLimits).orElseGet(Collections::emptyMap);
@@ -137,7 +137,7 @@ public interface ServerInfo {
      * @param character character to match
      * @return the found channel mode if present
      */
-    @Nonnull
+    @NonNull
     default Optional<ChannelMode> getChannelMode(char character) {
         return this.getChannelModes().stream().filter(channelMode -> channelMode.getChar() == character).findFirst();
     }
@@ -148,7 +148,7 @@ public interface ServerInfo {
      *
      * @return available channel modes
      */
-    @Nonnull
+    @NonNull
     List<ChannelMode> getChannelModes();
 
     /**
@@ -158,7 +158,7 @@ public interface ServerInfo {
      *
      * @return available channel prefixes
      */
-    @Nonnull
+    @NonNull
     List<Character> getChannelPrefixes();
 
     /**
@@ -167,7 +167,7 @@ public interface ServerInfo {
      * @param character character to match
      * @return the found channel user mode if present
      */
-    @Nonnull
+    @NonNull
     default Optional<ChannelUserMode> getChannelUserMode(char character) {
         return this.getChannelUserModes().stream().filter(channelUserMode -> channelUserMode.getChar() == character).findFirst();
     }
@@ -180,7 +180,7 @@ public interface ServerInfo {
      *
      * @return channel modes defining user status
      */
-    @Nonnull
+    @NonNull
     List<ChannelUserMode> getChannelUserModes();
 
     /**
@@ -189,8 +189,8 @@ public interface ServerInfo {
      * @param name parameter name, case insensitive
      * @return parameter if present
      */
-    @Nonnull
-    Optional<ISupportParameter> getISupportParameter(@Nonnull String name);
+    @NonNull
+    Optional<ISupportParameter> getISupportParameter(@NonNull String name);
 
     /**
      * Gets the named ISUPPORT parameter if present and if of the specified
@@ -201,9 +201,9 @@ public interface ServerInfo {
      * @param <ISupport> parameter type
      * @return parameter if present
      */
-    @Nonnull
+    @NonNull
     @SuppressWarnings("unchecked")
-    default <ISupport extends ISupportParameter> Optional<ISupport> getISupportParameter(@Nonnull String name, @Nonnull Class<ISupport> clazz) {
+    default <ISupport extends ISupportParameter> Optional<ISupport> getISupportParameter(@NonNull String name, @NonNull Class<ISupport> clazz) {
         Optional<ISupportParameter> optional = this.getISupportParameter(name);
         if (optional.isPresent() && Sanity.nullCheck(clazz, "Class cannot be null").isInstance(optional.get())) {
             return (Optional<ISupport>) optional;
@@ -216,7 +216,7 @@ public interface ServerInfo {
      *
      * @return all parameters stored
      */
-    @Nonnull
+    @NonNull
     Map<String, ISupportParameter> getISupportParameters();
 
     /**
@@ -224,7 +224,7 @@ public interface ServerInfo {
      *
      * @return motd if known
      */
-    @Nonnull
+    @NonNull
     Optional<List<String>> getMotd();
 
     /**
@@ -232,7 +232,7 @@ public interface ServerInfo {
      *
      * @return network name if known
      */
-    @Nonnull
+    @NonNull
     default Optional<String> getNetworkName() {
         Optional<ISupportParameter.Network> optional = this.getISupportParameter(ISupportParameter.Network.NAME, ISupportParameter.Network.class);
         return optional.map(ISupportParameter.Network::getNetworkName);
@@ -254,7 +254,7 @@ public interface ServerInfo {
      *
      * @return a list of user modes
      */
-    @Nonnull
+    @NonNull
     List<UserMode> getUserModes();
 
     /**
@@ -262,7 +262,7 @@ public interface ServerInfo {
      *
      * @return server version if known
      */
-    @Nonnull
+    @NonNull
     Optional<String> getVersion();
 
     /**
@@ -281,5 +281,5 @@ public interface ServerInfo {
      * @param name potentially valid name
      * @return true if valid according to the known info
      */
-    boolean isValidChannel(@Nonnull String name);
+    boolean isValidChannel(@NonNull String name);
 }

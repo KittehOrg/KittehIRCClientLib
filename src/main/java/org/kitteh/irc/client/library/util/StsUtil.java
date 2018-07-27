@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 import org.kitteh.irc.client.library.feature.sts.StsPropertiesStorageManager;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 
-import javax.annotation.Nonnull;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public final class StsUtil {
      *
      * @return an STSStorageManager implementer
      */
-    @Nonnull
+    @NonNull
     public static StsStorageManager getDefaultStorageManager() {
         return StsUtil.getDefaultStorageManager(Paths.get(System.getProperty("user.home"), DEFAULT_FILENAME));
     }
@@ -63,8 +63,8 @@ public final class StsUtil {
      * @param stsFile File instance
      * @return an STSStorageManager implementer
      */
-    @Nonnull
-    public static StsStorageManager getDefaultStorageManager(@Nonnull Path stsFile) {
+    @NonNull
+    public static StsStorageManager getDefaultStorageManager(@NonNull Path stsFile) {
         return new StsPropertiesStorageManager(stsFile);
     }
 
@@ -75,8 +75,8 @@ public final class StsUtil {
      * @param str the whole string
      * @return the policy
      */
-    @Nonnull
-    public static StsPolicy getStsPolicyFromString(@Nonnull String delimiter, @Nonnull String str) {
+    @NonNull
+    public static StsPolicy getStsPolicyFromString(@NonNull String delimiter, @NonNull String str) {
         Sanity.nullCheck(delimiter, "Need a valid delimiter.");
         Sanity.nullCheck(str, "Need a valid string to parse.");
 

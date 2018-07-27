@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.command;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * TOPICal command support.
@@ -44,7 +43,7 @@ public class TopicCommand extends ChannelCommand {
      * @param channel channel targeted
      * @throws IllegalArgumentException if null parameters
      */
-    public TopicCommand(@Nonnull Client client, @Nonnull String channel) {
+    public TopicCommand(@NonNull Client client, @NonNull String channel) {
         super(client, channel);
     }
 
@@ -55,7 +54,7 @@ public class TopicCommand extends ChannelCommand {
      * @return this TopicCommand
      * @throws IllegalArgumentException if topic invalid
      */
-    @Nonnull
+    @NonNull
     public TopicCommand topic(@Nullable String topic) {
         this.topic = (topic == null) ? null : Sanity.safeMessageCheck(topic, "Topic");
         return this;
@@ -66,7 +65,7 @@ public class TopicCommand extends ChannelCommand {
      *
      * @return this TopicCommand
      */
-    @Nonnull
+    @NonNull
     public TopicCommand query() {
         this.topic = null;
         return this;
@@ -77,7 +76,7 @@ public class TopicCommand extends ChannelCommand {
         this.getClient().sendRawLine("TOPIC " + this.getChannel() + (this.topic == null ? "" : (" :" + this.topic)));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     protected ToStringer toStringer() {
         return super.toStringer().add("topic", this.topic);

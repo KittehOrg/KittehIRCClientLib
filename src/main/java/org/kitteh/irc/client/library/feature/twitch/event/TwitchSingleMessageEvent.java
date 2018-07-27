@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.event;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.ServerMessageEvent;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -49,8 +49,8 @@ public interface TwitchSingleMessageEvent extends ServerMessageEvent {
      * @param name tag name
      * @return tag if present
      */
-    @Nonnull
-    default Optional<MessageTag> getTag(@Nonnull String name) {
+    @NonNull
+    default Optional<MessageTag> getTag(@NonNull String name) {
         return this.getOriginalMessage().getTag(name);
     }
 
@@ -62,8 +62,8 @@ public interface TwitchSingleMessageEvent extends ServerMessageEvent {
      * @param <Tag> message tag type
      * @return message tag if present
      */
-    @Nonnull
-    default <Tag extends MessageTag> Optional<Tag> getTag(@Nonnull String name, @Nonnull Class<Tag> clazz) {
+    @NonNull
+    default <Tag extends MessageTag> Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
         return this.getOriginalMessage().getTag(name, clazz);
     }
 }

@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Generic class used to track a piece of information changing.
@@ -40,7 +40,7 @@ public class Change<Type> {
      * @param oldData the old data prior to the change taking place
      * @param newData the new data following the change taking place
      */
-    public Change(@Nonnull Type oldData, @Nonnull Type newData) {
+    public Change(@NonNull Type oldData, @NonNull Type newData) {
         this.oldData = Sanity.nullCheck(oldData, "old data cannot be null");
         this.newData = Sanity.nullCheck(newData, "new data cannot be null");
     }
@@ -50,7 +50,7 @@ public class Change<Type> {
      *
      * @return the old data
      */
-    @Nonnull
+    @NonNull
     public Type getOld() {
         return this.oldData;
     }
@@ -60,7 +60,7 @@ public class Change<Type> {
      *
      * @return the new data
      */
-    @Nonnull
+    @NonNull
     public Type getNew() {
         return this.newData;
     }

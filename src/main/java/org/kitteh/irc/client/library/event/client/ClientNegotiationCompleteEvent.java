@@ -23,14 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.client;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * The {@link Client} has successfully completed negotiation with the server.
@@ -48,7 +47,7 @@ public class ClientNegotiationCompleteEvent extends ClientEventBase {
      * @param server the server to which the client is connected
      * @param serverInfo information about the server
      */
-    public ClientNegotiationCompleteEvent(@Nonnull Client client, @Nonnull Actor server, @Nonnull ServerInfo serverInfo) {
+    public ClientNegotiationCompleteEvent(@NonNull Client client, @NonNull Actor server, @NonNull ServerInfo serverInfo) {
         super(client);
         this.server = Sanity.nullCheck(server, "Server cannot be null");
         this.serverInfo = Sanity.nullCheck(serverInfo, "ServerInfo cannot be null");
@@ -59,7 +58,7 @@ public class ClientNegotiationCompleteEvent extends ClientEventBase {
      *
      * @return the server the client is connected to
      */
-    @Nonnull
+    @NonNull
     public Actor getServer() {
         return this.server;
     }
@@ -75,13 +74,13 @@ public class ClientNegotiationCompleteEvent extends ClientEventBase {
      * @see ServerInfo#getAddress()
      * @see ServerInfo#getVersion()
      */
-    @Nonnull
+    @NonNull
     public ServerInfo getServerInfo() {
         return this.serverInfo;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("server", this.server);
     }

@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,7 +50,7 @@ public class CISet implements Set<String> {
      *
      * @param client the client to which this set is tied
      */
-    public CISet(@Nonnull Client client) {
+    public CISet(@NonNull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
     }
 
@@ -61,7 +61,7 @@ public class CISet implements Set<String> {
      * @param input input to convert
      * @return lower cased input
      */
-    protected final synchronized String toLowerCase(@Nonnull String input) {
+    protected final synchronized String toLowerCase(@NonNull String input) {
         CaseMapping caseMapping = this.client.getServerInfo().getCaseMapping();
         if (caseMapping != this.lastCaseMapping) {
             Set<String> set = new HashSet<>(this.map.values());
@@ -87,26 +87,26 @@ public class CISet implements Set<String> {
         return (o instanceof String) && this.map.containsKey(this.toLowerCase((String) o));
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Iterator<String> iterator() {
         return this.map.values().iterator();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Object[] toArray() {
         return this.map.values().toArray();
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public <T> T[] toArray(@Nonnull T[] a) {
+    public <T> T[] toArray(@NonNull T[] a) {
         return this.map.values().toArray(a);
     }
 
     @Override
-    public boolean add(@Nonnull String s) {
+    public boolean add(@NonNull String s) {
         Sanity.nullCheck(s, "String cannot be null");
         this.map.put(this.toLowerCase(s), s);
         return true;
@@ -118,7 +118,7 @@ public class CISet implements Set<String> {
     }
 
     @Override
-    public boolean containsAll(@Nonnull Collection<?> c) {
+    public boolean containsAll(@NonNull Collection<?> c) {
         Sanity.nullCheck(c, "Collection cannot be null");
         for (Object o : c) {
             if (!this.contains(o)) {
@@ -129,20 +129,20 @@ public class CISet implements Set<String> {
     }
 
     @Override
-    public boolean addAll(@Nonnull Collection<? extends String> c) {
+    public boolean addAll(@NonNull Collection<? extends String> c) {
         Sanity.nullCheck(c, "Collection cannot be null");
         c.forEach(this::add);
         return true;
     }
 
     @Override
-    public boolean retainAll(@Nonnull Collection<?> c) {
+    public boolean retainAll(@NonNull Collection<?> c) {
         Sanity.nullCheck(c, "Collection cannot be null");
         return this.map.keySet().retainAll(c.stream().filter(i -> i instanceof String).map(i -> (String) i).map(this::toLowerCase).collect(Collectors.toSet()));
     }
 
     @Override
-    public boolean removeAll(@Nonnull Collection<?> c) {
+    public boolean removeAll(@NonNull Collection<?> c) {
         Sanity.nullCheck(c, "Collection cannot be null");
         return this.map.keySet().removeAll(c.stream().filter(i -> i instanceof String).map(i -> (String) i).map(this::toLowerCase).collect(Collectors.toSet()));
     }
@@ -152,7 +152,7 @@ public class CISet implements Set<String> {
         this.map.clear();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("client", this.client).add("set", this.map.values()).toString();

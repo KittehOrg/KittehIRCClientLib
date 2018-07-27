@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.defaults.element.mode;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -39,7 +39,7 @@ public class DefaultUserMode extends DefaultModeBase implements UserMode {
      * @param client client
      * @param mode mode
      */
-    public DefaultUserMode(@Nonnull Client client, char mode) {
+    public DefaultUserMode(@NonNull Client client, char mode) {
         super(client, mode);
     }
 

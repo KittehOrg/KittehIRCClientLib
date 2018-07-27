@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -44,7 +44,7 @@ public class ChannelKnockEvent extends ActorChannelEventBase<User> {
      * @param channel the channel being knocked upon
      * @param user user nick knocking
      */
-    public ChannelKnockEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel, @Nonnull User user) {
+    public ChannelKnockEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull User user) {
         super(client, originalMessages, user, channel);
     }
 }

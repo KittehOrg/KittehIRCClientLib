@@ -23,12 +23,12 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -64,9 +64,9 @@ public class DefaultUser extends DefaultStaleable implements User {
      * @param server server info, if known
      * @param channels channels they are in
      */
-    public DefaultUser(@Nonnull Client.WithManagement client, @Nonnull String name, @Nullable String account, @Nullable String awayMessage,
-                       @Nonnull String nick, @Nonnull String user, @Nonnull String host, boolean isAway,
-                       @Nullable String operString, @Nullable String realName, @Nullable String server, @Nonnull Set<String> channels) {
+    public DefaultUser(Client.@NonNull WithManagement client, @NonNull String name, @Nullable String account, @Nullable String awayMessage,
+                       @NonNull String nick, @NonNull String user, @NonNull String host, boolean isAway,
+                       @Nullable String operString, @Nullable String realName, @Nullable String server, @NonNull Set<String> channels) {
         super(client, name);
         this.account = account;
         this.awayMessage = awayMessage;
@@ -85,61 +85,61 @@ public class DefaultUser extends DefaultStaleable implements User {
         return (o instanceof DefaultUser) && (((DefaultUser) o).getClient() == this.getClient()) && ((DefaultUser) o).getLowerCaseName().equals(this.getLowerCaseName());
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getAccount() {
         return Optional.ofNullable(this.account);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getAwayMessage() {
         return Optional.ofNullable(this.awayMessage);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Set<String> getChannels() {
         return this.channels;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getHost() {
         return this.host;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getMessagingName() {
         return this.getNick();
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getNick() {
         return this.nick;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getOperatorInformation() {
         return Optional.ofNullable(this.operString);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getRealName() {
         return Optional.ofNullable(this.realName);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Optional<String> getServer() {
         return Optional.ofNullable(this.server);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getUserString() {
         return this.user;
@@ -156,7 +156,7 @@ public class DefaultUser extends DefaultStaleable implements User {
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public String toString() {
         return new ToStringer(this).add("client", this.getClient()).add("nick", this.nick).add("user", this.user).add("host", this.host).add("channels", this.channels.size()).toString();
     }

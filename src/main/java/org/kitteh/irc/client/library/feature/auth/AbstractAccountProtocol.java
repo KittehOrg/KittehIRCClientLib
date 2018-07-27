@@ -23,12 +23,11 @@
  */
 package org.kitteh.irc.client.library.feature.auth;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.auth.element.AccountName;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
-
-import javax.annotation.Nonnull;
 
 /**
  * Abstract general account name protocol.
@@ -43,25 +42,25 @@ public abstract class AbstractAccountProtocol implements AccountName {
      * @param client client
      * @param accountName account name
      */
-    protected AbstractAccountProtocol(@Nonnull Client client, @Nonnull String accountName) {
+    protected AbstractAccountProtocol(@NonNull Client client, @NonNull String accountName) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
         this.accountName = Sanity.safeMessageCheck(accountName, "Account name");
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Client getClient() {
         return this.client;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getAccountName() {
         return this.accountName;
     }
 
     @Override
-    public void setAccountName(@Nonnull String accountName) {
+    public void setAccountName(@NonNull String accountName) {
         this.accountName = Sanity.safeMessageCheck(accountName, "Account name");
     }
 
@@ -75,10 +74,10 @@ public abstract class AbstractAccountProtocol implements AccountName {
      *
      * @return auth string
      */
-    @Nonnull
+    @NonNull
     protected abstract String getAuthentication();
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("account", this.getAccountName()).toString();

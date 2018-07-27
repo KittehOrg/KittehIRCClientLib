@@ -23,10 +23,9 @@
  */
 package org.kitteh.irc.client.library.defaults.element;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Server;
-
-import javax.annotation.Nonnull;
 
 /**
  * Default Server implementation.
@@ -38,7 +37,7 @@ public class DefaultServer extends DefaultActor implements Server {
      * @param client client
      * @param name server name
      */
-    public DefaultServer(@Nonnull Client.WithManagement client, @Nonnull String name) {
+    public DefaultServer(Client.@NonNull WithManagement client, @NonNull String name) {
         super(client, name);
     }
 }

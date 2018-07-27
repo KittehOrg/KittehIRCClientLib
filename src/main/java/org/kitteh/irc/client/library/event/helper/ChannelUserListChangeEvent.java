@@ -23,10 +23,10 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
 
-import javax.annotation.Nonnull;
 import java.util.Optional;
 
 /**
@@ -53,7 +53,7 @@ public interface ChannelUserListChangeEvent extends ServerMessageEvent {
      *
      * @return channel or empty if all channels affected
      */
-    @Nonnull
+    @NonNull
     Optional<Channel> getAffectedChannel();
 
     /**
@@ -61,7 +61,7 @@ public interface ChannelUserListChangeEvent extends ServerMessageEvent {
      *
      * @return type of change
      */
-    @Nonnull
+    @NonNull
     Change getChange();
 
     /**
@@ -69,6 +69,6 @@ public interface ChannelUserListChangeEvent extends ServerMessageEvent {
      *
      * @return user
      */
-    @Nonnull
+    @NonNull
     User getUser();
 }

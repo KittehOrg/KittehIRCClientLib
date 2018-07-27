@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
@@ -30,7 +31,6 @@ import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -49,7 +49,7 @@ public abstract class ChannelEventBase extends ServerMessageEventBase implements
      * @param originalMessages original messages
      * @param channel the channel
      */
-    protected ChannelEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Channel channel) {
+    protected ChannelEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel) {
         super(client, originalMessages);
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
@@ -57,13 +57,13 @@ public abstract class ChannelEventBase extends ServerMessageEventBase implements
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public final Channel getChannel() {
         return this.channel;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("channel", this.channel);
     }

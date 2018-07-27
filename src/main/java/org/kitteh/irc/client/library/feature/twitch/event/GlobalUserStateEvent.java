@@ -23,11 +23,11 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.event;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -48,7 +48,7 @@ public class GlobalUserStateEvent extends ServerMessageEventBase implements Twit
      * @param client the client
      * @param originalMessages original messages
      */
-    public GlobalUserStateEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages) {
+    public GlobalUserStateEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages) {
         super(client, originalMessages);
     }
 }

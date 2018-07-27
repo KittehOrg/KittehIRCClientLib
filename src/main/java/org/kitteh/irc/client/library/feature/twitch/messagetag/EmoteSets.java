@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.feature.twitch.messagetag;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +52,7 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
 
     private final List<Integer> emoteSets;
 
-    private EmoteSets(@Nonnull String name, @Nullable String value) {
+    private EmoteSets(@NonNull String name, @Nullable String value) {
         super(name, value);
         this.emoteSets = (value == null) ? Collections.emptyList() : Collections.unmodifiableList(Arrays.stream(value.split(",")).map(Integer::valueOf).collect(Collectors.toList()));
     }
@@ -62,12 +62,12 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
      *
      * @return list of integers, at least containing 0.
      */
-    @Nonnull
+    @NonNull
     public List<Integer> getEmoteSets() {
         return this.emoteSets;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public ToStringer toStringer() {
         return super.toStringer().add("emoteSets", this.emoteSets);

@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A pair of objects!
@@ -45,7 +45,7 @@ public final class Pair<Left, Right> {
      * @param <Right> type of the second object
      * @return pair of the objects
      */
-    @Nonnull
+    @NonNull
     public static <Left, Right> Pair<Left, Right> of(@Nullable Left left, @Nullable Right right) {
         return new Pair<>(left, right);
     }
@@ -81,7 +81,7 @@ public final class Pair<Left, Right> {
         return this.right;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
         return new ToStringer(this).add("left", this.left).add("right", this.right).toString();

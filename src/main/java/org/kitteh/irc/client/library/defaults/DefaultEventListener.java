@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.defaults;
 
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.References;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.defaults.element.DefaultCapabilityState;
@@ -63,7 +64,6 @@ import org.kitteh.irc.client.library.event.channel.ChannelTargetedCtcpEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTargetedMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
-import org.kitteh.irc.client.library.event.channel.ChannelUsersUpdatedEvent;
 import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent;
 import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaKickEvent;
 import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaPartEvent;
@@ -100,7 +100,6 @@ import org.kitteh.irc.client.library.util.CtcpUtil;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -343,11 +342,11 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
         this.modeInfoList(event, "QUIETLIST", 'q', this.quietMessages, this.quiets, (event.getNumeric() == 344) ? 0 : 1);
     }
 
-    private void modeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
+    private void modeInfoList(@NonNull ClientReceiveNumericEvent event, @NonNull String name, char mode, @NonNull List<ServerMessage> messageList, @NonNull List<ModeInfo> infoList) {
         this.modeInfoList(event, name, mode, messageList, infoList, 0);
     }
 
-    private void modeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList, int offset) {
+    private void modeInfoList(@NonNull ClientReceiveNumericEvent event, @NonNull String name, char mode, @NonNull List<ServerMessage> messageList, @NonNull List<ModeInfo> infoList, int offset) {
         if (event.getParameters().size() < (3 + offset)) {
             this.trackException(event, name + " response too short");
             return;
@@ -399,7 +398,7 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
         this.endModeInfoList(event, "QUIETLIST", 'q', this.quietMessages, this.quiets);
     }
 
-    private void endModeInfoList(@Nonnull ClientReceiveNumericEvent event, @Nonnull String name, char mode, @Nonnull List<ServerMessage> messageList, @Nonnull List<ModeInfo> infoList) {
+    private void endModeInfoList(@NonNull ClientReceiveNumericEvent event, @NonNull String name, char mode, @NonNull List<ServerMessage> messageList, @NonNull List<ModeInfo> infoList) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, name + " response too short");
             return;
@@ -629,7 +628,7 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
         }
     }
 
-    private void fireAndCapReq(@Nonnull CapabilityNegotiationResponseEventWithRequestBase responseEvent) {
+    private void fireAndCapReq(@NonNull CapabilityNegotiationResponseEventWithRequestBase responseEvent) {
         Set<String> capabilities = this.getClient().getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
         capabilities.retainAll(CapabilityManager.Defaults.getDefaults());
         capabilities.removeAll(this.getClient().getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList()));
@@ -1060,12 +1059,12 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
                 this.channel = channel;
             }
 
-            @Nonnull
+            @NonNull
             protected Channel getChannel() {
                 return this.channel;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public String toString() {
                 return new ToStringer(this).toString();
@@ -1081,17 +1080,17 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
                 this.prefix = prefix;
             }
 
-            @Nonnull
+            @NonNull
             protected Channel getChannel() {
                 return this.channel;
             }
 
-            @Nonnull
+            @NonNull
             protected ChannelUserMode getPrefix() {
                 return this.prefix;
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public String toString() {
                 return new ToStringer(this).toString();
@@ -1104,7 +1103,7 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
             protected Private() {
             }
 
-            @Nonnull
+            @NonNull
             @Override
             public String toString() {
                 return new ToStringer(this).toString();
@@ -1112,8 +1111,8 @@ public class DefaultEventListener extends AbstractDefaultListenerBase {
         }
     }
 
-    @Nonnull
-    protected MessageTargetInfo getTypeByTarget(@Nonnull String target) {
+    @NonNull
+    protected MessageTargetInfo getTypeByTarget(@NonNull String target) {
         Optional<Channel> channel = this.getTracker().getTrackedChannel(target);
         Optional<ChannelUserMode> prefix = this.getClient().getServerInfo().getTargetedChannelInfo(target);
         if (prefix.isPresent()) {

@@ -23,6 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.channel;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
@@ -33,7 +34,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -51,7 +51,7 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * @param channel the channel in which the change is occurring
      * @param statusList list of statuses
      */
-    public ChannelModeEvent(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull Actor actor, @Nonnull Channel channel, @Nonnull ModeStatusList<ChannelMode> statusList) {
+    public ChannelModeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor actor, @NonNull Channel channel, @NonNull ModeStatusList<ChannelMode> statusList) {
         super(client, originalMessages, actor, channel);
         this.statusList = Sanity.nullCheck(statusList, "Status list cannot be null");
     }
@@ -61,13 +61,13 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      *
      * @return status list
      */
-    @Nonnull
+    @NonNull
     public ModeStatusList<ChannelMode> getStatusList() {
         return this.statusList;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("statusList", this.statusList);
     }

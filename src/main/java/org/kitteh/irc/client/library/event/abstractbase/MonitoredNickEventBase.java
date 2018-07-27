@@ -23,13 +23,13 @@
  */
 package org.kitteh.irc.client.library.event.abstractbase;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -45,19 +45,19 @@ public abstract class MonitoredNickEventBase extends ServerMessageEventBase impl
      * @param originalMessages original messages
      * @param nick the tracked nick
      */
-    protected MonitoredNickEventBase(@Nonnull Client client, @Nonnull List<ServerMessage> originalMessages, @Nonnull String nick) {
+    protected MonitoredNickEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull String nick) {
         super(client, originalMessages);
         this.nick = Sanity.nullCheck(nick, "Nick cannot be null");
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String getNick() {
         return this.nick;
     }
 
     @Override
-    @Nonnull
+    @NonNull
     protected ToStringer toStringer() {
         return super.toStringer().add("nick", this.nick);
     }
