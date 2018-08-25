@@ -21,33 +21,56 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.auth.element;
+package org.kitteh.irc.client.library.feature.auth;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
+import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 /**
- * Support for reclaiming a nickname.
+ * Abstract auth protocol.
  */
-public interface NickReclamation extends AuthProtocol {
+public abstract class AbstractAuthProtocol implements AuthProtocol {
+    private final Client client;
+
     /**
-     * Forcibly taking back a nickname.
+     * Creates an instance.
      *
-     * @param nick nickname to ghost
+     * @param client client
      */
-    default void ghostNick(@NonNull String nick) {
-        Sanity.safeMessageCheck(nick, "Nick");
-        this.getClient().sendRawLine("NickServ :GHOST " + nick);
+    protected AbstractAuthProtocol(@NonNull Client client) {
+        this.client = Sanity.nullCheck(client, "Client cannot be null");
+    }
+
+    @Override
+    public final @NonNull Client getClient() {
+        return this.client;
+    }
+
+    @Override
+    public final void startAuthentication() {
+        this.client.sendRawLineImmediately(this.getAuthentication());
     }
 
     /**
-     * Regaining a nickname.
+     * Gets a String for {@link #startAuthentication()}.
      *
-     * @param nick nickname to regain
+     * @return auth string
      */
-    default void regainNick(@NonNull String nick) {
-        Sanity.safeMessageCheck(nick, "Nick");
-        this.getClient().sendRawLine("NickServ :REGAIN " + nick);
+    protected abstract @NonNull String getAuthentication();
+
+    @Override
+    public final @NonNull String toString() {
+        final ToStringer stringer = new ToStringer(this);
+        this.toString(stringer);
+        return stringer.toString();
     }
+
+    /**
+     * Adds data to toString.
+     *
+     * @param stringer stringer
+     */
+    protected abstract void toString(ToStringer stringer);
 }

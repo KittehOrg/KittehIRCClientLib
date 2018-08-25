@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
@@ -51,7 +52,7 @@ import java.util.Base64;
  * SASL ECDSA-NIST256P-CHALLENGE authentication. Automatically attempts auth
  * during connection.
  */
-public class SaslEcdsaNist256PChallenge extends AbstractSaslProtocol<ECPrivateKey> {
+public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
     /**
      * Holds a private and public key.
      */
@@ -88,7 +89,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractSaslProtocol<ECPrivateKe
         }
     }
 
-    private class Listener extends AbstractSaslProtocol<ECPrivateKey>.Listener {
+    private class Listener extends AbstractSaslProtocol.Listener {
         @CommandFilter("AUTHENTICATE")
         @Handler
         @Override
@@ -100,7 +101,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractSaslProtocol<ECPrivateKe
                 } else {
                     String challenge = event.getParameters().get(0);
                     try {
-                        base64 = sign(SaslEcdsaNist256PChallenge.this.getAuthValue(), challenge);
+                        base64 = sign(SaslEcdsaNist256PChallenge.this.privateKey, challenge);
                     } catch (Exception e) {
                         throw new RuntimeException(e); // TODO make this better
                     }
@@ -110,7 +111,8 @@ public class SaslEcdsaNist256PChallenge extends AbstractSaslProtocol<ECPrivateKe
         }
     }
 
-    private Listener listener;
+    private final ECPrivateKey privateKey;
+    private @MonotonicNonNull Listener listener;
 
     /**
      * Creates an instance.
@@ -120,7 +122,8 @@ public class SaslEcdsaNist256PChallenge extends AbstractSaslProtocol<ECPrivateKe
      * @param privateKey private key
      */
     public SaslEcdsaNist256PChallenge(@NonNull Client client, @NonNull String accountName, @NonNull ECPrivateKey privateKey) {
-        super(client, accountName, privateKey, "ECDSA-NIST256P-CHALLENGE");
+        super(client, "ECDSA-NIST256P-CHALLENGE", accountName);
+        this.privateKey = Sanity.nullCheck(privateKey, "Private key cannot be null");
     }
 
     @Override
@@ -131,6 +134,12 @@ public class SaslEcdsaNist256PChallenge extends AbstractSaslProtocol<ECPrivateKe
     @Override
     public @NonNull Object getEventListener() {
         return (this.listener == null) ? (this.listener = new Listener()) : this.listener;
+    }
+
+    @Override
+    protected void toString(final ToStringer stringer) {
+        super.toString(stringer);
+        stringer.add("privateKey", this.privateKey);
     }
 
     /**

@@ -24,16 +24,18 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.auth.element.Password;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.StringUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 /**
  * Abstract general account/password protocol.
  */
-public abstract class AbstractAccountPassProtocol extends AbstractAccountProtocol implements Password {
-    private String password;
+public abstract class AbstractAccountPassProtocol extends AbstractAuthProtocol {
+    private final String accountName;
+    private final String password;
 
     /**
      * Creates an instance.
@@ -42,23 +44,33 @@ public abstract class AbstractAccountPassProtocol extends AbstractAccountProtoco
      * @param accountName account name
      * @param password password
      */
-    protected AbstractAccountPassProtocol(@NonNull Client client, @NonNull String accountName, @NonNull String password) {
-        super(client, accountName);
+    protected AbstractAccountPassProtocol(@NonNull Client client, @Nullable String accountName, @NonNull String password) {
+        super(client);
+        this.accountName = accountName;
         this.password = Sanity.safeMessageCheck(password, "Password");
     }
 
-    @Override
-    public @NonNull String getPassword() {
+    /**
+     * Gets the account name.
+     *
+     * @return account name
+     */
+    protected @Nullable String getAccountName() {
+        return this.accountName;
+    }
+
+    /**
+     * Gets the password.
+     *
+     * @return password
+     */
+    protected @NonNull String getPassword() {
         return this.password;
     }
 
     @Override
-    public void setPassword(@NonNull String password) {
-        this.password = Sanity.safeMessageCheck(password, "Password");
-    }
-
-    @Override
-    public @NonNull String toString() {
-        return new ToStringer(this).add("account", this.getAccountName()).add("pass", this.getPassword()).toString();
+    protected void toString(final ToStringer stringer) {
+        stringer.add("account", this.getAccountName());
+        stringer.add("password", StringUtil.filterPassword(this.password));
     }
 }

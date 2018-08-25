@@ -21,26 +21,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.auth.element;
+package org.kitteh.irc.client.library.feature.auth;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.util.ToStringer;
 
-/**
- * Utilizing an account name for authentication.
- */
-public interface AccountName extends AuthProtocol {
-    /**
-     * Gets the account name.
-     *
-     * @return account name
-     */
-    @NonNull String getAccountName();
+public abstract class AbstractAccountSaslProtocol extends AbstractSaslProtocol {
+  private final String accountName;
 
-    /**
-     * Sets the account name to use.
-     *
-     * @param accountName account name
-     */
-    void setAccountName(@NonNull String accountName);
+  /**
+   * Creates an instance.
+   *
+   * @param client client
+   * @param saslType type of SASL auth
+   * @param accountName account name
+   */
+  protected AbstractAccountSaslProtocol(@NonNull final Client client, @NonNull final String saslType, @NonNull final String accountName) {
+    super(client, saslType);
+    this.accountName = accountName;
+  }
+
+  /**
+   * Gets the account name.
+   *
+   * @return account name
+   */
+  protected @NonNull String getAccountName() {
+    return this.accountName;
+  }
+
+  @Override
+  protected void toString(final ToStringer stringer) {
+    super.toString(stringer);
+    stringer.add("account", this.getAccountName());
+  }
 }

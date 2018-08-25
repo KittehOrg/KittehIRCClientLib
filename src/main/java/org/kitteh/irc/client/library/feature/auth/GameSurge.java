@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
+import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 /**
@@ -58,7 +59,7 @@ public class GameSurge extends AbstractAccountPassProtocol implements EventListe
      * @param password password
      */
     public GameSurge(@NonNull Client client, @NonNull String accountName, @NonNull String password) {
-        super(client, accountName, password);
+        super(client, Sanity.safeMessageCheck(accountName, "Account name"), password);
     }
 
     @Override
