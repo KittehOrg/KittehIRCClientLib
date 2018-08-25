@@ -42,7 +42,7 @@ public final class Sanity {
      * @return the sane object
      * @throws IllegalArgumentException if the object is null
      */
-    public @NonNull static <Type> Type nullCheck(@Nullable Type object, @NonNull String failMessage) {
+    public static <Type> @NonNull Type nullCheck(@Nullable Type object, @NonNull String failMessage) {
         if (object == null) {
             throw new IllegalArgumentException(failMessage);
         }
@@ -58,7 +58,8 @@ public final class Sanity {
      * @return the sane object
      * @throws IllegalArgumentException if null or contains null elements
      */
-    public @NonNull static <Type> Type[] nullCheck(@Nullable Type[] array, @NonNull String failMessage) {
+    @SuppressWarnings("NullableProblems") // we check
+    public static <Type> @NonNull Type[] nullCheck(@Nullable Type[] array, @NonNull String failMessage) {
         Sanity.nullCheck((Object) array, failMessage);
         for (Object element : array) {
             Sanity.nullCheck(element, failMessage);
@@ -86,7 +87,7 @@ public final class Sanity {
      * @return the safe message
      * @throws IllegalArgumentException if found
      */
-    public @NonNull static String safeMessageCheck(@NonNull String message) {
+    public static @NonNull String safeMessageCheck(@NonNull String message) {
         return Sanity.safeMessageCheck(message, "Message");
     }
 
@@ -98,7 +99,7 @@ public final class Sanity {
      * @return the safe message
      * @throws IllegalArgumentException if found
      */
-    public @NonNull static String safeMessageCheck(@Nullable String message, @NonNull String name) {
+    public static @NonNull String safeMessageCheck(@Nullable String message, @NonNull String name) {
         Sanity.nullCheck(message, name + " cannot be null");
         for (char ch : message.toCharArray()) {
             if ((ch == '\n') || (ch == '\r') || (ch == '\0')) {
@@ -106,5 +107,17 @@ public final class Sanity {
             }
         }
         return message;
+    }
+
+    /**
+     * Checks if a string contains spaces.
+     *
+     * @param string string to check
+     * @return the string
+     * @throws IllegalArgumentException if found
+     */
+    public static @NonNull String noSpaces(@NonNull String string, @NonNull String name) {
+        Sanity.truthiness(!string.contains(" "), name + " cannot contain spaces");
+        return string;
     }
 }

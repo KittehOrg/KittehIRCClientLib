@@ -83,7 +83,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
     public void setNewNick(@NonNull String newNick) {
         Sanity.safeMessageCheck(newNick, "Nick");
         Sanity.truthiness(!newNick.equals(this.attemptedNick), "Cannot set new nick to the currently failing nick");
-        Sanity.truthiness(!newNick.contains(" "), "Nick cannot contain spaces");
+        Sanity.noSpaces(newNick, "Nick");
         this.newNick = newNick;
     }
 

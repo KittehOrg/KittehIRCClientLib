@@ -92,151 +92,368 @@ public interface Client extends ClientLinked {
      * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
      * <p>
      * The default built client connects securely via port 6697. See {@link
-     * #secure(boolean)} to disable, or the other secure-prefixed methods in this
-     * builder to fully utilize the feature. Note that the default
+     * Server#secure(boolean)} to disable, or the other secure-prefixed methods in
+     * this builder to fully utilize the feature. Note that the default
      * TrustManagerFactory relies on your local trust store. The default Oracle
      * trust store does not accept self-signed certificates.
      */
     interface Builder {
         /**
-         * Sets the supplier of the actor tracker.
-         * <p>
-         * By default, the {@link DefaultActorTracker} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultActorTracker
+         * Bind builder methods.
          */
-        @NonNull Builder actorTracker(@NonNull Function<Client.WithManagement, ? extends ActorTracker> supplier);
+        interface Bind {
+            /**
+             * Binds the client to a host or IP locally.
+             * <p>
+             * By default, the host is not set which results in wildcard binding.
+             *
+             * @param host host to bind to, or null for wildcard binding
+             * @return this builder
+             */
+            @NonNull Bind host(@Nullable String host);
+
+            /**
+             * Binds the client to the specified port. Invalid ports are set to 0.
+             * <p>
+             * By default, the port is 0.
+             *
+             * @param port port to bind to
+             * @return this builder
+             */
+            @NonNull Bind port(int port);
+
+            /**
+             * Returns to the root builder.
+             *
+             * @return the root builder
+             */
+            @NonNull Builder then();
+        }
 
         /**
-         * Sets the supplier of the authentication manager.
-         * <p>
-         * By default, the {@link DefaultAuthManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultAuthManager
+         * Server builder methods.
          */
-        @NonNull Builder authManager(@NonNull Function<Client.WithManagement, ? extends AuthManager> supplier);
+        interface Server {
+            /**
+             * Sets the server host to which the client will connect.
+             * <p>
+             * By default, the host is localhost.
+             *
+             * @param host IRC server host
+             * @return this builder
+             * @throws IllegalArgumentException for null host
+             */
+            @NonNull Server host(@NonNull String host);
+
+            /**
+             * Sets the server port to which the client will connect.
+             * <p>
+             * By default, the port is 6667.
+             *
+             * @param port IRC server port
+             * @return this builder
+             */
+            @NonNull Server port(int port);
+
+            /**
+             * Sets the server password.
+             * <p>
+             * If not set, no password is sent
+             *
+             * @param password server password or null to not send one
+             * @return this builder
+             */
+            @NonNull Server password(@Nullable String password);
+
+            /**
+             * Sets whether the client connects via TLS/SSL.
+             * <p>
+             * Note that by default the TrustManager used does not accept the
+             * certificates of many popular networks. You must use {@link
+             * #secureTrustManagerFactory(TrustManagerFactory)} to set your own
+             * TrustManagerFactory.
+             *
+             * @param secure true for TLS/SSL
+             * @return this builder
+             */
+            @NonNull Server secure(boolean secure);
+
+            /**
+             * Sets the key for SSL connection.
+             *
+             * @param keyCertChainFile X.509 certificate chain file in PEM format
+             * @return this builder
+             * @see #secure(boolean)
+             */
+            @NonNull Server secureKeyCertChain(@Nullable Path keyCertChainFile);
+
+            /**
+             * Sets the private key for SSL connection.
+             *
+             * @param keyFile PKCS#8 private key file in PEM format
+             * @return this builder
+             * @see #secure(boolean)
+             */
+            @NonNull Server secureKey(@Nullable Path keyFile);
+
+            /**
+             * Sets the private key password for SSL connection.
+             *
+             * @param password password for private key
+             * @return this builder
+             * @see #secure(boolean)
+             */
+            @NonNull Server secureKeyPassword(@Nullable String password);
+
+            /**
+             * Sets the {@link TrustManagerFactory} for SSL connection.
+             *
+             * @param factory trust manager supplier
+             * @return this builder
+             * @see #secure(boolean)
+             */
+            @NonNull Server secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
+
+            /**
+             * Returns to the root builder.
+             *
+             * @return the root builder
+             */
+            @NonNull Builder then();
+        }
 
         /**
-         * Binds the client to a host or IP locally.
-         * <p>
-         * By default, the host is not set which results in wildcard binding.
-         *
-         * @param host host to bind to, or null for wildcard binding
-         * @return this builder
+         * Listener builder methods.
          */
-        @NonNull Builder bindHost(@Nullable String host);
+        interface Listeners {
+            /**
+             * Sets a listener for all incoming messages from the server.
+             * <p>
+             * All messages are passed from a single, separate thread.
+             *
+             * @param listener input listener or null to not listen
+             * @return this builder
+             */
+            @NonNull Listeners input(@Nullable Consumer<String> listener);
+
+            /**
+             * Sets a listener for all outgoing messages to the server.
+             * <p>
+             * All messages are passed from a single, separate thread.
+             *
+             * @param listener output listener or null to not listen
+             * @return this builder
+             */
+            @NonNull Listeners output(@Nullable Consumer<String> listener);
+
+            /**
+             * Sets a listener for all thrown exceptions on this client. By default,
+             * a consumer exists which calls Throwable#printStackTrace() on all
+             * received exceptions.
+             * <p>
+             * All exceptions are passed from a single, separate thread.
+             *
+             * @param listener catcher of throwable objects or null to not listen
+             * @return this builder
+             */
+            @NonNull Listeners exception(@Nullable Consumer<Exception> listener);
+
+            /**
+             * Returns to the root builder.
+             *
+             * @return the root builder
+             */
+            @NonNull Builder then();
+        }
 
         /**
-         * Binds the client to the specified port. Invalid ports are set to 0.
-         * <p>
-         * By default, the port is 0.
-         *
-         * @param port port to bind to
-         * @return this builder
+         * WebIRC builder.
          */
-        @NonNull Builder bindPort(int port);
+        interface WebIrc {
+            /**
+             * WebIRC host.
+             */
+            interface Host {
+                /**
+                 * Sets the hostname part of the client's address.
+                 *
+                 * @param host hostname part of the client's address
+                 * @return user builder part
+                 */
+                @NonNull User host(@Nullable String host);
+            }
+
+            /**
+             * WebIRC user.
+             */
+            interface User {
+                /**
+                 * Sets the username part of the client's address.
+                 *
+                 * @param user username part of the client's address
+                 * @return password builder part
+                 */
+                @NonNull Password user(@Nullable String user);
+            }
+
+            /**
+             * WebIRC password.
+             */
+            interface Password {
+                /**
+                 * Sets the password as defined in the IRCd config.
+                 *
+                 * @param password password as defined in the IRCd config
+                 * @return ip builder part
+                 */
+                @NonNull Ip password(@Nullable String password);
+            }
+
+            /**
+             * WebIRC IP.
+             */
+            interface Ip {
+                /**
+                 * Sets the client's IP address.
+                 *
+                 * @param ip client's IP address
+                 * @return root builder
+                 */
+                @NonNull Builder ip(@Nullable InetAddress ip);
+            }
+        }
 
         /**
-         * Sets the supplier of the capability manager.
-         * <p>
-         * By default, the {@link DefaultCapabilityManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultCapabilityManager
+         * Management-related builder methods.
          */
-        @NonNull Builder capabilityManager(@NonNull Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier);
+        interface Management {
+            /**
+             * Sets the supplier of the actor tracker.
+             * <p>
+             * By default, the {@link DefaultActorTracker} is used.
+             *
+             * @param supplier supplier
+             * @return this builder
+             * @see DefaultActorTracker
+             */
+            @NonNull Management actorTracker(@Nullable Function<Client.WithManagement, ? extends ActorTracker> supplier);
 
-        /**
-         * Sets default messages.
-         *
-         * @param defaultMessageMap default values for messages
-         * @return this builder
-         * @see DefaultMessageMap
-         */
-        @NonNull Builder defaultMessageMap(@NonNull DefaultMessageMap defaultMessageMap);
+            /**
+             * Sets the supplier of the authentication manager.
+             * <p>
+             * By default, the {@link DefaultAuthManager} is used.
+             *
+             * @param supplier supplier
+             * @return this builder
+             * @see DefaultAuthManager
+             */
+            @NonNull Management authManager(@Nullable Function<Client.WithManagement, ? extends AuthManager> supplier);
 
-        /**
-         * Sets the suppliers of event listeners to be registered by the
-         * event manager upon construction.
-         * <p>
-         * By default, a list of {@link DefaultListeners} values is used.
-         * @param listenerSuppliers
-         * @return
-         */
-        @NonNull Builder eventListeners(@NonNull List<EventListenerSupplier> listenerSuppliers);
+            /**
+             * Sets the supplier of the capability manager.
+             * <p>
+             * By default, the {@link DefaultCapabilityManager} is used.
+             *
+             * @param supplier supplier
+             * @return this builder
+             * @see DefaultCapabilityManager
+             */
+            @NonNull Management capabilityManager(@Nullable Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier);
 
-        /**
-         * Sets the supplier of the event manager.
-         * <p>
-         * By default, the {@link DefaultEventManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultEventManager
-         */
-        @NonNull Builder eventManager(@NonNull Function<Client.WithManagement, ? extends EventManager> supplier);
+            /**
+             * Sets default messages.
+             *
+             * @param defaultMessageMap default values for messages
+             * @return this builder
+             * @see DefaultMessageMap
+             */
+            @NonNull Management defaultMessageMap(@Nullable DefaultMessageMap defaultMessageMap);
 
-        /**
-         * Sets a listener for all thrown exceptions on this client. By default,
-         * a consumer exists which calls Throwable#printStackTrace() on all
-         * received exceptions.
-         * <p>
-         * All exceptions are passed from a single, separate thread.
-         *
-         * @param listener catcher of throwable objects or null to not listen
-         * @return this builder
-         */
-        @NonNull Builder exceptionListener(@Nullable Consumer<Exception> listener);
+            /**
+             * Sets the supplier of the event manager.
+             * <p>
+             * By default, the {@link DefaultEventManager} is used.
+             *
+             * @param supplier supplier
+             * @return this builder
+             * @see DefaultEventManager
+             */
+            @NonNull Management eventManager(@Nullable Function<Client.WithManagement, ? extends EventManager> supplier);
 
-        /**
-         * Sets a listener for all incoming messages from the server.
-         * <p>
-         * All messages are passed from a single, separate thread.
-         *
-         * @param listener input listener or null to not listen
-         * @return this builder
-         */
-        @NonNull Builder inputListener(@Nullable Consumer<String> listener);
+            /**
+             * Sets the suppliers of event listeners to be registered by the
+             * event manager upon construction.
+             * <p>
+             * By default, a list of {@link DefaultListeners} values is used.
+             * @param listenerSuppliers event listener suppliers
+             * @return this builder
+             */
+            @NonNull Management eventListeners(@Nullable List<EventListenerSupplier> listenerSuppliers);
 
-        /**
-         * Sets the supplier of the ISUPPORT manager.
-         * <p>
-         * By default, the {@link DefaultISupportManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultEventManager
-         */
-        @NonNull Builder iSupportManager(@NonNull Function<Client.WithManagement, ? extends ISupportManager> supplier);
+            /**
+             * Sets the supplier of the ISUPPORT manager.
+             * <p>
+             * By default, the {@link DefaultISupportManager} is used.
+             *
+             * @param supplier supplier
+             * @return this builder
+             * @see DefaultEventManager
+             */
+            @NonNull Management iSupportManager(@Nullable Function<Client.WithManagement, ? extends ISupportManager> supplier);
 
-        /**
-         * Sets the supplier of message sending queues, which dictate the
-         * rate at which messages are sent by the Client to the server.
-         * <p>
-         * By default, the {@link SingleDelaySender} is used with a delay set
-         * to {@link SingleDelaySender#DEFAULT_MESSAGE_DELAY}.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see MessageSendingQueue
-         */
-        @NonNull Builder messageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
+            /**
+             * Sets the supplier of message sending queues, which dictate the
+             * rate at which messages are sent by the Client to the server.
+             * <p>
+             * By default, the {@link SingleDelaySender} is used with a delay set
+             * to {@link SingleDelaySender#DEFAULT_MESSAGE_DELAY}.
+             *
+             * @param supplier supplier
+             * @return this builder
+             * @see MessageSendingQueue
+             */
+            @NonNull Management messageSendingQueueSupplier(@Nullable Function<Client.WithManagement, ? extends MessageSendingQueue> supplier);
 
-        /**
-         * Sets the supplier of the message tag manager.
-         * <p>
-         * By default, the {@link DefaultMessageTagManager} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see MessageTagManager
-         */
-        @NonNull Builder messageTagManager(@NonNull Function<Client.WithManagement, ? extends MessageTagManager> supplier);
+            /**
+             * Sets the supplier of the message tag manager.
+             * <p>
+             * By default, the {@link DefaultMessageTagManager} is used.
+             *
+             * @param supplier supplier
+             * @return this builder
+             * @see MessageTagManager
+             */
+            @NonNull Management messageTagManager(@Nullable Function<Client.WithManagement, ? extends MessageTagManager> supplier);
+
+            /**
+             * Sets the supplier of the server info.
+             * <p>
+             * By default, the {@link DefaultServerInfo} is used.
+             *
+             * @param supplier supplier
+             * @return this builder
+             * @see DefaultServerInfo
+             */
+            @NonNull Management serverInfo(@Nullable Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier);
+
+            /**
+             * Sets the storage manager for STS (strict transport security) support.
+             * <p>
+             * By default, this is null and thus STS support is disabled. If you elect to
+             * enable STS, you are not permitted to use an insecure trust manager factory.
+             *
+             * @param storageManager storage system to persist STS information per host
+             * @return this builder
+             */
+            @NonNull Management stsStorageManager(@Nullable StsStorageManager storageManager);
+
+            /**
+             * Returns to the root builder.
+             *
+             * @return the root builder
+             */
+            @NonNull Builder then();
+        }
 
         /**
          * Names the client, for internal labeling.
@@ -259,14 +476,15 @@ public interface Client extends ClientLinked {
         @NonNull Builder nick(@NonNull String nick);
 
         /**
-         * Sets a listener for all outgoing messages to the server.
+         * Sets the user the client connects as.
          * <p>
-         * All messages are passed from a single, separate thread.
+         * By default, the user is Kitteh.
          *
-         * @param listener output listener or null to not listen
+         * @param user user to connect as
          * @return this builder
+         * @throws IllegalArgumentException for null user
          */
-        @NonNull Builder outputListener(@Nullable Consumer<String> listener);
+        @NonNull Builder user(@NonNull String user);
 
         /**
          * Sets the realname the client uses.
@@ -280,140 +498,39 @@ public interface Client extends ClientLinked {
         @NonNull Builder realName(@NonNull String name);
 
         /**
-         * Sets the server password.
-         * <p>
-         * If not set, no password is sent
+         * Returns bind builder methods.
          *
-         * @param password server password or null to not send one
-         * @return this builder
+         * @return bind builder
          */
-        @NonNull Builder serverPassword(@Nullable String password);
+        @NonNull Bind bind();
 
         /**
-         * Sets whether the client connects via TLS/SSL.
-         * <p>
-         * Note that by default the TrustManager used does not accept the
-         * certificates of many popular networks. You must use {@link
-         * #secureTrustManagerFactory(TrustManagerFactory)} to set your own
-         * TrustManagerFactory.
+         * Returns server builder methods.
          *
-         * @param secure true for TLS/SSL
-         * @return this builder
+         * @return server builder
          */
-        @NonNull Builder secure(boolean secure);
+        @NonNull Server server();
 
         /**
-         * Sets the key for SSL connection.
+         * Returns listener builder methods.
          *
-         * @param keyCertChainFile X.509 certificate chain file in PEM format
-         * @return this builder
-         * @see #secure(boolean)
+         * @return listener builder
          */
-        @NonNull Builder secureKeyCertChain(@Nullable Path keyCertChainFile);
+        @NonNull Listeners listeners();
 
         /**
-         * Sets the private key for SSL connection.
+         * Returns webirc builder methods.
          *
-         * @param keyFile PKCS#8 private key file in PEM format
-         * @return this builder
-         * @see #secure(boolean)
+         * @return webirc builder
          */
-        @NonNull Builder secureKey(@Nullable Path keyFile);
+        WebIrc.@NonNull Host webIrc();
 
         /**
-         * Sets the private key password for SSL connection.
+         * Returns the management-related builder methods.
          *
-         * @param password password for private key
-         * @return this builder
-         * @see #secure(boolean)
+         * @return management builder
          */
-        @NonNull Builder secureKeyPassword(@Nullable String password);
-
-        /**
-         * Sets the {@link TrustManagerFactory} for SSL connection.
-         *
-         * @param factory trust manager supplier
-         * @return this builder
-         * @see #secure(boolean)
-         */
-        @NonNull Builder secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
-
-        /**
-         * Sets the server host to which the client will connect.
-         * <p>
-         * By default, the host is localhost.
-         *
-         * @param host IRC server host
-         * @return this builder
-         * @throws IllegalArgumentException for null host
-         */
-        @NonNull Builder serverHost(@NonNull String host);
-
-        /**
-         * Sets the server port to which the client will connect.
-         * <p>
-         * By default, the port is 6667.
-         *
-         * @param port IRC server port
-         * @return this builder
-         */
-        @NonNull Builder serverPort(int port);
-
-        /**
-         * Sets the supplier of the server info.
-         * <p>
-         * By default, the {@link DefaultServerInfo} is used.
-         *
-         * @param supplier supplier
-         * @return this builder
-         * @see DefaultServerInfo
-         */
-        @NonNull Builder serverInfo(@NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier);
-
-        /**
-         * Sets the user the client connects as.
-         * <p>
-         * By default, the user is Kitteh.
-         *
-         * @param user user to connect as
-         * @return this builder
-         * @throws IllegalArgumentException for null user
-         */
-        @NonNull Builder user(@NonNull String user);
-
-        /**
-         * Sets all the information for, and enables, WebIRC.
-         * <p>
-         * By default, WebIRC is disabled.
-         *
-         * @param password password as defined in the IRCd config
-         * @param user username part of the client's address
-         * @param host hostname part of the client's address
-         * @param ip client's IP address
-         * @return this builder
-         * @throws IllegalArgumentException for any null parameters
-         * @see #webircRemove()
-         */
-        @NonNull Builder webirc(@NonNull String password, @NonNull String user, @NonNull String host, @NonNull InetAddress ip);
-
-        /**
-         * Removes WEBIRC settings from this builder.
-         *
-         * @return this builder
-         * @see #webirc(String, String, String, InetAddress)
-         */
-        @NonNull Builder webircRemove();
-
-        /**
-         * Sets the storage manager for STS (strict transport security) support.
-         * <p>
-         * By default, this is null and thus STS support is disabled. If you elect to
-         * enable STS, you are not permitted to use an insecure trust manager factory.
-         *
-         * @param storageManager storage system to persist STS information per host
-         * @return this builder
-         */
-        @NonNull Builder stsStorageManager(@Nullable StsStorageManager storageManager);
+        @NonNull Management management();
 
         /**
          * Clientmaker, clientmaker, make me a client!
