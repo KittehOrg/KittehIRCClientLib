@@ -25,72 +25,121 @@ package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.feature.auth.element.EventListening;
-import org.kitteh.irc.client.library.feature.auth.element.NickReclamation;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.util.Format;
-import org.kitteh.irc.client.library.util.ToStringer;
+import org.kitteh.irc.client.library.util.Sanity;
 
 /**
  * NickServ protocol. Automatically attempts to identify upon connection.
  */
-public class NickServ extends AbstractAccountPassProtocol implements EventListening, NickReclamation {
-    private class Listener {
-        @NumericFilter(4)
-        @Handler
-        public void listenVersion(ClientReceiveNumericEvent event) {
-            NickServ.this.startAuthentication();
+public class NickServ extends AbstractAccountPassProtocol implements EventListening {
+    /**
+     * NickServ builder.
+     */
+    public static class Builder {
+        private final Client client;
+        private String serviceName = "NickServ";
+        private @Nullable String account;
+        private @Nullable String password;
+
+        protected Builder(@NonNull final Client client) {
+            this.client = Sanity.nullCheck(client, "Client cannot be null");
         }
 
-        @Handler
-        public void listenSuccess(PrivateNoticeEvent event) {
-            if (event.getActor().getNick().equals(NickServ.this.getNickServNick())) {
-                if (event.getMessage().startsWith("You are now identified")) {
-                    int first;
-                    String accountName = event.getMessage().substring((first = event.getMessage().indexOf(Format.BOLD.toString()) + 1), event.getMessage().indexOf(Format.BOLD.toString(), first));
-                    // TODO do something with this information
-                }
-            }
+        /**
+         * Sets the service name.
+         *
+         * @param serviceName service name
+         * @return this builder
+         */
+        public @NonNull Builder serviceName(@Nullable String serviceName) {
+            this.serviceName = Sanity.safeMessageCheck(serviceName, "Service name");
+            return this;
         }
 
-        @Override
-        public @NonNull String toString() {
-            return new ToStringer(this).toString();
+        /**
+         * Sets the account.
+         *
+         * @param account account
+         * @return this builder
+         */
+        public @NonNull Builder account(@Nullable String account) {
+            this.account = Sanity.safeMessageCheck(account, "Account");
+            return this;
+        }
+
+        /**
+         * Sets the password.
+         *
+         * @param password password
+         * @return this builder
+         */
+        public @NonNull Builder password(@Nullable String password) {
+            this.password = Sanity.safeMessageCheck(password, "Password");
+            return this;
+        }
+
+        /**
+         * Builds NickServ.
+         *
+         * @return nickserv
+         * @throws IllegalArgumentException if password is not set
+         */
+        public @NonNull NickServ build() {
+            Sanity.truthiness(this.password != null, "Password must be set");
+            return new NickServ(this.client, this.serviceName, this.account, this.password);
         }
     }
 
-    private final Listener listener = new Listener();
+    public static @NonNull Builder builder(@NonNull Client client) {
+        return new Builder(client);
+    }
+
+    private final String serviceName;
 
     /**
      * Creates a NickServ authentication protocol instance.
      *
      * @param client client for which this will be used
+     * @param serviceName service name
      * @param accountName account name
      * @param password password
      */
-    public NickServ(@NonNull Client client, @NonNull String accountName, @NonNull String password) {
+    protected NickServ(@NonNull Client client, @NonNull String serviceName, @Nullable String accountName, @NonNull String password) {
         super(client, accountName, password);
+        this.serviceName = Sanity.safeMessageCheck(serviceName, "Service name");
     }
 
     @Override
     protected @NonNull String getAuthentication() {
-        return "PRIVMSG " + this.getNickServNick() + " :IDENTIFY " + this.getAccountName() + ' ' + this.getPassword();
+        final String accountName = this.getAccountName();
+        return "PRIVMSG " + this.serviceName + " :IDENTIFY " + (accountName == null ? "" : (accountName + ' ')) + this.getPassword();
     }
 
     @Override
     public @NonNull Object getEventListener() {
-        return this.listener;
+        return this;
     }
 
-    /**
-     * Gets the expected NickServ nickname.
-     *
-     * @return nick of NickServ
-     */
-    protected @NonNull String getNickServNick() {
-        return "NickServ";
+    @NumericFilter(4)
+    @Handler
+    public void listenVersion(ClientReceiveNumericEvent event) {
+        this.startAuthentication();
+    }
+
+    @Handler
+    public void listenSuccess(PrivateNoticeEvent event) {
+        if (event.getActor().getNick().equals(this.serviceName)) {
+            if (event.getMessage().startsWith("You are now identified")) {
+                int first;
+                String accountName = event.getMessage().substring((first = event.getMessage().indexOf(Format.BOLD.toString()) + 1), event.getMessage().indexOf(Format.BOLD.toString(), first));
+                // TODO do something with this information
+            }
+        }
     }
 }

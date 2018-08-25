@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
@@ -32,8 +33,8 @@ import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 /**
  * SASL EXTERNAL authentication. Automatically attempts auth during connection.
  */
-public class SaslExternal extends AbstractSaslProtocol<Object> {
-    private class Listener extends AbstractSaslProtocol<Object>.Listener {
+public class SaslExternal extends AbstractSaslProtocol {
+    private class Listener extends AbstractSaslProtocol.Listener {
         @CommandFilter("AUTHENTICATE")
         @Handler
         @Override
@@ -42,7 +43,7 @@ public class SaslExternal extends AbstractSaslProtocol<Object> {
         }
     }
 
-    private Listener listener;
+    private @MonotonicNonNull Listener listener;
 
     /**
      * Creates an instance.
@@ -50,7 +51,7 @@ public class SaslExternal extends AbstractSaslProtocol<Object> {
      * @param client client
      */
     public SaslExternal(@NonNull Client client) {
-        super(client, "", new Object(), "EXTERNAL"); // hacky?
+        super(client, "EXTERNAL");
     }
 
     @Override

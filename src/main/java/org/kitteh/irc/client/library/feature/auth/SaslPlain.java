@@ -25,12 +25,16 @@ package org.kitteh.irc.client.library.feature.auth;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.auth.element.Password;
+import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.StringUtil;
+import org.kitteh.irc.client.library.util.ToStringer;
 
 /**
  * SASL PLAIN authentication. Automatically attempts auth during connection.
  */
-public class SaslPlain extends AbstractSaslProtocol<String> implements Password {
+public class SaslPlain extends AbstractAccountSaslProtocol {
+    private final String password;
+
     /**
      * Creates an instance.
      *
@@ -39,21 +43,18 @@ public class SaslPlain extends AbstractSaslProtocol<String> implements Password 
      * @param password password
      */
     public SaslPlain(@NonNull Client client, @NonNull String accountName, @NonNull String password) {
-        super(client, accountName, password, "PLAIN");
+        super(client, "PLAIN", accountName);
+        this.password = Sanity.safeMessageCheck(password, "Password");
     }
 
     @Override
     protected @NonNull String getAuthLine() {
-        return this.getAccountName() + '\u0000' + this.getAccountName() + '\u0000' + this.getPassword();
+        return this.getAccountName() + '\u0000' + this.getAccountName() + '\u0000' + this.password;
     }
 
     @Override
-    public @NonNull String getPassword() {
-        return this.getAuthValue();
-    }
-
-    @Override
-    public void setPassword(@NonNull String password) {
-        this.setAuthValue(password);
+    protected void toString(final ToStringer stringer) {
+        super.toString(stringer);
+        stringer.add("password", StringUtil.filterPassword(this.password));
     }
 }

@@ -151,4 +151,15 @@ public final class StringUtil {
         return client.getServerInfo().getCaseMapping().toLowerCase(input);
     }
 
+    /**
+     * Converts all characters of a password to asterisks.
+     *
+     * @param password password
+     * @return filtered password
+     */
+    @SuppressWarnings("ReplaceAllDot")
+    public static @NonNull String filterPassword(@NonNull String password) {
+        Sanity.nullCheck(password, "Password cannot be null");
+        return password.replaceAll(".", "*");
+    }
 }

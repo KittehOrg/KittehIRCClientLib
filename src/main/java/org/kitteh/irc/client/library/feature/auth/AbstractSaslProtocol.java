@@ -47,10 +47,8 @@ import java.util.Optional;
 
 /**
  * SASL authentication. Automatically attempts auth during connection.
- *
- * @param <AuthValue> authentication value type
  */
-public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountProtocol implements EventListening {
+public abstract class AbstractSaslProtocol extends AbstractAuthProtocol implements EventListening {
     @SuppressWarnings("JavaDoc")
     protected class Listener {
         @Handler(priority = 1)
@@ -138,21 +136,17 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
 
     private Listener listener;
     private final String saslType;
-    private AuthValue authValue;
     private volatile boolean authenticating = false;
 
     /**
      * Creates an instance.
      *
      * @param client client
-     * @param accountName account name
-     * @param authValue authentication value
      * @param saslType type of SASL auth
      */
-    protected AbstractSaslProtocol(@NonNull Client client, @NonNull String accountName, @NonNull AuthValue authValue, @NonNull String saslType) {
-        super(client, accountName);
+    protected AbstractSaslProtocol(@NonNull Client client, @NonNull String saslType) {
+        super(client);
         this.saslType = Sanity.nullCheck(saslType, "SASL type cannot be null");
-        this.authValue = Sanity.nullCheck(authValue, "Auth value cannot be null");
     }
 
     @Override
@@ -166,28 +160,14 @@ public abstract class AbstractSaslProtocol<AuthValue> extends AbstractAccountPro
     }
 
     /**
-     * Gets the authentication value, be it a password or key.
-     *
-     * @return the authentication value
-     */
-    protected final @NonNull AuthValue getAuthValue() {
-        return this.authValue;
-    }
-
-    /**
-     * Sets the authentication value.
-     *
-     * @param authValue the authentication value
-     * @throws IllegalArgumentException if the value is null
-     */
-    protected final void setAuthValue(@NonNull AuthValue authValue) {
-        this.authValue = Sanity.nullCheck(authValue, "Auth value cannot be null");
-    }
-
-    /**
      * Gets the info to base64 encode in the first AUTHENTICATE message.
      *
      * @return value to encode
      */
     protected abstract @NonNull String getAuthLine();
+
+    @Override
+    protected void toString(final ToStringer stringer) {
+        stringer.add("type", this.saslType);
+    }
 }
