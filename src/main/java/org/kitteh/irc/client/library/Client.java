@@ -45,6 +45,7 @@ import org.kitteh.irc.client.library.defaults.feature.DefaultMessageTagManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
 import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
 import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
@@ -86,7 +87,7 @@ import java.util.function.Function;
 /**
  * An individual IRC connection, see {@link #builder()} to create one.
  */
-public interface Client {
+public interface Client extends ClientLinked {
     /**
      * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
      * <p>
@@ -1285,4 +1286,9 @@ public interface Client {
      * @param reason quit message to send
      */
     void shutdown(@Nullable String reason);
+
+    @Override
+    default @NonNull Client getClient() {
+        return this;
+    }
 }
