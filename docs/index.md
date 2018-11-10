@@ -69,7 +69,7 @@ simple as adding the lines below to your pom.xml file:
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>4.0.2</version>
+    <version>4.0.3</version>
     <scope>...</scope>
 </dependency>
 ```
