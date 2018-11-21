@@ -85,6 +85,9 @@ import java.util.function.Function;
  */
 public interface Client {
 
+    /**
+     * Type of proxy to use.
+     */
     enum ProxyType {
         SOCKS_4,
         SOCKS_5
@@ -312,12 +315,31 @@ public interface Client {
         @Nonnull
         Builder secure(boolean secure);
 
+        /**
+         * Sets the proxy host which the client will use when connecting to the server host.
+         *
+         * @param host proxy host
+         * @return this builder
+         * @throws IllegalArgumentException for null host
+         */
         @Nonnull
         Builder proxyHost(String host);
 
+        /**
+         * Sets the proxy port to which the client will connect.
+         *
+         * @param port proxy port
+         * @return this builder
+         */
         @Nonnull
         Builder proxyPort(int port);
 
+        /**
+         * Sets the type of proxy to use when the client connects to the server host.
+         *
+         * @param type one of {@link ProxyType}
+         * @return this builder
+         */
         @Nonnull
         Builder proxyType(ProxyType type);
 
@@ -652,15 +674,7 @@ public interface Client {
          * @return {@code true} if configured for proxy
          */
         @Nonnull
-        boolean isProxyEnabled();
-
-        /**
-         * Gets if the client is configured to use a proxy.
-         *
-         * @return {@code true} if configured for proxy
-         */
-        @Nonnull
-        ProxyType getProxyType();
+        Optional<ProxyType> getProxyType();
 
         /**
          * Gets the proxy address
@@ -668,7 +682,7 @@ public interface Client {
          * @return proxy address
          */
         @Nonnull
-        InetSocketAddress getProxyAddress();
+        Optional<InetSocketAddress> getProxyAddress();
 
         @Override
         @Nonnull

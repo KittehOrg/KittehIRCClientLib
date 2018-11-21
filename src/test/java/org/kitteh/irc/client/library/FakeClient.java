@@ -229,20 +229,13 @@ public class FakeClient implements Client.WithManagement {
 
     @Nonnull
     @Override
-    public boolean isProxyEnabled() {
-        // no proxy for fake clients
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public ProxyType getProxyType() {
+    public Optional<ProxyType> getProxyType() {
         return null;
     }
 
     @Nonnull
     @Override
-    public InetSocketAddress getProxyAddress() {
+    public Optional<InetSocketAddress> getProxyAddress() {
         return null;
     }
 

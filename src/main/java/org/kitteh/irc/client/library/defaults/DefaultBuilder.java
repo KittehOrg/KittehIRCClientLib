@@ -227,7 +227,7 @@ public class DefaultBuilder implements Client.Builder {
     @Nonnull
     @Override
     public Client.Builder proxyPort(int port) {
-        this.proxyPort = port;
+        this.proxyPort = isValidPort(port);
         return this;
     }
 
@@ -368,10 +368,14 @@ public class DefaultBuilder implements Client.Builder {
             Sanity.truthiness(!AcceptingTrustManagerFactory.isInsecure(this.secureTrustManagerFactory), "Cannot use STS with an insecure trust manager.");
         }
 
+        InetSocketAddress proxyAddress = null;
+        if (proxyHost != null && proxyPort > 0) {
+            proxyAddress = this.getInetSocketAddress(this.proxyHost, this.proxyPort);
+        }
         Client.WithManagement client = new DefaultClient();
         client.initialize(this.name, this.getInetSocketAddress(this.serverHost, this.serverPort), this.serverPassword,
                 this.getInetSocketAddress(this.bindHost, this.bindPort),
-                this.getInetSocketAddress(this.proxyHost, this.proxyPort), this.proxyType,
+                proxyAddress, this.proxyType,
                 this.nick, this.userString, this.realName,
                 this.actorTracker.apply(client),
                 this.authManager.apply(client), this.capabilityManager.apply(client), this.eventManager.apply(client),

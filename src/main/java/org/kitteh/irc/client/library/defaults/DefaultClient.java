@@ -213,8 +213,8 @@ public class DefaultClient implements Client.WithManagement {
     private String name;
     private InetSocketAddress bindAddress;
     private InetSocketAddress serverAddress;
-    private InetSocketAddress proxyAddress;
-    private ProxyType proxyType;
+    private Optional<InetSocketAddress> proxyAddress;
+    private Optional<ProxyType> proxyType;
     private String serverPassword;
     private String userString;
     private String realName;
@@ -256,8 +256,8 @@ public class DefaultClient implements Client.WithManagement {
                            @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
         this.name = name;
         this.serverAddress = serverAddress;
-        this.proxyAddress = proxyAddress;
-        this.proxyType = proxyType;
+        this.proxyAddress = Optional.ofNullable(proxyAddress);
+        this.proxyType = Optional.ofNullable(proxyType);
         this.serverPassword = serverPassword;
         this.bindAddress = bindAddress;
         this.currentNick = this.requestedNick = this.goalNick = nick;
@@ -575,19 +575,13 @@ public class DefaultClient implements Client.WithManagement {
 
     @Nonnull
     @Override
-    public boolean isProxyEnabled() {
-        return this.proxyAddress != null;
-    }
-
-    @Nonnull
-    @Override
-    public ProxyType getProxyType() {
+    public Optional<ProxyType> getProxyType() {
         return this.proxyType;
     }
 
     @Nonnull
     @Override
-    public InetSocketAddress getProxyAddress() {
+    public Optional<InetSocketAddress> getProxyAddress() {
         return this.proxyAddress;
     }
 

@@ -357,18 +357,17 @@ public class NettyManager {
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel channel) {
-                    if(client.isProxyEnabled()) {
+                    if (client.getProxyType().isPresent() && client.getProxyAddress().isPresent()) {
                         ChannelPipeline pipe = channel.pipeline();
-                        switch(client.getProxyType()) {
+                        switch(client.getProxyType().get()) {
                             case SOCKS_5:
-                                pipe.addLast(new Socks5ProxyHandler(client.getProxyAddress()));
+                                pipe.addLast(new Socks5ProxyHandler(client.getProxyAddress().get()));
                                 break;
                             case SOCKS_4:
-                                pipe.addLast(new Socks4ProxyHandler(client.getProxyAddress()));
+                                pipe.addLast(new Socks4ProxyHandler(client.getProxyAddress().get()));
                                 break;
                             default:
-                                // unknown proxy, should not happen
-                                break;
+                                throw new IllegalArgumentException("Unsupported proxy type: " + client.getProxyType());
                         }
                     }
                 }
