@@ -227,7 +227,7 @@ public class DefaultBuilder implements Client.Builder {
     @Nonnull
     @Override
     public Client.Builder proxyPort(int port) {
-        this.proxyPort = isValidPort(port);
+        this.proxyPort = this.isValidPort(port);
         return this;
     }
 

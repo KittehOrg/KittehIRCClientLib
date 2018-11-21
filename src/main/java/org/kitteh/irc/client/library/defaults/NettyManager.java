@@ -359,7 +359,7 @@ public class NettyManager {
                 public void initChannel(SocketChannel channel) {
                     if (client.getProxyType().isPresent() && client.getProxyAddress().isPresent()) {
                         ChannelPipeline pipe = channel.pipeline();
-                        switch(client.getProxyType().get()) {
+                        switch (client.getProxyType().get()) {
                             case SOCKS_5:
                                 pipe.addLast(new Socks5ProxyHandler(client.getProxyAddress().get()));
                                 break;
