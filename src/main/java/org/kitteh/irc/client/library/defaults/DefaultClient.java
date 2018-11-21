@@ -466,7 +466,7 @@ public class DefaultClient implements Client.WithManagement {
     public void sendCtcpMessage(@NonNull String target, @NonNull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
-        Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
+        Sanity.noSpaces(target, "Target");
         this.sendRawLine("PRIVMSG " + target + " :" + CtcpUtil.toCtcp(message));
     }
 
@@ -474,7 +474,7 @@ public class DefaultClient implements Client.WithManagement {
     public void sendCtcpReply(@NonNull String target, @NonNull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
-        Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
+        Sanity.noSpaces(target, "Target");
         this.sendRawLine("NOTICE " + target + " :" + CtcpUtil.toCtcp(message));
     }
 
@@ -482,7 +482,7 @@ public class DefaultClient implements Client.WithManagement {
     public void sendMessage(@NonNull String target, @NonNull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
-        Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
+        Sanity.noSpaces(target, "Target");
         this.sendRawLine("PRIVMSG " + target + " :" + message);
     }
 
@@ -542,7 +542,7 @@ public class DefaultClient implements Client.WithManagement {
     public void sendNotice(@NonNull String target, @NonNull String message) {
         Sanity.safeMessageCheck(target, "Target");
         Sanity.safeMessageCheck(message);
-        Sanity.truthiness(target.indexOf(' ') == -1, "Target cannot have spaces");
+        Sanity.noSpaces(target, "Target");
         this.sendRawLine("NOTICE " + target + " :" + message);
     }
 
