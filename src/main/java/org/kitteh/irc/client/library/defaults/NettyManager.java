@@ -33,6 +33,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -42,6 +43,8 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.proxy.Socks4ProxyHandler;
+import io.netty.handler.proxy.Socks5ProxyHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslHandler;
@@ -332,7 +335,6 @@ public class NettyManager {
      * @return connection
      */
     public static synchronized ClientConnection connect(Client.@NonNull WithManagement client) {
-
         // STS Override
         if (client.getStsMachine().isPresent() && !client.isSecureConnection()) {
             String hostname = client.getServerAddress().getHostName();
@@ -350,7 +352,19 @@ public class NettyManager {
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel channel) {
-                    // NOOP
+                    if (client.getProxyType().isPresent() && client.getProxyAddress().isPresent()) {
+                        ChannelPipeline pipe = channel.pipeline();
+                        switch (client.getProxyType().get()) {
+                            case SOCKS_5:
+                                pipe.addLast(new Socks5ProxyHandler(client.getProxyAddress().get()));
+                                break;
+                            case SOCKS_4:
+                                pipe.addLast(new Socks4ProxyHandler(client.getProxyAddress().get()));
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Unsupported proxy type: " + client.getProxyType());
+                        }
+                    }
                 }
             });
             bootstrap.option(ChannelOption.TCP_NODELAY, true);

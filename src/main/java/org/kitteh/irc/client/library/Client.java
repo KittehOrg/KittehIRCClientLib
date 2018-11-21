@@ -89,6 +89,20 @@ import java.util.function.Function;
  */
 public interface Client extends ClientLinked {
     /**
+     * Types of proxy supported.
+     */
+    enum ProxyType {
+        /**
+         * SOCKS 4
+         */
+        SOCKS_4,
+        /**
+         * SOCKS 5
+         */
+        SOCKS_5
+    }
+
+    /**
      * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
      * <p>
      * The default built client connects securely via port 6697. See {@link
@@ -257,6 +271,40 @@ public interface Client extends ClientLinked {
              * @return this builder
              */
             @NonNull Listeners exception(@Nullable Consumer<Exception> listener);
+
+            /**
+             * Returns to the root builder.
+             *
+             * @return the root builder
+             */
+            @NonNull Builder then();
+        }
+
+        interface Proxy {
+            /**
+             * Sets the proxy host which the client will use when connecting to the server host.
+             *
+             * @param host proxy host
+             * @return this builder
+             * @throws IllegalArgumentException for null host
+             */
+            @NonNull Proxy proxyHost(String host);
+
+            /**
+             * Sets the proxy port to which the client will connect.
+             *
+             * @param port proxy port
+             * @return this builder
+             */
+            @NonNull Proxy proxyPort(int port);
+
+            /**
+             * Sets the type of proxy to use when the client connects to the server host.
+             *
+             * @param type one of {@link ProxyType}
+             * @return this builder
+             */
+            @NonNull Proxy proxyType(ProxyType type);
 
             /**
              * Returns to the root builder.
@@ -669,6 +717,20 @@ public interface Client extends ClientLinked {
         @NonNull Listener<String> getOutputListener();
 
         /**
+         * Gets if the client is configured to use a proxy.
+         *
+         * @return {@code true} if configured for proxy
+         */
+        @NonNull Optional<ProxyType> getProxyType();
+
+        /**
+         * Gets the proxy address
+         *
+         * @return proxy address
+         */
+        @NonNull Optional<InetSocketAddress> getProxyAddress();
+
+        /**
          * Gets the nickname the client has last requested.
          *
          * @return requested nick
@@ -758,6 +820,8 @@ public interface Client extends ClientLinked {
          * @param serverAddress serverAddress
          * @param serverPassword serverPassword
          * @param bindAddress bindAddress
+         * @param proxyAddress proxyAddress
+         * @param proxyType proxyType
          * @param nick nick
          * @param userString userString
          * @param realName realName
@@ -765,6 +829,7 @@ public interface Client extends ClientLinked {
          * @param authManager authManager
          * @param capabilityManager capabilityManager
          * @param eventManager eventManager
+         * @param listenerSuppliers listenerSuppliers
          * @param messageTagManager messageTagManager
          * @param iSupportManager iSupportManager
          * @param defaultMessageMap defaultMessageMap
@@ -786,6 +851,7 @@ public interface Client extends ClientLinked {
          */
         void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword,
                         @Nullable InetSocketAddress bindAddress,
+                        @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType,
                         @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
                         @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
                         @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,

@@ -205,6 +205,8 @@ public class DefaultClient implements Client.WithManagement {
     private String name;
     private InetSocketAddress bindAddress;
     private InetSocketAddress serverAddress;
+    private InetSocketAddress proxyAddress;
+    private ProxyType proxyType;
     private String serverPassword;
     private String userString;
     private String realName;
@@ -232,6 +234,7 @@ public class DefaultClient implements Client.WithManagement {
     @Override
     public void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword,
                            @Nullable InetSocketAddress bindAddress,
+                           @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType,
                            @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
                            @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
                            @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
@@ -246,6 +249,8 @@ public class DefaultClient implements Client.WithManagement {
                            @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
         this.name = name;
         this.serverAddress = serverAddress;
+        this.proxyAddress = proxyAddress;
+        this.proxyType = proxyType;
         this.serverPassword = serverPassword;
         this.bindAddress = bindAddress;
         this.currentNick = this.requestedNick = this.goalNick = nick;
@@ -536,6 +541,16 @@ public class DefaultClient implements Client.WithManagement {
     @Override
     public @NonNull InetSocketAddress getServerAddress() {
         return this.serverAddress;
+    }
+
+    @Override
+    public @NonNull Optional<ProxyType> getProxyType() {
+        return Optional.ofNullable(this.proxyType);
+    }
+
+    @Override
+    public @NonNull Optional<InetSocketAddress> getProxyAddress() {
+        return Optional.ofNullable(this.proxyAddress);
     }
 
     @Override

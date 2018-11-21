@@ -163,6 +163,31 @@ public class DefaultBuilder implements Client.Builder {
         }
     }
 
+    private class ProxyImpl implements Proxy {
+        @Override
+        public @NonNull Proxy proxyHost(String host) {
+            DefaultBuilder.this.proxyHost = host;
+            return this;
+        }
+
+        @Override
+        public @NonNull Proxy proxyPort(int port) {
+            DefaultBuilder.this.proxyPort = DefaultBuilder.this.isValidPort(port);
+            return this;
+        }
+
+        @Override
+        public @NonNull Proxy proxyType(Client.ProxyType type) {
+            DefaultBuilder.this.proxyType = type;
+            return this;
+        }
+
+        @Override
+        public Client.@NonNull Builder then() {
+            return DefaultBuilder.this;
+        }
+    }
+
     private class WebIrcImpl implements WebIrc, WebIrc.Host, WebIrc.User, WebIrc.Password, WebIrc.Ip {
         @Override
         public @NonNull WebIrcImpl host(@Nullable String host) {
@@ -310,6 +335,11 @@ public class DefaultBuilder implements Client.Builder {
     private @Nullable Consumer<String> inputListener = null;
     private @Nullable Consumer<String> outputListener = null;
 
+    // Proxy
+    private @Nullable String proxyHost;
+    private int proxyPort;
+    private Client.@Nullable ProxyType proxyType;
+
     // WebIRC
     private @Nullable String webircHost = null;
     private @Nullable InetAddress webircIP = null;
@@ -388,9 +418,15 @@ public class DefaultBuilder implements Client.Builder {
             Sanity.truthiness(!AcceptingTrustManagerFactory.isInsecure(this.secureTrustManagerFactory), "Cannot use STS with an insecure trust manager.");
         }
 
+        InetSocketAddress proxyAddress = null;
+        if ((this.proxyHost != null) && (this.proxyPort > 0)) {
+            proxyAddress = this.getInetSocketAddress(this.proxyHost, this.proxyPort);
+        }
         Client.WithManagement client = new DefaultClient();
         client.initialize(this.name, this.getInetSocketAddress(this.serverHost, this.serverPort), this.serverPassword,
-                this.getInetSocketAddress(this.bindHost, this.bindPort), this.nick, this.userString, this.realName,
+                this.getInetSocketAddress(this.bindHost, this.bindPort),
+                proxyAddress, this.proxyType,
+                this.nick, this.userString, this.realName,
                 this.actorTracker.apply(client),
                 this.authManager.apply(client), this.capabilityManager.apply(client), this.eventManager.apply(client),
                 this.eventListeners, this.messageTagManager.apply(client),
