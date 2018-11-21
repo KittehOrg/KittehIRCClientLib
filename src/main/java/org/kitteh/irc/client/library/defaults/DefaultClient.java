@@ -213,6 +213,8 @@ public class DefaultClient implements Client.WithManagement {
     private String name;
     private InetSocketAddress bindAddress;
     private InetSocketAddress serverAddress;
+    private InetSocketAddress proxyAddress;
+    private ProxyType proxyType;
     private String serverPassword;
     private String userString;
     private String realName;
@@ -240,6 +242,7 @@ public class DefaultClient implements Client.WithManagement {
     @Override
     public void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword,
                            @Nullable InetSocketAddress bindAddress,
+                           @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType,
                            @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
                            @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager,
                            @Nonnull EventManager eventManager, @Nonnull MessageTagManager messageTagManager,
@@ -253,6 +256,8 @@ public class DefaultClient implements Client.WithManagement {
                            @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
         this.name = name;
         this.serverAddress = serverAddress;
+        this.proxyAddress = proxyAddress;
+        this.proxyType = proxyType;
         this.serverPassword = serverPassword;
         this.bindAddress = bindAddress;
         this.currentNick = this.requestedNick = this.goalNick = nick;
@@ -566,6 +571,24 @@ public class DefaultClient implements Client.WithManagement {
     @Override
     public InetSocketAddress getServerAddress() {
         return this.serverAddress;
+    }
+
+    @Nonnull
+    @Override
+    public boolean isProxyEnabled() {
+        return this.proxyAddress != null;
+    }
+
+    @Nonnull
+    @Override
+    public ProxyType getProxyType() {
+        return this.proxyType;
+    }
+
+    @Nonnull
+    @Override
+    public InetSocketAddress getProxyAddress() {
+        return this.proxyAddress;
     }
 
     @Override

@@ -75,7 +75,7 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
-    public void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword, @Nullable InetSocketAddress bindAddress, @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker, @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager, @Nonnull EventManager eventManager, @Nonnull MessageTagManager messageTagManager, @Nonnull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap, @Nonnull Function<WithManagement, ? extends MessageSendingQueue> messageSendingQueue, @Nonnull Function<WithManagement, ? extends ServerInfo.WithManagement> serverInfo, @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener, @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain, @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory, @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost, @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
+    public void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword, @Nullable InetSocketAddress bindAddress, @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType, @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker, @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager, @Nonnull EventManager eventManager, @Nonnull MessageTagManager messageTagManager, @Nonnull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap, @Nonnull Function<WithManagement, ? extends MessageSendingQueue> messageSendingQueue, @Nonnull Function<WithManagement, ? extends ServerInfo.WithManagement> serverInfo, @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener, @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain, @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory, @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost, @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
 
     }
 
@@ -224,6 +224,25 @@ public class FakeClient implements Client.WithManagement {
     @Nonnull
     @Override
     public InetSocketAddress getServerAddress() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public boolean isProxyEnabled() {
+        // no proxy for fake clients
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public ProxyType getProxyType() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public InetSocketAddress getProxyAddress() {
         return null;
     }
 

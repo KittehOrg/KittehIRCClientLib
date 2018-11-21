@@ -111,6 +111,12 @@ public class DefaultBuilder implements Client.Builder {
     @Nullable
     private String webircUser = null;
 
+    @Nullable
+    private String proxyHost;
+    private int proxyPort;
+    @Nullable
+    private Client.ProxyType proxyType;
+
     @Nonnull
     @Override
     public Client.Builder actorTracker(@Nonnull Function<Client.WithManagement, ? extends ActorTracker> supplier) {
@@ -208,6 +214,27 @@ public class DefaultBuilder implements Client.Builder {
     @Override
     public DefaultBuilder secure(boolean secure) {
         this.secure = secure;
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder proxyHost(String host) {
+        this.proxyHost = host;
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder proxyPort(int port) {
+        this.proxyPort = port;
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public Client.Builder proxyType(Client.ProxyType type) {
+        this.proxyType = type;
         return this;
     }
 
@@ -343,7 +370,9 @@ public class DefaultBuilder implements Client.Builder {
 
         Client.WithManagement client = new DefaultClient();
         client.initialize(this.name, this.getInetSocketAddress(this.serverHost, this.serverPort), this.serverPassword,
-                this.getInetSocketAddress(this.bindHost, this.bindPort), this.nick, this.userString, this.realName,
+                this.getInetSocketAddress(this.bindHost, this.bindPort),
+                this.getInetSocketAddress(this.proxyHost, this.proxyPort), this.proxyType,
+                this.nick, this.userString, this.realName,
                 this.actorTracker.apply(client),
                 this.authManager.apply(client), this.capabilityManager.apply(client), this.eventManager.apply(client),
                 this.messageTagManager.apply(client), this.iSupportManager.apply(client), this.defaultMessageMap, this.messageSendingQueue,

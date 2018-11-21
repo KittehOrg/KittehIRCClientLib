@@ -84,6 +84,12 @@ import java.util.function.Function;
  * An individual IRC connection, see {@link #builder()} to create one.
  */
 public interface Client {
+
+    enum ProxyType {
+        SOCKS_4,
+        SOCKS_5
+    }
+
     /**
      * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
      * <p>
@@ -305,6 +311,15 @@ public interface Client {
          */
         @Nonnull
         Builder secure(boolean secure);
+
+        @Nonnull
+        Builder proxyHost(String host);
+
+        @Nonnull
+        Builder proxyPort(int port);
+
+        @Nonnull
+        Builder proxyType(ProxyType type);
 
         /**
          * Sets the key for SSL connection.
@@ -631,6 +646,30 @@ public interface Client {
         @Nonnull
         InetSocketAddress getServerAddress();
 
+        /**
+         * Gets if the client is configured to use a proxy.
+         *
+         * @return {@code true} if configured for proxy
+         */
+        @Nonnull
+        boolean isProxyEnabled();
+
+        /**
+         * Gets if the client is configured to use a proxy.
+         *
+         * @return {@code true} if configured for proxy
+         */
+        @Nonnull
+        ProxyType getProxyType();
+
+        /**
+         * Gets the proxy address
+         *
+         * @return proxy address
+         */
+        @Nonnull
+        InetSocketAddress getProxyAddress();
+
         @Override
         @Nonnull
         ServerInfo.WithManagement getServerInfo();
@@ -708,6 +747,7 @@ public interface Client {
          */
         void initialize(@Nonnull String name, @Nonnull InetSocketAddress serverAddress, @Nullable String serverPassword,
                         @Nullable InetSocketAddress bindAddress,
+                        @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType,
                         @Nonnull String nick, @Nonnull String userString, @Nonnull String realName, @Nonnull ActorTracker actorTracker,
                         @Nonnull AuthManager authManager, @Nonnull CapabilityManager.WithManagement capabilityManager,
                         @Nonnull EventManager eventManager, @Nonnull MessageTagManager messageTagManager,
