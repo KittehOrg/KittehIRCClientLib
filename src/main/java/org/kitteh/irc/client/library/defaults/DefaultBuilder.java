@@ -229,19 +229,19 @@ public class DefaultBuilder implements Client.Builder {
     private class ManagementImpl implements Management {
         @Override
         public @NonNull Management actorTracker(@Nullable Function<Client.WithManagement, ? extends ActorTracker> supplier) {
-            DefaultBuilder.this.actorTracker = supplier != null ? supplier : DEFAULT_ACTOR_TRACKER;
+            DefaultBuilder.this.actorTracker = (supplier != null) ? supplier : DEFAULT_ACTOR_TRACKER;
             return this;
         }
 
         @Override
         public @NonNull Management authManager(@Nullable Function<Client.WithManagement, ? extends AuthManager> supplier) {
-            DefaultBuilder.this.authManager = supplier != null ? supplier : DEFAULT_AUTH_MANAGER;
+            DefaultBuilder.this.authManager = (supplier != null) ? supplier : DEFAULT_AUTH_MANAGER;
             return this;
         }
 
         @Override
         public @NonNull Management capabilityManager(@Nullable Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier) {
-            DefaultBuilder.this.capabilityManager = supplier != null ? supplier : DEFAULT_CAPABILITY_MANAGER;
+            DefaultBuilder.this.capabilityManager = (supplier != null) ? supplier : DEFAULT_CAPABILITY_MANAGER;
             return this;
         }
 
@@ -253,19 +253,19 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Management eventManager(@Nullable Function<Client.WithManagement, ? extends EventManager> supplier) {
-            DefaultBuilder.this.eventManager = supplier != null ? supplier : DEFAULT_EVENT_MANAGER;
+            DefaultBuilder.this.eventManager = (supplier != null) ? supplier : DEFAULT_EVENT_MANAGER;
             return this;
         }
 
         @Override
         public @NonNull Management eventListeners(@Nullable List<EventListenerSupplier> listenerSuppliers) {
-            DefaultBuilder.this.eventListeners = listenerSuppliers != null ? listenerSuppliers : DEFAULT_EVENT_LISTENERS;
+            DefaultBuilder.this.eventListeners = (listenerSuppliers != null) ? listenerSuppliers : DEFAULT_EVENT_LISTENERS;
             return this;
         }
 
         @Override
         public @NonNull Management iSupportManager(@Nullable Function<Client.WithManagement, ? extends ISupportManager> supplier) {
-            DefaultBuilder.this.iSupportManager = supplier != null ? supplier : DEFAULT_ISUPPORT_MANAGER;
+            DefaultBuilder.this.iSupportManager = (supplier != null) ? supplier : DEFAULT_ISUPPORT_MANAGER;
             return this;
         }
 
@@ -277,13 +277,13 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Management messageTagManager(@Nullable Function<Client.WithManagement, ? extends MessageTagManager> supplier) {
-            DefaultBuilder.this.messageTagManager = supplier != null ? supplier : DEFAULT_MESSAGE_TAG_MANAGER;
+            DefaultBuilder.this.messageTagManager = (supplier != null) ? supplier : DEFAULT_MESSAGE_TAG_MANAGER;
             return this;
         }
 
         @Override
         public @NonNull Management serverInfo(@Nullable Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier) {
-            DefaultBuilder.this.serverInfo = supplier != null ? supplier : DEFAULT_SERVER_INFO;
+            DefaultBuilder.this.serverInfo = (supplier != null) ? supplier : DEFAULT_SERVER_INFO;
             return this;
         }
 
