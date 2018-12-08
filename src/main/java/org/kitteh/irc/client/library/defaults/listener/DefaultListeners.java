@@ -41,6 +41,96 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     DEFAULT(DefaultEventListener::new), // TODO get rid of this one
     /**
+     * ACCOUNT handling.
+     *
+     * @see DefaultAccountListener
+     */
+    ACCOUNT(DefaultAccountListener::new),
+    /**
+     * AWAY handling.
+     *
+     * @see DefaultAwayListener
+     */
+    AWAY(DefaultAwayListener::new),
+    /**
+     * CAP handling.
+     *
+     * @see DefaultCapListener
+     */
+    CAP(DefaultCapListener::new),
+    /**
+     * CHGHOST handling.
+     *
+     * @see DefaultChgHostListener
+     */
+    CHGHOST(DefaultChgHostListener::new),
+    /**
+     * INVITE handling.
+     *
+     * @see DefaultInviteListener
+     */
+    INVITE(DefaultInviteListener::new),
+    /**
+     * JOIN handling.
+     *
+     * @see DefaultJoinListener
+     */
+    JOIN(DefaultJoinListener::new),
+    /**
+     * KICK handling.
+     *
+     * @see DefaultKickListener
+     */
+    KICK(DefaultKickListener::new),
+    /**
+     * MODE handling.
+     *
+     * @see DefaultModeListener
+     */
+    MODE(DefaultModeListener::new),
+    /**
+     * NICK handling.
+     *
+     * @see DefaultNickListener
+     */
+    NICK(DefaultNickListener::new),
+    /**
+     * NOTICE handling.
+     *
+     * @see DefaultNoticeListener
+     */
+    NOTICE(DefaultNoticeListener::new),
+    /**
+     * PART handling.
+     *
+     * @see DefaultPartListener
+     */
+    PART(DefaultPartListener::new),
+    /**
+     * PRIVMSG handling.
+     *
+     * @see DefaultPrivmsgListener
+     */
+    PRIVMSG(DefaultPrivmsgListener::new),
+    /**
+     * QUIT handling.
+     *
+     * @see DefaultQuitListener
+     */
+    QUIT(DefaultQuitListener::new),
+    /**
+     * TOPIC handling.
+     *
+     * @see DefaultTopicListener
+     */
+    TOPIC(DefaultTopicListener::new),
+    /**
+     * WALLOPS handling.
+     *
+     * @see DefaultWallopsListener
+     */
+    WALLOPS(DefaultWallopsListener::new),
+    /**
      * WHO handling.
      *
      * @see DefaultWhoListener

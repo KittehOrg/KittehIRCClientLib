@@ -4,8 +4,8 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.defaults.DefaultEventListener;
 import org.kitteh.irc.client.library.defaults.element.DefaultUser;
+import org.kitteh.irc.client.library.defaults.listener.DefaultChgHostListener;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
@@ -34,7 +34,7 @@ public class ChghostTest {
     @Test
     public void testChghostWithInvalidActorThrowsException() {
         List<Exception> exceptions = new LinkedList<>();
-        DefaultEventListener sut = this.getEventListener(exceptions);
+        DefaultChgHostListener sut = this.getEventListener(exceptions);
         final Client clientMock = Mockito.mock(Client.class);
         final Actor actorMock = Mockito.mock(Actor.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
@@ -50,7 +50,7 @@ public class ChghostTest {
     @Test
     public void testChghostWithTooManyParameters() {
         List<Exception> exceptions = new LinkedList<>();
-        DefaultEventListener sut = this.getEventListener(exceptions);
+        DefaultChgHostListener sut = this.getEventListener(exceptions);
         final Client clientMock = Mockito.mock(Client.class);
         final Actor actorMock = Mockito.mock(User.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
@@ -66,7 +66,7 @@ public class ChghostTest {
     @Test
     public void testChghostWithTooFewParameters() {
         List<Exception> exceptions = new LinkedList<>();
-        DefaultEventListener sut = this.getEventListener(exceptions);
+        DefaultChgHostListener sut = this.getEventListener(exceptions);
         final Client clientMock = Mockito.mock(Client.class);
         final Actor actorMock = Mockito.mock(User.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
@@ -147,23 +147,23 @@ public class ChghostTest {
         Mockito.when(actorProviderMock.getTrackedUser("Kitteh")).thenReturn(Optional.of(userMock));
         Mockito.when(userMock.getClient()).thenReturn(internalClient);
 
-        DefaultEventListener sut = new DefaultEventListener(internalClient);
+        DefaultChgHostListener sut = new DefaultChgHostListener(internalClient);
 
         ClientReceiveCommandEvent ev = new ClientReceiveCommandEvent(internalClient, Mockito.mock(ServerMessage.class), userMock, "CHGHOST", list);
         sut.chghost(ev);
         return actorProviderMock;
     }
 
-    private DefaultEventListener getEventListener(List<Exception> exceptionList) {
+    private DefaultChgHostListener getEventListener(List<Exception> exceptionList) {
         return this.getEventListener(null, exceptionList);
     }
 
-    private DefaultEventListener getEventListener(ActorTracker tracker, List<Exception> exceptionList) {
+    private DefaultChgHostListener getEventListener(ActorTracker tracker, List<Exception> exceptionList) {
         final Client.WithManagement client = Mockito.mock(Client.WithManagement.class);
         final Listener<Exception> exceptionListener = Mockito.mock(Listener.class);
         Mockito.when(client.getActorTracker()).thenReturn(tracker);
         Mockito.when(client.getExceptionListener()).thenReturn(exceptionListener);
         Mockito.doAnswer(invocationOnMock -> exceptionList.add((Exception) invocationOnMock.getArguments()[0])).when(exceptionListener).queue(Mockito.any());
-        return new DefaultEventListener(client);
+        return new DefaultChgHostListener(client);
     }
 }

@@ -9,6 +9,7 @@ import org.kitteh.irc.client.library.defaults.feature.DefaultActorTracker;
 import org.kitteh.irc.client.library.defaults.feature.DefaultEventManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultISupportManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
+import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
@@ -46,7 +47,9 @@ public class DefaultEventListenerTest {
         this.client = Mockito.mock(Client.WithManagement.class);
         this.actorTracker = new DefaultActorTracker(this.client);
         this.eventManager = Mockito.spy(new DefaultEventManager(this.client));
-        this.eventManager.registerEventListener(new DefaultEventListener(this.client));
+        for (DefaultListeners listener : DefaultListeners.values()) {
+            this.eventManager.registerEventListener(listener.getConstructingFunction().apply(this.client));
+        }
         this.exceptionListener = Mockito.mock(Listener.class);
         this.serverInfo = Mockito.mock(DefaultServerInfo.class);
         Mockito.when(this.client.getServerInfo()).thenReturn(this.serverInfo);

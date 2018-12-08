@@ -25,12 +25,24 @@ package org.kitteh.irc.client.library.defaults.listener;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.event.channel.ChannelCtcpEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelTargetedCtcpEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCtcpQueryEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCtcpReplyEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.EventManager;
+import org.kitteh.irc.client.library.util.CtcpUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
+
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * A base for listening to server message events.
@@ -66,6 +78,50 @@ public class AbstractDefaultListenerBase {
         this.client.getEventManager().callEvent(event);
     }
 
+    protected void ctcp(ClientReceiveCommandEvent event) {
+        final String ctcpMessage = CtcpUtil.fromCtcp(event.getParameters().get(1));
+        final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
+        User user = (User) event.getActor();
+        switch (event.getCommand()) {
+            case "NOTICE":
+                if (messageTargetInfo instanceof MessageTargetInfo.Private) {
+                    this.fire(new PrivateCtcpReplyEvent(this.getClient(), event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage));
+                }
+                break;
+            case "PRIVMSG":
+                if (messageTargetInfo instanceof MessageTargetInfo.Private) {
+                    String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
+                    switch (ctcpMessage) {
+                        case "VERSION":
+                            reply = "VERSION I am Kitteh!";
+                            break;
+                        case "TIME":
+                            reply = "TIME " + new Date().toString();
+                            break;
+                        case "FINGER":
+                            reply = "FINGER om nom nom tasty finger";
+                            break;
+                    }
+                    if (ctcpMessage.startsWith("PING ")) {
+                        reply = ctcpMessage;
+                    }
+                    PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.getClient(), event.getOriginalMessages(), user, event.getParameters().get(0), ctcpMessage, reply);
+                    this.fire(ctcpEvent);
+                    Optional<String> replyMessage = ctcpEvent.getReply();
+                    if (ctcpEvent.isToClient()) {
+                        replyMessage.ifPresent(message -> this.getClient().sendRawLine("NOTICE " + user.getNick() + " :" + CtcpUtil.toCtcp(message)));
+                    }
+                } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
+                    MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
+                    this.fire(new ChannelCtcpEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), ctcpMessage));
+                } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
+                    MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
+                    this.fire(new ChannelTargetedCtcpEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), channelInfo.getPrefix(), ctcpMessage));
+                }
+                break;
+        }
+    }
+
     /**
      * Fires an exception in processing a server message event.
      *
@@ -84,5 +140,70 @@ public class AbstractDefaultListenerBase {
      */
     protected @NonNull ActorTracker getTracker() {
         return this.client.getActorTracker();
+    }
+
+    protected static class MessageTargetInfo {
+        public static class ChannelInfo extends MessageTargetInfo {
+            private final Channel channel;
+
+            protected ChannelInfo(Channel channel) {
+                this.channel = channel;
+            }
+
+            public @NonNull Channel getChannel() {
+                return this.channel;
+            }
+
+            @Override
+            public @NonNull String toString() {
+                return new ToStringer(this).toString();
+            }
+        }
+
+        public static class TargetedChannel extends MessageTargetInfo {
+            private final Channel channel;
+            private final ChannelUserMode prefix;
+
+            protected TargetedChannel(Channel channel, ChannelUserMode prefix) {
+                this.channel = channel;
+                this.prefix = prefix;
+            }
+
+            public @NonNull Channel getChannel() {
+                return this.channel;
+            }
+
+            public @NonNull ChannelUserMode getPrefix() {
+                return this.prefix;
+            }
+
+            @Override
+            public @NonNull String toString() {
+                return new ToStringer(this).toString();
+            }
+        }
+
+        public static class Private extends MessageTargetInfo {
+            static final Private INSTANCE = new Private();
+
+            protected Private() {
+            }
+
+            @Override
+            public @NonNull String toString() {
+                return new ToStringer(this).toString();
+            }
+        }
+    }
+
+    protected @NonNull MessageTargetInfo getTypeByTarget(@NonNull String target) {
+        Optional<Channel> channel = this.getTracker().getTrackedChannel(target);
+        Optional<ChannelUserMode> prefix = this.getClient().getServerInfo().getTargetedChannelInfo(target);
+        if (prefix.isPresent()) {
+            return new MessageTargetInfo.TargetedChannel(this.getTracker().getTrackedChannel(target.substring(1)).get(), prefix.get());
+        } else if (channel.isPresent()) {
+            return new MessageTargetInfo.ChannelInfo(channel.get());
+        }
+        return MessageTargetInfo.Private.INSTANCE;
     }
 }
