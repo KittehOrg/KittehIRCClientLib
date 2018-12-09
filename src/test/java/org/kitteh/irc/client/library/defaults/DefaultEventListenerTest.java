@@ -151,7 +151,7 @@ public class DefaultEventListenerTest {
     public void test1WelcomeFail() {
         this.fireLine(":irc.network 001");
         Mockito.verify(this.client, Mockito.times(0)).setCurrentNick(Mockito.anyString());
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Nickname missing; can't confirm")));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Nickname missing from welcome message; can't confirm")));
     }
 
     /**

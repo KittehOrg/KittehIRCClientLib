@@ -26,44 +26,40 @@ package org.kitteh.irc.client.library.defaults.listener;
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
-import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelKnockEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.event.user.UserAwayMessageEvent;
-import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
-import org.kitteh.irc.client.library.util.StringUtil;
+
+import java.util.Optional;
 
 /**
- * Default AWAY listener, producing events using default classes.
+ * Default KNOCK listener, producing events using default classes.
  */
-public class DefaultAwayListener extends AbstractDefaultListenerBase {
+public class DefaultKnockListener extends AbstractDefaultListenerBase {
     /**
      * Constructs the listener.
      *
      * @param client client
      */
-    public DefaultAwayListener(Client.@NonNull WithManagement client) {
+    public DefaultKnockListener(Client.@NonNull WithManagement client) {
         super(client);
     }
 
-    @NumericFilter(305) // UNAWAY
-    @NumericFilter(306) // NOWAWAY
+    @NumericFilter(710) // Knock
     @Handler(priority = Integer.MAX_VALUE - 1)
-    public void away(ClientReceiveNumericEvent event) {
-        this.fire(new ClientAwayStatusChangeEvent(this.getClient(), event.getOriginalMessages(), event.getNumeric() == 306));
-    }
-
-    @CommandFilter("AWAY")
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void away(ClientReceiveCommandEvent event) {
-        if (!(event.getActor() instanceof User)) {
-            this.trackException(event, "AWAY message from something other than a user");
+    public void knock(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            this.trackException(event, "KNOCK message too short");
             return;
         }
-        String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0);
-        this.fire(new UserAwayMessageEvent(this.getClient(), event.getOriginalMessages(), (User) event.getActor(), awayMessage));
-        this.getTracker().setUserAway(((User) event.getActor()).getNick(), awayMessage);
+        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        if (channel.isPresent()) {
+            User user = (User) this.getTracker().getActor(event.getParameters().get(2));
+            this.fire(new ChannelKnockEvent(this.getClient(), event.getOriginalMessages(), channel.get(), user));
+        } else {
+            this.trackException(event, "KNOCK message sent for invalid channel name");
+        }
     }
 }

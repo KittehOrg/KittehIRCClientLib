@@ -26,44 +26,41 @@ package org.kitteh.irc.client.library.defaults.listener;
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
-import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.event.user.UserAwayMessageEvent;
-import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
-import org.kitteh.irc.client.library.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Default AWAY listener, producing events using default classes.
+ * Default quiet list listener, producing events using default classes.
  */
-public class DefaultAwayListener extends AbstractDefaultListenerBase {
+public class DefaultQuietListListener extends AbstractModeInfoListenerBase {
+    private final List<ServerMessage> quietMessages = new ArrayList<>();
+    private final List<ModeInfo> quiets = new ArrayList<>();
+
     /**
      * Constructs the listener.
      *
      * @param client client
      */
-    public DefaultAwayListener(Client.@NonNull WithManagement client) {
+    public DefaultQuietListListener(Client.@NonNull WithManagement client) {
         super(client);
     }
 
-    @NumericFilter(305) // UNAWAY
-    @NumericFilter(306) // NOWAWAY
+    @NumericFilter(344) // QUIETLIST
+    @NumericFilter(728) // QUIETLIST
     @Handler(priority = Integer.MAX_VALUE - 1)
-    public void away(ClientReceiveNumericEvent event) {
-        this.fire(new ClientAwayStatusChangeEvent(this.getClient(), event.getOriginalMessages(), event.getNumeric() == 306));
+    public void quietList(ClientReceiveNumericEvent event) {
+        this.modeInfoList(event, "QUIETLIST", 'q', this.quietMessages, this.quiets, (event.getNumeric() == 344) ? 0 : 1);
     }
 
-    @CommandFilter("AWAY")
+    @NumericFilter(345) // End of quiet list
+    @NumericFilter(729) // End of quiet list
     @Handler(priority = Integer.MAX_VALUE - 1)
-    public void away(ClientReceiveCommandEvent event) {
-        if (!(event.getActor() instanceof User)) {
-            this.trackException(event, "AWAY message from something other than a user");
-            return;
-        }
-        String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0);
-        this.fire(new UserAwayMessageEvent(this.getClient(), event.getOriginalMessages(), (User) event.getActor(), awayMessage));
-        this.getTracker().setUserAway(((User) event.getActor()).getNick(), awayMessage);
+    public void quietListEnd(ClientReceiveNumericEvent event) {
+        this.endModeInfoList(event, "QUIETLIST", 'q', this.quietMessages, this.quiets);
     }
 }

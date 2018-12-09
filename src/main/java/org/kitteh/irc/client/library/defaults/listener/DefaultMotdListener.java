@@ -26,44 +26,53 @@ package org.kitteh.irc.client.library.defaults.listener;
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
-import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.client.ClientReceiveMotdEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.event.user.UserAwayMessageEvent;
-import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
-import org.kitteh.irc.client.library.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Default AWAY listener, producing events using default classes.
+ * Default MOTD listener, producing events using default classes.
  */
-public class DefaultAwayListener extends AbstractDefaultListenerBase {
+public class DefaultMotdListener extends AbstractDefaultListenerBase {
+    private final List<String> motd = new ArrayList<>();
+    private final List<ServerMessage> motdMessages = new ArrayList<>();
+
     /**
      * Constructs the listener.
      *
      * @param client client
      */
-    public DefaultAwayListener(Client.@NonNull WithManagement client) {
+    public DefaultMotdListener(Client.@NonNull WithManagement client) {
         super(client);
     }
 
-    @NumericFilter(305) // UNAWAY
-    @NumericFilter(306) // NOWAWAY
+    @NumericFilter(375)
     @Handler(priority = Integer.MAX_VALUE - 1)
-    public void away(ClientReceiveNumericEvent event) {
-        this.fire(new ClientAwayStatusChangeEvent(this.getClient(), event.getOriginalMessages(), event.getNumeric() == 306));
+    public void motdStart(ClientReceiveNumericEvent event) {
+        this.motd.clear();
+        this.motdMessages.clear();
     }
 
-    @CommandFilter("AWAY")
+    @NumericFilter(372)
     @Handler(priority = Integer.MAX_VALUE - 1)
-    public void away(ClientReceiveCommandEvent event) {
-        if (!(event.getActor() instanceof User)) {
-            this.trackException(event, "AWAY message from something other than a user");
+    public void motdContent(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.trackException(event, "MOTD message too short");
             return;
         }
-        String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0);
-        this.fire(new UserAwayMessageEvent(this.getClient(), event.getOriginalMessages(), (User) event.getActor(), awayMessage));
-        this.getTracker().setUserAway(((User) event.getActor()).getNick(), awayMessage);
+        this.motd.add(event.getParameters().get(1));
+        this.motdMessages.add(event.getServerMessage());
+    }
+
+    @NumericFilter(376)
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void motdEnd(ClientReceiveNumericEvent event) {
+        this.motdMessages.add(event.getServerMessage());
+        this.getClient().getServerInfo().setMotd(new ArrayList<>(this.motd));
+        this.fire(new ClientReceiveMotdEvent(this.getClient(), this.motdMessages));
     }
 }

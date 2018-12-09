@@ -33,11 +33,14 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.UserModeEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
+import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.util.StringUtil;
 
 import java.time.Instant;
+import java.util.Optional;
 
 /**
  * Default MODE listener, producing events using default classes.
@@ -50,6 +53,28 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
      */
     public DefaultModeListener(Client.@NonNull WithManagement client) {
         super(client);
+    }
+
+    @NumericFilter(324)
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void channelMode(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 3) {
+            this.trackException(event, "Channel mode info message too short");
+            return;
+        }
+        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        if (channel.isPresent()) {
+            ModeStatusList<ChannelMode> statusList;
+            try {
+                statusList = ModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+            } catch (IllegalArgumentException e) {
+                this.trackException(event, e.getMessage());
+                return;
+            }
+            this.getTracker().updateChannelModes(channel.get().getName(), statusList);
+        } else {
+            this.trackException(event, "Channel mode info message sent for invalid channel name");
+        }
     }
 
     @CommandFilter("MODE")

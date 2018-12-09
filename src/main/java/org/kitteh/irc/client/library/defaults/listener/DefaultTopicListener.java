@@ -29,7 +29,9 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.event.channel.ChannelTopicEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
+import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
 import java.util.Optional;
 
@@ -44,6 +46,37 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
      */
     public DefaultTopicListener(Client.@NonNull WithManagement client) {
         super(client);
+    }
+
+    @NumericFilter(332) // Topic
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void topic(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 2) {
+            this.trackException(event, "Topic message too short");
+            return;
+        }
+        Optional<Channel> topicChannel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        if (topicChannel.isPresent()) {
+            this.getTracker().setChannelTopic(topicChannel.get().getName(), event.getParameters().get(2));
+        } else {
+            this.trackException(event, "Topic message sent for invalid channel name");
+        }
+    }
+
+    @NumericFilter(333) // Topic info
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void topicInfo(ClientReceiveNumericEvent event) {
+        if (event.getParameters().size() < 4) {
+            this.trackException(event, "Topic message too short");
+            return;
+        }
+        Optional<Channel> topicSetChannel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        if (topicSetChannel.isPresent()) {
+            this.getTracker().setChannelTopicInfo(topicSetChannel.get().getName(), Long.parseLong(event.getParameters().get(3)) * 1000, this.getTracker().getActor(event.getParameters().get(2)));
+            this.fire(new ChannelTopicEvent(this.getClient(), event.getOriginalMessages(), topicSetChannel.get(), false));
+        } else {
+            this.trackException(event, "Topic message sent for invalid channel name");
+        }
     }
 
     @CommandFilter("TOPIC")

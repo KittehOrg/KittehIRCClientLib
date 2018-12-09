@@ -26,44 +26,30 @@ package org.kitteh.irc.client.library.defaults.listener;
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.client.ClientAwayStatusChangeEvent;
-import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.event.user.UserAwayMessageEvent;
-import org.kitteh.irc.client.library.feature.filter.CommandFilter;
+import org.kitteh.irc.client.library.event.client.NickRejectedEvent;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
-import org.kitteh.irc.client.library.util.StringUtil;
 
 /**
- * Default AWAY listener, producing events using default classes.
+ * Default welcome listener, producing events using default classes.
  */
-public class DefaultAwayListener extends AbstractDefaultListenerBase {
+public class DefaultNickRejectedListener extends AbstractDefaultListenerBase {
     /**
      * Constructs the listener.
      *
      * @param client client
      */
-    public DefaultAwayListener(Client.@NonNull WithManagement client) {
+    public DefaultNickRejectedListener(Client.@NonNull WithManagement client) {
         super(client);
     }
 
-    @NumericFilter(305) // UNAWAY
-    @NumericFilter(306) // NOWAWAY
+    @NumericFilter(431) // No nick given
+    @NumericFilter(432) // Erroneous nickname
+    @NumericFilter(433) // Nick in use
     @Handler(priority = Integer.MAX_VALUE - 1)
-    public void away(ClientReceiveNumericEvent event) {
-        this.fire(new ClientAwayStatusChangeEvent(this.getClient(), event.getOriginalMessages(), event.getNumeric() == 306));
-    }
-
-    @CommandFilter("AWAY")
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void away(ClientReceiveCommandEvent event) {
-        if (!(event.getActor() instanceof User)) {
-            this.trackException(event, "AWAY message from something other than a user");
-            return;
-        }
-        String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0);
-        this.fire(new UserAwayMessageEvent(this.getClient(), event.getOriginalMessages(), (User) event.getActor(), awayMessage));
-        this.getTracker().setUserAway(((User) event.getActor()).getNick(), awayMessage);
+    public void nickInUse(ClientReceiveNumericEvent event) {
+        NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getRequestedNick(), this.getClient().getRequestedNick() + '`');
+        this.fire(nickRejectedEvent);
+        this.getClient().sendNickChange(nickRejectedEvent.getNewNick());
     }
 }

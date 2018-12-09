@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.FakeClient;
-import org.kitteh.irc.client.library.defaults.DefaultEventListener;
 import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
 import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 import org.mockito.Mockito;
@@ -114,7 +113,7 @@ public class AuthManagerTest {
         @Override
         public @NonNull Object getEventListener() {
             this.tripped = true;
-            return new DefaultEventListener(this.client);
+            return new Object();
         }
 
         public boolean wasTripped() {

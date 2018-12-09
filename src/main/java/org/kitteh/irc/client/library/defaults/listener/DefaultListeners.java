@@ -25,7 +25,6 @@ package org.kitteh.irc.client.library.defaults.listener;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.defaults.DefaultEventListener;
 import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 
 import java.util.function.Function;
@@ -34,12 +33,6 @@ import java.util.function.Function;
  * Default event listeners registered by the client.
  */
 public enum DefaultListeners implements EventListenerSupplier {
-    /**
-     * I'M FULL OF THINGS THAT HAVEN'T BEEN ISOLATED YET!
-     *
-     * @see DefaultEventListener
-     */
-    DEFAULT(DefaultEventListener::new), // TODO get rid of this one
     /**
      * ACCOUNT handling.
      *
@@ -53,6 +46,12 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     AWAY(DefaultAwayListener::new),
     /**
+     * Ban list handling.
+     *
+     * @see DefaultBanListListener
+     */
+    BANLIST(DefaultBanListListener::new),
+    /**
      * CAP handling.
      *
      * @see DefaultCapListener
@@ -65,11 +64,29 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     CHGHOST(DefaultChgHostListener::new),
     /**
+     * Except list handling.
+     *
+     * @see DefaultExceptListListener
+     */
+    EXCEPTLIST(DefaultExceptListListener::new),
+    /**
      * INVITE handling.
      *
      * @see DefaultInviteListener
      */
     INVITE(DefaultInviteListener::new),
+    /**
+     * Invite list handling.
+     *
+     * @see DefaultInviteListListener
+     */
+    INVITELIST(DefaultInviteListListener::new),
+    /**
+     * ISUPPORT handling.
+     *
+     * @see DefaultISupportListener
+     */
+    ISUPPORT(DefaultISupportListener::new),
     /**
      * JOIN handling.
      *
@@ -83,17 +100,47 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     KICK(DefaultKickListener::new),
     /**
+     * KNOCK handling.
+     *
+     * @see DefaultKnockListener
+     */
+    KNOCK(DefaultKnockListener::new),
+    /**
      * MODE handling.
      *
      * @see DefaultModeListener
      */
     MODE(DefaultModeListener::new),
     /**
+     * MONITOR handling.
+     *
+     * @see DefaultMonitorListener
+     */
+    MONITOR(DefaultMonitorListener::new),
+    /**
+     * MOTD handling.
+     *
+     * @see DefaultMotdListener
+     */
+    MOTD(DefaultMotdListener::new),
+    /**
+     * NAMES handling.
+     *
+     * @see DefaultNamesListener
+     */
+    NAMES(DefaultNamesListener::new),
+    /**
      * NICK handling.
      *
      * @see DefaultNickListener
      */
     NICK(DefaultNickListener::new),
+    /**
+     * Nick rejection handler.
+     *
+     * @see DefaultNickRejectedListener
+     */
+    NICK_REJECTED(DefaultNickRejectedListener::new),
     /**
      * NOTICE handling.
      *
@@ -113,6 +160,12 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     PRIVMSG(DefaultPrivmsgListener::new),
     /**
+     * Quiet list handling.
+     *
+     * @see DefaultQuietListListener
+     */
+    QUIETLIST(DefaultQuietListListener::new),
+    /**
      * QUIT handling.
      *
      * @see DefaultQuitListener
@@ -125,11 +178,29 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     TOPIC(DefaultTopicListener::new),
     /**
+     * UMODE handling.
+     *
+     * @see DefaultUserModeListener
+     */
+    USERMODE(DefaultUserModeListener::new),
+    /**
+     * Version handling.
+     *
+     * @see DefaultVersionListener
+     */
+    VERSION(DefaultVersionListener::new),
+    /**
      * WALLOPS handling.
      *
      * @see DefaultWallopsListener
      */
     WALLOPS(DefaultWallopsListener::new),
+    /**
+     * Welcome handling.
+     *
+     * @see DefaultWelcomeListener
+     */
+    WELCOME(DefaultWelcomeListener::new),
     /**
      * WHO handling.
      *

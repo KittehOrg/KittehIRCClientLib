@@ -131,7 +131,7 @@ public class DefaultEventManager implements EventManager {
     }
 
     @Override
-    public @NonNull synchronized Set<Object> getRegisteredEventListeners() {
+    public synchronized @NonNull Set<Object> getRegisteredEventListeners() {
         return new HashSet<>(this.listeners);
     }
 
