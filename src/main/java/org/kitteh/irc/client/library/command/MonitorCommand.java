@@ -125,7 +125,7 @@ public class MonitorCommand extends Command {
      * @throws IllegalArgumentException for \n, \r, \0, or comma in target or
      * null target
      */
-    public @NonNull synchronized MonitorCommand target(@NonNull Collection<String> targets) {
+    public synchronized @NonNull MonitorCommand target(@NonNull Collection<String> targets) {
         Sanity.nullCheck(targets, "Targets cannot be null");
         Set<String> targetSet = new LinkedHashSet<>();
         for (String target : targets) {

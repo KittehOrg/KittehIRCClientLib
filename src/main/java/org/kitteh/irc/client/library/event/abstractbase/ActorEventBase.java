@@ -58,7 +58,7 @@ public abstract class ActorEventBase<A extends Actor> extends ServerMessageEvent
     }
 
     @Override
-    public @NonNull final A getActor() {
+    public final @NonNull A getActor() {
         return this.actor;
     }
 

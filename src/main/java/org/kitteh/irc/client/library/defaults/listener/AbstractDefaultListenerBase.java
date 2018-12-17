@@ -64,6 +64,11 @@ public class AbstractDefaultListenerBase {
         return new ToStringer(this).toString();
     }
 
+    /**
+     * Gets the client.
+     *
+     * @return client
+     */
     protected Client.@NonNull WithManagement getClient() {
         return this.client;
     }
@@ -78,6 +83,11 @@ public class AbstractDefaultListenerBase {
         this.client.getEventManager().callEvent(event);
     }
 
+    /**
+     * Processes a CTCP message.
+     *
+     * @param event the currently handled event
+     */
     protected void ctcp(ClientReceiveCommandEvent event) {
         final String ctcpMessage = CtcpUtil.fromCtcp(event.getParameters().get(1));
         final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
@@ -142,14 +152,25 @@ public class AbstractDefaultListenerBase {
         return this.client.getActorTracker();
     }
 
+    /**
+     * Information about the target of a message.
+     */
     protected static class MessageTargetInfo {
+        /**
+         * A targeted channel.
+         */
         public static class ChannelInfo extends MessageTargetInfo {
             private final Channel channel;
 
-            protected ChannelInfo(Channel channel) {
+            private ChannelInfo(Channel channel) {
                 this.channel = channel;
             }
 
+            /**
+             * Gets the channel.
+             *
+             * @return channel
+             */
             public @NonNull Channel getChannel() {
                 return this.channel;
             }
@@ -160,19 +181,32 @@ public class AbstractDefaultListenerBase {
             }
         }
 
+        /**
+         * A channel targeted with a prefix.
+         */
         public static class TargetedChannel extends MessageTargetInfo {
             private final Channel channel;
             private final ChannelUserMode prefix;
 
-            protected TargetedChannel(Channel channel, ChannelUserMode prefix) {
+            private TargetedChannel(Channel channel, ChannelUserMode prefix) {
                 this.channel = channel;
                 this.prefix = prefix;
             }
 
+            /**
+             * Gets the channel.
+             *
+             * @return channel
+             */
             public @NonNull Channel getChannel() {
                 return this.channel;
             }
 
+            /**
+             * Gets the prefix.
+             *
+             * @return prefix
+             */
             public @NonNull ChannelUserMode getPrefix() {
                 return this.prefix;
             }
@@ -183,10 +217,13 @@ public class AbstractDefaultListenerBase {
             }
         }
 
+        /**
+         * A private message received.
+         */
         public static class Private extends MessageTargetInfo {
             static final Private INSTANCE = new Private();
 
-            protected Private() {
+            private Private() {
             }
 
             @Override
@@ -196,6 +233,12 @@ public class AbstractDefaultListenerBase {
         }
     }
 
+    /**
+     * Gets the relevant info about a message target.
+     *
+     * @param target target in string form
+     * @return target in specific object form
+     */
     protected @NonNull MessageTargetInfo getTypeByTarget(@NonNull String target) {
         Optional<Channel> channel = this.getTracker().getTrackedChannel(target);
         Optional<ChannelUserMode> prefix = this.getClient().getServerInfo().getTargetedChannelInfo(target);

@@ -75,7 +75,7 @@ public final class CtcpUtil {
      * @param message message to convert
      * @return converted message
      */
-    public @NonNull static String fromCtcp(@NonNull String message) {
+    public static @NonNull String fromCtcp(@NonNull String message) {
         final String ctcpContent = message.substring(1, message.indexOf(CTCP_DELIMITER, 1)); // Strip the delimiters
         StringBuilder builder = new StringBuilder(ctcpContent.length());
         int currentIndex = 0;
@@ -101,12 +101,10 @@ public final class CtcpUtil {
                     }
                     break;
                 case "\\":
-                    switch (matcher.group(2)) {
-                        case "a":
-                            builder.append(CTCP_DELIMITER);
-                            break;
-                        default:
-                            builder.append(matcher.group(2)); // If not one of the above, disregard the \. If \, it's covered here anyway.
+                    if ("a".equals(matcher.group(2))) {
+                        builder.append(CTCP_DELIMITER);
+                    } else {
+                        builder.append(matcher.group(2)); // If not one of the above, disregard the \. If \, it's covered here anyway.
                     }
                 default:
                     // NOOP
@@ -136,14 +134,14 @@ public final class CtcpUtil {
      * @param message message to convert
      * @return converted message
      */
-    public @NonNull static String toCtcp(@NonNull String message) {
+    public static @NonNull String toCtcp(@NonNull String message) {
         StringBuilder builder = new StringBuilder(message.length());
         builder.append(CTCP_DELIMITER);
         int currentIndex = 0;
         Matcher matcher = CTCP_ESCAPABLE_CHAR.matcher(message);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
-                builder.append(message.substring(currentIndex, matcher.start()));
+                builder.append(message, currentIndex, matcher.start());
             }
             switch (matcher.group()) {
                 case "\n":

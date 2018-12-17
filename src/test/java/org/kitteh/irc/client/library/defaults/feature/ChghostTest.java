@@ -39,7 +39,7 @@ public class ChghostTest {
         final Actor actorMock = Mockito.mock(Actor.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
         sut.chghost(new ClientReceiveCommandEvent(clientMock, Mockito.mock(ServerMessage.class), actorMock, "CHGHOST", Arrays.asList("foo", "bar")));
-        Assert.assertTrue("No exception fired", exceptions.size() == 1);
+        Assert.assertEquals("No exception fired", 1, exceptions.size());
         Assert.assertEquals("Wrong exception type", KittehServerMessageException.class, exceptions.get(0).getClass());
         Assert.assertThat("Wrong exception fired", exceptions.get(0).getMessage(), CoreMatchers.containsString("Invalid actor for CHGHOST message"));
     }
@@ -55,7 +55,7 @@ public class ChghostTest {
         final Actor actorMock = Mockito.mock(User.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
         sut.chghost(new ClientReceiveCommandEvent(clientMock, Mockito.mock(ServerMessage.class), actorMock, "CHGHOST", Arrays.asList("foo", "bar", "kitten")));
-        Assert.assertTrue("No exception fired", exceptions.size() == 1);
+        Assert.assertEquals("No exception fired", 1, exceptions.size());
         Assert.assertEquals("Wrong exception type", KittehServerMessageException.class, exceptions.get(0).getClass());
         Assert.assertThat("Wrong exception fired", exceptions.get(0).getMessage(), CoreMatchers.containsString("Invalid number of parameters for CHGHOST message"));
     }
@@ -71,7 +71,7 @@ public class ChghostTest {
         final Actor actorMock = Mockito.mock(User.class);
         Mockito.when(actorMock.getClient()).thenReturn(clientMock);
         sut.chghost(new ClientReceiveCommandEvent(clientMock, Mockito.mock(ServerMessage.class), actorMock, "CHGHOST", Collections.singletonList("foo")));
-        Assert.assertTrue("No exception fired", exceptions.size() == 1);
+        Assert.assertEquals("No exception fired", 1, exceptions.size());
         Assert.assertEquals("Wrong exception type", KittehServerMessageException.class, exceptions.get(0).getClass());
         Assert.assertThat("Wrong exception fired", exceptions.get(0).getMessage(), CoreMatchers.containsString("Invalid number of parameters for CHGHOST message"));
     }

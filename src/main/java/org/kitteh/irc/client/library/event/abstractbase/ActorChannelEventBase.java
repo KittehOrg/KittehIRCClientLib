@@ -62,7 +62,7 @@ public abstract class ActorChannelEventBase<A extends Actor> extends ActorEventB
     }
 
     @Override
-    public @NonNull final Channel getChannel() {
+    public final @NonNull Channel getChannel() {
         return this.channel;
     }
 

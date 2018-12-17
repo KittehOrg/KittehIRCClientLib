@@ -50,6 +50,6 @@ public class WhisperEvent extends PrivateMessageEvent implements TwitchSingleMes
 
     @Override
     public void sendReply(@NonNull String message) {
-        this.getClient().sendMessage("#jtv", "/w " + this.getActor().getNick() + " " + message);
+        this.getClient().sendMessage("#jtv", "/w " + this.getActor().getNick() + ' ' + message);
     }
 }

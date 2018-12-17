@@ -33,7 +33,7 @@ import org.kitteh.irc.client.library.exception.KittehServerISupportException;
  * Default implementation of {@link ISupportParameter.Network}.
  */
 public class DefaultISupportNetwork extends DefaultISupportParameterValueRequired implements ISupportParameter.Network {
-    private final String networkName;
+    private final @NonNull String networkName;
 
     /**
      * Constructs the object.

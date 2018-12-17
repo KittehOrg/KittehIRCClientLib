@@ -38,7 +38,7 @@ public class StsPropertiesStorageManagerTest {
         Assert.assertTrue(optionalPolicy.isPresent());
         final StsPolicy policy = optionalPolicy.get();
         Assert.assertTrue(policy.getOptions().containsKey(StsPolicy.POLICY_OPTION_KEY_PORT));
-        Assert.assertTrue("6697".equals(policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT)));
+        Assert.assertEquals("6697", policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT));
         Assert.assertTrue(policy.getFlags().contains("cats"));
     }
 
@@ -60,7 +60,7 @@ public class StsPropertiesStorageManagerTest {
         Assert.assertTrue(optionalPolicy.isPresent());
         final StsPolicy policy = optionalPolicy.get();
         Assert.assertTrue(policy.getOptions().containsKey(StsPolicy.POLICY_OPTION_KEY_PORT));
-        Assert.assertTrue("6697".equals(policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT)));
+        Assert.assertEquals("6697", policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT));
         Assert.assertTrue(policy.getFlags().contains("cats"));
     }
 

@@ -113,6 +113,7 @@ public final class Sanity {
      * Checks if a string contains spaces.
      *
      * @param string string to check
+     * @param name name of item being checked
      * @return the string
      * @throws IllegalArgumentException if found
      */

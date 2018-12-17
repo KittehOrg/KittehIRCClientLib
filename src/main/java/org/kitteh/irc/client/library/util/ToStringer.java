@@ -170,7 +170,7 @@ public class ToStringer {
             builder.append(pair.getLeft()).append('=');
             if ((pair.getRight() != null) && pair.getRight().getClass().isArray()) {
                 String arr = Arrays.deepToString(new Object[]{pair.getRight()});
-                builder.append(arr.substring(1, arr.length() - 1));
+                builder.append(arr, 1, arr.length() - 1);
             } else {
                 builder.append(pair.getRight());
             }

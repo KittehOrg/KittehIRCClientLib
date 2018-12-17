@@ -27,33 +27,36 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.ToStringer;
 
+/**
+ * Abstract class covering SASL protocols.
+ */
 public abstract class AbstractAccountSaslProtocol extends AbstractSaslProtocol {
-  private final String accountName;
+    private final String accountName;
 
-  /**
-   * Creates an instance.
-   *
-   * @param client client
-   * @param saslType type of SASL auth
-   * @param accountName account name
-   */
-  protected AbstractAccountSaslProtocol(@NonNull final Client client, @NonNull final String saslType, @NonNull final String accountName) {
-    super(client, saslType);
-    this.accountName = accountName;
-  }
+    /**
+     * Creates an instance.
+     *
+     * @param client client
+     * @param saslType type of SASL auth
+     * @param accountName account name
+     */
+    protected AbstractAccountSaslProtocol(final @NonNull Client client, final @NonNull String saslType, final @NonNull String accountName) {
+        super(client, saslType);
+        this.accountName = accountName;
+    }
 
-  /**
-   * Gets the account name.
-   *
-   * @return account name
-   */
-  protected @NonNull String getAccountName() {
-    return this.accountName;
-  }
+    /**
+     * Gets the account name.
+     *
+     * @return account name
+     */
+    protected @NonNull String getAccountName() {
+        return this.accountName;
+    }
 
-  @Override
-  protected void toString(final ToStringer stringer) {
-    super.toString(stringer);
-    stringer.add("account", this.getAccountName());
-  }
+    @Override
+    protected void toString(final ToStringer stringer) {
+        super.toString(stringer);
+        stringer.add("account", this.getAccountName());
+    }
 }

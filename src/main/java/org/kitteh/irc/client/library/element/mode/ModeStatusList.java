@@ -52,7 +52,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param string string to parse
      * @return list
      */
-    public @NonNull static ModeStatusList<ChannelMode> fromChannel(@NonNull Client client, @NonNull String string) {
+    public static @NonNull ModeStatusList<ChannelMode> fromChannel(@NonNull Client client, @NonNull String string) {
         Map<Character, ChannelMode> modes = new HashMap<>();
         client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
         client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));
@@ -66,7 +66,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param string string to parse
      * @return list
      */
-    public @NonNull static ModeStatusList<UserMode> fromUser(@NonNull Client client, @NonNull String string) {
+    public static @NonNull ModeStatusList<UserMode> fromUser(@NonNull Client client, @NonNull String string) {
         return from(string, client.getServerInfo().getUserModes().stream().collect(Collectors.toMap(UserMode::getChar, Function.identity())));
     }
 
@@ -112,7 +112,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param <ModeType> type of modes being listed
      * @return list
      */
-    public @NonNull static <ModeType extends Mode> ModeStatusList<ModeType> of(@NonNull ModeStatus<ModeType>... statuses) {
+    public static @NonNull <ModeType extends Mode> ModeStatusList<ModeType> of(@NonNull ModeStatus<ModeType>... statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
         Sanity.truthiness((statuses.length <= 1) || (Arrays.stream(statuses).map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
         return new ModeStatusList<>(Arrays.asList(statuses));
@@ -125,7 +125,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param <ModeType> type of modes being listed
      * @return list
      */
-    public @NonNull static <ModeType extends Mode> ModeStatusList<ModeType> of(@NonNull Collection<ModeStatus<ModeType>> statuses) {
+    public static @NonNull <ModeType extends Mode> ModeStatusList<ModeType> of(@NonNull Collection<ModeStatus<ModeType>> statuses) {
         Sanity.nullCheck(statuses, "Statuses cannot be null");
         List<ModeStatus<ModeType>> list = new ArrayList<>(statuses);
         Sanity.truthiness((list.size() <= 1) || (list.stream().map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");

@@ -51,7 +51,7 @@ public final class StringUtil {
      * @throws IllegalArgumentException for a null array, a length less than
      * 1, an index less than 0, or a null delimiter
      */
-    public @NonNull static String combineSplit(@NonNull String[] split, int start, int length, @NonNull String delimiter) {
+    public static @NonNull String combineSplit(@NonNull String[] split, int start, int length, @NonNull String delimiter) {
         Sanity.nullCheck((Object) split, "Cannot combine a null array");
         Sanity.nullCheck(delimiter, "Delimiter cannot be null");
         Sanity.truthiness(start >= 0, "Negative array indexes are not valid");
@@ -75,7 +75,7 @@ public final class StringUtil {
      * @return the combined string
      * @throws IllegalArgumentException for null array or index less than 0
      */
-    public @NonNull static String combineSplit(@NonNull String[] split, int start) {
+    public static @NonNull String combineSplit(@NonNull String[] split, int start) {
         Sanity.nullCheck((Object) split, "Cannot combine a null array");
         return StringUtil.combineSplit(split, start, split.length - start, " ");
     }
@@ -87,7 +87,7 @@ public final class StringUtil {
      * @return the colorful new message
      * @throws IllegalArgumentException for null message
      */
-    public @NonNull static String makeRainbow(@NonNull String message) {
+    public static @NonNull String makeRainbow(@NonNull String message) {
         return StringUtil.makeRainbow(message, DEFAULT_RAINBOW);
     }
 
@@ -100,7 +100,7 @@ public final class StringUtil {
      * @throws IllegalArgumentException for null parameters, null entries in
      * array, or non-color entries in array
      */
-    public @NonNull static String makeRainbow(@NonNull String message, @NonNull Format[] colorOrder) {
+    public static @NonNull String makeRainbow(@NonNull String message, @NonNull Format[] colorOrder) {
         Sanity.safeMessageCheck(message);
         Sanity.nullCheck(colorOrder, "Color order cannot be null");
         for (Format format : colorOrder) {
@@ -130,7 +130,7 @@ public final class StringUtil {
      * @throws IllegalArgumentException if input is null
      * @see CaseMapping#toLowerCase
      */
-    public @NonNull static String toLowerCase(@NonNull ClientLinked linked, @NonNull String input) {
+    public static @NonNull String toLowerCase(@NonNull ClientLinked linked, @NonNull String input) {
         Sanity.nullCheck(linked, "ClientLinked cannot be null");
         return StringUtil.toLowerCase(linked.getClient(), input);
     }
@@ -145,7 +145,7 @@ public final class StringUtil {
      * @throws IllegalArgumentException if input is null
      * @see CaseMapping#toLowerCase
      */
-    public @NonNull static String toLowerCase(@NonNull Client client, @NonNull String input) {
+    public static @NonNull String toLowerCase(@NonNull Client client, @NonNull String input) {
         Sanity.nullCheck(client, "Client cannot be null");
         Sanity.nullCheck(input, "Input cannot be null");
         return client.getServerInfo().getCaseMapping().toLowerCase(input);

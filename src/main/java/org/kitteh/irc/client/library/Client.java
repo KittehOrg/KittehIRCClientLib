@@ -280,6 +280,9 @@ public interface Client extends ClientLinked {
             @NonNull Builder then();
         }
 
+        /**
+         * Information about a proxy host for the connection.
+         */
         interface Proxy {
             /**
              * Sets the proxy host which the client will use when connecting to the server host.
@@ -433,6 +436,7 @@ public interface Client extends ClientLinked {
              * event manager upon construction.
              * <p>
              * By default, a list of {@link DefaultListeners} values is used.
+             *
              * @param listenerSuppliers event listener suppliers
              * @return this builder
              */

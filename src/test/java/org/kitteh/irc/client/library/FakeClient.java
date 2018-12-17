@@ -54,7 +54,7 @@ public class FakeClient implements Client.WithManagement {
     private final DefaultMessageTagManager messageTagManager = new DefaultMessageTagManager(this);
     private final DefaultServerInfo serverInfo = new DefaultServerInfo(this);
     private DefaultMessageMap defaultMessageMap = new SimpleDefaultMessageMap(null);
-    boolean secure = true;
+    private boolean secure = true;
 
     @Override
     public void processLine(@NonNull String line) {
@@ -217,12 +217,12 @@ public class FakeClient implements Client.WithManagement {
 
     @Override
     public @NonNull Optional<ProxyType> getProxyType() {
-        return null;
+        return Optional.empty();
     }
 
     @Override
     public @NonNull Optional<InetSocketAddress> getProxyAddress() {
-        return null;
+        return Optional.empty();
     }
 
     @Override

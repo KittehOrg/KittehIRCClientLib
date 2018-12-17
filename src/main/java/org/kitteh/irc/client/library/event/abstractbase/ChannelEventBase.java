@@ -57,7 +57,7 @@ public abstract class ChannelEventBase extends ServerMessageEventBase implements
     }
 
     @Override
-    public @NonNull final Channel getChannel() {
+    public final @NonNull Channel getChannel() {
         return this.channel;
     }
 

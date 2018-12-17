@@ -47,7 +47,12 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
         private @Nullable String account;
         private @Nullable String password;
 
-        protected Builder(@NonNull final Client client) {
+        /**
+         * Constructs the builder with the given client.
+         *
+         * @param client client
+         */
+        protected Builder(final @NonNull Client client) {
             this.client = Sanity.nullCheck(client, "Client cannot be null");
         }
 
@@ -96,6 +101,12 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
         }
     }
 
+    /**
+     * Creates a new NickServ builder.
+     *
+     * @param client client for whom this is to be built
+     * @return new builder
+     */
     public static @NonNull Builder builder(@NonNull Client client) {
         return new Builder(client);
     }

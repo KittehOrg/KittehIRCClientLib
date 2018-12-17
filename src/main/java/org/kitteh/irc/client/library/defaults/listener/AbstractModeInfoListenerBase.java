@@ -51,10 +51,29 @@ public class AbstractModeInfoListenerBase extends AbstractDefaultListenerBase {
         super(client);
     }
 
+    /**
+     * Adds an item to a mode info list.
+     *
+     * @param event event
+     * @param name name in list
+     * @param mode mode
+     * @param messageList list of server messages
+     * @param infoList info list to append
+     */
     protected void modeInfoList(@NonNull ClientReceiveNumericEvent event, @NonNull String name, char mode, @NonNull List<ServerMessage> messageList, @NonNull List<ModeInfo> infoList) {
         this.modeInfoList(event, name, mode, messageList, infoList, 0);
     }
 
+    /**
+     * Adds an item to a mode info list.
+     *
+     * @param event event
+     * @param name name in list
+     * @param mode mode
+     * @param messageList list of server messages
+     * @param infoList info list to append
+     * @param offset offset
+     */
     protected void modeInfoList(@NonNull ClientReceiveNumericEvent event, @NonNull String name, char mode, @NonNull List<ServerMessage> messageList, @NonNull List<ModeInfo> infoList, int offset) {
         if (event.getParameters().size() < (3 + offset)) {
             this.trackException(event, name + " response too short");
@@ -82,6 +101,15 @@ public class AbstractModeInfoListenerBase extends AbstractDefaultListenerBase {
         }
     }
 
+    /**
+     * Handles the end of the mode info list.
+     *
+     * @param event event
+     * @param name name
+     * @param mode mode
+     * @param messageList list of messages
+     * @param infoList mode info list
+     */
     protected void endModeInfoList(@NonNull ClientReceiveNumericEvent event, @NonNull String name, char mode, @NonNull List<ServerMessage> messageList, @NonNull List<ModeInfo> infoList) {
         if (event.getParameters().size() < 2) {
             this.trackException(event, name + " response too short");

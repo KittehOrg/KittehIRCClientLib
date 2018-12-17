@@ -149,7 +149,7 @@ public enum Format {
      * @see #stripColor(String)
      * @see #stripFormatting(String)
      */
-    public @NonNull static String stripAll(@NonNull String input) {
+    public static @NonNull String stripAll(@NonNull String input) {
         return stripColor(stripFormatting(input));
     }
 
@@ -159,7 +159,7 @@ public enum Format {
      * @param input input to strip
      * @return stripped input
      */
-    public @NonNull static String stripColor(@NonNull String input) {
+    public static @NonNull String stripColor(@NonNull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
         return COLOR_REGEX.matcher(input).replaceAll("");
     }
@@ -170,7 +170,7 @@ public enum Format {
      * @param input input to strip
      * @return stripped input
      */
-    public @NonNull static String stripFormatting(@NonNull String input) {
+    public static @NonNull String stripFormatting(@NonNull String input) {
         Sanity.nullCheck(input, "Input cannot be null");
         return FORMAT_REGEX.matcher(input).replaceAll("");
     }

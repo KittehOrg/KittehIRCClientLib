@@ -64,7 +64,7 @@ public class AuthManagerTest {
         StubAuthProtocol stub2 = new StubAuthProtocol();
         final Optional<AuthProtocol> ret = sut.addProtocol(stub2);
         Assert.assertTrue(ret.isPresent());
-        Assert.assertTrue(ret.get() == stub1);
+        Assert.assertSame(ret.get(), stub1);
         Optional<AuthProtocol> removed = sut.addProtocol(new AuthProtocol() {
             @Override
             public @NonNull Client getClient() {

@@ -81,6 +81,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -339,9 +340,9 @@ public class NettyManager {
         if (client.getStsMachine().isPresent() && !client.isSecureConnection()) {
             String hostname = client.getServerAddress().getHostName();
             final StsMachine machine = client.getStsMachine().get();
-            if (machine.getStorageManager().hasEntry(hostname)) {
-                StsPolicy policy = machine.getStorageManager().getEntry(hostname).get();
-                machine.setStsPolicy(policy);
+            Optional<StsPolicy> policy = machine.getStorageManager().getEntry(hostname);
+            if (policy.isPresent()) {
+                machine.setStsPolicy(policy.get());
                 machine.setCurrentState(StsClientState.STS_POLICY_CACHED);
             }
         }

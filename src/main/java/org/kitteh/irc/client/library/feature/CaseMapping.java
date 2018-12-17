@@ -62,7 +62,7 @@ public enum CaseMapping {
      * @param name the name of the CaseMapping to get
      * @return the matching CaseMapping if one exists
      */
-    public @NonNull static Optional<CaseMapping> getByName(@Nullable String name) {
+    public static @NonNull Optional<CaseMapping> getByName(@Nullable String name) {
         return (name == null) ? Optional.empty() : Optional.ofNullable(nameMap.get(name.toUpperCase()));
     }
 

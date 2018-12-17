@@ -82,6 +82,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -707,7 +708,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public @NonNull Set<String> getIntendedChannels() {
-        return this.channelsIntended;
+        return Collections.unmodifiableSet(new HashSet<>(this.channelsIntended));
     }
 
     @Override
@@ -825,7 +826,7 @@ public class DefaultClient implements Client.WithManagement {
         return this.secure;
     }
 
-    private void handleLine(@NonNull final String line) {
+    private void handleLine(final @NonNull String line) {
         if (line.isEmpty()) {
             this.actorTracker.reset();
             this.capabilityManager.reset();
@@ -887,7 +888,7 @@ public class DefaultClient implements Client.WithManagement {
             position = next + 1;
         }
         if (position != line.length()) {
-            String bit = line.substring((!dobbyIsFreeElf && line.charAt(position) == ':') ? (position + 1) : position, line.length());
+            String bit = line.substring((!dobbyIsFreeElf && (line.charAt(position) == ':')) ? (position + 1) : position);
             if (commandString == null) {
                 commandString = bit;
             } else {

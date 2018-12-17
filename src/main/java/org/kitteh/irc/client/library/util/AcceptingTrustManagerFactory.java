@@ -40,7 +40,7 @@ import java.security.cert.X509Certificate;
 /**
  * A very friendly, accepting trust manager factory. Allows anything through.
  *
- * @see Client.Builder#secureTrustManagerFactory(TrustManagerFactory)
+ * @see Client.Builder.Server#secureTrustManagerFactory(TrustManagerFactory)
  */
 public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactory {
     private class TrustingManager implements X509TrustManager {

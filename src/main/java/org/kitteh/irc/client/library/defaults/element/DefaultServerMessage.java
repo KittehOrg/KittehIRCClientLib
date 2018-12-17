@@ -109,7 +109,7 @@ public class DefaultServerMessage implements ServerMessage {
     }
 
     @Override
-    public @NonNull final List<MessageTag> getTags() {
+    public final @NonNull List<MessageTag> getTags() {
         return this.tags;
     }
 

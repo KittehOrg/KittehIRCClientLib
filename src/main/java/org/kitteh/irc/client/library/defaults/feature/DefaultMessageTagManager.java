@@ -142,7 +142,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
         Matcher matcher = TAG_ESCAPE.matcher(tag);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
-                builder.append(tag.substring(currentIndex, matcher.start()));
+                builder.append(tag, currentIndex, matcher.start());
             }
             switch (matcher.group(1)) {
                 case ":":

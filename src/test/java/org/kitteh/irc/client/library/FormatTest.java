@@ -76,7 +76,7 @@ public class FormatTest {
     public void validColors() {
         for (Format format : Format.values()) {
             if (format.isColor()) {
-                Assert.assertTrue("Invalid IRCFormat color char " + format.name(), (format.getColorChar() & 15) == format.getColorChar());
+                Assert.assertEquals("Invalid IRCFormat color char " + format.name(), (format.getColorChar() & 15), format.getColorChar());
             } else {
                 Assert.assertEquals("Invalid IRCFormat format " + format.name(), format.getColorChar(), -1);
             }
