@@ -310,7 +310,6 @@ public class NettyManager {
         }
     }
 
-    private static @Nullable Bootstrap bootstrap;
     private static @Nullable EventLoopGroup eventLoopGroup;
     private static final Set<Client.WithManagement> clients = new HashSet<>();
 
@@ -325,7 +324,6 @@ public class NettyManager {
                 eventLoopGroup.shutdownGracefully();
             }
             eventLoopGroup = null;
-            bootstrap = null;
         }
     }
 
@@ -347,31 +345,33 @@ public class NettyManager {
             }
         }
 
-        if (bootstrap == null) {
-            bootstrap = new Bootstrap();
-            bootstrap.channel(NioSocketChannel.class);
-            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel channel) {
-                    if (client.getProxyType().isPresent() && client.getProxyAddress().isPresent()) {
-                        ChannelPipeline pipe = channel.pipeline();
-                        switch (client.getProxyType().get()) {
-                            case SOCKS_5:
-                                pipe.addLast(new Socks5ProxyHandler(client.getProxyAddress().get()));
-                                break;
-                            case SOCKS_4:
-                                pipe.addLast(new Socks4ProxyHandler(client.getProxyAddress().get()));
-                                break;
-                            default:
-                                throw new IllegalArgumentException("Unsupported proxy type: " + client.getProxyType());
+        if (eventLoopGroup == null) {
+            eventLoopGroup = new NioEventLoopGroup();
+        }
+
+        final Bootstrap bootstrap = new Bootstrap()
+                .channel(NioSocketChannel.class)
+                .group(eventLoopGroup)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel channel) {
+                        if (client.getProxyType().isPresent() && client.getProxyAddress().isPresent()) {
+                            ChannelPipeline pipe = channel.pipeline();
+                            switch (client.getProxyType().get()) {
+                                case SOCKS_5:
+                                    pipe.addLast(new Socks5ProxyHandler(client.getProxyAddress().get()));
+                                    break;
+                                case SOCKS_4:
+                                    pipe.addLast(new Socks4ProxyHandler(client.getProxyAddress().get()));
+                                    break;
+                                default:
+                                    throw new IllegalArgumentException("Unsupported proxy type: " + client.getProxyType());
+                            }
                         }
                     }
-                }
-            });
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            eventLoopGroup = new NioEventLoopGroup();
-            bootstrap.group(eventLoopGroup);
-        }
+                })
+                .option(ChannelOption.TCP_NODELAY, true);
+
         SocketAddress bind = client.getBindAddress();
         SocketAddress server = client.getServerAddress();
         ClientConnection clientConnection = new ClientConnection(client, bootstrap.connect(server, bind));
