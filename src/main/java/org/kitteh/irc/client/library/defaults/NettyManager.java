@@ -63,6 +63,8 @@ import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehStsException;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
+import org.kitteh.irc.client.library.util.HostWithPort;
+import org.kitteh.irc.client.library.feature.resolver.JavaResolver;
 import org.kitteh.irc.client.library.feature.sts.StsClientState;
 import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.feature.sts.StsPolicy;
@@ -73,8 +75,10 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -192,9 +196,9 @@ public class NettyManager {
                         this.client.getExceptionListener().queue(new KittehNagException(String.format("Client '%s' is using an insecure trust manager factory.", this.client)));
                     }
                     SslContext sslContext = SslContextBuilder.forClient().trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();
-                    InetSocketAddress addr = this.client.getServerAddress();
+                    HostWithPort addr = this.client.getServerAddress();
                     // The presence of the two latter arguments enables SNI.
-                    final SslHandler sslHandler = sslContext.newHandler(this.channel.alloc(), addr.getHostString(), addr.getPort());
+                    final SslHandler sslHandler = sslContext.newHandler(this.channel.alloc(), addr.getHost(), addr.getPort());
                     sslHandler.handshakeFuture().addListener(handshakeFuture -> {
                         if (!handshakeFuture.isSuccess() && ClientConnection.this.client.getStsMachine().isPresent()) {
                             StsMachine machine = ClientConnection.this.client.getStsMachine().get();
@@ -336,7 +340,7 @@ public class NettyManager {
     public static synchronized ClientConnection connect(Client.@NonNull WithManagement client) {
         // STS Override
         if (client.getStsMachine().isPresent() && !client.isSecureConnection()) {
-            String hostname = client.getServerAddress().getHostName();
+            String hostname = client.getServerAddress().getHost();
             final StsMachine machine = client.getStsMachine().get();
             Optional<StsPolicy> policy = machine.getStorageManager().getEntry(hostname);
             if (policy.isPresent()) {
@@ -357,12 +361,13 @@ public class NettyManager {
                     public void initChannel(SocketChannel channel) {
                         if (client.getProxyType().isPresent() && client.getProxyAddress().isPresent()) {
                             ChannelPipeline pipe = channel.pipeline();
+                            HostWithPort proxyHostWithPort = client.getProxyAddress().get();
                             switch (client.getProxyType().get()) {
                                 case SOCKS_5:
-                                    pipe.addLast(new Socks5ProxyHandler(client.getProxyAddress().get()));
+                                    pipe.addLast(new Socks5ProxyHandler(new InetSocketAddress(proxyHostWithPort.getHost(), proxyHostWithPort.getPort())));
                                     break;
                                 case SOCKS_4:
-                                    pipe.addLast(new Socks4ProxyHandler(client.getProxyAddress().get()));
+                                    pipe.addLast(new Socks4ProxyHandler(new InetSocketAddress(proxyHostWithPort.getHost(), proxyHostWithPort.getPort())));
                                     break;
                                 default:
                                     throw new IllegalArgumentException("Unsupported proxy type: " + client.getProxyType());
@@ -373,7 +378,17 @@ public class NettyManager {
                 .option(ChannelOption.TCP_NODELAY, true);
 
         SocketAddress bind = client.getBindAddress();
-        SocketAddress server = client.getServerAddress();
+
+        final String host = client.getServerAddress().getHost();
+        // TODO not be horrible
+        SocketAddress server;
+        try {
+            InetAddress address = new JavaResolver().getAddress(host);
+            server = new InetSocketAddress(address, client.getServerAddress().getPort());
+        } catch (UnknownHostException e) {
+            server = InetSocketAddress.createUnresolved(host, client.getServerAddress().getPort());
+        }
+
         ClientConnection clientConnection = new ClientConnection(client, bootstrap.connect(server, bind));
         clients.add(client);
         return clientConnection;

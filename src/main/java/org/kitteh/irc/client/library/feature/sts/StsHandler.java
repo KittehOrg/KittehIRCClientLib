@@ -31,9 +31,9 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupported
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.event.client.ClientConnectionEndedEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
+import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.StsUtil;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -120,7 +120,7 @@ public class StsHandler {
         // The spec says we have to update the expiry of the policy if it still exists
         // at disconnection time...
         // Do this by removing and re-adding.
-        String hostname = this.client.getServerAddress().getHostName();
+        String hostname = this.client.getServerAddress().getHost();
         final StsStorageManager storageManager = this.machine.getStorageManager();
         storageManager.getEntry(hostname).ifPresent(policy -> {
             long duration = Long.parseLong(policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_DURATION));
@@ -131,7 +131,7 @@ public class StsHandler {
 
     private void handleStsCapability(CapabilityState sts, List<ServerMessage> originalMessages) {
         this.isSecure = this.client.isSecureConnection();
-        InetSocketAddress address = this.client.getServerAddress();
+        HostWithPort address = this.client.getServerAddress();
         if (!sts.getValue().isPresent()) {
             throw new KittehServerMessageException(originalMessages, "No value provided for sts capability.");
         }
@@ -193,7 +193,7 @@ public class StsHandler {
                 }
 
                 final StsStorageManager storageMan = this.machine.getStorageManager();
-                String hostname = this.client.getServerAddress().getHostName();
+                String hostname = this.client.getServerAddress().getHost();
 
                 // A duration of 0 means the policy expires immediately.
                 // This method can be used by servers to remove a previously set policy.

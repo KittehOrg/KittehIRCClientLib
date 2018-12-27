@@ -47,6 +47,7 @@ import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
+import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.Version;
@@ -85,14 +86,20 @@ public class DefaultBuilder implements Client.Builder {
 
     private class ServerImpl implements Server {
         @Override
+        public @NonNull Server address(@NonNull HostWithPort hostWithPort) {
+            DefaultBuilder.this.serverHostWithPort = Sanity.nullCheck(hostWithPort, "Host with port cannot be null");
+            return this;
+        }
+
+        @Override
         public @NonNull Server host(@NonNull String host) {
-            DefaultBuilder.this.serverHost = Sanity.nullCheck(host, "Host cannot be null");
+            DefaultBuilder.this.serverHostWithPort = DefaultBuilder.this.serverHostWithPort.withHost(Sanity.nullCheck(host, "Host cannot be null"));
             return this;
         }
 
         @Override
         public @NonNull Server port(int port) {
-            DefaultBuilder.this.serverPort = DefaultBuilder.this.isValidPort(port);
+            DefaultBuilder.this.serverHostWithPort = DefaultBuilder.this.serverHostWithPort.withPort(DefaultBuilder.this.isValidPort(port));
             return this;
         }
 
@@ -317,8 +324,7 @@ public class DefaultBuilder implements Client.Builder {
     private @Nullable String bindHost;
     private int bindPort;
 
-    private String serverHost = DEFAULT_SERVER_HOST;
-    private int serverPort = DEFAULT_SERVER_PORT;
+    private HostWithPort serverHostWithPort = HostWithPort.of(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
     private @Nullable String serverPassword = null;
     private boolean secure = true;
     private @Nullable Path secureKeyCertChain = null;
@@ -418,12 +424,12 @@ public class DefaultBuilder implements Client.Builder {
             Sanity.truthiness(!AcceptingTrustManagerFactory.isInsecure(this.secureTrustManagerFactory), "Cannot use STS with an insecure trust manager.");
         }
 
-        InetSocketAddress proxyAddress = null;
+        HostWithPort proxyAddress = null;
         if ((this.proxyHost != null) && (this.proxyPort > 0)) {
-            proxyAddress = this.getInetSocketAddress(this.proxyHost, this.proxyPort);
+            proxyAddress = HostWithPort.of(this.proxyHost, this.proxyPort);
         }
         Client.WithManagement client = new DefaultClient();
-        client.initialize(this.name, this.getInetSocketAddress(this.serverHost, this.serverPort), this.serverPassword,
+        client.initialize(this.name, this.serverHostWithPort, this.serverPassword,
                 this.getInetSocketAddress(this.bindHost, this.bindPort),
                 proxyAddress, this.proxyType,
                 this.nick, this.userString, this.realName,

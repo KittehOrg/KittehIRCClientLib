@@ -68,6 +68,7 @@ import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.CtcpUtil;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.QueueProcessingThread;
@@ -205,8 +206,8 @@ public class DefaultClient implements Client.WithManagement {
 
     private String name;
     private InetSocketAddress bindAddress;
-    private InetSocketAddress serverAddress;
-    private InetSocketAddress proxyAddress;
+    private HostWithPort serverAddress;
+    private HostWithPort proxyAddress;
     private ProxyType proxyType;
     private String serverPassword;
     private String userString;
@@ -233,9 +234,9 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword,
+    public void initialize(@NonNull String name, @NonNull HostWithPort serverAddress, @Nullable String serverPassword,
                            @Nullable InetSocketAddress bindAddress,
-                           @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType,
+                           @Nullable HostWithPort proxyAddress, @Nullable ProxyType proxyType,
                            @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
                            @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
                            @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
@@ -540,7 +541,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public @NonNull InetSocketAddress getServerAddress() {
+    public @NonNull HostWithPort getServerAddress() {
         return this.serverAddress;
     }
 
@@ -550,7 +551,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public @NonNull Optional<InetSocketAddress> getProxyAddress() {
+    public @NonNull Optional<HostWithPort> getProxyAddress() {
         return Optional.ofNullable(this.proxyAddress);
     }
 
@@ -780,7 +781,7 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void setServerAddress(@NonNull InetSocketAddress address) {
+    public void setServerAddress(@NonNull HostWithPort address) {
         this.serverAddress = address;
     }
 

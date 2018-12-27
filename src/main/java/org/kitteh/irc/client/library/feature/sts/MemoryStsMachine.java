@@ -25,9 +25,8 @@ package org.kitteh.irc.client.library.feature.sts;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.Sanity;
-
-import java.net.InetSocketAddress;
 
 /**
  * "Memory" prefix to distinguish implementation class
@@ -71,8 +70,8 @@ public class MemoryStsMachine implements StsMachine {
             case STS_POLICY_CACHED:
             case STS_PRESENT_RECONNECTING:
                 this.client.isSecureConnection();
-                InetSocketAddress oldAddress = this.client.getServerAddress();
-                InetSocketAddress newAddress = new InetSocketAddress(oldAddress.getHostName(), Integer.parseInt(this.policy.getOptions().getOrDefault(StsPolicy.POLICY_OPTION_KEY_PORT, "6697")));
+                HostWithPort oldAddress = this.client.getServerAddress();
+                HostWithPort newAddress = HostWithPort.of(oldAddress.getHost(), Integer.parseInt(this.policy.getOptions().getOrDefault(StsPolicy.POLICY_OPTION_KEY_PORT, "6697")));
 
                 this.client.setServerAddress(newAddress);
                 break;

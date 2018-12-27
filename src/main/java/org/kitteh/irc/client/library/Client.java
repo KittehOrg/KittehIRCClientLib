@@ -69,6 +69,7 @@ import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.Cutter;
+import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -149,6 +150,17 @@ public interface Client extends ClientLinked {
          */
         interface Server {
             /**
+             * Sets the server host and port to which the client will connect.
+             * <p>
+             * By default, the host is localhost and port is 6697.
+             *
+             * @param hostWithPort IRC server host and port
+             * @return this builder
+             * @throws IllegalArgumentException for null parameter
+             */
+            @NonNull Server address(@NonNull HostWithPort hostWithPort);
+
+            /**
              * Sets the server host to which the client will connect.
              * <p>
              * By default, the host is localhost.
@@ -162,7 +174,7 @@ public interface Client extends ClientLinked {
             /**
              * Sets the server port to which the client will connect.
              * <p>
-             * By default, the port is 6667.
+             * By default, the port is 6697.
              *
              * @param port IRC server port
              * @return this builder
@@ -732,7 +744,7 @@ public interface Client extends ClientLinked {
          *
          * @return proxy address
          */
-        @NonNull Optional<InetSocketAddress> getProxyAddress();
+        @NonNull Optional<HostWithPort> getProxyAddress();
 
         /**
          * Gets the nickname the client has last requested.
@@ -774,7 +786,7 @@ public interface Client extends ClientLinked {
          *
          * @return server address
          */
-        @NonNull InetSocketAddress getServerAddress();
+        @NonNull HostWithPort getServerAddress();
 
         @Override
         ServerInfo.@NonNull WithManagement getServerInfo();
@@ -815,13 +827,13 @@ public interface Client extends ClientLinked {
          *
          * @param address server address
          */
-        void setServerAddress(@NonNull InetSocketAddress address);
+        void setServerAddress(@NonNull HostWithPort address);
 
         /**
          * Initialize with pre-connection information.
          *
          * @param name name
-         * @param serverAddress serverAddress
+         * @param serverHostWithPort serverHostWithPort
          * @param serverPassword serverPassword
          * @param bindAddress bindAddress
          * @param proxyAddress proxyAddress
@@ -853,9 +865,9 @@ public interface Client extends ClientLinked {
          * @param webircPassword webircPassword
          * @param webircUser webircUser
          */
-        void initialize(@NonNull String name, @NonNull InetSocketAddress serverAddress, @Nullable String serverPassword,
+        void initialize(@NonNull String name, @NonNull HostWithPort serverHostWithPort, @Nullable String serverPassword,
                         @Nullable InetSocketAddress bindAddress,
-                        @Nullable InetSocketAddress proxyAddress, @Nullable ProxyType proxyType,
+                        @Nullable HostWithPort proxyAddress, @Nullable ProxyType proxyType,
                         @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
                         @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
                         @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
