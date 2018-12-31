@@ -12,20 +12,20 @@
     <description>
         An IRC client library for Java. KICL uses an event bus model to handle communication with an IRC server.
     </description>
-    <url>http://kitteh.org/irc-client-library/</url>
+    <url>https://kitteh.org/irc-client-library/</url>
     <inceptionYear>2013</inceptionYear>
 
     <licenses>
         <license>
             <name>MIT License (Expat)</name>
-            <url>http://opensource.org/licenses/mit-license.php</url>
+            <url>https://opensource.org/licenses/mit-license.php</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <organization>
         <name>Kitteh</name>
-        <url>http://kitteh.org</url>
+        <url>https://kitteh.org</url>
     </organization>
 
     <developers>
@@ -33,9 +33,9 @@
             <id>mbaxter</id>
             <name>Matt Baxter</name>
             <email>matt@kitteh.org</email>
-            <url>http://kitteh.org</url>
+            <url>https://kitteh.org</url>
             <organization>Kitteh</organization>
-            <organizationUrl>http://kitteh.org</organizationUrl>
+            <organizationUrl>https://kitteh.org</organizationUrl>
         </developer>
     </developers>
 
