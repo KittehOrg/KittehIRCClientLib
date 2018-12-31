@@ -21,30 +21,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.defaults.listener;
+package org.kitteh.irc.client.library.feature.twitch;
 
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.defaults.element.mode.DefaultUserMode;
-import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.defaults.listener.AbstractDefaultListenerBase;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Default version listener, producing events using default classes.
+ * Twitch-variant version listener, producing events using default classes.
  */
-public class DefaultVersionListener extends AbstractDefaultListenerBase {
+public class TwitchVersionListener extends AbstractDefaultListenerBase {
     /**
      * Constructs the listener.
      *
      * @param client client
      */
-    public DefaultVersionListener(Client.@NonNull WithManagement client) {
+    public TwitchVersionListener(Client.@NonNull WithManagement client) {
         super(client);
     }
 
@@ -53,24 +49,9 @@ public class DefaultVersionListener extends AbstractDefaultListenerBase {
     public void version(ClientReceiveNumericEvent event) {
         if (event.getParameters().size() > 1) {
             this.getClient().getServerInfo().setAddress(event.getParameters().get(1));
-            if (event.getParameters().size() > 2) {
-                this.getClient().getServerInfo().setVersion(event.getParameters().get(2));
-                if (event.getParameters().size() > 3) {
-                    List<UserMode> modes = new ArrayList<>(event.getParameters().get(3).length());
-                    for (char mode : event.getParameters().get(3).toCharArray()) {
-                        modes.add(new DefaultUserMode(this.getClient(), mode));
-                    }
-                    this.getClient().getServerInfo().setUserModes(modes);
-                } else {
-                    this.trackException(event, "Server user modes missing");
-                }
-            } else {
-                this.trackException(event, "Server version and user modes missing");
-            }
         } else {
             this.trackException(event, "Server address, version, and user modes missing");
         }
-        this.getClient().sendRawLineImmediately("WHOIS " + this.getClient().getNick());
         this.fire(new ClientNegotiationCompleteEvent(this.getClient(), event.getActor(), this.getClient().getServerInfo()));
         this.getClient().startSending();
     }

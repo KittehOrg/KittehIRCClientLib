@@ -38,31 +38,6 @@ import org.kitteh.irc.client.library.feature.twitch.event.RoomStateEvent;
 import org.kitteh.irc.client.library.feature.twitch.event.UserNoticeEvent;
 import org.kitteh.irc.client.library.feature.twitch.event.UserStateEvent;
 import org.kitteh.irc.client.library.feature.twitch.event.WhisperEvent;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Badges;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Bits;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.BroadcasterLang;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Color;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.EmoteSets;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Emotes;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Id;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Mod;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.MsgId;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamMonths;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamSubPlan;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamSubPlanName;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.R9k;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.RoomId;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Slow;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.SubsOnly;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Subscriber;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.SystemMsg;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.User;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.UserId;
-import org.kitteh.irc.client.library.feature.twitch.messagetag.UserType;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import java.util.List;
@@ -74,69 +49,28 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("JavaDoc")
 public class TwitchListener {
-    /**
-     * Capability to receive commands.
-     */
-    public static final String CAPABILITY_COMMANDS = "twitch.tv/commands";
-
-    /**
-     * Capability to receive JOIN, MODE, NAMES, and PART.
-     */
-    public static final String CAPABILITY_MEMBERSHIP = "twitch.tv/membership";
-
-    /**
-     * Capability to receive tags.
-     */
-    public static final String CAPABILITY_TAGS = "twitch.tv/tags";
-
     private final Client client;
 
     /**
-     * Creates a new TwitchListener and registers all the Twitch tags.
+     * Creates a new TwitchListener.
      *
      * @param client the client for which it will be registered
      */
     public TwitchListener(@NonNull Client client) {
         this.client = Sanity.nullCheck(client, "Client cannot be null");
-        ((Client.WithManagement) client).getActorTracker().setQueryChannelInformation(false);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Badges.NAME, Badges.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BanDuration.NAME, BanDuration.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BanReason.NAME, BanReason.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Bits.NAME, Bits.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BroadcasterLang.NAME, BroadcasterLang.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Color.NAME, Color.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, DisplayName.NAME, DisplayName.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Emotes.NAME, Emotes.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, EmoteSets.NAME, EmoteSets.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Id.NAME, Id.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgId.NAME, MsgId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamMonths.NAME, MsgParamMonths.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamSubPlan.NAME, MsgParamSubPlan.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamSubPlanName.NAME, MsgParamSubPlanName.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Mod.NAME, Mod.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, R9k.NAME, R9k.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, RoomId.NAME, RoomId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Slow.NAME, Slow.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, SubsOnly.NAME, SubsOnly.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Subscriber.NAME, Subscriber.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, SystemMsg.NAME, SystemMsg.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Turbo.NAME, Turbo.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, User.NAME, User.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, UserId.NAME, UserId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, UserType.NAME, UserType.FUNCTION);
     }
 
     @Handler
     public void capList(@NonNull CapabilitiesSupportedListEvent event) {
         List<String> already = this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList());
-        if (!already.contains(CAPABILITY_COMMANDS)) {
-            event.addRequest(CAPABILITY_COMMANDS);
+        if (!already.contains(TwitchSupport.CAPABILITY_COMMANDS)) {
+            event.addRequest(TwitchSupport.CAPABILITY_COMMANDS);
         }
-        if (!already.contains(CAPABILITY_MEMBERSHIP)) {
-            event.addRequest(CAPABILITY_MEMBERSHIP);
+        if (!already.contains(TwitchSupport.CAPABILITY_MEMBERSHIP)) {
+            event.addRequest(TwitchSupport.CAPABILITY_MEMBERSHIP);
         }
-        if (!already.contains(CAPABILITY_TAGS)) {
-            event.addRequest(CAPABILITY_TAGS);
+        if (!already.contains(TwitchSupport.CAPABILITY_TAGS)) {
+            event.addRequest(TwitchSupport.CAPABILITY_TAGS);
         }
     }
 

@@ -702,6 +702,13 @@ public interface Client extends ClientLinked {
         @NonNull ActorTracker getActorTracker();
 
         /**
+         * Gets if the connection is alive.
+         *
+         * @return true if connection is alive
+         */
+        boolean isConnectionAlive();
+
+        /**
          * Gets the bind address
          *
          * @return bind address

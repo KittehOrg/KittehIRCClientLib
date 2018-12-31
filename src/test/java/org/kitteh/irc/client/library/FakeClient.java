@@ -241,6 +241,11 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
+    public boolean isConnectionAlive() {
+        return false;
+    }
+
+    @Override
     public @NonNull InetSocketAddress getBindAddress() {
         return null;
     }

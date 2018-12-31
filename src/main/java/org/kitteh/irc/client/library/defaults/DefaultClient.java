@@ -703,6 +703,11 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
+    public boolean isConnectionAlive() {
+        return (this.connection != null) && this.connection.isAlive();
+    }
+
+    @Override
     public @NonNull Listener<String> getInputListener() {
         return this.inputListener;
     }
@@ -724,7 +729,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void connect() {
-        if ((this.connection != null) && this.connection.isAlive()) {
+        if (this.isConnectionAlive()) {
             throw new IllegalStateException("Client is already connecting");
         }
 
