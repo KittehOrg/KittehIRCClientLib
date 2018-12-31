@@ -221,7 +221,7 @@ public class DefaultClient implements Client.WithManagement {
     private String webircHost;
     private InetAddress webircIP;
     private String webircPassword;
-    private String webircUser;
+    private String webircGateway;
     private Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueueSupplier;
     private Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfoSupplier;
 
@@ -248,7 +248,7 @@ public class DefaultClient implements Client.WithManagement {
                            @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain,
                            @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory,
                            @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost,
-                           @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
+                           @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircGateway) {
         this.name = name;
         this.serverAddress = serverAddress;
         this.proxyAddress = proxyAddress;
@@ -279,7 +279,7 @@ public class DefaultClient implements Client.WithManagement {
         this.webircHost = webircHost;
         this.webircIP = webircIP;
         this.webircPassword = webircPassword;
-        this.webircUser = webircUser;
+        this.webircGateway = webircGateway;
 
         for (EventListenerSupplier eventListenerSupplier : listenerSuppliers) {
             this.eventManager.registerEventListener(eventListenerSupplier.getConstructingFunction().apply(this));
@@ -736,12 +736,14 @@ public class DefaultClient implements Client.WithManagement {
         this.connection = NettyManager.connect(this);
         this.processor.queue("");
 
-        this.sendRawLineImmediately("CAP LS 302");
-
-        // If we have WebIRC information, send it before PASS, USER, and NICK.
+        // If we have WebIRC information, send it before everything.
+        // "The WEBIRC command MUST be the first command sent from the WebIRC gateway to the IRC server and MUST be sent before capability negotiation."
+        // https://ircv3.net/specs/extensions/webirc.html
         if (this.webircPassword != null) {
-            this.sendRawLineImmediately("WEBIRC " + this.webircPassword + ' ' + this.webircUser + ' ' + this.webircHost + ' ' + this.webircIP.getHostAddress());
+            this.sendRawLineImmediately("WEBIRC " + this.webircPassword + ' ' + this.webircGateway + ' ' + this.webircHost + ' ' + this.webircIP.getHostAddress());
         }
+
+        this.sendRawLineImmediately("CAP LS 302");
 
         // If the server has a password, send that along before USER and NICK.
         String password = this.serverPassword;

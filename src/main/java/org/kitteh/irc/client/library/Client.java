@@ -343,20 +343,20 @@ public interface Client extends ClientLinked {
                  * @param host hostname part of the client's address
                  * @return user builder part
                  */
-                @NonNull User host(@Nullable String host);
+                @NonNull Gateway host(@Nullable String host);
             }
 
             /**
              * WebIRC user.
              */
-            interface User {
+            interface Gateway {
                 /**
-                 * Sets the username part of the client's address.
+                 * Sets the gateway/user part of the client's address.
                  *
-                 * @param user username part of the client's address
+                 * @param gateway gateway/user part of the client's address
                  * @return password builder part
                  */
-                @NonNull Password user(@Nullable String user);
+                @NonNull Password gateway(@Nullable String gateway);
             }
 
             /**

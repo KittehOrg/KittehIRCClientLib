@@ -195,7 +195,7 @@ public class DefaultBuilder implements Client.Builder {
         }
     }
 
-    private class WebIrcImpl implements WebIrc, WebIrc.Host, WebIrc.User, WebIrc.Password, WebIrc.Ip {
+    private class WebIrcImpl implements WebIrc, WebIrc.Host, WebIrc.Gateway, WebIrc.Password, WebIrc.Ip {
         @Override
         public @NonNull WebIrcImpl host(@Nullable String host) {
             if (host != null) {
@@ -207,12 +207,12 @@ public class DefaultBuilder implements Client.Builder {
         }
 
         @Override
-        public @NonNull WebIrcImpl user(@Nullable String user) {
-            if (user != null) {
-                Sanity.safeMessageCheck(user, "User");
-                Sanity.noSpaces(user, "User");
+        public @NonNull WebIrcImpl gateway(@Nullable String gateway) {
+            if (gateway != null) {
+                Sanity.safeMessageCheck(gateway, "Gateway");
+                Sanity.noSpaces(gateway, "Gateway");
             }
-            DefaultBuilder.this.webircUser = user;
+            DefaultBuilder.this.webircGateway = gateway;
             return this;
         }
 
@@ -350,7 +350,7 @@ public class DefaultBuilder implements Client.Builder {
     private @Nullable String webircHost = null;
     private @Nullable InetAddress webircIP = null;
     private @Nullable String webircPassword = null;
-    private @Nullable String webircUser = null;
+    private @Nullable String webircGateway = null;
 
     // Management
     private Function<Client.WithManagement, ? extends ActorTracker> actorTracker = DEFAULT_ACTOR_TRACKER;
@@ -439,7 +439,7 @@ public class DefaultBuilder implements Client.Builder {
                 this.iSupportManager.apply(client), this.defaultMessageMap, this.messageSendingQueue,
                 this.serverInfo, this.exceptionListener, this.inputListener, this.outputListener, this.secure,
                 this.secureKeyCertChain, this.secureKey, this.secureKeyPassword, this.secureTrustManagerFactory, this.stsStorageManager,
-                this.webircHost, this.webircIP, this.webircPassword, this.webircUser
+                this.webircHost, this.webircIP, this.webircPassword, this.webircGateway
         );
 
         return client;
