@@ -82,7 +82,7 @@ public final class CtcpUtil {
         Matcher matcher = CTCP_ESCAPED_CHAR.matcher(ctcpContent);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
-                builder.append(ctcpContent.substring(currentIndex, matcher.start()));
+                builder.append(ctcpContent, currentIndex, matcher.start());
             }
             switch (matcher.group(1)) {
                 case CTCP_MQUOTE + "":

@@ -63,12 +63,12 @@ import org.kitteh.irc.client.library.exception.KittehConnectionException;
 import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehStsException;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
-import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.feature.resolver.JavaResolver;
 import org.kitteh.irc.client.library.feature.sts.StsClientState;
 import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
+import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.net.ssl.SSLException;
