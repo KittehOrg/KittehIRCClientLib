@@ -336,14 +336,14 @@ public interface Client extends ClientLinked {
             /**
              * WebIRC host.
              */
-            interface Host {
+            interface Hostname {
                 /**
                  * Sets the hostname part of the client's address.
                  *
                  * @param host hostname part of the client's address
                  * @return user builder part
                  */
-                @NonNull Gateway host(@Nullable String host);
+                @NonNull Ip hostname(@Nullable String host);
             }
 
             /**
@@ -356,7 +356,7 @@ public interface Client extends ClientLinked {
                  * @param gateway gateway/user part of the client's address
                  * @return password builder part
                  */
-                @NonNull Password gateway(@Nullable String gateway);
+                @NonNull Hostname gateway(@Nullable String gateway);
             }
 
             /**
@@ -369,7 +369,7 @@ public interface Client extends ClientLinked {
                  * @param password password as defined in the IRCd config
                  * @return ip builder part
                  */
-                @NonNull Ip password(@Nullable String password);
+                @NonNull Gateway password(@Nullable String password);
             }
 
             /**
@@ -583,11 +583,18 @@ public interface Client extends ClientLinked {
         @NonNull Listeners listeners();
 
         /**
+         * Returns proxy builder methods.
+         *
+         * @return proxy builder
+         */
+        @NonNull Proxy proxy();
+
+        /**
          * Returns webirc builder methods.
          *
          * @return webirc builder
          */
-        WebIrc.@NonNull Host webIrc();
+        WebIrc.@NonNull Password webIrc();
 
         /**
          * Returns the management-related builder methods.

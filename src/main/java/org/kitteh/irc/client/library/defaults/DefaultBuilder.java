@@ -195,14 +195,14 @@ public class DefaultBuilder implements Client.Builder {
         }
     }
 
-    private class WebIrcImpl implements WebIrc, WebIrc.Host, WebIrc.Gateway, WebIrc.Password, WebIrc.Ip {
+    private class WebIrcImpl implements WebIrc, WebIrc.Hostname, WebIrc.Gateway, WebIrc.Password, WebIrc.Ip {
         @Override
-        public @NonNull WebIrcImpl host(@Nullable String host) {
-            if (host != null) {
-                Sanity.safeMessageCheck(host, "Host");
-                Sanity.noSpaces(host, "Host");
+        public @NonNull WebIrcImpl hostname(@Nullable String hostname) {
+            if (hostname != null) {
+                Sanity.safeMessageCheck(hostname, "Host");
+                Sanity.noSpaces(hostname, "Host");
             }
-            DefaultBuilder.this.webircHost = host;
+            DefaultBuilder.this.webircHost = hostname;
             return this;
         }
 
@@ -409,7 +409,12 @@ public class DefaultBuilder implements Client.Builder {
     }
 
     @Override
-    public WebIrc.@NonNull Host webIrc() {
+    public @NonNull Proxy proxy() {
+        return new ProxyImpl();
+    }
+
+    @Override
+    public WebIrc.@NonNull Password webIrc() {
         return new WebIrcImpl();
     }
 
