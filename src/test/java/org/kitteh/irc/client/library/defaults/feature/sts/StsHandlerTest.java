@@ -57,6 +57,37 @@ public class StsHandlerTest {
     }
 
     /**
+     * Checks that the STS Handler works now that the STS spec has
+     * been ratified, and no longer uses a draft/ prefix.
+     */
+    @Test
+    public void testHandlerWithNonDraftPolicy() {
+        final FakeClient client = new FakeClient();
+        client.setSecure(false);
+        final StubMachine machine = new StubMachine();
+        Assert.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
+
+        StsHandler handler = new StsHandler(machine, client);
+
+        List<CapabilityState> capabilities = new ArrayList<>();
+        final String policyString = "sts=" + StsPolicy.POLICY_OPTION_KEY_PORT + "=7681," + StsPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
+        capabilities.add(new DefaultCapabilityState(client, policyString));
+        List<ServerMessage> messages = new ArrayList<>();
+        messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
+        handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
+        Assert.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
+
+        StsPolicy extractedPolicy = machine.getPolicy();
+        final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
+        Assert.assertEquals("7681", port);
+
+        final String duration = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_DURATION);
+        Assert.assertEquals("300", duration);
+
+        Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
+    }
+
+    /**
      * Checks that the STS Handler works when the STS policy arrives
      * via CAP new.
      */

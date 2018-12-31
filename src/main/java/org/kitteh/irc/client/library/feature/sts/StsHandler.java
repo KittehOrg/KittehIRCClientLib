@@ -46,8 +46,7 @@ public class StsHandler {
      * Draft prepend for capability.
      */
     public static final String DRAFT = "draft/";
-    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals(DRAFT + "sts");
-
+    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals(DRAFT + "sts") || c.getName().equals("sts");
     private final StsMachine machine;
     private final Client.WithManagement client;
     private boolean isSecure;
