@@ -31,7 +31,7 @@ public class Example {
     }
 
     public static void main(String[] args) {
-        Client client = Client.builder().nick("Kitteh").serverHost("127.0.0.1").buildAndConnect();
+        Client client = Client.builder().nick("Kitteh").server().host("127.0.0.1").then().buildAndConnect();
         client.getEventManager().registerEventListener(new Listener());
         client.addChannel("#kicl");
     }

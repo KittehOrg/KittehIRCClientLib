@@ -28,7 +28,7 @@ A hello world is as simple as:
 ```java
 public class HelloKitteh {
     public static void main(String[] args) {
-        Client client = Client.builder().nick("KittehBot").serverHost("127.0.0.1").buildAndConnect();
+        Client client = Client.builder().nick("KittehBot").server().host("127.0.0.1").then().buildAndConnect();
 
         client.addChannel("#kitteh.org");
         client.sendMessage("#kitteh.org", "Hello World!");
@@ -43,7 +43,7 @@ public class HelloKitteh {
 
 It can be useful to see input, output, and exceptions thrown while developing.
 
-Use the `ClientBuilder` methods `listenInput`, `listenOutput`, and `listenException` to catch these little surprises.
+Use the `Client.Builder` to set listeners to catch these little surprises.
 Here is a simple example, printing all of the info to the console:
 
 ```java
@@ -52,9 +52,9 @@ public class DebugKitteh {
         Client.Builder builder = Client.builder();
 
         SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-        builder.inputListener(line -> System.out.println(sdf.format(new Date()) + ' ' + "[I] " + line));
-        builder.outputListener(line -> System.out.println(sdf.format(new Date()) + ' ' + "[O] " + line));
-        builder.exceptionListener(Throwable::printStackTrace);
+        builder.listeners().input(line -> System.out.println(sdf.format(new Date()) + ' ' + "[I] " + line));
+        builder.listeners().output(line -> System.out.println(sdf.format(new Date()) + ' ' + "[O] " + line));
+        builder.listeners().exception(Throwable::printStackTrace);
         // and then build() or buildAndConnect()
     }
 }

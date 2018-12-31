@@ -10,18 +10,14 @@ command. The account name and password are provided:
 PRIVMSG NickServ :IDENTIFY accountname password
 ```
 
-It's possible to extend the `org.kitteh.irc.client.library.auth.protocol.NickServ` class and override the
-`getNickServNick()` method if your network uses a different nick for the NickServ service (but the command syntax is
-the same).
-
 To configure the KICL client to use the NickServ authentication class:
 
 ```java
-client.getAuthManager().addProtocol(new NickServ(client, "accountname", "password"));
+client.getAuthManager().addProtocol(NickServ.builder(client).account("accountname").password("password").build());
 ```
 
 NickServ is used with this syntax on networks which use Atheme. This includes Freenode and EsperNet amongst others.
-Anope should also support this syntax.
+Anope should also support this syntax. See the javadocs for more customization.
 
 ### AuthServ
 

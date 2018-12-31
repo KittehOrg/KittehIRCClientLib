@@ -12,7 +12,7 @@ the `AbstractSaslProtocol` class. It's also possible to add [non-SASL](alt_auth.
 Protocols can be added by calling the `AuthManager#addProtocol` method, for example:
 
 ```java
-client.getAuthManager().addProtocol(new SaslPlain(client, "accountname", "password"))
+client.getAuthManager().addProtocol(new SaslPlain(client, "accountname", "password"));
 ```
 
 The three available mechanisms are described below. The server-side SASL authentication logic is almost always performed
@@ -31,7 +31,7 @@ appear at the start of the AUTHENTICATE argument. The argument is base64 encoded
 call the `AuthManager#addProtocol` method and supply an instance of `SaslPlain`:
 
 ```java
-Client client = Client.builder().nick("Kitteh").serverHost("127.0.0.1").build();
+Client client = Client.builder().nick("Kitteh").server().host("127.0.0.1").then().build();
 client.getAuthManager().addProtocol(new SaslPlain(client, "Kitteh", "password"));
 ```
 
@@ -44,7 +44,7 @@ For Atheme, the EXTERNAL mechanism looks at the client's SSL certificate and che
 associated with a services account. The client will become authenticated if so.
 
 ```java
-Client client = Client.builder().nick("Kitteh").serverHost("127.0.0.1").secureKeyCertChain(certFile).secureKey(keyFile).build();
+Client client = Client.builder().nick("Kitteh").server().host("127.0.0.1").secureKeyCertChain(null).secureKey(null).then().build();;
 client.getAuthManager().addProtocol(new SaslExternal(client));
 ```
 

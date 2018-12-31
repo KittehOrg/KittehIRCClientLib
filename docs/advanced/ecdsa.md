@@ -13,21 +13,21 @@ It's possible to programmatically generate a keypair and retrieve the encoded
 public key for use with NickServ:
 
 ```java
-SaslECDSANIST256PChallenge.ECKeyPair ecKeyPair = SaslECDSANIST256PChallenge.getNewKey();
-System.out.println("/msg NickServ SET PUBKEY " + SaslECDSANIST256PChallenge.getCompressedBase64PublicKey(ecKeyPair.getPublic()));
+SaslEcdsaNist256PChallenge.ECKeyPair ecKeyPair = SaslEcdsaNist256PChallenge.getNewKey();
+System.out.println("/msg NickServ SET PUBKEY " + SaslEcdsaNist256PChallenge.getCompressedBase64PublicKey(ecKeyPair.getPublic()));
 ```
 
 You can get a base64 representation of the private key. This could then be
 stored in e.g. a config file:
 
 ```java
-String base64Representation = SaslECDSANIST256PChallenge.base64Encode(ecKeyPair.getPrivate());
+String base64Representation = SaslEcdsaNist256PChallenge.base64Encode(ecKeyPair.getPrivate());
 ```
 
 You can get a private key back from a base64 representation using:
 
 ```java
-ECPrivateKey privateKey = SaslECDSANIST256PChallenge.getPrivateKey(base64Representation);
+ECPrivateKey privateKey = SaslEcdsaNist256PChallenge.getPrivateKey(base64Representation);
 ```
 
 #### Generating a keypair using OpenSSL
@@ -53,7 +53,7 @@ openssl pkcs8 -topk8 -inform PEM -outform DER -in private_key.pem -out private_k
 ```
 
 Now, we base64 the two DER files so they can be used as arguments to the `getPublicKey`
-and `getPrivateKey` static methods on the `SaslECDSANIST256PChallenge` class:
+and `getPrivateKey` static methods on the `SaslEcdsaNist256PChallenge` class:
 
 ```sh
 cat public_key.der | base64 | tr -d "\n"
@@ -76,7 +76,7 @@ You can use `/msg NickServ SET PUBKEY <pubkey>` where `<pubkey>` is the output f
 To get KICL to do the authentication, call the `addProtocol` method on the `AuthManager` instance:
 
 ```java
-client.getAuthManager().addProtocol(new SaslECDSANIST256PChallenge(client, "accountname", privateKey));
+client.getAuthManager().addProtocol(new SaslEcdsaNist256PChallenge(client, "accountname", privateKey));
 ```
 
 ### Protocol description

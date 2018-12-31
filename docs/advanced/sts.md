@@ -1,8 +1,7 @@
 ### Strict transport security
 
-Due to recent development efforts, KICL now supports the draft IRCv3
-[STS specification](https://ircv3.net/specs/core/sts-3.3.html) which adds support for strict transport security
-policies to be set by the IRC server administrators.
+KICL supports the IRCv3 [STS specification](https://ircv3.net/specs/core/sts-3.3.html) which adds support
+for strict transport security policies to be set by IRC server administrators.
 
 These policies tell the client to connect **only via a secure TLS connection** for a given duration. They also specify
 the port on which the client can reach the secure service. Further details on how the system works can be found in the
@@ -31,7 +30,7 @@ Alternatively, a default class (currently `StsPropertiesStorageManager`) which s
 file is available to use and built-in to KICL. A utility method makes using this default implementation very straightforward:
 
 ```java
-Client client = Client.builder().serverHost("irc.kitteh.org").stsStorageManager(StsUtil.getDefaultStorageManager()).build();
+Client client = Client.builder().server().host("irc.kitteh.org").then().management().stsStorageManager(StsUtil.getDefaultStorageManager()).then().buildAndConnect();
 client.addChannel("#kicl");
 ```
 
@@ -53,7 +52,7 @@ client.getStsMachine().get().getStorageManager().addEntry("irc.kitteh.org", 5000
 
 The InspIRCd test network has support for STS, currently using a CAP key of "draft/sts". Due to a
 [recent spec change](https://github.com/ircv3/ircv3-specifications/commit/c0fcd05aceaa7f117d438ebc31814e1d49226967),
-KICL's implementation currently also uses this key.
+KICL's implementation supports this key.
 
 There is a simple [Charybdis module](https://github.com/lol768/charybdis/blob/release/4/extensions/sts_module.c)
 that was created as part of the work on this functionality for testing purposes only. This has also been updated

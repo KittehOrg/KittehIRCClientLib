@@ -46,7 +46,7 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 * server-time
 * userhost-in-names
 * STS
-    * Draft spec supported.
+    * Supported as either 'sts' or 'draft/sts' capability.
     * `STSPropertiesStorageManager` as default implementation.
 * SNI
     * Draft spec supported.
