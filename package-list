@@ -6,6 +6,7 @@ org.kitteh.irc.client.library.defaults.element.isupport
 org.kitteh.irc.client.library.defaults.element.messagetag
 org.kitteh.irc.client.library.defaults.element.mode
 org.kitteh.irc.client.library.defaults.feature
+org.kitteh.irc.client.library.defaults.listener
 org.kitteh.irc.client.library.element
 org.kitteh.irc.client.library.element.mode
 org.kitteh.irc.client.library.event
@@ -21,6 +22,7 @@ org.kitteh.irc.client.library.feature.auth
 org.kitteh.irc.client.library.feature.auth.element
 org.kitteh.irc.client.library.feature.defaultmessage
 org.kitteh.irc.client.library.feature.filter
+org.kitteh.irc.client.library.feature.resolver
 org.kitteh.irc.client.library.feature.sending
 org.kitteh.irc.client.library.feature.sts
 org.kitteh.irc.client.library.feature.twitch
