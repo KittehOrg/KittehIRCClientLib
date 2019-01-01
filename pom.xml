@@ -4,7 +4,7 @@
 
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.0</version>
 
     <packaging>jar</packaging>
 
@@ -123,9 +123,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>${plugin.javadocs.version}</version>
-                        <configuration>
-                            <excludePackageNames>org.kitteh.irc.client.library.implementation</excludePackageNames>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -166,9 +163,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>${plugin.javadocs.version}</version>
-                        <configuration>
-                            <excludePackageNames>org.kitteh.irc.client.library.implementation</excludePackageNames>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -317,9 +311,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${plugin.javadocs.version}</version>
-                <configuration>
-                    <excludePackageNames>org.kitteh.irc.client.library.implementation</excludePackageNames>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
