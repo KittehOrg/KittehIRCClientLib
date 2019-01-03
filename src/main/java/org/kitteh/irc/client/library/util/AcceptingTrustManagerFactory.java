@@ -41,7 +41,9 @@ import java.security.cert.X509Certificate;
  * A very friendly, accepting trust manager factory. Allows anything through.
  *
  * @see Client.Builder.Server#secureTrustManagerFactory(TrustManagerFactory)
+ * @deprecated Use {@link InsecureTrustManagerFactory} instead.
  */
+@Deprecated
 public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactory {
     private class TrustingManager implements X509TrustManager {
         @Override
@@ -89,7 +91,9 @@ public final class AcceptingTrustManagerFactory extends SimpleTrustManagerFactor
      *
      * @param factory the factory
      * @return true if the factory is insecure, false if not
+     * @deprecated use {@link SslUtil#isInsecure(TrustManagerFactory)}
      */
+    @Deprecated
     public static boolean isInsecure(TrustManagerFactory factory) {
         return (factory instanceof AcceptingTrustManagerFactory) || (factory instanceof InsecureTrustManagerFactory);
     }
