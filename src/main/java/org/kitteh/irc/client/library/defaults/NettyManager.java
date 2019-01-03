@@ -67,8 +67,8 @@ import org.kitteh.irc.client.library.feature.resolver.JavaResolver;
 import org.kitteh.irc.client.library.feature.sts.StsClientState;
 import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.feature.sts.StsPolicy;
-import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.HostWithPort;
+import org.kitteh.irc.client.library.util.SslUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import javax.net.ssl.SSLException;
@@ -192,7 +192,7 @@ public class NettyManager {
                     if (factory == null) {
                         factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                         factory.init((KeyStore) null);
-                    } else if (AcceptingTrustManagerFactory.isInsecure(factory)) {
+                    } else if (SslUtil.isInsecure(factory)) {
                         this.client.getExceptionListener().queue(new KittehNagException(String.format("Client '%s' is using an insecure trust manager factory.", this.client)));
                     }
                     SslContext sslContext = SslContextBuilder.forClient().trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();

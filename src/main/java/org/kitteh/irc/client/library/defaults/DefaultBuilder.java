@@ -46,9 +46,9 @@ import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
-import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
 import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.SslUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.Version;
 
@@ -426,7 +426,7 @@ public class DefaultBuilder implements Client.Builder {
     @Override
     public @NonNull Client build() {
         if (this.stsStorageManager != null) {
-            Sanity.truthiness(!AcceptingTrustManagerFactory.isInsecure(this.secureTrustManagerFactory), "Cannot use STS with an insecure trust manager.");
+            Sanity.truthiness(!SslUtil.isInsecure(this.secureTrustManagerFactory), "Cannot use STS with an insecure trust manager.");
         }
 
         HostWithPort proxyAddress = null;
