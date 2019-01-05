@@ -48,6 +48,16 @@ public interface ISupportParameter extends ClientLinked {
     }
 
     /**
+     * Represents the length limit of an away reason.
+     */
+    interface AwayLen extends IntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "AWAYLEN";
+    }
+
+    /**
      * Represents the {@link org.kitteh.irc.client.library.feature.CaseMapping}
      * supported by the server.
      */
@@ -124,6 +134,16 @@ public interface ISupportParameter extends ClientLinked {
          * @return supported prefixes
          */
         @NonNull List<Character> getTypes();
+    }
+
+    /**
+     * Represents the length limit of a kick reason.
+     */
+    interface KickLen extends IntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "KICKLEN";
     }
 
     /**
