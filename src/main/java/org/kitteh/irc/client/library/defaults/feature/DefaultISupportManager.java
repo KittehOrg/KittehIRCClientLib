@@ -27,11 +27,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportAwayLen;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportCaseMapping;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanLimit;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanModes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanTypes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChannelLen;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportKickLen;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportModes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportNetwork;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportNickLen;
@@ -57,11 +59,13 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
      */
     public DefaultISupportManager(Client.WithManagement client) {
         super(client);
+        this.registerParameter(ISupportParameter.AwayLen.NAME, DefaultISupportAwayLen::new);
         this.registerParameter(ISupportParameter.CaseMapping.NAME, DefaultISupportCaseMapping::new);
         this.registerParameter(ISupportParameter.ChannelLen.NAME, DefaultISupportChannelLen::new);
         this.registerParameter(ISupportParameter.ChanLimit.NAME, DefaultISupportChanLimit::new);
         this.registerParameter(ISupportParameter.ChanModes.NAME, DefaultISupportChanModes::new);
         this.registerParameter(ISupportParameter.ChanTypes.NAME, DefaultISupportChanTypes::new);
+        this.registerParameter(ISupportParameter.KickLen.NAME, DefaultISupportKickLen::new);
         this.registerParameter(ISupportParameter.Modes.NAME, DefaultISupportModes::new);
         this.registerParameter(ISupportParameter.Network.NAME, DefaultISupportNetwork::new);
         this.registerParameter(ISupportParameter.NickLen.NAME, DefaultISupportNickLen::new);

@@ -97,6 +97,16 @@ public interface ServerInfo {
     @NonNull Optional<String> getAddress();
 
     /**
+     * Gets the maximum length of away reasons.
+     *
+     * @return away reason length limit or -1 if unknown
+     */
+    default int getAwayReasonLengthLimit() {
+        Optional<ISupportParameter.AwayLen> optional = this.getISupportParameter(ISupportParameter.AwayLen.NAME, ISupportParameter.AwayLen.class);
+        return optional.map(ISupportParameter.IntegerParameter::getInteger).orElse(-1);
+    }
+
+    /**
      * Gets the casemapping for the server. By default {@link
      * CaseMapping#RFC1459}
      *
@@ -208,6 +218,16 @@ public interface ServerInfo {
     @NonNull Map<String, ISupportParameter> getISupportParameters();
 
     /**
+     * Gets the maximum length of kick reasons.
+     *
+     * @return kick reason length limit or -1 if unknown
+     */
+    default int getKickReasonLengthLimit() {
+        final Optional<ISupportParameter.KickLen> optional = this.getISupportParameter(ISupportParameter.KickLen.NAME, ISupportParameter.KickLen.class);
+        return optional.map(ISupportParameter.IntegerParameter::getInteger).orElse(-1);
+    }
+
+    /**
      * Gets the server's MOTD.
      *
      * @return motd if known
@@ -231,6 +251,16 @@ public interface ServerInfo {
      */
     default int getNickLengthLimit() {
         Optional<ISupportParameter.NickLen> optional = this.getISupportParameter(ISupportParameter.NickLen.NAME, ISupportParameter.NickLen.class);
+        return optional.map(ISupportParameter.IntegerParameter::getInteger).orElse(-1);
+    }
+
+    /**
+     * Gets the maximum length of topics.
+     *
+     * @return topic length limit or -1 if unknown
+     */
+    default int getTopicLengthLimit() {
+        final Optional<ISupportParameter.TopicLen> optional = this.getISupportParameter(ISupportParameter.TopicLen.NAME, ISupportParameter.TopicLen.class);
         return optional.map(ISupportParameter.IntegerParameter::getInteger).orElse(-1);
     }
 
