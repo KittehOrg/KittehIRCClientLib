@@ -203,6 +203,7 @@ public class DefaultClient implements Client.WithManagement {
     private final MessageSendingQueue messageSendingImmediate;
     private MessageSendingQueue messageSendingScheduled;
     private final Object messageSendingLock = new Object();
+    private boolean isSending = false;
 
     private String name;
     private InetSocketAddress bindAddress;
@@ -629,7 +630,9 @@ public class DefaultClient implements Client.WithManagement {
             this.messageSendingScheduled.shutdown().forEach(newQueue::queue);
             Optional<Consumer<String>> consumer = this.messageSendingScheduled.getConsumer();
             this.messageSendingScheduled = newQueue;
-            consumer.ifPresent(con -> this.messageSendingScheduled.beginSending(con));
+            if (this.isSending && consumer.isPresent()) {
+                this.messageSendingScheduled.beginSending(consumer.get());
+            }
         }
     }
 
@@ -765,6 +768,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void pauseMessageSending() {
+        this.isSending = false;
         synchronized (this.messageSendingLock) {
             this.messageSendingImmediate.pause();
             this.messageSendingScheduled.pause();
@@ -799,6 +803,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void startSending() {
+        this.isSending = true;
         this.connection.startPing();
         synchronized (this.messageSendingLock) {
             this.messageSendingScheduled.beginSending(this.messageSendingImmediate::queue);
