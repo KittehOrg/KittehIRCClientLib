@@ -109,6 +109,7 @@ public final class TwitchSupport {
                 .stream()
                 .filter(l -> l.getClass().equals(DefaultVersionListener.class))
                 .forEach(client.getEventManager()::unregisterEventListener);
+        client.getEventManager().registerEventListener(new TwitchListener(client));
         client.getEventManager().registerEventListener(new TwitchVersionListener((Client.WithManagement) client));
 
         client.setMessageSendingQueueSupplier(TwitchDelaySender.getSupplier(alwaysModOrOp));
