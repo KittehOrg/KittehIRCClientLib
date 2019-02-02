@@ -72,5 +72,5 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
     * The metadata 3.2 spec was deprecated.
     * KICL will consider supporting a new spec if one is proposed.
 * TLS
-    * This is a STARTTLS approach, which is silly when the default KICL strategy is SSL.
+    * This is an [officially deprecated](https://github.com/ircv3/ircv3.github.io/pull/211) STARTTLS approach, which is silly when the default KICL strategy is TLS.
     * Use the [SSL](advanced/ssl.md) and [STS](advanced/sts.md) support that KICL has built-in instead.
