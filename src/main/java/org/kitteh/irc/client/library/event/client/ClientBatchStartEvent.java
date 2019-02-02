@@ -25,32 +25,47 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
-import org.kitteh.irc.client.library.feature.filter.CommandFilter;
+import org.kitteh.irc.client.library.event.abstractbase.ClientBatchEventBase;
+import org.kitteh.irc.client.library.util.BatchReferenceTag;
 
 import java.util.List;
 
 /**
- * Fires when the client receives a command message. Note that the client
- * itself listens to this event internally to fire events at an mBassador
- * priority of Integer.MAX_VALUE - 1. If you wish to beat the client to
- * listening to a command, listen at priority INTEGER.MAX_VALUE.
- *
- * @see CommandFilter
+ * A batch has started.
  */
-public class ClientReceiveCommandEvent extends ClientReceiveServerMessageEventBase {
+public class ClientBatchStartEvent extends ClientBatchEventBase {
+    private boolean ignore = false;
+
     /**
      * Constructs the event.
      *
-     * @param client client
-     * @param serverMessage server message
-     * @param actor actor
-     * @param command command
-     * @param parameters parameters
+     * @param client the client
+     * @param originalMessages original messages
+     * @param batchReferenceTag reference-tag and associated information
      */
-    public ClientReceiveCommandEvent(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor actor, @NonNull String command, @NonNull List<String> parameters) {
-        super(client, serverMessage, actor, command, parameters);
+    public ClientBatchStartEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull BatchReferenceTag batchReferenceTag) {
+        super(client, originalMessages, batchReferenceTag);
+    }
+
+    /**
+     * Gets if the reference tag will be ignored, resulting in tagged messages
+     * being processed as if the batch tag were not holding them back.
+     *
+     * @return true if the tag will be ignored
+     * @see #setReferenceTagIgnored(boolean)
+     */
+    public boolean isReferenceTagIgnored() {
+        return this.ignore;
+    }
+
+    /**
+     * Sets if the reference tag will be ignored, resulting in tagged messages
+     * being processed as if the batch tag were not holding them back.
+     *
+     * @param ignore true to ignore the tag
+     */
+    public void setReferenceTagIgnored(boolean ignore) {
+        this.ignore = ignore;
     }
 }

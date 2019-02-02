@@ -51,10 +51,10 @@ public class ClientReceiveNumericEvent extends ClientReceiveServerMessageEventBa
      * @param server server
      * @param command command
      * @param numeric numeric
-     * @param args args
+     * @param parameters parameters
      */
-    public ClientReceiveNumericEvent(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor server, String command, int numeric, @NonNull List<String> args) {
-        super(client, serverMessage, server, command, args);
+    public ClientReceiveNumericEvent(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor server, String command, int numeric, @NonNull List<String> parameters) {
+        super(client, serverMessage, server, command, parameters);
         this.numeric = numeric;
     }
 

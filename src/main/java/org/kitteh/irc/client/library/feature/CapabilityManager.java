@@ -82,6 +82,11 @@ public interface CapabilityManager {
         public static final String AWAY_NOTIFY = "away-notify";
 
         /**
+         * Batched messages.
+         */
+        public static final String BATCH = "batch";
+
+        /**
          * Capability change notification. Implicitly enabled by the server
          * when "CAP LS 302" (or higher version) is sent and therefore it
          * is not requested by the default capability manager.
