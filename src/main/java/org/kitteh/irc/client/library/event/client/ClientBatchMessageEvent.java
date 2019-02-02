@@ -25,32 +25,25 @@ package org.kitteh.irc.client.library.event.client;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
-import org.kitteh.irc.client.library.feature.filter.CommandFilter;
+import org.kitteh.irc.client.library.event.abstractbase.ClientBatchEventBase;
+import org.kitteh.irc.client.library.util.BatchReferenceTag;
 
 import java.util.List;
 
 /**
- * Fires when the client receives a command message. Note that the client
- * itself listens to this event internally to fire events at an mBassador
- * priority of Integer.MAX_VALUE - 1. If you wish to beat the client to
- * listening to a command, listen at priority INTEGER.MAX_VALUE.
- *
- * @see CommandFilter
+ * A new message has been added to a batch reference tag, and will be held
+ * until the batch finishes.
  */
-public class ClientReceiveCommandEvent extends ClientReceiveServerMessageEventBase {
+public class ClientBatchMessageEvent extends ClientBatchEventBase {
     /**
      * Constructs the event.
      *
-     * @param client client
-     * @param serverMessage server message
-     * @param actor actor
-     * @param command command
-     * @param parameters parameters
+     * @param client the client
+     * @param originalMessages original messages
+     * @param batchReferenceTag reference-tag and associated information
      */
-    public ClientReceiveCommandEvent(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor actor, @NonNull String command, @NonNull List<String> parameters) {
-        super(client, serverMessage, actor, command, parameters);
+    public ClientBatchMessageEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull BatchReferenceTag batchReferenceTag) {
+        super(client, originalMessages, batchReferenceTag);
     }
 }

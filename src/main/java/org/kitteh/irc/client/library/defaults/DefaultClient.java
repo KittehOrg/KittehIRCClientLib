@@ -43,8 +43,12 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.event.client.ClientBatchEndEvent;
+import org.kitteh.irc.client.library.event.client.ClientBatchMessageEvent;
+import org.kitteh.irc.client.library.event.client.ClientBatchStartEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
@@ -65,6 +69,7 @@ import org.kitteh.irc.client.library.feature.sts.MemoryStsMachine;
 import org.kitteh.irc.client.library.feature.sts.StsHandler;
 import org.kitteh.irc.client.library.feature.sts.StsMachine;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
+import org.kitteh.irc.client.library.util.BatchReferenceTag;
 import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.CtcpUtil;
 import org.kitteh.irc.client.library.util.Cutter;
@@ -169,6 +174,7 @@ public class DefaultClient implements Client.WithManagement {
     private final String[] pingPurr = new String[]{"MEOW", "MEOW!", "PURR", "PURRRRRRR", "MEOWMEOW", ":3", "HISS"};
     private int pingPurrCount;
 
+    private final HashMap<String, BatchReferenceTag> batchHold = new HashMap<>();
     private final InputProcessor processor;
     private ServerInfo.WithManagement serverInfo;
 
@@ -880,14 +886,14 @@ public class DefaultClient implements Client.WithManagement {
         final Actor actor = this.actorTracker.getActor(actorName);
 
         String commandString = null;
-        List<String> args = new ArrayList<>();
+        List<String> parameters = new ArrayList<>();
 
-        boolean dobbyIsFreeElf = false;
+        boolean noParamsWithColon = true;
         free:
         while ((next = line.indexOf(' ', position)) != -1) {
             if (line.charAt(position) == ':') {
                 position++;
-                dobbyIsFreeElf = true;
+                noParamsWithColon = false;
                 /* I've got to */
                 break free;
             } else if (position != next) {
@@ -895,17 +901,17 @@ public class DefaultClient implements Client.WithManagement {
                 if (commandString == null) {
                     commandString = bit;
                 } else {
-                    args.add(bit);
+                    parameters.add(bit);
                 }
             }
             position = next + 1;
         }
         if (position != line.length()) {
-            String bit = line.substring((!dobbyIsFreeElf && (line.charAt(position) == ':')) ? (position + 1) : position);
+            String bit = line.substring((noParamsWithColon && (line.charAt(position) == ':')) ? (position + 1) : position);
             if (commandString == null) {
                 commandString = bit;
             } else {
-                args.add(bit);
+                parameters.add(bit);
             }
         }
 
@@ -913,12 +919,71 @@ public class DefaultClient implements Client.WithManagement {
             throw new KittehServerMessageException(new DefaultServerMessage(line, tags), "Server sent a message without a command");
         }
 
+        ClientReceiveServerMessageEvent event;
         try {
             int numeric = Integer.parseInt(commandString);
-            this.eventManager.callEvent(new ClientReceiveNumericEvent(this, new DefaultServerMessage.NumericCommand(numeric, line, tags), actor, commandString, numeric, args));
+            event = new ClientReceiveNumericEvent(this, new DefaultServerMessage.NumericCommand(numeric, line, tags), actor, commandString, numeric, parameters);
         } catch (NumberFormatException exception) {
-            this.eventManager.callEvent(new ClientReceiveCommandEvent(this, new DefaultServerMessage.StringCommand(commandString, line, tags), actor, commandString, args));
+            event = new ClientReceiveCommandEvent(this, new DefaultServerMessage.StringCommand(commandString, line, tags), actor, commandString, parameters);
         }
+
+        Optional<MessageTag> batchTag = tags.stream().filter(tag -> CapabilityManager.Defaults.BATCH.equalsIgnoreCase(tag.getName())).findFirst();
+        if (batchTag.isPresent() && batchTag.get().getValue().isPresent()) {
+            String batch = batchTag.get().getValue().get();
+            BatchReferenceTag tag = this.batchHold.get(batch);
+            if (tag != null) {
+                tag.addEvent(event);
+                this.eventManager.callEvent(new ClientBatchMessageEvent(this, event.getOriginalMessages(), tag));
+                return;
+            }
+            // else improper batch
+        }
+
+        this.sendLineEvent(event);
+    }
+
+    private void sendLineEvent(@NonNull ClientReceiveServerMessageEvent event) {
+        List<String> parameters = event.getParameters();
+        KittehServerMessageException exception = null;
+        onThroughToTheOtherSide:
+        if (CapabilityManager.Defaults.BATCH.equalsIgnoreCase(event.getCommand())) {
+            if (parameters.isEmpty() || (parameters.get(0).length() < 2)) {
+                exception = new KittehServerMessageException(event.getServerMessage(), "Server sent a BATCH without sufficient information: Missing name and type.");
+                // Tried to run, tried to hide,
+                break onThroughToTheOtherSide;
+            }
+            char plusOrMinus = parameters.get(0).charAt(0);
+            String refTag = parameters.get(0).substring(1);
+            if (plusOrMinus == '+') {
+                if (event.getParameters().size() < 2) {
+                    exception = new KittehServerMessageException(event.getServerMessage(), "Server sent a BATCH without sufficient information: Missing type.");
+                    // But can you still recall, the time we cried
+                    break onThroughToTheOtherSide;
+                }
+                String type = parameters.get(1);
+                List<String> batchParameters = new ArrayList<>(parameters.subList(2, parameters.size()));
+                BatchReferenceTag tag = new BatchReferenceTag(refTag, type, batchParameters);
+                ClientBatchStartEvent batchEvent = new ClientBatchStartEvent(this, event.getOriginalMessages(), tag);
+                this.eventManager.callEvent(batchEvent);
+                if (!batchEvent.isReferenceTagIgnored()) {
+                    this.batchHold.put(refTag, tag);
+                }
+            } else if (plusOrMinus == '-') {
+                BatchReferenceTag tag = this.batchHold.remove(refTag);
+                if (tag != null) {
+                    this.eventManager.callEvent(new ClientBatchEndEvent(this, event.getOriginalMessages(), tag));
+                    tag.getEvents().forEach(this::sendLineEvent);
+                }
+            } else {
+                exception = new KittehServerMessageException(event.getServerMessage(), "Server sent a BATCH without sufficient information: Missing +/-.");
+            }
+        }
+
+        if (exception != null) {
+            throw exception;
+        }
+
+        this.eventManager.callEvent(event);
     }
 
     @Override
