@@ -73,4 +73,4 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
     * KICL will consider supporting a new spec if one is proposed.
 * TLS
     * This is an [officially deprecated](https://github.com/ircv3/ircv3.github.io/pull/211) STARTTLS approach, which is silly when the default KICL strategy is TLS.
-    * Use the [SSL](advanced/ssl.md) and [STS](advanced/sts.md) support that KICL has built-in instead.
+    * Use the [TLS](advanced/tls.md) and [STS](advanced/sts.md) support that KICL has built-in instead.

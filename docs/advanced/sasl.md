@@ -40,7 +40,7 @@ of IRC.
 
 ### EXTERNAL Mechanism
 
-For Atheme, the EXTERNAL mechanism looks at the client's SSL certificate and checks to see if the fingerprint has been
+For Atheme, the EXTERNAL mechanism looks at the client's TLS certificate and checks to see if the fingerprint has been
 associated with a services account. The client will become authenticated if so.
 
 ```java
@@ -48,7 +48,7 @@ Client client = Client.builder().nick("Kitteh").server().host("127.0.0.1").secur
 client.getAuthManager().addProtocol(new SaslExternal(client));
 ```
 
-See the [SSL docs](ssl.md) for more information on the `secureKeyCertChain` and `secureKey` methods.
+See the [TLS docs](tls.md) for more information on the `secureKeyCertChain` and `secureKey` methods.
 
 ### ECDSA-NIST256P-CHALLENGE Mechanism
 

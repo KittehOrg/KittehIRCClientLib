@@ -292,8 +292,8 @@ public class DefaultClient implements Client.WithManagement {
             this.configureSts();
         } else if (!this.isSecureConnection()) {
             this.exceptionListener.queue(new KittehNagException(
-                    "Connection is insecure. If the server does not support SSL, consider enabling STS support to " +
-                            "facilitate automatic SSL upgrades when it does."
+                    "Connection is insecure. If the server does not support TLS, consider enabling STS support to " +
+                            "facilitate automatic TLS upgrades when it does."
             ));
         }
 

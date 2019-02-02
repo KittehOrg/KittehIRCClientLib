@@ -180,7 +180,7 @@ public class NettyManager {
                 }
             });
 
-            // SSL
+            // TLS
             if (this.client.isSecureConnection()) {
                 try {
                     Path keyCertChain = this.client.getSecureKeyCertChain();

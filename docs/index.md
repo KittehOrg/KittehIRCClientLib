@@ -7,7 +7,7 @@ and utilizes Java 8's Optional to avoid returning null in the API.
 Some niceties about KICL include:
 
 * Events model for handling information from the server.
-* [Full SSL support](advanced/ssl.md).
+* [Full TLS support](advanced/tls.md).
 * [WEBIRC authentication](advanced/webirc.md).
 * Fully featured CTCP support.
 * Rather comprehensive [IRCv3 support](ircv3.md) including:
@@ -37,7 +37,7 @@ public class HelloKitteh {
 ```
 
 *Note: By default KICL connects over
-[SSL, which requires additional setup on certain networks](advanced/ssl.md).*
+[TLS, which requires additional setup on certain networks](advanced/tls.md).*
 
 ### Debugging
 

@@ -192,20 +192,20 @@ public interface Client extends ClientLinked {
             @NonNull Server password(@Nullable String password);
 
             /**
-             * Sets whether the client connects via TLS/SSL.
+             * Sets whether the client connects via TLS.
              * <p>
              * Note that by default the TrustManager used does not accept the
              * certificates of many popular networks. You must use {@link
              * #secureTrustManagerFactory(TrustManagerFactory)} to set your own
              * TrustManagerFactory.
              *
-             * @param secure true for TLS/SSL
+             * @param secure true for TLS
              * @return this builder
              */
             @NonNull Server secure(boolean secure);
 
             /**
-             * Sets the key for SSL connection.
+             * Sets the key for TLS connection.
              *
              * @param keyCertChainFile X.509 certificate chain file in PEM format
              * @return this builder
@@ -214,7 +214,7 @@ public interface Client extends ClientLinked {
             @NonNull Server secureKeyCertChain(@Nullable Path keyCertChainFile);
 
             /**
-             * Sets the private key for SSL connection.
+             * Sets the private key for TLS connection.
              *
              * @param keyFile PKCS#8 private key file in PEM format
              * @return this builder
@@ -223,7 +223,7 @@ public interface Client extends ClientLinked {
             @NonNull Server secureKey(@Nullable Path keyFile);
 
             /**
-             * Sets the private key password for SSL connection.
+             * Sets the private key password for TLS connection.
              *
              * @param password password for private key
              * @return this builder
@@ -232,7 +232,7 @@ public interface Client extends ClientLinked {
             @NonNull Server secureKeyPassword(@Nullable String password);
 
             /**
-             * Sets the {@link TrustManagerFactory} for SSL connection.
+             * Sets the {@link TrustManagerFactory} for TLS connection.
              *
              * @param factory trust manager supplier
              * @return this builder
@@ -768,21 +768,21 @@ public interface Client extends ClientLinked {
         @NonNull String getRequestedNick();
 
         /**
-         * Gets the TLS/SSL key.
+         * Gets the TLS key.
          *
          * @return key
          */
         @Nullable Path getSecureKey();
 
         /**
-         * Gets the TLS/SSL key certificate chain.
+         * Gets the TLS key certificate chain.
          *
          * @return key cert chain
          */
         @Nullable Path getSecureKeyCertChain();
 
         /**
-         * Gets the TLS/SSL key password.
+         * Gets the TLS key password.
          *
          * @return password
          */
