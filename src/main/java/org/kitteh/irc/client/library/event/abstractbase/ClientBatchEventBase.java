@@ -31,6 +31,11 @@ import org.kitteh.irc.client.library.util.BatchReferenceTag;
 
 import java.util.List;
 
+/**
+ * Abstract base class for batch related events.
+ *
+ * @see BatchEvent
+ */
 public class ClientBatchEventBase extends ServerMessageEventBase implements BatchEvent {
     private final BatchReferenceTag tag;
 

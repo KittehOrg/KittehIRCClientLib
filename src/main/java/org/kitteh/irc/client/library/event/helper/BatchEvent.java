@@ -30,5 +30,10 @@ import org.kitteh.irc.client.library.util.BatchReferenceTag;
  * An event involving batched messages.
  */
 public interface BatchEvent extends ServerMessageEvent {
+    /**
+     * Gets the reference tag.
+     *
+     * @return reference tag
+     */
     @NonNull BatchReferenceTag getReferenceTag();
 }
