@@ -22,6 +22,7 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
     * Boolean `User#isAway()`.
     * `User#getAwayMessage()`.
     * `UserAwayMessageEvent`.
+* batch
 * extended-join
     * Information tracked automagically.
 * Message tags
@@ -58,7 +59,6 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 
 ### Not yet supported
 
-* batch
 * message-tags draft
 * client-only tags
     * reply
@@ -71,6 +71,6 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 * Metadata
     * The metadata 3.2 spec was deprecated.
     * KICL will consider supporting a new spec if one is proposed.
-* TLS
+* STARTTLS (`TLS` capability)
     * This is an [officially deprecated](https://github.com/ircv3/ircv3.github.io/pull/211) STARTTLS approach, which is silly when the default KICL strategy is TLS.
     * Use the [TLS](advanced/tls.md) and [STS](advanced/sts.md) support that KICL has built-in instead.
