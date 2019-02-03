@@ -28,7 +28,7 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
- * SSL utilities!
+ * TLS utilities!
  */
 public final class SslUtil {
     private SslUtil() {
