@@ -4,6 +4,7 @@ pages:
 - Home: index.md
 - Events: events.md
 - IRCv3 Support: ircv3.md
+- Using with Android: android.md
 - Advanced:
   - Account Tracking: advanced/accounts.md
   - STS: advanced/sts.md
