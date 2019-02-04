@@ -22,7 +22,7 @@ In `app/build.gradle`:
 android {
     // ...
     defaultConfig {
-        applicationId "com.example.kiclandoridtest"
+        applicationId "com.example.kiclandroidtest"
         minSdkVersion 24
         // ...
     }
@@ -63,7 +63,7 @@ In `AndroidManifest.xml`:
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.kiclandoridtest">
+    package="com.example.kiclandroidtest">
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- ... -->
 </manifest>
@@ -74,8 +74,6 @@ In `AndroidManifest.xml`:
 Simple asynchronous task to connect to an IRC network and send a message:
 
 ```java
-package com.example.kiclandoridtest;
-
 import android.os.AsyncTask;
 
 import org.kitteh.irc.client.library.Client;
@@ -83,7 +81,7 @@ import org.kitteh.irc.client.library.Client;
 public class ConnectIrcTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
-        Client client = Client.builder().nick("KittehAndroid").server().host("irc.esper.net").then().buildAndConnect();
+        Client client = Client.builder().nick("KittehAndroid").server().host("localhost").then().buildAndConnect();
 
         client.addChannel("#kittehandroid");
         client.sendMessage("#kittehandroid", "Hello World!");
