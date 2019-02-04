@@ -106,3 +106,7 @@ fab.setOnClickListener(new View.OnClickListener() {
     }
 });
 ```
+
+Run the app, and trigger the task:
+
+![IRC screenshot showing successful connection and message](android_screenshot.png)
