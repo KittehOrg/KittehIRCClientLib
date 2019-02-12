@@ -29,7 +29,7 @@ import org.kitteh.irc.client.library.feature.filter.ToSelfOnly;
 /**
  * An event representing a message sent privately.
  */
-public interface PrivateEvent extends MessageEvent {
+public interface PrivateEvent {
     /**
      * Gets the target of this message.
      *
