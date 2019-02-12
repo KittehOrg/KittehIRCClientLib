@@ -113,6 +113,14 @@ public interface CapabilityManager {
         public static final transient String INVITE_NOTIFY = "invite-notify";
 
         /**
+         * Message tags support, explicitly stating that client-only tags are
+         * supported, but not a necessary capability for actually supporting
+         * tags through other capabilities like account-tag, batch, or
+         * server-time.
+         */
+        public static final String MESSAGE_TAGS = "message-tags";
+
+        /**
          * Multiple prefixes sent in NAMES and WHO output.
          *
          * @see Channel#getUserModes

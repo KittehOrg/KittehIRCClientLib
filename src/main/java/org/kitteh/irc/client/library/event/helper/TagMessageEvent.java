@@ -21,49 +21,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.event.helper;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.MessageTag;
 
-import java.time.Instant;
-import java.util.Optional;
+import java.util.List;
 
 /**
- * Reflects a message tag.
+ * An event for {@code TAGMSG} messages, containing just a target and tags.
  */
-public interface MessageTag {
+public interface TagMessageEvent extends ActorEvent<Actor> {
     /**
-     * Represents the 'time' tag as specified by the 'server-time' extension.
-     */
-    interface Time extends MessageTag {
-        /**
-         * Gets the instant in time specified by this tag.
-         *
-         * @return instant in time
-         */
-        @NonNull Instant getTime();
-    }
-
-    /**
-     * Gets the name of the tag.
+     * Gets the tags for this tag message.
      *
-     * @return tag name
+     * @return a list of tags
      */
-    @NonNull String getName();
-
-    /**
-     * Gets the unescaped, but otherwise unprocessed, value of the tag.
-     *
-     * @return tag value if set
-     */
-    @NonNull Optional<String> getValue();
-
-    /**
-     * Gets if this message tag is a client-only tag.
-     *
-     * @return true if the tag name starts with a {@code +} character
-     */
-    default boolean isClientOnly() {
-        return !this.getName().isEmpty() && this.getName().charAt(0) == '+';
+    default @NonNull List<MessageTag> getTags() {
+        return this.getOriginalMessages().get(0).getTags();
     }
 }

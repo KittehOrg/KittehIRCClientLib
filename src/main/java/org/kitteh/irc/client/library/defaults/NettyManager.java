@@ -97,7 +97,7 @@ public class NettyManager {
      * A connection by a client.
      */
     public static final class ClientConnection {
-        private static final int MAX_LINE_LENGTH = 4096;
+        private static final int MAX_LINE_LENGTH = 9001; // 8703 is the limit with IRCv3 latest message tags
 
         private final Client.WithManagement client;
         private final Channel channel;
