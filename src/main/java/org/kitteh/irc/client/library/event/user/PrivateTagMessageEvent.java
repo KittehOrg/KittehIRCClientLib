@@ -21,49 +21,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.event.user;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.abstractbase.PrivateEventBase;
+import org.kitteh.irc.client.library.event.helper.TagMessageEvent;
 
-import java.time.Instant;
-import java.util.Optional;
+import java.util.List;
 
 /**
- * Reflects a message tag.
+ * Fires when a tag message is sent to the client. Note that the sender may be
+ * the client itself if the capability "echo-message" is enabled.
  */
-public interface MessageTag {
+public class PrivateTagMessageEvent extends PrivateEventBase<Actor> implements TagMessageEvent {
     /**
-     * Represents the 'time' tag as specified by the 'server-time' extension.
-     */
-    interface Time extends MessageTag {
-        /**
-         * Gets the instant in time specified by this tag.
-         *
-         * @return instant in time
-         */
-        @NonNull Instant getTime();
-    }
-
-    /**
-     * Gets the name of the tag.
+     * Creates the event.
      *
-     * @return tag name
+     * @param client client for which this is occurring
+     * @param originalMessages original messages
+     * @param sender who sent it
+     * @param target target of the message
      */
-    @NonNull String getName();
-
-    /**
-     * Gets the unescaped, but otherwise unprocessed, value of the tag.
-     *
-     * @return tag value if set
-     */
-    @NonNull Optional<String> getValue();
-
-    /**
-     * Gets if this message tag is a client-only tag.
-     *
-     * @return true if the tag name starts with a {@code +} character
-     */
-    default boolean isClientOnly() {
-        return !this.getName().isEmpty() && this.getName().charAt(0) == '+';
+    public PrivateTagMessageEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor sender, @NonNull String target) {
+        super(client, originalMessages, sender, target);
     }
 }

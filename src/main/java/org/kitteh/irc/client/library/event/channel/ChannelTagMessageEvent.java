@@ -21,49 +21,33 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.element;
+package org.kitteh.irc.client.library.event.channel;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Actor;
+import org.kitteh.irc.client.library.element.Channel;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
+import org.kitteh.irc.client.library.event.helper.TagMessageEvent;
 
-import java.time.Instant;
-import java.util.Optional;
+import java.util.List;
 
 /**
- * Reflects a message tag.
+ * Fires when a tag message is sent to a channel. Note that the sender may be
+ * the client itself if the capability "echo-message" is enabled.
  */
-public interface MessageTag {
+public class ChannelTagMessageEvent extends ActorChannelEventBase<Actor> implements TagMessageEvent {
     /**
-     * Represents the 'time' tag as specified by the 'server-time' extension.
-     */
-    interface Time extends MessageTag {
-        /**
-         * Gets the instant in time specified by this tag.
-         *
-         * @return instant in time
-         */
-        @NonNull Instant getTime();
-    }
-
-    /**
-     * Gets the name of the tag.
+     * Creates the event.
      *
-     * @return tag name
+     * @param client client for which this is occurring
+     * @param originalMessages original messages
+     * @param sender who sent it
+     * @param channel channel receiving
      */
-    @NonNull String getName();
-
-    /**
-     * Gets the unescaped, but otherwise unprocessed, value of the tag.
-     *
-     * @return tag value if set
-     */
-    @NonNull Optional<String> getValue();
-
-    /**
-     * Gets if this message tag is a client-only tag.
-     *
-     * @return true if the tag name starts with a {@code +} character
-     */
-    default boolean isClientOnly() {
-        return !this.getName().isEmpty() && this.getName().charAt(0) == '+';
+    public ChannelTagMessageEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor sender, @NonNull Channel channel) {
+        super(client, originalMessages, sender, channel);
     }
 }

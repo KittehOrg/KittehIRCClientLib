@@ -21,48 +21,40 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.abstractbase;
+package org.kitteh.irc.client.library.event.channel;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
-import org.kitteh.irc.client.library.event.helper.ActorEvent;
-import org.kitteh.irc.client.library.event.helper.ChannelEvent;
+import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.event.helper.ChannelTargetedEvent;
-import org.kitteh.irc.client.library.event.helper.MessageEvent;
+import org.kitteh.irc.client.library.event.helper.TagMessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import java.util.List;
 
 /**
- * Abstract base class for events involving an Actor and Channel and have a
- * message while being targeted at a specific subset of users to that
- * Channel. Use the helper events if you want to listen to events involving
- * either.
- *
- * @see ActorEvent
- * @see ChannelEvent
- * @see MessageEvent
+ * Fires when a tag message is sent to a subset of users in a channel. Note
+ * that the sender may be the client itself if the capability
+ * "echo-message" is enabled.
  */
-public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMessageEventBase<User> implements ChannelTargetedEvent, MessageEvent {
+public class ChannelTargetedTagMessageEvent extends ActorChannelEventBase<Actor> implements TagMessageEvent, ChannelTargetedEvent {
     private final ChannelUserMode prefix;
 
     /**
-     * Constructs the event.
+     * Creates the event.
      *
-     * @param client the client
+     * @param client client for which this is occurring
      * @param originalMessages original messages
-     * @param user the user
-     * @param channel the channel
-     * @param prefix the targeted prefix
-     * @param message the message
+     * @param sender who sent it
+     * @param channel channel receiving
      */
-    protected TargetedUserChannelMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User user, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
-        super(client, originalMessages, user, channel, message);
+    public ChannelTargetedTagMessageEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix) {
+        super(client, originalMessages, sender, channel);
         this.prefix = Sanity.nullCheck(prefix, "Prefix cannot be null");
     }
 
