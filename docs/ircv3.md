@@ -28,6 +28,8 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 * Message tags
     * Getters in `ServerMessage`.
     * Custom class registration in `MessageTagManager`.
+    * Client-only tags.
+    * Tag-only (TAGMSG) messages.
 * Monitor
     * `MonitorCommand` to get the party started.
     * `MonitoredNickOnlineEvent`, `MonitoredNickOfflineEvent` to track.
@@ -59,8 +61,7 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 
 ### Not yet supported
 
-* message-tags draft
-* client-only tags
+* Specific support for proposed client-only tags:
     * reply
     * react
 * labeled-message draft
