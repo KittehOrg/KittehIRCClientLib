@@ -21,7 +21,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.kitteh.irc.client.library.feature.network;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
- * DNS resolution.
+ * A slightly improved resolution design than the Java default (which always
+ * returns the first acquired, which is often the same.
  */
-package org.kitteh.irc.client.library.feature.resolver;
+public class JavaResolver implements Resolver {
+    private int resolutionCount = 0;
+
+    @Override
+    public @NonNull InetAddress getAddress(@NonNull String host) throws UnknownHostException {
+        InetAddress[] addresses = InetAddress.getAllByName(host);
+        if (addresses.length == 0) {
+            throw new UnknownHostException(host);
+        }
+        return addresses[this.resolutionCount++ % addresses.length];
+    }
+}

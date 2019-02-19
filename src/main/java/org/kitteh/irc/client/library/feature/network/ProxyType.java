@@ -21,24 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.resolver;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+package org.kitteh.irc.client.library.feature.network;
 
 /**
- * A resolver of hostnames.
+ * Types of proxy supported.
  */
-@FunctionalInterface
-public interface Resolver {
+public enum ProxyType {
     /**
-     * Gets the InetAddress for the given host, resolving as necessary.
-     *
-     * @param host host (IP or hostname)
-     * @return InetAddress for the given host
-     * @throws UnknownHostException if it can't be found
+     * SOCKS 4
      */
-    @NonNull InetAddress getAddress(@NonNull String host) throws UnknownHostException;
+    SOCKS_4,
+    /**
+     * SOCKS 5
+     */
+    SOCKS_5
 }

@@ -43,6 +43,7 @@ import org.kitteh.irc.client.library.defaults.feature.DefaultEventManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultISupportManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultMessageTagManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
+import org.kitteh.irc.client.library.defaults.feature.network.NettyNetworkHandler;
 import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ClientLinked;
@@ -64,6 +65,8 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
+import org.kitteh.irc.client.library.feature.network.NetworkHandler;
+import org.kitteh.irc.client.library.feature.network.ProxyType;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.StsMachine;
@@ -89,19 +92,7 @@ import java.util.function.Function;
  * An individual IRC connection, see {@link #builder()} to create one.
  */
 public interface Client extends ClientLinked {
-    /**
-     * Types of proxy supported.
-     */
-    enum ProxyType {
-        /**
-         * SOCKS 4
-         */
-        SOCKS_4,
-        /**
-         * SOCKS 5
-         */
-        SOCKS_5
-    }
+
 
     /**
      * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
@@ -490,6 +481,18 @@ public interface Client extends ClientLinked {
             @NonNull Management messageTagManager(@Nullable Function<Client.WithManagement, ? extends MessageTagManager> supplier);
 
             /**
+             * Sets which {@link NetworkHandler} will handle establishing the
+             * connection.
+             * <p>
+             * By default, the {@link NettyNetworkHandler} is used.
+             *
+             * @param networkHandler network handler
+             * @return this builder
+             * @see NettyNetworkHandler
+             */
+            @NonNull Management networkHandler(@NonNull NetworkHandler networkHandler);
+
+            /**
              * Sets the supplier of the server info.
              * <p>
              * By default, the {@link DefaultServerInfo} is used.
@@ -740,6 +743,13 @@ public interface Client extends ClientLinked {
         @NonNull Set<String> getIntendedChannels();
 
         /**
+         * Gets the network handler.
+         *
+         * @return network handler
+         */
+        @NonNull NetworkHandler getNetworkHandler();
+
+        /**
          * Gets the currently set output listener.
          *
          * @return output listener
@@ -837,6 +847,13 @@ public interface Client extends ClientLinked {
         void setCurrentNick(@NonNull String nick);
 
         /**
+         * Sets the network handler, for the next time a connection is made.
+         *
+         * @param networkHandler new network handler
+         */
+        void setNetworkHandler(@NonNull NetworkHandler networkHandler);
+
+        /**
          * Sets the server address.
          *
          * @param address server address
@@ -847,6 +864,7 @@ public interface Client extends ClientLinked {
          * Initialize with pre-connection information.
          *
          * @param name name
+         * @param networkHandler networkHandler
          * @param serverHostWithPort serverHostWithPort
          * @param serverPassword serverPassword
          * @param bindAddress bindAddress
@@ -879,7 +897,8 @@ public interface Client extends ClientLinked {
          * @param webircPassword webircPassword
          * @param webircUser webircUser
          */
-        void initialize(@NonNull String name, @NonNull HostWithPort serverHostWithPort, @Nullable String serverPassword,
+        void initialize(@NonNull String name, @NonNull NetworkHandler networkHandler,
+                        @NonNull HostWithPort serverHostWithPort, @Nullable String serverPassword,
                         @Nullable InetSocketAddress bindAddress,
                         @Nullable HostWithPort proxyAddress, @Nullable ProxyType proxyType,
                         @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,

@@ -21,26 +21,40 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.resolver;
+package org.kitteh.irc.client.library.feature.network;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 
 /**
- * A slightly improved resolution design than the Java default (which always
- * returns the first acquired, which is often the same.
+ * A connection by a client.
  */
-public class JavaResolver implements Resolver {
-    private int resolutionCount = 0;
+public interface ClientConnection {
+    /**
+     * Gets if the connection is alive.
+     *
+     * @return true if alive
+     */
+    boolean isAlive();
 
-    @Override
-    public @NonNull InetAddress getAddress(@NonNull String host) throws UnknownHostException {
-        InetAddress[] addresses = InetAddress.getAllByName(host);
-        if (addresses.length == 0) {
-            throw new UnknownHostException(host);
-        }
-        return addresses[this.resolutionCount++ % addresses.length];
-    }
+    /**
+     * Starts sending pings.
+     */
+    void startPing();
+
+    /**
+     * Shuts down with a message type.
+     *
+     * @param messageType message type
+     * @param reconnect true to indicate desire to reconnect
+     */
+    void shutdown(DefaultMessageType messageType, boolean reconnect);
+
+    /**
+     * Shuts down with a message.
+     *
+     * @param message message
+     * @param reconnect true to indicate desire to reconnect
+     */
+    void shutdown(@Nullable String message, boolean reconnect);
 }
