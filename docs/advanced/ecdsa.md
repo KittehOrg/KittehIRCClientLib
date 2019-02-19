@@ -105,7 +105,7 @@ package their public key
      key which is then base64 encoded. Please see section 2.3.3 of the [SEC1](http://www.secg.org/sec1-v2.pdf)
      spec for more information. Public keys making use of the uncompressed or hybrid forms will
      **not work**. Java users may wish to implement their own method for applying point compression
-     since it is unavailable in the standard library. See the implementation in [KICL]((https://github.com/KittehOrg/KittehIRCClientLib/commit/448ae6bf18956b5a38e0da8f87486c5db85db880)).
+     since it is unavailable in the standard library. See the implementation in [KICL](https://github.com/KittehOrg/KittehIRCClientLib/commit/448ae6bf18956b5a38e0da8f87486c5db85db880).
 
 #### Step 1 - Begin authentication
 
