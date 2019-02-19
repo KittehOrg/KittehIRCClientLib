@@ -63,6 +63,9 @@ import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
+import org.kitteh.irc.client.library.feature.network.ClientConnection;
+import org.kitteh.irc.client.library.feature.network.NetworkHandler;
+import org.kitteh.irc.client.library.feature.network.ProxyType;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.QueueProcessingThreadSender;
 import org.kitteh.irc.client.library.feature.sts.MemoryStsMachine;
@@ -184,7 +187,8 @@ public class DefaultClient implements Client.WithManagement {
 
     private final Set<String> channelsIntended = new CISet(this);
 
-    private NettyManager.ClientConnection connection;
+    private NetworkHandler networkHandler;
+    private ClientConnection connection;
 
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
 
@@ -241,7 +245,8 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
-    public void initialize(@NonNull String name, @NonNull HostWithPort serverAddress, @Nullable String serverPassword,
+    public void initialize(@NonNull String name, @NonNull NetworkHandler networkHandler,
+                           @NonNull HostWithPort serverAddress, @Nullable String serverPassword,
                            @Nullable InetSocketAddress bindAddress,
                            @Nullable HostWithPort proxyAddress, @Nullable ProxyType proxyType,
                            @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
@@ -257,6 +262,7 @@ public class DefaultClient implements Client.WithManagement {
                            @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost,
                            @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircGateway) {
         this.name = name;
+        this.networkHandler = networkHandler;
         this.serverAddress = serverAddress;
         this.proxyAddress = proxyAddress;
         this.proxyType = proxyType;
@@ -435,6 +441,11 @@ public class DefaultClient implements Client.WithManagement {
     @Override
     public @NonNull String getNick() {
         return this.currentNick;
+    }
+
+    @Override
+    public @NonNull NetworkHandler getNetworkHandler() {
+        return this.networkHandler;
     }
 
     @Override
@@ -643,6 +654,11 @@ public class DefaultClient implements Client.WithManagement {
     }
 
     @Override
+    public void setNetworkHandler(@NonNull NetworkHandler networkHandler) {
+        this.networkHandler = Sanity.nullCheck(networkHandler, "Network handler cannot be null");
+    }
+
+    @Override
     public void setNick(@NonNull String nick) {
         Sanity.safeMessageCheck(nick, "Nick");
         this.goalNick = nick.trim();
@@ -742,7 +758,7 @@ public class DefaultClient implements Client.WithManagement {
             throw new IllegalStateException("Client is already connecting");
         }
 
-        this.connection = NettyManager.connect(this);
+        this.connection = this.networkHandler.connect(this);
         this.processor.queue("");
 
         // If we have WebIRC information, send it before everything.

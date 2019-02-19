@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.defaults.feature.DefaultEventManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultISupportManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultMessageTagManager;
 import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
+import org.kitteh.irc.client.library.defaults.feature.network.NettyNetworkHandler;
 import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.AuthManager;
@@ -43,6 +44,8 @@ import org.kitteh.irc.client.library.feature.ISupportManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
+import org.kitteh.irc.client.library.feature.network.NetworkHandler;
+import org.kitteh.irc.client.library.feature.network.ProxyType;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sending.SingleDelaySender;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
@@ -184,7 +187,7 @@ public class DefaultBuilder implements Client.Builder {
         }
 
         @Override
-        public @NonNull Proxy proxyType(Client.ProxyType type) {
+        public @NonNull Proxy proxyType(ProxyType type) {
             DefaultBuilder.this.proxyType = type;
             return this;
         }
@@ -289,6 +292,12 @@ public class DefaultBuilder implements Client.Builder {
         }
 
         @Override
+        public @NonNull Management networkHandler(@NonNull NetworkHandler networkHandler) {
+            DefaultBuilder.this.networkHandler = Sanity.nullCheck(networkHandler, "Network handler cannot be null");
+            return this;
+        }
+
+        @Override
         public @NonNull Management serverInfo(@Nullable Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier) {
             DefaultBuilder.this.serverInfo = (supplier != null) ? supplier : DEFAULT_SERVER_INFO;
             return this;
@@ -344,7 +353,7 @@ public class DefaultBuilder implements Client.Builder {
     // Proxy
     private @Nullable String proxyHost;
     private int proxyPort;
-    private Client.@Nullable ProxyType proxyType;
+    private @Nullable ProxyType proxyType;
 
     // WebIRC
     private @Nullable String webircHost = null;
@@ -362,6 +371,7 @@ public class DefaultBuilder implements Client.Builder {
     private Function<Client.WithManagement, ? extends ISupportManager> iSupportManager = DEFAULT_ISUPPORT_MANAGER;
     private Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue = DEFAULT_MESSAGE_SENDING_QUEUE;
     private Function<Client.WithManagement, ? extends MessageTagManager> messageTagManager = DEFAULT_MESSAGE_TAG_MANAGER;
+    private NetworkHandler networkHandler = NettyNetworkHandler.getInstance();
     private Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo = DEFAULT_SERVER_INFO;
     private @Nullable StsStorageManager stsStorageManager = null;
 
@@ -434,7 +444,8 @@ public class DefaultBuilder implements Client.Builder {
             proxyAddress = HostWithPort.of(this.proxyHost, this.proxyPort);
         }
         Client.WithManagement client = new DefaultClient();
-        client.initialize(this.name, this.serverHostWithPort, this.serverPassword,
+        client.initialize(this.name, this.networkHandler,
+                this.serverHostWithPort, this.serverPassword,
                 this.getInetSocketAddress(this.bindHost, this.bindPort),
                 proxyAddress, this.proxyType,
                 this.nick, this.userString, this.realName,
