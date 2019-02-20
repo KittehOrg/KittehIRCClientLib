@@ -75,7 +75,8 @@ public final class CtcpUtil {
      * @return converted message
      */
     public static @NonNull String fromCtcp(@NonNull String message) {
-        final String ctcpContent = message.substring(1, message.indexOf(CTCP_DELIMITER, 1)); // Strip the delimiters
+        int secondDelimiter = message.indexOf(CTCP_DELIMITER, 1);
+        final String ctcpContent = message.substring(1, (secondDelimiter == -1) ? message.length() : secondDelimiter); // Strip the delimiters
         StringBuilder builder = new StringBuilder(ctcpContent.length());
         int currentIndex = 0;
         Matcher matcher = CTCP_ESCAPED_CHAR.matcher(ctcpContent);
