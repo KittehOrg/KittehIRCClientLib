@@ -3,6 +3,7 @@ repo_url: https://github.com/KittehOrg/KittehIRCClientLib
 pages:
 - Home: index.md
 - Events: events.md
+- Common Problems: common_problems.md
 - IRCv3 Support: ircv3.md
 - Using with Android: android.md
 - Advanced:

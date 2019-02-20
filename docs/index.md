@@ -41,8 +41,9 @@ public class HelloKitteh {
 
 ### Debugging
 
-It can be useful to see input, output, and exceptions thrown while developing.
+Check the [common problems](common_problems.md) page for some common situations.
 
+It can be useful to see input, output, and exceptions thrown while developing.
 Use the `Client.Builder` to set listeners to catch these little surprises.
 Here is a simple example, printing all of the info to the console:
 
@@ -60,7 +61,7 @@ public class DebugKitteh {
 }
 ```
 
-## Using KICL in your Maven project
+## Using KICL in your project
 
 KICL is built and deployed using Maven. Releases are available on Maven Central. Adding it as a dependency is
 simple as adding the lines below to your pom.xml file:
@@ -72,6 +73,12 @@ simple as adding the lines below to your pom.xml file:
     <version>5.1.1</version>
     <scope>...</scope>
 </dependency>
+```
+
+Or, for Gradle:
+
+```
+compile "org.kitteh.irc:client-lib:5.1.0"
 ```
 
 ## Events
@@ -103,5 +110,5 @@ public class FriendlyBot {
 Consult the [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/) to answer most questions.
 
 Visit us in `#kitteh.org` on `irc.esper.net` for a chat (click
-[here](https://webchat.esper.net/?nick=kicl_...&channels=%23kitteh.org&prompt=1) to join), or check out the
+[here](https://webchat.esper.net/?nick=kicl_...&channels=%23kitteh.org) to join), or check out the
 [Issue Tracker](https://github.com/KittehOrg/KittehIRCClientLib/issues) if you have trouble.
