@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
+import org.kitteh.irc.client.library.event.helper.CtcpEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -45,7 +46,7 @@ import java.util.Optional;
  * <p>
  * See {@link PrivateCtcpReplyEvent} for received CTCP replies.
  */
-public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User> {
+public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User>, CtcpEvent {
     private @Nullable String reply;
 
     /**

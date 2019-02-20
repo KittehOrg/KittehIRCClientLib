@@ -21,34 +21,44 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.user;
+package org.kitteh.irc.client.library.feature.filter;
 
+import net.engio.mbassy.listener.Filter;
+import net.engio.mbassy.listener.IMessageFilter;
+import net.engio.mbassy.subscription.SubscriptionContext;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
-import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.event.helper.CtcpEvent;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The client has received a reply to a CTCP query! The method
- * {@link #getMessage()} returns the unescaped message with the delimiter
- * removed.
+ * Only get CTCP messages that are from the {@code /me} command.
  */
-public class PrivateCtcpReplyEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User>, CtcpEvent {
+@Filter(MeCommandOnly.Processor.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface MeCommandOnly {
     /**
-     * Creates the event.
-     *
-     * @param client client for which this is occurring
-     * @param originalMessages original messages
-     * @param sender sender of the reply
-     * @param target target of the reply
-     * @param message message sent
+     * {@inheritDoc}
      */
-    public PrivateCtcpReplyEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message) {
-        super(client, originalMessages, sender, target, message);
+    class Processor implements FilterProcessor<CtcpEvent, MeCommandOnly>, IMessageFilter<CtcpEvent> {
+        /**
+         * Constructs the processor.
+         */
+        public Processor() {
+        }
+
+        @Override
+        public boolean accepts(@NonNull CtcpEvent event, @NonNull MeCommandOnly[] annotations) {
+            return event.getCommand().equalsIgnoreCase("ACTION");
+        }
+
+        @Override
+        public boolean accepts(CtcpEvent event, SubscriptionContext context) {
+            return this.accepts(event, context.getHandler().getMethod().getAnnotationsByType(MeCommandOnly.class));
+        }
     }
 }

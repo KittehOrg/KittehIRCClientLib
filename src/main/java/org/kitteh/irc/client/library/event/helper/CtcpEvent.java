@@ -21,34 +21,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.user;
+package org.kitteh.irc.client.library.event.helper;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
-import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
-import org.kitteh.irc.client.library.event.helper.CtcpEvent;
-
-import java.util.List;
 
 /**
- * The client has received a reply to a CTCP query! The method
- * {@link #getMessage()} returns the unescaped message with the delimiter
- * removed.
+ * An event involving a CTCP message.
  */
-public class PrivateCtcpReplyEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User>, CtcpEvent {
+public interface CtcpEvent extends MessageEvent {
     /**
-     * Creates the event.
+     * Gets the CTCP command.
      *
-     * @param client client for which this is occurring
-     * @param originalMessages original messages
-     * @param sender sender of the reply
-     * @param target target of the reply
-     * @param message message sent
+     * @return command
      */
-    public PrivateCtcpReplyEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message) {
-        super(client, originalMessages, sender, target, message);
+    default @NonNull String getCommand() {
+        return this.getMessage().split(" ")[0];
     }
 }
