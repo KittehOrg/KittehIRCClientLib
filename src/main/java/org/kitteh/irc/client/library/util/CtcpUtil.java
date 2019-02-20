@@ -64,7 +64,6 @@ public final class CtcpUtil {
 
     private static final Pattern CTCP_ESCAPABLE_CHAR = Pattern.compile("[\n\r\u0000" + CTCP_DELIMITER + CTCP_MQUOTE + "\\\\]");
     private static final Pattern CTCP_ESCAPED_CHAR = Pattern.compile("([" + CTCP_MQUOTE + "\\\\])(.)");
-    private static final Pattern CTCP_MESSAGE = Pattern.compile(CTCP_DELIMITER + "([^" + CTCP_DELIMITER + "]*)" + CTCP_DELIMITER + "[^" + CTCP_DELIMITER + "]*");
 
     private CtcpUtil() {
     }
@@ -125,7 +124,7 @@ public final class CtcpUtil {
      * @return true if the message is a CTCP message
      */
     public static boolean isCtcp(@NonNull String message) {
-        return CTCP_MESSAGE.matcher(message).matches();
+        return !message.isEmpty() && (message.charAt(0) == CTCP_DELIMITER);
     }
 
     /**
