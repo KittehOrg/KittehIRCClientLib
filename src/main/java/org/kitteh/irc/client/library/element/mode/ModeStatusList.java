@@ -150,6 +150,16 @@ public class ModeStatusList<ModeType extends Mode> {
     }
 
     /**
+     * Gets if the given mode character is present in the list.
+     *
+     * @param mode mode to check
+     * @return true if present at least once
+     */
+    public boolean containsMode(char mode) {
+        return this.statuses.stream().anyMatch(status -> status.getMode().getChar() == mode);
+    }
+
+    /**
      * Gets all mode statuses of a given mode.
      *
      * @param mode mode to check
@@ -158,6 +168,16 @@ public class ModeStatusList<ModeType extends Mode> {
     public @NonNull List<ModeStatus<ModeType>> getStatusByMode(@NonNull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().equals(mode)).collect(Collectors.toList()));
+    }
+
+    /**
+     * Gets all mode statuses of a given mode character.
+     *
+     * @param mode mode to check
+     * @return all matching modes or empty if none match
+     */
+    public @NonNull List<ModeStatus<ModeType>> getStatusByMode(char mode) {
+        return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().getChar() == mode).collect(Collectors.toList()));
     }
 
     /**
