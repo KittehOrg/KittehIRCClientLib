@@ -36,7 +36,6 @@ import io.netty.handler.proxy.Socks5ProxyHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.feature.network.JavaResolver;
 import org.kitteh.irc.client.library.feature.network.NetworkHandler;
 import org.kitteh.irc.client.library.feature.network.Resolver;
 import org.kitteh.irc.client.library.feature.sts.StsClientState;

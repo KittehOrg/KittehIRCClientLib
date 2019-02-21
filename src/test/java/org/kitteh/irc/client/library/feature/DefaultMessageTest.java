@@ -3,7 +3,7 @@ package org.kitteh.irc.client.library.feature;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
-import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
+import org.kitteh.irc.client.library.defaults.feature.SimpleDefaultMessageMap;
 
 import java.util.Map;
 

@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.feature.ServerInfo;
-import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
+import org.kitteh.irc.client.library.defaults.feature.SimpleDefaultMessageMap;
 import org.mockito.Mockito;
 
 /**

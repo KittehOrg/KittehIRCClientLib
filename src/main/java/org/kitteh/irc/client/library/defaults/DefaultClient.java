@@ -62,7 +62,7 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
-import org.kitteh.irc.client.library.feature.defaultmessage.SimpleDefaultMessageMap;
+import org.kitteh.irc.client.library.defaults.feature.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.network.ClientConnection;
 import org.kitteh.irc.client.library.feature.network.NetworkHandler;
 import org.kitteh.irc.client.library.feature.network.ProxyType;

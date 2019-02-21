@@ -21,10 +21,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.defaultmessage;
+package org.kitteh.irc.client.library.defaults.feature;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
+import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import java.util.Collections;

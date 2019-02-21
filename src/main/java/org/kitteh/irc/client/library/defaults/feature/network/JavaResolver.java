@@ -21,16 +21,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.network;
+package org.kitteh.irc.client.library.defaults.feature.network;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.feature.network.Resolver;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
  * A slightly improved resolution design than the Java default (which always
- * returns the first acquired, which is often the same.
+ * returns the first acquired, which is often the same).
  */
 public class JavaResolver implements Resolver {
     private int resolutionCount = 0;

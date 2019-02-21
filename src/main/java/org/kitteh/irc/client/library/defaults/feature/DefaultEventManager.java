@@ -40,7 +40,6 @@ import org.kitteh.irc.client.library.feature.EventManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.EchoMessage;
 import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
-import org.kitteh.irc.client.library.feature.filter.FilteringSubscriptionFactory;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.feature.filter.ToSelfOnly;
 import org.kitteh.irc.client.library.util.Sanity;

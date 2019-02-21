@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.feature.filter;
+package org.kitteh.irc.client.library.defaults.feature;
 
 import net.engio.mbassy.bus.MessagePublication;
 import net.engio.mbassy.bus.error.MessageBusException;
@@ -31,6 +31,7 @@ import net.engio.mbassy.dispatch.IMessageDispatcher;
 import net.engio.mbassy.subscription.SubscriptionContext;
 import net.engio.mbassy.subscription.SubscriptionFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
