@@ -42,6 +42,6 @@ public final class SslUtil {
      * @return true if the factory is insecure, false if not
      */
     public static boolean isInsecure(final TrustManagerFactory factory) {
-        return (factory instanceof InsecureTrustManagerFactory) || (factory instanceof AcceptingTrustManagerFactory);
+        return factory instanceof InsecureTrustManagerFactory;
     }
 }

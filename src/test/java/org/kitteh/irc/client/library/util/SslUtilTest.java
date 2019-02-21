@@ -20,14 +20,6 @@ public class SslUtilTest {
 
     /**
      * Test the isInsecure function.
-     */
-    @Test
-    public void testSecure2() {
-        Assert.assertTrue(SslUtil.isInsecure(new AcceptingTrustManagerFactory()));
-    }
-
-    /**
-     * Test the isInsecure function.
      *
      * @throws Exception Oh no
      */
