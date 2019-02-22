@@ -33,6 +33,42 @@ import java.util.Optional;
  */
 public interface ModeStatus<ModeType extends Mode> extends ClientLinked {
     /**
+     * Describes the mode status.
+     */
+    enum Action {
+        /**
+         * This mode is being added.
+         */
+        ADD('+'),
+        /**
+         * This mode is being removed.
+         */
+        REMOVE('-');
+
+        private final char c;
+
+        Action(char c) {
+            this.c = c;
+        }
+
+        /**
+         * Gets the character that represents this action.
+         *
+         * @return character representing the action
+         */
+        public char getChar() {
+            return this.c;
+        }
+    }
+
+    /**
+     * Gets if the mode is being set or removed.
+     *
+     * @return the action, add or remove
+     */
+    @NonNull Action getAction();
+
+    /**
      * Gets the {@link Mode} describing this mode status.
      *
      * @return the mode
@@ -45,11 +81,4 @@ public interface ModeStatus<ModeType extends Mode> extends ClientLinked {
      * @return parameter if present
      */
     @NonNull Optional<String> getParameter();
-
-    /**
-     * Gets if this mode is being set.
-     *
-     * @return true for setting, false for removing
-     */
-    boolean isSetting();
 }

@@ -175,11 +175,11 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
     public @NonNull String getAsString() {
         StringBuilder modes = new StringBuilder(this.statuses.size() * 2);
         StringBuilder parameters = new StringBuilder(100); // Golly, that's arbitrary.
-        Boolean add = null;
+        ModeStatus.Action action = null;
         for (ModeStatus<ModeType> change : this.statuses) {
-            if ((add == null) || (add != change.isSetting())) {
-                add = change.isSetting();
-                modes.append(add ? '+' : '-');
+            if ((action == null) || (action != change.getAction())) {
+                action = change.getAction();
+                modes.append(action.getChar());
             }
             modes.append(change.getMode().getChar());
             Optional<String> parameter = change.getParameter();

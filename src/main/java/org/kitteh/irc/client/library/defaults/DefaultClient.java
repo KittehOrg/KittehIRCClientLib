@@ -839,7 +839,7 @@ public class DefaultClient implements Client.WithManagement {
             this.userModes = new HashMap<>();
         }
         for (ModeStatus<UserMode> status : userModes.getAll()) {
-            if (status.isSetting()) {
+            if (status.getAction() == ModeStatus.Action.ADD) {
                 this.userModes.put(status.getMode().getChar(), status);
             } else {
                 this.userModes.remove(status.getMode().getChar());

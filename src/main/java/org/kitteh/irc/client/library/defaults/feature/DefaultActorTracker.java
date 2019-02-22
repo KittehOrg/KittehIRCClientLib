@@ -299,14 +299,14 @@ public class DefaultActorTracker implements ActorTracker {
 
         void updateChannelModes(ModeStatusList<ChannelMode> statusList) {
             statusList.getAll().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter().isPresent())).forEach(status -> {
-                if (status.isSetting()) {
+                if (status.getAction() == ModeStatus.Action.ADD) {
                     this.trackUserModeAdd(status.getParameter().get(), (ChannelUserMode) status.getMode());
                 } else {
                     this.trackUserModeRemove(status.getParameter().get(), (ChannelUserMode) status.getMode());
                 }
             });
             statusList.getAll().stream().filter(status -> !(status.getMode() instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
-                if (status.isSetting()) {
+                if (status.getAction() == ModeStatus.Action.ADD) {
                     this.channelModes.put(status.getMode().getChar(), status);
                 } else {
                     this.channelModes.remove(status.getMode().getChar());

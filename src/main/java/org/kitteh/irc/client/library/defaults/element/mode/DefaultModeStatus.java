@@ -26,7 +26,6 @@ package org.kitteh.irc.client.library.defaults.element.mode;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.element.mode.Mode;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -40,7 +39,7 @@ import java.util.Optional;
 public class DefaultModeStatus<ModeType extends Mode> implements ModeStatus<ModeType> {
     private final ModeType mode;
     private final @Nullable String parameter;
-    private final boolean setting;
+    private final Action action;
 
     /**
      * Creates a status without a parameter.
@@ -51,7 +50,7 @@ public class DefaultModeStatus<ModeType extends Mode> implements ModeStatus<Mode
     public DefaultModeStatus(boolean setting, @NonNull ModeType mode) {
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
         this.parameter = null;
-        this.setting = setting;
+        this.action = setting ? Action.ADD : Action.REMOVE;
     }
 
     /**
@@ -64,7 +63,12 @@ public class DefaultModeStatus<ModeType extends Mode> implements ModeStatus<Mode
     public DefaultModeStatus(boolean setting, @NonNull ModeType mode, @NonNull String parameter) {
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
         this.parameter = Sanity.safeMessageCheck(parameter, "Parameter");
-        this.setting = setting;
+        this.action = setting ? Action.ADD : Action.REMOVE;
+    }
+
+    @Override
+    public @NonNull Action getAction() {
+        return this.action;
     }
 
     @Override
@@ -83,12 +87,7 @@ public class DefaultModeStatus<ModeType extends Mode> implements ModeStatus<Mode
     }
 
     @Override
-    public boolean isSetting() {
-        return this.setting;
-    }
-
-    @Override
     public @NonNull String toString() {
-        return new ToStringer(this).add("client", this.getClient()).add("mode", this.mode).add("setting", this.setting).add("parameter", this.parameter).toString();
+        return new ToStringer(this).add("client", this.getClient()).add("mode", this.mode).add("action", this.action).add("parameter", this.parameter).toString();
     }
 }
