@@ -24,13 +24,10 @@
 package org.kitteh.irc.client.library.element.mode;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ClientLinked;
 import org.kitteh.irc.client.library.util.Mask;
-import org.kitteh.irc.client.library.util.ToStringer;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -39,72 +36,6 @@ import java.util.Optional;
  * Represents a type A mode information entry.
  */
 public interface ModeInfo extends ClientLinked {
-    /**
-     * A default ModeInfo implementation.
-     */
-    class DefaultModeInfo implements ModeInfo {
-        private final Client client;
-        private final Instant creationTime;
-        private final String creator;
-        private final Channel channel;
-        private final Mask mask;
-        private final ChannelMode mode;
-
-        /**
-         * Constructs the mode info.
-         *
-         * @param client the client
-         * @param channel channel
-         * @param mode mode
-         * @param mask mask
-         * @param creator creator, if known
-         * @param creationTime creation time, if known
-         */
-        public DefaultModeInfo(@NonNull Client client, @NonNull Channel channel, @NonNull ChannelMode mode, @NonNull String mask, @Nullable String creator, @Nullable Instant creationTime) {
-            this.client = client;
-            this.creator = creator;
-            this.channel = channel;
-            this.mask = Mask.fromString(mask);
-            this.creationTime = creationTime;
-            this.mode = mode;
-        }
-
-        @Override
-        public @NonNull Optional<String> getCreator() {
-            return Optional.ofNullable(this.creator);
-        }
-
-        @Override
-        public @NonNull Channel getChannel() {
-            return this.channel;
-        }
-
-        @Override
-        public @NonNull Client getClient() {
-            return this.client;
-        }
-
-        @Override
-        public @NonNull Mask getMask() {
-            return this.mask;
-        }
-
-        @Override
-        public @NonNull ChannelMode getMode() {
-            return this.mode;
-        }
-
-        @Override
-        public @NonNull Optional<Instant> getCreationTime() {
-            return Optional.ofNullable(this.creationTime);
-        }
-
-        @Override
-        public @NonNull String toString() {
-            return new ToStringer(this).add("client", this.client).add("channel", this.channel).add("mode", this.mode).add("mask", this.mask).add("creator", this.creator).add("creationTime", this.creationTime).toString();
-        }
-    }
-
     /**
      * Gets the name of the party listed as creating the entry. This may be a
      * nickname, a service name, a server name, etc.

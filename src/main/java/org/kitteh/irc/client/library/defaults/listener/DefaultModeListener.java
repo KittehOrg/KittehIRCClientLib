@@ -26,10 +26,10 @@ package org.kitteh.irc.client.library.defaults.listener;
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeInfo;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatusList;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
-import org.kitteh.irc.client.library.element.mode.ModeInfo;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.channel.ChannelModeEvent;
@@ -109,7 +109,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
             statusList.getAll().stream()
                     .filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK)
                     .forEach(status -> this.getTracker().trackChannelModeInfo(channel.getName(), status.isSetting(),
-                            new ModeInfo.DefaultModeInfo(this.getClient(), channel, status.getMode(), status.getParameter().get(), event.getActor().getName(), Instant.now())
+                            new DefaultModeInfo(this.getClient(), channel, status.getMode(), status.getParameter().get(), event.getActor().getName(), Instant.now())
                     ));
             this.getTracker().updateChannelModes(channel.getName(), statusList);
         } else {

@@ -25,6 +25,7 @@ package org.kitteh.irc.client.library.defaults.listener;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeInfo;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
@@ -92,7 +93,7 @@ public class AbstractModeInfoListenerBase extends AbstractDefaultListenerBase {
             }
             Optional<ChannelMode> channelMode = this.getClient().getServerInfo().getChannelMode(mode);
             if (channelMode.isPresent()) {
-                infoList.add(new ModeInfo.DefaultModeInfo(this.getClient(), channel.get(), channelMode.get(), event.getParameters().get((2 + offset)), creator, creationTime));
+                infoList.add(new DefaultModeInfo(this.getClient(), channel.get(), channelMode.get(), event.getParameters().get((2 + offset)), creator, creationTime));
             } else {
                 this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
             }
