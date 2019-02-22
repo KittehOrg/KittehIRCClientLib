@@ -144,7 +144,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param mode mode to check
      * @return true if present at least once
      */
-    public boolean containsMode(@NonNull ModeType mode) {
+    public boolean contains(@NonNull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         return this.statuses.stream().anyMatch(status -> status.getMode().equals(mode));
     }
@@ -165,7 +165,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param mode mode to check
      * @return all matching modes or empty if none match
      */
-    public @NonNull List<ModeStatus<ModeType>> getStatusByMode(@NonNull ModeType mode) {
+    public @NonNull List<ModeStatus<ModeType>> getByMode(@NonNull ModeType mode) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().equals(mode)).collect(Collectors.toList()));
     }
@@ -176,7 +176,7 @@ public class ModeStatusList<ModeType extends Mode> {
      * @param mode mode to check
      * @return all matching modes or empty if none match
      */
-    public @NonNull List<ModeStatus<ModeType>> getStatusByMode(char mode) {
+    public @NonNull List<ModeStatus<ModeType>> getByMode(char mode) {
         return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().getChar() == mode).collect(Collectors.toList()));
     }
 
@@ -185,7 +185,7 @@ public class ModeStatusList<ModeType extends Mode> {
      *
      * @return status list
      */
-    public @NonNull List<ModeStatus<ModeType>> getStatuses() {
+    public @NonNull List<ModeStatus<ModeType>> getAll() {
         return Collections.unmodifiableList(this.statuses);
     }
 
@@ -194,7 +194,7 @@ public class ModeStatusList<ModeType extends Mode> {
      *
      * @return string of modes
      */
-    public @NonNull String getStatusString() {
+    public @NonNull String getAsString() {
         StringBuilder modes = new StringBuilder(this.statuses.size() * 2);
         StringBuilder parameters = new StringBuilder(100); // Golly, that's arbitrary.
         Boolean add = null;
