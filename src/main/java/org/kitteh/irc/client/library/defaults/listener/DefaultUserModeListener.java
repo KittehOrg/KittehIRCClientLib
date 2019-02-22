@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.defaults.listener;
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatusList;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
@@ -59,7 +60,7 @@ public class DefaultUserModeListener extends AbstractDefaultListenerBase {
         }
         ModeStatusList<UserMode> modes;
         try {
-            modes = ModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+            modes = DefaultModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
         } catch (IllegalArgumentException e) {
             this.trackException(event, e.getMessage());
             return;

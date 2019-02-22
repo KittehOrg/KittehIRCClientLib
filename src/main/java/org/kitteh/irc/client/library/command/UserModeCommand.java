@@ -26,8 +26,9 @@ package org.kitteh.irc.client.library.command;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatus;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatusList;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
-import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -82,9 +83,9 @@ public class UserModeCommand extends Command {
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter, "Parameter");
-            this.changes.add(new ModeStatus<>(add, mode, parameter));
+            this.changes.add(new DefaultModeStatus<>(add, mode, parameter));
         } else {
-            this.changes.add(new ModeStatus<>(add, mode));
+            this.changes.add(new DefaultModeStatus<>(add, mode));
         }
         return this;
     }
@@ -95,7 +96,7 @@ public class UserModeCommand extends Command {
             this.getClient().sendRawLine("MODE " + this.getClient().getNick());
             return;
         }
-        this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + ModeStatusList.of(new ArrayList<>(this.changes)).getStatusString());
+        this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + DefaultModeStatusList.of(new ArrayList<>(this.changes)).getAsString());
     }
 
     @Override

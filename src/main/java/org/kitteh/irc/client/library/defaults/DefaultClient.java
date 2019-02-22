@@ -36,6 +36,8 @@ import org.kitteh.irc.client.library.command.TopicCommand;
 import org.kitteh.irc.client.library.command.WallopsCommand;
 import org.kitteh.irc.client.library.command.WhoisCommand;
 import org.kitteh.irc.client.library.defaults.element.DefaultServerMessage;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatusList;
+import org.kitteh.irc.client.library.defaults.feature.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.MessageTag;
@@ -62,7 +64,6 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
-import org.kitteh.irc.client.library.defaults.feature.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.network.ClientConnection;
 import org.kitteh.irc.client.library.feature.network.NetworkHandler;
 import org.kitteh.irc.client.library.feature.network.ProxyType;
@@ -460,7 +461,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public @NonNull Optional<ModeStatusList<UserMode>> getUserModes() {
-        return (this.userModes == null) ? Optional.empty() : Optional.of(ModeStatusList.of(this.userModes.values()));
+        return (this.userModes == null) ? Optional.empty() : Optional.of(DefaultModeStatusList.of(this.userModes.values()));
     }
 
     @Override
@@ -820,7 +821,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void setUserModes(@NonNull ModeStatusList<UserMode> userModes) {
-        this.userModes = new HashMap<>(userModes.getStatuses().stream().collect(Collectors.toMap(modeStatus -> modeStatus.getMode().getChar(), Function.identity())));
+        this.userModes = new HashMap<>(userModes.getAll().stream().collect(Collectors.toMap(modeStatus -> modeStatus.getMode().getChar(), Function.identity())));
     }
 
     @Override
@@ -837,7 +838,7 @@ public class DefaultClient implements Client.WithManagement {
         if (this.userModes == null) {
             this.userModes = new HashMap<>();
         }
-        for (ModeStatus<UserMode> status : userModes.getStatuses()) {
+        for (ModeStatus<UserMode> status : userModes.getAll()) {
             if (status.isSetting()) {
                 this.userModes.put(status.getMode().getChar(), status);
             } else {

@@ -32,6 +32,7 @@ import org.kitteh.irc.client.library.defaults.element.DefaultChannel;
 import org.kitteh.irc.client.library.defaults.element.DefaultChannelTopic;
 import org.kitteh.irc.client.library.defaults.element.DefaultServer;
 import org.kitteh.irc.client.library.defaults.element.DefaultUser;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatusList;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ISupportParameter;
@@ -175,7 +176,7 @@ public class DefaultActorTracker implements ActorTracker {
                     }
                 }
             }
-            ModeStatusList<ChannelMode> channelModes = ModeStatusList.of(this.channelModes.values());
+            ModeStatusList<ChannelMode> channelModes = DefaultModeStatusList.of(this.channelModes.values());
             Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
             for (Map.Entry<Character, List<ModeInfo>> entry : this.modeInfoLists.entrySet()) {
                 modeInfoLists.put(entry.getKey(), Collections.unmodifiableList(new ArrayList<>(entry.getValue())));
@@ -297,14 +298,14 @@ public class DefaultActorTracker implements ActorTracker {
         }
 
         void updateChannelModes(ModeStatusList<ChannelMode> statusList) {
-            statusList.getStatuses().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter().isPresent())).forEach(status -> {
+            statusList.getAll().stream().filter(status -> (status.getMode() instanceof ChannelUserMode) && (status.getParameter().isPresent())).forEach(status -> {
                 if (status.isSetting()) {
                     this.trackUserModeAdd(status.getParameter().get(), (ChannelUserMode) status.getMode());
                 } else {
                     this.trackUserModeRemove(status.getParameter().get(), (ChannelUserMode) status.getMode());
                 }
             });
-            statusList.getStatuses().stream().filter(status -> !(status.getMode() instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
+            statusList.getAll().stream().filter(status -> !(status.getMode() instanceof ChannelUserMode) && (status.getMode().getType() != ChannelMode.Type.A_MASK)).forEach(status -> {
                 if (status.isSetting()) {
                     this.channelModes.put(status.getMode().getChar(), status);
                 } else {

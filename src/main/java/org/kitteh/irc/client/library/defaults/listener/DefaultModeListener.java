@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.defaults.listener;
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatusList;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ModeInfo;
@@ -66,7 +67,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
         if (channel.isPresent()) {
             ModeStatusList<ChannelMode> statusList;
             try {
-                statusList = ModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+                statusList = DefaultModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;
@@ -88,7 +89,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
             ModeStatusList<UserMode> statusList;
             try {
-                statusList = ModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+                statusList = DefaultModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;
@@ -99,13 +100,13 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
             Channel channel = ((MessageTargetInfo.ChannelInfo) messageTargetInfo).getChannel();
             ModeStatusList<ChannelMode> statusList;
             try {
-                statusList = ModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+                statusList = DefaultModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;
             }
             this.fire(new ChannelModeEvent(this.getClient(), event.getOriginalMessages(), event.getActor(), channel, statusList));
-            statusList.getStatuses().stream()
+            statusList.getAll().stream()
                     .filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK)
                     .forEach(status -> this.getTracker().trackChannelModeInfo(channel.getName(), status.isSetting(),
                             new ModeInfo.DefaultModeInfo(this.getClient(), channel, status.getMode(), status.getParameter().get(), event.getActor().getName(), Instant.now())

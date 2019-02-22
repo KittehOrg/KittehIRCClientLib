@@ -26,12 +26,13 @@ package org.kitteh.irc.client.library.command;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatus;
+import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeStatusList;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
-import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -105,9 +106,9 @@ public class ChannelModeCommand extends ChannelCommand {
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter, "Parameter");
-            this.changes.add(new ModeStatus<>(add, mode, parameter));
+            this.changes.add(new DefaultModeStatus<>(add, mode, parameter));
         } else {
-            this.changes.add(new ModeStatus<>(add, mode));
+            this.changes.add(new DefaultModeStatus<>(add, mode));
         }
         return this;
     }
@@ -143,7 +144,7 @@ public class ChannelModeCommand extends ChannelCommand {
     }
 
     private void send(@NonNull List<ModeStatus<ChannelMode>> queue) {
-        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + ModeStatusList.of(new ArrayList<>(queue)).getStatusString());
+        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + DefaultModeStatusList.of(new ArrayList<>(queue)).getAsString());
         queue.clear();
     }
 
