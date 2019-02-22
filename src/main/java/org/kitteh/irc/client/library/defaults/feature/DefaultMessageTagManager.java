@@ -36,6 +36,7 @@ import org.kitteh.irc.client.library.util.TriFunction;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -104,11 +105,11 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
 
     @Override
     public @NonNull List<MessageTag> getCapabilityTags(@NonNull String tagList) {
-        String[] tags = tagList.split(";"); // Split up by semicolon
-        List<MessageTag> list = new ArrayList<>();
+        String[] tagSplit = tagList.split(";"); // Split up by semicolon
+        Map<String, MessageTag> tags = new LinkedHashMap<>();
         int index;
         TagCreator tagCreator;
-        for (String tag : tags) {
+        for (String tag : tagSplit) {
             String tagName;
             @Nullable String value;
             // Split out value if present
@@ -131,9 +132,10 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
             if (messageTag == null) {
                 messageTag = new DefaultMessageTag(tagName, value);
             }
-            list.add(messageTag);
+            // "Clients receiving messages with more than one occurrence of a tag key SHOULD discard all but the final occurrence."
+            tags.put(tagName.toLowerCase(), messageTag);
         }
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(new ArrayList<>(tags.values()));
     }
 
     private @NonNull String getTagValue(@NonNull String tag) {

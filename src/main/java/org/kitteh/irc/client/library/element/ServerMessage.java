@@ -73,7 +73,7 @@ public interface ServerMessage {
     @NonNull List<MessageTag> getTags();
 
     /**
-     * Gets the named tag if present
+     * Gets the named tag if present.
      *
      * @param name tag name
      * @return tag if present
