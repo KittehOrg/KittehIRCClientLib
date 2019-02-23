@@ -49,7 +49,6 @@ import java.util.Optional;
  * SASL authentication. Automatically attempts auth during connection.
  */
 public abstract class AbstractSaslProtocol extends AbstractAuthProtocol implements EventListening {
-    @SuppressWarnings("JavaDoc")
     protected class Listener {
         @Handler(priority = 1)
         public void capList(CapabilitiesSupportedListEvent event) {

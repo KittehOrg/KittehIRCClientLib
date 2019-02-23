@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
 /**
  * Helpful things.
  */
-@SuppressWarnings("JavaDoc")
 public class TwitchListener {
     private final Client client;
 
