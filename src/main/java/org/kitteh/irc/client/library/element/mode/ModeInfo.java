@@ -76,6 +76,6 @@ public interface ModeInfo extends ClientLinked {
      * Attempts to remove this item from the channel.
      */
     default void remove() {
-        new ChannelModeCommand(this.getClient(), this.getChannel().getName()).add(false, this.getMode(), this.getMask().asString()).execute();
+        new ChannelModeCommand(this.getClient(), this.getChannel().getName()).add(ModeStatus.Action.REMOVE, this.getMode(), this.getMask().asString()).execute();
     }
 }

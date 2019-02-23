@@ -207,7 +207,8 @@ public class DefaultActorTracker implements ActorTracker {
 
         void trackMode(@NonNull ChannelMode mode, boolean track) {
             if (track && this.trackedModes.add(mode.getChar())) {
-                new ChannelModeCommand(DefaultActorTracker.this.client, this.getName()).add(true, mode).execute();
+                // Request the mode list (bans, quiets, etc)
+                new ChannelModeCommand(DefaultActorTracker.this.client, this.getName()).add(ModeStatus.Action.ADD, mode).execute();
             } else if (!track) {
                 this.trackedModes.remove(mode.getChar());
             }

@@ -62,53 +62,53 @@ public class ChannelModeCommand extends ChannelCommand {
     /**
      * Adds a mode change without a parameter.
      *
-     * @param add true if adding, false if removing
+     * @param action adding or removing
      * @param mode the mode to be changed
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid
      */
-    public @NonNull ChannelModeCommand add(boolean add, @NonNull ChannelMode mode) {
-        return this.addChange(add, mode, null);
+    public @NonNull ChannelModeCommand add(ModeStatus.Action action, @NonNull ChannelMode mode) {
+        return this.addChange(action, mode, null);
     }
 
     /**
      * Adds a mode change.
      *
-     * @param add true if adding, false if removing
+     * @param action adding or removing
      * @param mode the mode to be changed
      * @param parameter mode parameter
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid comes from a
      * different client or parameter is null
      */
-    public @NonNull ChannelModeCommand add(boolean add, @NonNull ChannelMode mode, @NonNull String parameter) {
-        return this.addChange(add, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
+    public @NonNull ChannelModeCommand add(ModeStatus.Action action, @NonNull ChannelMode mode, @NonNull String parameter) {
+        return this.addChange(action, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
     }
 
     /**
      * Adds a mode change.
      *
-     * @param add true if adding, false if removing
+     * @param action adding or removing
      * @param mode the mode to be changed
      * @param parameter user whose nick will be sent
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid or either mode or
      * user comes from a different client or parameter is null
      */
-    public @NonNull ChannelModeCommand add(boolean add, @NonNull ChannelUserMode mode, @NonNull User parameter) {
+    public @NonNull ChannelModeCommand add(ModeStatus.Action action, @NonNull ChannelUserMode mode, @NonNull User parameter) {
         Sanity.nullCheck(parameter, "User cannot be null");
         Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
-        return this.addChange(add, mode, parameter.getNick());
+        return this.addChange(action, mode, parameter.getNick());
     }
 
-    private synchronized @NonNull ChannelModeCommand addChange(boolean add, @NonNull ChannelMode mode, @Nullable String parameter) {
+    private synchronized @NonNull ChannelModeCommand addChange(ModeStatus.Action action, @NonNull ChannelMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter, "Parameter");
-            this.changes.add(new DefaultModeStatus<>(add, mode, parameter));
+            this.changes.add(new DefaultModeStatus<>(action, mode, parameter));
         } else {
-            this.changes.add(new DefaultModeStatus<>(add, mode));
+            this.changes.add(new DefaultModeStatus<>(action, mode));
         }
         return this;
     }

@@ -86,14 +86,14 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
             if (!((changes.charAt(0) == '+') || (changes.charAt(0) == '-'))) {
                 throw new IllegalArgumentException("Mode change does not start with + or -");
             }
-            boolean add = true;
+            ModeStatus.Action action = null; // Immediately changed because of lines immediately above and the switch below.
             for (char modeChar : changes.toCharArray()) {
                 switch (modeChar) {
                     case '+':
-                        add = true;
+                        action = ModeStatus.Action.ADD;
                         break;
                     case '-':
-                        add = false;
+                        action = ModeStatus.Action.REMOVE;
                         break;
                     default:
                         ModeType mode = modes.get(modeChar);
@@ -101,10 +101,10 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
                             throw new IllegalArgumentException("Contains non-registered mode: " + modeChar);
                         }
                         String target = null;
-                        if ((mode instanceof ChannelMode) && ((mode instanceof ChannelUserMode) || (add ? ((ChannelMode) mode).getType().isParameterRequiredOnSetting() : ((ChannelMode) mode).getType().isParameterRequiredOnRemoval()))) {
+                        if ((mode instanceof ChannelMode) && ((mode instanceof ChannelUserMode) || ((action == ModeStatus.Action.ADD) ? ((ChannelMode) mode).getType().isParameterRequiredOnSetting() : ((ChannelMode) mode).getType().isParameterRequiredOnRemoval()))) {
                             target = args[++currentArg];
                         }
-                        list.add((target == null) ? new DefaultModeStatus<>(add, mode) : new DefaultModeStatus<>(add, mode, target));
+                        list.add((target == null) ? new DefaultModeStatus<>(action, mode) : new DefaultModeStatus<>(action, mode, target));
                 }
             }
         }

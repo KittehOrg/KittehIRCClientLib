@@ -4,6 +4,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -33,7 +34,7 @@ public class UserModeCommandTest {
 
         UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', clientMock);
-        sut.add(true, mode);
+        sut.add(ModeStatus.Action.ADD, mode);
         sut.execute();
         Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +A");
     }
@@ -44,10 +45,10 @@ public class UserModeCommandTest {
         Mockito.when(clientMock.getNick()).thenReturn(USER);
 
         UserModeCommand sut = new UserModeCommand(clientMock);
-        sut.add(true, this.getUserMode('A', clientMock));
-        sut.add(true, this.getUserMode('B', clientMock));
-        sut.add(true, this.getUserMode('C', clientMock));
-        sut.add(true, this.getUserMode('D', clientMock));
+        sut.add(ModeStatus.Action.ADD, this.getUserMode('A', clientMock));
+        sut.add(ModeStatus.Action.ADD, this.getUserMode('B', clientMock));
+        sut.add(ModeStatus.Action.ADD, this.getUserMode('C', clientMock));
+        sut.add(ModeStatus.Action.ADD, this.getUserMode('D', clientMock));
         sut.execute();
         InOrder inOrder = Mockito.inOrder(clientMock, clientMock);
         inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +ABCD");
@@ -60,7 +61,7 @@ public class UserModeCommandTest {
 
         UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', Mockito.mock(Client.class));
-        sut.add(true, mode);
+        sut.add(ModeStatus.Action.ADD, mode);
     }
 
     @Test
@@ -71,8 +72,8 @@ public class UserModeCommandTest {
         UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode modeA = this.getUserMode('A', clientMock);
         UserMode modeB = this.getUserMode('B', clientMock);
-        sut.add(true, modeA);
-        sut.add(false, modeB);
+        sut.add(ModeStatus.Action.ADD, modeA);
+        sut.add(ModeStatus.Action.REMOVE, modeB);
         sut.execute();
         Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +A-B");
     }
@@ -85,8 +86,8 @@ public class UserModeCommandTest {
         UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode modeA = this.getUserMode('A', clientMock);
         UserMode modeB = this.getUserMode('B', clientMock);
-        sut.add(true, modeA);
-        sut.add(true, modeB, "test");
+        sut.add(ModeStatus.Action.ADD, modeA);
+        sut.add(ModeStatus.Action.ADD, modeB, "test");
         sut.execute();
         Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +AB test");
     }
@@ -98,7 +99,7 @@ public class UserModeCommandTest {
 
         UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', clientMock);
-        sut.add(true, mode, "foo");
+        sut.add(ModeStatus.Action.ADD, mode, "foo");
         sut.execute();
         Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +A foo");
     }
@@ -110,7 +111,7 @@ public class UserModeCommandTest {
 
         UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', clientMock);
-        sut.add(false, mode, "foo");
+        sut.add(ModeStatus.Action.REMOVE, mode, "foo");
         sut.execute();
         Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " -A foo");
     }

@@ -44,26 +44,26 @@ public class DefaultModeStatus<ModeType extends Mode> implements ModeStatus<Mode
     /**
      * Creates a status without a parameter.
      *
-     * @param setting true for setting mode, false for removing
+     * @param action adding or removing
      * @param mode mode to set
      */
-    public DefaultModeStatus(boolean setting, @NonNull ModeType mode) {
+    public DefaultModeStatus(Action action, @NonNull ModeType mode) {
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
         this.parameter = null;
-        this.action = setting ? Action.ADD : Action.REMOVE;
+        this.action = action;
     }
 
     /**
      * Creates a status.
      *
-     * @param setting true for setting mode, false for removing
+     * @param action adding or removing
      * @param mode mode to set
      * @param parameter parameter
      */
-    public DefaultModeStatus(boolean setting, @NonNull ModeType mode, @NonNull String parameter) {
+    public DefaultModeStatus(Action action, @NonNull ModeType mode, @NonNull String parameter) {
         this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
         this.parameter = Sanity.safeMessageCheck(parameter, "Parameter");
-        this.action = setting ? Action.ADD : Action.REMOVE;
+        this.action = action;
     }
 
     @Override

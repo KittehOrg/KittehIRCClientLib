@@ -32,8 +32,8 @@ public class AwayCommandTest {
         Client client = Mockito.mock(Client.class);
 
         AwayCommand awayCommand = new AwayCommand(client);
-        awayCommand.message("meow");
-        awayCommand.message(null);
+        awayCommand.away("meow");
+        awayCommand.away(null);
         awayCommand.execute();
 
         Mockito.verify(client, Mockito.times(1)).sendRawLine("AWAY");
@@ -47,8 +47,8 @@ public class AwayCommandTest {
         Client client = Mockito.mock(Client.class);
 
         AwayCommand awayCommand = new AwayCommand(client);
-        awayCommand.message(MESSAGE);
-        awayCommand.messageRemove();
+        awayCommand.away(MESSAGE);
+        awayCommand.notAway();
         awayCommand.execute();
 
         Mockito.verify(client, Mockito.times(1)).sendRawLine("AWAY");
@@ -62,7 +62,7 @@ public class AwayCommandTest {
         Client client = Mockito.mock(Client.class);
 
         AwayCommand awayCommand = new AwayCommand(client);
-        awayCommand.message(MESSAGE);
+        awayCommand.away(MESSAGE);
         awayCommand.execute();
 
         Assert.assertTrue(awayCommand.toString().contains(MESSAGE));
@@ -76,7 +76,7 @@ public class AwayCommandTest {
         Client client = Mockito.mock(Client.class);
 
         AwayCommand awayCommand = new AwayCommand(client);
-        awayCommand.message(MESSAGE);
+        awayCommand.away(MESSAGE);
         awayCommand.execute();
 
         Mockito.verify(client, Mockito.times(1)).sendRawLine("AWAY :" + MESSAGE);

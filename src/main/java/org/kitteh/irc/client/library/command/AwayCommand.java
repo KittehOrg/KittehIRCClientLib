@@ -52,7 +52,7 @@ public class AwayCommand extends Command {
      * @return this command
      * @throws IllegalArgumentException for invalid message
      */
-    public @NonNull AwayCommand message(@Nullable String message) {
+    public @NonNull AwayCommand away(@Nullable String message) {
         this.message = (message == null) ? null : Sanity.safeMessageCheck(message);
         return this;
     }
@@ -63,7 +63,7 @@ public class AwayCommand extends Command {
      *
      * @return this command
      */
-    public @NonNull AwayCommand messageRemove() {
+    public @NonNull AwayCommand notAway() {
         this.message = null;
         return this;
     }

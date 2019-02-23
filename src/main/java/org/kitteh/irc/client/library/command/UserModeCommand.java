@@ -55,37 +55,37 @@ public class UserModeCommand extends Command {
     /**
      * Adds a mode change without a parameter.
      *
-     * @param add true if adding, false if removing
+     * @param action adding or removing
      * @param mode the mode to be changed
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid
      */
-    public @NonNull UserModeCommand add(boolean add, @NonNull UserMode mode) {
-        return this.addChange(add, mode, null);
+    public @NonNull UserModeCommand add(ModeStatus.Action action, @NonNull UserMode mode) {
+        return this.addChange(action, mode, null);
     }
 
     /**
      * Adds a mode change.
      *
-     * @param add true if adding, false if removing
+     * @param action adding or removing
      * @param mode the mode to be changed
      * @param parameter mode parameter
      * @return this ModeCommand
      * @throws IllegalArgumentException if mode invalid comes from a
      * different client or parameter is null
      */
-    public @NonNull UserModeCommand add(boolean add, @NonNull UserMode mode, @NonNull String parameter) {
-        return this.addChange(add, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
+    public @NonNull UserModeCommand add(ModeStatus.Action action, @NonNull UserMode mode, @NonNull String parameter) {
+        return this.addChange(action, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
     }
 
-    private synchronized @NonNull UserModeCommand addChange(boolean add, @NonNull UserMode mode, @Nullable String parameter) {
+    private synchronized @NonNull UserModeCommand addChange(ModeStatus.Action action, @NonNull UserMode mode, @Nullable String parameter) {
         Sanity.nullCheck(mode, "Mode cannot be null");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter, "Parameter");
-            this.changes.add(new DefaultModeStatus<>(add, mode, parameter));
+            this.changes.add(new DefaultModeStatus<>(action, mode, parameter));
         } else {
-            this.changes.add(new DefaultModeStatus<>(add, mode));
+            this.changes.add(new DefaultModeStatus<>(action, mode));
         }
         return this;
     }
