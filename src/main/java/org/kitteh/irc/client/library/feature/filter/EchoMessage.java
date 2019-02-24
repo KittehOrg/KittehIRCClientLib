@@ -29,7 +29,7 @@ import net.engio.mbassy.subscription.SubscriptionContext;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.User;
-import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
+import org.kitteh.irc.client.library.event.helper.ActorEvent;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -47,7 +47,7 @@ public @interface EchoMessage {
     /**
      * {@inheritDoc}
      */
-    class Processor implements FilterProcessor<ActorMessageEvent<? extends Actor>, EchoMessage>, IMessageFilter<ActorMessageEvent<? extends Actor>> {
+    class Processor implements FilterProcessor<ActorEvent<? extends Actor>, EchoMessage>, IMessageFilter<ActorEvent<? extends Actor>> {
         /**
          * Constructs the processor.
          */
@@ -55,13 +55,13 @@ public @interface EchoMessage {
         }
 
         @Override
-        public boolean accepts(@NonNull ActorMessageEvent<? extends Actor> event, @NonNull EchoMessage[] annotations) {
+        public boolean accepts(@NonNull ActorEvent<? extends Actor> event, @NonNull EchoMessage[] annotations) {
             Optional<User> client = event.getClient().getUser();
             return client.isPresent() && client.get().equals(event.getActor());
         }
 
         @Override
-        public boolean accepts(ActorMessageEvent<? extends Actor> event, SubscriptionContext context) {
+        public boolean accepts(ActorEvent<? extends Actor> event, SubscriptionContext context) {
             return this.accepts(event, context.getHandler().getMethod().getAnnotationsByType(EchoMessage.class));
         }
     }

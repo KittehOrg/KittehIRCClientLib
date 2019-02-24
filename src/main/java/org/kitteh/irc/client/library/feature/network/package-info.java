@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * DNS resolution.
+ * Networking is fun for the whole family!
  */
 package org.kitteh.irc.client.library.feature.network;
