@@ -52,6 +52,7 @@ public class ChannelTargetedTagMessageEvent extends ActorChannelEventBase<Actor>
      * @param originalMessages original messages
      * @param sender who sent it
      * @param channel channel receiving
+     * @param prefix targeted prefix
      */
     public ChannelTargetedTagMessageEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix) {
         super(client, originalMessages, sender, channel);
