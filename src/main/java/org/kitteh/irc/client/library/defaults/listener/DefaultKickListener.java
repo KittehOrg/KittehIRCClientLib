@@ -56,7 +56,7 @@ public class DefaultKickListener extends AbstractDefaultListenerBase {
             this.trackException(event, "KICK message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(0));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(0));
         if (channel.isPresent()) {
             Optional<User> kickedUser = this.getTracker().getTrackedUser(event.getParameters().get(1));
             if (kickedUser.isPresent()) {

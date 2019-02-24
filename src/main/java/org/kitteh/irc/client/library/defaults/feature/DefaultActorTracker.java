@@ -485,6 +485,17 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
+    public @NonNull Optional<Channel> getChannel(@NonNull String channel) {
+        Optional<Channel> ch = this.getTrackedChannel(channel);
+        if (ch.isPresent()) {
+            return ch;
+        } else if (this.client.getServerInfo().isValidChannel(channel)) {
+            return Optional.of(new IrcChannel(channel).snapshot());
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public @NonNull Optional<Channel> getTrackedChannel(@NonNull String channel) {
         IrcChannel ch = this.trackedChannels.get(channel);
         return (ch == null) ? Optional.empty() : Optional.of(ch.snapshot());

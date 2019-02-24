@@ -63,7 +63,7 @@ public class DefaultWhoListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHO response too short");
             return;
         }
-        final Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        final Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
         channel.ifPresent(ch -> {
             final String ident = event.getParameters().get(2);
             final String host = event.getParameters().get(3);
@@ -115,7 +115,7 @@ public class DefaultWhoListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WHO response too short");
             return;
         }
-        Optional<Channel> whoChannel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> whoChannel = this.getTracker().getChannel(event.getParameters().get(1));
         whoChannel.ifPresent(channel -> {
             this.getTracker().setChannelListReceived(channel.getName());
             this.whoMessages.add(event.getServerMessage());

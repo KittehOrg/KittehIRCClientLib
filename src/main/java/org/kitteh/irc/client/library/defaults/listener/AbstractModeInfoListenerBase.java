@@ -79,7 +79,7 @@ public class AbstractModeInfoListenerBase extends AbstractDefaultListenerBase {
             this.trackException(event, name + " response too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             messageList.add(event.getServerMessage());
             String creator = (event.getParameters().size() > (3 + offset)) ? event.getParameters().get((3 + offset)) : null;
@@ -115,7 +115,7 @@ public class AbstractModeInfoListenerBase extends AbstractDefaultListenerBase {
             this.trackException(event, name + " response too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             messageList.add(event.getServerMessage());
             Optional<ChannelMode> channelMode = this.getClient().getServerInfo().getChannelMode(mode);

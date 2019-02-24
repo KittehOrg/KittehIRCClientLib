@@ -55,6 +55,14 @@ public interface ActorTracker extends Resettable {
     @NonNull Actor getActor(@NonNull String name);
 
     /**
+     * Gets a channel.
+     *
+     * @param channel channel name
+     * @return channel if a valid channel name
+     */
+    @NonNull Optional<Channel> getChannel(@NonNull String channel);
+
+    /**
      * Gets a tracked channel.
      *
      * @param channel channel name

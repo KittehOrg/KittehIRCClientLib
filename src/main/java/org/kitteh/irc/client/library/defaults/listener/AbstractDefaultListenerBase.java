@@ -240,10 +240,10 @@ public class AbstractDefaultListenerBase {
      * @return target in specific object form
      */
     protected @NonNull MessageTargetInfo getTypeByTarget(@NonNull String target) {
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(target);
+        Optional<Channel> channel = this.getTracker().getChannel(target);
         Optional<ChannelUserMode> prefix = this.getClient().getServerInfo().getTargetedChannelInfo(target);
         if (prefix.isPresent()) {
-            return new MessageTargetInfo.TargetedChannel(this.getTracker().getTrackedChannel(target.substring(1)).get(), prefix.get());
+            return new MessageTargetInfo.TargetedChannel(this.getTracker().getChannel(target.substring(1)).get(), prefix.get());
         } else if (channel.isPresent()) {
             return new MessageTargetInfo.ChannelInfo(channel.get());
         }

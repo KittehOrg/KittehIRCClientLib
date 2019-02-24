@@ -61,7 +61,7 @@ public class DefaultNamesListener extends AbstractDefaultListenerBase {
             this.trackException(event, "NAMES response too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(2));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(2));
         if (channel.isPresent()) {
             List<ChannelUserMode> channelUserModes = this.getClient().getServerInfo().getChannelUserModes();
             for (String combo : event.getParameters().get(3).split(" ")) {
@@ -90,7 +90,7 @@ public class DefaultNamesListener extends AbstractDefaultListenerBase {
             this.trackException(event, "NAMES response too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             this.namesMessages.add(event.getServerMessage());
             this.fire(new ChannelNamesUpdatedEvent(this.getClient(), this.namesMessages, channel.get()));

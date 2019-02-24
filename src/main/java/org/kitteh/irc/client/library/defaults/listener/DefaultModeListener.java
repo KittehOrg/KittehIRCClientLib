@@ -62,7 +62,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
             this.trackException(event, "Channel mode info message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             ModeStatusList<ChannelMode> statusList;
             try {

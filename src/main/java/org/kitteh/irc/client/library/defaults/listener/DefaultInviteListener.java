@@ -53,7 +53,7 @@ public class DefaultInviteListener extends AbstractDefaultListenerBase {
             this.trackException(event, "INVITE message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             if (this.getClient().getNick().equalsIgnoreCase(event.getParameters().get(0)) && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
                 this.getClient().sendRawLine("JOIN " + channel.get().getName());

@@ -54,7 +54,7 @@ public class DefaultKnockListener extends AbstractDefaultListenerBase {
             this.trackException(event, "KNOCK message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
         if (channel.isPresent()) {
             User user = (User) this.getTracker().getActor(event.getParameters().get(2));
             this.fire(new ChannelKnockEvent(this.getClient(), event.getOriginalMessages(), channel.get(), user));

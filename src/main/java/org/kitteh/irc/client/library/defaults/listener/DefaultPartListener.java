@@ -55,7 +55,7 @@ public class DefaultPartListener extends AbstractDefaultListenerBase {
             this.trackException(event, "PART message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(0));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(0));
         if (channel.isPresent()) {
             if (event.getActor() instanceof User) {
                 User user = (User) event.getActor();

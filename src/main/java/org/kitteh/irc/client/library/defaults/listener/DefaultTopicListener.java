@@ -55,7 +55,7 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
             this.trackException(event, "Topic message too short");
             return;
         }
-        Optional<Channel> topicChannel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> topicChannel = this.getTracker().getChannel(event.getParameters().get(1));
         if (topicChannel.isPresent()) {
             this.getTracker().setChannelTopic(topicChannel.get().getName(), event.getParameters().get(2));
         } else {
@@ -70,7 +70,7 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
             this.trackException(event, "Topic message too short");
             return;
         }
-        Optional<Channel> topicSetChannel = this.getTracker().getTrackedChannel(event.getParameters().get(1));
+        Optional<Channel> topicSetChannel = this.getTracker().getChannel(event.getParameters().get(1));
         if (topicSetChannel.isPresent()) {
             this.getTracker().setChannelTopicInfo(topicSetChannel.get().getName(), Long.parseLong(event.getParameters().get(3)) * 1000, this.getTracker().getActor(event.getParameters().get(2)));
             this.fire(new ChannelTopicEvent(this.getClient(), event.getOriginalMessages(), topicSetChannel.get(), false));
@@ -86,7 +86,7 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
             this.trackException(event, "TOPIC message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getTrackedChannel(event.getParameters().get(0));
+        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(0));
         if (channel.isPresent()) {
             this.getTracker().setChannelTopic(channel.get().getName(), event.getParameters().get(1));
             this.getTracker().setChannelTopicInfo(channel.get().getName(), System.currentTimeMillis(), event.getActor());
