@@ -29,10 +29,12 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
+import java.util.List;
+
 /**
  * Sends an AWAY request to the server.
  */
-public class AwayCommand extends Command {
+public class AwayCommand extends Command<AwayCommand> {
     private @Nullable String message;
 
     /**
@@ -74,7 +76,7 @@ public class AwayCommand extends Command {
         if (this.message != null) {
             exec += " :" + this.message;
         }
-        this.getClient().sendRawLine(exec);
+        this.sendCommandLine(exec);
     }
 
     @Override

@@ -35,7 +35,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 /**
  * Get your KICKs on Route 66.
  */
-public class KickCommand extends ChannelCommand {
+public class KickCommand extends ChannelCommand<KickCommand> {
     private String target;
     private @Nullable String reason;
 
@@ -101,7 +101,7 @@ public class KickCommand extends ChannelCommand {
         if (this.target == null) {
             throw new IllegalStateException("Target not defined");
         }
-        this.getClient().sendRawLine("KICK " + this.getChannel() + ' ' + this.target + (this.reason != null ? (" :" + this.reason) : ""));
+        this.sendCommandLine("KICK " + this.getChannel() + ' ' + this.target + (this.reason != null ? (" :" + this.reason) : ""));
     }
 
     @Override

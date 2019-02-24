@@ -32,7 +32,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 /**
  * Sends a WHOIS request to the server.
  */
-public class WhoisCommand extends Command {
+public class WhoisCommand extends Command<WhoisCommand> {
     private @Nullable String server;
     private @Nullable String target;
 
@@ -84,7 +84,7 @@ public class WhoisCommand extends Command {
             builder.append(this.server).append(' ');
         }
         builder.append(this.target);
-        this.getClient().sendRawLine(builder.toString());
+        this.sendCommandLine(builder.toString());
     }
 
     @Override

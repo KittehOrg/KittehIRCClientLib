@@ -43,7 +43,7 @@ import java.util.Optional;
 /**
  * Commands a la MODE.
  */
-public class ChannelModeCommand extends ChannelCommand {
+public class ChannelModeCommand extends ChannelCommand<ChannelModeCommand> {
     private static final int PARAMETER_MODES_PER_LINE = 3;
 
     private final List<ModeStatus<ChannelMode>> changes = new ArrayList<>();
@@ -116,7 +116,7 @@ public class ChannelModeCommand extends ChannelCommand {
     @Override
     public synchronized void execute() {
         if (this.changes.isEmpty()) {
-            this.getClient().sendRawLine("MODE " + this.getChannel());
+            this.sendCommandLine("MODE " + this.getChannel());
             return;
         }
         int parameterModesPerLine = -1;
@@ -144,7 +144,7 @@ public class ChannelModeCommand extends ChannelCommand {
     }
 
     private void send(@NonNull List<ModeStatus<ChannelMode>> queue) {
-        this.getClient().sendRawLine("MODE " + this.getChannel() + ' ' + DefaultModeStatusList.of(new ArrayList<>(queue)).getAsString());
+        this.sendCommandLine("MODE " + this.getChannel() + ' ' + DefaultModeStatusList.of(new ArrayList<>(queue)).getAsString());
         queue.clear();
     }
 

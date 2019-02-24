@@ -36,7 +36,7 @@ import java.util.Set;
 /**
  * Sends a MONITOR request to the server.
  */
-public class MonitorCommand extends Command {
+public class MonitorCommand extends Command<MonitorCommand> {
     /**
      * Describes an action to take with the MONITOR command.
      */
@@ -164,11 +164,11 @@ public class MonitorCommand extends Command {
     }
 
     private void monitorCommand(@NonNull Action action) {
-        this.getClient().sendRawLine("MONITOR " + action.getCharacter());
+        this.sendCommandLine("MONITOR " + action.getCharacter());
     }
 
     private void monitorCommand(@NonNull Action action, @NonNull String targets) {
-        this.getClient().sendRawLine("MONITOR " + action.getCharacter() + ' ' + targets);
+        this.sendCommandLine("MONITOR " + action.getCharacter() + ' ' + targets);
     }
 
     @Override

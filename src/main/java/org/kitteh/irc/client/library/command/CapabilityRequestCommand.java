@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Sends a capability request to the server.
  */
-public class CapabilityRequestCommand extends Command {
+public class CapabilityRequestCommand extends Command<CapabilityRequestCommand> {
     private final List<String> requests = new ArrayList<>();
 
     /**
@@ -89,7 +89,7 @@ public class CapabilityRequestCommand extends Command {
     }
 
     private void send(@NonNull String requests) {
-        this.getClient().sendRawLineImmediately("CAP REQ :" + requests);
+        this.sendCommandLine("CAP REQ :" + requests, true);
     }
 
     @Override

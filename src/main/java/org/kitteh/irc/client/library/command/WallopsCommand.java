@@ -31,7 +31,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 /**
  * Sends a WALLOPS message to the server.
  */
-public class WallopsCommand extends Command {
+public class WallopsCommand extends Command<WallopsCommand> {
     private String message;
 
     /**
@@ -61,7 +61,7 @@ public class WallopsCommand extends Command {
         if (this.message == null) {
             throw new IllegalStateException("Message not defined");
         }
-        this.getClient().sendRawLine("WALLOPS :" + this.message);
+        this.sendCommandLine("WALLOPS :" + this.message);
     }
 
     @Override

@@ -31,7 +31,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 /**
  * A command only executed on a channel.
  */
-public abstract class ChannelCommand extends Command {
+public abstract class ChannelCommand<C extends ChannelCommand<C>> extends Command<ChannelCommand<C>> {
     private final String channel;
 
     /**

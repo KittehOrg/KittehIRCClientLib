@@ -26,14 +26,50 @@ package org.kitteh.irc.client.library.command;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ClientLinked;
+import org.kitteh.irc.client.library.element.MessageTag;
+import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a command which is executable on the server by the client.
  */
-public abstract class Command implements ClientLinked {
+public abstract class Command<C extends Command<C>> implements ClientLinked {
+    public class Tags {
+        private List<MessageTag> tags = new ArrayList<>();
+
+        public Tags add(@NonNull MessageTag tag) {
+            this.tags.add(Sanity.nullCheck(tag, "Tag cannot be null"));
+            return this;
+        }
+
+        public Tags add(@NonNull String name) {
+            this.tags.add(new MessageTagManager.DefaultMessageTag(Sanity.nullCheck(name, "Name cannot be null"), null));
+            return this;
+        }
+
+        public Tags add(@NonNull String name, @NonNull String value) {
+            Sanity.nullCheck(name, "Name cannot be null");
+            Sanity.nullCheck(value, "Value cannot be null");
+            this.tags.add(new MessageTagManager.DefaultMessageTag(name, value));
+            return this;
+        }
+
+        public Tags clear() {
+            this.tags.clear();
+            return this;
+        }
+
+        public C then() {
+            return (C) Command.this;
+        }
+    }
+
     private final Client client;
+    private Tags tags;
 
     /**
      * Constructs the command.
@@ -59,6 +95,40 @@ public abstract class Command implements ClientLinked {
      * Executes the command.
      */
     public abstract void execute();
+
+    protected void sendCommandLine(@NonNull String line) {
+        this.sendCommandLine(line, false);
+    }
+
+    protected void sendCommandLine(@NonNull String line, boolean immediately) {
+        if (this.tags == null || this.tags.tags.isEmpty()) {
+            if (immediately) {
+                this.client.sendRawLineImmediately(line);
+            } else {
+                this.client.sendRawLine(line);
+            }
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append('@');
+            for (MessageTag tag : this.tags.tags) {
+                builder.append(tag.getAsString()).append(';');
+            }
+            builder.setCharAt(builder.length() - 1, ' ');
+            builder.append(line);
+            if (immediately) {
+                this.client.sendRawLineImmediately(builder.toString());
+            } else {
+                this.client.sendRawLine(builder.toString());
+            }
+        }
+    }
+
+    public Tags tags() {
+        if (this.tags == null) {
+            this.tags = new Tags();
+        }
+        return this.tags;
+    }
 
     @Override
     public String toString() {

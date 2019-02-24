@@ -24,63 +24,60 @@
 package org.kitteh.irc.client.library.command;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 /**
- * Sends an OPER request to the server - MAKE SURE IT'S YOUR SERVER!
+ * Sends a tag message.
  */
-public class OperCommand extends Command<OperCommand> {
-    private String user;
-    private String password;
+public class TagMessageCommand extends Command<TagMessageCommand> {
+    private String target;
 
     /**
-     * Constructs the command.
+     * Constructs a tag message command.
      *
-     * @param client the client
-     * @throws IllegalArgumentException if client is null
+     * @param client the client on which this command is executing
+     * @throws IllegalArgumentException if null parameters
      */
-    public OperCommand(@NonNull Client client) {
+    public TagMessageCommand(@NonNull Client client) {
         super(client);
     }
 
     /**
-     * Sets user for the command.
+     * Sets the target of this message.
      *
-     * @param user target nick
+     * @param target target
      * @return this command
-     * @throws IllegalArgumentException for invalid target
+     * @throws IllegalArgumentException if target is null or contains invalid characters
      */
-    public @NonNull OperCommand user(@NonNull String user) {
-        this.user = Sanity.safeMessageCheck(user, "user");
+    public @NonNull TagMessageCommand target(@NonNull String target) {
+        this.target = Sanity.safeMessageCheck(target, "Target");
+        return this;
+    }
+
+    public @NonNull TagMessageCommand target(@NonNull MessageReceiver target) {
+        this.target = Sanity.nullCheck(target, "Target cannot be null").getMessagingName();
         return this;
     }
 
     /**
-     * Sets the password for the command.
+     * Executes the command.
      *
-     * @param password password for the user
-     * @return this command
+     * @throws IllegalStateException if target or message is not defined
      */
-    public @NonNull OperCommand password(@NonNull String password) {
-        this.password = Sanity.safeMessageCheck(password, "password");
-        return this;
-    }
-
     @Override
     public void execute() {
-        if (this.user == null) {
-            throw new IllegalStateException("User not defined");
+        if (this.target == null) {
+            throw new IllegalStateException("Target not defined");
         }
-        if (this.password == null) {
-            throw new IllegalStateException("Password not defined");
-        }
-        this.sendCommandLine("OPER " + this.user + ' ' + this.password);
+        this.sendCommandLine("TAGMSG " + this.target);
     }
 
     @Override
     protected @NonNull ToStringer toStringer() {
-        return super.toStringer().add("user", (this.user == null) ? null : "AzureDiamond").add("password", (this.password == null) ? null : "hunter2");
+        return super.toStringer().add("target", this.target);
     }
 }

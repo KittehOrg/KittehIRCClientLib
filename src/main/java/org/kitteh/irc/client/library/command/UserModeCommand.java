@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Commands a la User MODE, without modes added will just query self.
  */
-public class UserModeCommand extends Command {
+public class UserModeCommand extends Command<UserModeCommand> {
     private final List<ModeStatus<UserMode>> changes = new ArrayList<>();
 
     /**
@@ -93,10 +93,10 @@ public class UserModeCommand extends Command {
     @Override
     public synchronized void execute() {
         if (this.changes.isEmpty()) {
-            this.getClient().sendRawLine("MODE " + this.getClient().getNick());
+            this.sendCommandLine("MODE " + this.getClient().getNick());
             return;
         }
-        this.getClient().sendRawLine("MODE " + this.getClient().getNick() + ' ' + DefaultModeStatusList.of(new ArrayList<>(this.changes)).getAsString());
+        this.sendCommandLine("MODE " + this.getClient().getNick() + ' ' + DefaultModeStatusList.of(new ArrayList<>(this.changes)).getAsString());
     }
 
     @Override

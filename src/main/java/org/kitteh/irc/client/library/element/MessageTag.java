@@ -59,11 +59,34 @@ public interface MessageTag {
     @NonNull Optional<String> getValue();
 
     /**
+     * Gets the escaped value of the tag.
+     *
+     * @return escaped tag value if set
+     */
+    default @NonNull Optional<String> getEscapedValue() {
+        return this.getValue().map(s -> s
+                .replace(";", "\\:")
+                .replace(" ", "\\s")
+                .replace("\\", "\\\\")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n"));
+    }
+
+    /**
      * Gets if this message tag is a client-only tag.
      *
      * @return true if the tag name starts with a {@code +} character
      */
     default boolean isClientOnly() {
         return !this.getName().isEmpty() && this.getName().charAt(0) == '+';
+    }
+
+    /**
+     * Gets the tag in the String format sent over the IRC protocol.
+     *
+     * @return tag in String form
+     */
+    default @NonNull String getAsString() {
+        return this.getEscapedValue().map(s -> this.getName() + '=' + s).orElseGet(this::getName);
     }
 }

@@ -26,55 +26,75 @@ package org.kitteh.irc.client.library.command;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.MessageReceiver;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 /**
- * TOPICal command support.
+ * Sends a message.
  */
-public class TopicCommand extends ChannelCommand<TopicCommand> {
-    private @Nullable String topic;
+// TODO multi-line, cutter
+public class MessageCommand extends Command<MessageCommand> {
+    private String target;
+    private String message;
 
     /**
-     * Constructs a TOPIC command for a given channel.
+     * Constructs a message command.
      *
      * @param client the client on which this command is executing
-     * @param channel channel targeted
      * @throws IllegalArgumentException if null parameters
      */
-    public TopicCommand(@NonNull Client client, @NonNull String channel) {
-        super(client, channel);
+    public MessageCommand(@NonNull Client client) {
+        super(client);
     }
 
     /**
-     * Sets the topic.
+     * Sets the target of this message.
      *
-     * @param topic new topic or null to query the current topic
-     * @return this TopicCommand
-     * @throws IllegalArgumentException if topic invalid
+     * @param target target
+     * @return this command
+     * @throws IllegalArgumentException if target is null or contains invalid characters
      */
-    public @NonNull TopicCommand topic(@Nullable String topic) {
-        this.topic = (topic == null) ? null : Sanity.safeMessageCheck(topic, "Topic");
+    public @NonNull MessageCommand target(@NonNull String target) {
+        this.target = Sanity.safeMessageCheck(target, "Target");
+        return this;
+    }
+
+    public @NonNull MessageCommand target(@NonNull MessageReceiver target) {
+        this.target = Sanity.nullCheck(target, "Target cannot be null").getMessagingName();
         return this;
     }
 
     /**
-     * Sets this command to query the channel's current topic.
+     * Sets the message to send.
      *
-     * @return this TopicCommand
+     * @param message message
+     * @return this command
+     * @throws IllegalArgumentException if message contains invalid characters
      */
-    public @NonNull TopicCommand query() {
-        this.topic = null;
+    public @NonNull MessageCommand message(@Nullable String message) {
+        this.message = Sanity.safeMessageCheck(message, "Message");
         return this;
     }
 
+    /**
+     * Executes the command.
+     *
+     * @throws IllegalStateException if target or message is not defined
+     */
     @Override
-    public synchronized void execute() {
-        this.sendCommandLine("TOPIC " + this.getChannel() + (this.topic == null ? "" : (" :" + this.topic)));
+    public void execute() {
+        if (this.target == null) {
+            throw new IllegalStateException("Target not defined");
+        }
+        if (this.message == null) {
+            throw new IllegalStateException("Message not defined");
+        }
+        this.sendCommandLine("PRIVMSG " + this.target + " :" + this.message);
     }
 
     @Override
     protected @NonNull ToStringer toStringer() {
-        return super.toStringer().add("topic", this.topic);
+        return super.toStringer().add("target", this.target).add("message", this.message);
     }
 }
