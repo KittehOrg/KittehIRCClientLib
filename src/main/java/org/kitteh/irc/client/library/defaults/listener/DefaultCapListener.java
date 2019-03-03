@@ -169,7 +169,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
         List<String> requests = responseEvent.getRequests();
         if (!requests.isEmpty()) {
             CapabilityRequestCommand capabilityRequestCommand = new CapabilityRequestCommand(this.getClient());
-            requests.forEach(capabilityRequestCommand::enable);
+            requests.stream().distinct().forEach(capabilityRequestCommand::enable);
             capabilityRequestCommand.execute();
         }
     }
