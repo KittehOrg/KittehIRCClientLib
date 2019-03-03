@@ -114,7 +114,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
             case "ls":
                 this.capLsMessages.add(event.getServerMessage());
                 if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
-                    this.capList.addAll(capabilityStateList);
+                    this.capLs.addAll(capabilityStateList);
                 } else {
                     List<CapabilityState> states;
                     if (this.capLs.isEmpty()) {
@@ -126,6 +126,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
                     this.getClient().getCapabilityManager().setSupportedCapabilities(states);
                     responseEvent = new CapabilitiesSupportedListEvent(this.getClient(), this.capLsMessages, this.getClient().getCapabilityManager().isNegotiating(), states);
                     this.fireAndCapReq((CapabilitiesSupportedListEvent) responseEvent);
+                    this.capLs.clear();
                 }
                 break;
             case "nak":
