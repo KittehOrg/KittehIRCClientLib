@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
 import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * Abstract base class for events involving capability negotiation (CAP) that
  * can have a response.
@@ -47,11 +45,11 @@ public abstract class CapabilityNegotiationResponseEventBase extends ServerMessa
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param negotiating if we are negotiating right now
      */
-    protected CapabilityNegotiationResponseEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating) {
-        super(client, originalMessages);
+    protected CapabilityNegotiationResponseEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, boolean negotiating) {
+        super(client, originalMessage);
         this.negotiating = negotiating;
     }
 

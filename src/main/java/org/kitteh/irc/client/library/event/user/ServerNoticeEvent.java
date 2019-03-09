@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.Server;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
-import java.util.List;
-
 /**
  * Fires when a notice is sent to the client.
  */
@@ -39,11 +37,11 @@ public class ServerNoticeEvent extends ActorMessageEventBase<Server> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param message message sent
      * @param sender who sent it
      */
-    public ServerNoticeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Server sender, @NonNull String message) {
-        super(client, originalMessages, sender, message);
+    public ServerNoticeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Server sender, @NonNull String message) {
+        super(client, originalMessage, sender, message);
     }
 }

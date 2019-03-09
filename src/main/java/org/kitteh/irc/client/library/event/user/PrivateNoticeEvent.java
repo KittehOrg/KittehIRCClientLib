@@ -31,8 +31,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEvent
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.event.helper.ReplyableEvent;
 
-import java.util.List;
-
 /**
  * Fires when a notice is sent to the client.
  */
@@ -41,13 +39,13 @@ public class PrivateNoticeEvent extends ActorPrivateMessageEventBase<User> imple
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param target target of the message
      * @param message message sent
      */
-    public PrivateNoticeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message) {
-        super(client, originalMessages, sender, target, message);
+    public PrivateNoticeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
+        super(client, originalMessage, sender, target, message);
     }
 
     @Override

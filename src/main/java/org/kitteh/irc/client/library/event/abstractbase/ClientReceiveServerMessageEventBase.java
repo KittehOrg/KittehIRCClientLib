@@ -55,17 +55,12 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * @param parameters parameters
      */
     public ClientReceiveServerMessageEventBase(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor server, @NonNull String command, @NonNull List<String> parameters) {
-        super(client, Collections.singletonList(Sanity.nullCheck(serverMessage, "Server message cannot be null")), server);
+        super(client, Sanity.nullCheck(serverMessage, "Server message cannot be null"), server);
         this.parameters = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(parameters, "Parameters cannot be null")));
         this.message = serverMessage;
         this.command = Sanity.nullCheck(command, "Command cannot be null");
     }
 
-    /**
-     * Gets the subsequent arguments after the command.
-     *
-     * @return arguments
-     */
     @Override
     public @NonNull List<String> getParameters() {
         return this.parameters;
@@ -76,23 +71,13 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
         return this.command;
     }
 
-    /**
-     * Gets the message tags.
-     *
-     * @return message tags
-     */
     @Override
     public @NonNull List<MessageTag> getMessageTags() {
         return this.message.getTags();
     }
 
-    /**
-     * Gets the original message received by the server.
-     *
-     * @return unprocessed, original message
-     */
     @Override
-    public @NonNull String getOriginalMessage() {
+    public @NonNull String getRawMessage() {
         return this.message.getMessage();
     }
 

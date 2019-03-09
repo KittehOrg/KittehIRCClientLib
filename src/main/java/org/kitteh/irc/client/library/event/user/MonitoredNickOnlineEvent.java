@@ -28,8 +28,6 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.MonitoredNickEventBase;
 
-import java.util.List;
-
 /**
  * A nick tracked by MONITOR is now online!
  */
@@ -38,10 +36,10 @@ public class MonitoredNickOnlineEvent extends MonitoredNickEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param nick the tracked nick
      */
-    public MonitoredNickOnlineEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull String nick) {
-        super(client, originalMessages, nick);
+    public MonitoredNickOnlineEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull String nick) {
+        super(client, originalMessage, nick);
     }
 }

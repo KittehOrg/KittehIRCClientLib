@@ -29,7 +29,8 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ModeInfo;
-import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ChannelMultipleMessageEventBase;
+import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
@@ -39,7 +40,7 @@ import java.util.List;
 /**
  * A list of mode info is available!
  */
-public class ChannelModeInfoListEvent extends ChannelEventBase {
+public class ChannelModeInfoListEvent extends ChannelMultipleMessageEventBase implements ChannelEvent {
     private final ChannelMode mode;
     private final List<ModeInfo> info;
 
@@ -47,7 +48,7 @@ public class ChannelModeInfoListEvent extends ChannelEventBase {
      * Constructs the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessages original messagess
      * @param channel channel with this info
      * @param mode mode for which the info exists
      * @param info list of info

@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
-import java.util.List;
-
 /**
  * An event for when Twitch sends a CLEARCHAT message meaning a ban has
  * happened.
@@ -38,15 +36,15 @@ import java.util.List;
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.BanDuration
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.BanReason
  */
-public class ClearChatEvent extends ChannelEventBase implements TwitchSingleMessageEvent {
+public class ClearChatEvent extends ChannelEventBase {
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel the channel
      */
-    public ClearChatEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel) {
-        super(client, originalMessages, channel);
+    public ClearChatEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel) {
+        super(client, originalMessage, channel);
     }
 }

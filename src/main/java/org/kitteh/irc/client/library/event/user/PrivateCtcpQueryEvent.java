@@ -34,7 +34,6 @@ import org.kitteh.irc.client.library.event.helper.CtcpEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -53,14 +52,14 @@ public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> im
      * Creates the event
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender sender of the query
      * @param target target of the query
      * @param message message sent
      * @param reply reply to be sent, if any
      */
-    public PrivateCtcpQueryEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message, @Nullable String reply) {
-        super(client, originalMessages, sender, target, message);
+    public PrivateCtcpQueryEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull String target, @NonNull String message, @Nullable String reply) {
+        super(client, originalMessage, sender, target, message);
         this.reply = reply;
     }
 

@@ -75,12 +75,12 @@ public class DefaultChgHostListener extends AbstractDefaultListenerBase {
 
         if (!user.getHost().equals(newHostString)) {
             this.getTracker().trackUserHostnameChange(user.getNick(), newHostString);
-            this.fire(new UserHostnameChangeEvent(this.getClient(), event.getOriginalMessages(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
+            this.fire(new UserHostnameChangeEvent(this.getClient(), event.getOriginalMessage(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
         }
 
         if (!user.getUserString().equals(newUserString)) {
             this.getTracker().trackUserUserStringChange(user.getNick(), newUserString);
-            this.fire(new UserUserStringChangeEvent(this.getClient(), event.getOriginalMessages(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
+            this.fire(new UserUserStringChangeEvent(this.getClient(), event.getOriginalMessage(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
         }
     }
 }

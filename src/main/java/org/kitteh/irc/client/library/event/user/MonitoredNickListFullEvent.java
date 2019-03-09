@@ -45,12 +45,12 @@ public class MonitoredNickListFullEvent extends ServerMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param limit limit
      * @param rejectedNicks rejected nicks
      */
-    public MonitoredNickListFullEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, int limit, @NonNull List<String> rejectedNicks) {
-        super(client, originalMessages);
+    public MonitoredNickListFullEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, int limit, @NonNull List<String> rejectedNicks) {
+        super(client, originalMessage);
         this.limit = limit;
         this.rejectedNicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(rejectedNicks, "Rejected nicks cannot be null")));
     }

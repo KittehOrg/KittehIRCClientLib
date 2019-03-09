@@ -63,7 +63,7 @@ public class DefaultNoticeListener extends AbstractDefaultListenerBase {
                     this.trackException(event, "Server sent a CTCP message and I panicked");
                     return;
                 }
-                this.fire(new ServerNoticeEvent(this.getClient(), event.getOriginalMessages(), (Server) event.getActor(), message));
+                this.fire(new ServerNoticeEvent(this.getClient(), event.getOriginalMessage(), (Server) event.getActor(), message));
             } else {
                 this.trackException(event, "Message from neither server nor user");
             }
@@ -76,13 +76,13 @@ public class DefaultNoticeListener extends AbstractDefaultListenerBase {
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateNoticeEvent(this.getClient(), event.getOriginalMessages(), user, event.getParameters().get(0), message));
+            this.fire(new PrivateNoticeEvent(this.getClient(), event.getOriginalMessage(), user, event.getParameters().get(0), message));
         } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
             MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
-            this.fire(new ChannelNoticeEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), message));
+            this.fire(new ChannelNoticeEvent(this.getClient(), event.getOriginalMessage(), user, channelInfo.getChannel(), message));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.fire(new ChannelTargetedNoticeEvent(this.getClient(), event.getOriginalMessages(), user, channelInfo.getChannel(), channelInfo.getPrefix(), message));
+            this.fire(new ChannelTargetedNoticeEvent(this.getClient(), event.getOriginalMessage(), user, channelInfo.getChannel(), channelInfo.getPrefix(), message));
         }
     }
 }

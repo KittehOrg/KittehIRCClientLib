@@ -33,8 +33,6 @@ import org.kitteh.irc.client.library.event.abstractbase.TargetedUserChannelMessa
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.event.helper.ReplyableEvent;
 
-import java.util.List;
-
 /**
  * Fires when a notice is sent to a subset of users in a channel. Note that
  * the sender may be the client itself if the capability "echo-message" is
@@ -45,14 +43,14 @@ public class ChannelTargetedNoticeEvent extends TargetedUserChannelMessageEventB
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param channel channel receiving
      * @param prefix targeted prefix
      * @param message message sent
      */
-    public ChannelTargetedNoticeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
-        super(client, originalMessages, sender, channel, prefix, message);
+    public ChannelTargetedNoticeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
+        super(client, originalMessage, sender, channel, prefix, message);
     }
 
     @Override

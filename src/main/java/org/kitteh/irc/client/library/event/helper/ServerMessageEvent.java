@@ -23,18 +23,52 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.element.ServerMessage;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Represents an event triggered by the server.
+ * Represents an event triggered by a single message from the server.
  */
 public interface ServerMessageEvent extends ClientEvent {
     /**
-     * Gets the original messages that caused this event.
+     * Gets the original message that caused this event.
      *
-     * @return at least one message that lead to this event
+     * @return the message that lead to this event
      */
-    List<ServerMessage> getOriginalMessages();
+    ServerMessage getOriginalMessage();
+
+    /**
+     * Gets the tags for this tag message.
+     *
+     * @return a list of tags
+     */
+    default @NonNull List<MessageTag> getTags() {
+        return this.getOriginalMessage().getTags();
+    }
+
+    /**
+     * Gets the named tag if present.
+     *
+     * @param name tag name
+     * @return tag if present
+     */
+    default Optional<MessageTag> getTag(@NonNull String name) {
+        return this.getOriginalMessage().getTag(name);
+    }
+
+    /**
+     * Gets the named message tag if present and if of the specified type.
+     *
+     * @param name message tag name
+     * @param clazz message tag type
+     * @param <Tag> message tag type
+     * @return message tag if present
+     */
+    default <Tag extends MessageTag> @NonNull Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
+        return this.getOriginalMessage().getTag(name, clazz);
+    }
 }

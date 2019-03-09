@@ -30,7 +30,6 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -54,19 +53,19 @@ import java.util.Optional;
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserId
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
  */
-public class UserNoticeEvent extends ChannelEventBase implements TwitchSingleMessageEvent {
+public class UserNoticeEvent extends ChannelEventBase {
     private final String message;
 
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel channel
      * @param message message from user
      */
-    public UserNoticeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @Nullable String message) {
-        super(client, originalMessages, channel);
+    public UserNoticeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @Nullable String message) {
+        super(client, originalMessage, channel);
         this.message = message;
     }
 

@@ -53,7 +53,7 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
      *
      * @return unprocessed, original message
      */
-    @NonNull String getOriginalMessage();
+    @NonNull String getRawMessage();
 
     /**
      * Gets the subsequent parameters after the command.

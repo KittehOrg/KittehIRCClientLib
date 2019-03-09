@@ -49,12 +49,12 @@ public class CapabilitiesRejectedEvent extends CapabilityNegotiationResponseEven
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param negotiating if we are negotiating right now
      * @param rejectedCapabilitiesRequest capabilities rejected
      */
-    public CapabilitiesRejectedEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating, @NonNull List<CapabilityState> rejectedCapabilitiesRequest) {
-        super(client, originalMessages, negotiating);
+    public CapabilitiesRejectedEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, boolean negotiating, @NonNull List<CapabilityState> rejectedCapabilitiesRequest) {
+        super(client, originalMessage, negotiating);
         Sanity.nullCheck(rejectedCapabilitiesRequest, "Capabilities list cannot be null");
         this.rejectedCapabilitiesRequest = Collections.unmodifiableList(rejectedCapabilitiesRequest);
     }

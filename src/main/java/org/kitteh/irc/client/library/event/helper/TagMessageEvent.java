@@ -23,22 +23,10 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.Actor;
-import org.kitteh.irc.client.library.element.MessageTag;
-
-import java.util.List;
 
 /**
  * An event for {@code TAGMSG} messages, containing just a target and tags.
  */
 public interface TagMessageEvent extends ActorEvent<Actor> {
-    /**
-     * Gets the tags for this tag message.
-     *
-     * @return a list of tags
-     */
-    default @NonNull List<MessageTag> getTags() {
-        return this.getOriginalMessages().get(0).getTags();
-    }
 }

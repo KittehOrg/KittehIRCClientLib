@@ -28,7 +28,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ServerMultipleMessageEventBase;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -43,7 +43,7 @@ import java.util.List;
  * @see CapabilityManager
  * @see CapabilityRequestCommand
  */
-public class CapabilitiesListEvent extends ServerMessageEventBase {
+public class CapabilitiesListEvent extends ServerMultipleMessageEventBase {
     private final List<CapabilityState> capabilities;
 
     /**

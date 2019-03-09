@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.UserInfoChangeEventBase;
 
-import java.util.List;
-
 /**
  * A {@link User} has changed user string.
  */
@@ -39,11 +37,11 @@ public class UserUserStringChangeEvent extends UserInfoChangeEventBase<String> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param oldUser user changing username
      * @param newUser the new user instance
      */
-    public UserUserStringChangeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User oldUser, @NonNull User newUser) {
-        super(client, originalMessages, oldUser, newUser, User::getUserString);
+    public UserUserStringChangeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User oldUser, @NonNull User newUser) {
+        super(client, originalMessage, oldUser, newUser, User::getUserString);
     }
 }

@@ -32,7 +32,6 @@ import org.kitteh.irc.client.library.util.Change;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -49,13 +48,13 @@ public class UserInfoChangeEventBase<Type> extends ActorEventBase<User> implemen
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param oldUser the actor
      * @param newUser the new actor
      * @param changedInfoGetter getter for the changed info
      */
-    protected UserInfoChangeEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User oldUser, @NonNull User newUser, @NonNull Function<User, Type> changedInfoGetter) {
-        super(client, originalMessages, oldUser);
+    protected UserInfoChangeEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User oldUser, @NonNull User newUser, @NonNull Function<User, Type> changedInfoGetter) {
+        super(client, originalMessage, oldUser);
         this.newUser = Sanity.nullCheck(newUser, "New user cannot be null");
         this.change = new Change<>(changedInfoGetter.apply(oldUser), changedInfoGetter.apply(newUser));
     }

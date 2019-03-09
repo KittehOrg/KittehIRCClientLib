@@ -103,9 +103,8 @@ public class StsHandlerTest {
         List<CapabilityState> capabilities = new ArrayList<>();
         final String policyString = "draft/sts=" + StsPolicy.POLICY_OPTION_KEY_PORT + "=1234," + StsPolicy.POLICY_OPTION_KEY_DURATION + "=300,foobar";
         capabilities.add(new DefaultCapabilityState(client, policyString));
-        List<ServerMessage> messages = new ArrayList<>();
-        messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
-        handler.onCapNew(new CapabilitiesNewSupportedEvent(client, messages, true, capabilities));
+        ServerMessage message = new DefaultServerMessage(":test.kitteh CAP ^o^ NEW :" + policyString, new ArrayList<>());
+        handler.onCapNew(new CapabilitiesNewSupportedEvent(client, message, true, capabilities));
         Assert.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
 
         StsPolicy extractedPolicy = machine.getPolicy();

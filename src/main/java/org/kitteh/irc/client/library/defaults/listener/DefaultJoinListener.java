@@ -69,7 +69,7 @@ public class DefaultJoinListener extends AbstractDefaultListenerBase {
                         this.getClient().sendRawLine("WHO " + channelName + (this.getClient().getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
                     }
                     if (this.getClient().getIntendedChannels().contains(channelName)) {
-                        joinEvent = new RequestedChannelJoinCompleteEvent(this.getClient(), event.getOriginalMessages(), channel, user);
+                        joinEvent = new RequestedChannelJoinCompleteEvent(this.getClient(), event.getOriginalMessage(), channel, user);
                     }
                 }
                 if (event.getParameters().size() > 2) {
@@ -79,7 +79,7 @@ public class DefaultJoinListener extends AbstractDefaultListenerBase {
                     this.getTracker().setUserRealName(user.getNick(), event.getParameters().get(2));
                 }
                 if (joinEvent == null) {
-                    joinEvent = new ChannelJoinEvent(this.getClient(), event.getOriginalMessages(), channel, user);
+                    joinEvent = new ChannelJoinEvent(this.getClient(), event.getOriginalMessage(), channel, user);
                 }
                 this.fire(joinEvent);
             } else {

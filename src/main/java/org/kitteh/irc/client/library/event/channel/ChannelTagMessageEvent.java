@@ -31,8 +31,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.event.helper.TagMessageEvent;
 
-import java.util.List;
-
 /**
  * Fires when a tag message is sent to a channel. Note that the sender may be
  * the client itself if the capability "echo-message" is enabled.
@@ -42,11 +40,11 @@ public class ChannelTagMessageEvent extends ActorChannelEventBase<Actor> impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param channel channel receiving
      */
-    public ChannelTagMessageEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor sender, @NonNull Channel channel) {
-        super(client, originalMessages, sender, channel);
+    public ChannelTagMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor sender, @NonNull Channel channel) {
+        super(client, originalMessage, sender, channel);
     }
 }

@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.defaults.element.DefaultCapabilityState;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventBase;
-import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventWithRequestBase;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesAcknowledgedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesDeletedSupportedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesListEvent;
@@ -39,6 +37,8 @@ import org.kitteh.irc.client.library.event.capabilities.CapabilitiesNewSupported
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesRejectedEvent;
 import org.kitteh.irc.client.library.event.capabilities.CapabilitiesSupportedListEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationRequestEvent;
+import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationResponseEvent;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 
@@ -76,7 +76,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
             this.trackException(event, "CAP message too short");
             return;
         }
-        CapabilityNegotiationResponseEventBase responseEvent = null;
+        CapabilityNegotiationResponseEvent responseEvent = null;
         int capabilityListIndex;
         if ("*".equals(event.getParameters().get(CAPABILITY_LIST_INDEX_DEFAULT))) {
             if (event.getParameters().size() < 4) {
@@ -91,7 +91,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
         switch (event.getParameters().get(1).toLowerCase()) {
             case "ack":
                 this.getClient().getCapabilityManager().updateCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesAcknowledgedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesAcknowledgedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
             case "list":
@@ -131,21 +131,21 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
                 break;
             case "nak":
                 this.getClient().getCapabilityManager().updateCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesRejectedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesRejectedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
             case "new":
                 List<CapabilityState> statesAdded = new ArrayList<>(this.getClient().getCapabilityManager().getSupportedCapabilities());
                 statesAdded.addAll(capabilityStateList);
                 this.getClient().getCapabilityManager().setSupportedCapabilities(statesAdded);
-                responseEvent = new CapabilitiesNewSupportedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesNewSupportedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fireAndCapReq((CapabilitiesNewSupportedEvent) responseEvent);
                 break;
             case "del":
                 List<CapabilityState> statesRemaining = new ArrayList<>(this.getClient().getCapabilityManager().getSupportedCapabilities());
                 statesRemaining.removeAll(capabilityStateList);
                 this.getClient().getCapabilityManager().setSupportedCapabilities(statesRemaining);
-                responseEvent = new CapabilitiesDeletedSupportedEvent(this.getClient(), event.getOriginalMessages(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesDeletedSupportedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
         }
@@ -157,7 +157,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
         }
     }
 
-    private void fireAndCapReq(@NonNull CapabilityNegotiationResponseEventWithRequestBase responseEvent) {
+    private void fireAndCapReq(@NonNull CapabilityNegotiationRequestEvent responseEvent) {
         Set<String> capabilities = this.getClient().getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
         capabilities.retainAll(CapabilityManager.Defaults.getDefaults());
         List<String> currentCapabilities = this.getClient().getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList());

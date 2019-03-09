@@ -65,13 +65,13 @@ public class DefaultMonitorListener extends AbstractDefaultListenerBase {
             this.trackException(event, "MONITOR status message too short");
             return;
         }
-        List<ServerMessage> originalMessages = event.getOriginalMessages();
+        ServerMessage originalMessage = event.getOriginalMessage();
         for (String nick : event.getParameters().get(1).split(",")) {
             MonitoredNickStatusEvent monitorEvent;
             if (event.getNumeric() == 730) {
-                monitorEvent = new MonitoredNickOnlineEvent(this.getClient(), originalMessages, nick);
+                monitorEvent = new MonitoredNickOnlineEvent(this.getClient(), originalMessage, nick);
             } else {
-                monitorEvent = new MonitoredNickOfflineEvent(this.getClient(), originalMessages, nick);
+                monitorEvent = new MonitoredNickOfflineEvent(this.getClient(), originalMessage, nick);
             }
             this.fire(monitorEvent);
         }
@@ -110,6 +110,6 @@ public class DefaultMonitorListener extends AbstractDefaultListenerBase {
             this.trackException(event, "MONITOR list full message using non-int limit");
             return;
         }
-        this.fire(new MonitoredNickListFullEvent(this.getClient(), event.getOriginalMessages(), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
+        this.fire(new MonitoredNickListFullEvent(this.getClient(), event.getOriginalMessage(), limit, Arrays.stream(event.getParameters().get(2).split(",")).collect(Collectors.toList())));
     }
 }

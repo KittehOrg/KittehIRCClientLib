@@ -34,8 +34,6 @@ import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * Abstract base class for events involving an Actor and Channel and have a
  * message. Use the helper events if you want to listen to events involving
@@ -53,13 +51,13 @@ public abstract class ActorChannelMessageEventBase<A extends Actor> extends Acto
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param actor the actor
      * @param channel the channel
      * @param message the message
      */
-    protected ActorChannelMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull A actor, @NonNull Channel channel, @NonNull String message) {
-        super(client, originalMessages, actor, channel);
+    protected ActorChannelMessageEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull A actor, @NonNull Channel channel, @NonNull String message) {
+        super(client, originalMessage, actor, channel);
         this.message = Sanity.nullCheck(message, "Message cannot be null");
     }
 

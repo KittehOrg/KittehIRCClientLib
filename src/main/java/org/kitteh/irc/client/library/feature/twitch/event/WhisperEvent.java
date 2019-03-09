@@ -29,23 +29,21 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 
-import java.util.List;
-
 /**
  * Fires when a whisper is received via twitch.
  */
-public class WhisperEvent extends PrivateMessageEvent implements TwitchSingleMessageEvent {
+public class WhisperEvent extends PrivateMessageEvent {
     /**
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param target who received it
      * @param message message sent
      */
-    public WhisperEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message) {
-        super(client, originalMessages, sender, target, message);
+    public WhisperEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
+        super(client, originalMessage, sender, target, message);
     }
 
     @Override

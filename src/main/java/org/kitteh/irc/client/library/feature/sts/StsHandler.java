@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.StsUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -105,7 +106,7 @@ public class StsHandler {
         // okay, we have an STS capability!
         final CapabilityState sts = potentialStsCapability.get();
         if (this.machine.getCurrentState() == StsClientState.UNKNOWN) {
-            this.handleStsCapability(sts, event.getOriginalMessages());
+            this.handleStsCapability(sts, Collections.singletonList(event.getOriginalMessage()));
         }
     }
 

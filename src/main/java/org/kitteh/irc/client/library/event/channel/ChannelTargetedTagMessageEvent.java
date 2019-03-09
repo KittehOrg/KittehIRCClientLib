@@ -35,8 +35,6 @@ import org.kitteh.irc.client.library.event.helper.TagMessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * Fires when a tag message is sent to a subset of users in a channel. Note
  * that the sender may be the client itself if the capability
@@ -49,13 +47,13 @@ public class ChannelTargetedTagMessageEvent extends ActorChannelEventBase<Actor>
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param channel channel receiving
      * @param prefix targeted prefix
      */
-    public ChannelTargetedTagMessageEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix) {
-        super(client, originalMessages, sender, channel);
+    public ChannelTargetedTagMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix) {
+        super(client, originalMessage, sender, channel);
         this.prefix = Sanity.nullCheck(prefix, "Prefix cannot be null");
     }
 

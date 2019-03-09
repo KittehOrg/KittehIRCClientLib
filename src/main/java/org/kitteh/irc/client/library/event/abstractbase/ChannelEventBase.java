@@ -31,8 +31,6 @@ import org.kitteh.irc.client.library.event.helper.ChannelEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * Abstract base class for events involving a Channel. Use the helper events
  * if you want to listen to such events.
@@ -46,11 +44,11 @@ public abstract class ChannelEventBase extends ServerMessageEventBase implements
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel the channel
      */
-    protected ChannelEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel) {
-        super(client, originalMessages);
+    protected ChannelEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel) {
+        super(client, originalMessage);
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
         this.channel = channel;

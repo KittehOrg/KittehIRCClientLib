@@ -26,31 +26,41 @@ package org.kitteh.irc.client.library.event.abstractbase;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.helper.BatchEvent;
-import org.kitteh.irc.client.library.util.BatchReferenceTag;
+import org.kitteh.irc.client.library.event.helper.ServerMultipleMessageEvent;
+import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Abstract base class for batch related events.
+ * Abstract base class for events involving messages from the server. Use
+ * the helper events if you want to listen to such events.
  *
- * @see BatchEvent
+ * @see ServerMultipleMessageEvent
  */
-public class ClientBatchEventBase extends ServerMessageEventBase implements BatchEvent {
-    private final BatchReferenceTag tag;
+public abstract class ServerMultipleMessageEventBase extends ClientEventBase implements ServerMultipleMessageEvent {
+    private final List<ServerMessage> originalMessages;
 
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
-     * @param batchReferenceTag reference-tag and associated information
+     * @param originalMessages original messages
      */
-    public ClientBatchEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
-        super(client, originalMessage);
-        this.tag = batchReferenceTag;
+    protected ServerMultipleMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages) {
+        super(client);
+        this.originalMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(originalMessages, "Original messages cannot be null")));
     }
 
     @Override
-    public @NonNull BatchReferenceTag getReferenceTag() {
-        return this.tag;
+    public @NonNull List<ServerMessage> getOriginalMessages() {
+        return this.originalMessages;
+    }
+
+    @Override
+    protected @NonNull ToStringer toStringer() {
+        return super.toStringer().add("originalMessages", this.originalMessages);
     }
 }

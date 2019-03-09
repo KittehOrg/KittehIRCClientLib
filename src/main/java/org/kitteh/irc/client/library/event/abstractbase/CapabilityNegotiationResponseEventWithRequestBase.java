@@ -49,11 +49,11 @@ public abstract class CapabilityNegotiationResponseEventWithRequestBase extends 
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param negotiating if we are negotiating right now
      */
-    protected CapabilityNegotiationResponseEventWithRequestBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating) {
-        super(client, originalMessages, negotiating);
+    protected CapabilityNegotiationResponseEventWithRequestBase(@NonNull Client client, @NonNull ServerMessage originalMessage, boolean negotiating) {
+        super(client, originalMessage, negotiating);
     }
 
     @Override

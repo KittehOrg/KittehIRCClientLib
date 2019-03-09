@@ -64,9 +64,9 @@ public class DefaultKickListener extends AbstractDefaultListenerBase {
                 ClientEvent kickEvent;
                 String kickReason = (event.getParameters().size() > 2) ? event.getParameters().get(2) : "";
                 if (isSelf && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
-                    kickEvent = new UnexpectedChannelLeaveViaKickEvent(this.getClient(), event.getOriginalMessages(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
+                    kickEvent = new UnexpectedChannelLeaveViaKickEvent(this.getClient(), event.getOriginalMessage(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
                 } else {
-                    kickEvent = new ChannelKickEvent(this.getClient(), event.getOriginalMessages(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
+                    kickEvent = new ChannelKickEvent(this.getClient(), event.getOriginalMessage(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
                 }
                 this.fire(kickEvent);
                 this.getTracker().trackUserPart(channel.get().getName(), event.getParameters().get(1));

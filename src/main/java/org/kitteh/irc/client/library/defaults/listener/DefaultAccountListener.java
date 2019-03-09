@@ -57,7 +57,7 @@ public class DefaultAccountListener extends AbstractDefaultListenerBase {
         }
         String accountParameter = event.getParameters().get(0);
         String accountName = "*".equals(accountParameter) ? null : accountParameter;
-        this.fire(new UserAccountStatusEvent(this.getClient(), event.getOriginalMessages(), (User) event.getActor(), accountName));
+        this.fire(new UserAccountStatusEvent(this.getClient(), event.getOriginalMessage(), (User) event.getActor(), accountName));
         this.getTracker().setUserAccount(((User) event.getActor()).getNick(), accountName);
     }
 }

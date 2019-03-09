@@ -29,7 +29,7 @@ import org.kitteh.irc.client.library.element.Channel;
 /**
  * An event involving a {@link Channel}.
  */
-public interface ChannelEvent extends ServerMessageEvent {
+public interface ChannelEvent extends ClientEvent {
     /**
      * Gets the {@link Channel} involved in this event.
      *

@@ -32,8 +32,6 @@ import org.kitteh.irc.client.library.event.helper.MessageEvent;
 import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * Abstract base class for events involving an Actor and have a message and
  * are private messages. Use the helper events if you want to listen to
@@ -52,13 +50,13 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param actor the actor
      * @param target target of the message
      * @param message the message
      */
-    protected ActorPrivateMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull A actor, @NonNull String target, @NonNull String message) {
-        super(client, originalMessages, actor, message);
+    protected ActorPrivateMessageEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull A actor, @NonNull String target, @NonNull String message) {
+        super(client, originalMessage, actor, message);
         this.target = target;
         this.isToClient = client.getServerInfo().getCaseMapping().areEqualIgnoringCase(client.getNick(), target);
     }

@@ -34,8 +34,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * Channel a la mode.
  */
@@ -46,13 +44,13 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param actor the mode setter
      * @param channel the channel in which the change is occurring
      * @param statusList list of statuses
      */
-    public ChannelModeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor actor, @NonNull Channel channel, @NonNull ModeStatusList<ChannelMode> statusList) {
-        super(client, originalMessages, actor, channel);
+    public ChannelModeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor actor, @NonNull Channel channel, @NonNull ModeStatusList<ChannelMode> statusList) {
+        super(client, originalMessage, actor, channel);
         this.statusList = Sanity.nullCheck(statusList, "Status list cannot be null");
     }
 

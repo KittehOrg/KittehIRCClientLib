@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.helper.PrivateEvent;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * Abstract base class for events involving a target.
  *
@@ -45,12 +43,12 @@ public class PrivateEventBase<A extends Actor> extends ActorEventBase<A> impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param target who received it
      */
-    public PrivateEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull A sender, @NonNull String target) {
-        super(client, originalMessages, sender);
+    public PrivateEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull A sender, @NonNull String target) {
+        super(client, originalMessage, sender);
         this.target = target;
         this.isToClient = client.getServerInfo().getCaseMapping().areEqualIgnoringCase(client.getNick(), target);
     }

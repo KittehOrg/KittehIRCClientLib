@@ -28,7 +28,8 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.CapabilityNegotiationResponseEventWithRequestBase;
+import org.kitteh.irc.client.library.event.abstractbase.ServerMultipleMessageEventBase;
+import org.kitteh.irc.client.library.event.helper.CapabilityNegotiationRequestEvent;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -43,21 +44,35 @@ import java.util.List;
  * @see CapabilityManager
  * @see CapabilityRequestCommand
  */
-public class CapabilitiesSupportedListEvent extends CapabilityNegotiationResponseEventWithRequestBase {
+public class CapabilitiesSupportedListEvent extends ServerMultipleMessageEventBase implements CapabilityNegotiationRequestEvent {
     private final List<CapabilityState> supportedCapabilities;
+    private final List<String> requests = new ArrayList<>();
+    private boolean endNegotiation = true;
+    private final boolean negotiating;
 
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessages original message
      * @param negotiating if we are negotiating right now
      * @param supportedCapabilities supported capabilities
      */
     public CapabilitiesSupportedListEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating, @NonNull List<CapabilityState> supportedCapabilities) {
-        super(client, originalMessages, negotiating);
+        super(client, originalMessages);
+        this.negotiating = negotiating;
         Sanity.nullCheck(supportedCapabilities, "Capabilities list cannot be null");
         this.supportedCapabilities = Collections.unmodifiableList(new ArrayList<>(supportedCapabilities));
+    }
+
+    @Override
+    public void addRequest(@NonNull String capability) {
+        this.requests.add(Sanity.safeMessageCheck(capability, "capability"));
+    }
+
+    @Override
+    public @NonNull List<String> getRequests() {
+        return Collections.unmodifiableList(new ArrayList<>(this.requests));
     }
 
     /**
@@ -70,7 +85,26 @@ public class CapabilitiesSupportedListEvent extends CapabilityNegotiationRespons
     }
 
     @Override
+    public final boolean isEndingNegotiation() {
+        return this.endNegotiation;
+    }
+
+    @Override
+    public final boolean isNegotiating() {
+        return this.negotiating;
+    }
+
+    @Override
+    public final void setEndingNegotiation(boolean endNegotiation) {
+        this.endNegotiation = endNegotiation;
+    }
+
+    @Override
     protected @NonNull ToStringer toStringer() {
-        return super.toStringer().add("supportedCapabilities", this.supportedCapabilities);
+        return super.toStringer()
+                .add("requests", this.requests)
+                .add("supportedCapabilities", this.supportedCapabilities)
+                .add("isEndingNegotiation", this.endNegotiation)
+                .add("isNegotiating", this.isNegotiating());
     }
 }

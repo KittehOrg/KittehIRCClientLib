@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.UnexpectedChannelLeaveEvent;
 
-import java.util.List;
-
 /**
  * I have left a channel I want to be in, via part!
  */
@@ -40,12 +38,12 @@ public class UnexpectedChannelLeaveViaPartEvent extends ChannelPartEvent impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel channel being left
      * @param user user leaving
      * @param message message the user left
      */
-    public UnexpectedChannelLeaveViaPartEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull User user, @NonNull String message) {
-        super(client, originalMessages, channel, user, message);
+    public UnexpectedChannelLeaveViaPartEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull User user, @NonNull String message) {
+        super(client, originalMessage, channel, user, message);
     }
 }

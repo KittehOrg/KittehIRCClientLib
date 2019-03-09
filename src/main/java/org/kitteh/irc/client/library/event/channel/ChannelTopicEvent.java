@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * The server has informed us of a channel's topic.
  * <p>
@@ -44,13 +42,13 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel channel the topic is about
      * @param updated if this is a new change
      * @see Channel#getTopic()
      */
-    public ChannelTopicEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, boolean updated) {
-        super(client, originalMessages, channel);
+    public ChannelTopicEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, boolean updated) {
+        super(client, originalMessage, channel);
         this.updated = updated;
     }
 

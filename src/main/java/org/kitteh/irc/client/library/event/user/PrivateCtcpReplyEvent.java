@@ -31,8 +31,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEvent
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.event.helper.CtcpEvent;
 
-import java.util.List;
-
 /**
  * The client has received a reply to a CTCP query! The method
  * {@link #getMessage()} returns the unescaped message with the delimiter
@@ -43,12 +41,12 @@ public class PrivateCtcpReplyEvent extends ActorPrivateMessageEventBase<User> im
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender sender of the reply
      * @param target target of the reply
      * @param message message sent
      */
-    public PrivateCtcpReplyEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull String target, @NonNull String message) {
-        super(client, originalMessages, sender, target, message);
+    public PrivateCtcpReplyEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
+        super(client, originalMessage, sender, target, message);
     }
 }

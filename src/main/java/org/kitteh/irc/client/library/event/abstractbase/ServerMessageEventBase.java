@@ -30,10 +30,6 @@ import org.kitteh.irc.client.library.event.helper.ServerMessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Abstract base class for events involving a message from the server. Use
  * the helper events if you want to listen to such events.
@@ -41,26 +37,26 @@ import java.util.List;
  * @see ServerMessageEvent
  */
 public abstract class ServerMessageEventBase extends ClientEventBase implements ServerMessageEvent {
-    private final List<ServerMessage> originalMessages;
+    private final ServerMessage originalMessage;
 
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      */
-    protected ServerMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages) {
+    protected ServerMessageEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage) {
         super(client);
-        this.originalMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(originalMessages, "Original messages cannot be null")));
+        this.originalMessage = Sanity.nullCheck(originalMessage, "Original message cannot be null");
     }
 
     @Override
-    public @NonNull List<ServerMessage> getOriginalMessages() {
-        return this.originalMessages;
+    public @NonNull ServerMessage getOriginalMessage() {
+        return this.originalMessage;
     }
 
     @Override
     protected @NonNull ToStringer toStringer() {
-        return super.toStringer().add("originalMessages", this.originalMessages);
+        return super.toStringer().add("originalMessage", this.originalMessage);
     }
 }

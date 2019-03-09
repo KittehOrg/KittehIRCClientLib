@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.PrivateEventBase;
 import org.kitteh.irc.client.library.event.helper.TagMessageEvent;
 
-import java.util.List;
-
 /**
  * Fires when a tag message is sent to the client. Note that the sender may be
  * the client itself if the capability "echo-message" is enabled.
@@ -41,11 +39,11 @@ public class PrivateTagMessageEvent extends PrivateEventBase<Actor> implements T
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param target target of the message
      */
-    public PrivateTagMessageEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor sender, @NonNull String target) {
-        super(client, originalMessages, sender, target);
+    public PrivateTagMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor sender, @NonNull String target) {
+        super(client, originalMessage, sender, target);
     }
 }

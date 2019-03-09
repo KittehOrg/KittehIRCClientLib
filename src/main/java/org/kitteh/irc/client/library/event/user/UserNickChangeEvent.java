@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.UserInfoChangeEventBase;
 
-import java.util.List;
-
 /**
  * A {@link User} has changed nickname!
  */
@@ -39,11 +37,11 @@ public class UserNickChangeEvent extends UserInfoChangeEventBase<String> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param oldUser oldUser changing name
      * @param newUser the new nickname
      */
-    public UserNickChangeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User oldUser, @NonNull User newUser) {
-        super(client, originalMessages, oldUser, newUser, User::getNick);
+    public UserNickChangeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User oldUser, @NonNull User newUser) {
+        super(client, originalMessage, oldUser, newUser, User::getNick);
     }
 }

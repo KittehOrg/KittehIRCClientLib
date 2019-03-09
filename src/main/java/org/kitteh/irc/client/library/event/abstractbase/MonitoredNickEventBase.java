@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.event.helper.MonitoredNickStatusEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * A nickname tracked by MONITOR!
  */
@@ -42,11 +40,11 @@ public abstract class MonitoredNickEventBase extends ServerMessageEventBase impl
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param nick the tracked nick
      */
-    protected MonitoredNickEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull String nick) {
-        super(client, originalMessages);
+    protected MonitoredNickEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull String nick) {
+        super(client, originalMessage);
         this.nick = Sanity.nullCheck(nick, "Nick cannot be null");
     }
 

@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
 
-import java.util.List;
-
 /**
  * An event for when Twitch sends a USERSTATE message.
  *
@@ -42,15 +40,15 @@ import java.util.List;
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Turbo
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
  */
-public class UserStateEvent extends ChannelEventBase implements TwitchSingleMessageEvent {
+public class UserStateEvent extends ChannelEventBase {
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel the channel
      */
-    public UserStateEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel) {
-        super(client, originalMessages, channel);
+    public UserStateEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel) {
+        super(client, originalMessage, channel);
     }
 }

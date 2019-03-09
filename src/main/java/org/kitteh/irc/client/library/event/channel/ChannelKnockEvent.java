@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 
-import java.util.List;
-
 /**
  * Somebody wishes to join a {@link Channel}!
  */
@@ -40,11 +38,11 @@ public class ChannelKnockEvent extends ActorChannelEventBase<User> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel the channel being knocked upon
      * @param user user nick knocking
      */
-    public ChannelKnockEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull User user) {
-        super(client, originalMessages, user, channel);
+    public ChannelKnockEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull User user) {
+        super(client, originalMessage, user, channel);
     }
 }

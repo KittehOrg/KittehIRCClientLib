@@ -33,8 +33,6 @@ import org.kitteh.irc.client.library.event.abstractbase.TargetedUserChannelMessa
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.event.helper.CtcpEvent;
 
-import java.util.List;
-
 /**
  * Fires when a CTCP message is sent to a subset of users in a channel. The
  * method {@link #getMessage()} returns the message with the delimiter
@@ -46,13 +44,13 @@ public class ChannelTargetedCtcpEvent extends TargetedUserChannelMessageEventBas
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param channel channel receiving
      * @param prefix targeted prefix
      * @param message message sent
      */
-    public ChannelTargetedCtcpEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
-        super(client, originalMessages, sender, channel, prefix, message);
+    public ChannelTargetedCtcpEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
+        super(client, originalMessage, sender, channel, prefix, message);
     }
 }

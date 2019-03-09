@@ -50,12 +50,12 @@ public class CapabilitiesDeletedSupportedEvent extends CapabilityNegotiationResp
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param negotiating if we are negotiating right now
      * @param deletedCapabilities no longer supported capabilities
      */
-    public CapabilitiesDeletedSupportedEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean negotiating, @NonNull List<CapabilityState> deletedCapabilities) {
-        super(client, originalMessages, negotiating);
+    public CapabilitiesDeletedSupportedEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, boolean negotiating, @NonNull List<CapabilityState> deletedCapabilities) {
+        super(client, originalMessage, negotiating);
         Sanity.nullCheck(deletedCapabilities, "Capabilities list cannot be null");
         this.deletedCapabilities = Collections.unmodifiableList(new ArrayList<>(deletedCapabilities));
     }

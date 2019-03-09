@@ -31,7 +31,6 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorEventBase;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -45,12 +44,12 @@ public class UserAccountStatusEvent extends ActorEventBase<User> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param user user
      * @param account account the user is signed into
      */
-    public UserAccountStatusEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User user, @Nullable String account) {
-        super(client, originalMessages, user);
+    public UserAccountStatusEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User user, @Nullable String account) {
+        super(client, originalMessage, user);
         this.account = account;
     }
 

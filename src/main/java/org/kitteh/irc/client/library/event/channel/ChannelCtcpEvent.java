@@ -32,8 +32,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEvent
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.event.helper.CtcpEvent;
 
-import java.util.List;
-
 /**
  * The client has received a CTCP message! The method {@link #getMessage()}
  * returns the message with the delimiter character (1) removed. Note that
@@ -45,12 +43,12 @@ public class ChannelCtcpEvent extends ActorChannelMessageEventBase<User> impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender sender of the message
      * @param channel channel in which it was sent
      * @param message message sent
      */
-    public ChannelCtcpEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
-        super(client, originalMessages, sender, channel, message);
+    public ChannelCtcpEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
+        super(client, originalMessage, sender, channel, message);
     }
 }

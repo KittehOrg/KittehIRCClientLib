@@ -27,14 +27,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ChannelEventBase;
+import org.kitteh.irc.client.library.event.abstractbase.ChannelMultipleMessageEventBase;
 
 import java.util.List;
 
 /**
  * Called after completion of a WHO command.
  */
-public class ChannelUsersUpdatedEvent extends ChannelEventBase {
+public class ChannelUsersUpdatedEvent extends ChannelMultipleMessageEventBase {
     /**
      * Constructs the event.
      *

@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ActorMessageEventBase;
 
-import java.util.List;
-
 /**
  * A WALLOPS message has been received.
  */
@@ -39,11 +37,11 @@ public class WallopsEvent extends ActorMessageEventBase<Actor> {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param actor the actor
      * @param message the message
      */
-    public WallopsEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Actor actor, @NonNull String message) {
-        super(client, originalMessages, actor, message);
+    public WallopsEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor actor, @NonNull String message) {
+        super(client, originalMessage, actor, message);
     }
 }

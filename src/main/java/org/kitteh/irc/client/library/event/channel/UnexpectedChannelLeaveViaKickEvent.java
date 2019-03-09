@@ -31,8 +31,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.UnexpectedChannelLeaveEvent;
 
-import java.util.List;
-
 /**
  * I have left a channel I want to be in, via kick!
  */
@@ -41,13 +39,13 @@ public class UnexpectedChannelLeaveViaKickEvent extends ChannelKickEvent impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel channel being left
      * @param actor actor kicking the targeted user
      * @param target targeted user
      * @param message message the user left
      */
-    public UnexpectedChannelLeaveViaKickEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
-        super(client, originalMessages, channel, actor, target, message);
+    public UnexpectedChannelLeaveViaKickEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
+        super(client, originalMessage, channel, actor, target, message);
     }
 }

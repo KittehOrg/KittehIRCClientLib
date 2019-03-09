@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ClientBatchEventBase;
 import org.kitteh.irc.client.library.util.BatchReferenceTag;
 
-import java.util.List;
-
 /**
  * A batch has started.
  */
@@ -41,11 +39,11 @@ public class ClientBatchStartEvent extends ClientBatchEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param batchReferenceTag reference-tag and associated information
      */
-    public ClientBatchStartEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull BatchReferenceTag batchReferenceTag) {
-        super(client, originalMessages, batchReferenceTag);
+    public ClientBatchStartEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
+        super(client, originalMessage, batchReferenceTag);
     }
 
     /**

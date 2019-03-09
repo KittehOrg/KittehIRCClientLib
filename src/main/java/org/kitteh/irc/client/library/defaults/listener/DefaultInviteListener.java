@@ -58,7 +58,7 @@ public class DefaultInviteListener extends AbstractDefaultListenerBase {
             if (this.getClient().getNick().equalsIgnoreCase(event.getParameters().get(0)) && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
                 this.getClient().sendRawLine("JOIN " + channel.get().getName());
             }
-            this.fire(new ChannelInviteEvent(this.getClient(), event.getOriginalMessages(), channel.get(), event.getActor(), event.getParameters().get(0)));
+            this.fire(new ChannelInviteEvent(this.getClient(), event.getOriginalMessage(), channel.get(), event.getActor(), event.getParameters().get(0)));
         } else {
             this.trackException(event, "INVITE message sent for invalid channel name");
         }

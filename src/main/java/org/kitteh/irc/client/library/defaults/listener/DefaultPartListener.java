@@ -63,9 +63,9 @@ public class DefaultPartListener extends AbstractDefaultListenerBase {
                 String partReason = (event.getParameters().size() > 1) ? event.getParameters().get(1) : "";
                 ChannelPartEvent partEvent;
                 if (isSelf && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
-                    partEvent = new UnexpectedChannelLeaveViaPartEvent(this.getClient(), event.getOriginalMessages(), channel.get(), user, partReason);
+                    partEvent = new UnexpectedChannelLeaveViaPartEvent(this.getClient(), event.getOriginalMessage(), channel.get(), user, partReason);
                 } else {
-                    partEvent = new ChannelPartEvent(this.getClient(), event.getOriginalMessages(), channel.get(), user, partReason);
+                    partEvent = new ChannelPartEvent(this.getClient(), event.getOriginalMessage(), channel.get(), user, partReason);
                 }
                 this.fire(partEvent);
                 this.getTracker().trackUserPart(channel.get().getName(), user.getNick());

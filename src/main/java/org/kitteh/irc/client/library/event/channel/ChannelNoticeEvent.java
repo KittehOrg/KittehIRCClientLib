@@ -31,8 +31,6 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorChannelMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 
-import java.util.List;
-
 /**
  * Fires when a notice is sent to a channel. Note that the sender may be the
  * client itself if the capability "echo-message" is enabled.
@@ -42,12 +40,12 @@ public class ChannelNoticeEvent extends ActorChannelMessageEventBase<User> imple
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param sender who sent it
      * @param channel channel receiving
      * @param message message sent
      */
-    public ChannelNoticeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
-        super(client, originalMessages, sender, channel, message);
+    public ChannelNoticeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
+        super(client, originalMessage, sender, channel, message);
     }
 }

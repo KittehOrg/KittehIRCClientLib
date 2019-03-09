@@ -21,36 +21,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.abstractbase;
+package org.kitteh.irc.client.library.event.helper;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.helper.BatchEvent;
-import org.kitteh.irc.client.library.util.BatchReferenceTag;
+
+import java.util.List;
 
 /**
- * Abstract base class for batch related events.
- *
- * @see BatchEvent
+ * Represents an event triggered by multiple messages from the server.
  */
-public class ClientBatchEventBase extends ServerMessageEventBase implements BatchEvent {
-    private final BatchReferenceTag tag;
-
+public interface ServerMultipleMessageEvent extends ClientEvent {
     /**
-     * Constructs the event.
+     * Gets the original message that caused this event.
      *
-     * @param client the client
-     * @param originalMessage original message
-     * @param batchReferenceTag reference-tag and associated information
+     * @return the message that lead to this event
      */
-    public ClientBatchEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
-        super(client, originalMessage);
-        this.tag = batchReferenceTag;
-    }
-
-    @Override
-    public @NonNull BatchReferenceTag getReferenceTag() {
-        return this.tag;
-    }
+    List<ServerMessage> getOriginalMessages();
 }

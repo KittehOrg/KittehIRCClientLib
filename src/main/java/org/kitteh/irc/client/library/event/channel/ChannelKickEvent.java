@@ -34,7 +34,6 @@ import org.kitteh.irc.client.library.event.helper.ChannelUserListChangeEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -47,14 +46,14 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<Actor> implem
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel channel being left
      * @param actor actor kicking the targeted user
      * @param target targeted user
      * @param message message the user left
      */
-    public ChannelKickEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
-        super(client, originalMessages, actor, channel, message);
+    public ChannelKickEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
+        super(client, originalMessage, actor, channel, message);
         this.target = Sanity.nullCheck(target, "Target cannot be null");
     }
 

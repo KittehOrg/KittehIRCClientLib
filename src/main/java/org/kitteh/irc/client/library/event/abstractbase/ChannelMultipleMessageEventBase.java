@@ -25,32 +25,44 @@ package org.kitteh.irc.client.library.event.abstractbase;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.helper.BatchEvent;
-import org.kitteh.irc.client.library.util.BatchReferenceTag;
+import org.kitteh.irc.client.library.event.helper.ChannelEvent;
+import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.ToStringer;
+
+import java.util.List;
 
 /**
- * Abstract base class for batch related events.
+ * Abstract base class for events involving a Channel. Use the helper events
+ * if you want to listen to such events.
  *
- * @see BatchEvent
+ * @see ChannelEvent
  */
-public class ClientBatchEventBase extends ServerMessageEventBase implements BatchEvent {
-    private final BatchReferenceTag tag;
+public abstract class ChannelMultipleMessageEventBase extends ServerMultipleMessageEventBase implements ChannelEvent {
+    private final Channel channel;
 
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
-     * @param batchReferenceTag reference-tag and associated information
+     * @param originalMessages original messages
+     * @param channel the channel
      */
-    public ClientBatchEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
-        super(client, originalMessage);
-        this.tag = batchReferenceTag;
+    protected ChannelMultipleMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel) {
+        super(client, originalMessages);
+        Sanity.nullCheck(channel, "Channel cannot be null");
+        Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
+        this.channel = channel;
     }
 
     @Override
-    public @NonNull BatchReferenceTag getReferenceTag() {
-        return this.tag;
+    public final @NonNull Channel getChannel() {
+        return this.channel;
+    }
+
+    @Override
+    protected @NonNull ToStringer toStringer() {
+        return super.toStringer().add("channel", this.channel);
     }
 }

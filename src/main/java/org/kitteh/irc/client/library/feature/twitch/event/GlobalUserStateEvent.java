@@ -28,8 +28,6 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 
-import java.util.List;
-
 /**
  * An event for when Twitch sends a GLOBALUSERSTATE message on successful
  * login.
@@ -41,14 +39,14 @@ import java.util.List;
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserId
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.UserType
  */
-public class GlobalUserStateEvent extends ServerMessageEventBase implements TwitchSingleMessageEvent {
+public class GlobalUserStateEvent extends ServerMessageEventBase {
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      */
-    public GlobalUserStateEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages) {
-        super(client, originalMessages);
+    public GlobalUserStateEvent(@NonNull Client client, @NonNull ServerMessage originalMessage) {
+        super(client, originalMessage);
     }
 }

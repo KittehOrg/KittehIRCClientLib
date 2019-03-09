@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * The Client's away status has changed.
  */
@@ -41,11 +39,11 @@ public class ClientAwayStatusChangeEvent extends ServerMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param isNowAway true if now away, false if now back
      */
-    public ClientAwayStatusChangeEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, boolean isNowAway) {
-        super(client, originalMessages);
+    public ClientAwayStatusChangeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, boolean isNowAway) {
+        super(client, originalMessage);
         this.isNowAway = isNowAway;
     }
 

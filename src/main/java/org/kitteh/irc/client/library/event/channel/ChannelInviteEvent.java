@@ -33,8 +33,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ActorChannelEventBase;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.List;
-
 /**
  * A {@link User} has invited somebody to a {@link Channel}!
  */
@@ -45,13 +43,13 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel the channel
      * @param actor the actor inviting another
      * @param target the nick invited
      */
-    public ChannelInviteEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull Actor actor, @NonNull String target) {
-        super(client, originalMessages, actor, channel);
+    public ChannelInviteEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull Actor actor, @NonNull String target) {
+        super(client, originalMessage, actor, channel);
         this.target = Sanity.nullCheck(target, "Target cannot be null");
     }
 

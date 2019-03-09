@@ -29,8 +29,6 @@ import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ServerMessage;
 import org.kitteh.irc.client.library.element.User;
 
-import java.util.List;
-
 /**
  * I have successfully joined the channel I wanted! Will fire each time the
  * client joins a channel added via {@link Client#addChannel} and not removed
@@ -42,11 +40,11 @@ public class RequestedChannelJoinCompleteEvent extends ChannelJoinEvent {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param originalMessage original message
      * @param channel the channel joined
      * @param user the client
      */
-    public RequestedChannelJoinCompleteEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel, @NonNull User user) {
-        super(client, originalMessages, channel, user);
+    public RequestedChannelJoinCompleteEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull User user) {
+        super(client, originalMessage, channel, user);
     }
 }
