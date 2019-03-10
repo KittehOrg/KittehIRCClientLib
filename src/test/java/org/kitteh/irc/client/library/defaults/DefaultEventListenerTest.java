@@ -205,6 +205,17 @@ public class DefaultEventListenerTest {
     }
 
     @Test
+    public void test5ISUPPORTLonger() {
+        this.fireLine(":irc.network 005 Kitteh SAFELIST ELIST=CTU CHANTYPES=# EXCEPTS INVEX :are supported by this server");
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("SAFELIST")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("ELIST")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("CHANTYPES")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("EXCEPTS")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("INVEX")));
+        Mockito.verify(this.serverInfo, Mockito.times(5)).addISupportParameter(Mockito.any());
+    }
+
+    @Test
     public void testMOTD() {
         this.fireLine(":irc.network 375 Kitteh :- irc.network Message of the Day -");
         this.fireLine(":irc.network 372 Kitteh :-   Hello                         ");

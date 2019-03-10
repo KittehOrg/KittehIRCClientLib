@@ -48,6 +48,9 @@ public class DefaultISupportListener extends AbstractDefaultListenerBase {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void iSupport(ClientReceiveNumericEvent event) {
         for (int i = 1; i < event.getParameters().size(); i++) {
+            if ((i == event.getParameters().size() - 1) && event.getParameters().get(i).contains(" ")) {
+                continue;
+            }
             ISupportParameter parameter = this.getClient().getISupportManager().createParameter(event.getParameters().get(i));
             this.getClient().getServerInfo().addISupportParameter(parameter);
             this.fire(new ISupportParameterEvent(this.getClient(), event.getSource(), parameter));
