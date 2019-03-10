@@ -50,6 +50,6 @@ public class DefaultWallopsListener extends AbstractDefaultListenerBase {
             this.trackException(event, "WALLOPS message too short");
             return;
         }
-        this.fire(new WallopsEvent(this.getClient(), event.getOriginalMessage(), event.getActor(), event.getParameters().get(0)));
+        this.fire(new WallopsEvent(this.getClient(), event.getSource(), event.getActor(), event.getParameters().get(0)));
     }
 }

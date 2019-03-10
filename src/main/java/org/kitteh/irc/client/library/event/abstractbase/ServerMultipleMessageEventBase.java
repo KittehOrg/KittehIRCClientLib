@@ -55,7 +55,7 @@ public abstract class ServerMultipleMessageEventBase extends ClientEventBase imp
     }
 
     @Override
-    public @NonNull List<ServerMessage> getOriginalMessages() {
+    public @NonNull List<ServerMessage> getSource() {
         return this.originalMessages;
     }
 

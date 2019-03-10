@@ -76,19 +76,19 @@ public class TwitchListener {
     @CommandFilter("CLEARCHAT")
     @Handler(priority = Integer.MAX_VALUE - 2)
     public void clearChat(ClientReceiveCommandEvent event) {
-        this.client.getEventManager().callEvent(new ClearChatEvent(this.client, event.getOriginalMessage(), this.getChannel(event)));
+        this.client.getEventManager().callEvent(new ClearChatEvent(this.client, event.getSource(), this.getChannel(event)));
     }
 
     @CommandFilter("GLOBALUSERSTATE")
     @Handler(priority = Integer.MAX_VALUE - 2)
     public void globalUserState(ClientReceiveCommandEvent event) {
-        this.client.getEventManager().callEvent(new GlobalUserStateEvent(this.client, event.getOriginalMessage()));
+        this.client.getEventManager().callEvent(new GlobalUserStateEvent(this.client, event.getSource()));
     }
 
     @CommandFilter("ROOMSTATE")
     @Handler(priority = Integer.MAX_VALUE - 2)
     public void roomState(ClientReceiveCommandEvent event) {
-        this.client.getEventManager().callEvent(new RoomStateEvent(this.client, event.getOriginalMessage(), this.getChannel(event)));
+        this.client.getEventManager().callEvent(new RoomStateEvent(this.client, event.getSource(), this.getChannel(event)));
     }
 
     @CommandFilter("USERNOTICE")
@@ -98,32 +98,32 @@ public class TwitchListener {
         if (event.getParameters().size() > 1) {
             message = event.getParameters().get(1);
         }
-        this.client.getEventManager().callEvent(new UserNoticeEvent(this.client, event.getOriginalMessage(), this.getChannel(event), message));
+        this.client.getEventManager().callEvent(new UserNoticeEvent(this.client, event.getSource(), this.getChannel(event), message));
     }
 
     @CommandFilter("USERSTATE")
     @Handler(priority = Integer.MAX_VALUE - 2)
     public void userState(ClientReceiveCommandEvent event) {
-        this.client.getEventManager().callEvent(new UserStateEvent(this.client, event.getOriginalMessage(), this.getChannel(event)));
+        this.client.getEventManager().callEvent(new UserStateEvent(this.client, event.getSource(), this.getChannel(event)));
     }
 
     @CommandFilter("WHISPER")
     @Handler(priority = Integer.MAX_VALUE - 2)
     public void whisper(ClientReceiveCommandEvent event) {
         if (event.getParameters().size() < 2) {
-            this.client.getExceptionListener().queue(new KittehServerMessageException(event.getOriginalMessage(), "WHISPER didn't contain enough parameters"));
+            this.client.getExceptionListener().queue(new KittehServerMessageException(event.getSource(), "WHISPER didn't contain enough parameters"));
             return;
         }
 
         if (!(event.getActor() instanceof org.kitteh.irc.client.library.element.User)) {
-            this.client.getExceptionListener().queue(new KittehServerMessageException(event.getOriginalMessage(), "Received WHISPER from non-user"));
+            this.client.getExceptionListener().queue(new KittehServerMessageException(event.getSource(), "Received WHISPER from non-user"));
             return;
         }
 
         final String target = event.getParameters().get(0);
         final String message = event.getParameters().get(1);
         final org.kitteh.irc.client.library.element.User sender = (org.kitteh.irc.client.library.element.User) event.getActor();
-        this.client.getEventManager().callEvent(new WhisperEvent(this.client, event.getOriginalMessage(), sender, target, message));
+        this.client.getEventManager().callEvent(new WhisperEvent(this.client, event.getSource(), sender, target, message));
     }
 
     private @NonNull Channel getChannel(ClientReceiveCommandEvent event) {

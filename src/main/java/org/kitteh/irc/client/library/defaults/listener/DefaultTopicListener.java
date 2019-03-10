@@ -73,7 +73,7 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
         Optional<Channel> topicSetChannel = this.getTracker().getChannel(event.getParameters().get(1));
         if (topicSetChannel.isPresent()) {
             this.getTracker().setChannelTopicInfo(topicSetChannel.get().getName(), Long.parseLong(event.getParameters().get(3)) * 1000, this.getTracker().getActor(event.getParameters().get(2)));
-            this.fire(new ChannelTopicEvent(this.getClient(), event.getOriginalMessage(), topicSetChannel.get(), false));
+            this.fire(new ChannelTopicEvent(this.getClient(), event.getSource(), topicSetChannel.get(), false));
         } else {
             this.trackException(event, "Topic message sent for invalid channel name");
         }
@@ -90,7 +90,7 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
         if (channel.isPresent()) {
             this.getTracker().setChannelTopic(channel.get().getName(), event.getParameters().get(1));
             this.getTracker().setChannelTopicInfo(channel.get().getName(), System.currentTimeMillis(), event.getActor());
-            this.fire(new ChannelTopicEvent(this.getClient(), event.getOriginalMessage(), channel.get(), true));
+            this.fire(new ChannelTopicEvent(this.getClient(), event.getSource(), channel.get(), true));
         } else {
             this.trackException(event, "TOPIC message sent for invalid channel name");
         }

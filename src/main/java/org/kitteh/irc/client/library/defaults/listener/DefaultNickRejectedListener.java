@@ -48,7 +48,7 @@ public class DefaultNickRejectedListener extends AbstractDefaultListenerBase {
     @NumericFilter(433) // Nick in use
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void nickInUse(ClientReceiveNumericEvent event) {
-        NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getRequestedNick(), this.getClient().getRequestedNick() + '`');
+        NickRejectedEvent nickRejectedEvent = new NickRejectedEvent(this.getClient(), event.getSource(), this.getClient().getRequestedNick(), this.getClient().getRequestedNick() + '`');
         this.fire(nickRejectedEvent);
         this.getClient().sendNickChange(nickRejectedEvent.getNewNick());
     }

@@ -91,7 +91,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
         switch (event.getParameters().get(1).toLowerCase()) {
             case "ack":
                 this.getClient().getCapabilityManager().updateCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesAcknowledgedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesAcknowledgedEvent(this.getClient(), event.getSource(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
             case "list":
@@ -131,21 +131,21 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
                 break;
             case "nak":
                 this.getClient().getCapabilityManager().updateCapabilities(capabilityStateList);
-                responseEvent = new CapabilitiesRejectedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesRejectedEvent(this.getClient(), event.getSource(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
             case "new":
                 List<CapabilityState> statesAdded = new ArrayList<>(this.getClient().getCapabilityManager().getSupportedCapabilities());
                 statesAdded.addAll(capabilityStateList);
                 this.getClient().getCapabilityManager().setSupportedCapabilities(statesAdded);
-                responseEvent = new CapabilitiesNewSupportedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesNewSupportedEvent(this.getClient(), event.getSource(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fireAndCapReq((CapabilitiesNewSupportedEvent) responseEvent);
                 break;
             case "del":
                 List<CapabilityState> statesRemaining = new ArrayList<>(this.getClient().getCapabilityManager().getSupportedCapabilities());
                 statesRemaining.removeAll(capabilityStateList);
                 this.getClient().getCapabilityManager().setSupportedCapabilities(statesRemaining);
-                responseEvent = new CapabilitiesDeletedSupportedEvent(this.getClient(), event.getOriginalMessage(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
+                responseEvent = new CapabilitiesDeletedSupportedEvent(this.getClient(), event.getSource(), this.getClient().getCapabilityManager().isNegotiating(), capabilityStateList);
                 this.fire(responseEvent);
                 break;
         }

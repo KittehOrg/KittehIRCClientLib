@@ -95,7 +95,7 @@ public class AbstractDefaultListenerBase {
         switch (event.getCommand()) {
             case "NOTICE":
                 if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                    this.fire(new PrivateCtcpReplyEvent(this.getClient(), event.getOriginalMessage(), user, event.getParameters().get(0), ctcpMessage));
+                    this.fire(new PrivateCtcpReplyEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), ctcpMessage));
                 }
                 break;
             case "PRIVMSG":
@@ -115,7 +115,7 @@ public class AbstractDefaultListenerBase {
                     if (ctcpMessage.startsWith("PING ")) {
                         reply = ctcpMessage;
                     }
-                    PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.getClient(), event.getOriginalMessage(), user, event.getParameters().get(0), ctcpMessage, reply);
+                    PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), ctcpMessage, reply);
                     this.fire(ctcpEvent);
                     Optional<String> replyMessage = ctcpEvent.getReply();
                     if (ctcpEvent.isToClient()) {
@@ -123,10 +123,10 @@ public class AbstractDefaultListenerBase {
                     }
                 } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
                     MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
-                    this.fire(new ChannelCtcpEvent(this.getClient(), event.getOriginalMessage(), user, channelInfo.getChannel(), ctcpMessage));
+                    this.fire(new ChannelCtcpEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), ctcpMessage));
                 } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
                     MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-                    this.fire(new ChannelTargetedCtcpEvent(this.getClient(), event.getOriginalMessage(), user, channelInfo.getChannel(), channelInfo.getPrefix(), ctcpMessage));
+                    this.fire(new ChannelTargetedCtcpEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), ctcpMessage));
                 }
                 break;
         }

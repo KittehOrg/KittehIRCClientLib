@@ -84,7 +84,7 @@ public class StsHandler {
 
         // okay, we have an STS capability!
         final CapabilityState sts = potentialStsCapability.get();
-        this.handleStsCapability(sts, event.getOriginalMessages());
+        this.handleStsCapability(sts, event.getSource());
     }
 
     /**
@@ -106,7 +106,7 @@ public class StsHandler {
         // okay, we have an STS capability!
         final CapabilityState sts = potentialStsCapability.get();
         if (this.machine.getCurrentState() == StsClientState.UNKNOWN) {
-            this.handleStsCapability(sts, Collections.singletonList(event.getOriginalMessage()));
+            this.handleStsCapability(sts, Collections.singletonList(event.getSource()));
         }
     }
 

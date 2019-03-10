@@ -65,13 +65,13 @@ public class DefaultPrivmsgListener extends AbstractDefaultListenerBase {
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateMessageEvent(this.getClient(), event.getOriginalMessage(), user, event.getParameters().get(0), event.getParameters().get(1)));
+            this.fire(new PrivateMessageEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), event.getParameters().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
             MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
-            this.fire(new ChannelMessageEvent(this.getClient(), event.getOriginalMessage(), user, channelInfo.getChannel(), event.getParameters().get(1)));
+            this.fire(new ChannelMessageEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), event.getParameters().get(1)));
         } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
             MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
-            this.fire(new ChannelTargetedMessageEvent(this.getClient(), event.getOriginalMessage(), user, channelInfo.getChannel(), channelInfo.getPrefix(), event.getParameters().get(1)));
+            this.fire(new ChannelTargetedMessageEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), event.getParameters().get(1)));
         }
     }
 }

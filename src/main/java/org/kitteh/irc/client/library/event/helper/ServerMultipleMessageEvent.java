@@ -32,9 +32,9 @@ import java.util.List;
  */
 public interface ServerMultipleMessageEvent extends ClientEvent {
     /**
-     * Gets the original message that caused this event.
+     * Gets the server-sent messages that caused this event.
      *
-     * @return the message that lead to this event
+     * @return the server-sent messages that caused this event
      */
-    List<ServerMessage> getOriginalMessages();
+    List<ServerMessage> getSource();
 }

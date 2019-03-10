@@ -35,11 +35,11 @@ import java.util.Optional;
  */
 public interface ServerMessageEvent extends ClientEvent {
     /**
-     * Gets the original message that caused this event.
+     * Gets the server-sent message that caused this event.
      *
-     * @return the message that lead to this event
+     * @return the server-sent message that caused this event
      */
-    ServerMessage getOriginalMessage();
+    ServerMessage getSource();
 
     /**
      * Gets the tags for this tag message.
@@ -47,7 +47,7 @@ public interface ServerMessageEvent extends ClientEvent {
      * @return a list of tags
      */
     default @NonNull List<MessageTag> getTags() {
-        return this.getOriginalMessage().getTags();
+        return this.getSource().getTags();
     }
 
     /**
@@ -57,7 +57,7 @@ public interface ServerMessageEvent extends ClientEvent {
      * @return tag if present
      */
     default Optional<MessageTag> getTag(@NonNull String name) {
-        return this.getOriginalMessage().getTag(name);
+        return this.getSource().getTag(name);
     }
 
     /**
@@ -69,6 +69,6 @@ public interface ServerMessageEvent extends ClientEvent {
      * @return message tag if present
      */
     default <Tag extends MessageTag> @NonNull Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
-        return this.getOriginalMessage().getTag(name, clazz);
+        return this.getSource().getTag(name, clazz);
     }
 }

@@ -95,7 +95,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
                 this.trackException(event, e.getMessage());
                 return;
             }
-            this.fire(new UserModeEvent(this.getClient(), event.getOriginalMessage(), event.getActor(), event.getParameters().get(0), statusList));
+            this.fire(new UserModeEvent(this.getClient(), event.getSource(), event.getActor(), event.getParameters().get(0), statusList));
             this.getClient().updateUserModes(statusList);
         } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
             Channel channel = ((MessageTargetInfo.ChannelInfo) messageTargetInfo).getChannel();
@@ -106,7 +106,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
                 this.trackException(event, e.getMessage());
                 return;
             }
-            this.fire(new ChannelModeEvent(this.getClient(), event.getOriginalMessage(), event.getActor(), channel, statusList));
+            this.fire(new ChannelModeEvent(this.getClient(), event.getSource(), event.getActor(), channel, statusList));
             statusList.getAll().stream()
                     .filter(status -> status.getMode().getType() == ChannelMode.Type.A_MASK)
                     .forEach(status -> this.getTracker().trackChannelModeInfo(channel.getName(), status.getAction() == ModeStatus.Action.ADD,

@@ -52,7 +52,7 @@ public class DefaultAwayListener extends AbstractDefaultListenerBase {
     @NumericFilter(306) // NOWAWAY
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void away(ClientReceiveNumericEvent event) {
-        this.fire(new ClientAwayStatusChangeEvent(this.getClient(), event.getOriginalMessage(), event.getNumeric() == 306));
+        this.fire(new ClientAwayStatusChangeEvent(this.getClient(), event.getSource(), event.getNumeric() == 306));
     }
 
     @CommandFilter("AWAY")
@@ -63,7 +63,7 @@ public class DefaultAwayListener extends AbstractDefaultListenerBase {
             return;
         }
         String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0);
-        this.fire(new UserAwayMessageEvent(this.getClient(), event.getOriginalMessage(), (User) event.getActor(), awayMessage));
+        this.fire(new UserAwayMessageEvent(this.getClient(), event.getSource(), (User) event.getActor(), awayMessage));
         this.getTracker().setUserAway(((User) event.getActor()).getNick(), awayMessage);
     }
 }

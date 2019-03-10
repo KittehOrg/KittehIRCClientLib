@@ -51,7 +51,7 @@ public abstract class ServerMessageEventBase extends ClientEventBase implements 
     }
 
     @Override
-    public @NonNull ServerMessage getOriginalMessage() {
+    public @NonNull ServerMessage getSource() {
         return this.originalMessage;
     }
 
