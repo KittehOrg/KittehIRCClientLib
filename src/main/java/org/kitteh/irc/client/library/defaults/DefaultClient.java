@@ -45,6 +45,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
+import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
 import org.kitteh.irc.client.library.event.batch.ClientBatchEndEvent;
 import org.kitteh.irc.client.library.event.batch.ClientBatchMessageEvent;
 import org.kitteh.irc.client.library.event.batch.ClientBatchStartEvent;
@@ -950,7 +951,7 @@ public class DefaultClient implements Client.WithManagement {
             BatchReferenceTag tag = this.batchHold.get(batch);
             if (tag != null) {
                 tag.addEvent(event);
-                this.eventManager.callEvent(new ClientBatchMessageEvent(this, event.getOriginalMessage(), tag));
+                this.eventManager.callEvent(new ClientBatchMessageEvent(this, event.getSource(), tag));
                 return;
             }
             // else improper batch
@@ -980,7 +981,7 @@ public class DefaultClient implements Client.WithManagement {
                 String type = parameters.get(1);
                 List<String> batchParameters = new ArrayList<>(parameters.subList(2, parameters.size()));
                 BatchReferenceTag tag = new BatchReferenceTag(refTag, type, batchParameters);
-                ClientBatchStartEvent batchEvent = new ClientBatchStartEvent(this, event.getOriginalMessage(), tag);
+                ClientBatchStartEvent batchEvent = new ClientBatchStartEvent(this, event.getSource(), tag);
                 this.eventManager.callEvent(batchEvent);
                 if (!batchEvent.isReferenceTagIgnored()) {
                     this.batchHold.put(refTag, tag);
@@ -988,7 +989,7 @@ public class DefaultClient implements Client.WithManagement {
             } else if (plusOrMinus == '-') {
                 BatchReferenceTag tag = this.batchHold.remove(refTag);
                 if (tag != null) {
-                    this.eventManager.callEvent(new ClientBatchEndEvent(this, event.getOriginalMessage(), tag));
+                    this.eventManager.callEvent(new ClientBatchEndEvent(this, event.getSource(), tag));
                     tag.getEvents().forEach(this::sendLineEvent);
                 }
             } else {

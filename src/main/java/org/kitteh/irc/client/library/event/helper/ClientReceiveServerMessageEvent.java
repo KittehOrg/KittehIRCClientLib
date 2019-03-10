@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * An event for a raw server message from the server.
  */
-public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor> {
+public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor>, ServerMessageEvent {
     /**
      * Gets the command sent.
      *
