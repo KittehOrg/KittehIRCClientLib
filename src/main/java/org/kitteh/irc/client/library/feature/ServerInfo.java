@@ -204,7 +204,7 @@ public interface ServerInfo {
     @SuppressWarnings("unchecked")
     default <ISupport extends ISupportParameter> @NonNull Optional<ISupport> getISupportParameter(@NonNull String name, @NonNull Class<ISupport> clazz) {
         Optional<ISupportParameter> optional = this.getISupportParameter(name);
-        if (optional.isPresent() && Sanity.nullCheck(clazz, "Class cannot be null").isInstance(optional.get())) {
+        if (optional.isPresent() && Sanity.nullCheck(clazz, "Class").isInstance(optional.get())) {
             return (Optional<ISupport>) optional;
         }
         return Optional.empty();

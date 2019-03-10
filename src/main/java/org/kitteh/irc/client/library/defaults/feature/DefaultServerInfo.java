@@ -126,7 +126,7 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
 
     @Override
     public @NonNull Optional<ISupportParameter> getISupportParameter(@NonNull String name) {
-        Sanity.nullCheck(name, "Name cannot be null");
+        Sanity.nullCheck(name, "Name");
         return Optional.ofNullable(this.iSupportParameterMap.get(name.toUpperCase()));
     }
 

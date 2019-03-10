@@ -49,8 +49,8 @@ public class ClientNegotiationCompleteEvent extends ClientEventBase {
      */
     public ClientNegotiationCompleteEvent(@NonNull Client client, @NonNull Actor server, @NonNull ServerInfo serverInfo) {
         super(client);
-        this.server = Sanity.nullCheck(server, "Server cannot be null");
-        this.serverInfo = Sanity.nullCheck(serverInfo, "ServerInfo cannot be null");
+        this.server = Sanity.nullCheck(server, "Server");
+        this.serverInfo = Sanity.nullCheck(serverInfo, "ServerInfo");
     }
 
     /**

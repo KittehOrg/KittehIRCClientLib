@@ -96,7 +96,7 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Server host(@NonNull String host) {
-            DefaultBuilder.this.serverHostWithPort = DefaultBuilder.this.serverHostWithPort.withHost(Sanity.nullCheck(host, "Host cannot be null"));
+            DefaultBuilder.this.serverHostWithPort = DefaultBuilder.this.serverHostWithPort.withHost(Sanity.nullCheck(host, "Host"));
             return this;
         }
 
@@ -281,7 +281,7 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Management messageSendingQueueSupplier(@Nullable Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
-            DefaultBuilder.this.messageSendingQueue = Sanity.nullCheck(supplier, "Supplier cannot be null");
+            DefaultBuilder.this.messageSendingQueue = Sanity.nullCheck(supplier, "Supplier");
             return this;
         }
 

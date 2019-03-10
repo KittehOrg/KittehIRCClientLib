@@ -54,7 +54,7 @@ public abstract class ActorChannelEventBase<A extends Actor> extends ActorEventB
      */
     protected ActorChannelEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull A actor, @NonNull Channel channel) {
         super(client, sourceMessage, actor);
-        Sanity.nullCheck(channel, "Channel cannot be null");
+        Sanity.nullCheck(channel, "Channel");
         Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
         this.channel = channel;
     }

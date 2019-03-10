@@ -95,6 +95,6 @@ public class MemoryStsMachine implements StsMachine {
 
     @Override
     public void setStsPolicy(@NonNull StsPolicy policy) {
-        this.policy = Sanity.nullCheck(policy, "Policy cannot be null");
+        this.policy = Sanity.nullCheck(policy, "Policy");
     }
 }

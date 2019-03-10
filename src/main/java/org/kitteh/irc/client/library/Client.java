@@ -92,8 +92,6 @@ import java.util.function.Function;
  * An individual IRC connection, see {@link #builder()} to create one.
  */
 public interface Client extends ClientLinked {
-
-
     /**
      * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
      * <p>
@@ -1222,7 +1220,7 @@ public interface Client extends ClientLinked {
      * @throws IllegalArgumentException for null parameters
      */
     default void sendCtcpMessage(@NonNull MessageReceiver target, @NonNull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(target, "Target");
         this.sendCtcpMessage(target.getMessagingName(), message);
     }
 
@@ -1247,7 +1245,7 @@ public interface Client extends ClientLinked {
      * @throws IllegalArgumentException for null parameters
      */
     default void sendCtcpReply(@NonNull MessageReceiver target, @NonNull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(target, "Target");
         this.sendCtcpMessage(target.getMessagingName(), message);
     }
 
@@ -1268,7 +1266,7 @@ public interface Client extends ClientLinked {
      * @throws IllegalArgumentException for null parameters
      */
     default void sendMessage(@NonNull MessageReceiver target, @NonNull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(target, "Target");
         this.sendMessage(target.getMessagingName(), message);
     }
 
@@ -1289,7 +1287,7 @@ public interface Client extends ClientLinked {
      * @throws IllegalArgumentException for null parameters
      */
     default void sendNotice(@NonNull MessageReceiver target, @NonNull String message) {
-        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(target, "Target");
         this.sendNotice(target.getMessagingName(), message);
     }
 
@@ -1350,7 +1348,7 @@ public interface Client extends ClientLinked {
      * @throws IllegalArgumentException for null parameters
      */
     default void sendMultiLineMessage(@NonNull MessageReceiver target, @NonNull String message, @NonNull Cutter cutter) {
-        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(target, "Target");
         this.sendMultiLineMessage(target.getMessagingName(), message, cutter);
     }
 
@@ -1411,7 +1409,7 @@ public interface Client extends ClientLinked {
      * @throws IllegalArgumentException for null parameters
      */
     default void sendMultiLineNotice(@NonNull MessageReceiver target, @NonNull String message, @NonNull Cutter cutter) {
-        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(target, "Target");
         this.sendMultiLineNotice(target.getMessagingName(), message, cutter);
     }
 

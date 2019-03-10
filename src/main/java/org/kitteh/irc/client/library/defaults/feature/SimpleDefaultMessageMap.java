@@ -34,7 +34,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 
-
 /**
  * Provides a way to set default messages.
  *
@@ -65,18 +64,18 @@ public class SimpleDefaultMessageMap implements DefaultMessageMap {
 
     @Override
     public @NonNull SimpleDefaultMessageMap setDefault(@NonNull DefaultMessageType key, @Nullable String defaultString) {
-        this.defaults.put(Sanity.nullCheck(key, "Key cannot be null"), defaultString);
+        this.defaults.put(Sanity.nullCheck(key, "Key"), defaultString);
         return this;
     }
 
     @Override
     public @NonNull Optional<String> getDefault(DefaultMessageType key) {
-        return this.getDefault(Sanity.nullCheck(key, "Key cannot be null"), key.getFallback());
+        return this.getDefault(Sanity.nullCheck(key, "Key"), key.getFallback());
     }
 
     @Override
     public @NonNull Optional<String> getDefault(@NonNull DefaultMessageType key, @Nullable String defaultValue) {
-        Sanity.nullCheck(key, "Key cannot be null");
+        Sanity.nullCheck(key, "Key");
         return Optional.ofNullable(this.defaults.getOrDefault(key, defaultValue));
     }
 

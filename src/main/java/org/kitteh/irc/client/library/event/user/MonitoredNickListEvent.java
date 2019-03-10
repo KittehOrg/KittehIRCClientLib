@@ -50,7 +50,7 @@ public class MonitoredNickListEvent extends ServerMultipleMessageEventBase {
      */
     public MonitoredNickListEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, @NonNull List<String> nicks) {
         super(client, sourceMessages);
-        this.nicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(nicks, "Nicks cannot be null")));
+        this.nicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(nicks, "Nicks")));
     }
 
     /**

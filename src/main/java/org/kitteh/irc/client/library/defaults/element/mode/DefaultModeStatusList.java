@@ -119,7 +119,7 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
      * @return list
      */
     public static @NonNull <ModeType extends Mode> DefaultModeStatusList<ModeType> of(@NonNull ModeStatus<ModeType>... statuses) {
-        Sanity.nullCheck(statuses, "Statuses cannot be null");
+        Sanity.nullCheck(statuses, "Statuses");
         Sanity.truthiness((statuses.length <= 1) || (Arrays.stream(statuses).map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
         return new DefaultModeStatusList<>(Arrays.asList(statuses));
     }
@@ -132,7 +132,7 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
      * @return list
      */
     public static @NonNull <ModeType extends Mode> DefaultModeStatusList<ModeType> of(@NonNull Collection<ModeStatus<ModeType>> statuses) {
-        Sanity.nullCheck(statuses, "Statuses cannot be null");
+        Sanity.nullCheck(statuses, "Statuses");
         List<ModeStatus<ModeType>> list = new ArrayList<>(statuses);
         Sanity.truthiness((list.size() <= 1) || (list.stream().map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
         return new DefaultModeStatusList<>(list);
@@ -146,7 +146,7 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
 
     @Override
     public boolean contains(@NonNull ModeType mode) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
+        Sanity.nullCheck(mode, "Mode");
         return this.statuses.stream().anyMatch(status -> status.getMode().equals(mode));
     }
 
@@ -157,7 +157,7 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
 
     @Override
     public @NonNull List<ModeStatus<ModeType>> getByMode(@NonNull ModeType mode) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
+        Sanity.nullCheck(mode, "Mode");
         return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().equals(mode)).collect(Collectors.toList()));
     }
 

@@ -99,7 +99,7 @@ public class MonitorCommand extends Command<MonitorCommand> {
      * @throws IllegalArgumentException for null action
      */
     public @NonNull MonitorCommand action(@NonNull Action action) {
-        this.action = Sanity.nullCheck(action, "Action cannot be null");
+        this.action = Sanity.nullCheck(action, "Action");
         return this;
     }
 
@@ -113,7 +113,7 @@ public class MonitorCommand extends Command<MonitorCommand> {
      * null target
      */
     public @NonNull MonitorCommand target(@NonNull String... targets) {
-        return this.target(Arrays.asList(Sanity.nullCheck(targets, "Targets cannot be null")));
+        return this.target(Arrays.asList(Sanity.nullCheck(targets, "Targets")));
     }
 
     /**
@@ -126,7 +126,7 @@ public class MonitorCommand extends Command<MonitorCommand> {
      * null target
      */
     public synchronized @NonNull MonitorCommand target(@NonNull Collection<String> targets) {
-        Sanity.nullCheck(targets, "Targets cannot be null");
+        Sanity.nullCheck(targets, "Targets");
         Set<String> targetSet = new LinkedHashSet<>();
         for (String target : targets) {
             Sanity.safeMessageCheck(target, "target");

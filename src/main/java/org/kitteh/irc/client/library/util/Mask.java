@@ -37,7 +37,7 @@ public class Mask {
      * @return mask from string
      */
     public static @NonNull Mask fromString(@NonNull String string) {
-        return new Mask(Sanity.nullCheck(string, "String cannot be null"));
+        return new Mask(Sanity.nullCheck(string, "String"));
     }
 
     private final String string;

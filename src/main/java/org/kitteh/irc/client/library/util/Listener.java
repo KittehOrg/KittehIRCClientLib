@@ -75,7 +75,7 @@ public class Listener<Type> {
      * @param consumer consumer or null for no consumer
      */
     public Listener(@NonNull Client client, @Nullable Consumer<Type> consumer) {
-        this.clientName = Sanity.nullCheck(client, "Client cannot be null").getName();
+        this.clientName = Sanity.nullCheck(client, "Client").getName();
         this.thread = (consumer == null) ? null : new ListenerThread(this.clientName, consumer);
     }
 

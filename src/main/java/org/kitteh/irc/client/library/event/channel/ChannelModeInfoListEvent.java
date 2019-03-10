@@ -55,8 +55,8 @@ public class ChannelModeInfoListEvent extends ChannelMultipleMessageEventBase im
      */
     public ChannelModeInfoListEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, @NonNull Channel channel, @NonNull ChannelMode mode, @NonNull List<ModeInfo> info) {
         super(client, sourceMessages, channel);
-        this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
-        this.info = Collections.unmodifiableList(Sanity.nullCheck(info, "Info cannot be null"));
+        this.mode = Sanity.nullCheck(mode, "Mode");
+        this.info = Collections.unmodifiableList(Sanity.nullCheck(info, "Info"));
     }
 
     /**

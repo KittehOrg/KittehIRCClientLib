@@ -41,7 +41,7 @@ public interface Cutter {
     class DefaultWordCutter implements Cutter {
         @Override
         public @NonNull List<String> split(@NonNull String message, @NonNegative int size) {
-            Sanity.nullCheck(message, "Message cannot be null");
+            Sanity.nullCheck(message, "Message");
             Sanity.truthiness(size > 0, "Size must be positive");
             List<String> list = new ArrayList<>();
             if (message.length() <= size) {

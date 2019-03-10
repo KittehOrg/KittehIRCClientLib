@@ -53,7 +53,7 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
          * @param client client
          */
         protected Builder(final @NonNull Client client) {
-            this.client = Sanity.nullCheck(client, "Client cannot be null");
+            this.client = Sanity.nullCheck(client, "Client");
         }
 
         /**

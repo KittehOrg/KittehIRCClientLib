@@ -180,7 +180,7 @@ public interface Channel extends MessageReceiver, Staleable {
      * @return a set of modes the user is known to have, if the user is known
      */
     default @NonNull Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull User user) {
-        return this.getUserModes(Sanity.nullCheck(user, "User cannot be null").getNick());
+        return this.getUserModes(Sanity.nullCheck(user, "User").getNick());
     }
 
     /**

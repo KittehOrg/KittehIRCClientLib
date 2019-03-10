@@ -97,8 +97,8 @@ public class DefaultServerMessage implements ServerMessage {
      * @param tags parsed tags
      */
     public DefaultServerMessage(@NonNull String message, @NonNull List<MessageTag> tags) {
-        Sanity.nullCheck(message, "Message cannot be null");
-        Sanity.nullCheck(tags, "Tags cannot be null");
+        Sanity.nullCheck(message, "Message");
+        Sanity.nullCheck(tags, "Tags");
         this.message = message;
         this.tags = Collections.unmodifiableList(new ArrayList<>(tags));
     }

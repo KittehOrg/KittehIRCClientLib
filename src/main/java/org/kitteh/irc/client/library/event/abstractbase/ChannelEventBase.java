@@ -49,7 +49,7 @@ public abstract class ChannelEventBase extends ServerMessageEventBase implements
      */
     protected ChannelEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel) {
         super(client, sourceMessage);
-        Sanity.nullCheck(channel, "Channel cannot be null");
+        Sanity.nullCheck(channel, "Channel");
         Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
         this.channel = channel;
     }

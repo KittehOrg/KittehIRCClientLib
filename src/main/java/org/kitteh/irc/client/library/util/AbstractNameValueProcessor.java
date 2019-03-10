@@ -51,7 +51,7 @@ public abstract class AbstractNameValueProcessor<NameValue> {
          * @param function function to do the work
          */
         public Creator(@NonNull TriFunction<Client, String, String, ? extends NameValue> function) {
-            this.function = Sanity.nullCheck(function, "Function cannot be null");
+            this.function = Sanity.nullCheck(function, "Function");
         }
 
         /**
@@ -101,7 +101,7 @@ public abstract class AbstractNameValueProcessor<NameValue> {
      * @return registered creator function
      */
     protected final @NonNull Optional<TriFunction<Client, String, String, ? extends NameValue>> getCreatorByName(@NonNull String name) {
-        return this.optional(this.registeredNames.get(Sanity.nullCheck(name, "Name cannot be null")));
+        return this.optional(this.registeredNames.get(Sanity.nullCheck(name, "Name")));
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class AbstractNameValueProcessor<NameValue> {
      * @return previous occupant of the name registration, if there was one
      */
     protected final @NonNull Optional<TriFunction<Client, String, String, ? extends NameValue>> registerCreator(@NonNull String name, @NonNull Creator<NameValue> creator) {
-        return this.optional(this.registeredNames.put(Sanity.nullCheck(name, "Name cannot be null"), creator));
+        return this.optional(this.registeredNames.put(Sanity.nullCheck(name, "Name"), creator));
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class AbstractNameValueProcessor<NameValue> {
      * @return previous occupant of the name registration, if there was one
      */
     protected final @NonNull Optional<TriFunction<Client, String, String, ? extends NameValue>> unregisterCreator(@NonNull String name) {
-        return this.optional(this.registeredNames.remove(Sanity.nullCheck(name, "Name cannot be null")));
+        return this.optional(this.registeredNames.remove(Sanity.nullCheck(name, "Name")));
     }
 
     private @NonNull Optional<TriFunction<Client, String, String, ? extends NameValue>> optional(@Nullable Creator<NameValue> creator) {

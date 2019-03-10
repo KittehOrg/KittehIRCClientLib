@@ -91,5 +91,4 @@ public class StsPropertiesStorageManagerTest {
         Assert.assertTrue(sut2.hasEntry("kitteh.org"));
     }
 
-
 }

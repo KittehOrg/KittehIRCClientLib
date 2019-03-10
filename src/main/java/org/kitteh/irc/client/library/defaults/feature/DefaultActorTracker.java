@@ -417,7 +417,6 @@ public class DefaultActorTracker implements ActorTracker {
         }
     }
 
-
     class IrcServer extends IrcActor {
         private IrcServer(@NonNull String name) {
             super(name);

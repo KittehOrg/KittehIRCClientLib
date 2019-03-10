@@ -276,7 +276,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
     public static boolean verify(@NonNull ECPublicKey publicKey, @NonNull String base64Challenge, @NonNull String signature) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         Sanity.nullCheck(publicKey, "Public key cannot be null");
         Sanity.nullCheck(base64Challenge, "Base64 encoded challenge cannot be null");
-        Sanity.nullCheck(signature, "Signature cannot be null");
+        Sanity.nullCheck(signature, "Signature");
         Signature ver = Signature.getInstance("NONEwithECDSA");
         ver.initVerify(publicKey);
         Base64.Decoder decoder = Base64.getDecoder();

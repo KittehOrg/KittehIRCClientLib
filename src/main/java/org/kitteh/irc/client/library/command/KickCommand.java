@@ -73,7 +73,7 @@ public class KickCommand extends ChannelCommand<KickCommand> {
      * @throws IllegalArgumentException if target is null or from a different Client
      */
     public @NonNull KickCommand target(@NonNull User target) {
-        Sanity.nullCheck(target, "Target cannot be null");
+        Sanity.nullCheck(target, "Target");
         Sanity.truthiness(target.getClient() == this.getClient(), "User comes from a different client");
         this.target(target.getNick());
         return this;

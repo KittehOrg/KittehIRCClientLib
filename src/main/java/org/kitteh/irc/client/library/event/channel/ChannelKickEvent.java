@@ -54,7 +54,7 @@ public class ChannelKickEvent extends ActorChannelMessageEventBase<Actor> implem
      */
     public ChannelKickEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
         super(client, sourceMessage, actor, channel, message);
-        this.target = Sanity.nullCheck(target, "Target cannot be null");
+        this.target = Sanity.nullCheck(target, "Target");
     }
 
     @Override

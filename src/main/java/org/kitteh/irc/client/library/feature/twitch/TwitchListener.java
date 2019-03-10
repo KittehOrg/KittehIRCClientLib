@@ -56,7 +56,7 @@ public class TwitchListener {
      * @param client the client for which it will be registered
      */
     public TwitchListener(@NonNull Client client) {
-        this.client = Sanity.nullCheck(client, "Client cannot be null");
+        this.client = Sanity.nullCheck(client, "Client");
     }
 
     @Handler

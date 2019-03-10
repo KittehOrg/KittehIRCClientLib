@@ -61,7 +61,7 @@ public class MessageCommand extends Command<MessageCommand> {
     }
 
     public @NonNull MessageCommand target(@NonNull MessageReceiver target) {
-        this.target = Sanity.nullCheck(target, "Target cannot be null").getMessagingName();
+        this.target = Sanity.nullCheck(target, "Target").getMessagingName();
         return this;
     }
 

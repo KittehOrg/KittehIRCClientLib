@@ -59,7 +59,7 @@ public class TagMessageCommand extends Command<TagMessageCommand> {
     }
 
     public @NonNull TagMessageCommand target(@NonNull MessageReceiver target) {
-        this.target = Sanity.nullCheck(target, "Target cannot be null").getMessagingName();
+        this.target = Sanity.nullCheck(target, "Target").getMessagingName();
         return this;
     }
 

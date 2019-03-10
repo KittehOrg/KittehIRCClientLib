@@ -56,7 +56,7 @@ public class DefaultAuthManager implements AuthManager {
 
     @Override
     public synchronized @NonNull Optional<AuthProtocol> addProtocol(@NonNull AuthProtocol protocol) {
-        Sanity.nullCheck(protocol, "Protocol cannot be null");
+        Sanity.nullCheck(protocol, "Protocol");
         List<AuthProtocol> matching = this.protocols.stream().filter(p -> p.getClass() == protocol.getClass()).collect(Collectors.toList());
         Optional<AuthProtocol> removed = Optional.ofNullable(matching.isEmpty() ? null : matching.get(0));
         removed.ifPresent(this::removeProtocol);
@@ -74,7 +74,7 @@ public class DefaultAuthManager implements AuthManager {
 
     @Override
     public synchronized void removeProtocol(@NonNull AuthProtocol protocol) {
-        Sanity.nullCheck(protocol, "Protocol cannot be null");
+        Sanity.nullCheck(protocol, "Protocol");
         this.protocols.remove(protocol);
         if (protocol instanceof EventListening) {
             this.client.getEventManager().unregisterEventListener(((EventListening) protocol).getEventListener());

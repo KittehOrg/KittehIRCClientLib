@@ -37,14 +37,14 @@ public final class Sanity {
      * Checks if an object is null.
      *
      * @param object object to check
-     * @param failMessage message to throw
+     * @param name name of the string
      * @param <Type> type of object checked
      * @return the sane object
      * @throws IllegalArgumentException if the object is null
      */
-    public static <Type> @NonNull Type nullCheck(@Nullable Type object, @NonNull String failMessage) {
+    public static <Type> @NonNull Type nullCheck(@Nullable Type object, @NonNull String name) {
         if (object == null) {
-            throw new IllegalArgumentException(failMessage);
+            throw new IllegalArgumentException(name + " cannot be null");
         }
         return object;
     }
@@ -53,16 +53,16 @@ public final class Sanity {
      * Checks if an array is null or contains null elements.
      *
      * @param array array to check
-     * @param failMessage message to throw
+     * @param name name of the string
      * @param <Type> type of object checked
      * @return the sane object
      * @throws IllegalArgumentException if null or contains null elements
      */
     @SuppressWarnings("NullableProblems") // we check
-    public static <Type> @NonNull Type[] nullCheck(@Nullable Type[] array, @NonNull String failMessage) {
-        Sanity.nullCheck((Object) array, failMessage);
+    public static <Type> @NonNull Type[] nullCheck(@Nullable Type[] array, @NonNull String name) {
+        Sanity.nullCheck((Object) array, name);
         for (Object element : array) {
-            Sanity.nullCheck(element, failMessage);
+            Sanity.nullCheck(element, name);
         }
         return array;
     }
@@ -88,7 +88,7 @@ public final class Sanity {
      * @throws IllegalArgumentException if found
      */
     public static @NonNull String safeMessageCheck(@NonNull String message) {
-        return Sanity.safeMessageCheck(message, "Message");
+        return Sanity.safeMessageCheck(message, "message");
     }
 
     /**

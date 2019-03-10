@@ -53,7 +53,7 @@ public final class StringUtil {
      */
     public static @NonNull String combineSplit(@NonNull String[] split, int start, int length, @NonNull String delimiter) {
         Sanity.nullCheck((Object) split, "Cannot combine a null array");
-        Sanity.nullCheck(delimiter, "Delimiter cannot be null");
+        Sanity.nullCheck(delimiter, "Delimiter");
         Sanity.truthiness(start >= 0, "Negative array indexes are not valid");
         Sanity.truthiness(length > 0, "Cannot combine less than one element of an array");
 
@@ -131,7 +131,7 @@ public final class StringUtil {
      * @see CaseMapping#toLowerCase
      */
     public static @NonNull String toLowerCase(@NonNull ClientLinked linked, @NonNull String input) {
-        Sanity.nullCheck(linked, "ClientLinked cannot be null");
+        Sanity.nullCheck(linked, "ClientLinked");
         return StringUtil.toLowerCase(linked.getClient(), input);
     }
 
@@ -146,8 +146,8 @@ public final class StringUtil {
      * @see CaseMapping#toLowerCase
      */
     public static @NonNull String toLowerCase(@NonNull Client client, @NonNull String input) {
-        Sanity.nullCheck(client, "Client cannot be null");
-        Sanity.nullCheck(input, "Input cannot be null");
+        Sanity.nullCheck(client, "Client");
+        Sanity.nullCheck(input, "Input");
         return client.getServerInfo().getCaseMapping().toLowerCase(input);
     }
 
@@ -159,7 +159,7 @@ public final class StringUtil {
      */
     @SuppressWarnings("ReplaceAllDot")
     public static @NonNull String filterPassword(@NonNull String password) {
-        Sanity.nullCheck(password, "Password cannot be null");
+        Sanity.nullCheck(password, "Password");
         return password.replaceAll(".", "*");
     }
 }

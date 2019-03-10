@@ -121,14 +121,14 @@ public class DefaultClient implements Client.WithManagement {
 
         @Override
         public @NonNull ChannelModeCommand mode(@NonNull Channel channel) {
-            Sanity.nullCheck(channel, "Channel cannot be null");
+            Sanity.nullCheck(channel, "Channel");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new ChannelModeCommand(DefaultClient.this, channel.getMessagingName());
         }
 
         @Override
         public @NonNull KickCommand kick(@NonNull Channel channel) {
-            Sanity.nullCheck(channel, "Channel cannot be null");
+            Sanity.nullCheck(channel, "Channel");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new KickCommand(DefaultClient.this, channel.getMessagingName());
         }
@@ -145,7 +145,7 @@ public class DefaultClient implements Client.WithManagement {
 
         @Override
         public @NonNull TopicCommand topic(@NonNull Channel channel) {
-            Sanity.nullCheck(channel, "Channel cannot be null");
+            Sanity.nullCheck(channel, "Channel");
             Sanity.truthiness(DefaultClient.this == channel.getClient(), "Client mismatch");
             return new TopicCommand(DefaultClient.this, channel.getMessagingName());
         }
@@ -321,7 +321,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void addChannel(@NonNull String... channels) {
-        Sanity.nullCheck(channels, "Channels cannot be null");
+        Sanity.nullCheck(channels, "Channels");
         Sanity.truthiness(channels.length > 0, "Channels cannot be empty array");
         for (String channelName : channels) {
             Sanity.truthiness(this.serverInfo.isValidChannel(channelName), "Invalid channel name " + channelName);
@@ -334,8 +334,8 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void addKeyProtectedChannel(@NonNull String channel, @NonNull String key) {
-        Sanity.nullCheck(channel, "Channel cannot be null");
-        Sanity.nullCheck(key, "Key cannot be null");
+        Sanity.nullCheck(channel, "Channel");
+        Sanity.nullCheck(key, "Key");
         Sanity.truthiness(this.serverInfo.isValidChannel(channel), "Invalid channel name " + channel);
         this.channelsIntended.add(channel);
         this.sendRawLine("JOIN " + channel + ' ' + key);
@@ -467,7 +467,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void knockChannel(@NonNull String channelName) {
-        this.sendRawLine("KNOCK " + Sanity.nullCheck(channelName, "Channel cannot be null"));
+        this.sendRawLine("KNOCK " + Sanity.nullCheck(channelName, "Channel"));
     }
 
     @Override
@@ -515,17 +515,17 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void sendMultiLineMessage(@NonNull String target, @NonNull String message, @NonNull Cutter cutter) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        Sanity.nullCheck(message, "Message cannot be null");
-        Sanity.nullCheck(cutter, "Cutter cannot be null");
+        Sanity.nullCheck(target, "Target");
+        Sanity.nullCheck(message, "Message");
+        Sanity.nullCheck(cutter, "Cutter");
         cutter.split(message, this.getRemainingLength("PRIVMSG", target)).forEach(line -> this.sendMessage(target, line));
     }
 
     @Override
     public void sendMultiLineNotice(@NonNull String target, @NonNull String message, @NonNull Cutter cutter) {
-        Sanity.nullCheck(target, "Target cannot be null");
-        Sanity.nullCheck(message, "Message cannot be null");
-        Sanity.nullCheck(cutter, "Cutter cannot be null");
+        Sanity.nullCheck(target, "Target");
+        Sanity.nullCheck(message, "Message");
+        Sanity.nullCheck(cutter, "Cutter");
         cutter.split(message, this.getRemainingLength("NOTICE", target)).forEach(line -> this.sendNotice(target, line));
     }
 
@@ -623,7 +623,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void setDefaultMessageMap(@NonNull DefaultMessageMap defaults) {
-        Sanity.nullCheck(defaults, "Defaults cannot be null");
+        Sanity.nullCheck(defaults, "Defaults");
         this.defaultMessageMap = defaults;
     }
 
@@ -638,12 +638,12 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void setMessageCutter(@NonNull Cutter cutter) {
-        this.messageCutter = Sanity.nullCheck(cutter, "Cutter cannot be null");
+        this.messageCutter = Sanity.nullCheck(cutter, "Cutter");
     }
 
     @Override
     public void setMessageSendingQueueSupplier(@NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> supplier) {
-        this.messageSendingQueueSupplier = Sanity.nullCheck(supplier, "Supplier cannot be null");
+        this.messageSendingQueueSupplier = Sanity.nullCheck(supplier, "Supplier");
         synchronized (this.messageSendingLock) {
             MessageSendingQueue newQueue = this.getMessageSendingQueueSupplier().apply(this);
             this.messageSendingScheduled.shutdown().forEach(newQueue::queue);

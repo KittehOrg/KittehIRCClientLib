@@ -45,7 +45,7 @@ public abstract class MonitoredNickEventBase extends ServerMessageEventBase impl
      */
     protected MonitoredNickEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull String nick) {
         super(client, sourceMessage);
-        this.nick = Sanity.nullCheck(nick, "Nick cannot be null");
+        this.nick = Sanity.nullCheck(nick, "Nick");
     }
 
     @Override

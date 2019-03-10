@@ -48,7 +48,7 @@ public class DefaultModeStatus<ModeType extends Mode> implements ModeStatus<Mode
      * @param mode mode to set
      */
     public DefaultModeStatus(Action action, @NonNull ModeType mode) {
-        this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
+        this.mode = Sanity.nullCheck(mode, "Mode");
         this.parameter = null;
         this.action = action;
     }
@@ -61,7 +61,7 @@ public class DefaultModeStatus<ModeType extends Mode> implements ModeStatus<Mode
      * @param parameter parameter
      */
     public DefaultModeStatus(Action action, @NonNull ModeType mode, @NonNull String parameter) {
-        this.mode = Sanity.nullCheck(mode, "Mode cannot be null");
+        this.mode = Sanity.nullCheck(mode, "Mode");
         this.parameter = Sanity.safeMessageCheck(parameter, "Parameter");
         this.action = action;
     }

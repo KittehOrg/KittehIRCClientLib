@@ -75,11 +75,11 @@ public class UserModeCommand extends Command<UserModeCommand> {
      * different client or parameter is null
      */
     public @NonNull UserModeCommand add(ModeStatus.Action action, @NonNull UserMode mode, @NonNull String parameter) {
-        return this.addChange(action, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
+        return this.addChange(action, mode, Sanity.nullCheck(parameter, "Parameter"));
     }
 
     private synchronized @NonNull UserModeCommand addChange(ModeStatus.Action action, @NonNull UserMode mode, @Nullable String parameter) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
+        Sanity.nullCheck(mode, "Mode");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter, "Parameter");

@@ -54,7 +54,7 @@ public class ChannelTargetedTagMessageEvent extends ActorChannelEventBase<Actor>
      */
     public ChannelTargetedTagMessageEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Actor sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix) {
         super(client, sourceMessage, sender, channel);
-        this.prefix = Sanity.nullCheck(prefix, "Prefix cannot be null");
+        this.prefix = Sanity.nullCheck(prefix, "Prefix");
     }
 
     @Override

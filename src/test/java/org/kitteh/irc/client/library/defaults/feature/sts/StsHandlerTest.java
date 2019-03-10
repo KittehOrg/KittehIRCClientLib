@@ -24,7 +24,6 @@ import java.util.List;
  * Tests around the STS event handler and the underlying machine.
  */
 public class StsHandlerTest {
-
     /**
      * Checks that the STS Handler works when we connect in a plaintext manner and give
      * it a policy.

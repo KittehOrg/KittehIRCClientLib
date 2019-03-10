@@ -122,7 +122,7 @@ public class DefaultEventManager implements EventManager {
 
     @Override
     public void callEvent(@NonNull Object event) {
-        Sanity.nullCheck(event, "Event cannot be null");
+        Sanity.nullCheck(event, "Event");
         if (event instanceof ClientEvent) {
             Sanity.truthiness(((ClientEvent) event).getClient() == this.client, "Event cannot be from another client!");
         }
@@ -146,14 +146,14 @@ public class DefaultEventManager implements EventManager {
 
     @Override
     public synchronized void registerEventListener(@NonNull Object listener) {
-        Sanity.nullCheck(listener, "Listener cannot be null");
+        Sanity.nullCheck(listener, "Listener");
         this.listeners.add(listener);
         this.bus.subscribe(listener);
     }
 
     @Override
     public synchronized void unregisterEventListener(@NonNull Object listener) {
-        Sanity.nullCheck(listener, "Listener cannot be null");
+        Sanity.nullCheck(listener, "Listener");
         this.listeners.remove(listener);
         this.bus.unsubscribe(listener);
     }

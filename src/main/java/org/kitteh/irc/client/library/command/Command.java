@@ -42,18 +42,18 @@ public abstract class Command<C extends Command<C>> implements ClientLinked {
         private List<MessageTag> tags = new ArrayList<>();
 
         public Tags add(@NonNull MessageTag tag) {
-            this.tags.add(Sanity.nullCheck(tag, "Tag cannot be null"));
+            this.tags.add(Sanity.nullCheck(tag, "Tag"));
             return this;
         }
 
         public Tags add(@NonNull String name) {
-            this.tags.add(new MessageTagManager.DefaultMessageTag(Sanity.nullCheck(name, "Name cannot be null"), null));
+            this.tags.add(new MessageTagManager.DefaultMessageTag(Sanity.nullCheck(name, "Name"), null));
             return this;
         }
 
         public Tags add(@NonNull String name, @NonNull String value) {
-            Sanity.nullCheck(name, "Name cannot be null");
-            Sanity.nullCheck(value, "Value cannot be null");
+            Sanity.nullCheck(name, "Name");
+            Sanity.nullCheck(value, "Value");
             this.tags.add(new MessageTagManager.DefaultMessageTag(name, value));
             return this;
         }
@@ -78,7 +78,7 @@ public abstract class Command<C extends Command<C>> implements ClientLinked {
      * @throws IllegalArgumentException if client is null
      */
     protected Command(@NonNull Client client) {
-        this.client = Sanity.nullCheck(client, "Client cannot be null");
+        this.client = Sanity.nullCheck(client, "Client");
     }
 
     /**

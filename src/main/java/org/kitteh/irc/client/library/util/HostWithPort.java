@@ -49,7 +49,7 @@ public class HostWithPort {
      * @return a HostWithPort with the provided information
      */
     public static @NonNull HostWithPort of(@NonNull String host, @IntRange(from = PORT_MIN, to = PORT_MAX) int port) {
-        Sanity.nullCheck(host, "Host cannot be null");
+        Sanity.nullCheck(host, "Host");
         Sanity.truthiness((port >= PORT_MIN) && (port <= PORT_MAX), port + " is not acceptable port number");
         return new HostWithPort(host, port);
     }

@@ -40,7 +40,7 @@ public abstract class AbstractAuthProtocol implements AuthProtocol {
      * @param client client
      */
     protected AbstractAuthProtocol(@NonNull Client client) {
-        this.client = Sanity.nullCheck(client, "Client cannot be null");
+        this.client = Sanity.nullCheck(client, "Client");
     }
 
     @Override

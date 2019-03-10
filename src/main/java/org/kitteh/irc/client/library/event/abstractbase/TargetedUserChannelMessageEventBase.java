@@ -61,7 +61,7 @@ public abstract class TargetedUserChannelMessageEventBase extends ActorChannelMe
      */
     protected TargetedUserChannelMessageEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User user, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
         super(client, sourceMessage, user, channel, message);
-        this.prefix = Sanity.nullCheck(prefix, "Prefix cannot be null");
+        this.prefix = Sanity.nullCheck(prefix, "Prefix");
     }
 
     @Override

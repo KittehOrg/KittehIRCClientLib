@@ -49,13 +49,13 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
      * @param name name of this sending queue
      */
     public QueueProcessingThreadSender(@NonNull Client client, @NonNull String name) {
-        super("KICL " + Sanity.nullCheck(name, "Name cannot be null") + " Sending Queue (" + Sanity.nullCheck(client, "Client cannot be null").getName() + ')');
+        super("KICL " + Sanity.nullCheck(name, "Name") + " Sending Queue (" + Sanity.nullCheck(client, "Client").getName() + ')');
         this.client = client;
     }
 
     @Override
     protected void processElement(@NonNull String message) {
-        Sanity.nullCheck(message, "Message cannot be null");
+        Sanity.nullCheck(message, "Message");
         synchronized (this.sendingLock) {
             if (this.waiting) {
                 try {
@@ -97,7 +97,7 @@ public class QueueProcessingThreadSender extends QueueProcessingThread<String> i
 
     @Override
     public void beginSending(@NonNull Consumer<String> consumer) {
-        Sanity.nullCheck(consumer, "Consumer cannot be null");
+        Sanity.nullCheck(consumer, "Consumer");
         synchronized (this.sendingLock) {
             this.consumer = consumer;
             this.waiting = false;

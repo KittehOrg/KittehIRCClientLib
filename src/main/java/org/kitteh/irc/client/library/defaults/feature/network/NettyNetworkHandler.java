@@ -155,7 +155,7 @@ public class NettyNetworkHandler implements NetworkHandler {
 
     @Override
     public void setResolver(@NonNull Resolver resolver) {
-        this.resolver = Sanity.nullCheck(resolver, "Resolver cannot be null");
+        this.resolver = Sanity.nullCheck(resolver, "Resolver");
     }
 
     @Override

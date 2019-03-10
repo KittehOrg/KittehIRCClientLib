@@ -137,7 +137,7 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
 
     @Override
     public @NonNull Optional<List<ModeInfo>> getModeInfoList(@NonNull ChannelMode mode) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
+        Sanity.nullCheck(mode, "Mode");
         Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
         return Optional.ofNullable(this.modeInfoLists.get(mode.getChar()));
     }
@@ -159,13 +159,13 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
 
     @Override
     public @NonNull Optional<User> getUser(@NonNull String nick) {
-        Sanity.nullCheck(nick, "Nick cannot be null");
+        Sanity.nullCheck(nick, "Nick");
         return Optional.ofNullable(this.nickMap.get(nick));
     }
 
     @Override
     public @NonNull Optional<SortedSet<ChannelUserMode>> getUserModes(@NonNull String nick) {
-        Sanity.nullCheck(nick, "Nick cannot be null");
+        Sanity.nullCheck(nick, "Nick");
         return Optional.ofNullable(this.modes.get(nick));
     }
 
@@ -181,7 +181,7 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
 
     @Override
     public void setModeInfoTracking(@NonNull ChannelMode mode, boolean track) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
+        Sanity.nullCheck(mode, "Mode");
         Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
         Sanity.truthiness((mode.getChar() == 'b') || (mode.getChar() == 'e') || (mode.getChar() == 'I') || (mode.getChar() == 'q'), "Only modes b, e, I, and q supported");
         Optional<Channel> channel = this.getClient().getActorTracker().getTrackedChannel(this.getName());

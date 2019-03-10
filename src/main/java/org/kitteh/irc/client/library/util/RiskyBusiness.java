@@ -62,7 +62,7 @@ public final class RiskyBusiness {
      * @return output of the function
      */
     public static <Input, Output> @Nullable Output assertSafe(@NonNull CheckedFunction<Input, Output> function, @Nullable Input input) {
-        Sanity.nullCheck(function, "Function cannot be null");
+        Sanity.nullCheck(function, "Function");
         try {
             return function.apply(input);
         } catch (Exception everythingYouKnowIsWrong) {

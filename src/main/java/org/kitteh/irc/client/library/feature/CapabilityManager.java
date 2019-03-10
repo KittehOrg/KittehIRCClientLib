@@ -248,7 +248,7 @@ public interface CapabilityManager {
      * @return the named capability if enabled
      */
     default @NonNull Optional<CapabilityState> getCapability(@NonNull String name) {
-        Sanity.nullCheck(name, "Name cannot be null");
+        Sanity.nullCheck(name, "Name");
         return this.getCapabilities().stream().filter(capabilityState -> capabilityState.getName().equals(name)).findFirst();
     }
 
@@ -267,7 +267,7 @@ public interface CapabilityManager {
      * @return the named capability if supported
      */
     default @NonNull Optional<CapabilityState> getSupportedCapability(@NonNull String name) {
-        Sanity.nullCheck(name, "Name cannot be null");
+        Sanity.nullCheck(name, "Name");
         return this.getSupportedCapabilities().stream().filter(capabilityState -> capabilityState.getName().equals(name)).findFirst();
     }
 }

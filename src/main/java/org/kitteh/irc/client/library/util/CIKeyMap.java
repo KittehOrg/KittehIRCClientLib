@@ -50,7 +50,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
      * @param client the client to which this map is tied
      */
     public CIKeyMap(@NonNull Client client) {
-        this.client = Sanity.nullCheck(client, "Client cannot be null");
+        this.client = Sanity.nullCheck(client, "Client");
     }
 
     /**
@@ -107,7 +107,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
 
     @Override
     public @Nullable Value put(@NonNull String key, @Nullable Value value) {
-        Sanity.nullCheck(key, "Key cannot be null");
+        Sanity.nullCheck(key, "Key");
         Pair<String, Value> pair = this.map.put(this.toLowerCase(key), new Pair<>(key, value));
         return (pair == null) ? null : pair.getRight();
     }
@@ -123,7 +123,7 @@ public class CIKeyMap<Value> implements Map<String, Value> {
 
     @Override
     public void putAll(@NonNull Map<? extends String, ? extends Value> m) {
-        Sanity.nullCheck(m, "Map cannot be null");
+        Sanity.nullCheck(m, "Map");
         m.forEach(this::put);
     }
 

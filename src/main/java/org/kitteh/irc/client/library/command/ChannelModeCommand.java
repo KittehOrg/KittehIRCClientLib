@@ -82,7 +82,7 @@ public class ChannelModeCommand extends ChannelCommand<ChannelModeCommand> {
      * different client or parameter is null
      */
     public @NonNull ChannelModeCommand add(ModeStatus.Action action, @NonNull ChannelMode mode, @NonNull String parameter) {
-        return this.addChange(action, mode, Sanity.nullCheck(parameter, "Parameter cannot be null"));
+        return this.addChange(action, mode, Sanity.nullCheck(parameter, "Parameter"));
     }
 
     /**
@@ -96,13 +96,13 @@ public class ChannelModeCommand extends ChannelCommand<ChannelModeCommand> {
      * user comes from a different client or parameter is null
      */
     public @NonNull ChannelModeCommand add(ModeStatus.Action action, @NonNull ChannelUserMode mode, @NonNull User parameter) {
-        Sanity.nullCheck(parameter, "User cannot be null");
+        Sanity.nullCheck(parameter, "User");
         Sanity.truthiness(parameter.getClient() == this.getClient(), "User comes from a different Client");
         return this.addChange(action, mode, parameter.getNick());
     }
 
     private synchronized @NonNull ChannelModeCommand addChange(ModeStatus.Action action, @NonNull ChannelMode mode, @Nullable String parameter) {
-        Sanity.nullCheck(mode, "Mode cannot be null");
+        Sanity.nullCheck(mode, "Mode");
         Sanity.truthiness(mode.getClient() == this.getClient(), "Mode comes from a different Client");
         if (parameter != null) {
             Sanity.safeMessageCheck(parameter, "Parameter");

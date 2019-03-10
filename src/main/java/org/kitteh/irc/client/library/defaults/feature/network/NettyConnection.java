@@ -98,7 +98,7 @@ public final class NettyConnection implements ClientConnection {
      * @param shutdownHook consumer to call when shut down
      */
     public NettyConnection(final Client.@NonNull WithManagement client, @NonNull ChannelFuture channelFuture, @NonNull Consumer<Client.WithManagement> shutdownHook) {
-        this.client = Sanity.nullCheck(client, "Client cannot be null");
+        this.client = Sanity.nullCheck(client, "Client");
         this.channelFuture = Sanity.nullCheck(channelFuture, "Channel future cannot be null");
         this.channel = channelFuture.channel();
         this.shutdownHook = Sanity.nullCheck(shutdownHook, "Shutdown hook cannot be null");
@@ -197,7 +197,6 @@ public final class NettyConnection implements ClientConnection {
                     }
                 });
                 this.channel.pipeline().addFirst(sslHandler);
-
             } catch (SSLException | NoSuchAlgorithmException | KeyStoreException e) {
                 this.client.getExceptionListener().queue(new KittehConnectionException(e, true));
                 return;

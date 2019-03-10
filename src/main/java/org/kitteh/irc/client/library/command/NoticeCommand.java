@@ -61,7 +61,7 @@ public class NoticeCommand extends Command<NoticeCommand> {
     }
 
     public @NonNull NoticeCommand target(@NonNull MessageReceiver target) {
-        this.target = Sanity.nullCheck(target, "Target cannot be null").getMessagingName();
+        this.target = Sanity.nullCheck(target, "Target").getMessagingName();
         return this;
     }
 

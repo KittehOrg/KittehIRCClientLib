@@ -89,7 +89,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      * @return true if the item is in the queue
      */
     public boolean contains(@NonNull Type item) {
-        return this.queue.contains(Sanity.nullCheck(item, "Item cannot be null"));
+        return this.queue.contains(Sanity.nullCheck(item, "Item"));
     }
 
     /**
@@ -107,7 +107,7 @@ public abstract class QueueProcessingThread<Type> extends Thread {
      * @param item item to queue
      */
     public void queue(@NonNull Type item) {
-        Sanity.nullCheck(item, "Item cannot be null");
+        Sanity.nullCheck(item, "Item");
         synchronized (this.queue) {
             this.queue.add(item);
             this.queue.notify();

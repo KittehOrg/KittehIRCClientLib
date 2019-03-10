@@ -179,7 +179,6 @@ public class DefaultEventListenerTest {
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server version and user modes missing")));
     }
 
-
     /**
      * Tests numeric 4 without address or version.
      */

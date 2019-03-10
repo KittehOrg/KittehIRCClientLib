@@ -43,7 +43,7 @@ public class ToStringer {
      * @param object object that is being toString'd
      */
     public ToStringer(@NonNull Object object) {
-        Sanity.nullCheck(object, "Object cannot be null");
+        Sanity.nullCheck(object, "Object");
         this.name = object.getClass().getSimpleName();
     }
 
@@ -55,7 +55,7 @@ public class ToStringer {
      * @return this instance
      */
     public @NonNull ToStringer add(@NonNull String name, @Nullable Object object) {
-        Sanity.nullCheck(name, "Name cannot be null");
+        Sanity.nullCheck(name, "Name");
         this.list.add(new Pair<>(name, object));
         return this;
     }

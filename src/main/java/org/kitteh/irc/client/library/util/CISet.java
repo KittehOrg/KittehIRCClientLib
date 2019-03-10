@@ -51,7 +51,7 @@ public class CISet implements Set<String> {
      * @param client the client to which this set is tied
      */
     public CISet(@NonNull Client client) {
-        this.client = Sanity.nullCheck(client, "Client cannot be null");
+        this.client = Sanity.nullCheck(client, "Client");
     }
 
     /**
@@ -104,7 +104,7 @@ public class CISet implements Set<String> {
 
     @Override
     public boolean add(@NonNull String s) {
-        Sanity.nullCheck(s, "String cannot be null");
+        Sanity.nullCheck(s, "String");
         this.map.put(this.toLowerCase(s), s);
         return true;
     }
@@ -116,7 +116,7 @@ public class CISet implements Set<String> {
 
     @Override
     public boolean containsAll(@NonNull Collection<?> c) {
-        Sanity.nullCheck(c, "Collection cannot be null");
+        Sanity.nullCheck(c, "Collection");
         for (Object o : c) {
             if (!this.contains(o)) {
                 return false;
@@ -127,20 +127,20 @@ public class CISet implements Set<String> {
 
     @Override
     public boolean addAll(@NonNull Collection<? extends String> c) {
-        Sanity.nullCheck(c, "Collection cannot be null");
+        Sanity.nullCheck(c, "Collection");
         c.forEach(this::add);
         return true;
     }
 
     @Override
     public boolean retainAll(@NonNull Collection<?> c) {
-        Sanity.nullCheck(c, "Collection cannot be null");
+        Sanity.nullCheck(c, "Collection");
         return this.map.keySet().retainAll(c.stream().filter(i -> i instanceof String).map(i -> (String) i).map(this::toLowerCase).collect(Collectors.toSet()));
     }
 
     @Override
     public boolean removeAll(@NonNull Collection<?> c) {
-        Sanity.nullCheck(c, "Collection cannot be null");
+        Sanity.nullCheck(c, "Collection");
         return this.map.keySet().removeAll(c.stream().filter(i -> i instanceof String).map(i -> (String) i).map(this::toLowerCase).collect(Collectors.toSet()));
     }
 

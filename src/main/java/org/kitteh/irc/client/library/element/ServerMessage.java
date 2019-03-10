@@ -79,7 +79,7 @@ public interface ServerMessage {
      * @return tag if present
      */
     default Optional<MessageTag> getTag(@NonNull String name) {
-        Sanity.nullCheck(name, "Name cannot be null");
+        Sanity.nullCheck(name, "Name");
         return this.getTags().stream().filter(tag -> tag.getName().equals(name)).findAny();
     }
 
@@ -93,8 +93,8 @@ public interface ServerMessage {
      */
     @SuppressWarnings("unchecked")
     default <Tag extends MessageTag> @NonNull Optional<Tag> getTag(@NonNull String name, @NonNull Class<Tag> clazz) {
-        Sanity.nullCheck(name, "Name cannot be null");
-        Sanity.nullCheck(clazz, "Class cannot be null");
+        Sanity.nullCheck(name, "Name");
+        Sanity.nullCheck(clazz, "Class");
         return this.getTags().stream()
                 .filter(tag -> tag.getName().equals(name))
                 .filter(clazz::isInstance)
