@@ -39,13 +39,13 @@ public class UnexpectedChannelLeaveViaKickEvent extends ChannelKickEvent impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param channel channel being left
      * @param actor actor kicking the targeted user
      * @param target targeted user
      * @param message message the user left
      */
-    public UnexpectedChannelLeaveViaKickEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
-        super(client, originalMessage, channel, actor, target, message);
+    public UnexpectedChannelLeaveViaKickEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, @NonNull Actor actor, @NonNull User target, @NonNull String message) {
+        super(client, sourceMessage, channel, actor, target, message);
     }
 }

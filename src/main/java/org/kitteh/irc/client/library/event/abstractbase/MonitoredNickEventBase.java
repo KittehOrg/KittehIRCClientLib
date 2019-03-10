@@ -40,11 +40,11 @@ public abstract class MonitoredNickEventBase extends ServerMessageEventBase impl
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param nick the tracked nick
      */
-    protected MonitoredNickEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull String nick) {
-        super(client, originalMessage);
+    protected MonitoredNickEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull String nick) {
+        super(client, sourceMessage);
         this.nick = Sanity.nullCheck(nick, "Nick cannot be null");
     }
 

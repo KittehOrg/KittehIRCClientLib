@@ -45,11 +45,11 @@ public class MonitoredNickListEvent extends ServerMultipleMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messagess
+     * @param sourceMessages source messages
      * @param nicks nicknames tracked
      */
-    public MonitoredNickListEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull List<String> nicks) {
-        super(client, originalMessages);
+    public MonitoredNickListEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, @NonNull List<String> nicks) {
+        super(client, sourceMessages);
         this.nicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(nicks, "Nicks cannot be null")));
     }
 

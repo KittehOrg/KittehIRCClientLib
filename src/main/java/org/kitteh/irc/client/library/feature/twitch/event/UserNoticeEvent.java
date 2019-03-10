@@ -60,12 +60,12 @@ public class UserNoticeEvent extends ChannelEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param channel channel
      * @param message message from user
      */
-    public UserNoticeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @Nullable String message) {
-        super(client, originalMessage, channel);
+    public UserNoticeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, @Nullable String message) {
+        super(client, sourceMessage, channel);
         this.message = message;
     }
 

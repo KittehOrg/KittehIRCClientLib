@@ -43,14 +43,14 @@ public class ChannelTargetedMessageEvent extends TargetedUserChannelMessageEvent
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender who sent it
      * @param channel channel receiving
      * @param prefix targeted prefix
      * @param message message sent
      */
-    public ChannelTargetedMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
-        super(client, originalMessage, sender, channel, prefix, message);
+    public ChannelTargetedMessageEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix, @NonNull String message) {
+        super(client, sourceMessage, sender, channel, prefix, message);
     }
 
     @Override

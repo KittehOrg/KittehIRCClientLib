@@ -42,13 +42,13 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param channel channel the topic is about
      * @param updated if this is a new change
      * @see Channel#getTopic()
      */
-    public ChannelTopicEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, boolean updated) {
-        super(client, originalMessage, channel);
+    public ChannelTopicEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, boolean updated) {
+        super(client, sourceMessage, channel);
         this.updated = updated;
     }
 

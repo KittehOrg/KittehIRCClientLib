@@ -39,10 +39,10 @@ public class ChannelUsersUpdatedEvent extends ChannelMultipleMessageEventBase {
      * Constructs the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessages original messages
+     * @param sourceMessages source messages
      * @param channel channel with the updated users list
      */
-    public ChannelUsersUpdatedEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel) {
-        super(client, originalMessages, channel);
+    public ChannelUsersUpdatedEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, @NonNull Channel channel) {
+        super(client, sourceMessages, channel);
     }
 }

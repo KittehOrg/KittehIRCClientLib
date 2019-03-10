@@ -40,10 +40,10 @@ public class ClientReceiveMotdEvent extends ServerMultipleMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param sourceMessages source messages
      */
-    public ClientReceiveMotdEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages) {
-        super(client, originalMessages);
+    public ClientReceiveMotdEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages) {
+        super(client, sourceMessages);
     }
 
     /**

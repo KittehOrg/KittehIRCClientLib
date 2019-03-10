@@ -46,12 +46,12 @@ public class UserAwayMessageEvent extends ActorEventBase<User> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param user user
      * @param message message the user left
      */
-    public UserAwayMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User user, @Nullable String message) {
-        super(client, originalMessage, user);
+    public UserAwayMessageEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User user, @Nullable String message) {
+        super(client, sourceMessage, user);
         this.isAway = message != null;
         this.message = message;
     }

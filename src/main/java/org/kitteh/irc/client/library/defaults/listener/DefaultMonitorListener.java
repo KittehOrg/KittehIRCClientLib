@@ -65,13 +65,13 @@ public class DefaultMonitorListener extends AbstractDefaultListenerBase {
             this.trackException(event, "MONITOR status message too short");
             return;
         }
-        ServerMessage originalMessage = event.getSource();
+        ServerMessage sourceMessage = event.getSource();
         for (String nick : event.getParameters().get(1).split(",")) {
             MonitoredNickStatusEvent monitorEvent;
             if (event.getNumeric() == 730) {
-                monitorEvent = new MonitoredNickOnlineEvent(this.getClient(), originalMessage, nick);
+                monitorEvent = new MonitoredNickOnlineEvent(this.getClient(), sourceMessage, nick);
             } else {
-                monitorEvent = new MonitoredNickOfflineEvent(this.getClient(), originalMessage, nick);
+                monitorEvent = new MonitoredNickOfflineEvent(this.getClient(), sourceMessage, nick);
             }
             this.fire(monitorEvent);
         }

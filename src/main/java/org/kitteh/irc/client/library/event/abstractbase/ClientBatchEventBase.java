@@ -41,11 +41,11 @@ public class ClientBatchEventBase extends ServerMessageEventBase implements Batc
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param batchReferenceTag reference-tag and associated information
      */
-    public ClientBatchEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
-        super(client, originalMessage);
+    public ClientBatchEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull BatchReferenceTag batchReferenceTag) {
+        super(client, sourceMessage);
         this.tag = batchReferenceTag;
     }
 

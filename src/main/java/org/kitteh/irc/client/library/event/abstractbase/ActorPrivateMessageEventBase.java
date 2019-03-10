@@ -50,13 +50,13 @@ public abstract class ActorPrivateMessageEventBase<A extends Actor> extends Acto
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param actor the actor
      * @param target target of the message
      * @param message the message
      */
-    protected ActorPrivateMessageEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull A actor, @NonNull String target, @NonNull String message) {
-        super(client, originalMessage, actor, message);
+    protected ActorPrivateMessageEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull A actor, @NonNull String target, @NonNull String message) {
+        super(client, sourceMessage, actor, message);
         this.target = target;
         this.isToClient = client.getServerInfo().getCaseMapping().areEqualIgnoringCase(client.getNick(), target);
     }

@@ -48,13 +48,13 @@ public class UserInfoChangeEventBase<Type> extends ActorEventBase<User> implemen
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param oldUser the actor
      * @param newUser the new actor
      * @param changedInfoGetter getter for the changed info
      */
-    protected UserInfoChangeEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User oldUser, @NonNull User newUser, @NonNull Function<User, Type> changedInfoGetter) {
-        super(client, originalMessage, oldUser);
+    protected UserInfoChangeEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User oldUser, @NonNull User newUser, @NonNull Function<User, Type> changedInfoGetter) {
+        super(client, sourceMessage, oldUser);
         this.newUser = Sanity.nullCheck(newUser, "New user cannot be null");
         this.change = new Change<>(changedInfoGetter.apply(oldUser), changedInfoGetter.apply(newUser));
     }

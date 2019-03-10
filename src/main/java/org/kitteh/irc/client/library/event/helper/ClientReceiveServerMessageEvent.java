@@ -49,9 +49,9 @@ public interface ClientReceiveServerMessageEvent extends ActorEvent<Actor>, Serv
     @NonNull List<MessageTag> getMessageTags();
 
     /**
-     * Gets the original message received by the server.
+     * Gets the unprocessed message received by the server.
      *
-     * @return unprocessed, original message
+     * @return unprocessed message
      */
     @NonNull String getRawMessage();
 

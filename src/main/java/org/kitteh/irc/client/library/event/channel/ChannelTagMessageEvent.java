@@ -40,11 +40,11 @@ public class ChannelTagMessageEvent extends ActorChannelEventBase<Actor> impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender who sent it
      * @param channel channel receiving
      */
-    public ChannelTagMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor sender, @NonNull Channel channel) {
-        super(client, originalMessage, sender, channel);
+    public ChannelTagMessageEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Actor sender, @NonNull Channel channel) {
+        super(client, sourceMessage, sender, channel);
     }
 }

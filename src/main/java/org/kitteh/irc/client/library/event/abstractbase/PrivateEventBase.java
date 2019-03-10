@@ -43,12 +43,12 @@ public class PrivateEventBase<A extends Actor> extends ActorEventBase<A> impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender who sent it
      * @param target who received it
      */
-    public PrivateEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull A sender, @NonNull String target) {
-        super(client, originalMessage, sender);
+    public PrivateEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull A sender, @NonNull String target) {
+        super(client, sourceMessage, sender);
         this.target = target;
         this.isToClient = client.getServerInfo().getCaseMapping().areEqualIgnoringCase(client.getNick(), target);
     }

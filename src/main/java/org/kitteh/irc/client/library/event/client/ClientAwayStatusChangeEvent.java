@@ -39,11 +39,11 @@ public class ClientAwayStatusChangeEvent extends ServerMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param isNowAway true if now away, false if now back
      */
-    public ClientAwayStatusChangeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, boolean isNowAway) {
-        super(client, originalMessage);
+    public ClientAwayStatusChangeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, boolean isNowAway) {
+        super(client, sourceMessage);
         this.isNowAway = isNowAway;
     }
 

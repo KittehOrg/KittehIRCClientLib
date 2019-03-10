@@ -39,11 +39,11 @@ public class PrivateTagMessageEvent extends PrivateEventBase<Actor> implements T
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender who sent it
      * @param target target of the message
      */
-    public PrivateTagMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor sender, @NonNull String target) {
-        super(client, originalMessage, sender, target);
+    public PrivateTagMessageEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Actor sender, @NonNull String target) {
+        super(client, sourceMessage, sender, target);
     }
 }

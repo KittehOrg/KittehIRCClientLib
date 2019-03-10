@@ -44,12 +44,12 @@ public class UserAccountStatusEvent extends ActorEventBase<User> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param user user
      * @param account account the user is signed into
      */
-    public UserAccountStatusEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User user, @Nullable String account) {
-        super(client, originalMessage, user);
+    public UserAccountStatusEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User user, @Nullable String account) {
+        super(client, sourceMessage, user);
         this.account = account;
     }
 

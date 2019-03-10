@@ -45,11 +45,11 @@ public abstract class ActorEventBase<A extends Actor> extends ServerMessageEvent
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param actor the actor
      */
-    protected ActorEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull A actor) {
-        super(client, originalMessage);
+    protected ActorEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull A actor) {
+        super(client, sourceMessage);
         Sanity.nullCheck(actor, "Actor cannot be null");
         Sanity.truthiness(actor.getClient() == client, "Actor must be from given Client");
         this.actor = actor;

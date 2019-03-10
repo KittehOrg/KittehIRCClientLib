@@ -37,13 +37,13 @@ public class WhisperEvent extends PrivateMessageEvent {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender who sent it
      * @param target who received it
      * @param message message sent
      */
-    public WhisperEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
-        super(client, originalMessage, sender, target, message);
+    public WhisperEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
+        super(client, sourceMessage, sender, target, message);
     }
 
     @Override

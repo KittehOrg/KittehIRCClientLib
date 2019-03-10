@@ -44,13 +44,13 @@ public class UserModeEvent extends ActorEventBase<Actor> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param actor the mode setter
      * @param target the target for whom the change is occurring
      * @param statusList list of statuses
      */
-    public UserModeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor actor, @NonNull String target, @NonNull ModeStatusList<UserMode> statusList) {
-        super(client, originalMessage, actor);
+    public UserModeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Actor actor, @NonNull String target, @NonNull ModeStatusList<UserMode> statusList) {
+        super(client, sourceMessage, actor);
         this.statusList = Sanity.nullCheck(statusList, "Status list cannot be null");
         this.target = Sanity.nullCheck(target, "Target cannot be null");
     }

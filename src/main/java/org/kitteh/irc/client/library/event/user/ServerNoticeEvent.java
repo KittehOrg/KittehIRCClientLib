@@ -37,11 +37,11 @@ public class ServerNoticeEvent extends ActorMessageEventBase<Server> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param message message sent
      * @param sender who sent it
      */
-    public ServerNoticeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Server sender, @NonNull String message) {
-        super(client, originalMessage, sender, message);
+    public ServerNoticeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Server sender, @NonNull String message) {
+        super(client, sourceMessage, sender, message);
     }
 }

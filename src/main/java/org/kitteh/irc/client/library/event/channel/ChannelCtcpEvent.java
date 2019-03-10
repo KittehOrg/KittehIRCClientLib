@@ -43,12 +43,12 @@ public class ChannelCtcpEvent extends ActorChannelMessageEventBase<User> impleme
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender sender of the message
      * @param channel channel in which it was sent
      * @param message message sent
      */
-    public ChannelCtcpEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
-        super(client, originalMessage, sender, channel, message);
+    public ChannelCtcpEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
+        super(client, sourceMessage, sender, channel, message);
     }
 }

@@ -41,10 +41,10 @@ public class ClearChatEvent extends ChannelEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param channel the channel
      */
-    public ClearChatEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel) {
-        super(client, originalMessage, channel);
+    public ClearChatEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel) {
+        super(client, sourceMessage, channel);
     }
 }

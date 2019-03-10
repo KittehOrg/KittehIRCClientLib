@@ -38,10 +38,10 @@ public class ClientBatchMessageEvent extends ClientBatchEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param batchReferenceTag reference-tag and associated information
      */
-    public ClientBatchMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
-        super(client, originalMessage, batchReferenceTag);
+    public ClientBatchMessageEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull BatchReferenceTag batchReferenceTag) {
+        super(client, sourceMessage, batchReferenceTag);
     }
 }

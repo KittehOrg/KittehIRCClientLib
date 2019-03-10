@@ -40,12 +40,12 @@ public class ChannelNoticeEvent extends ActorChannelMessageEventBase<User> imple
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender who sent it
      * @param channel channel receiving
      * @param message message sent
      */
-    public ChannelNoticeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
-        super(client, originalMessage, sender, channel, message);
+    public ChannelNoticeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User sender, @NonNull Channel channel, @NonNull String message) {
+        super(client, sourceMessage, sender, channel, message);
     }
 }

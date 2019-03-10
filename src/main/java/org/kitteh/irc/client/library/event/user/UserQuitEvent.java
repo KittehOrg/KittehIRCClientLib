@@ -41,12 +41,12 @@ public class UserQuitEvent extends ActorMessageEventBase<User> implements Channe
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param user user quitting
      * @param message message the user left
      */
-    public UserQuitEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User user, @NonNull String message) {
-        super(client, originalMessage, user, message);
+    public UserQuitEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User user, @NonNull String message) {
+        super(client, sourceMessage, user, message);
     }
 
     @Override

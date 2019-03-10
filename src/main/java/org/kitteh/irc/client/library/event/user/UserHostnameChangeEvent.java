@@ -37,11 +37,11 @@ public class UserHostnameChangeEvent extends UserInfoChangeEventBase<String> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param oldUser user changing hostname
      * @param newUser the new user instance
      */
-    public UserHostnameChangeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User oldUser, @NonNull User newUser) {
-        super(client, originalMessage, oldUser, newUser, User::getHost);
+    public UserHostnameChangeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User oldUser, @NonNull User newUser) {
+        super(client, sourceMessage, oldUser, newUser, User::getHost);
     }
 }

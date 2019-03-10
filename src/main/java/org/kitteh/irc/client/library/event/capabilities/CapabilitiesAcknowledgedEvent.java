@@ -49,12 +49,12 @@ public class CapabilitiesAcknowledgedEvent extends CapabilityNegotiationResponse
      * Constructs this event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param negotiating if we are negotiating right now
      * @param acknowledgedCapabilities capabilities acknowledged
      */
-    public CapabilitiesAcknowledgedEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, boolean negotiating, @NonNull List<CapabilityState> acknowledgedCapabilities) {
-        super(client, originalMessage, negotiating);
+    public CapabilitiesAcknowledgedEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, boolean negotiating, @NonNull List<CapabilityState> acknowledgedCapabilities) {
+        super(client, sourceMessage, negotiating);
         Sanity.nullCheck(acknowledgedCapabilities, "Capabilities list cannot be null");
         this.acknowledgedCapabilities = Collections.unmodifiableList(acknowledgedCapabilities);
     }

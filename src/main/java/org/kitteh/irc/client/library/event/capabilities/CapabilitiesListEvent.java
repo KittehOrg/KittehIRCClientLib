@@ -50,11 +50,11 @@ public class CapabilitiesListEvent extends ServerMultipleMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param sourceMessages source messages
      * @param capabilities capabilities listed
      */
-    public CapabilitiesListEvent(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull List<CapabilityState> capabilities) {
-        super(client, originalMessages);
+    public CapabilitiesListEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, @NonNull List<CapabilityState> capabilities) {
+        super(client, sourceMessages);
         Sanity.nullCheck(capabilities, "Capabilities list cannot be null");
         this.capabilities = Collections.unmodifiableList(new ArrayList<>(capabilities));
     }

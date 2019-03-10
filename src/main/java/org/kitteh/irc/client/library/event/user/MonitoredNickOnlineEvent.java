@@ -36,10 +36,10 @@ public class MonitoredNickOnlineEvent extends MonitoredNickEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param nick the tracked nick
      */
-    public MonitoredNickOnlineEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull String nick) {
-        super(client, originalMessage, nick);
+    public MonitoredNickOnlineEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull String nick) {
+        super(client, sourceMessage, nick);
     }
 }

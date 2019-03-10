@@ -40,11 +40,11 @@ public class RequestedChannelJoinCompleteEvent extends ChannelJoinEvent {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param channel the channel joined
      * @param user the client
      */
-    public RequestedChannelJoinCompleteEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull User user) {
-        super(client, originalMessage, channel, user);
+    public RequestedChannelJoinCompleteEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, @NonNull User user) {
+        super(client, sourceMessage, channel, user);
     }
 }

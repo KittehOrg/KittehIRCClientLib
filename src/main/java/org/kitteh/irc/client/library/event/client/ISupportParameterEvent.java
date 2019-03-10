@@ -39,10 +39,10 @@ public class ISupportParameterEvent extends ServerMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      */
-    public ISupportParameterEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull ISupportParameter parameter) {
-        super(client, originalMessage);
+    public ISupportParameterEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull ISupportParameter parameter) {
+        super(client, sourceMessage);
         this.parameter = parameter;
     }
 

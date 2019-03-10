@@ -45,10 +45,10 @@ public class UserStateEvent extends ChannelEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param channel the channel
      */
-    public UserStateEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel) {
-        super(client, originalMessage, channel);
+    public UserStateEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel) {
+        super(client, sourceMessage, channel);
     }
 }

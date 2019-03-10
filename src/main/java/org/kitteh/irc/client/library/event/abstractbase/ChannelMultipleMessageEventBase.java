@@ -46,11 +46,11 @@ public abstract class ChannelMultipleMessageEventBase extends ServerMultipleMess
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param sourceMessages source messages
      * @param channel the channel
      */
-    protected ChannelMultipleMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages, @NonNull Channel channel) {
-        super(client, originalMessages);
+    protected ChannelMultipleMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, @NonNull Channel channel) {
+        super(client, sourceMessages);
         Sanity.nullCheck(channel, "Channel cannot be null");
         Sanity.truthiness(channel.getClient() == client, "Channel must be from given Client");
         this.channel = channel;

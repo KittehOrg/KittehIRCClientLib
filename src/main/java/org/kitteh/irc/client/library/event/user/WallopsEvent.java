@@ -37,11 +37,11 @@ public class WallopsEvent extends ActorMessageEventBase<Actor> {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param actor the actor
      * @param message the message
      */
-    public WallopsEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor actor, @NonNull String message) {
-        super(client, originalMessage, actor, message);
+    public WallopsEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Actor actor, @NonNull String message) {
+        super(client, sourceMessage, actor, message);
     }
 }

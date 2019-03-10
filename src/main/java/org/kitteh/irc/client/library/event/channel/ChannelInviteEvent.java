@@ -43,13 +43,13 @@ public class ChannelInviteEvent extends ActorChannelEventBase<Actor> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param channel the channel
      * @param actor the actor inviting another
      * @param target the nick invited
      */
-    public ChannelInviteEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Channel channel, @NonNull Actor actor, @NonNull String target) {
-        super(client, originalMessage, actor, channel);
+    public ChannelInviteEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, @NonNull Actor actor, @NonNull String target) {
+        super(client, sourceMessage, actor, channel);
         this.target = Sanity.nullCheck(target, "Target cannot be null");
     }
 

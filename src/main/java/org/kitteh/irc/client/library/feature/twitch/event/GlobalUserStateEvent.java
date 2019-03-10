@@ -44,9 +44,9 @@ public class GlobalUserStateEvent extends ServerMessageEventBase {
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      */
-    public GlobalUserStateEvent(@NonNull Client client, @NonNull ServerMessage originalMessage) {
-        super(client, originalMessage);
+    public GlobalUserStateEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage) {
+        super(client, sourceMessage);
     }
 }

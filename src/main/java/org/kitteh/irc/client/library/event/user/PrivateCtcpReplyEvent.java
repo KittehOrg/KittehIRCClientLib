@@ -41,12 +41,12 @@ public class PrivateCtcpReplyEvent extends ActorPrivateMessageEventBase<User> im
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender sender of the reply
      * @param target target of the reply
      * @param message message sent
      */
-    public PrivateCtcpReplyEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
-        super(client, originalMessage, sender, target, message);
+    public PrivateCtcpReplyEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
+        super(client, sourceMessage, sender, target, message);
     }
 }

@@ -44,13 +44,13 @@ public class ChannelModeEvent extends ActorChannelEventBase<Actor> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param actor the mode setter
      * @param channel the channel in which the change is occurring
      * @param statusList list of statuses
      */
-    public ChannelModeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor actor, @NonNull Channel channel, @NonNull ModeStatusList<ChannelMode> statusList) {
-        super(client, originalMessage, actor, channel);
+    public ChannelModeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Actor actor, @NonNull Channel channel, @NonNull ModeStatusList<ChannelMode> statusList) {
+        super(client, sourceMessage, actor, channel);
         this.statusList = Sanity.nullCheck(statusList, "Status list cannot be null");
     }
 

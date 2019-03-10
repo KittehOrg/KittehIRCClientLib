@@ -37,26 +37,26 @@ import org.kitteh.irc.client.library.util.ToStringer;
  * @see ServerMessageEvent
  */
 public abstract class ServerMessageEventBase extends ClientEventBase implements ServerMessageEvent {
-    private final ServerMessage originalMessage;
+    private final ServerMessage sourceMessage;
 
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      */
-    protected ServerMessageEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage) {
+    protected ServerMessageEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage) {
         super(client);
-        this.originalMessage = Sanity.nullCheck(originalMessage, "Original message cannot be null");
+        this.sourceMessage = Sanity.nullCheck(sourceMessage, "Original message cannot be null");
     }
 
     @Override
     public @NonNull ServerMessage getSource() {
-        return this.originalMessage;
+        return this.sourceMessage;
     }
 
     @Override
     protected @NonNull ToStringer toStringer() {
-        return super.toStringer().add("originalMessage", this.originalMessage);
+        return super.toStringer().add("sourceMessage", this.sourceMessage);
     }
 }

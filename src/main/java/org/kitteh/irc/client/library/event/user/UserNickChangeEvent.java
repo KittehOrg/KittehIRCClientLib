@@ -37,11 +37,11 @@ public class UserNickChangeEvent extends UserInfoChangeEventBase<String> {
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param oldUser oldUser changing name
      * @param newUser the new nickname
      */
-    public UserNickChangeEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User oldUser, @NonNull User newUser) {
-        super(client, originalMessage, oldUser, newUser, User::getNick);
+    public UserNickChangeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User oldUser, @NonNull User newUser) {
+        super(client, sourceMessage, oldUser, newUser, User::getNick);
     }
 }

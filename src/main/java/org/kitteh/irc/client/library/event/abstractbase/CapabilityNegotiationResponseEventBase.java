@@ -45,11 +45,11 @@ public abstract class CapabilityNegotiationResponseEventBase extends ServerMessa
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param negotiating if we are negotiating right now
      */
-    protected CapabilityNegotiationResponseEventBase(@NonNull Client client, @NonNull ServerMessage originalMessage, boolean negotiating) {
-        super(client, originalMessage);
+    protected CapabilityNegotiationResponseEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage, boolean negotiating) {
+        super(client, sourceMessage);
         this.negotiating = negotiating;
     }
 

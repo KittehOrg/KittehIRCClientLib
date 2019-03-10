@@ -47,13 +47,13 @@ public class ChannelTargetedTagMessageEvent extends ActorChannelEventBase<Actor>
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender who sent it
      * @param channel channel receiving
      * @param prefix targeted prefix
      */
-    public ChannelTargetedTagMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull Actor sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix) {
-        super(client, originalMessage, sender, channel);
+    public ChannelTargetedTagMessageEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Actor sender, @NonNull Channel channel, @NonNull ChannelUserMode prefix) {
+        super(client, sourceMessage, sender, channel);
         this.prefix = Sanity.nullCheck(prefix, "Prefix cannot be null");
     }
 

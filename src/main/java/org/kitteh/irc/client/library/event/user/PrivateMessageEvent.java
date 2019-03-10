@@ -39,13 +39,13 @@ public class PrivateMessageEvent extends ActorPrivateMessageEventBase<User> impl
      * Creates the event.
      *
      * @param client client for which this is occurring
-     * @param originalMessage original message
+     * @param sourceMessage source message
      * @param sender who sent it
      * @param target who received it
      * @param message message sent
      */
-    public PrivateMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
-        super(client, originalMessage, sender, target, message);
+    public PrivateMessageEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User sender, @NonNull String target, @NonNull String message) {
+        super(client, sourceMessage, sender, target, message);
     }
 
     @Override

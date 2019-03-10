@@ -41,26 +41,26 @@ import java.util.List;
  * @see ServerMultipleMessageEvent
  */
 public abstract class ServerMultipleMessageEventBase extends ClientEventBase implements ServerMultipleMessageEvent {
-    private final List<ServerMessage> originalMessages;
+    private final List<ServerMessage> sourceMessages;
 
     /**
      * Constructs the event.
      *
      * @param client the client
-     * @param originalMessages original messages
+     * @param sourceMessages source messages
      */
-    protected ServerMultipleMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> originalMessages) {
+    protected ServerMultipleMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages) {
         super(client);
-        this.originalMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(originalMessages, "Original messages cannot be null")));
+        this.sourceMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(sourceMessages, "Original messages cannot be null")));
     }
 
     @Override
     public @NonNull List<ServerMessage> getSource() {
-        return this.originalMessages;
+        return this.sourceMessages;
     }
 
     @Override
     protected @NonNull ToStringer toStringer() {
-        return super.toStringer().add("originalMessages", this.originalMessages);
+        return super.toStringer().add("sourceMessages", this.sourceMessages);
     }
 }
