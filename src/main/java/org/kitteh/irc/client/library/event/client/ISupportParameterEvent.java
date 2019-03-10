@@ -21,36 +21,37 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.defaults.listener;
+package org.kitteh.irc.client.library.event.client;
 
-import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
-import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
-import org.kitteh.irc.client.library.event.client.ISupportParameterEvent;
-import org.kitteh.irc.client.library.feature.filter.NumericFilter;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.abstractbase.ServerMessageEventBase;
 
 /**
- * Default ISUPPORT listener, producing events using default classes.
+ * An ISUPPORT parameter has been received.
  */
-public class DefaultISupportListener extends AbstractDefaultListenerBase {
+public class ISupportParameterEvent extends ServerMessageEventBase {
+    private final ISupportParameter parameter;
+
     /**
-     * Constructs the listener.
+     * Constructs the event.
      *
-     * @param client client
+     * @param client the client
+     * @param originalMessage original message
      */
-    public DefaultISupportListener(Client.@NonNull WithManagement client) {
-        super(client);
+    public ISupportParameterEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull ISupportParameter parameter) {
+        super(client, originalMessage);
+        this.parameter = parameter;
     }
 
-    @NumericFilter(5)
-    @Handler(priority = Integer.MAX_VALUE - 1)
-    public void iSupport(ClientReceiveNumericEvent event) {
-        for (int i = 1; i < event.getParameters().size(); i++) {
-            ISupportParameter parameter = this.getClient().getISupportManager().createParameter(event.getParameters().get(i));
-            this.getClient().getServerInfo().addISupportParameter(parameter);
-            this.fire(new ISupportParameterEvent(this.getClient(), event.getSource(), parameter));
-        }
+    /**
+     * Gets the parameter received.
+     *
+     * @return the parameter
+     */
+    public @NonNull ISupportParameter getParameter() {
+        return this.parameter;
     }
 }
