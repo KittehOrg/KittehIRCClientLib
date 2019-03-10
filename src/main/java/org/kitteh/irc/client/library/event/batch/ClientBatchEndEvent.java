@@ -21,24 +21,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.client;
+package org.kitteh.irc.client.library.event.batch;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.abstractbase.ClientBatchEventBase;
+import org.kitteh.irc.client.library.util.BatchReferenceTag;
 
 /**
- * The {@link Client} has had a connection failure.
+ * A batch has ended, and all the messages will now be processed.
  */
-public class ClientConnectionFailedEvent extends ClientConnectionEndedEvent {
+public class ClientBatchEndEvent extends ClientBatchEventBase {
     /**
      * Constructs the event.
      *
-     * @param client client for which this is occurring
-     * @param reconnecting true if the client plans to reconnect
-     * @param cause cause, if there was one, closing it
+     * @param client the client
+     * @param originalMessage original message
+     * @param batchReferenceTag reference-tag and associated information
      */
-    public ClientConnectionFailedEvent(@NonNull Client client, boolean reconnecting, @Nullable Throwable cause) {
-        super(client, reconnecting, cause);
+    public ClientBatchEndEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
+        super(client, originalMessage, batchReferenceTag);
     }
 }

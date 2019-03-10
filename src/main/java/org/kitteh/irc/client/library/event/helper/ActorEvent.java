@@ -29,7 +29,7 @@ import org.kitteh.irc.client.library.element.Actor;
 /**
  * An event involving an {@link Actor}.
  */
-public interface ActorEvent<A extends Actor> extends ServerMessageEvent {
+public interface ActorEvent<A extends Actor> extends ClientEvent {
     /**
      * Gets the actor responsible for this event.
      *

@@ -21,19 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.helper;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.kitteh.irc.client.library.util.BatchReferenceTag;
-
 /**
- * An event involving batched messages.
+ * Events related to batched messages.
  */
-public interface BatchEvent extends ClientEvent {
-    /**
-     * Gets the reference tag.
-     *
-     * @return reference tag
-     */
-    @NonNull BatchReferenceTag getReferenceTag();
-}
+package org.kitteh.irc.client.library.event.batch;

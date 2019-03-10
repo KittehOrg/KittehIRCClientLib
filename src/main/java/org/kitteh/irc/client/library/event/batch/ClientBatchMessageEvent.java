@@ -21,19 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.helper;
+package org.kitteh.irc.client.library.event.batch;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.element.ServerMessage;
+import org.kitteh.irc.client.library.event.abstractbase.ClientBatchEventBase;
 import org.kitteh.irc.client.library.util.BatchReferenceTag;
 
 /**
- * An event involving batched messages.
+ * A new message has been added to a batch reference tag, and will be held
+ * until the batch finishes.
  */
-public interface BatchEvent extends ClientEvent {
+public class ClientBatchMessageEvent extends ClientBatchEventBase {
     /**
-     * Gets the reference tag.
+     * Constructs the event.
      *
-     * @return reference tag
+     * @param client the client
+     * @param originalMessage original message
+     * @param batchReferenceTag reference-tag and associated information
      */
-    @NonNull BatchReferenceTag getReferenceTag();
+    public ClientBatchMessageEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
+        super(client, originalMessage, batchReferenceTag);
+    }
 }

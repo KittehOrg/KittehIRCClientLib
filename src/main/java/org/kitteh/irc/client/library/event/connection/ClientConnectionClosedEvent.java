@@ -21,24 +21,47 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.client;
+package org.kitteh.irc.client.library.event.connection;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
-import org.kitteh.irc.client.library.event.helper.ConnectionEvent;
+import org.kitteh.irc.client.library.util.ToStringer;
+
+import java.util.Optional;
 
 /**
- * The {@link Client} has connected to the server and is about to begin IRC
- * negotiation.
+ * The {@link Client} has had a working connection cease.
  */
-public class ClientConnectionEstablishedEvent extends ClientEventBase implements ConnectionEvent {
+public class ClientConnectionClosedEvent extends ClientConnectionEndedEvent {
+    private final @Nullable String lastMessage;
+
     /**
      * Constructs the event.
      *
      * @param client client for which this is occurring
+     * @param reconnecting true if the client plans to reconnect
+     * @param cause cause, if there was one, closing it
+     * @param lastMessage last message received
      */
-    public ClientConnectionEstablishedEvent(@NonNull Client client) {
-        super(client);
+    public ClientConnectionClosedEvent(@NonNull Client client, boolean reconnecting, @Nullable Throwable cause, @Nullable String lastMessage) {
+        super(client, reconnecting, cause);
+        this.lastMessage = lastMessage;
+    }
+
+    /**
+     * Gets the last message sent prior to disconnect. Useful if killed from
+     * the server. This message may not have been processed yet by other
+     * events.
+     *
+     * @return last message, or empty, sent by the server
+     */
+    public @NonNull Optional<String> getLastMessage() {
+        return Optional.ofNullable(this.lastMessage);
+    }
+
+    @Override
+    protected @NonNull ToStringer toStringer() {
+        return super.toStringer().add("lastMessage", this.lastMessage);
     }
 }

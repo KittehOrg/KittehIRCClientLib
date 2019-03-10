@@ -21,26 +21,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.client;
+package org.kitteh.irc.client.library.event.connection;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
-import org.kitteh.irc.client.library.element.ServerMessage;
-import org.kitteh.irc.client.library.event.abstractbase.ClientBatchEventBase;
-import org.kitteh.irc.client.library.util.BatchReferenceTag;
+import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
+import org.kitteh.irc.client.library.event.helper.ConnectionEvent;
 
 /**
- * A batch has ended, and all the messages will now be processed.
+ * The {@link Client} has connected to the server and is about to begin IRC
+ * negotiation.
  */
-public class ClientBatchEndEvent extends ClientBatchEventBase {
+public class ClientConnectionEstablishedEvent extends ClientEventBase implements ConnectionEvent {
     /**
      * Constructs the event.
      *
-     * @param client the client
-     * @param originalMessage original message
-     * @param batchReferenceTag reference-tag and associated information
+     * @param client client for which this is occurring
      */
-    public ClientBatchEndEvent(@NonNull Client client, @NonNull ServerMessage originalMessage, @NonNull BatchReferenceTag batchReferenceTag) {
-        super(client, originalMessage, batchReferenceTag);
+    public ClientConnectionEstablishedEvent(@NonNull Client client) {
+        super(client);
     }
 }
