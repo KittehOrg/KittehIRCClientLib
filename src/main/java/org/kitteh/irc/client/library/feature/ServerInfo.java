@@ -90,6 +90,13 @@ public interface ServerInfo {
     }
 
     /**
+     * Adds a custom mode, for a server that doesn't correctly list modes.
+     *
+     * @param mode custom mode to support
+     */
+    void addCustomChannelMode(@NonNull ChannelMode mode);
+
+    /**
      * Gets the server-stated address of the server.
      *
      * @return the server's address if known

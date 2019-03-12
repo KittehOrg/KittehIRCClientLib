@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.defaults.element.mode.DefaultUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.element.mode.Mode;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.util.Sanity;
@@ -43,8 +44,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Default implementation for tracking server information.
@@ -53,6 +57,7 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     private final Client client;
     private final Map<String, ISupportParameter> iSupportParameterMap = new ConcurrentHashMap<>();
     private final List<ChannelMode> defaultChannelModes;
+    private final List<ChannelMode> customChannelModes = new CopyOnWriteArrayList<>();
     private final List<Character> defaultChannelPrefixes = Arrays.asList('#', '&', '!', '+');
     private final List<ChannelUserMode> defaultChannelUserModes;
     private List<String> motd;
@@ -97,6 +102,11 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     }
 
     @Override
+    public void addCustomChannelMode(@NonNull ChannelMode mode) {
+        this.customChannelModes.add(Sanity.nullCheck(mode, "mode"));
+    }
+
+    @Override
     public @NonNull Optional<String> getAddress() {
         return Optional.ofNullable(this.address);
     }
@@ -109,7 +119,12 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     @Override
     public @NonNull List<ChannelMode> getChannelModes() {
         Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter(ISupportParameter.ChanModes.NAME, ISupportParameter.ChanModes.class);
-        return new ArrayList<>(optional.map(ISupportParameter.ChanModes::getModes).orElse(this.defaultChannelModes));
+        List<ChannelMode> list = new ArrayList<>();
+        List<ChannelMode> modes = optional.map(ISupportParameter.ChanModes::getModes).orElse(this.defaultChannelModes);
+        Set<Character> customModeChar = this.customChannelModes.stream().map(Mode::getChar).collect(Collectors.toSet());
+        modes.stream().filter(mode -> !customModeChar.contains(mode.getChar())).forEach(list::add);
+        list.addAll(this.customChannelModes);
+        return list;
     }
 
     @Override
