@@ -26,6 +26,11 @@ class StubServerInfo implements ServerInfo {
     }
 
     @Override
+    public void addCustomUserMode(@NonNull UserMode mode) {
+
+    }
+
+    @Override
     public @NonNull Optional<String> getAddress() {
         return Optional.empty();
     }
