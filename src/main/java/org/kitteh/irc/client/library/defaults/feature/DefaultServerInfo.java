@@ -63,7 +63,8 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     private List<String> motd;
     private String address;
     private String version;
-    private List<UserMode> userModes;
+    private final List<UserMode> userModes = new CopyOnWriteArrayList<>();
+    private final List<UserMode> customUserModes = new CopyOnWriteArrayList<>();
 
     // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
     // Screw it, let's assume IRCDs disregard length policy
@@ -93,17 +94,20 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         defaultChannelUserModes.add(new DefaultChannelUserMode(client, 'o', '@')); // OP
         defaultChannelUserModes.add(new DefaultChannelUserMode(client, 'v', '+')); // Voice
         this.defaultChannelUserModes = Collections.unmodifiableList(defaultChannelUserModes);
-        List<UserMode> defaultUserModes = new ArrayList<>(4);
-        defaultUserModes.add(new DefaultUserMode(client, 'i')); // Invisible
-        defaultUserModes.add(new DefaultUserMode(client, 's')); // Can receive server notices
-        defaultUserModes.add(new DefaultUserMode(client, 'w')); // Can receive wallops
-        defaultUserModes.add(new DefaultUserMode(client, 'o')); // Operator
-        this.userModes = Collections.unmodifiableList(defaultUserModes);
+        this.userModes.add(new DefaultUserMode(client, 'i')); // Invisible
+        this.userModes.add(new DefaultUserMode(client, 's')); // Can receive server notices
+        this.userModes.add(new DefaultUserMode(client, 'w')); // Can receive wallops
+        this.userModes.add(new DefaultUserMode(client, 'o')); // Operator
     }
 
     @Override
     public void addCustomChannelMode(@NonNull ChannelMode mode) {
         this.customChannelModes.add(Sanity.nullCheck(mode, "mode"));
+    }
+
+    @Override
+    public void addCustomUserMode(@NonNull UserMode mode) {
+        this.customUserModes.add(Sanity.nullCheck(mode, "mode"));
     }
 
     @Override
@@ -202,12 +206,17 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
 
     @Override
     public @NonNull List<UserMode> getUserModes() {
-        return this.userModes;
+        List<UserMode> list = new ArrayList<>();
+        Set<Character> customModeChar = this.customUserModes.stream().map(Mode::getChar).collect(Collectors.toSet());
+        this.userModes.stream().filter(mode -> !customModeChar.contains(mode.getChar())).forEach(list::add);
+        list.addAll(this.customUserModes);
+        return list;
     }
 
     @Override
     public void setUserModes(@NonNull List<UserMode> userModes) {
-        this.userModes = Collections.unmodifiableList(userModes);
+        this.userModes.clear();
+        this.userModes.addAll(userModes);
     }
 
     @Override
