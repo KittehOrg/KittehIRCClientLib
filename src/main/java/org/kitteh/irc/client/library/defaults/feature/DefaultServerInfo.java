@@ -125,8 +125,8 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
         Optional<ISupportParameter.ChanModes> optional = this.getISupportParameter(ISupportParameter.ChanModes.NAME, ISupportParameter.ChanModes.class);
         List<ChannelMode> list = new ArrayList<>();
         List<ChannelMode> modes = optional.map(ISupportParameter.ChanModes::getModes).orElse(this.defaultChannelModes);
-        Set<Character> customModeChar = this.customChannelModes.stream().map(Mode::getChar).collect(Collectors.toSet());
-        modes.stream().filter(mode -> !customModeChar.contains(mode.getChar())).forEach(list::add);
+        Set<Character> customModeChars = this.customChannelModes.stream().map(Mode::getChar).collect(Collectors.toSet());
+        modes.stream().filter(mode -> !customModeChars.contains(mode.getChar())).forEach(list::add);
         list.addAll(this.customChannelModes);
         return list;
     }
@@ -207,8 +207,8 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     @Override
     public @NonNull List<UserMode> getUserModes() {
         List<UserMode> list = new ArrayList<>();
-        Set<Character> customModeChar = this.customUserModes.stream().map(Mode::getChar).collect(Collectors.toSet());
-        this.userModes.stream().filter(mode -> !customModeChar.contains(mode.getChar())).forEach(list::add);
+        Set<Character> customModeChars = this.customUserModes.stream().map(Mode::getChar).collect(Collectors.toSet());
+        this.userModes.stream().filter(mode -> !customModeChars.contains(mode.getChar())).forEach(list::add);
         list.addAll(this.customUserModes);
         return list;
     }
