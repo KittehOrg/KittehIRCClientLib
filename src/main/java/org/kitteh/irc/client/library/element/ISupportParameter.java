@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Represents an ISUPPORT parameter sent by the server.
@@ -45,6 +46,18 @@ public interface ISupportParameter extends ClientLinked {
          * @return the processed value
          */
         int getInteger();
+    }
+
+    /**
+     * Represents a parameter which maybe has an integer value.
+     */
+    interface OptionalIntegerParameter extends ISupportParameter {
+        /**
+         * Gets the value of this parameter.
+         *
+         * @return the processed value
+         */
+        Optional<Integer> getInteger();
     }
 
     /**
@@ -137,6 +150,108 @@ public interface ISupportParameter extends ClientLinked {
     }
 
     /**
+     * Represents the LIST extensions supported.
+     */
+    interface EList extends ISupportParameter {
+        /**
+         * Support for searching by channel creation time.
+         */
+        char CHANNEL_CREATION_TIME = 'C';
+        /**
+         * Support for searching by a mask.
+         */
+        char MASK = 'M';
+        /**
+         * Support for searching by not matching a mask.
+         */
+        char NON_MATCHING_MASK = 'N';
+        /**
+         * Support for searching by topic set time.
+         */
+        char TOPIC_SET_TIME = 'T';
+        /**
+         * Support for searching by user count.
+         */
+        char USER_COUNT = 'C';
+
+        /**
+         * Parameter name.
+         */
+        String NAME = "ELIST";
+
+        /**
+         * Gets the supported LIST extensions.
+         *
+         * @return supported extensions
+         */
+        @NonNull Set<Character> getExtensions();
+    }
+
+    /**
+     * Represents support for ban exceptions.
+     */
+    interface Excepts extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "EXCEPTS";
+    }
+
+    /**
+     * Represents support for extended ban masks.
+     */
+    interface ExtBan extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "EXTBAN";
+
+        /**
+         * Gets the prefix, if any, for extended bans.
+         *
+         * @return prefix, or empty if there should not be one used
+         */
+        @NonNull Optional<Character> getPrefix();
+
+        /**
+         * Gets the characters of types of extended bans supported.
+         *
+         * @return set of supported types
+         */
+        @NonNull Set<Character> getTypes();
+    }
+
+    /**
+     * Represents the length limit of a hostname.
+     */
+    interface HostLen extends IntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "HOSTLEN";
+    }
+
+    /**
+     * Represents support for invite exemptions.
+     */
+    interface InvEx extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "INVEX";
+    }
+
+    /**
+     * Represents limits to type A mode lists.
+     */
+    interface MaxTargets extends OptionalIntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "MAXTARGETS";
+    }
+
+    /**
      * Represents the length limit of a kick reason.
      */
     interface KickLen extends IntegerParameter {
@@ -201,13 +316,41 @@ public interface ISupportParameter extends ClientLinked {
     }
 
     /**
-     * Represents support for WHOX.
+     * Represents calling LIST being safe and not disconnecting for too much info.
      */
-    interface WhoX extends ISupportParameter {
+    interface SafeList extends ISupportParameter {
         /**
          * Parameter name.
          */
-        String NAME = "WHOX";
+        String NAME = "SAFELIST";
+    }
+
+    /**
+     * Represents support (or lack of, if no value) for maximum entries in
+     * client silence lists.
+     */
+    interface Silence extends OptionalIntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "SILENCE";
+    }
+
+    /**
+     * Lists the prefixes that can receive a status message.
+     */
+    interface StatusMsg extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "STATUSMSG";
+
+        /**
+         * Gets the prefixes supported.
+         *
+         * @return supported prefixes
+         */
+        Set<Character> getPrefixes();
     }
 
     /**
@@ -218,6 +361,26 @@ public interface ISupportParameter extends ClientLinked {
          * Parameter name.
          */
         String NAME = "TOPICLEN";
+    }
+
+    /**
+     * Represents the length limit of user strings.
+     */
+    interface UserLen extends IntegerParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "USERLEN";
+    }
+
+    /**
+     * Represents support for WHOX.
+     */
+    interface WhoX extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "WHOX";
     }
 
     /**

@@ -33,12 +33,21 @@ import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportCh
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanModes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanTypes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChannelLen;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportEList;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportExcepts;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportExtBan;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportHostLen;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportInvEx;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportKickLen;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportMaxTargets;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportModes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportNetwork;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportNickLen;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportPrefix;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportSilence;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportStatusMsg;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportTopicLen;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportUserLen;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportWhoX;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
@@ -65,12 +74,21 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         this.registerParameter(ISupportParameter.ChanLimit.NAME, DefaultISupportChanLimit::new);
         this.registerParameter(ISupportParameter.ChanModes.NAME, DefaultISupportChanModes::new);
         this.registerParameter(ISupportParameter.ChanTypes.NAME, DefaultISupportChanTypes::new);
+        this.registerParameter(ISupportParameter.EList.NAME, DefaultISupportEList::new);
+        this.registerParameter(ISupportParameter.Excepts.NAME, DefaultISupportExcepts::new);
+        this.registerParameter(ISupportParameter.ExtBan.NAME, DefaultISupportExtBan::new);
+        this.registerParameter(ISupportParameter.HostLen.NAME, DefaultISupportHostLen::new);
+        this.registerParameter(ISupportParameter.InvEx.NAME, DefaultISupportInvEx::new);
         this.registerParameter(ISupportParameter.KickLen.NAME, DefaultISupportKickLen::new);
+        this.registerParameter(ISupportParameter.MaxTargets.NAME, DefaultISupportMaxTargets::new);
         this.registerParameter(ISupportParameter.Modes.NAME, DefaultISupportModes::new);
         this.registerParameter(ISupportParameter.Network.NAME, DefaultISupportNetwork::new);
         this.registerParameter(ISupportParameter.NickLen.NAME, DefaultISupportNickLen::new);
         this.registerParameter(ISupportParameter.Prefix.NAME, DefaultISupportPrefix::new);
+        this.registerParameter(ISupportParameter.Silence.NAME, DefaultISupportSilence::new);
+        this.registerParameter(ISupportParameter.StatusMsg.NAME, DefaultISupportStatusMsg::new);
         this.registerParameter(ISupportParameter.TopicLen.NAME, DefaultISupportTopicLen::new);
+        this.registerParameter(ISupportParameter.UserLen.NAME, DefaultISupportUserLen::new);
         this.registerParameter(ISupportParameter.WhoX.NAME, DefaultISupportWhoX::new);
     }
 

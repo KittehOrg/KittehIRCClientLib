@@ -27,7 +27,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
-import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,9 +47,6 @@ public class DefaultISupportChanTypes extends DefaultISupportParameterValueRequi
      */
     public DefaultISupportChanTypes(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
-        if (value == null) {
-            throw new KittehServerISupportException(name, "No chantypes defined");
-        }
         List<Character> prefixes = new ArrayList<>();
         for (char c : value.toCharArray()) {
             prefixes.add(c);

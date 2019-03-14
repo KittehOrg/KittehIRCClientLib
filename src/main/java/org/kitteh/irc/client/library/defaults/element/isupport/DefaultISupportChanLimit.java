@@ -48,9 +48,6 @@ public class DefaultISupportChanLimit extends DefaultISupportParameterValueRequi
      */
     public DefaultISupportChanLimit(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
-        if (value == null) {
-            throw new KittehServerISupportException(name, "No limits defined");
-        }
         String[] pairs = value.split(",");
         Map<Character, Integer> limits = new HashMap<>();
         for (String p : pairs) {

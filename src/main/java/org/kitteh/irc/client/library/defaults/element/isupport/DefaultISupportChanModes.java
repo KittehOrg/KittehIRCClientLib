@@ -29,7 +29,6 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultChannelMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
-import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,9 +49,6 @@ public class DefaultISupportChanModes extends DefaultISupportParameterValueRequi
      */
     public DefaultISupportChanModes(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
-        if (value == null) {
-            throw new KittehServerISupportException(name, "No modes defined");
-        }
         String[] modes = value.split(",");
         List<ChannelMode> modesList = new ArrayList<>();
         for (int typeId = 0; (typeId < modes.length) && (typeId < 4); typeId++) {

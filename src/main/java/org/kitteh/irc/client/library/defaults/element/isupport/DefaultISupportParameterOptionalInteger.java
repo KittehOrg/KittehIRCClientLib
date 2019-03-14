@@ -26,36 +26,37 @@ package org.kitteh.irc.client.library.defaults.element.isupport;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
 import org.kitteh.irc.client.library.element.ISupportParameter;
-import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
 import java.util.Optional;
 
 /**
- * Default implementation of {@link ISupportParameter.CaseMapping}.
+ * Default implementation of {@link OptionalIntegerParameter}.
  */
-public class DefaultISupportCaseMapping extends DefaultISupportParameterValueRequired implements ISupportParameter.CaseMapping {
-    private final org.kitteh.irc.client.library.feature.CaseMapping caseMapping;
+public abstract class DefaultISupportParameterOptionalInteger extends DefaultISupportParameter implements ISupportParameter.OptionalIntegerParameter {
+    private final Integer integer;
 
     /**
      * Constructs the object.
      *
      * @param client client
      * @param name parameter name
-     * @param value parameter value, if present
+     * @param value value
      */
-    public DefaultISupportCaseMapping(@NonNull Client client, @NonNull String name, @Nullable String value) {
+    protected DefaultISupportParameterOptionalInteger(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
-        Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value);
-        if (caseMapping.isPresent()) {
-            this.caseMapping = caseMapping.get();
-        } else {
-            throw new KittehServerISupportException(name, "Undefined casemapping");
+        Integer integer;
+        try {
+            integer = Integer.valueOf(value);
+        } catch (Exception e) {
+            integer = null;
         }
+        this.integer = integer;
     }
 
     @Override
-    public org.kitteh.irc.client.library.feature.@NonNull CaseMapping getCaseMapping() {
-        return this.caseMapping;
+    public Optional<Integer> getInteger() {
+        return Optional.ofNullable(this.integer);
     }
 }

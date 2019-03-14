@@ -27,15 +27,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
-import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
- * Default implementation of {@link ISupportParameter.CaseMapping}.
+ * Default implementation of {@link ExtBan}.
  */
-public class DefaultISupportCaseMapping extends DefaultISupportParameterValueRequired implements ISupportParameter.CaseMapping {
-    private final org.kitteh.irc.client.library.feature.CaseMapping caseMapping;
+public class DefaultISupportExtBan extends DefaultISupportParameterValueRequired implements ISupportParameter.ExtBan {
+    private final Character prefix;
+    private final Set<Character> types;
 
     /**
      * Constructs the object.
@@ -44,18 +47,24 @@ public class DefaultISupportCaseMapping extends DefaultISupportParameterValueReq
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportCaseMapping(@NonNull Client client, @NonNull String name, @Nullable String value) {
+    public DefaultISupportExtBan(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
-        Optional<org.kitteh.irc.client.library.feature.CaseMapping> caseMapping = org.kitteh.irc.client.library.feature.CaseMapping.getByName(value);
-        if (caseMapping.isPresent()) {
-            this.caseMapping = caseMapping.get();
-        } else {
-            throw new KittehServerISupportException(name, "Undefined casemapping");
+        String[] split = value.split(",");
+        this.prefix = split[0].isEmpty() ? null : split[0].charAt(0);
+        Set<Character> types = new HashSet<>();
+        for (char c : split[1].toCharArray()) {
+            types.add(c);
         }
+        this.types = Collections.unmodifiableSet(types);
     }
 
     @Override
-    public org.kitteh.irc.client.library.feature.@NonNull CaseMapping getCaseMapping() {
-        return this.caseMapping;
+    public @NonNull Optional<Character> getPrefix() {
+        return Optional.of(this.prefix);
+    }
+
+    @Override
+    public @NonNull Set<Character> getTypes() {
+        return this.types;
     }
 }
