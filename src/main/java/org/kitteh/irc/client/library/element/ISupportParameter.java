@@ -30,6 +30,7 @@ import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 
 /**
@@ -57,7 +58,7 @@ public interface ISupportParameter extends ClientLinked {
          *
          * @return the processed value
          */
-        Optional<Integer> getInteger();
+        OptionalInt getInteger();
     }
 
     /**

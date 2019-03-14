@@ -29,7 +29,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 
-import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Default implementation of {@link OptionalIntegerParameter}.
@@ -56,7 +56,7 @@ public abstract class DefaultISupportParameterOptionalInteger extends DefaultISu
     }
 
     @Override
-    public Optional<Integer> getInteger() {
-        return Optional.ofNullable(this.integer);
+    public OptionalInt getInteger() {
+        return this.integer == null ? OptionalInt.empty() : OptionalInt.of(this.integer);
     }
 }
