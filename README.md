@@ -43,7 +43,7 @@ public class Example {
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>6.0.1</version>
+    <version>7.0.0</version>
 </dependency>
 ```
 
