@@ -40,6 +40,7 @@ public class ISupportParameterEvent extends ServerMessageEventBase {
      *
      * @param client the client
      * @param sourceMessage source message
+     * @param parameter parameter
      */
     public ISupportParameterEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull ISupportParameter parameter) {
         super(client, sourceMessage);
