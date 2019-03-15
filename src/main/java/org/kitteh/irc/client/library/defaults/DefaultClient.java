@@ -45,7 +45,6 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
-import org.kitteh.irc.client.library.event.abstractbase.ClientReceiveServerMessageEventBase;
 import org.kitteh.irc.client.library.event.batch.ClientBatchEndEvent;
 import org.kitteh.irc.client.library.event.batch.ClientBatchMessageEvent;
 import org.kitteh.irc.client.library.event.batch.ClientBatchStartEvent;
