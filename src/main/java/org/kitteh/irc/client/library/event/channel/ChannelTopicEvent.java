@@ -37,6 +37,25 @@ import org.kitteh.irc.client.library.util.ToStringer;
  */
 public class ChannelTopicEvent extends ChannelEventBase {
     private final boolean updated;
+    private final Channel.Topic oldTopic;
+    private final Channel.Topic newTopic;
+
+    /**
+     * Creates the event.
+     *
+     * @param client client for which this is occurring
+     * @param sourceMessage source message
+     * @param channel channel the topic is about
+     * @param oldTopic old topic
+     * @param newTopic new topic
+     * @param updated if this is a new change
+     */
+    public ChannelTopicEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, Channel.@NonNull Topic oldTopic, Channel.@NonNull Topic newTopic, boolean updated) {
+        super(client, sourceMessage, channel);
+        this.oldTopic = oldTopic;
+        this.newTopic = newTopic;
+        this.updated = updated;
+    }
 
     /**
      * Creates the event.
@@ -45,21 +64,30 @@ public class ChannelTopicEvent extends ChannelEventBase {
      * @param sourceMessage source message
      * @param channel channel the topic is about
      * @param updated if this is a new change
-     * @see Channel#getTopic()
+     * @deprecated Use new constructor
      */
+    @Deprecated
     public ChannelTopicEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, boolean updated) {
-        super(client, sourceMessage, channel);
-        this.updated = updated;
+        this(client, sourceMessage, channel, null, null, updated);
     }
 
     /**
      * Gets the channel's topic.
      *
      * @return the channel topic
-     * @see Channel#getTopic()
+     * @deprecated Use {@link #getNewTopic()} and {@link #getOldTopic()}
      */
+    @Deprecated
     public Channel.@NonNull Topic getTopic() {
         return this.getChannel().getTopic();
+    }
+
+    public Channel.@NonNull Topic getNewTopic() {
+        return this.newTopic;
+    }
+
+    public Channel.@NonNull Topic getOldTopic() {
+        return this.oldTopic;
     }
 
     /**

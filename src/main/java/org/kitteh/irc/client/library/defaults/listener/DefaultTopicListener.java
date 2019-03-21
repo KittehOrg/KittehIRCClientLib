@@ -32,13 +32,17 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
+import org.kitteh.irc.client.library.util.CIKeyMap;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * Default TOPIC listener, producing events using default classes.
  */
 public class DefaultTopicListener extends AbstractDefaultListenerBase {
+    private final Map<String, Channel.Topic> oldTopics;
+
     /**
      * Constructs the listener.
      *
@@ -46,6 +50,7 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
      */
     public DefaultTopicListener(Client.@NonNull WithManagement client) {
         super(client);
+        this.oldTopics = new CIKeyMap<>(client);
     }
 
     @NumericFilter(332) // Topic
@@ -57,7 +62,9 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
         }
         Optional<Channel> topicChannel = this.getTracker().getChannel(event.getParameters().get(1));
         if (topicChannel.isPresent()) {
-            this.getTracker().setChannelTopic(topicChannel.get().getName(), event.getParameters().get(2));
+            Channel oldChannel = topicChannel.get();
+            this.oldTopics.put(oldChannel.getName(), oldChannel.getTopic());
+            this.getTracker().setChannelTopic(oldChannel.getName(), event.getParameters().get(2));
         } else {
             this.trackException(event, "Topic message sent for invalid channel name");
         }
@@ -72,8 +79,9 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
         }
         Optional<Channel> topicSetChannel = this.getTracker().getChannel(event.getParameters().get(1));
         if (topicSetChannel.isPresent()) {
-            this.getTracker().setChannelTopicInfo(topicSetChannel.get().getName(), Long.parseLong(event.getParameters().get(3)) * 1000, this.getTracker().getActor(event.getParameters().get(2)));
-            this.fire(new ChannelTopicEvent(this.getClient(), event.getSource(), topicSetChannel.get(), false));
+            Channel oldChannel = topicSetChannel.get();
+            this.getTracker().setChannelTopicInfo(oldChannel.getName(), Long.parseLong(event.getParameters().get(3)) * 1000, this.getTracker().getActor(event.getParameters().get(2)));
+            this.fire(new ChannelTopicEvent(this.getClient(), event.getSource(), oldChannel, this.oldTopics.remove(oldChannel.getName()), oldChannel.getLatest().get().getTopic(), false));
         } else {
             this.trackException(event, "Topic message sent for invalid channel name");
         }
@@ -88,9 +96,10 @@ public class DefaultTopicListener extends AbstractDefaultListenerBase {
         }
         Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(0));
         if (channel.isPresent()) {
-            this.getTracker().setChannelTopic(channel.get().getName(), event.getParameters().get(1));
-            this.getTracker().setChannelTopicInfo(channel.get().getName(), System.currentTimeMillis(), event.getActor());
-            this.fire(new ChannelTopicEvent(this.getClient(), event.getSource(), channel.get(), true));
+            Channel oldChannel = channel.get();
+            this.getTracker().setChannelTopic(oldChannel.getName(), event.getParameters().get(1));
+            this.getTracker().setChannelTopicInfo(oldChannel.getName(), System.currentTimeMillis(), event.getActor());
+            this.fire(new ChannelTopicEvent(this.getClient(), event.getSource(), oldChannel, oldChannel.getTopic(), oldChannel.getLatest().get().getTopic(), true));
         } else {
             this.trackException(event, "TOPIC message sent for invalid channel name");
         }
