@@ -7,6 +7,10 @@
             <contains>&lt;version&gt;${project.version}&lt;/version&gt;</contains>
         </file>
         <file>
+            <location>README.md</location>
+            <contains>client-lib:${project.version}"</contains>
+        </file>
+        <file>
             <location>docs/index.md</location>
             <contains>&lt;version&gt;${project.version}&lt;/version&gt;</contains>
         </file>
