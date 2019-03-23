@@ -38,13 +38,17 @@ public class Example {
 }
 ```
 
-### Maven
+### Adding the dependency
 ```xml
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>7.0.0</version>
+    <version>7.1.0</version>
 </dependency>
+```
+
+```groovy
+compile "org.kitteh.irc:client-lib:7.1.0"
 ```
 
 Releases are available on Maven Central.
