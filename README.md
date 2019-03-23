@@ -48,7 +48,7 @@ public class Example {
 ```
 
 ```groovy
-compile "org.kitteh.irc:client-lib:7.1.0"
+implementation "org.kitteh.irc:client-lib:7.1.0"
 ```
 
 Releases are available on Maven Central.
