@@ -243,6 +243,58 @@ public interface ISupportParameter extends ClientLinked {
     }
 
     /**
+     * Represents maximum list sizes for type A modes.
+     */
+    interface MaxList extends ISupportParameter {
+        /**
+         * Data on a particular limit.
+         */
+        interface LimitData {
+            /**
+             * Gets the limit for this data.
+             *
+             * @return limit
+             */
+            int getLimit();
+
+            /**
+             * Gets the modes for this data.
+             *
+             * @return modes
+             */
+            @NonNull Set<Character> getModes();
+        }
+
+        /**
+         * Parameter name.
+         */
+        String NAME = "MAXLIST";
+
+        /**
+         * Gets all the limit data specified.
+         *
+         * @return collection of limit data
+         */
+        @NonNull Set<LimitData> getAllLimitData();
+
+        /**
+         * Gets the maximum limit for a given mode.
+         *
+         * @param c mode character
+         * @return limit or -1 if not specified
+         */
+        int getLimit(char c);
+
+        /**
+         * Gets the limit data for a given mode.
+         *
+         * @param c mode character
+         * @return limit data if specified
+         */
+        @NonNull Optional<LimitData> getLimitData(char c);
+    }
+
+    /**
      * Represents limits to type A mode lists.
      */
     interface MaxTargets extends OptionalIntegerParameter {

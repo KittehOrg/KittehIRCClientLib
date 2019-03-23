@@ -39,6 +39,7 @@ import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportEx
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportHostLen;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportInvEx;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportKickLen;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportMaxList;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportMaxTargets;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportModes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportNetwork;
@@ -80,6 +81,7 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         this.registerParameter(ISupportParameter.HostLen.NAME, DefaultISupportHostLen::new);
         this.registerParameter(ISupportParameter.InvEx.NAME, DefaultISupportInvEx::new);
         this.registerParameter(ISupportParameter.KickLen.NAME, DefaultISupportKickLen::new);
+        this.registerParameter(ISupportParameter.MaxList.NAME, DefaultISupportMaxList::new);
         this.registerParameter(ISupportParameter.MaxTargets.NAME, DefaultISupportMaxTargets::new);
         this.registerParameter(ISupportParameter.Modes.NAME, DefaultISupportModes::new);
         this.registerParameter(ISupportParameter.Network.NAME, DefaultISupportNetwork::new);
