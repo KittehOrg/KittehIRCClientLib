@@ -17,7 +17,7 @@ public class TwitchExample {
 }
 ```
 
-* The server password has to be the OAuth token, with `oath:` as a prefix.
+* The server password has to be the OAuth token, with `oauth:` as a prefix.
 * Nickname has to be the twitch username.
 * See the `TwitchSupport` javadocs for more details.
 
