@@ -38,9 +38,9 @@ public class SingleDelaySender extends QueueProcessingThreadSender {
     public static final int DEFAULT_MESSAGE_DELAY = 1200;
 
     /**
-     * Gets a delay supplier with a set delay.
+     * Gets a delay supplier with a set delay of milliseconds.
      *
-     * @param delay delay to set
+     * @param delay delay to set in milliseconds
      * @return supplier
      */
     public static Function<Client.WithManagement, SingleDelaySender> getSupplier(int delay) {
@@ -55,7 +55,7 @@ public class SingleDelaySender extends QueueProcessingThreadSender {
      *
      * @param client the client
      * @param name name of this sending queue
-     * @param delay initial delay
+     * @param delay initial delay in milliseconds
      */
     public SingleDelaySender(@NonNull Client client, @NonNull String name, int delay) {
         super(client, name);
@@ -89,7 +89,7 @@ public class SingleDelaySender extends QueueProcessingThreadSender {
     /**
      * Sets the delay for subsequent messages.
      *
-     * @param delay the new delay
+     * @param delay the new delay in milliseconds
      */
     public void setDelay(int delay) {
         this.delay = delay;
