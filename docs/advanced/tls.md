@@ -20,8 +20,8 @@ the root certificates for these certificate authorities which will allow connect
 made.
 
 KICL lets you set your own `TrustManagerFactory` in the `Client.Builder` so you may let KICL
-connect to the network you desire. There is also the `AcceptingTrustManagerFactory` which,
-if you set it in the `Client.Builder`, will blindly allow all connections through.
+connect to the network you desire. For testing, there is also the `InsecureTrustManagerFactory`
+which, if you set it in the `Client.Builder`, will blindly allow all connections through.
 
 For certificate or key pinning, you currently must implement this yourself in your custom
 `TrustManager`, though discussions for adding a pinning API are underway.

@@ -5,7 +5,7 @@ means that connections to servers which make use of certificates signed by CAs s
 fail.
 
 It's possible to manually import the root certificates into Java's trust store which will make such connections work.
-This approach is preferable to making use of the `AcceptingTrustManagerFactory` or otherwise disabling certificate
+This approach is preferable to making use of the `InsecureTrustManagerFactory` or otherwise disabling certificate
 verification.
 
 1. Download the root certificates in DER form. For StartCom's roots, these can be obtained using wget:
