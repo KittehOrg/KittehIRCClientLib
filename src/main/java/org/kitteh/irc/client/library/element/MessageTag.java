@@ -33,6 +33,13 @@ import java.util.Optional;
  */
 public interface MessageTag {
     /**
+     * Represents the `msgid` tag as specified by the Message IDs spec.
+     */
+    interface MsgId extends MessageTag {
+        @NonNull String getId();
+    }
+
+    /**
      * Represents the 'time' tag as specified by the 'server-time' extension.
      */
     interface Time extends MessageTag {

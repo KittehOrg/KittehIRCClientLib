@@ -26,9 +26,11 @@ package org.kitteh.irc.client.library.defaults.feature;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagMsgId;
 import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagTime;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
+import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.AbstractNameValueProcessor;
 import org.kitteh.irc.client.library.util.ToStringer;
@@ -80,7 +82,8 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
      */
     public DefaultMessageTagManager(Client.WithManagement client) {
         super(client);
-        this.registerTagCreator("server-time", "time", DefaultMessageTagTime.FUNCTION);
+        this.registerTagCreator(CapabilityManager.Defaults.SERVER_TIME, "time", DefaultMessageTagTime.FUNCTION);
+        this.registerTagCreator(CapabilityManager.Defaults.MESSAGE_TAGS, "msgid", DefaultMessageTagMsgId.FUNCTION);
     }
 
     @Override
