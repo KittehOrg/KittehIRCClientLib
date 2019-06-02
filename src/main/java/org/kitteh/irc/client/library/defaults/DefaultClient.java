@@ -953,7 +953,7 @@ public class DefaultClient implements Client.WithManagement {
                 this.eventManager.callEvent(new ClientBatchMessageEvent(this, event.getSource(), tag));
                 return;
             }
-            // else improper batch
+            // else improper batch, or intentionally ignored via event
         }
 
         this.sendLineEvent(event);
