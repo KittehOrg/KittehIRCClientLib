@@ -42,4 +42,5 @@ want to make this technically risky decision.
 
 #### Self-signed certificate
 
-You could import the certificate! Or, use your own trust manager.
+An example message in the exception is "unable to find valid certification path to requested target"
+but there may be others. To resolve this, you could import the certificate! Or, use your own trust manager.
