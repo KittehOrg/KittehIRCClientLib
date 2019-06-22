@@ -1,23 +1,17 @@
 ### Importing common root certificates
 
-Java's default trust store does not include root certificates from a number of popular certificate authorities. This
-means that connections to servers which make use of certificates signed by CAs such as StartCom (e.g. EsperNet) will
+Java's default trust store may not include the certificate authority (such as self-signed) used by your IRC. This
+means that connections to servers which make use of certificates signed by these CAs will
 fail.
 
 It's possible to manually import the root certificates into Java's trust store which will make such connections work.
 This approach is preferable to making use of the `InsecureTrustManagerFactory` or otherwise disabling certificate
 verification.
 
-1. Download the root certificates in DER form. For StartCom's roots, these can be obtained using wget:
+1. Download the certificate in DER form.
 
 ```sh
-wget https://www.startssl.com/certs/der/ca.crt https://www.startssl.com/certs/der/ca-g2.crt
-```
-
-If the certificates you want to import aren't available in DER form, you can convert one in PEM form using:
-
-```sh
-openssl x509 -in certificate.crt -out certificate.der -outform DER
+openssl s_client -showcerts -connect irc.host:6697 < /dev/null | openssl x509 -outform DER > cert.der
 ```
 
 1. Locate the `cacerts` file. This is located in the `lib` of the JAVA_HOME directory. For example,
@@ -28,7 +22,7 @@ which is set by default to 'changeit'. If you've not changed it, you should be a
 supply an alias for each certificate via the `-alias` argument.
 
 ```sh
-sudo keytool -trustcacerts -keystore /usr/lib/jvm/java-8-oracle/jre/lib/security/cacerts -noprompt -importcert -alias StartCom1 -file ca.crt 
+sudo keytool -trustcacerts -keystore /usr/lib/jvm/java-8-oracle/jre/lib/security/cacerts -noprompt -importcert -alias irchost -file cert.der
 ```
 
 You can list all certificates in your trust store and verify the certificates were correctly added by issuing
