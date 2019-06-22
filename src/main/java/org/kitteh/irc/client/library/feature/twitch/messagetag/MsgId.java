@@ -41,7 +41,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
      * Function to create this message tag.
      */
     @SuppressWarnings("ConstantConditions")
-    public static final TriFunction<Client, String, String, MsgId> FUNCTION = (client, name, value) -> new MsgId(name, value);
+    public static final TriFunction<Client, String, String, org.kitteh.irc.client.library.feature.twitch.messagetag.MsgId> FUNCTION = (client, name, value) -> new org.kitteh.irc.client.library.feature.twitch.messagetag.MsgId(name, value);
 
     /**
      * Known msg id values, according to Twitch documentation.
