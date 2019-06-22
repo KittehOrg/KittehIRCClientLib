@@ -25,3 +25,21 @@ which, if you set it in the `Client.Builder`, will blindly allow all connections
 
 For certificate or key pinning, you currently must implement this yourself in your custom
 `TrustManager`, though discussions for adding a pinning API are underway.
+
+### TLS Exceptions
+
+If something goes wrong, you may get a `ClientConnectionFailedEvent` with `getCause()`
+containing a "SSLEngine problem" and a chain of causes. At the bottom should be the actual
+cause of this situation
+
+#### Certificate Expired
+
+The exception may say something like `NotAfter: Mon Jun 10 08:15:43 EDT 2019` which means the
+certificate was only valid until that point in time. You should let the admins of that IRC server
+know of their mistake. In the mean time, you could work around it by connecting using the
+`InsecureTrustManagerFactory`. If writing a client, you could prompt the user to decide if they
+want to make this technically risky decision.
+
+#### Self-signed certificate
+
+You could import the certificate! Or, use your own trust manager.
