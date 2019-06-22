@@ -47,6 +47,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.connection.ClientConnectionClosedEvent;
+import org.kitteh.irc.client.library.event.connection.ClientConnectionEndedEvent;
 import org.kitteh.irc.client.library.event.connection.ClientConnectionEstablishedEvent;
 import org.kitteh.irc.client.library.event.connection.ClientConnectionFailedEvent;
 import org.kitteh.irc.client.library.exception.KittehConnectionException;
@@ -87,6 +88,7 @@ public final class NettyConnection implements ClientConnection {
     private @Nullable ScheduledFuture<?> ping;
 
     private volatile String lastMessage;
+    private volatile Throwable lastCause;
 
     private boolean alive = true;
 
@@ -187,12 +189,17 @@ public final class NettyConnection implements ClientConnection {
                 // The presence of the two latter arguments enables SNI.
                 final SslHandler sslHandler = sslContext.newHandler(this.channel.alloc(), addr.getHost(), addr.getPort());
                 sslHandler.handshakeFuture().addListener(handshakeFuture -> {
-                    if (!handshakeFuture.isSuccess() && NettyConnection.this.client.getStsMachine().isPresent()) {
-                        StsMachine machine = NettyConnection.this.client.getStsMachine().get();
-                        if (machine.getCurrentState() == StsClientState.STS_PRESENT_RECONNECTING) {
-                            NettyConnection.this.shutdown(DefaultMessageType.STS_FAILURE, false);
-                            machine.setCurrentState(StsClientState.STS_PRESENT_CANNOT_CONNECT);
-                            throw new KittehStsException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
+                    this.lastCause = null;
+                    if (!handshakeFuture.isSuccess()) {
+                        if (NettyConnection.this.client.getStsMachine().isPresent()) {
+                            StsMachine machine = NettyConnection.this.client.getStsMachine().get();
+                            if (machine.getCurrentState() == StsClientState.STS_PRESENT_RECONNECTING) {
+                                NettyConnection.this.shutdown(DefaultMessageType.STS_FAILURE, false);
+                                machine.setCurrentState(StsClientState.STS_PRESENT_CANNOT_CONNECT);
+                                throw new KittehStsException("Handshake failure, aborting STS-protected connection attempt.", handshakeFuture.cause());
+                            }
+                        } else {
+                            this.lastCause = handshakeFuture.cause();
                         }
                     }
                 });
@@ -227,7 +234,12 @@ public final class NettyConnection implements ClientConnection {
                 this.ping.cancel(true);
             }
             NettyConnection.this.alive = false;
-            ClientConnectionClosedEvent event = new ClientConnectionClosedEvent(NettyConnection.this.client, NettyConnection.this.reconnect, future.cause(), this.lastMessage);
+            ClientConnectionEndedEvent event;
+            if (this.lastCause == null ) {
+                event = new ClientConnectionClosedEvent(this.client, this.reconnect, future.cause(), this.lastMessage);
+            } else {
+                event = new ClientConnectionFailedEvent(this.client, this.reconnect, this.lastCause);
+            }
             NettyConnection.this.client.getEventManager().callEvent(event);
             if (event.willAttemptReconnect()) {
                 this.scheduleReconnect(event.getReconnectionDelay());
