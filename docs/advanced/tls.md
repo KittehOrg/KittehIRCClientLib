@@ -36,9 +36,9 @@ cause of this situation
 
 The exception may say something like `NotAfter: Mon Jun 10 08:15:43 EDT 2019` which means the
 certificate was only valid until that point in time. You should let the admins of that IRC server
-know of their mistake. In the mean time, you could work around it by connecting using the
-`InsecureTrustManagerFactory`. If writing a client, you could prompt the user to decide if they
-want to make this technically risky decision.
+know of their mistake. In the mean time, you could work around it by having your trust manager allow
+it. If writing a client, you could prompt the user to decide if they want to make this technically
+risky decision.
 
 #### Self-signed certificate
 
