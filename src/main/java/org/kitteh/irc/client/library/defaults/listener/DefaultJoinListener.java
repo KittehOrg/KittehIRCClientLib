@@ -34,6 +34,7 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 
 import java.util.HashSet;
+import java.util.Optional;
 
 /**
  * Default JOIN listener, producing events using default classes.
@@ -62,6 +63,16 @@ public class DefaultJoinListener extends AbstractDefaultListenerBase {
                 Channel channel = this.getTracker().getTrackedChannel(channelName).get();
                 User user = (User) event.getActor();
                 this.getTracker().trackChannelUser(channelName, user, new HashSet<>());
+                if (event.getParameters().size() > 2) {
+                    if (!"*".equals(event.getParameters().get(1))) {
+                        this.getTracker().setUserAccount(user.getNick(), event.getParameters().get(1));
+                    }
+                    this.getTracker().setUserRealName(user.getNick(), event.getParameters().get(2));
+                    Optional<User> u = this.getTracker().getTrackedUser(user.getNick());
+                    if (u.isPresent()) { // Just in case something goes funny, let's not murder the event and instead just sacrifice some info
+                        user = u.get();
+                    }
+                }
                 ChannelJoinEvent joinEvent = null;
                 if (user.getNick().equals(this.getClient().getNick())) {
                     if (this.getClient().getActorTracker().shouldQueryChannelInformation()) {
@@ -71,12 +82,6 @@ public class DefaultJoinListener extends AbstractDefaultListenerBase {
                     if (this.getClient().getIntendedChannels().contains(channelName)) {
                         joinEvent = new RequestedChannelJoinCompleteEvent(this.getClient(), event.getSource(), channel, user);
                     }
-                }
-                if (event.getParameters().size() > 2) {
-                    if (!"*".equals(event.getParameters().get(1))) {
-                        this.getTracker().setUserAccount(user.getNick(), event.getParameters().get(1));
-                    }
-                    this.getTracker().setUserRealName(user.getNick(), event.getParameters().get(2));
                 }
                 if (joinEvent == null) {
                     joinEvent = new ChannelJoinEvent(this.getClient(), event.getSource(), channel, user);
