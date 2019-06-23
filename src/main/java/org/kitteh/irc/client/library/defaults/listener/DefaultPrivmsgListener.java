@@ -27,12 +27,18 @@ import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.event.channel.ChannelCtcpEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
+import org.kitteh.irc.client.library.event.channel.ChannelTargetedCtcpEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTargetedMessageEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCtcpQueryEvent;
 import org.kitteh.irc.client.library.event.user.PrivateMessageEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 import org.kitteh.irc.client.library.util.CtcpUtil;
+
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * Default PRIVMSG listener, producing events using default classes.
@@ -59,7 +65,39 @@ public class DefaultPrivmsgListener extends AbstractDefaultListenerBase {
             return;
         }
         if (CtcpUtil.isCtcp(event.getParameters().get(1))) {
-            this.ctcp(event);
+            final String ctcpMessage = CtcpUtil.fromCtcp(event.getParameters().get(1));
+            final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
+            User user = (User) event.getActor();
+
+            if (messageTargetInfo instanceof MessageTargetInfo.Private) {
+                String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
+                switch (ctcpMessage) {
+                    case "VERSION":
+                        reply = "VERSION I am Kitteh!";
+                        break;
+                    case "TIME":
+                        reply = "TIME " + new Date().toString();
+                        break;
+                    case "FINGER":
+                        reply = "FINGER om nom nom tasty finger";
+                        break;
+                }
+                if (ctcpMessage.startsWith("PING ")) {
+                    reply = ctcpMessage;
+                }
+                PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), ctcpMessage, reply);
+                this.fire(ctcpEvent);
+                Optional<String> replyMessage = ctcpEvent.getReply();
+                if (ctcpEvent.isToClient()) {
+                    replyMessage.ifPresent(message -> this.getClient().sendRawLine("NOTICE " + user.getNick() + " :" + CtcpUtil.toCtcp(message)));
+                }
+            } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
+                MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
+                this.fire(new ChannelCtcpEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), ctcpMessage));
+            } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
+                MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
+                this.fire(new ChannelTargetedCtcpEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), ctcpMessage));
+            }
             return;
         }
         User user = (User) event.getActor();

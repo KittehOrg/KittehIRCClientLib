@@ -62,25 +62,25 @@ public class DefaultNamesListener extends AbstractDefaultListenerBase {
             return;
         }
         Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(2));
-        if (channel.isPresent()) {
-            List<ChannelUserMode> channelUserModes = this.getClient().getServerInfo().getChannelUserModes();
-            for (String combo : event.getParameters().get(3).split(" ")) {
-                Set<ChannelUserMode> modes = new HashSet<>();
-                for (int i = 0; i < combo.length(); i++) {
-                    char c = combo.charAt(i);
-                    Optional<ChannelUserMode> mode = channelUserModes.stream().filter(userMode -> userMode.getNickPrefix() == c).findFirst();
-                    if (mode.isPresent()) {
-                        modes.add(mode.get());
-                    } else {
-                        this.getTracker().trackChannelNick(channel.get().getName(), combo.substring(i), modes);
-                        break;
-                    }
+        if (!channel.isPresent()) {
+            this.trackException(event, "NAMES response sent for invalid channel name");
+            return;
+        }
+        List<ChannelUserMode> channelUserModes = this.getClient().getServerInfo().getChannelUserModes();
+        for (String combo : event.getParameters().get(3).split(" ")) {
+            Set<ChannelUserMode> modes = new HashSet<>();
+            for (int i = 0; i < combo.length(); i++) {
+                char c = combo.charAt(i);
+                Optional<ChannelUserMode> mode = channelUserModes.stream().filter(userMode -> userMode.getNickPrefix() == c).findFirst();
+                if (mode.isPresent()) {
+                    modes.add(mode.get());
+                } else {
+                    this.getTracker().trackChannelNick(channel.get().getName(), combo.substring(i), modes);
+                    break;
                 }
             }
-            this.namesMessages.add(event.getServerMessage());
-        } else {
-            this.trackException(event, "NAMES response sent for invalid channel name");
         }
+        this.namesMessages.add(event.getServerMessage());
     }
 
     @NumericFilter(366) // End of NAMES
@@ -91,12 +91,12 @@ public class DefaultNamesListener extends AbstractDefaultListenerBase {
             return;
         }
         Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
-        if (channel.isPresent()) {
-            this.namesMessages.add(event.getServerMessage());
-            this.fire(new ChannelNamesUpdatedEvent(this.getClient(), this.namesMessages, channel.get()));
-            this.namesMessages.clear();
-        } else {
+        if (!channel.isPresent()) {
             this.trackException(event, "NAMES response sent for invalid channel name");
+            return;
         }
+        this.namesMessages.add(event.getServerMessage());
+        this.fire(new ChannelNamesUpdatedEvent(this.getClient(), this.namesMessages, channel.get()));
+        this.namesMessages.clear();
     }
 }

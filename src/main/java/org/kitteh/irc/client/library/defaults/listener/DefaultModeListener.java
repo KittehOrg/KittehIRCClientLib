@@ -42,7 +42,6 @@ import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 import org.kitteh.irc.client.library.util.StringUtil;
 
 import java.time.Instant;
-import java.util.Optional;
 
 /**
  * Default MODE listener, producing events using default classes.
@@ -64,19 +63,19 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
             this.trackException(event, "Channel mode info message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
-        if (channel.isPresent()) {
-            ModeStatusList<ChannelMode> statusList;
-            try {
-                statusList = DefaultModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
-            } catch (IllegalArgumentException e) {
-                this.trackException(event, e.getMessage());
-                return;
-            }
-            this.getTracker().updateChannelModes(channel.get().getName(), statusList);
-        } else {
+        Channel channel = this.getTracker().getChannel(event.getParameters().get(1)).orElse(null);
+        if (channel == null) {
             this.trackException(event, "Channel mode info message sent for invalid channel name");
+            return;
         }
+        ModeStatusList<ChannelMode> statusList;
+        try {
+            statusList = DefaultModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+        } catch (IllegalArgumentException e) {
+            this.trackException(event, e.getMessage());
+            return;
+        }
+        this.getTracker().updateChannelModes(channel.getName(), statusList);
     }
 
     @CommandFilter("MODE")

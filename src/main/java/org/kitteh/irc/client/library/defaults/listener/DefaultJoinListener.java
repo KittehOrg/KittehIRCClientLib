@@ -57,41 +57,43 @@ public class DefaultJoinListener extends AbstractDefaultListenerBase {
             return;
         }
         String channelName = event.getParameters().get(0);
-        if (this.getClient().getServerInfo().isValidChannel(channelName)) {
-            if (event.getActor() instanceof User) {
-                this.getTracker().trackChannel(channelName);
-                Channel channel = this.getTracker().getTrackedChannel(channelName).get();
-                User user = (User) event.getActor();
-                this.getTracker().trackChannelUser(channelName, user, new HashSet<>());
-                if (event.getParameters().size() > 2) {
-                    if (!"*".equals(event.getParameters().get(1))) {
-                        this.getTracker().setUserAccount(user.getNick(), event.getParameters().get(1));
-                    }
-                    this.getTracker().setUserRealName(user.getNick(), event.getParameters().get(2));
-                    Optional<User> u = this.getTracker().getTrackedUser(user.getNick());
-                    if (u.isPresent()) { // Just in case something goes funny, let's not murder the event and instead just sacrifice some info
-                        user = u.get();
-                    }
-                }
-                ChannelJoinEvent joinEvent = null;
-                if (user.getNick().equals(this.getClient().getNick())) {
-                    if (this.getClient().getActorTracker().shouldQueryChannelInformation()) {
-                        this.getClient().sendRawLine("MODE " + channelName);
-                        this.getClient().sendRawLine("WHO " + channelName + (this.getClient().getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
-                    }
-                    if (this.getClient().getIntendedChannels().contains(channelName)) {
-                        joinEvent = new RequestedChannelJoinCompleteEvent(this.getClient(), event.getSource(), channel, user);
-                    }
-                }
-                if (joinEvent == null) {
-                    joinEvent = new ChannelJoinEvent(this.getClient(), event.getSource(), channel, user);
-                }
-                this.fire(joinEvent);
-            } else {
-                this.trackException(event, "JOIN message sent for non-user");
-            }
-        } else {
+        if (!this.getClient().getServerInfo().isValidChannel(channelName)) {
             this.trackException(event, "JOIN message sent for invalid channel name");
+            return;
         }
+        if (!(event.getActor() instanceof User)) {
+            this.trackException(event, "JOIN message sent for non-user");
+            return;
+        }
+        this.getTracker().trackChannel(channelName);
+        Channel channel = this.getTracker().getTrackedChannel(channelName).get();
+        User user = (User) event.getActor();
+        this.getTracker().trackChannelUser(channelName, user, new HashSet<>());
+        if (event.getParameters().size() > 2) {
+            if (!"*".equals(event.getParameters().get(1))) {
+                this.getTracker().setUserAccount(user.getNick(), event.getParameters().get(1));
+            }
+            this.getTracker().setUserRealName(user.getNick(), event.getParameters().get(2));
+
+            // We've updated the user, so let's update the snapshot we have.
+            Optional<User> u = this.getTracker().getTrackedUser(user.getNick());
+            if (u.isPresent()) { // Just in case something goes funny, let's not murder the event and instead just sacrifice some info
+                user = u.get();
+            }
+        }
+        ChannelJoinEvent joinEvent = null;
+        if (user.getNick().equals(this.getClient().getNick())) {
+            if (this.getClient().getActorTracker().shouldQueryChannelInformation()) {
+                this.getClient().sendRawLine("MODE " + channelName);
+                this.getClient().sendRawLine("WHO " + channelName + (this.getClient().getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));
+            }
+            if (this.getClient().getIntendedChannels().contains(channelName)) {
+                joinEvent = new RequestedChannelJoinCompleteEvent(this.getClient(), event.getSource(), channel, user);
+            }
+        }
+        if (joinEvent == null) {
+            joinEvent = new ChannelJoinEvent(this.getClient(), event.getSource(), channel, user);
+        }
+        this.fire(joinEvent);
     }
 }

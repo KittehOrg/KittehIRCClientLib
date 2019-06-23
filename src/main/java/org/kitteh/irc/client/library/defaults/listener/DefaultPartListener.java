@@ -33,8 +33,6 @@ import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaPart
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 
-import java.util.Optional;
-
 /**
  * Default PART listener, producing events using default classes.
  */
@@ -55,28 +53,28 @@ public class DefaultPartListener extends AbstractDefaultListenerBase {
             this.trackException(event, "PART message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(0));
-        if (channel.isPresent()) {
-            if (event.getActor() instanceof User) {
-                User user = (User) event.getActor();
-                boolean isSelf = user.getNick().equals(this.getClient().getNick());
-                String partReason = (event.getParameters().size() > 1) ? event.getParameters().get(1) : "";
-                ChannelPartEvent partEvent;
-                if (isSelf && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
-                    partEvent = new UnexpectedChannelLeaveViaPartEvent(this.getClient(), event.getSource(), channel.get(), user, partReason);
-                } else {
-                    partEvent = new ChannelPartEvent(this.getClient(), event.getSource(), channel.get(), user, partReason);
-                }
-                this.fire(partEvent);
-                this.getTracker().trackUserPart(channel.get().getName(), user.getNick());
-                if (isSelf) {
-                    this.getTracker().unTrackChannel(channel.get().getName());
-                }
-            } else {
-                this.trackException(event, "PART message sent for non-user");
-            }
-        } else {
+        Channel channel = this.getTracker().getChannel(event.getParameters().get(0)).orElse(null);
+        if (channel == null) {
             this.trackException(event, "PART message sent for invalid channel name");
+            return;
+        }
+        if (!(event.getActor() instanceof User)) {
+            this.trackException(event, "PART message sent for non-user");
+            return;
+        }
+        User user = (User) event.getActor();
+        boolean isSelf = user.getNick().equals(this.getClient().getNick());
+        String partReason = (event.getParameters().size() > 1) ? event.getParameters().get(1) : "";
+        ChannelPartEvent partEvent;
+        if (isSelf && this.getClient().getIntendedChannels().contains(channel.getName())) {
+            partEvent = new UnexpectedChannelLeaveViaPartEvent(this.getClient(), event.getSource(), channel, user, partReason);
+        } else {
+            partEvent = new ChannelPartEvent(this.getClient(), event.getSource(), channel, user, partReason);
+        }
+        this.fire(partEvent);
+        this.getTracker().trackUserPart(channel.getName(), user.getNick());
+        if (isSelf) {
+            this.getTracker().unTrackChannel(channel.getName());
         }
     }
 }

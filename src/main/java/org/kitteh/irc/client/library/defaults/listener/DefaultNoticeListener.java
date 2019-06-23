@@ -31,6 +31,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.channel.ChannelNoticeEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelTargetedNoticeEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.user.PrivateCtcpReplyEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;
 import org.kitteh.irc.client.library.event.user.ServerNoticeEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
@@ -57,6 +58,7 @@ public class DefaultNoticeListener extends AbstractDefaultListenerBase {
             return;
         }
         String message = event.getParameters().get(1);
+        // Not a user
         if (!(event.getActor() instanceof User)) {
             if (event.getActor() instanceof Server) {
                 if (CtcpUtil.isCtcp(message)) {
@@ -70,7 +72,12 @@ public class DefaultNoticeListener extends AbstractDefaultListenerBase {
             return;
         }
         if (CtcpUtil.isCtcp(message)) {
-            this.ctcp(event);
+            final String ctcpMessage = CtcpUtil.fromCtcp(event.getParameters().get(1));
+            final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
+            User user = (User) event.getActor();
+            if (messageTargetInfo instanceof MessageTargetInfo.Private) {
+                this.fire(new PrivateCtcpReplyEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), ctcpMessage));
+            }
             return;
         }
         User user = (User) event.getActor();

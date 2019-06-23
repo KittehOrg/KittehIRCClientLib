@@ -24,6 +24,7 @@
 package org.kitteh.irc.client.library.defaults.listener;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultModeInfo;
 import org.kitteh.irc.client.library.element.Channel;
@@ -37,7 +38,6 @@ import java.time.DateTimeException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A base for listening to mode info events.
@@ -80,26 +80,25 @@ public class AbstractModeInfoListenerBase extends AbstractDefaultListenerBase {
             this.trackException(event, name + " response too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
-        if (channel.isPresent()) {
-            messageList.add(event.getServerMessage());
-            String creator = (event.getParameters().size() > (3 + offset)) ? event.getParameters().get((3 + offset)) : null;
-            Instant creationTime = null;
-            if (event.getParameters().size() > (4 + offset)) {
-                try {
-                    creationTime = Instant.ofEpochSecond(Integer.parseInt(event.getParameters().get((4 + offset))));
-                } catch (NumberFormatException | DateTimeException ignored) {
-                }
-            }
-            Optional<ChannelMode> channelMode = this.getClient().getServerInfo().getChannelMode(mode);
-            if (channelMode.isPresent()) {
-                infoList.add(new DefaultModeInfo(this.getClient(), channel.get(), channelMode.get(), event.getParameters().get((2 + offset)), creator, creationTime));
-            } else {
-                this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
-            }
-        } else {
-            this.trackException(event, name + " response sent for invalid channel name");
+        Channel channel;
+        if ((channel = this.getChannel(event, name)) == null) {
+            return;
         }
+        ChannelMode channelMode;
+        if ((channelMode = this.getChannelMode(event, name, mode)) == null) {
+            return;
+        }
+
+        messageList.add(event.getServerMessage());
+        String creator = (event.getParameters().size() > (3 + offset)) ? event.getParameters().get((3 + offset)) : null;
+        Instant creationTime = null;
+        if (event.getParameters().size() > (4 + offset)) {
+            try {
+                creationTime = Instant.ofEpochSecond(Integer.parseInt(event.getParameters().get((4 + offset))));
+            } catch (NumberFormatException | DateTimeException ignored) {
+            }
+        }
+        infoList.add(new DefaultModeInfo(this.getClient(), channel, channelMode, event.getParameters().get((2 + offset)), creator, creationTime));
     }
 
     /**
@@ -116,21 +115,36 @@ public class AbstractModeInfoListenerBase extends AbstractDefaultListenerBase {
             this.trackException(event, name + " response too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
-        if (channel.isPresent()) {
-            messageList.add(event.getServerMessage());
-            Optional<ChannelMode> channelMode = this.getClient().getServerInfo().getChannelMode(mode);
-            if (channelMode.isPresent()) {
-                List<ModeInfo> modeInfos = new ArrayList<>(infoList);
-                this.fire(new ChannelModeInfoListEvent(this.getClient(), messageList, channel.get(), channelMode.get(), modeInfos));
-                this.getTracker().setChannelModeInfoList(channel.get().getName(), mode, modeInfos);
-            } else {
-                this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
-            }
-            infoList.clear();
-            messageList.clear();
-        } else {
+        Channel channel;
+        if ((channel = this.getChannel(event, name)) == null) {
+            return;
+        }
+        ChannelMode channelMode;
+        if ((channelMode = this.getChannelMode(event, name, mode)) == null) {
+            return;
+        }
+
+        messageList.add(event.getServerMessage());
+        List<ModeInfo> modeInfos = new ArrayList<>(infoList);
+        this.fire(new ChannelModeInfoListEvent(this.getClient(), messageList, channel, channelMode, modeInfos));
+        this.getTracker().setChannelModeInfoList(channel.getName(), mode, modeInfos);
+        infoList.clear();
+        messageList.clear();
+    }
+
+    protected @Nullable Channel getChannel(@NonNull ClientReceiveNumericEvent event, @NonNull String name) {
+        Channel channel = this.getTracker().getChannel(event.getParameters().get(1)).orElse(null);
+        if (channel == null) {
             this.trackException(event, name + " response sent for invalid channel name");
         }
+        return channel;
+    }
+
+    protected @Nullable ChannelMode getChannelMode(@NonNull ClientReceiveNumericEvent event, @NonNull String name, char mode) {
+        ChannelMode channelMode = this.getClient().getServerInfo().getChannelMode(mode).orElse(null);
+        if (channelMode == null) {
+            this.trackException(event, name + " can't list if there's no '" + mode + "' mode");
+        }
+        return channelMode;
     }
 }

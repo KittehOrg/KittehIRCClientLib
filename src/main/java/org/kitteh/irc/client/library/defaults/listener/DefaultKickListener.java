@@ -34,8 +34,6 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.helper.ClientEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 
-import java.util.Optional;
-
 /**
  * Default KICK listener, producing events using default classes.
  */
@@ -56,28 +54,28 @@ public class DefaultKickListener extends AbstractDefaultListenerBase {
             this.trackException(event, "KICK message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(0));
-        if (channel.isPresent()) {
-            Optional<User> kickedUser = this.getTracker().getTrackedUser(event.getParameters().get(1));
-            if (kickedUser.isPresent()) {
-                boolean isSelf = event.getParameters().get(1).equals(this.getClient().getNick());
-                ClientEvent kickEvent;
-                String kickReason = (event.getParameters().size() > 2) ? event.getParameters().get(2) : "";
-                if (isSelf && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
-                    kickEvent = new UnexpectedChannelLeaveViaKickEvent(this.getClient(), event.getSource(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
-                } else {
-                    kickEvent = new ChannelKickEvent(this.getClient(), event.getSource(), channel.get(), event.getActor(), kickedUser.get(), kickReason);
-                }
-                this.fire(kickEvent);
-                this.getTracker().trackUserPart(channel.get().getName(), event.getParameters().get(1));
-                if (isSelf) {
-                    this.getTracker().unTrackChannel(channel.get().getName());
-                }
-            } else {
-                this.trackException(event, "KICK message sent for non-user");
-            }
-        } else {
+        Channel channel = this.getTracker().getChannel(event.getParameters().get(0)).orElse(null);
+        if (channel == null) {
             this.trackException(event, "KICK message sent for invalid channel name");
+            return;
+        }
+        User kickedUser = this.getTracker().getTrackedUser(event.getParameters().get(1)).orElse(null);
+        if (kickedUser == null) {
+            this.trackException(event, "KICK message sent for non-user");
+            return;
+        }
+        boolean isSelf = event.getParameters().get(1).equals(this.getClient().getNick());
+        ClientEvent kickEvent;
+        String kickReason = (event.getParameters().size() > 2) ? event.getParameters().get(2) : "";
+        if (isSelf && this.getClient().getIntendedChannels().contains(channel.getName())) {
+            kickEvent = new UnexpectedChannelLeaveViaKickEvent(this.getClient(), event.getSource(), channel, event.getActor(), kickedUser, kickReason);
+        } else {
+            kickEvent = new ChannelKickEvent(this.getClient(), event.getSource(), channel, event.getActor(), kickedUser, kickReason);
+        }
+        this.fire(kickEvent);
+        this.getTracker().trackUserPart(channel.getName(), event.getParameters().get(1));
+        if (isSelf) {
+            this.getTracker().unTrackChannel(channel.getName());
         }
     }
 }

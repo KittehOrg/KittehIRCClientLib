@@ -31,8 +31,6 @@ import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
 
-import java.util.Optional;
-
 /**
  * Default INVITE listener, producing events using default classes.
  */
@@ -53,14 +51,14 @@ public class DefaultInviteListener extends AbstractDefaultListenerBase {
             this.trackException(event, "INVITE message too short");
             return;
         }
-        Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
-        if (channel.isPresent()) {
-            if (this.getClient().getNick().equalsIgnoreCase(event.getParameters().get(0)) && this.getClient().getIntendedChannels().contains(channel.get().getName())) {
-                this.getClient().sendRawLine("JOIN " + channel.get().getName());
-            }
-            this.fire(new ChannelInviteEvent(this.getClient(), event.getSource(), channel.get(), event.getActor(), event.getParameters().get(0)));
-        } else {
+        Channel channel = this.getTracker().getChannel(event.getParameters().get(1)).orElse(null);
+        if (channel == null) {
             this.trackException(event, "INVITE message sent for invalid channel name");
+            return;
         }
+        if (this.getClient().getNick().equalsIgnoreCase(event.getParameters().get(0)) && this.getClient().getIntendedChannels().contains(channel.getName())) {
+            this.getClient().sendRawLine("JOIN " + channel.getName());
+        }
+        this.fire(new ChannelInviteEvent(this.getClient(), event.getSource(), channel, event.getActor(), event.getParameters().get(0)));
     }
 }

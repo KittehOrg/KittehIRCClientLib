@@ -53,26 +53,26 @@ public class DefaultNickListener extends AbstractDefaultListenerBase {
             this.trackException(event, "NICK message too short");
             return;
         }
-        if (event.getActor() instanceof User) {
-            boolean isSelf = ((User) event.getActor()).getNick().equals(this.getClient().getNick());
-            Optional<User> user = this.getTracker().getTrackedUser(((User) event.getActor()).getNick());
-            if (!user.isPresent()) {
-                if (isSelf) {
-                    this.getClient().setCurrentNick(event.getParameters().get(0));
-                    return; // Don't fail if NICK changes while not in a channel!
-                }
-                this.trackException(event, "NICK message sent for user not in tracked channels");
-                return;
-            }
-            User oldUser = user.get();
-            this.getTracker().trackUserNickChange(user.get().getNick(), event.getParameters().get(0));
-            User newUser = user.get();
-            this.fire(new UserNickChangeEvent(this.getClient(), event.getSource(), oldUser, newUser));
+        if (!(event.getActor() instanceof User)) {
+            this.trackException(event, "NICK message sent for non-user");
+            return;
+        }
+        boolean isSelf = ((User) event.getActor()).getNick().equals(this.getClient().getNick());
+        Optional<User> user = this.getTracker().getTrackedUser(((User) event.getActor()).getNick());
+        if (!user.isPresent()) {
             if (isSelf) {
                 this.getClient().setCurrentNick(event.getParameters().get(0));
+                return; // Don't fail if NICK changes while not in a channel!
             }
-        } else {
-            this.trackException(event, "NICK message sent for non-user");
+            this.trackException(event, "NICK message sent for user not in tracked channels");
+            return;
+        }
+        User oldUser = user.get();
+        this.getTracker().trackUserNickChange(user.get().getNick(), event.getParameters().get(0));
+        User newUser = user.get();
+        this.fire(new UserNickChangeEvent(this.getClient(), event.getSource(), oldUser, newUser));
+        if (isSelf) {
+            this.getClient().setCurrentNick(event.getParameters().get(0));
         }
     }
 }

@@ -55,11 +55,11 @@ public class DefaultKnockListener extends AbstractDefaultListenerBase {
             return;
         }
         Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
-        if (channel.isPresent()) {
-            User user = (User) this.getTracker().getActor(event.getParameters().get(2));
-            this.fire(new ChannelKnockEvent(this.getClient(), event.getSource(), channel.get(), user));
-        } else {
+        if (!channel.isPresent()) {
             this.trackException(event, "KNOCK message sent for invalid channel name");
+            return;
         }
+        User user = (User) this.getTracker().getActor(event.getParameters().get(2));
+        this.fire(new ChannelKnockEvent(this.getClient(), event.getSource(), channel.get(), user));
     }
 }
