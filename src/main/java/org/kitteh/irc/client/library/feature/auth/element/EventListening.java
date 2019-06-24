@@ -24,9 +24,13 @@
 package org.kitteh.irc.client.library.feature.auth.element;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.feature.AuthManager;
+import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
 
 /**
- * Listens to events
+ * An interface for providing an object to be registered automatically as an
+ * event listener when {@link AuthManager#addProtocol(AuthProtocol)} is
+ * called.
  */
 public interface EventListening {
     /**
