@@ -60,7 +60,7 @@ public class DefaultUserModeListener extends AbstractDefaultListenerBase {
         }
         ModeStatusList<UserMode> modes;
         try {
-            modes = DefaultModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+            modes = DefaultModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[0]), 1));
         } catch (IllegalArgumentException e) {
             this.trackException(event, e.getMessage());
             return;

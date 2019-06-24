@@ -70,7 +70,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
         }
         ModeStatusList<ChannelMode> statusList;
         try {
-            statusList = DefaultModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 2));
+            statusList = DefaultModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[0]), 2));
         } catch (IllegalArgumentException e) {
             this.trackException(event, e.getMessage());
             return;
@@ -89,7 +89,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
             ModeStatusList<UserMode> statusList;
             try {
-                statusList = DefaultModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+                statusList = DefaultModeStatusList.fromUser(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[0]), 1));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;
@@ -100,7 +100,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
             Channel channel = ((MessageTargetInfo.ChannelInfo) messageTargetInfo).getChannel();
             ModeStatusList<ChannelMode> statusList;
             try {
-                statusList = DefaultModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 1));
+                statusList = DefaultModeStatusList.fromChannel(this.getClient(), StringUtil.combineSplit(event.getParameters().toArray(new String[0]), 1));
             } catch (IllegalArgumentException e) {
                 this.trackException(event, e.getMessage());
                 return;

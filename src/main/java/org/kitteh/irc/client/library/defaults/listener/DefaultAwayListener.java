@@ -62,7 +62,7 @@ public class DefaultAwayListener extends AbstractDefaultListenerBase {
             this.trackException(event, "AWAY message from something other than a user");
             return;
         }
-        String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[event.getParameters().size()]), 0);
+        String awayMessage = event.getParameters().isEmpty() ? null : StringUtil.combineSplit(event.getParameters().toArray(new String[0]), 0);
         this.fire(new UserAwayMessageEvent(this.getClient(), event.getSource(), (User) event.getActor(), awayMessage));
         this.getTracker().setUserAway(((User) event.getActor()).getNick(), awayMessage);
     }

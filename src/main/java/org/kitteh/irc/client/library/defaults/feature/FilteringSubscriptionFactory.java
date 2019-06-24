@@ -66,7 +66,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
             }
         }
         if (!filterWrappers.isEmpty()) {
-            dispatcher = new FilteredMessageDispatcher(dispatcher, filterWrappers.toArray(new FilterProcessorWrapper[filterWrappers.size()]));
+            dispatcher = new FilteredMessageDispatcher(dispatcher, filterWrappers.toArray(new FilterProcessorWrapper[0]));
         }
         return dispatcher;
     }

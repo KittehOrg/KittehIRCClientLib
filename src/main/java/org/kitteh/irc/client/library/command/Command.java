@@ -63,6 +63,7 @@ public abstract class Command<C extends Command<C>> implements ClientLinked {
             return this;
         }
 
+        @SuppressWarnings("unchecked")
         public C then() {
             return (C) Command.this;
         }
