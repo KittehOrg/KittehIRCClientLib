@@ -179,7 +179,7 @@ public class DefaultClient implements Client.WithManagement {
     private int pingPurrCount;
 
     private final HashMap<String, BatchReferenceTag> batchHold = new HashMap<>();
-    private final InputProcessor processor;
+    private InputProcessor processor;
     private ServerInfo.WithManagement serverInfo;
 
     private String goalNick;
@@ -211,7 +211,7 @@ public class DefaultClient implements Client.WithManagement {
 
     private final ClientCommands commands = new ClientCommands();
 
-    private final MessageSendingQueue messageSendingImmediate;
+    private MessageSendingQueue messageSendingImmediate;
     private MessageSendingQueue messageSendingScheduled;
     private final Object messageSendingLock = new Object();
     private boolean isSending = false;
@@ -241,8 +241,7 @@ public class DefaultClient implements Client.WithManagement {
      * Creates a new default client.
      */
     public DefaultClient() {
-        this.processor = new InputProcessor();
-        this.messageSendingImmediate = new QueueProcessingThreadSender(this, "Immediate");
+
     }
 
     @Override
@@ -263,6 +262,8 @@ public class DefaultClient implements Client.WithManagement {
                            @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost,
                            @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircGateway) {
         this.name = name;
+        this.processor = new InputProcessor();
+        this.messageSendingImmediate = new QueueProcessingThreadSender(this, "Immediate");
         this.networkHandler = networkHandler;
         this.serverAddress = serverAddress;
         this.proxyAddress = proxyAddress;
