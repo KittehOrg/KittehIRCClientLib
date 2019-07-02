@@ -69,7 +69,7 @@ public class DefaultNickListener extends AbstractDefaultListenerBase {
         }
         User oldUser = user.get();
         this.getTracker().trackUserNickChange(user.get().getNick(), event.getParameters().get(0));
-        User newUser = user.get();
+        User newUser = this.getTracker().getTrackedUser(((User) event.getActor()).getNick()).get();
         this.fire(new UserNickChangeEvent(this.getClient(), event.getSource(), oldUser, newUser));
         if (isSelf) {
             this.getClient().setCurrentNick(event.getParameters().get(0));
