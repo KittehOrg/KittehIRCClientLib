@@ -70,7 +70,7 @@ simple as adding the lines below to your pom.xml file:
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>7.2.1</version>
+    <version>7.2.2</version>
     <scope>...</scope>
 </dependency>
 ```
@@ -78,7 +78,7 @@ simple as adding the lines below to your pom.xml file:
 Or, for Gradle:
 
 ```
-implementation "org.kitteh.irc:client-lib:7.2.1"
+implementation "org.kitteh.irc:client-lib:7.2.2"
 ```
 
 ## Events
