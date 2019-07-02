@@ -58,21 +58,22 @@ public class DefaultNickListener extends AbstractDefaultListenerBase {
             return;
         }
         boolean isSelf = ((User) event.getActor()).getNick().equals(this.getClient().getNick());
+        String newNick = event.getParameters().get(0);
         Optional<User> user = this.getTracker().getTrackedUser(((User) event.getActor()).getNick());
         if (!user.isPresent()) {
             if (isSelf) {
-                this.getClient().setCurrentNick(event.getParameters().get(0));
+                this.getClient().setCurrentNick(newNick);
                 return; // Don't fail if NICK changes while not in a channel!
             }
             this.trackException(event, "NICK message sent for user not in tracked channels");
             return;
         }
         User oldUser = user.get();
-        this.getTracker().trackUserNickChange(user.get().getNick(), event.getParameters().get(0));
-        User newUser = this.getTracker().getTrackedUser(((User) event.getActor()).getNick()).get();
+        this.getTracker().trackUserNickChange(user.get().getNick(), newNick);
+        User newUser = this.getTracker().getTrackedUser(newNick).get();
         this.fire(new UserNickChangeEvent(this.getClient(), event.getSource(), oldUser, newUser));
         if (isSelf) {
-            this.getClient().setCurrentNick(event.getParameters().get(0));
+            this.getClient().setCurrentNick(newNick);
         }
     }
 }
