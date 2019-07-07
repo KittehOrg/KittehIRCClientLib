@@ -39,12 +39,14 @@ import java.util.Optional;
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Badges
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Color
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.DisplayName
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Login
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Emotes
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Mod
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgId
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamMonths
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamSubPlan
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamSubPlanName
+ * @see org.kitteh.irc.client.library.feature.twitch.messagetag.MsgParamCumulativeMonths
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.RoomId
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.Subscriber
  * @see org.kitteh.irc.client.library.feature.twitch.messagetag.SystemMsg
