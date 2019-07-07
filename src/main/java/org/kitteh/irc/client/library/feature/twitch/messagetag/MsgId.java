@@ -51,6 +51,16 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
         }
 
         /**
+         * Sub
+         */
+        public static final String SUB = "sub";
+
+        /**
+         * Resubed
+         */
+        public static final String RESUB = "resub";
+
+        /**
          * &lt;user&gt; is already banned in this room.
          */
         public static final String ALREADY_BANNED = "already_banned";
