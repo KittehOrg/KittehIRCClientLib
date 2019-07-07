@@ -56,7 +56,7 @@ public class MsgId extends MessageTagManager.DefaultMessageTag {
         public static final String SUB = "sub";
 
         /**
-         * Resubed
+         * Resubbed
          */
         public static final String RESUB = "resub";
 
