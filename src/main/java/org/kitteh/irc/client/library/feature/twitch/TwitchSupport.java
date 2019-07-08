@@ -128,7 +128,9 @@ public final class TwitchSupport {
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Emotes.NAME, Emotes.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, EmoteSets.NAME, EmoteSets.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Id.NAME, Id.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Login.NAME, Login.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgId.NAME, MsgId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamCumulativeMonths.NAME, MsgParamCumulativeMonths.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamMonths.NAME, MsgParamMonths.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamSubPlan.NAME, MsgParamSubPlan.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamSubPlanName.NAME, MsgParamSubPlanName.FUNCTION);
@@ -143,9 +145,6 @@ public final class TwitchSupport {
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, User.NAME, User.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, UserId.NAME, UserId.FUNCTION);
         client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, UserType.NAME, UserType.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Login.NAME, Login.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamCumulativeMonths.NAME, MsgParamCumulativeMonths.FUNCTION);
-
         return client;
     }
 
