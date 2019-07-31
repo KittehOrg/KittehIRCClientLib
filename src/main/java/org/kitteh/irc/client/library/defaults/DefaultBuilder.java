@@ -100,9 +100,17 @@ public class DefaultBuilder implements Client.Builder {
             return this;
         }
 
+        @Deprecated
         @Override
         public @NonNull Server port(int port) {
             DefaultBuilder.this.serverHostWithPort = DefaultBuilder.this.serverHostWithPort.withPort(DefaultBuilder.this.isValidPort(port));
+            return this;
+        }
+
+        @Override
+        public @NonNull Server port(int port, @NonNull SecurityType security) {
+            DefaultBuilder.this.serverHostWithPort = DefaultBuilder.this.serverHostWithPort.withPort(DefaultBuilder.this.isValidPort(port));
+            DefaultBuilder.this.secure = security != SecurityType.INSECURE; // Default to secure on null
             return this;
         }
 
@@ -112,6 +120,7 @@ public class DefaultBuilder implements Client.Builder {
             return this;
         }
 
+        @Deprecated
         @Override
         public @NonNull Server secure(boolean secure) {
             DefaultBuilder.this.secure = secure;

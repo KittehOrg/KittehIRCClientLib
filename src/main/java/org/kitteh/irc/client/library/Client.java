@@ -139,6 +139,20 @@ public interface Client extends ClientLinked {
          */
         interface Server {
             /**
+             * The security type, TLS or no.
+             */
+            enum SecurityType {
+                /**
+                 * TLS enabled.
+                 */
+                SECURE,
+                /**
+                 * TLS disabled.
+                 */
+                INSECURE;
+            }
+
+            /**
              * Sets the server host and port to which the client will connect.
              * <p>
              * By default, the host is localhost and port is 6697.
@@ -167,8 +181,21 @@ public interface Client extends ClientLinked {
              *
              * @param port IRC server port
              * @return this builder
+             * @deprecated use {@link #port(int, SecurityType)} instead
              */
+            @Deprecated
             @NonNull Server port(int port);
+
+            /**
+             * Sets the server port to which the client will connect and
+             * determines TLS setting. By default, the port is 6697 and the
+             * TLS setting is {@link SecurityType#SECURE}.
+             *
+             * @param port IRC server port
+             * @param security TLS security setting
+             * @return this builder
+             */
+            @NonNull Server port(int port, @NonNull SecurityType security);
 
             /**
              * Sets the server password.
@@ -190,7 +217,9 @@ public interface Client extends ClientLinked {
              *
              * @param secure true for TLS
              * @return this builder
+             * @deprecated use {@link #port(int, SecurityType)} instead
              */
+            @Deprecated
             @NonNull Server secure(boolean secure);
 
             /**
