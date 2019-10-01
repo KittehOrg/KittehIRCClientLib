@@ -28,6 +28,17 @@ a more recent release.
 
 Make sure you utilize the `TwitchSupport` class. Check out [advanced/twitch.md] for more details.
 
+#### It's responding to CTCP queries!
+
+By default, KICL has the following responses to CTCP:
+
+* **VERSION** responds with "I am Kitteh!"
+* **TIME** responds with the current time
+* **FINGER** responds with "om nom nom tasty finger"
+* **PING** responds with the same message
+
+These can all be modified or prevented through `PrivateCtcpQueryEvent` using `getReply()` and `setReply()`.
+
 #### I still need help!
 
 Head on over to the [GitHub Issues](https://github.com/KittehOrg/KittehIRCClientLib/issues) page
