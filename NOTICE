@@ -1,6 +1,6 @@
 See the LICENSE file for the Kitteh IRC Client Library copyright and license.
 
-This project, when built, includes the MBassador event bus and Netty framework.
+This project, when built, has a "shaded" jar which includes the MBassador event bus and Netty framework.
 
 
 
@@ -40,7 +40,7 @@ License for the specific language governing permissions and limitations
 under the License.
 -----------------------
 
-The Netty framework additionally includes other projects with their own licenses. These licenses can be found at https://github.com/netty/netty/tree/4.0/license
+The Netty framework additionally includes other projects with their own licenses. These licenses can be found at https://github.com/netty/netty/tree/4.1/license
 
 For your convenience, the full text of the Apache License, version 2.0:
 
