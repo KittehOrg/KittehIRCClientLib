@@ -215,6 +215,7 @@ public class DefaultClient implements Client.WithManagement {
     private MessageSendingQueue messageSendingScheduled;
     private final Object messageSendingLock = new Object();
     private boolean isSending = false;
+    private String lastSentUser;
 
     private String name;
     private InetSocketAddress bindAddress;
@@ -761,6 +762,9 @@ public class DefaultClient implements Client.WithManagement {
         }
 
         this.connection = this.networkHandler.connect(this);
+        if (this.lastSentUser != null && this.messageSendingImmediate.contains(this.lastSentUser)) {
+            return;
+        }
         this.processor.queue("");
 
         // If we have WebIRC information, send it before everything.
@@ -779,7 +783,7 @@ public class DefaultClient implements Client.WithManagement {
         }
 
         // Initial USER and NICK messages. Let's just assume we want +iw (send 8)
-        this.sendRawLineImmediately("USER " + this.userString + " 8 * :" + this.realName);
+        this.sendRawLineImmediately(this.lastSentUser = "USER " + this.userString + " 8 * :" + this.realName);
         this.sendNickChange(this.goalNick);
     }
 
