@@ -62,8 +62,8 @@ public final class CtcpUtil {
     private static final char CTCP_DELIMITER = '\u0001';
     private static final char CTCP_MQUOTE = '\u0016';
 
-    private static final Pattern CTCP_ESCAPABLE_CHAR = Pattern.compile("[\n\r\u0000" + CTCP_DELIMITER + CTCP_MQUOTE + "\\\\]");
-    private static final Pattern CTCP_ESCAPED_CHAR = Pattern.compile("([" + CTCP_MQUOTE + "\\\\])(.)");
+    private static final Pattern CTCP_ESCAPABLE_CHAR = Pattern.compile("[\n\r\u0000" + CtcpUtil.CTCP_DELIMITER + CtcpUtil.CTCP_MQUOTE + "\\\\]");
+    private static final Pattern CTCP_ESCAPED_CHAR = Pattern.compile("([" + CtcpUtil.CTCP_MQUOTE + "\\\\])(.)");
 
     private CtcpUtil() {
     }
@@ -75,17 +75,17 @@ public final class CtcpUtil {
      * @return converted message
      */
     public static @NonNull String fromCtcp(@NonNull String message) {
-        int secondDelimiter = message.indexOf(CTCP_DELIMITER, 1);
+        int secondDelimiter = message.indexOf(CtcpUtil.CTCP_DELIMITER, 1);
         final String ctcpContent = message.substring(1, (secondDelimiter == -1) ? message.length() : secondDelimiter); // Strip the delimiters
         StringBuilder builder = new StringBuilder(ctcpContent.length());
         int currentIndex = 0;
-        Matcher matcher = CTCP_ESCAPED_CHAR.matcher(ctcpContent);
+        Matcher matcher = CtcpUtil.CTCP_ESCAPED_CHAR.matcher(ctcpContent);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
                 builder.append(ctcpContent, currentIndex, matcher.start());
             }
             switch (matcher.group(1)) {
-                case CTCP_MQUOTE + "":
+                case CtcpUtil.CTCP_MQUOTE + "":
                     switch (matcher.group(2)) {
                         case "n":
                             builder.append('\n');
@@ -102,7 +102,7 @@ public final class CtcpUtil {
                     break;
                 case "\\":
                     if ("a".equals(matcher.group(2))) {
-                        builder.append(CTCP_DELIMITER);
+                        builder.append(CtcpUtil.CTCP_DELIMITER);
                     } else {
                         builder.append(matcher.group(2)); // If not one of the above, disregard the \. If \, it's covered here anyway.
                     }
@@ -125,7 +125,7 @@ public final class CtcpUtil {
      * @return true if the message is a CTCP message
      */
     public static boolean isCtcp(@NonNull String message) {
-        return !message.isEmpty() && (message.charAt(0) == CTCP_DELIMITER);
+        return !message.isEmpty() && (message.charAt(0) == CtcpUtil.CTCP_DELIMITER);
     }
 
     /**
@@ -136,27 +136,27 @@ public final class CtcpUtil {
      */
     public static @NonNull String toCtcp(@NonNull String message) {
         StringBuilder builder = new StringBuilder(message.length());
-        builder.append(CTCP_DELIMITER);
+        builder.append(CtcpUtil.CTCP_DELIMITER);
         int currentIndex = 0;
-        Matcher matcher = CTCP_ESCAPABLE_CHAR.matcher(message);
+        Matcher matcher = CtcpUtil.CTCP_ESCAPABLE_CHAR.matcher(message);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
                 builder.append(message, currentIndex, matcher.start());
             }
             switch (matcher.group()) {
                 case "\n":
-                    builder.append(CTCP_MQUOTE).append('n');
+                    builder.append(CtcpUtil.CTCP_MQUOTE).append('n');
                     break;
                 case "\r":
-                    builder.append(CTCP_MQUOTE).append('r');
+                    builder.append(CtcpUtil.CTCP_MQUOTE).append('r');
                     break;
                 case "\u0000":
-                    builder.append(CTCP_MQUOTE).append('0');
+                    builder.append(CtcpUtil.CTCP_MQUOTE).append('0');
                     break;
-                case CTCP_MQUOTE + "":
-                    builder.append(CTCP_MQUOTE).append(CTCP_MQUOTE);
+                case CtcpUtil.CTCP_MQUOTE + "":
+                    builder.append(CtcpUtil.CTCP_MQUOTE).append(CtcpUtil.CTCP_MQUOTE);
                     break;
-                case CTCP_DELIMITER + "":
+                case CtcpUtil.CTCP_DELIMITER + "":
                     builder.append("\\a");
                     break;
                 case "\\":
@@ -171,7 +171,7 @@ public final class CtcpUtil {
         if (currentIndex < message.length()) {
             builder.append(message.substring(currentIndex));
         }
-        builder.append(CTCP_DELIMITER);
+        builder.append(CtcpUtil.CTCP_DELIMITER);
         return builder.toString();
     }
 }

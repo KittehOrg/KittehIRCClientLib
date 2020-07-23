@@ -131,15 +131,15 @@ public enum Format {
     Format(int color) {
         this.color = color;
         this.isColor = true;
-        this.toString = COLOR_CHAR + ((color < 10) ? "0" : "") + color;
+        this.toString = Format.COLOR_CHAR + ((color < 10) ? "0" : "") + color;
     }
 
     /**
      * Character indicating color.
      */
     public static final char COLOR_CHAR = '\u0003';
-    private static final Pattern COLOR_REGEX = Pattern.compile(COLOR_CHAR + "[0-9]{1,2}(?:,[0-9]{1,2})?");
-    private static final Pattern FORMAT_REGEX = Pattern.compile("[" + BOLD + RESET + REVERSE + UNDERLINE + ']');
+    private static final Pattern COLOR_REGEX = Pattern.compile(Format.COLOR_CHAR + "[0-9]{1,2}(?:,[0-9]{1,2})?");
+    private static final Pattern FORMAT_REGEX = Pattern.compile("[" + Format.BOLD + Format.RESET + Format.REVERSE + Format.UNDERLINE + ']');
 
     /**
      * Strips color and formatting from a given input.
@@ -150,7 +150,7 @@ public enum Format {
      * @see #stripFormatting(String)
      */
     public static @NonNull String stripAll(@NonNull String input) {
-        return stripColor(stripFormatting(input));
+        return Format.stripColor(Format.stripFormatting(input));
     }
 
     /**
@@ -161,7 +161,7 @@ public enum Format {
      */
     public static @NonNull String stripColor(@NonNull String input) {
         Sanity.nullCheck(input, "Input");
-        return COLOR_REGEX.matcher(input).replaceAll("");
+        return Format.COLOR_REGEX.matcher(input).replaceAll("");
     }
 
     /**
@@ -172,7 +172,7 @@ public enum Format {
      */
     public static @NonNull String stripFormatting(@NonNull String input) {
         Sanity.nullCheck(input, "Input");
-        return FORMAT_REGEX.matcher(input).replaceAll("");
+        return Format.FORMAT_REGEX.matcher(input).replaceAll("");
     }
 
     /**

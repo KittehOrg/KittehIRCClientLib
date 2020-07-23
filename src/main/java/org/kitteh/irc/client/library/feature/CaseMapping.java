@@ -51,8 +51,8 @@ public enum CaseMapping {
     private static final Map<String, CaseMapping> nameMap = new HashMap<>();
 
     static {
-        for (CaseMapping caseMapping : values()) {
-            nameMap.put(caseMapping.name().replace('_', '-'), caseMapping);
+        for (CaseMapping caseMapping : CaseMapping.values()) {
+            CaseMapping.nameMap.put(caseMapping.name().replace('_', '-'), caseMapping);
         }
     }
 
@@ -63,7 +63,7 @@ public enum CaseMapping {
      * @return the matching CaseMapping if one exists
      */
     public static @NonNull Optional<CaseMapping> getByName(@Nullable String name) {
-        return (name == null) ? Optional.empty() : Optional.ofNullable(nameMap.get(name.toUpperCase()));
+        return (name == null) ? Optional.empty() : Optional.ofNullable(CaseMapping.nameMap.get(name.toUpperCase()));
     }
 
     private final char upperbound;

@@ -87,7 +87,7 @@ public final class TwitchSupport {
      * @see TwitchDelaySender
      */
     public static Client addSupport(@NonNull Client client) {
-        return addSupport(client, false);
+        return TwitchSupport.addSupport(client, false);
     }
 
     /**
@@ -118,33 +118,33 @@ public final class TwitchSupport {
 
         ((Client.WithManagement) client).getActorTracker().setQueryChannelInformation(false);
 
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Badges.NAME, Badges.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BanDuration.NAME, BanDuration.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BanReason.NAME, BanReason.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Bits.NAME, Bits.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, BroadcasterLang.NAME, BroadcasterLang.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Color.NAME, Color.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, DisplayName.NAME, DisplayName.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Emotes.NAME, Emotes.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, EmoteSets.NAME, EmoteSets.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Id.NAME, Id.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Login.NAME, Login.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgId.NAME, MsgId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamCumulativeMonths.NAME, MsgParamCumulativeMonths.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamMonths.NAME, MsgParamMonths.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamSubPlan.NAME, MsgParamSubPlan.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, MsgParamSubPlanName.NAME, MsgParamSubPlanName.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Mod.NAME, Mod.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, R9k.NAME, R9k.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, RoomId.NAME, RoomId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Slow.NAME, Slow.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, SubsOnly.NAME, SubsOnly.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Subscriber.NAME, Subscriber.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, SystemMsg.NAME, SystemMsg.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, Turbo.NAME, Turbo.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, User.NAME, User.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, UserId.NAME, UserId.FUNCTION);
-        client.getMessageTagManager().registerTagCreator(CAPABILITY_TAGS, UserType.NAME, UserType.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Badges.NAME, Badges.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, BanDuration.NAME, BanDuration.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, BanReason.NAME, BanReason.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Bits.NAME, Bits.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, BroadcasterLang.NAME, BroadcasterLang.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Color.NAME, Color.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, DisplayName.NAME, DisplayName.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Emotes.NAME, Emotes.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, EmoteSets.NAME, EmoteSets.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Id.NAME, Id.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Login.NAME, Login.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, MsgId.NAME, MsgId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, MsgParamCumulativeMonths.NAME, MsgParamCumulativeMonths.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, MsgParamMonths.NAME, MsgParamMonths.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, MsgParamSubPlan.NAME, MsgParamSubPlan.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, MsgParamSubPlanName.NAME, MsgParamSubPlanName.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Mod.NAME, Mod.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, R9k.NAME, R9k.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, RoomId.NAME, RoomId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Slow.NAME, Slow.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, SubsOnly.NAME, SubsOnly.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Subscriber.NAME, Subscriber.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, SystemMsg.NAME, SystemMsg.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, Turbo.NAME, Turbo.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, User.NAME, User.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, UserId.NAME, UserId.FUNCTION);
+        client.getMessageTagManager().registerTagCreator(TwitchSupport.CAPABILITY_TAGS, UserType.NAME, UserType.FUNCTION);
         return client;
     }
 

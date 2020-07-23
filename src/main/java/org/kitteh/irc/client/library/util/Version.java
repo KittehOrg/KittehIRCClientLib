@@ -41,7 +41,7 @@ public final class Version {
      * @return current KICL version or {@link #MISSINGNO} if somehow not set
      */
     public static @NonNull String getVersion() {
-        return (Version.VERSION.version == null) ? MISSINGNO : Version.VERSION.version; // Semantic satiation!
+        return (Version.VERSION.version == null) ? Version.MISSINGNO : Version.VERSION.version; // Semantic satiation!
     }
 
     private Version() {

@@ -47,7 +47,7 @@ public class StsHandler {
      * Draft prepend for capability.
      */
     public static final String DRAFT = "draft/";
-    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals(DRAFT + "sts") || c.getName().equals("sts");
+    private static final Predicate<CapabilityState> STS_CAPABILITY_PREDICATE = c -> c.getName().equals(StsHandler.DRAFT + "sts") || c.getName().equals("sts");
     private final StsMachine machine;
     private final Client.WithManagement client;
     private boolean isSecure;
@@ -96,7 +96,7 @@ public class StsHandler {
     public void onCapNew(CapabilitiesNewSupportedEvent event) {
         // stability not a concern, only one or zero result(s)
         final Optional<CapabilityState> potentialStsCapability = event.getNewCapabilities().stream()
-                .filter(STS_CAPABILITY_PREDICATE).findAny();
+                .filter(StsHandler.STS_CAPABILITY_PREDICATE).findAny();
 
         if (!potentialStsCapability.isPresent()) {
             // get out if we can't do anything useful here

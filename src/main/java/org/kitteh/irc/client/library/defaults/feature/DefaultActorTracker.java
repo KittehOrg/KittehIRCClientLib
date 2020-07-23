@@ -466,14 +466,14 @@ public class DefaultActorTracker implements ActorTracker {
         } else if (this.client.getServerInfo().isValidChannel(name)) {
             return new IrcChannel(name).snapshot();
         }
-        if (name.isEmpty() || SERVER_PATTERN.matcher(name).matches()) {
+        if (name.isEmpty() || DefaultActorTracker.SERVER_PATTERN.matcher(name).matches()) {
             return new IrcServer(name).snapshot();
         }
         return new IrcActor(name).snapshot();
     }
 
     private IrcUser getUserByName(@NonNull String name) {
-        Matcher nickMatcher = NICK_PATTERN.matcher(name);
+        Matcher nickMatcher = DefaultActorTracker.NICK_PATTERN.matcher(name);
         if (nickMatcher.matches()) {
             String nick = nickMatcher.group(1);
             IrcUser user = this.trackedUsers.get(nick);

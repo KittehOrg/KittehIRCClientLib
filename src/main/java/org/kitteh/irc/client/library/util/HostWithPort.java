@@ -48,16 +48,16 @@ public class HostWithPort {
      * @param port port
      * @return a HostWithPort with the provided information
      */
-    public static @NonNull HostWithPort of(@NonNull String host, @IntRange(from = PORT_MIN, to = PORT_MAX) int port) {
+    public static @NonNull HostWithPort of(@NonNull String host, @IntRange(from = HostWithPort.PORT_MIN, to = HostWithPort.PORT_MAX) int port) {
         Sanity.nullCheck(host, "Host");
-        Sanity.truthiness((port >= PORT_MIN) && (port <= PORT_MAX), port + " is not acceptable port number");
+        Sanity.truthiness((port >= HostWithPort.PORT_MIN) && (port <= HostWithPort.PORT_MAX), port + " is not acceptable port number");
         return new HostWithPort(host, port);
     }
 
     private final String host;
     private final int port;
 
-    private HostWithPort(@NonNull String host, @IntRange(from = PORT_MIN, to = PORT_MAX) int port) {
+    private HostWithPort(@NonNull String host, @IntRange(from = HostWithPort.PORT_MIN, to = HostWithPort.PORT_MAX) int port) {
         this.host = host;
         this.port = port;
     }
@@ -96,7 +96,7 @@ public class HostWithPort {
      * @param port new port
      * @return new instance
      */
-    public @NonNull HostWithPort withPort(@IntRange(from = PORT_MIN, to = PORT_MAX) int port) {
+    public @NonNull HostWithPort withPort(@IntRange(from = HostWithPort.PORT_MIN, to = HostWithPort.PORT_MAX) int port) {
         return HostWithPort.of(this.host, port);
     }
 

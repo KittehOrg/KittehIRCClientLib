@@ -149,7 +149,7 @@ public interface Client extends ClientLinked {
                 /**
                  * TLS disabled.
                  */
-                INSECURE;
+                INSECURE
             }
 
             /**

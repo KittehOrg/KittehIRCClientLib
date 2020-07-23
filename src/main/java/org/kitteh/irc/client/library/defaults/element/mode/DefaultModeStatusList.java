@@ -62,7 +62,7 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
         Map<Character, ChannelMode> modes = new HashMap<>();
         client.getServerInfo().getChannelModes().forEach(mode -> modes.put(mode.getChar(), mode));
         client.getServerInfo().getChannelUserModes().forEach(mode -> modes.put(mode.getChar(), mode));
-        return from(string, modes);
+        return DefaultModeStatusList.from(string, modes);
     }
 
     /**
@@ -73,7 +73,7 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
      * @return list
      */
     public static @NonNull DefaultModeStatusList<UserMode> fromUser(@NonNull Client client, @NonNull String string) {
-        return from(string, client.getServerInfo().getUserModes().stream().collect(Collectors.toMap(UserMode::getChar, Function.identity())));
+        return DefaultModeStatusList.from(string, client.getServerInfo().getUserModes().stream().collect(Collectors.toMap(UserMode::getChar, Function.identity())));
     }
 
     private static <ModeType extends Mode> @NonNull DefaultModeStatusList<ModeType> from(@NonNull String string, @NonNull Map<Character, ModeType> modes) {

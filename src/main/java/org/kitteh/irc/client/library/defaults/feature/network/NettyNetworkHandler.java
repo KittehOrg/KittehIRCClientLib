@@ -65,7 +65,7 @@ public class NettyNetworkHandler implements NetworkHandler {
      * @return instance
      */
     public static @NonNull NettyNetworkHandler getInstance() {
-        return instance;
+        return NettyNetworkHandler.instance;
     }
 
     private @Nullable EventLoopGroup eventLoopGroup;
@@ -82,12 +82,12 @@ public class NettyNetworkHandler implements NetworkHandler {
      * @param client client for whom to remove the connection
      */
     private synchronized void removeClientConnection(Client.@NonNull WithManagement client) {
-        clients.remove(client);
-        if (clients.isEmpty()) {
-            if (eventLoopGroup != null) {
-                eventLoopGroup.shutdownGracefully();
+        this.clients.remove(client);
+        if (this.clients.isEmpty()) {
+            if (this.eventLoopGroup != null) {
+                this.eventLoopGroup.shutdownGracefully();
             }
-            eventLoopGroup = null;
+            this.eventLoopGroup = null;
         }
     }
 
@@ -104,13 +104,13 @@ public class NettyNetworkHandler implements NetworkHandler {
             }
         }
 
-        if (eventLoopGroup == null) {
-            eventLoopGroup = new NioEventLoopGroup();
+        if (this.eventLoopGroup == null) {
+            this.eventLoopGroup = new NioEventLoopGroup();
         }
 
         final Bootstrap bootstrap = new Bootstrap()
                 .channel(NioSocketChannel.class)
-                .group(eventLoopGroup)
+                .group(this.eventLoopGroup)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel channel) {
@@ -144,7 +144,7 @@ public class NettyNetworkHandler implements NetworkHandler {
         }
 
         NettyConnection clientConnection = new NettyConnection(client, bootstrap.connect(server, bind), this::removeClientConnection);
-        clients.add(client);
+        this.clients.add(client);
         return clientConnection;
     }
 

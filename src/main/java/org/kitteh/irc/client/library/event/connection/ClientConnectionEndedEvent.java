@@ -44,7 +44,7 @@ public abstract class ClientConnectionEndedEvent extends ClientEventBase impleme
 
     private final boolean canReconnect;
     private final @Nullable Throwable cause;
-    private int reconnectionDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
+    private int reconnectionDelayMillis = ClientConnectionEndedEvent.DEFAULT_RECONNECTION_DELAY_MILLIS;
     private boolean attemptReconnect;
 
     /**

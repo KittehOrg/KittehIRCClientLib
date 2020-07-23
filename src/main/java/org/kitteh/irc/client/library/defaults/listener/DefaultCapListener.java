@@ -78,14 +78,14 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
         }
         CapabilityNegotiationResponseEvent responseEvent = null;
         int capabilityListIndex;
-        if ("*".equals(event.getParameters().get(CAPABILITY_LIST_INDEX_DEFAULT))) {
+        if ("*".equals(event.getParameters().get(DefaultCapListener.CAPABILITY_LIST_INDEX_DEFAULT))) {
             if (event.getParameters().size() < 4) {
                 this.trackException(event, "CAP message too short");
                 return;
             }
-            capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT + 1;
+            capabilityListIndex = DefaultCapListener.CAPABILITY_LIST_INDEX_DEFAULT + 1;
         } else {
-            capabilityListIndex = CAPABILITY_LIST_INDEX_DEFAULT;
+            capabilityListIndex = DefaultCapListener.CAPABILITY_LIST_INDEX_DEFAULT;
         }
         List<CapabilityState> capabilityStateList = Arrays.stream(event.getParameters().get(capabilityListIndex).split(" ")).filter(string -> !string.isEmpty()).map(capability -> new DefaultCapabilityState(this.getClient(), capability)).collect(Collectors.toCollection(ArrayList::new));
         switch (event.getParameters().get(1).toLowerCase()) {
@@ -96,7 +96,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
                 break;
             case "list":
                 this.capListMessages.add(event.getServerMessage());
-                if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
+                if (capabilityListIndex != DefaultCapListener.CAPABILITY_LIST_INDEX_DEFAULT) {
                     this.capList.addAll(capabilityStateList);
                 } else {
                     List<CapabilityState> states;
@@ -113,7 +113,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
                 break;
             case "ls":
                 this.capLsMessages.add(event.getServerMessage());
-                if (capabilityListIndex != CAPABILITY_LIST_INDEX_DEFAULT) {
+                if (capabilityListIndex != DefaultCapListener.CAPABILITY_LIST_INDEX_DEFAULT) {
                     this.capLs.addAll(capabilityStateList);
                 } else {
                     List<CapabilityState> states;

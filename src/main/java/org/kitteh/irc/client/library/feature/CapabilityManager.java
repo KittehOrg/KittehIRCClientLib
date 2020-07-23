@@ -170,13 +170,13 @@ public interface CapabilityManager {
          * @return all capability names
          */
         public static List<String> getDefaults() {
-            return DEFAULTS;
+            return Defaults.DEFAULTS;
         }
 
         static {
             DEFAULTS = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields())
                     .filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
-                    .map(Defaults::getStringForCapabilityField).collect(Collectors.toCollection(SUPPLIER)));
+                    .map(Defaults::getStringForCapabilityField).collect(Collectors.toCollection(Defaults.SUPPLIER)));
         }
 
         /**

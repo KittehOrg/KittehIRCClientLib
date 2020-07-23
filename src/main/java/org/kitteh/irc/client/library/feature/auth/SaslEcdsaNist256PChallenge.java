@@ -101,7 +101,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
                 } else {
                     String challenge = event.getParameters().get(0);
                     try {
-                        base64 = sign(SaslEcdsaNist256PChallenge.this.privateKey, challenge);
+                        base64 = SaslEcdsaNist256PChallenge.sign(SaslEcdsaNist256PChallenge.this.privateKey, challenge);
                     } catch (Exception e) {
                         throw new RuntimeException(e); // TODO make this better
                     }

@@ -50,7 +50,7 @@ public class TwitchDelaySender extends QueueProcessingThreadSender {
      * @return supplier
      */
     public static Function<Client.WithManagement, TwitchDelaySender> getSupplier() {
-        return getSupplier(false);
+        return TwitchDelaySender.getSupplier(false);
     }
 
     /**
@@ -63,7 +63,7 @@ public class TwitchDelaySender extends QueueProcessingThreadSender {
     public static Function<Client.WithManagement, TwitchDelaySender> getSupplier(boolean modOrOpOnly) {
         return client -> new TwitchDelaySender(client,
                 "TwitchDelay " + (modOrOpOnly ? "Only Mod/Op" : "Standard"),
-                modOrOpOnly ? MOD_OP_PER_THIRTY_SECONDS : NON_MOD_OP_PER_THIRTY_SECONDS);
+                modOrOpOnly ? TwitchDelaySender.MOD_OP_PER_THIRTY_SECONDS : TwitchDelaySender.NON_MOD_OP_PER_THIRTY_SECONDS);
     }
 
     /**

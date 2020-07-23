@@ -39,7 +39,7 @@ import java.util.List;
  */
 public abstract class Command<C extends Command<C>> implements ClientLinked {
     public class Tags {
-        private List<MessageTag> tags = new ArrayList<>();
+        private final List<MessageTag> tags = new ArrayList<>();
 
         public Tags add(@NonNull MessageTag tag) {
             this.tags.add(Sanity.nullCheck(tag, "Tag"));

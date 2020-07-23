@@ -147,7 +147,7 @@ public class StsPropertiesStorageManager implements StsStorageManager {
         for (String hostname : this.properties.stringPropertyNames()) {
             String value = this.properties.getProperty(hostname);
             String[] components = value.split("; ");
-            ZonedDateTime dt = ZonedDateTime.parse(components[0], DATE_TIME_FORMATTER);
+            ZonedDateTime dt = ZonedDateTime.parse(components[0], StsPropertiesStorageManager.DATE_TIME_FORMATTER);
             if (dt.isBefore(ZonedDateTime.now(ZoneOffset.UTC))) {
                 stagedRemovals.add(hostname); // CME
             }
@@ -195,6 +195,6 @@ public class StsPropertiesStorageManager implements StsStorageManager {
      * @return the date-time string e.g. 2016-01-01T00:00:00Z
      */
     private String getExpiryFromDuration(long duration) {
-        return ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(duration).format(DATE_TIME_FORMATTER);
+        return ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(duration).format(StsPropertiesStorageManager.DATE_TIME_FORMATTER);
     }
 }

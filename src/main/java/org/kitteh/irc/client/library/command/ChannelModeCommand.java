@@ -125,7 +125,7 @@ public class ChannelModeCommand extends ChannelCommand<ChannelModeCommand> {
             parameterModesPerLine = modes.get().getInteger();
         }
         if (parameterModesPerLine < 1) {
-            parameterModesPerLine = PARAMETER_MODES_PER_LINE;
+            parameterModesPerLine = ChannelModeCommand.PARAMETER_MODES_PER_LINE;
         }
         List<ModeStatus<ChannelMode>> queue = new ArrayList<>();
         int currentParamModes = 0;

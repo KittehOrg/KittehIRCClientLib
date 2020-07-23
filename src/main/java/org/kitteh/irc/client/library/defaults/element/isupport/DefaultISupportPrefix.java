@@ -54,7 +54,7 @@ public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired
      */
     public DefaultISupportPrefix(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
-        Matcher matcher = PATTERN.matcher(value);
+        Matcher matcher = DefaultISupportPrefix.PATTERN.matcher(value);
         if (!matcher.find()) {
             throw new KittehServerISupportException(name, "Data does not match expected pattern");
         }

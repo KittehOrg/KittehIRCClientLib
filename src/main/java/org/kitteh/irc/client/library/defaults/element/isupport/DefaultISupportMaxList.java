@@ -40,7 +40,7 @@ public class DefaultISupportMaxList extends DefaultISupportParameterValueRequire
     /**
      * Default implementation of {@link MaxList.LimitData}.
      */
-    public class DefaultLimitData implements MaxList.LimitData {
+    public static class DefaultLimitData implements MaxList.LimitData {
         private final int limit;
         private final Set<Character> modes;
 

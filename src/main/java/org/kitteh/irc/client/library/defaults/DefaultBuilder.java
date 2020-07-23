@@ -248,19 +248,19 @@ public class DefaultBuilder implements Client.Builder {
     private class ManagementImpl implements Management {
         @Override
         public @NonNull Management actorTracker(@Nullable Function<Client.WithManagement, ? extends ActorTracker> supplier) {
-            DefaultBuilder.this.actorTracker = (supplier != null) ? supplier : DEFAULT_ACTOR_TRACKER;
+            DefaultBuilder.this.actorTracker = (supplier != null) ? supplier : DefaultBuilder.DEFAULT_ACTOR_TRACKER;
             return this;
         }
 
         @Override
         public @NonNull Management authManager(@Nullable Function<Client.WithManagement, ? extends AuthManager> supplier) {
-            DefaultBuilder.this.authManager = (supplier != null) ? supplier : DEFAULT_AUTH_MANAGER;
+            DefaultBuilder.this.authManager = (supplier != null) ? supplier : DefaultBuilder.DEFAULT_AUTH_MANAGER;
             return this;
         }
 
         @Override
         public @NonNull Management capabilityManager(@Nullable Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> supplier) {
-            DefaultBuilder.this.capabilityManager = (supplier != null) ? supplier : DEFAULT_CAPABILITY_MANAGER;
+            DefaultBuilder.this.capabilityManager = (supplier != null) ? supplier : DefaultBuilder.DEFAULT_CAPABILITY_MANAGER;
             return this;
         }
 
@@ -272,19 +272,19 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Management eventManager(@Nullable Function<Client.WithManagement, ? extends EventManager> supplier) {
-            DefaultBuilder.this.eventManager = (supplier != null) ? supplier : DEFAULT_EVENT_MANAGER;
+            DefaultBuilder.this.eventManager = (supplier != null) ? supplier : DefaultBuilder.DEFAULT_EVENT_MANAGER;
             return this;
         }
 
         @Override
         public @NonNull Management eventListeners(@Nullable List<EventListenerSupplier> listenerSuppliers) {
-            DefaultBuilder.this.eventListeners = (listenerSuppliers != null) ? listenerSuppliers : DEFAULT_EVENT_LISTENERS;
+            DefaultBuilder.this.eventListeners = (listenerSuppliers != null) ? listenerSuppliers : DefaultBuilder.DEFAULT_EVENT_LISTENERS;
             return this;
         }
 
         @Override
         public @NonNull Management iSupportManager(@Nullable Function<Client.WithManagement, ? extends ISupportManager> supplier) {
-            DefaultBuilder.this.iSupportManager = (supplier != null) ? supplier : DEFAULT_ISUPPORT_MANAGER;
+            DefaultBuilder.this.iSupportManager = (supplier != null) ? supplier : DefaultBuilder.DEFAULT_ISUPPORT_MANAGER;
             return this;
         }
 
@@ -296,7 +296,7 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Management messageTagManager(@Nullable Function<Client.WithManagement, ? extends MessageTagManager> supplier) {
-            DefaultBuilder.this.messageTagManager = (supplier != null) ? supplier : DEFAULT_MESSAGE_TAG_MANAGER;
+            DefaultBuilder.this.messageTagManager = (supplier != null) ? supplier : DefaultBuilder.DEFAULT_MESSAGE_TAG_MANAGER;
             return this;
         }
 
@@ -308,7 +308,7 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Management serverInfo(@Nullable Function<Client.WithManagement, ? extends ServerInfo.WithManagement> supplier) {
-            DefaultBuilder.this.serverInfo = (supplier != null) ? supplier : DEFAULT_SERVER_INFO;
+            DefaultBuilder.this.serverInfo = (supplier != null) ? supplier : DefaultBuilder.DEFAULT_SERVER_INFO;
             return this;
         }
 
@@ -342,7 +342,7 @@ public class DefaultBuilder implements Client.Builder {
     private @Nullable String bindHost;
     private int bindPort;
 
-    private HostWithPort serverHostWithPort = HostWithPort.of(DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT);
+    private HostWithPort serverHostWithPort = HostWithPort.of(DefaultBuilder.DEFAULT_SERVER_HOST, DefaultBuilder.DEFAULT_SERVER_PORT);
     private @Nullable String serverPassword = null;
     private boolean secure = true;
     private @Nullable Path secureKeyCertChain = null;
@@ -371,17 +371,17 @@ public class DefaultBuilder implements Client.Builder {
     private @Nullable String webircGateway = null;
 
     // Management
-    private Function<Client.WithManagement, ? extends ActorTracker> actorTracker = DEFAULT_ACTOR_TRACKER;
-    private Function<Client.WithManagement, ? extends AuthManager> authManager = DEFAULT_AUTH_MANAGER;
-    private Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> capabilityManager = DEFAULT_CAPABILITY_MANAGER;
+    private Function<Client.WithManagement, ? extends ActorTracker> actorTracker = DefaultBuilder.DEFAULT_ACTOR_TRACKER;
+    private Function<Client.WithManagement, ? extends AuthManager> authManager = DefaultBuilder.DEFAULT_AUTH_MANAGER;
+    private Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> capabilityManager = DefaultBuilder.DEFAULT_CAPABILITY_MANAGER;
     private @Nullable DefaultMessageMap defaultMessageMap = null;
-    private Function<Client.WithManagement, ? extends EventManager> eventManager = DEFAULT_EVENT_MANAGER;
-    private List<EventListenerSupplier> eventListeners = DEFAULT_EVENT_LISTENERS;
-    private Function<Client.WithManagement, ? extends ISupportManager> iSupportManager = DEFAULT_ISUPPORT_MANAGER;
-    private Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue = DEFAULT_MESSAGE_SENDING_QUEUE;
-    private Function<Client.WithManagement, ? extends MessageTagManager> messageTagManager = DEFAULT_MESSAGE_TAG_MANAGER;
+    private Function<Client.WithManagement, ? extends EventManager> eventManager = DefaultBuilder.DEFAULT_EVENT_MANAGER;
+    private List<EventListenerSupplier> eventListeners = DefaultBuilder.DEFAULT_EVENT_LISTENERS;
+    private Function<Client.WithManagement, ? extends ISupportManager> iSupportManager = DefaultBuilder.DEFAULT_ISUPPORT_MANAGER;
+    private Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue = DefaultBuilder.DEFAULT_MESSAGE_SENDING_QUEUE;
+    private Function<Client.WithManagement, ? extends MessageTagManager> messageTagManager = DefaultBuilder.DEFAULT_MESSAGE_TAG_MANAGER;
     private NetworkHandler networkHandler = NettyNetworkHandler.getInstance();
-    private Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo = DEFAULT_SERVER_INFO;
+    private Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo = DefaultBuilder.DEFAULT_SERVER_INFO;
     private @Nullable StsStorageManager stsStorageManager = null;
 
     @Override

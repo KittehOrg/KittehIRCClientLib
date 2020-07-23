@@ -53,7 +53,7 @@ public final class StsUtil {
      * @return an STSStorageManager implementer
      */
     public static @NonNull StsStorageManager getDefaultStorageManager() {
-        return StsUtil.getDefaultStorageManager(Paths.get(System.getProperty("user.home"), DEFAULT_FILENAME));
+        return StsUtil.getDefaultStorageManager(Paths.get(System.getProperty("user.home"), StsUtil.DEFAULT_FILENAME));
     }
 
     /**

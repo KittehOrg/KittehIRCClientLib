@@ -88,7 +88,7 @@ public final class StringUtil {
      * @throws IllegalArgumentException for null message
      */
     public static @NonNull String makeRainbow(@NonNull String message) {
-        return StringUtil.makeRainbow(message, DEFAULT_RAINBOW);
+        return StringUtil.makeRainbow(message, StringUtil.DEFAULT_RAINBOW);
     }
 
     /**

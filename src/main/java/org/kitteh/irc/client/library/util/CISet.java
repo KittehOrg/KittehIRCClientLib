@@ -67,7 +67,7 @@ public class CISet implements Set<String> {
             Set<String> set = new HashSet<>(this.map.values());
             this.lastCaseMapping = caseMapping;
             this.map.clear();
-            set.forEach(this::add);
+            this.addAll(set);
         }
         return caseMapping.toLowerCase(input);
     }

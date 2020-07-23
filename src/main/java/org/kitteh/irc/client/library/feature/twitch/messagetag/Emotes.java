@@ -52,7 +52,7 @@ public class Emotes extends MessageTagManager.DefaultMessageTag {
     /**
      * One emote.
      */
-    public class Emote {
+    public static class Emote {
         private final int id;
         private final int firstIndex;
         private final int lastIndex;

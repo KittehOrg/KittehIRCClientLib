@@ -100,7 +100,7 @@ public class Badges extends MessageTagManager.DefaultMessageTag {
     /**
      * One badge.
      */
-    public class Badge {
+    public static class Badge {
         private final String name;
         private final String version;
 

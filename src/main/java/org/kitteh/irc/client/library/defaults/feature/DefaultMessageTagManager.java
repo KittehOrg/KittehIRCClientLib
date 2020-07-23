@@ -144,7 +144,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
     private @NonNull String getTagValue(@NonNull String tag) {
         StringBuilder builder = new StringBuilder(tag.length());
         int currentIndex = 0;
-        Matcher matcher = TAG_ESCAPE.matcher(tag);
+        Matcher matcher = DefaultMessageTagManager.TAG_ESCAPE.matcher(tag);
         while (matcher.find()) {
             if (matcher.start() > currentIndex) {
                 builder.append(tag, currentIndex, matcher.start());

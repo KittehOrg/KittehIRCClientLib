@@ -91,7 +91,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
         }
     }
 
-    private final class FilterProcessorWrapper {
+    private static final class FilterProcessorWrapper {
         private final Annotation[] annotations;
         private final FilterProcessor filterProcessor;
 
