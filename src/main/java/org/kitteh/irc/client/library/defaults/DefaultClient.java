@@ -344,11 +344,11 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void addKeyProtectedChannel(@NonNull Pair<String, String>... channelsAndKeys) {
-        Sanity.nullCheck(channelsAndKeys, "Channel/key pairs cannot be null");
+        Sanity.nullCheck(channelsAndKeys, "Channel/key pairs");
         Sanity.truthiness(channelsAndKeys.length > 0, "Channel/key pairs cannot be empty array");
         for (Pair<String, String> channelAndKey : channelsAndKeys) {
             String channelName = channelAndKey.getLeft();
-            Sanity.nullCheck(channelName, "Channel/key pairs cannot contain null channel name");
+            Sanity.nullCheck(channelName, "Channel/key pair channel name");
             Sanity.truthiness(this.serverInfo.isValidChannel(channelName), "Channel/key pairs cannot contain invalid channel name " + channelName);
         }
         for (Pair<String, String> channelAndKey : channelsAndKeys) {
@@ -374,7 +374,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public @NonNull Optional<Channel> getChannel(@NonNull String name) {
-        return this.actorTracker.getTrackedChannel(Sanity.nullCheck(name, "Channel name cannot be null"));
+        return this.actorTracker.getTrackedChannel(Sanity.nullCheck(name, "Channel name"));
     }
 
     @Override
@@ -384,7 +384,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public @NonNull Set<Channel> getChannels(@NonNull Collection<String> channels) {
-        return Sanity.nullCheck(channels, "Channels collection cannot be null").stream()
+        return Sanity.nullCheck(channels, "Channels collection").stream()
                 .filter(Objects::nonNull)
                 .map(this.actorTracker::getTrackedChannel)
                 .flatMap(optional -> optional.map(Stream::of).orElseGet(Stream::empty))
@@ -658,7 +658,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void setNetworkHandler(@NonNull NetworkHandler networkHandler) {
-        this.networkHandler = Sanity.nullCheck(networkHandler, "Network handler cannot be null");
+        this.networkHandler = Sanity.nullCheck(networkHandler, "Network handler");
     }
 
     @Override

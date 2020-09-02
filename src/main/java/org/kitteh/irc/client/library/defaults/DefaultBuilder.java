@@ -90,7 +90,7 @@ public class DefaultBuilder implements Client.Builder {
     private class ServerImpl implements Server {
         @Override
         public @NonNull Server address(@NonNull HostWithPort hostWithPort) {
-            DefaultBuilder.this.serverHostWithPort = Sanity.nullCheck(hostWithPort, "Host with port cannot be null");
+            DefaultBuilder.this.serverHostWithPort = Sanity.nullCheck(hostWithPort, "Host with port");
             return this;
         }
 
@@ -302,7 +302,7 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Management networkHandler(@NonNull NetworkHandler networkHandler) {
-            DefaultBuilder.this.networkHandler = Sanity.nullCheck(networkHandler, "Network handler cannot be null");
+            DefaultBuilder.this.networkHandler = Sanity.nullCheck(networkHandler, "Network handler");
             return this;
         }
 

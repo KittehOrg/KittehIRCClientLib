@@ -56,7 +56,7 @@ public class CapabilitiesDeletedSupportedEvent extends CapabilityNegotiationResp
      */
     public CapabilitiesDeletedSupportedEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, boolean negotiating, @NonNull List<CapabilityState> deletedCapabilities) {
         super(client, sourceMessage, negotiating);
-        Sanity.nullCheck(deletedCapabilities, "Capabilities list cannot be null");
+        Sanity.nullCheck(deletedCapabilities, "Capabilities list");
         this.deletedCapabilities = Collections.unmodifiableList(new ArrayList<>(deletedCapabilities));
     }
 

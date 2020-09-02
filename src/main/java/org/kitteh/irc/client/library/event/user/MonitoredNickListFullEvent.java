@@ -52,7 +52,7 @@ public class MonitoredNickListFullEvent extends ServerMessageEventBase {
     public MonitoredNickListFullEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, int limit, @NonNull List<String> rejectedNicks) {
         super(client, sourceMessage);
         this.limit = limit;
-        this.rejectedNicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(rejectedNicks, "Rejected nicks cannot be null")));
+        this.rejectedNicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(rejectedNicks, "Rejected nicks")));
     }
 
     /**

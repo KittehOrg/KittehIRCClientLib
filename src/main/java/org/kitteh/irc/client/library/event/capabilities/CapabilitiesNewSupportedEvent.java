@@ -56,7 +56,7 @@ public class CapabilitiesNewSupportedEvent extends CapabilityNegotiationResponse
      */
     public CapabilitiesNewSupportedEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, boolean negotiating, @NonNull List<CapabilityState> newCapabilities) {
         super(client, sourceMessage, negotiating);
-        Sanity.nullCheck(newCapabilities, "Capabilities list cannot be null");
+        Sanity.nullCheck(newCapabilities, "Capabilities list");
         this.newCapabilities = Collections.unmodifiableList(new ArrayList<>(newCapabilities));
     }
 

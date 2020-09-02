@@ -55,7 +55,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      * @param parameters parameters
      */
     public ClientReceiveServerMessageEventBase(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor server, @NonNull String command, @NonNull List<String> parameters) {
-        super(client, Sanity.nullCheck(serverMessage, "Server message cannot be null"), server);
+        super(client, Sanity.nullCheck(serverMessage, "Server message"), server);
         this.parameters = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(parameters, "Parameters")));
         this.message = serverMessage;
         this.command = Sanity.nullCheck(command, "Command");

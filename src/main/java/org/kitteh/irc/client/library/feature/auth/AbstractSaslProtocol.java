@@ -145,7 +145,7 @@ public abstract class AbstractSaslProtocol extends AbstractAuthProtocol implemen
      */
     protected AbstractSaslProtocol(@NonNull Client client, @NonNull String saslType) {
         super(client);
-        this.saslType = Sanity.nullCheck(saslType, "SASL type cannot be null");
+        this.saslType = Sanity.nullCheck(saslType, "SASL type");
     }
 
     @Override

@@ -47,7 +47,7 @@ public abstract class ServerMessageEventBase extends ClientEventBase implements 
      */
     protected ServerMessageEventBase(@NonNull Client client, @NonNull ServerMessage sourceMessage) {
         super(client);
-        this.sourceMessage = Sanity.nullCheck(sourceMessage, "Original message cannot be null");
+        this.sourceMessage = Sanity.nullCheck(sourceMessage, "Original message");
     }
 
     @Override

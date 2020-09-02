@@ -100,7 +100,7 @@ public final class Sanity {
      * @throws IllegalArgumentException if found
      */
     public static @NonNull String safeMessageCheck(@Nullable String message, @NonNull String name) {
-        Sanity.nullCheck(message, name + " cannot be null");
+        Sanity.nullCheck(message, name);
         for (char ch : message.toCharArray()) {
             if ((ch == '\n') || (ch == '\r') || (ch == '\0')) {
                 throw new IllegalArgumentException(name + " cannot contain CR, LF, or NUL");

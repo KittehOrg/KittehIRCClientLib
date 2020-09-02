@@ -41,8 +41,8 @@ public class Change<Type> {
      * @param newData the new data following the change taking place
      */
     public Change(@NonNull Type oldData, @NonNull Type newData) {
-        this.oldData = Sanity.nullCheck(oldData, "old data cannot be null");
-        this.newData = Sanity.nullCheck(newData, "new data cannot be null");
+        this.oldData = Sanity.nullCheck(oldData, "old data");
+        this.newData = Sanity.nullCheck(newData, "new data");
     }
 
     /**

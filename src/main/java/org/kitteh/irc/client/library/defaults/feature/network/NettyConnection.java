@@ -101,9 +101,9 @@ public final class NettyConnection implements ClientConnection {
      */
     public NettyConnection(final Client.@NonNull WithManagement client, @NonNull ChannelFuture channelFuture, @NonNull Consumer<Client.WithManagement> shutdownHook) {
         this.client = Sanity.nullCheck(client, "Client");
-        this.channelFuture = Sanity.nullCheck(channelFuture, "Channel future cannot be null");
+        this.channelFuture = Sanity.nullCheck(channelFuture, "Channel future");
         this.channel = channelFuture.channel();
-        this.shutdownHook = Sanity.nullCheck(shutdownHook, "Shutdown hook cannot be null");
+        this.shutdownHook = Sanity.nullCheck(shutdownHook, "Shutdown hook");
 
         channelFuture.addListener(future -> {
             NettyConnection.this.channelFuture = null;

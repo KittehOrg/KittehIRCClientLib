@@ -51,7 +51,7 @@ public class UserModeEvent extends ActorEventBase<Actor> {
      */
     public UserModeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Actor actor, @NonNull String target, @NonNull ModeStatusList<UserMode> statusList) {
         super(client, sourceMessage, actor);
-        this.statusList = Sanity.nullCheck(statusList, "Status list cannot be null");
+        this.statusList = Sanity.nullCheck(statusList, "Status list");
         this.target = Sanity.nullCheck(target, "Target");
     }
 

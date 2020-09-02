@@ -51,7 +51,7 @@ public abstract class ServerMultipleMessageEventBase extends ClientEventBase imp
      */
     protected ServerMultipleMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages) {
         super(client);
-        this.sourceMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(sourceMessages, "Original messages cannot be null")));
+        this.sourceMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(sourceMessages, "Original messages")));
     }
 
     @Override

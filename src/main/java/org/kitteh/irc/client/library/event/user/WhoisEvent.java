@@ -44,7 +44,7 @@ public class WhoisEvent extends ClientEventBase {
      */
     public WhoisEvent(@NonNull Client client, @NonNull WhoisData whoisData) {
         super(client);
-        this.whoisData = Sanity.nullCheck(whoisData, "Whois data cannot be null");
+        this.whoisData = Sanity.nullCheck(whoisData, "Whois data");
     }
 
     /**

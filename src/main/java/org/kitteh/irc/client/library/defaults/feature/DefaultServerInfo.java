@@ -182,7 +182,7 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     // Util stuffs
     @Override
     public boolean isValidChannel(@NonNull String name) {
-        Sanity.nullCheck(name, "Channel name cannot be null");
+        Sanity.nullCheck(name, "Channel name");
         int channelLengthLimit = this.getChannelLengthLimit();
         return (name.length() > 1) && ((channelLengthLimit < 0) || (name.length() <= channelLengthLimit)) && this.getChannelPrefixes().contains(name.charAt(0)) && this.channelPattern.matcher(name).matches();
     }

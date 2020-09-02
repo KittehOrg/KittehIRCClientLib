@@ -61,7 +61,7 @@ public class CapabilitiesSupportedListEvent extends ServerMultipleMessageEventBa
     public CapabilitiesSupportedListEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, boolean negotiating, @NonNull List<CapabilityState> supportedCapabilities) {
         super(client, sourceMessages);
         this.negotiating = negotiating;
-        Sanity.nullCheck(supportedCapabilities, "Capabilities list cannot be null");
+        Sanity.nullCheck(supportedCapabilities, "Capabilities list");
         this.supportedCapabilities = Collections.unmodifiableList(new ArrayList<>(supportedCapabilities));
     }
 

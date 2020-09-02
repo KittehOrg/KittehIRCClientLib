@@ -102,7 +102,7 @@ public final class StringUtil {
      */
     public static @NonNull String makeRainbow(@NonNull String message, @NonNull Format[] colorOrder) {
         Sanity.safeMessageCheck(message);
-        Sanity.nullCheck(colorOrder, "Color order cannot be null");
+        Sanity.nullCheck(colorOrder, "Color order");
         for (Format format : colorOrder) {
             if (!format.isColor()) {
                 throw new IllegalArgumentException("Color order must contain only colors");
