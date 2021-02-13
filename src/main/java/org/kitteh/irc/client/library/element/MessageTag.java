@@ -69,6 +69,37 @@ public interface MessageTag {
     }
 
     /**
+     * Represents the `typing` client tag as specified here:
+     * https://ircv3.net/specs/client-tags/typing#format
+     */
+    interface Typing extends MessageTag {
+        /**
+         * Typing states.
+         */
+        enum State {
+            /**
+             * The user is actively typing.
+             */
+            ACTIVE,
+            /**
+             * The user has cleared the text field.
+             */
+            DONE,
+            /**
+             * The user has paused typing with text in the text input field.
+             */
+            PAUSED
+        }
+
+        /**
+         * Gets the typing state.
+         *
+         * @return typing state
+         */
+        @NonNull State getState();
+    }
+
+    /**
      * Gets the name of the tag.
      *
      * @return tag name

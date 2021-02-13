@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagLabel;
 import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagMsgId;
 import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagTime;
+import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagTyping;
 import org.kitteh.irc.client.library.element.MessageTag;
 import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
@@ -86,6 +87,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
         this.registerTagCreator(CapabilityManager.Defaults.SERVER_TIME, "time", DefaultMessageTagTime.FUNCTION);
         this.registerTagCreator(CapabilityManager.Defaults.MESSAGE_TAGS, "msgid", DefaultMessageTagMsgId.FUNCTION);
         this.registerTagCreator(CapabilityManager.Defaults.LABELED_RESPONSE, "label", DefaultMessageTagLabel.FUNCTION);
+        this.registerTagCreator(CapabilityManager.Defaults.MESSAGE_TAGS, "typing", DefaultMessageTagTyping.FUNCTION);
     }
 
     @Override
