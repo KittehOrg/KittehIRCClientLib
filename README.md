@@ -6,7 +6,7 @@ using the Netty library to maximize performance and scalability.
 [![Coverage](https://img.shields.io/codecov/c/github/KittehOrg/KittehIRCClientLib/master.svg)](https://codecov.io/github/KittehOrg/KittehIRCClientLib)
 ![Powered by Kittens](https://img.shields.io/badge/powered%20by-kittens-blue.svg)
 
-#### [Project News](http://kitteh.org/) | [Documentation](http://kicl.kitteh.org/) |  [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/) | [Issues](https://github.com/KittehOrg/KittehIRCClientLib/issues)
+#### [Project News](https://kitteh.org/) | [Documentation](https://kicl.kitteh.org/) |  [JavaDocs](https://kittehorg.github.io/KittehIRCClientLib/) | [Issues](https://github.com/KittehOrg/KittehIRCClientLib/issues)
 
 ### Minimal example
 
@@ -51,8 +51,6 @@ implementation "org.kitteh.irc:client-lib:7.3.0"
 ```
 
 Releases are available on Maven Central.
-
-Snapshots are available on the Sonatype OSSRH: https://oss.sonatype.org/content/repositories/snapshots
 
 ### Branches
 
