@@ -106,6 +106,16 @@ public class SanityTest {
         Sanity.safeMessageCheck("Me\0ow");
     }
 
+    @Test
+    public void noSpacesPass() {
+        Sanity.noSpaces("Cat", "");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void noSpacesFail() {
+        Sanity.noSpaces("Cat ", "");
+    }
+
     /**
      * Tests the private constructor.
      *
