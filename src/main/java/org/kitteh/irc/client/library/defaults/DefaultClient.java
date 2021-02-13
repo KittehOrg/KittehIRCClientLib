@@ -87,6 +87,7 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import javax.net.ssl.TrustManagerFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -601,7 +602,7 @@ public class DefaultClient implements Client.WithManagement {
 
     private void sendRawLine(@NonNull String message, boolean priority, boolean avoidDuplicates) {
         Sanity.safeMessageCheck(message);
-        if (!message.isEmpty() && (message.length() > ((message.charAt(0) == '@') ? 1022 : 510))) {
+        if (!message.isEmpty() && (message.getBytes(StandardCharsets.UTF_8).length > (((message.charAt(0) == '@') ? 4096 : 0) + 510))) {
             throw new IllegalArgumentException("Message too long: " + message.length());
         }
         synchronized (this.messageSendingLock) {
