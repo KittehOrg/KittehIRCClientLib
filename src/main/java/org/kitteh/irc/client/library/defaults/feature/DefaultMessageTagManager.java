@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.defaults.feature;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagLabel;
 import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagMsgId;
 import org.kitteh.irc.client.library.defaults.element.messagetag.DefaultMessageTagTime;
 import org.kitteh.irc.client.library.element.MessageTag;
@@ -84,6 +85,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
         super(client);
         this.registerTagCreator(CapabilityManager.Defaults.SERVER_TIME, "time", DefaultMessageTagTime.FUNCTION);
         this.registerTagCreator(CapabilityManager.Defaults.MESSAGE_TAGS, "msgid", DefaultMessageTagMsgId.FUNCTION);
+        this.registerTagCreator(CapabilityManager.Defaults.LABELED_RESPONSE, "label", DefaultMessageTagLabel.FUNCTION);
     }
 
     @Override

@@ -113,10 +113,16 @@ public interface CapabilityManager {
         public static final transient String INVITE_NOTIFY = "invite-notify";
 
         /**
+         * Labeled responses, which also requires the {@link #BATCH}
+         * capability to function, via a "label" message id.
+         */
+        public static final String LABELED_RESPONSE = "labeled-response";
+
+        /**
          * Message tags support, explicitly stating that client-only tags are
-         * supported, but not a necessary capability for actually supporting
-         * tags through other capabilities like account-tag, batch, or
-         * server-time.
+         * supported, required for msgid tag but not a necessary capability
+         * for actually supporting tags through other capabilities like
+         * account-tag, batch, or server-time.
          */
         public static final String MESSAGE_TAGS = "message-tags";
 

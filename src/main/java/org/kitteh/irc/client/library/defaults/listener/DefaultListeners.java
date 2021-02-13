@@ -40,6 +40,12 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     ACCOUNT(DefaultAccountListener::new),
     /**
+     * ACK handling.
+     *
+     * @see DefaultAckListener
+     */
+    ACK(DefaultAckListener::new),
+    /**
      * AWAY handling.
      *
      * @see DefaultAwayListener

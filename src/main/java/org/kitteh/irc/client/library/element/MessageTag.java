@@ -33,9 +33,26 @@ import java.util.Optional;
  */
 public interface MessageTag {
     /**
+     * Represents the `label` tag as specified by the labeled responses spec.
+     */
+    interface Label extends MessageTag {
+        /**
+         * Gets the label.
+         *
+         * @return the label
+         */
+        @NonNull String getLabel();
+    }
+
+    /**
      * Represents the `msgid` tag as specified by the Message IDs spec.
      */
     interface MsgId extends MessageTag {
+        /**
+         * Gets the message id.
+         *
+         * @return the message id
+         */
         @NonNull String getId();
     }
 
