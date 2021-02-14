@@ -31,7 +31,7 @@ import org.kitteh.irc.client.library.element.ISupportParameter;
 /**
  * Default implementation of {@link ISupportParameter.Modes}.
  */
-public class DefaultISupportModes extends DefaultISupportParameterInteger implements ISupportParameter.Modes {
+public class DefaultISupportModes extends DefaultISupportParameterOptionalInteger implements ISupportParameter.Modes {
     /**
      * Constructs the object.
      *

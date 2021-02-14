@@ -364,7 +364,7 @@ public interface ISupportParameter extends ClientLinked {
     /**
      * Represents the number of modes with parameters allowed per line.
      */
-    interface Modes extends IntegerParameter {
+    interface Modes extends OptionalIntegerParameter {
         /**
          * Parameter name.
          */

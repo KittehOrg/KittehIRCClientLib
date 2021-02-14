@@ -16,6 +16,7 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * @see ChannelModeCommand
@@ -37,7 +38,7 @@ public class ChannelModeCommandTest {
         Mockito.when(serverInfo.isValidChannel(Mockito.any())).thenReturn(true);
         ISupportParameter.Modes modes = Mockito.mock(ISupportParameter.Modes.class);
         Mockito.when(serverInfo.getISupportParameter("MODES", ISupportParameter.Modes.class)).thenReturn(Optional.of(modes));
-        Mockito.when(modes.getInteger()).thenReturn(3);
+        Mockito.when(modes.getInteger()).thenReturn(OptionalInt.of(3));
     }
 
     @Test
