@@ -1032,7 +1032,10 @@ public interface Client extends ClientLinked {
     @NonNull CapabilityManager getCapabilityManager();
 
     /**
-     * Gets the named channel.
+     * Gets a snapshot of known information about a named channel, if the
+     * channel is being tracked by the client. Results should be expected
+     * after the client has joined the channel, and will contain as much
+     * information as is available to the client at the time of the request.
      *
      * @param name channel name
      * @return a channel snapshot of the named channel if tracked by the
