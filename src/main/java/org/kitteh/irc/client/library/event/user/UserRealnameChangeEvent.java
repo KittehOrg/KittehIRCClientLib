@@ -21,29 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.kitteh.irc.client.library.event.client;
+package org.kitteh.irc.client.library.event.user;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ServerMessage;
-
-import java.util.List;
+import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.event.abstractbase.UserInfoChangeEventBase;
 
 /**
- * A WARN has been received.
+ * A {@link User} has changed realname.
  */
-public class WarnEvent extends StandardReplyEvent {
+public class UserRealnameChangeEvent extends UserInfoChangeEventBase<String> {
     /**
-     * Constructs the event.
+     * Creates the event.
      *
-     * @param client the client
+     * @param client client for which this is occurring
      * @param sourceMessage source message
-     * @param command the command
-     * @param code the code
-     * @param context the context
-     * @param description the description
+     * @param oldUser user changing realname
+     * @param newUser the new user realname
      */
-    public WarnEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull String command, @NonNull String code, @NonNull List<String> context, @NonNull String description) {
-        super(client, sourceMessage, Type.WARN, command, code, context, description);
+    public UserRealnameChangeEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull User oldUser, @NonNull User newUser) {
+        super(client, sourceMessage, oldUser, newUser, user -> user.getRealName().orElse(""));
     }
 }

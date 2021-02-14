@@ -142,6 +142,11 @@ public interface CapabilityManager {
         public static final String SERVER_TIME = "server-time";
 
         /**
+         * Setting realname (GECOS) without disconnecting.
+         */
+        public static final String SETNAME = "setname";
+
+        /**
          * The chghost extension, allows users to change user string or
          * hostname.
          *

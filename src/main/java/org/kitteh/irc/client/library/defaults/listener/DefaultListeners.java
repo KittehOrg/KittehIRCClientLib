@@ -178,6 +178,12 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     QUIT(DefaultQuitListener::new),
     /**
+     * SETNAME handling.
+     *
+     * @see DefaultSetNameListener
+     */
+    SETNAME(DefaultSetNameListener::new),
+    /**
      * Standard Reply (FAIL, NOTE, WARN) handling.
      */
     STANDARD_REPLY(DefaultStandardReplyListener::new),

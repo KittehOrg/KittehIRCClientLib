@@ -680,6 +680,14 @@ public class DefaultActorTracker implements ActorTracker {
     }
 
     @Override
+    public void trackUserRealnameChange(@NonNull String nick, @NonNull String newRealname) {
+        IrcUser u = this.trackedUsers.get(nick);
+        if (u != null) {
+            u.setRealName(newRealname);
+        }
+    }
+
+    @Override
     public void trackUserPart(@NonNull String channel, @NonNull String nick) {
         IrcChannel ch = this.trackedChannels.get(channel);
         if (ch != null) {

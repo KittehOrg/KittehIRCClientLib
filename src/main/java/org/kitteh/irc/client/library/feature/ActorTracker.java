@@ -258,6 +258,14 @@ public interface ActorTracker extends Resettable {
     void trackUserNickChange(@NonNull String oldNick, @NonNull String newNick);
 
     /**
+     * Tracks a user's realname changing.
+     *
+     * @param nick nick
+     * @param newRealname new realname
+     */
+    void trackUserRealnameChange(@NonNull String nick, @NonNull String newRealname);
+
+    /**
      * Tracks a user parting a channel, potentially untracking them overall
      * if they are no longer in any tracked channel.
      *
