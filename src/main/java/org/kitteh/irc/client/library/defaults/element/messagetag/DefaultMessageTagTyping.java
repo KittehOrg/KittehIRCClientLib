@@ -30,7 +30,7 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.TriFunction;
 
 /**
- * Default implementation of {@link Time}.
+ * Default implementation of {@link Typing}.
  */
 public class DefaultMessageTagTyping extends MessageTagManager.DefaultMessageTag implements MessageTag.Typing {
     /**

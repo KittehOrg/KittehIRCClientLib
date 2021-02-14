@@ -82,6 +82,8 @@ public abstract class StandardReplyEvent extends ServerMessageEventBase {
 
     /**
      * Gets the type of standard reply this is.
+     *
+     * @return type of reply
      */
     public @NonNull Type getType() {
         return this.type;
@@ -114,6 +116,11 @@ public abstract class StandardReplyEvent extends ServerMessageEventBase {
         return Collections.unmodifiableList(this.context);
     }
 
+    /**
+     * Gets the description.
+     *
+     * @return description
+     */
     public @NonNull String getDescription() {
         return this.description;
     }
