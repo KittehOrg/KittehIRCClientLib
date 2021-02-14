@@ -1,5 +1,5 @@
 This page documents IRCv3 features. With two exceptions noted, all of the IRCv3 3.1 and 3.2
-specifications are implemented. Draft/WIP specs have some support (STS, SNI).
+specifications are implemented along with more recent specifications. Draft/WIP specs have some support (SNI).
 
 See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 
@@ -8,6 +8,7 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 * CAP
     * The client starts the connection with `CAP LS 302` and will request a modifiable selection of capabilities.
     * It supports CAP spec 3.2, including the NEW and DEL commands.
+* Standard Replies (FAIL, NOTE, WARN) and ACK.
 * multi-prefix
     * Prefixes sorted by importance according to ISUPPORT info.
 * sasl
@@ -28,7 +29,10 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
 * Message tags
     * Getters in `ServerMessage`.
     * Custom class registration in `MessageTagManager`.
+    * Message ID (`msgid`).
+    * Labeled response (`label` and ACK messages)
     * Client-only tags.
+      * `talking`.
     * Tag-only (TAGMSG) messages.
 * Monitor
     * `MonitorCommand` to get the party started.
@@ -58,14 +62,6 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
     * Supported in the client builder.
     * For more information see [here](advanced/webirc.md).
 
-
-### Not yet supported
-
-* Specific support for proposed client-only tags:
-    * reply
-    * react
-* labeled-message draft
-* message-ids draft
 
 ### No plans to support
 
