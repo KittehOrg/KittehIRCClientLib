@@ -151,6 +151,52 @@ public interface ISupportParameter extends ClientLinked {
     }
 
     /**
+     * Represents a listing of client tags that will be blocked and dropped
+     */
+    interface ClientTagDeny extends ISupportParameter {
+        String NAME = "CLIENTTAGDENY";
+
+        /**
+         * Gets the list of items provided by the server. An asterisk first
+         * means all client tags are blocked, with the exception of any
+         * subsequent tags listed with a hyphen prefix.
+         *
+         * @return list of returned items, which may be empty
+         */
+        @NonNull List<String> getList();
+
+        /**
+         * Gets if a given client tag is allowed by the server.
+         *
+         * @param tag tag to test
+         * @return true if allowed, false if denied
+         */
+        default boolean isAllowed(@NonNull String tag) {
+            List<String> list = this.getList();
+            if (list.isEmpty()) {
+                return true;
+            }
+            if (list.get(0).equals("*")) {
+                if (list.size() == 1) {
+                    return false;
+                }
+                for (String item : list) {
+                    if (item.charAt(0) == '-' && item.substring(1).equalsIgnoreCase(tag)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            for (String item : list) {
+                if (item.equalsIgnoreCase(tag)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    /**
      * Represents the LIST extensions supported.
      */
     interface EList extends ISupportParameter {

@@ -33,6 +33,7 @@ import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportCh
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanModes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanTypes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChannelLen;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportClientTagDeny;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportEList;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportExcepts;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportExtBan;
@@ -75,6 +76,7 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         this.registerParameter(ISupportParameter.ChanLimit.NAME, DefaultISupportChanLimit::new);
         this.registerParameter(ISupportParameter.ChanModes.NAME, DefaultISupportChanModes::new);
         this.registerParameter(ISupportParameter.ChanTypes.NAME, DefaultISupportChanTypes::new);
+        this.registerParameter(ISupportParameter.ClientTagDeny.NAME, DefaultISupportClientTagDeny::new);
         this.registerParameter(ISupportParameter.EList.NAME, DefaultISupportEList::new);
         this.registerParameter(ISupportParameter.Excepts.NAME, DefaultISupportExcepts::new);
         this.registerParameter(ISupportParameter.ExtBan.NAME, DefaultISupportExtBan::new);
