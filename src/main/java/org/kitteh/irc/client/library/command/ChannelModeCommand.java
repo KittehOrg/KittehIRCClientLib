@@ -121,8 +121,8 @@ public class ChannelModeCommand extends ChannelCommand<ChannelModeCommand> {
         }
         int parameterModesPerLine = -1;
         Optional<ISupportParameter.Modes> modes = this.getClient().getServerInfo().getISupportParameter("MODES", ISupportParameter.Modes.class);
-        if (modes.isPresent()) {
-            parameterModesPerLine = modes.get().getInteger();
+        if (modes.isPresent() && modes.get().getInteger().isPresent()) {
+            parameterModesPerLine = modes.get().getInteger().getAsInt();
         }
         if (parameterModesPerLine < 1) {
             parameterModesPerLine = ChannelModeCommand.PARAMETER_MODES_PER_LINE;
