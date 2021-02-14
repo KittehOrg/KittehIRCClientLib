@@ -107,7 +107,7 @@ public class FriendlyBot {
 
 ## More information
 
-Consult the [JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/) to answer most questions.
+Consult the [JavaDocs](https://kittehorg.github.io/KittehIRCClientLib/) to answer most questions.
 
 Visit us in `#kitteh.org` on `irc.esper.net` for a chat (click
 [here](https://webchat.esper.net/?nick=kicl_...&channels=%23kitteh.org) to join), or check out the

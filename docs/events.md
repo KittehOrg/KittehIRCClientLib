@@ -37,7 +37,7 @@ listen to the exact class, utilize the annotation's `rejectSubtypes` value.
 
 ## KICL Events
 KICL events cover nearly all common IRC interactions. See the
-[JavaDocs](http://kittehorg.github.io/KittehIRCClientLib/) for the complete listing.
+[JavaDocs](https://kittehorg.github.io/KittehIRCClientLib/) for the complete listing.
 
 For all situations where KICL doesn't provide the event you need, you can listen to the server's
 messages. The `ClientReceiveCommandEvent` and `ClientReceiveNumericEvent` classes let you listen

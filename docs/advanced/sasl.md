@@ -1,12 +1,12 @@
 KICL supports using SASL to authenticate with an IRC server. As described in the
-[IRCv3.1 spec](http://ircv3.net/specs/extensions/sasl-3.1.html), SASL allows the client to authenticate using a SASL
+[IRCv3.1 spec](https://ircv3.net/specs/extensions/sasl-3.1.html), SASL allows the client to authenticate using a SASL
 mechanism and the `AUTHENTICATE` command. The client must have requested the `sasl` capability to be able to use the
 AUTHENTICATE command.
 
 KICL's SASL support can be configured by calling the `Client#getAuthManager` method which returns an
-[AuthManager](http://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/auth/AuthManager.html). The
+[AuthManager](https://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/auth/AuthManager.html). The
 manager can be used to manage authentication protocols. For SASL, there are currently three available authentication
-protocols which [extend](http://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/auth/protocol/class-use/AbstractSaslProtocol.html)
+protocols which [extend](https://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/auth/protocol/class-use/AbstractSaslProtocol.html)
 the `AbstractSaslProtocol` class. It's also possible to add [non-SASL](alt_auth.md) authentication protocols.
 
 Protocols can be added by calling the `AuthManager#addProtocol` method, for example:

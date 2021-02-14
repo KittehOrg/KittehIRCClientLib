@@ -94,7 +94,7 @@ server sends an `CAP ACK`, authentication can begin.
 The mechanism makes use of the NIST P-256 curve (`NID_X9_62_prime256v1` in OpenSSL) which
 (per the name) is defined over a 256 bit prime finite field. The parameters for this curve
 are available [from the NSA](https://www.nsa.gov/ia/_files/nist-routines.pdf) in section 4.3.
-The curve itself doesn't fit the [SafeCurves requirements](http://safecurves.cr.yp.to/).
+The curve itself doesn't fit the [SafeCurves requirements](https://safecurves.cr.yp.to/).
 
 Atheme is the only IRC services software that appears to implement this authentication method.
  Atheme's implementation requires that:
@@ -102,7 +102,7 @@ Atheme is the only IRC services software that appears to implement this authenti
 * Users make use of the `/msg NickServ SET PUBKEY <pubkey>` command to tell the services
 package their public key
     * `<pubkey>` in this case is the **point compressed** X9.62 representation of the public
-     key which is then base64 encoded. Please see section 2.3.3 of the [SEC1](http://www.secg.org/sec1-v2.pdf)
+     key which is then base64 encoded. Please see section 2.3.3 of the [SEC1](https://www.secg.org/sec1-v2.pdf)
      spec for more information. Public keys making use of the uncompressed or hybrid forms will
      **not work**. Java users may wish to implement their own method for applying point compression
      since it is unavailable in the standard library. See the implementation in [KICL](https://github.com/KittehOrg/KittehIRCClientLib/commit/448ae6bf18956b5a38e0da8f87486c5db85db880).
@@ -110,7 +110,7 @@ package their public key
 #### Step 1 - Begin authentication
 
 The client sends `AUTHENTICATE ECDSA-NIST256P-CHALLENGE` to request that the authentication
-process be started. See the [SASL documentation](http://ircv3.net/specs/extensions/sasl-3.1.html)
+process be started. See the [SASL documentation](https://ircv3.net/specs/extensions/sasl-3.1.html)
 for more information on the SASL process.
 
 #### Step 2 - Wait for server acknowledgement

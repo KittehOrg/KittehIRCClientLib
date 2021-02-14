@@ -206,7 +206,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * Applies point compression to a public key and returns the result,
      * encoded with base64.
      *
-     * See http://www.secg.org/sec1-v2.pdf section 2.3.3 for more info.
+     * See https://www.secg.org/sec1-v2.pdf section 2.3.3 for more info.
      *
      * @param publicKey the public key to get the compressed X9.62
      * representation for

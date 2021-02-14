@@ -23,7 +23,7 @@ a secure connection if they haven't yet rolled out TLS.
 
 To use STS, the client needs some way to persist information about the policies it encounters during the connection
 process. Within the codebase, an interface
-[org.kitteh.irc.client.library.feature.sts.StsStorageManager](http://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/feature/sts/StsStorageManager.html)
+[org.kitteh.irc.client.library.feature.sts.StsStorageManager](https://kittehorg.github.io/KittehIRCClientLib/org/kitteh/irc/client/library/feature/sts/StsStorageManager.html)
 is available which you can implement yourself for complete control over policy storage.
 
 Alternatively, a default class (currently `StsPropertiesStorageManager`) which stores the STS policies in a properties
