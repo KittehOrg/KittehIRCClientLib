@@ -42,12 +42,12 @@ public class Example {
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>7.3.0</version>
+    <version>7.4.0</version>
 </dependency>
 ```
 
 ```groovy
-implementation "org.kitteh.irc:client-lib:7.3.0"
+implementation "org.kitteh.irc:client-lib:7.4.0"
 ```
 
 Releases are available on Maven Central.
