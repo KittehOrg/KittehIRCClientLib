@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.element;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.util.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -450,6 +451,31 @@ public interface ISupportParameter extends ClientLinked {
          * @return supported prefixes
          */
         Set<Character> getPrefixes();
+    }
+
+    /**
+     * Limits of targets for commands.
+     */
+    interface TargMax extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "TARGMAX";
+
+        /**
+         * Gets the set of max target entries.
+         *
+         * @return set of entries, empty if none specified.
+         */
+        @NonNull Set<Pair<String, OptionalInt>> getEntries();
+
+        /**
+         * Gets the max, if any, for a given command.
+         *
+         * @param command command
+         * @return max, if any, for the command
+         */
+        @NonNull OptionalInt getMax(@NonNull String command);
     }
 
     /**

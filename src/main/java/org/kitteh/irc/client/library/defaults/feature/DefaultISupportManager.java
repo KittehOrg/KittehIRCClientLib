@@ -48,6 +48,7 @@ import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportNi
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportPrefix;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportSilence;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportStatusMsg;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportTargMax;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportTopicLen;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportUserLen;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportWhoX;
@@ -91,6 +92,7 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         this.registerParameter(ISupportParameter.Prefix.NAME, DefaultISupportPrefix::new);
         this.registerParameter(ISupportParameter.Silence.NAME, DefaultISupportSilence::new);
         this.registerParameter(ISupportParameter.StatusMsg.NAME, DefaultISupportStatusMsg::new);
+        this.registerParameter(ISupportParameter.TargMax.NAME, DefaultISupportTargMax::new);
         this.registerParameter(ISupportParameter.TopicLen.NAME, DefaultISupportTopicLen::new);
         this.registerParameter(ISupportParameter.UserLen.NAME, DefaultISupportUserLen::new);
         this.registerParameter(ISupportParameter.WhoX.NAME, DefaultISupportWhoX::new);
