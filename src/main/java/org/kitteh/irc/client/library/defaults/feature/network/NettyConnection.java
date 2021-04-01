@@ -230,6 +230,7 @@ public final class NettyConnection implements ClientConnection {
 
         // Clean up on disconnect
         this.channel.closeFuture().addListener(future -> {
+            this.client.pauseMessageSending();
             if (this.ping != null) {
                 this.ping.cancel(true);
             }
