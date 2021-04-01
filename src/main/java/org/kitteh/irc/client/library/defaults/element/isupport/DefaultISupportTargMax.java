@@ -55,7 +55,7 @@ public class DefaultISupportTargMax extends DefaultISupportParameter implements 
         if (value != null) {
             for (String string : value.split(",")) {
                 String[] parts = string.split(":");
-                this.map.put(parts[0], Pair.of(parts[0], parts.length==1?OptionalInt.empty() : OptionalInt.of(Integer.parseInt(parts[1]))));
+                this.map.put(parts[0], Pair.of(parts[0], parts.length == 1 ? OptionalInt.empty() : OptionalInt.of(Integer.parseInt(parts[1]))));
             }
         }
     }
@@ -67,7 +67,7 @@ public class DefaultISupportTargMax extends DefaultISupportParameter implements 
 
     @Override
     public @NonNull OptionalInt getMax(@NonNull String command) {
-        Pair<String,OptionalInt> pair = this.map.get(command);
+        Pair<String, OptionalInt> pair = this.map.get(command);
         return pair == null ? OptionalInt.empty() : pair.getRight();
     }
 }

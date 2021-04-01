@@ -236,7 +236,7 @@ public final class NettyConnection implements ClientConnection {
             }
             NettyConnection.this.alive = false;
             ClientConnectionEndedEvent event;
-            if (this.lastCause == null ) {
+            if (this.lastCause == null) {
                 event = new ClientConnectionClosedEvent(this.client, this.reconnect, future.cause(), this.lastMessage);
             } else {
                 event = new ClientConnectionFailedEvent(this.client, this.reconnect, this.lastCause);
