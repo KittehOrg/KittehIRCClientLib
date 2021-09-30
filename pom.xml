@@ -4,7 +4,7 @@
 
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>8.0.0</version>
+    <version>8.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
 
@@ -44,11 +44,6 @@
         <url>https://github.com/KittehOrg/KittehIRCClientLib/issues</url>
     </issueManagement>
 
-    <ciManagement>
-        <system>TravisCI</system>
-        <url>https://travis-ci.org/KittehOrg/KittehIRCClientLib</url>
-    </ciManagement>
-
     <scm>
         <connection>scm:git:git@github.com:KittehOrg/KittehIRCClientLib.git</connection>
         <developerConnection>scm:git:git@github.com:KittehOrg/KittehIRCClientLib.git</developerConnection>
@@ -59,7 +54,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugin.javadocs.version>3.2.0</plugin.javadocs.version>
         <plugin.source.version>3.2.1</plugin.source.version>
-        <dependency.netty.version>4.1.59.Final</dependency.netty.version>
+        <dependency.netty.version>4.1.68.Final</dependency.netty.version>
     </properties>
 
     <dependencies>
@@ -90,19 +85,19 @@
         <dependency>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
-            <version>3.5.0</version>
+            <version>3.18.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.4.4</version>
+            <version>3.12.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
