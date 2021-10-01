@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.feature.auth;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -29,7 +29,7 @@ public class SaslEcdsaNist256PChallengeTest {
         ECPublicKey publicKeyO = keyPair.getPublic();
         ECPrivateKey privateKeyO = keyPair.getPrivate();
         String signature = SaslEcdsaNist256PChallenge.sign(privateKeyO, CHALLENGE);
-        Assert.assertTrue("Failed to verify signed challenge", SaslEcdsaNist256PChallenge.verify(publicKeyO, CHALLENGE, signature));
+        Assertions.assertTrue(SaslEcdsaNist256PChallenge.verify(publicKeyO, CHALLENGE, signature), "Failed to verify signed challenge");
     }
 
     /**
@@ -47,7 +47,7 @@ public class SaslEcdsaNist256PChallengeTest {
         String encodedPrivateKey = SaslEcdsaNist256PChallenge.base64Encode(keyPair.getPrivate());
         ECPrivateKey recreatedPrivateKey = SaslEcdsaNist256PChallenge.getPrivateKey(encodedPrivateKey);
         String signature = SaslEcdsaNist256PChallenge.sign(recreatedPrivateKey, CHALLENGE);
-        Assert.assertTrue("Failed to verify signed challenge", SaslEcdsaNist256PChallenge.verify(keyPair.getPublic(), CHALLENGE, signature));
+        Assertions.assertTrue(SaslEcdsaNist256PChallenge.verify(keyPair.getPublic(), CHALLENGE, signature), "Failed to verify signed challenge");
     }
 
     /**
@@ -65,6 +65,6 @@ public class SaslEcdsaNist256PChallengeTest {
         String signature = SaslEcdsaNist256PChallenge.sign(keyPair.getPrivate(), CHALLENGE);
         String encodedPublicKey = SaslEcdsaNist256PChallenge.base64Encode(keyPair.getPublic());
         ECPublicKey recreatedPublicKey = SaslEcdsaNist256PChallenge.getPublicKey(encodedPublicKey);
-        Assert.assertTrue("Failed to verify signed challenge", SaslEcdsaNist256PChallenge.verify(recreatedPublicKey, CHALLENGE, signature));
+        Assertions.assertTrue(SaslEcdsaNist256PChallenge.verify(recreatedPublicKey, CHALLENGE, signature), "Failed to verify signed challenge");
     }
 }

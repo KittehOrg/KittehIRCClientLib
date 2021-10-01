@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -15,8 +15,8 @@ public class StringUtilTest {
      */
     @Test
     public void combineSplitWithSpaces() {
-        Assert.assertEquals("item one two", StringUtil.combineSplit(new String[]{"item", "one", "two"}, 0));
-        Assert.assertEquals("one two", StringUtil.combineSplit(new String[]{"item", "one", "two"}, 1));
+        Assertions.assertEquals("item one two", StringUtil.combineSplit(new String[]{"item", "one", "two"}, 0));
+        Assertions.assertEquals("one two", StringUtil.combineSplit(new String[]{"item", "one", "two"}, 1));
     }
 
     /**
@@ -24,23 +24,23 @@ public class StringUtilTest {
      */
     @Test
     public void combineSplitCustomDelimiter() {
-        Assert.assertEquals("one  two", StringUtil.combineSplit(new String[]{"item", "one", "two", "three"}, 1, 2, "  "));
+        Assertions.assertEquals("one  two", StringUtil.combineSplit(new String[]{"item", "one", "two", "three"}, 1, 2, "  "));
     }
 
     /**
      * Tests an empty array.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void combineSplitEmpty() {
-        StringUtil.combineSplit(new String[]{}, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> StringUtil.combineSplit(new String[]{}, 0));
     }
 
     /**
      * Tests negative index.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void combineSplitNegative() {
-        StringUtil.combineSplit(new String[]{"one"}, -1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> StringUtil.combineSplit(new String[]{"one"}, -1));
     }
 
     /**
@@ -54,25 +54,25 @@ public class StringUtilTest {
     /**
      * And what happens if one fails?
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void rainbowNullMessage() {
-        StringUtil.makeRainbow(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> StringUtil.makeRainbow(null));
     }
 
     /**
      * Rainbows are Strings, but just for good input.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void rainbowNullOrder() {
-        StringUtil.makeRainbow("La da de dee da dee da doo", null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> StringUtil.makeRainbow("La da de dee da dee da doo", null));
     }
 
     /**
      * And users are hard to predict.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void rainbowNotAColor() {
-        StringUtil.makeRainbow("Someday we'll find it, the rainbow test coverage, the coders, the users, and me.", new Format[]{Format.UNDERLINE});
+        Assertions.assertThrows(IllegalArgumentException.class, () -> StringUtil.makeRainbow("Someday we'll find it, the rainbow test coverage, the coders, the users, and me.", new Format[]{Format.UNDERLINE}));
     }
 
     /**
@@ -83,7 +83,7 @@ public class StringUtilTest {
     @Test
     public void testConstructorIsPrivate() throws Exception {
         Constructor<StringUtil> constructor = StringUtil.class.getDeclaredConstructor();
-        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }

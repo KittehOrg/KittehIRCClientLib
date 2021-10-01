@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.mockito.Mockito;
 
@@ -83,7 +83,7 @@ public class CapabilityRequestCommandTest {
         sut.enable("testCapability");
 
         // assert
-        Assert.assertEquals("CapabilityRequestCommand (client=testClientToString, requests=[testCapability])", sut.toString());
+        Assertions.assertEquals("CapabilityRequestCommand (client=testClientToString, requests=[testCapability])", sut.toString());
     }
 
     /**

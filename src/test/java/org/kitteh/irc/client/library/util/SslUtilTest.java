@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.util;
 
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.TrustManagerFactory;
 
@@ -15,7 +15,7 @@ public class SslUtilTest {
      */
     @Test
     public void testSecure1() {
-        Assert.assertTrue(SslUtil.isInsecure(InsecureTrustManagerFactory.INSTANCE));
+        Assertions.assertTrue(SslUtil.isInsecure(InsecureTrustManagerFactory.INSTANCE));
     }
 
     /**
@@ -25,6 +25,6 @@ public class SslUtilTest {
      */
     @Test
     public void testSecure3() throws Exception {
-        Assert.assertFalse(SslUtil.isInsecure(TrustManagerFactory.getInstance("PKIX")));
+        Assertions.assertFalse(SslUtil.isInsecure(TrustManagerFactory.getInstance("PKIX")));
     }
 }

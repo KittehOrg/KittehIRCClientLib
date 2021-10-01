@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -21,9 +21,9 @@ public class SanityTest {
     /**
      * Tests nullCheck with invalid info.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullCheckFail() {
-        Sanity.nullCheck((Object) null, "Failure!");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.nullCheck((Object) null, "Failure!"));
     }
 
     /**
@@ -37,17 +37,17 @@ public class SanityTest {
     /**
      * Tests nullCheck with invalid array info.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullCheckArrayFail() {
-        Sanity.nullCheck((Object[]) null, "Failure!");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.nullCheck((Object[]) null, "Failure!"));
     }
 
     /**
      * Tests nullCheck with invalid array info.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullCheckArrayFailElement() {
-        Sanity.nullCheck(new Object[]{"meow", null}, "Failure!");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.nullCheck(new Object[]{"meow", null}, "Failure!"));
     }
 
     /**
@@ -61,9 +61,9 @@ public class SanityTest {
     /**
      * Tests truthiness with invalid info.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void truthFail() {
-        Sanity.truthiness(false, "Fail");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.truthiness(false, "Fail"));
     }
 
     /**
@@ -77,33 +77,33 @@ public class SanityTest {
     /**
      * Tests safeMessageCheck with invalid info.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void safeMessageFailNull() {
-        Sanity.safeMessageCheck(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.safeMessageCheck(null));
     }
 
     /**
      * Tests safeMessageCheck with invalid info.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void safeMessageFailLF() {
-        Sanity.safeMessageCheck("Me\now");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.safeMessageCheck("Me\now"));
     }
 
     /**
      * Tests safeMessageCheck with invalid info.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void safeMessageFailCR() {
-        Sanity.safeMessageCheck("Me\row");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.safeMessageCheck("Me\row"));
     }
 
     /**
      * Tests safeMessageCheck with invalid info.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void safeMessageFailNul() {
-        Sanity.safeMessageCheck("Me\0ow");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.safeMessageCheck("Me\0ow"));
     }
 
     @Test
@@ -111,9 +111,9 @@ public class SanityTest {
         Sanity.noSpaces("Cat", "");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void noSpacesFail() {
-        Sanity.noSpaces("Cat ", "");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.noSpaces("Cat ", ""));
     }
 
     /**
@@ -124,7 +124,7 @@ public class SanityTest {
     @Test
     public void testConstructorIsPrivate() throws Exception {
         Constructor<Sanity> constructor = Sanity.class.getDeclaredConstructor();
-        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }

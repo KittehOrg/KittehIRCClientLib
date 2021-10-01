@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.command;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.mode.ModeStatus;
 import org.kitteh.irc.client.library.element.mode.UserMode;
@@ -24,7 +24,7 @@ public class UserModeCommandTest {
         sut.execute();
         Mockito.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER);
 
-        Assert.assertFalse(sut.toString().isEmpty());
+        Assertions.assertFalse(sut.toString().isEmpty());
     }
 
     @Test
@@ -54,14 +54,14 @@ public class UserModeCommandTest {
         inOrder.verify(clientMock, Mockito.times(1)).sendRawLine("MODE " + USER + " +ABCD");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWithOneSimpleModeChangeButWrongClient() {
         Client clientMock = Mockito.mock(Client.class);
         Mockito.when(clientMock.getNick()).thenReturn(USER);
 
         UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', Mockito.mock(Client.class));
-        sut.add(ModeStatus.Action.ADD, mode);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> sut.add(ModeStatus.Action.ADD, mode));
     }
 
     @Test

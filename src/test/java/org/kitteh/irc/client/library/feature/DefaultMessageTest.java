@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.feature;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.defaults.feature.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 
@@ -16,7 +16,7 @@ public class DefaultMessageTest {
         SimpleDefaultMessageMap defaults = new SimpleDefaultMessageMap("foo")
                 .setDefault(DefaultMessageType.QUIT, "My kittens bring all the boys to the yard");
 
-        Assert.assertEquals("My kittens bring all the boys to the yard", defaults.getDefault(DefaultMessageType.QUIT).orElse(null));
+        Assertions.assertEquals("My kittens bring all the boys to the yard", defaults.getDefault(DefaultMessageType.QUIT).orElse(null));
     }
 
     @Test
@@ -43,9 +43,9 @@ public class DefaultMessageTest {
             }
         }
 
-        Assert.assertEquals(DefaultMessageType.values().length - 1, foos);
-        Assert.assertEquals(1, bars);
-        Assert.assertEquals(0, unknowns);
+        Assertions.assertEquals(DefaultMessageType.values().length - 1, foos);
+        Assertions.assertEquals(1, bars);
+        Assertions.assertEquals(0, unknowns);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class DefaultMessageTest {
                 .setDefault(DefaultMessageType.QUIT, "stuff")
                 .setDefault(DefaultMessageType.QUIT, "otherStuff");
 
-        Assert.assertEquals("otherStuff", defaults.getDefault(DefaultMessageType.QUIT).orElse(null));
+        Assertions.assertEquals("otherStuff", defaults.getDefault(DefaultMessageType.QUIT).orElse(null));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class DefaultMessageTest {
         SimpleDefaultMessageMap defaults = new SimpleDefaultMessageMap("unset")
                 .setDefault(DefaultMessageType.QUIT, "kittens");
 
-        Assert.assertEquals("kittens", defaults.getDefault(DefaultMessageType.QUIT, "set").orElse(null));
-        Assert.assertEquals("unset", defaults.getDefault(DefaultMessageType.KICK, "unset").orElse(null));
+        Assertions.assertEquals("kittens", defaults.getDefault(DefaultMessageType.QUIT, "set").orElse(null));
+        Assertions.assertEquals("unset", defaults.getDefault(DefaultMessageType.KICK, "unset").orElse(null));
     }
 }

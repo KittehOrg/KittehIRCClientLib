@@ -1,6 +1,6 @@
 package org.kitteh.irc.client.library;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test building a builder.

@@ -3,8 +3,8 @@ package org.kitteh.irc.client.library.defaults.feature;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.FakeClient;
 import org.kitteh.irc.client.library.defaults.element.DefaultActor;
 import org.kitteh.irc.client.library.defaults.element.DefaultServerMessage;
@@ -72,8 +72,8 @@ public class CustomEventManagerTest {
         em.registerEventListener(this);
         em.callEvent(new ClientReceiveNumericEvent(client, new DefaultServerMessage.NumericCommand(200, "", Collections.emptyList()), actor, "", 200, Collections.emptyList()));
         em.callEvent(new ClientReceiveNumericEvent(client, new DefaultServerMessage.NumericCommand(300, "", Collections.emptyList()), actor, "", 300, Collections.emptyList()));
-        Assert.assertEquals(2, unfilteredNumericCount.get());
-        Assert.assertEquals(1, filteredNumericCount.get());
+        Assertions.assertEquals(2, unfilteredNumericCount.get());
+        Assertions.assertEquals(1, filteredNumericCount.get());
     }
 
     @Handler

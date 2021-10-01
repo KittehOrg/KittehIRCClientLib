@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.mockito.Mockito;
@@ -20,39 +20,39 @@ public class CIKeyMapTest {
     public void testWithAscii() {
         Client client = this.getMockClientWithCaseMapping(CaseMapping.ASCII);
         CIKeyMap<String> sut = new CIKeyMap<>(client);
-        Assert.assertTrue(sut.isEmpty());
+        Assertions.assertTrue(sut.isEmpty());
         sut.put("KITTEN", "foobar");
 
-        Assert.assertTrue(sut.containsKey("KITTEN"));
-        Assert.assertTrue(sut.containsKey("kitten"));
-        Assert.assertEquals("foobar", sut.get("kitten"));
-        Assert.assertEquals(1, sut.size());
-        Assert.assertTrue(sut.containsValue("foobar"));
-        Assert.assertFalse(sut.isEmpty());
-        Assert.assertArrayEquals(new String[]{"KITTEN"}, sut.keySet().toArray());
-        Assert.assertArrayEquals(new String[]{"foobar"}, sut.values().toArray());
-        Assert.assertFalse(sut.toString().isEmpty());
+        Assertions.assertTrue(sut.containsKey("KITTEN"));
+        Assertions.assertTrue(sut.containsKey("kitten"));
+        Assertions.assertEquals("foobar", sut.get("kitten"));
+        Assertions.assertEquals(1, sut.size());
+        Assertions.assertTrue(sut.containsValue("foobar"));
+        Assertions.assertFalse(sut.isEmpty());
+        Assertions.assertArrayEquals(new String[]{"KITTEN"}, sut.keySet().toArray());
+        Assertions.assertArrayEquals(new String[]{"foobar"}, sut.values().toArray());
+        Assertions.assertFalse(sut.toString().isEmpty());
 
         final Exception ex = new Exception("Not a valid key!");
-        Assert.assertFalse(sut.containsKey(ex));
-        Assert.assertNull(sut.get(ex));
-        Assert.assertNull(sut.remove(ex));
-        Assert.assertNull(sut.remove("somestring"));
-        Assert.assertNull(sut.put("somestring", "somevalue"));
-        Assert.assertEquals("somevalue", sut.put("somestring", "someothervalue"));
+        Assertions.assertFalse(sut.containsKey(ex));
+        Assertions.assertNull(sut.get(ex));
+        Assertions.assertNull(sut.remove(ex));
+        Assertions.assertNull(sut.remove("somestring"));
+        Assertions.assertNull(sut.put("somestring", "somevalue"));
+        Assertions.assertEquals("somevalue", sut.put("somestring", "someothervalue"));
         sut.clear();
-        Assert.assertTrue(sut.isEmpty());
+        Assertions.assertTrue(sut.isEmpty());
 
         Map<String, String> map = new HashMap<>(2);
         map.put("one", "two");
         map.put("three", "four");
 
         sut.putAll(map);
-        Assert.assertEquals(2, sut.size());
-        Assert.assertTrue(sut.keySet().containsAll(map.keySet()));
+        Assertions.assertEquals(2, sut.size());
+        Assertions.assertTrue(sut.keySet().containsAll(map.keySet()));
 
         sut.put("key", null);
-        Assert.assertTrue(sut.containsValue(null));
+        Assertions.assertTrue(sut.containsValue(null));
     }
 
     /**
@@ -64,18 +64,18 @@ public class CIKeyMapTest {
         CIKeyMap<String> sut = new CIKeyMap<>(client);
 
         sut.put("[cat]", "kitten");
-        Assert.assertTrue(sut.containsKey("[cat]"));
-        Assert.assertTrue(sut.containsKey("{cat}"));
-        Assert.assertEquals("kitten", sut.get("{cat}"));
+        Assertions.assertTrue(sut.containsKey("[cat]"));
+        Assertions.assertTrue(sut.containsKey("{cat}"));
+        Assertions.assertEquals("kitten", sut.get("{cat}"));
 
         sut.put("[cat]^", "kitteh");
-        Assert.assertTrue(sut.containsKey("[cat]~"));
-        Assert.assertTrue(sut.containsKey("{cat}^"));
-        Assert.assertEquals("kitteh", sut.get("{cat}^"));
-        Assert.assertEquals(2, sut.size());
+        Assertions.assertTrue(sut.containsKey("[cat]~"));
+        Assertions.assertTrue(sut.containsKey("{cat}^"));
+        Assertions.assertEquals("kitteh", sut.get("{cat}^"));
+        Assertions.assertEquals(2, sut.size());
 
-        Assert.assertEquals("kitteh", sut.remove("[cat]^"));
-        Assert.assertEquals(1, sut.size());
+        Assertions.assertEquals("kitteh", sut.remove("[cat]^"));
+        Assertions.assertEquals(1, sut.size());
     }
 
     /**
@@ -87,14 +87,14 @@ public class CIKeyMapTest {
         CIKeyMap<String> sut = new CIKeyMap<>(client);
 
         sut.put("[cat]^", "kitteh");
-        Assert.assertTrue(sut.containsKey("[cat]^"));
-        Assert.assertTrue(sut.containsKey("{cat}^"));
+        Assertions.assertTrue(sut.containsKey("[cat]^"));
+        Assertions.assertTrue(sut.containsKey("{cat}^"));
 
-        Assert.assertFalse(sut.containsKey("{cat}~"));
-        Assert.assertFalse(sut.containsValue("cat"));
-        Assert.assertNull(sut.get("kitty"));
-        Assert.assertEquals("kitteh", sut.get("{cat}^"));
-        Assert.assertEquals(1, sut.size());
+        Assertions.assertFalse(sut.containsKey("{cat}~"));
+        Assertions.assertFalse(sut.containsValue("cat"));
+        Assertions.assertNull(sut.get("kitty"));
+        Assertions.assertEquals("kitteh", sut.get("{cat}^"));
+        Assertions.assertEquals(1, sut.size());
     }
 
     /**

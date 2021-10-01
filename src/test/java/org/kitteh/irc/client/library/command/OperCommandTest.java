@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.mockito.Mockito;
 
@@ -38,30 +38,30 @@ public class OperCommandTest {
         command.user(USER);
         command.password(PASSWORD);
 
-        Assert.assertFalse("Details in toString", command.toString().contains(USER) || command.toString().contains(PASSWORD));
+        Assertions.assertFalse(command.toString().contains(USER) || command.toString().contains(PASSWORD), "Details in toString");
     }
 
     /**
      * Tests a userless execution.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void noUser() {
         Client client = Mockito.mock(Client.class);
 
         OperCommand command = new OperCommand(client);
         command.password(PASSWORD);
-        command.execute();
+        Assertions.assertThrows(IllegalStateException.class, command::execute);
     }
 
     /**
      * Tests a passless execution.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void noPass() {
         Client client = Mockito.mock(Client.class);
 
         OperCommand command = new OperCommand(client);
         command.user(USER);
-        command.execute();
+        Assertions.assertThrows(IllegalStateException.class, command::execute);
     }
 }

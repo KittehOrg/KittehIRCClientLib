@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.FakeClient;
 import org.kitteh.irc.client.library.feature.auth.AuthProtocol;
@@ -18,11 +18,11 @@ public class AuthManagerTest {
     /**
      * Tests a null protocol failure.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFailureWithNullProtocol() {
         Client client = new FakeClient();
         DefaultAuthManager sut = new DefaultAuthManager(client);
-        sut.addProtocol(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> sut.addProtocol(null));
     }
 
     /**
@@ -44,12 +44,12 @@ public class AuthManagerTest {
             }
         };
         sut.addProtocol(ap);
-        Assert.assertEquals(1, sut.getProtocols().size());
-        Assert.assertEquals(ap, sut.getProtocols().iterator().next());
-        Assert.assertFalse(sut.toString().isEmpty());
+        Assertions.assertEquals(1, sut.getProtocols().size());
+        Assertions.assertEquals(ap, sut.getProtocols().iterator().next());
+        Assertions.assertFalse(sut.toString().isEmpty());
         sut.removeProtocol(ap);
-        Assert.assertEquals(0, sut.getProtocols().size());
-        Assert.assertFalse(sut.getProtocols().iterator().hasNext());
+        Assertions.assertEquals(0, sut.getProtocols().size());
+        Assertions.assertFalse(sut.getProtocols().iterator().hasNext());
     }
 
     /**
@@ -63,8 +63,8 @@ public class AuthManagerTest {
         sut.addProtocol(stub1);
         StubAuthProtocol stub2 = new StubAuthProtocol();
         final Optional<AuthProtocol> ret = sut.addProtocol(stub2);
-        Assert.assertTrue(ret.isPresent());
-        Assert.assertSame(ret.get(), stub1);
+        Assertions.assertTrue(ret.isPresent());
+        Assertions.assertSame(ret.get(), stub1);
         Optional<AuthProtocol> removed = sut.addProtocol(new AuthProtocol() {
             @Override
             public @NonNull Client getClient() {
@@ -76,7 +76,7 @@ public class AuthManagerTest {
                 // do nothing
             }
         });
-        Assert.assertFalse(removed.isPresent());
+        Assertions.assertFalse(removed.isPresent());
     }
 
     /**
@@ -89,7 +89,7 @@ public class AuthManagerTest {
         final StubAuthProtocol stub = new StubAuthProtocol();
         sut.addProtocol(stub);
         sut.removeProtocol(stub);
-        Assert.assertTrue(stub.wasTripped());
+        Assertions.assertTrue(stub.wasTripped());
     }
 
     private class StubAuthProtocol implements AuthProtocol, EventListening {

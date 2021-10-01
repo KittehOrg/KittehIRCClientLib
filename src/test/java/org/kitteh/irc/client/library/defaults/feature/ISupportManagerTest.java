@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.FakeClient;
 import org.kitteh.irc.client.library.element.ISupportParameter;
@@ -25,11 +25,11 @@ public class ISupportManagerTest {
     public void testParam() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter("MEOW=PURR");
-        Assert.assertEquals(manager.getClient(), param.getClient());
-        Assert.assertEquals("MEOW", param.getName());
-        Assert.assertTrue(param.getValue().isPresent());
-        Assert.assertEquals("PURR", param.getValue().get());
-        Assert.assertTrue(param.toString().contains("MEOW") && param.toString().contains("PURR"));
+        Assertions.assertEquals(manager.getClient(), param.getClient());
+        Assertions.assertEquals("MEOW", param.getName());
+        Assertions.assertTrue(param.getValue().isPresent());
+        Assertions.assertEquals("PURR", param.getValue().get());
+        Assertions.assertTrue(param.toString().contains("MEOW") && param.toString().contains("PURR"));
     }
 
     /**
@@ -39,8 +39,8 @@ public class ISupportManagerTest {
     public void casemapping() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter(ISupportParameter.CaseMapping.NAME + '=' + CaseMapping.RFC1459.name());
-        Assert.assertTrue(ISupportParameter.CaseMapping.class.isAssignableFrom(param.getClass()));
-        Assert.assertEquals(CaseMapping.RFC1459, ((ISupportParameter.CaseMapping) param).getCaseMapping());
+        Assertions.assertTrue(ISupportParameter.CaseMapping.class.isAssignableFrom(param.getClass()));
+        Assertions.assertEquals(CaseMapping.RFC1459, ((ISupportParameter.CaseMapping) param).getCaseMapping());
     }
 
     /**
@@ -49,7 +49,7 @@ public class ISupportManagerTest {
     @Test
     public void casemappingFailName() {
         DefaultISupportManager manager = this.getManager();
-        Assert.assertFalse(ISupportParameter.CaseMapping.class.isAssignableFrom(manager.createParameter(ISupportParameter.CaseMapping.NAME + "=MEOW").getClass()));
+        Assertions.assertFalse(ISupportParameter.CaseMapping.class.isAssignableFrom(manager.createParameter(ISupportParameter.CaseMapping.NAME + "=MEOW").getClass()));
         this.verifyException(manager);
     }
 
@@ -59,7 +59,7 @@ public class ISupportManagerTest {
     @Test
     public void casemappingFailEmpty() {
         DefaultISupportManager manager = this.getManager();
-        Assert.assertFalse(ISupportParameter.CaseMapping.class.isAssignableFrom(manager.createParameter(ISupportParameter.CaseMapping.NAME).getClass()));
+        Assertions.assertFalse(ISupportParameter.CaseMapping.class.isAssignableFrom(manager.createParameter(ISupportParameter.CaseMapping.NAME).getClass()));
         this.verifyException(manager);
     }
 
@@ -70,8 +70,8 @@ public class ISupportManagerTest {
     public void channellen() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter(ISupportParameter.ChannelLen.NAME + "=15");
-        Assert.assertTrue(ISupportParameter.ChannelLen.class.isAssignableFrom(param.getClass()));
-        Assert.assertEquals(15, ((ISupportParameter.ChannelLen) param).getInteger());
+        Assertions.assertTrue(ISupportParameter.ChannelLen.class.isAssignableFrom(param.getClass()));
+        Assertions.assertEquals(15, ((ISupportParameter.ChannelLen) param).getInteger());
     }
 
     /**
@@ -80,7 +80,7 @@ public class ISupportManagerTest {
     @Test
     public void channellenFailValue() {
         DefaultISupportManager manager = this.getManager();
-        Assert.assertFalse(ISupportParameter.ChannelLen.class.isAssignableFrom(manager.createParameter(ISupportParameter.ChannelLen.NAME + "=MEOW").getClass()));
+        Assertions.assertFalse(ISupportParameter.ChannelLen.class.isAssignableFrom(manager.createParameter(ISupportParameter.ChannelLen.NAME + "=MEOW").getClass()));
         this.verifyException(manager);
     }
 
@@ -91,13 +91,13 @@ public class ISupportManagerTest {
     public void channelLimit() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter(ISupportParameter.ChanLimit.NAME + "=#:5,!:3");
-        Assert.assertTrue(ISupportParameter.ChanLimit.class.isAssignableFrom(param.getClass()));
+        Assertions.assertTrue(ISupportParameter.ChanLimit.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanLimit limit = (ISupportParameter.ChanLimit) param;
-        Assert.assertEquals(2, limit.getLimits().size());
-        Assert.assertTrue(limit.getLimits().containsKey('#'));
-        Assert.assertEquals(5, limit.getLimits().get('#').intValue());
-        Assert.assertTrue(limit.getLimits().containsKey('!'));
-        Assert.assertEquals(3, limit.getLimits().get('!').intValue());
+        Assertions.assertEquals(2, limit.getLimits().size());
+        Assertions.assertTrue(limit.getLimits().containsKey('#'));
+        Assertions.assertEquals(5, limit.getLimits().get('#').intValue());
+        Assertions.assertTrue(limit.getLimits().containsKey('!'));
+        Assertions.assertEquals(3, limit.getLimits().get('!').intValue());
     }
 
     /**
@@ -106,7 +106,7 @@ public class ISupportManagerTest {
     @Test
     public void chanlimitFailValueSplit() {
         DefaultISupportManager manager = this.getManager();
-        Assert.assertFalse(ISupportParameter.ChanLimit.class.isAssignableFrom(manager.createParameter(ISupportParameter.ChanLimit.NAME + "=MEOW").getClass()));
+        Assertions.assertFalse(ISupportParameter.ChanLimit.class.isAssignableFrom(manager.createParameter(ISupportParameter.ChanLimit.NAME + "=MEOW").getClass()));
         this.verifyException(manager);
     }
 
@@ -116,7 +116,7 @@ public class ISupportManagerTest {
     @Test
     public void chanlimitFailValueInt() {
         DefaultISupportManager manager = this.getManager();
-        Assert.assertFalse(ISupportParameter.ChanLimit.class.isAssignableFrom(manager.createParameter(ISupportParameter.ChanLimit.NAME + "=#:MEOW").getClass()));
+        Assertions.assertFalse(ISupportParameter.ChanLimit.class.isAssignableFrom(manager.createParameter(ISupportParameter.ChanLimit.NAME + "=#:MEOW").getClass()));
         this.verifyException(manager);
     }
 
@@ -126,7 +126,7 @@ public class ISupportManagerTest {
     @Test
     public void channellenFailEmpty() {
         DefaultISupportManager manager = this.getManager();
-        Assert.assertFalse(ISupportParameter.ChannelLen.class.isAssignableFrom(manager.createParameter(ISupportParameter.ChannelLen.NAME).getClass()));
+        Assertions.assertFalse(ISupportParameter.ChannelLen.class.isAssignableFrom(manager.createParameter(ISupportParameter.ChannelLen.NAME).getClass()));
         this.verifyException(manager);
     }
 
@@ -137,21 +137,21 @@ public class ISupportManagerTest {
     public void chanmodes() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter(ISupportParameter.ChanModes.NAME + "=ME,O,W,CA,T");
-        Assert.assertTrue(ISupportParameter.ChanModes.class.isAssignableFrom(param.getClass()));
+        Assertions.assertTrue(ISupportParameter.ChanModes.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanModes modes = (ISupportParameter.ChanModes) param;
-        Assert.assertEquals(6, modes.getModes().size());
-        Assert.assertEquals('M', modes.getModes().get(0).getChar());
-        Assert.assertEquals(ChannelMode.Type.A_MASK, modes.getModes().get(0).getType());
-        Assert.assertEquals('E', modes.getModes().get(1).getChar());
-        Assert.assertEquals(ChannelMode.Type.A_MASK, modes.getModes().get(1).getType());
-        Assert.assertEquals('O', modes.getModes().get(2).getChar());
-        Assert.assertEquals(ChannelMode.Type.B_PARAMETER_ALWAYS, modes.getModes().get(2).getType());
-        Assert.assertEquals('W', modes.getModes().get(3).getChar());
-        Assert.assertEquals(ChannelMode.Type.C_PARAMETER_ON_SET, modes.getModes().get(3).getType());
-        Assert.assertEquals('C', modes.getModes().get(4).getChar());
-        Assert.assertEquals(ChannelMode.Type.D_PARAMETER_NEVER, modes.getModes().get(4).getType());
-        Assert.assertEquals('A', modes.getModes().get(5).getChar());
-        Assert.assertEquals(ChannelMode.Type.D_PARAMETER_NEVER, modes.getModes().get(5).getType());
+        Assertions.assertEquals(6, modes.getModes().size());
+        Assertions.assertEquals('M', modes.getModes().get(0).getChar());
+        Assertions.assertEquals(ChannelMode.Type.A_MASK, modes.getModes().get(0).getType());
+        Assertions.assertEquals('E', modes.getModes().get(1).getChar());
+        Assertions.assertEquals(ChannelMode.Type.A_MASK, modes.getModes().get(1).getType());
+        Assertions.assertEquals('O', modes.getModes().get(2).getChar());
+        Assertions.assertEquals(ChannelMode.Type.B_PARAMETER_ALWAYS, modes.getModes().get(2).getType());
+        Assertions.assertEquals('W', modes.getModes().get(3).getChar());
+        Assertions.assertEquals(ChannelMode.Type.C_PARAMETER_ON_SET, modes.getModes().get(3).getType());
+        Assertions.assertEquals('C', modes.getModes().get(4).getChar());
+        Assertions.assertEquals(ChannelMode.Type.D_PARAMETER_NEVER, modes.getModes().get(4).getType());
+        Assertions.assertEquals('A', modes.getModes().get(5).getChar());
+        Assertions.assertEquals(ChannelMode.Type.D_PARAMETER_NEVER, modes.getModes().get(5).getType());
     }
 
     /**
@@ -161,11 +161,11 @@ public class ISupportManagerTest {
     public void chantypes() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter(ISupportParameter.ChanTypes.NAME + "=#!");
-        Assert.assertTrue(ISupportParameter.ChanTypes.class.isAssignableFrom(param.getClass()));
+        Assertions.assertTrue(ISupportParameter.ChanTypes.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanTypes types = (ISupportParameter.ChanTypes) param;
-        Assert.assertEquals(2, types.getTypes().size());
-        Assert.assertEquals('#', types.getTypes().get(0).charValue());
-        Assert.assertEquals('!', types.getTypes().get(1).charValue());
+        Assertions.assertEquals(2, types.getTypes().size());
+        Assertions.assertEquals('#', types.getTypes().get(0).charValue());
+        Assertions.assertEquals('!', types.getTypes().get(1).charValue());
     }
 
     /**
@@ -175,8 +175,8 @@ public class ISupportManagerTest {
     public void network() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter(ISupportParameter.Network.NAME + "=Meow");
-        Assert.assertTrue(ISupportParameter.Network.class.isAssignableFrom(param.getClass()));
-        Assert.assertEquals("Meow", ((ISupportParameter.Network) param).getNetworkName());
+        Assertions.assertTrue(ISupportParameter.Network.class.isAssignableFrom(param.getClass()));
+        Assertions.assertEquals("Meow", ((ISupportParameter.Network) param).getNetworkName());
     }
 
     /**
@@ -186,8 +186,8 @@ public class ISupportManagerTest {
     public void nicklen() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter(ISupportParameter.NickLen.NAME + "=4");
-        Assert.assertTrue(ISupportParameter.NickLen.class.isAssignableFrom(param.getClass()));
-        Assert.assertEquals(4, ((ISupportParameter.NickLen) param).getInteger());
+        Assertions.assertTrue(ISupportParameter.NickLen.class.isAssignableFrom(param.getClass()));
+        Assertions.assertEquals(4, ((ISupportParameter.NickLen) param).getInteger());
     }
 
     /**
@@ -197,13 +197,13 @@ public class ISupportManagerTest {
     public void prefix() {
         DefaultISupportManager manager = this.getManager();
         ISupportParameter param = manager.createParameter(ISupportParameter.Prefix.NAME + "=(ov)@+");
-        Assert.assertTrue(ISupportParameter.Prefix.class.isAssignableFrom(param.getClass()));
+        Assertions.assertTrue(ISupportParameter.Prefix.class.isAssignableFrom(param.getClass()));
         ISupportParameter.Prefix prefix = (ISupportParameter.Prefix) param;
-        Assert.assertEquals(2, prefix.getModes().size());
-        Assert.assertEquals('o', prefix.getModes().get(0).getChar());
-        Assert.assertEquals('@', prefix.getModes().get(0).getNickPrefix());
-        Assert.assertEquals('v', prefix.getModes().get(1).getChar());
-        Assert.assertEquals('+', prefix.getModes().get(1).getNickPrefix());
+        Assertions.assertEquals(2, prefix.getModes().size());
+        Assertions.assertEquals('o', prefix.getModes().get(0).getChar());
+        Assertions.assertEquals('@', prefix.getModes().get(0).getNickPrefix());
+        Assertions.assertEquals('v', prefix.getModes().get(1).getChar());
+        Assertions.assertEquals('+', prefix.getModes().get(1).getNickPrefix());
     }
 
     /**
@@ -212,7 +212,7 @@ public class ISupportManagerTest {
     @Test
     public void prefixFailPattern() {
         DefaultISupportManager manager = this.getManager();
-        Assert.assertFalse(ISupportParameter.Prefix.class.isAssignableFrom(manager.createParameter(ISupportParameter.Prefix.NAME + "=(ov@+").getClass()));
+        Assertions.assertFalse(ISupportParameter.Prefix.class.isAssignableFrom(manager.createParameter(ISupportParameter.Prefix.NAME + "=(ov@+").getClass()));
         this.verifyException(manager);
     }
 
@@ -222,7 +222,7 @@ public class ISupportManagerTest {
     @Test
     public void prefixFailSize() {
         DefaultISupportManager manager = this.getManager();
-        Assert.assertFalse(ISupportParameter.Prefix.class.isAssignableFrom(manager.createParameter(ISupportParameter.Prefix.NAME + "=(ov)@").getClass()));
+        Assertions.assertFalse(ISupportParameter.Prefix.class.isAssignableFrom(manager.createParameter(ISupportParameter.Prefix.NAME + "=(ov)@").getClass()));
         this.verifyException(manager);
     }
 
@@ -231,8 +231,8 @@ public class ISupportManagerTest {
      */
     @Test
     public void whox() {
-        Assert.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager().createParameter(ISupportParameter.WhoX.NAME).getClass()));
-        Assert.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager().createParameter(ISupportParameter.WhoX.NAME + "=MEOW").getClass()));
+        Assertions.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager().createParameter(ISupportParameter.WhoX.NAME).getClass()));
+        Assertions.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager().createParameter(ISupportParameter.WhoX.NAME + "=MEOW").getClass()));
     }
 
     private class KittenParameter implements ISupportParameter {
@@ -268,28 +268,28 @@ public class ISupportManagerTest {
         TriFunction<Client, String, String, ? extends ISupportParameter> naughtyKitten = (client, name, value) -> new KittenParameter(true);
 
         // Register
-        Assert.assertTrue(!manager.registerParameter("KITTEN", kitten).isPresent());
+        Assertions.assertTrue(!manager.registerParameter("KITTEN", kitten).isPresent());
         // Is it registered?
         Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> optionalGotten = manager.getCreator("KITTEN");
-        Assert.assertTrue(optionalGotten.isPresent());
-        Assert.assertEquals(kitten, optionalGotten.get());
+        Assertions.assertTrue(optionalGotten.isPresent());
+        Assertions.assertEquals(kitten, optionalGotten.get());
         // Get parameter
-        Assert.assertTrue(KittenParameter.class.isAssignableFrom(manager.createParameter("KITTEN").getClass()));
+        Assertions.assertTrue(KittenParameter.class.isAssignableFrom(manager.createParameter("KITTEN").getClass()));
         // Remove
         Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> optionalRemoved = manager.unregisterParameter("KITTEN");
-        Assert.assertTrue(optionalRemoved.isPresent());
-        Assert.assertEquals(kitten, optionalRemoved.get());
+        Assertions.assertTrue(optionalRemoved.isPresent());
+        Assertions.assertEquals(kitten, optionalRemoved.get());
 
         // Register it again, to test removal on replacement registration.
         manager.registerParameter("KITTEN", kitten);
         // Register the naughty version
         Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> optionalReplaced = manager.registerParameter("KITTEN", naughtyKitten);
         // Was it replaced?
-        Assert.assertTrue(optionalReplaced.isPresent());
-        Assert.assertEquals(kitten, optionalReplaced.get());
+        Assertions.assertTrue(optionalReplaced.isPresent());
+        Assertions.assertEquals(kitten, optionalReplaced.get());
 
         // Fire exception
-        Assert.assertFalse(KittenParameter.class.isAssignableFrom(manager.createParameter("KITTEN").getClass()));
+        Assertions.assertFalse(KittenParameter.class.isAssignableFrom(manager.createParameter("KITTEN").getClass()));
         this.verifyException(manager);
     }
 
@@ -298,7 +298,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void stringTo() {
-        Assert.assertEquals(DefaultISupportManager.class.getSimpleName() + " ()", this.getManager().toString());
+        Assertions.assertEquals(DefaultISupportManager.class.getSimpleName() + " ()", this.getManager().toString());
     }
 
     private void verifyException(@NonNull DefaultISupportManager manager) {

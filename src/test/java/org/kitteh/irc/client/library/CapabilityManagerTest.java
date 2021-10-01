@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 
@@ -23,11 +23,11 @@ public class CapabilityManagerTest {
     @Test
     public void testDefaultGetCapabilityMethodsInCapabilityManager() {
         StubCapabilityManager sut = new StubCapabilityManager();
-        Assert.assertEquals(2, sut.getCapabilities().size());
-        Assert.assertTrue(sut.getCapability("Test1").isPresent());
-        Assert.assertTrue(sut.getSupportedCapability("Test1").isPresent());
-        Assert.assertFalse(sut.getSupportedCapability("Test2").isPresent());
-        Assert.assertFalse(sut.getCapability("Cats").isPresent());
+        Assertions.assertEquals(2, sut.getCapabilities().size());
+        Assertions.assertTrue(sut.getCapability("Test1").isPresent());
+        Assertions.assertTrue(sut.getSupportedCapability("Test1").isPresent());
+        Assertions.assertFalse(sut.getSupportedCapability("Test2").isPresent());
+        Assertions.assertFalse(sut.getCapability("Cats").isPresent());
     }
 
     /**
@@ -36,8 +36,8 @@ public class CapabilityManagerTest {
     @Test
     public void testNativeCapabilityRetrieval() {
         List<String> caps = CapabilityManager.Defaults.getDefaults();
-        Assert.assertFalse(caps.isEmpty());
-        Assert.assertTrue(caps.contains(CapabilityManager.Defaults.ACCOUNT_NOTIFY));
+        Assertions.assertFalse(caps.isEmpty());
+        Assertions.assertTrue(caps.contains(CapabilityManager.Defaults.ACCOUNT_NOTIFY));
     }
 
     /**
@@ -48,7 +48,7 @@ public class CapabilityManagerTest {
     @Test
     public void testConstructorIsPrivate() throws Exception {
         Constructor<CapabilityManager.Defaults> constructor = CapabilityManager.Defaults.class.getDeclaredConstructor();
-        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }

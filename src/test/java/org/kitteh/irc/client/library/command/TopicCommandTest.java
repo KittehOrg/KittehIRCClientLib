@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.command;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.mockito.Mockito;
@@ -19,7 +19,7 @@ public class TopicCommandTest {
     /**
      * And then Kitteh said, let there be test!
      */
-    @Before
+    @BeforeEach
     public void before() {
         this.client = Mockito.mock(Client.class);
         ServerInfo serverInfo = Mockito.mock(ServerInfo.class);
@@ -73,7 +73,7 @@ public class TopicCommandTest {
         topicCommand.topic(TOPIC);
         topicCommand.execute();
 
-        Assert.assertTrue(topicCommand.toString().contains(TOPIC));
+        Assertions.assertTrue(topicCommand.toString().contains(TOPIC));
     }
 
     /**

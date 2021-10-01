@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.defaults;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultServerMessage;
 import org.kitteh.irc.client.library.defaults.feature.DefaultActorTracker;
@@ -42,7 +42,7 @@ public class DefaultEventListenerTest {
     /**
      * And then Kitteh said, let there be test!
      */
-    @Before
+    @BeforeEach
     public void before() {
         this.client = Mockito.mock(Client.WithManagement.class);
         this.actorTracker = new DefaultActorTracker(this.client);

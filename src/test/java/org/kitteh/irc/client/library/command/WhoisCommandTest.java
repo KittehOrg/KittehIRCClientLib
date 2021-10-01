@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.mockito.Mockito;
 
@@ -29,12 +29,12 @@ public class WhoisCommandTest {
     /**
      * Tests a simple mistake.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testNoNothing() {
         Client client = Mockito.mock(Client.class);
 
         WhoisCommand whoisCommand = new WhoisCommand(client);
-        whoisCommand.execute();
+        Assertions.assertThrows(IllegalStateException.class, whoisCommand::execute);
     }
 
     /**
@@ -78,6 +78,6 @@ public class WhoisCommandTest {
         WhoisCommand whoisCommand = new WhoisCommand(client);
         whoisCommand.target(TARGET);
 
-        Assert.assertTrue(whoisCommand.toString().contains(TARGET));
+        Assertions.assertTrue(whoisCommand.toString().contains(TARGET));
     }
 }

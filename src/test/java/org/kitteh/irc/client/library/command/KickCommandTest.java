@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.command;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.feature.SimpleDefaultMessageMap;
 import org.kitteh.irc.client.library.element.User;
@@ -23,7 +23,7 @@ public class KickCommandTest {
     /**
      * And then Kitteh said, let there be test!
      */
-    @Before
+    @BeforeEach
     public void before() {
         this.client = Mockito.mock(Client.class);
         ServerInfo serverInfo = Mockito.mock(ServerInfo.class);
@@ -79,21 +79,21 @@ public class KickCommandTest {
     /**
      * Tests a targetless execution.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void noTarget() {
         KickCommand command = new KickCommand(this.client, CHANNEL);
-        command.execute();
+        Assertions.assertThrowsExactly(IllegalStateException.class, command::execute);
     }
 
     /**
      * Tests a wrong-Client attempt.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void wrongClientUser() {
         Mockito.when(this.user.getClient()).thenReturn(Mockito.mock(Client.class));
 
         KickCommand command = new KickCommand(this.client, CHANNEL);
-        command.target(this.user);
+        Assertions.assertThrowsExactly(IllegalArgumentException.class, () -> command.target(this.user));
     }
 
     /**
@@ -103,6 +103,6 @@ public class KickCommandTest {
     public void toStringer() {
         KickCommand command = new KickCommand(this.client, CHANNEL);
 
-        Assert.assertTrue(command.toString().contains(CHANNEL));
+        Assertions.assertTrue(command.toString().contains(CHANNEL));
     }
 }

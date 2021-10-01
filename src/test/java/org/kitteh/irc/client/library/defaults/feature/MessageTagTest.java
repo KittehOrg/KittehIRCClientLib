@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.FakeClient;
 import org.kitteh.irc.client.library.element.MessageTag;
 
@@ -18,13 +18,13 @@ public class MessageTagTest {
     @Test
     public void multiTag() {
         List<MessageTag> tags = new FakeClient().getMessageTagManager().getCapabilityTags("aaa=bbb;ccc;example.com/ddd=eee");
-        Assert.assertEquals("Failed to process multiple tags", 3, tags.size());
-        Assert.assertEquals("Failed to process valid tag name", tags.get(0).getName(), "aaa");
-        Assert.assertEquals("Failed to process valid tag value", tags.get(0).getValue().get(), "bbb");
-        Assert.assertEquals("Failed to process valid tag name", tags.get(1).getName(), "ccc");
-        Assert.assertTrue("Failed to process lack of tag value", !tags.get(1).getValue().isPresent());
-        Assert.assertEquals("Failed to process valid tag name", tags.get(2).getName(), "example.com/ddd");
-        Assert.assertEquals("Failed to process valid tag value", tags.get(2).getValue().get(), "eee");
+        Assertions.assertEquals(3, tags.size(), "Failed to process multiple tags");
+        Assertions.assertEquals(tags.get(0).getName(), "aaa", "Failed to process valid tag name");
+        Assertions.assertEquals(tags.get(0).getValue().get(), "bbb", "Failed to process valid tag value");
+        Assertions.assertEquals(tags.get(1).getName(), "ccc", "Failed to process valid tag name");
+        Assertions.assertTrue(!tags.get(1).getValue().isPresent(), "Failed to process lack of tag value");
+        Assertions.assertEquals(tags.get(2).getName(), "example.com/ddd", "Failed to process valid tag name");
+        Assertions.assertEquals(tags.get(2).getValue().get(), "eee", "Failed to process valid tag value");
     }
 
     private static final String TIME = "2012-06-30T23:59:60.419Z";
@@ -35,8 +35,8 @@ public class MessageTagTest {
     @Test
     public void timeTag() {
         List<MessageTag> tags = new FakeClient().getMessageTagManager().getCapabilityTags("time=" + TIME);
-        Assert.assertEquals("Failed to process time tag", 1, tags.size());
-        Assert.assertTrue("Failed to process time tag as MessageTag.Time", tags.get(0) instanceof MessageTag.Time);
-        Assert.assertEquals("Failed to process time tag", ((MessageTag.Time) tags.get(0)).getTime(), Instant.parse(TIME));
+        Assertions.assertEquals(1, tags.size(), "Failed to process time tag");
+        Assertions.assertTrue(tags.get(0) instanceof MessageTag.Time, "Failed to process time tag as MessageTag.Time");
+        Assertions.assertEquals(((MessageTag.Time) tags.get(0)).getTime(), Instant.parse(TIME), "Failed to process time tag");
     }
 }

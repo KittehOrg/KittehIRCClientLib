@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests ToStringer.
@@ -12,7 +12,7 @@ public class ToStringerTest {
      */
     @Test
     public void toStringer() {
-        Assert.assertNotNull(new ToStringer(this)
+        Assertions.assertNotNull(new ToStringer(this)
                 .add("boolean", true)
                 .add("byte", (byte) 0x00)
                 .add("char", 'c')
@@ -30,16 +30,16 @@ public class ToStringerTest {
     /**
      * Tests a null addition parameter.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void toStringerNullAddition() {
-        new ToStringer(this).add(null, "test");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ToStringer(this).add(null, "test"));
     }
 
     /**
      * Tests a null constructor parameter.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void toStringerNullConstructor() {
-        new ToStringer(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ToStringer(null));
     }
 }
