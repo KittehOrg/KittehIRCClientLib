@@ -1,6 +1,7 @@
 package org.kitteh.irc.client.library.command;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.mockito.Mockito;
 
@@ -62,20 +63,20 @@ public class MonitorCommandTest {
     /**
      * Tests a targetless failure.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddNoTarget() {
         Client ircClient = getClientMock();
         MonitorCommand command = new MonitorCommand(ircClient);
 
         command.action(MonitorCommand.Action.ADD_TARGET);
 
-        command.execute();
+        Assertions.assertThrows(IllegalStateException.class, command::execute);
     }
 
     /**
      * Tests a targetless failure.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddNoTarget2() {
         Client ircClient = getClientMock();
         MonitorCommand command = new MonitorCommand(ircClient);
@@ -83,31 +84,31 @@ public class MonitorCommandTest {
         command.action(MonitorCommand.Action.ADD_TARGET);
         command.target();
 
-        command.execute();
+        Assertions.assertThrows(IllegalStateException.class, command::execute);
     }
 
     /**
      * Tests invalid target input.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidTarget() {
         Client ircClient = getClientMock();
         MonitorCommand command = new MonitorCommand(ircClient);
 
-        command.target("meow,", "purr");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> command.target("meow,", "purr"));
     }
 
     /**
      * Tests an actionless execution.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddNoAction() {
         Client ircClient = getClientMock();
         MonitorCommand command = new MonitorCommand(ircClient);
 
         command.target("meow", "purr");
 
-        command.execute();
+        Assertions.assertThrows(IllegalStateException.class, command::execute);
     }
 
     /**

@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +22,7 @@ public class CtcpUtilTest {
      */
     @Test
     public void fromCTCP() {
-        Assert.assertEquals(UNCONVERTED_1, CtcpUtil.fromCtcp(CONVERTED_1));
+        Assertions.assertEquals(UNCONVERTED_1, CtcpUtil.fromCtcp(CONVERTED_1));
     }
 
     /**
@@ -30,7 +30,7 @@ public class CtcpUtilTest {
      */
     @Test
     public void thereAndBackAgain() {
-        Assert.assertEquals(UNCONVERTED_1, CtcpUtil.fromCtcp(CtcpUtil.toCtcp(UNCONVERTED_1))); // For fun
+        Assertions.assertEquals(UNCONVERTED_1, CtcpUtil.fromCtcp(CtcpUtil.toCtcp(UNCONVERTED_1))); // For fun
     }
 
     /**
@@ -38,7 +38,7 @@ public class CtcpUtilTest {
      */
     @Test
     public void snip() {
-        Assert.assertEquals(UNCONVERTED_1, CtcpUtil.fromCtcp(SNIP_1));
+        Assertions.assertEquals(UNCONVERTED_1, CtcpUtil.fromCtcp(SNIP_1));
     }
 
     /**
@@ -46,7 +46,7 @@ public class CtcpUtilTest {
      */
     @Test
     public void toCTCP() {
-        Assert.assertEquals(CONVERTED_1, CtcpUtil.toCtcp(UNCONVERTED_1));
+        Assertions.assertEquals(CONVERTED_1, CtcpUtil.toCtcp(UNCONVERTED_1));
     }
 
     /**
@@ -54,7 +54,7 @@ public class CtcpUtilTest {
      */
     @Test
     public void isCTCPTrue() {
-        Assert.assertTrue(CtcpUtil.isCtcp(CONVERTED_1));
+        Assertions.assertTrue(CtcpUtil.isCtcp(CONVERTED_1));
     }
 
     /**
@@ -62,7 +62,7 @@ public class CtcpUtilTest {
      */
     @Test
     public void isCTCPFalse() {
-        Assert.assertFalse(CtcpUtil.isCtcp(UNCONVERTED_1));
+        Assertions.assertFalse(CtcpUtil.isCtcp(UNCONVERTED_1));
     }
 
     /**
@@ -70,7 +70,7 @@ public class CtcpUtilTest {
      */
     @Test
     public void noEscapeToCTCP() {
-        Assert.assertEquals(CONVERTED_2, CtcpUtil.toCtcp(UNCONVERTED_2));
+        Assertions.assertEquals(CONVERTED_2, CtcpUtil.toCtcp(UNCONVERTED_2));
     }
 
     /**
@@ -78,7 +78,7 @@ public class CtcpUtilTest {
      */
     @Test
     public void noEscapeFromCTCP() {
-        Assert.assertEquals(UNCONVERTED_2, CtcpUtil.fromCtcp(CONVERTED_2));
+        Assertions.assertEquals(UNCONVERTED_2, CtcpUtil.fromCtcp(CONVERTED_2));
     }
 
     /**

@@ -1,16 +1,14 @@
 package org.kitteh.irc.client.library.defaults.feature.sts;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 import org.kitteh.irc.client.library.feature.sts.StsPropertiesStorageManager;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.StsUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -19,27 +17,27 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StsPropertiesStorageManagerTest {
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @TempDir
+    public File temporaryFolder;
 
     /**
      * Checks that the simple bundled storage manager works.
      */
     @Test
-    public void testSimpleOperations() throws IOException {
-        final File tempFile = this.temporaryFolder.newFile("sts.properties");
+    public void testSimpleOperations() {
+        final File tempFile = new File(this.temporaryFolder, "sts.properties");
         final Path path = tempFile.toPath();
 
         StsPropertiesStorageManager sut = new StsPropertiesStorageManager(path);
         sut.addEntry("kitteh.org", 500, StsUtil.getStsPolicyFromString(",", StsPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
 
-        Assert.assertTrue(sut.hasEntry("kitteh.org"));
+        Assertions.assertTrue(sut.hasEntry("kitteh.org"));
         final Optional<StsPolicy> optionalPolicy = sut.getEntry("kitteh.org");
-        Assert.assertTrue(optionalPolicy.isPresent());
+        Assertions.assertTrue(optionalPolicy.isPresent());
         final StsPolicy policy = optionalPolicy.get();
-        Assert.assertTrue(policy.getOptions().containsKey(StsPolicy.POLICY_OPTION_KEY_PORT));
-        Assert.assertEquals("6697", policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT));
-        Assert.assertTrue(policy.getFlags().contains("cats"));
+        Assertions.assertTrue(policy.getOptions().containsKey(StsPolicy.POLICY_OPTION_KEY_PORT));
+        Assertions.assertEquals("6697", policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT));
+        Assertions.assertTrue(policy.getFlags().contains("cats"));
     }
 
     /**
@@ -47,21 +45,21 @@ public class StsPropertiesStorageManagerTest {
      * with reading.
      */
     @Test
-    public void testSimpleReading() throws IOException {
-        final File tempFile = this.temporaryFolder.newFile("sts.properties");
+    public void testSimpleReading() {
+        final File tempFile = new File(this.temporaryFolder, "sts.properties");
         final Path path = tempFile.toPath();
         StsPropertiesStorageManager sut1 = new StsPropertiesStorageManager(path);
         sut1.addEntry("kitteh.org", 500, StsUtil.getStsPolicyFromString(",", StsPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
 
-        Assert.assertTrue(sut1.hasEntry("kitteh.org"));
+        Assertions.assertTrue(sut1.hasEntry("kitteh.org"));
         StsPropertiesStorageManager sut2 = new StsPropertiesStorageManager(path);
-        Assert.assertTrue(sut2.hasEntry("kitteh.org"));
+        Assertions.assertTrue(sut2.hasEntry("kitteh.org"));
         final Optional<StsPolicy> optionalPolicy = sut2.getEntry("kitteh.org");
-        Assert.assertTrue(optionalPolicy.isPresent());
+        Assertions.assertTrue(optionalPolicy.isPresent());
         final StsPolicy policy = optionalPolicy.get();
-        Assert.assertTrue(policy.getOptions().containsKey(StsPolicy.POLICY_OPTION_KEY_PORT));
-        Assert.assertEquals("6697", policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT));
-        Assert.assertTrue(policy.getFlags().contains("cats"));
+        Assertions.assertTrue(policy.getOptions().containsKey(StsPolicy.POLICY_OPTION_KEY_PORT));
+        Assertions.assertEquals("6697", policy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT));
+        Assertions.assertTrue(policy.getFlags().contains("cats"));
     }
 
     /**
@@ -69,8 +67,8 @@ public class StsPropertiesStorageManagerTest {
      * with expiration (UGLY).
      */
     @Test
-    public void testDelay() throws InterruptedException, IOException {
-        final File tempFile = this.temporaryFolder.newFile("sts.properties");
+    public void testDelay() throws InterruptedException {
+        final File tempFile = new File(this.temporaryFolder, "sts.properties");
         final Path path = tempFile.toPath();
         StsPropertiesStorageManager sut = new StsPropertiesStorageManager(path);
         sut.addEntry("kitteh.org", 0, StsUtil.getStsPolicyFromString(",", StsPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
@@ -78,17 +76,17 @@ public class StsPropertiesStorageManagerTest {
         final AtomicBoolean okay = new AtomicBoolean(true);
         scheduler.schedule(() -> okay.set(sut.hasEntry("kitteh.org")), 1000, TimeUnit.MILLISECONDS);
         scheduler.awaitTermination(3000, TimeUnit.MILLISECONDS);
-        Assert.assertFalse(okay.get());
+        Assertions.assertFalse(okay.get());
     }
 
     @Test
-    public void testReloading() throws IOException {
-        final File tempFile = this.temporaryFolder.newFile("sts.properties");
+    public void testReloading() {
+        final File tempFile = new File(this.temporaryFolder, "sts.properties");
         final Path path = tempFile.toPath();
         StsStorageManager sut1 = StsUtil.getDefaultStorageManager(path);
         sut1.addEntry("kitteh.org", 500, StsUtil.getStsPolicyFromString(",", StsPolicy.POLICY_OPTION_KEY_PORT + "=6697,cats"));
         StsStorageManager sut2 = StsUtil.getDefaultStorageManager(path);
-        Assert.assertTrue(sut2.hasEntry("kitteh.org"));
+        Assertions.assertTrue(sut2.hasEntry("kitteh.org"));
     }
 
 }

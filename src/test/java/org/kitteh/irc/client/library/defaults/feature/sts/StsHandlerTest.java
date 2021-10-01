@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.defaults.feature.sts;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.FakeClient;
 import org.kitteh.irc.client.library.defaults.element.DefaultCapabilityState;
 import org.kitteh.irc.client.library.defaults.element.DefaultServerMessage;
@@ -33,7 +33,7 @@ public class StsHandlerTest {
         final FakeClient client = new FakeClient();
         client.setSecure(false);
         final StubMachine machine = new StubMachine();
-        Assert.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
+        Assertions.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
 
         StsHandler handler = new StsHandler(machine, client);
 
@@ -43,16 +43,16 @@ public class StsHandlerTest {
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
-        Assert.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
+        Assertions.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
 
         StsPolicy extractedPolicy = machine.getPolicy();
         final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
-        Assert.assertEquals("1234", port);
+        Assertions.assertEquals("1234", port);
 
         final String duration = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_DURATION);
-        Assert.assertEquals("300", duration);
+        Assertions.assertEquals("300", duration);
 
-        Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
+        Assertions.assertTrue(extractedPolicy.getFlags().contains("foobar"));
     }
 
     /**
@@ -64,7 +64,7 @@ public class StsHandlerTest {
         final FakeClient client = new FakeClient();
         client.setSecure(false);
         final StubMachine machine = new StubMachine();
-        Assert.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
+        Assertions.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
 
         StsHandler handler = new StsHandler(machine, client);
 
@@ -74,16 +74,16 @@ public class StsHandlerTest {
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
-        Assert.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
+        Assertions.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
 
         StsPolicy extractedPolicy = machine.getPolicy();
         final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
-        Assert.assertEquals("7681", port);
+        Assertions.assertEquals("7681", port);
 
         final String duration = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_DURATION);
-        Assert.assertEquals("300", duration);
+        Assertions.assertEquals("300", duration);
 
-        Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
+        Assertions.assertTrue(extractedPolicy.getFlags().contains("foobar"));
     }
 
     /**
@@ -95,7 +95,7 @@ public class StsHandlerTest {
         final FakeClient client = new FakeClient();
         client.setSecure(false);
         final StubMachine machine = new StubMachine();
-        Assert.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
+        Assertions.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
 
         StsHandler handler = new StsHandler(machine, client);
 
@@ -104,22 +104,22 @@ public class StsHandlerTest {
         capabilities.add(new DefaultCapabilityState(client, policyString));
         ServerMessage message = new DefaultServerMessage(":test.kitteh CAP ^o^ NEW :" + policyString, new ArrayList<>());
         handler.onCapNew(new CapabilitiesNewSupportedEvent(client, message, true, capabilities));
-        Assert.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
+        Assertions.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
 
         StsPolicy extractedPolicy = machine.getPolicy();
         final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
-        Assert.assertEquals("1234", port);
+        Assertions.assertEquals("1234", port);
 
         final String duration = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_DURATION);
-        Assert.assertEquals("300", duration);
+        Assertions.assertEquals("300", duration);
 
-        Assert.assertTrue(extractedPolicy.getFlags().contains("foobar"));
+        Assertions.assertTrue(extractedPolicy.getFlags().contains("foobar"));
     }
 
     /**
      * Checks an error is raised for an invalid port value.
      */
-    @Test(expected = KittehServerMessageException.class)
+    @Test
     public void testHandlerWithInvalidPort() {
         final FakeClient client = new FakeClient();
         client.setSecure(false);
@@ -130,13 +130,14 @@ public class StsHandlerTest {
         capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
-        handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
+        Assertions.assertThrows(KittehServerMessageException.class,
+                () -> handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities)));
     }
 
     /**
      * Checks an error is raised for an missing port value.
      */
-    @Test(expected = KittehServerMessageException.class)
+    @Test
     public void testHandlerWithMissingPortValue() {
         final FakeClient client = new FakeClient();
         client.setSecure(false);
@@ -147,7 +148,8 @@ public class StsHandlerTest {
         capabilities.add(new DefaultCapabilityState(client, policyString));
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
-        handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
+        Assertions.assertThrows(KittehServerMessageException.class,
+                () -> handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities)));
     }
 
     private class StubMachine implements StsMachine {

@@ -1,9 +1,9 @@
 package org.kitteh.irc.client.library.command;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ISupportParameter;
@@ -29,7 +29,7 @@ public class ChannelModeCommandTest {
     /**
      * And then Kitteh said, let there be test!
      */
-    @Before
+    @BeforeEach
     public void before() {
         this.client = Mockito.mock(Client.class);
         Mockito.when(this.client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
@@ -47,7 +47,7 @@ public class ChannelModeCommandTest {
         sut.execute();
         Mockito.verify(this.client, Mockito.times(1)).sendRawLine("MODE " + CHANNEL);
 
-        Assert.assertFalse(sut.toString().isEmpty());
+        Assertions.assertFalse(sut.toString().isEmpty());
     }
 
     @Test
@@ -96,11 +96,11 @@ public class ChannelModeCommandTest {
         inOrder.verify(this.client, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +D meow");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWithOneSimpleModeChangeButWrongClient() {
         ChannelModeCommand sut = new ChannelModeCommand(this.client, CHANNEL);
         ChannelMode mode = this.getChannelMode('A', Mockito.mock(Client.class), ChannelMode.Type.A_MASK);
-        sut.add(ModeStatus.Action.ADD, mode);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> sut.add(ModeStatus.Action.ADD, mode));
     }
 
     @Test
@@ -148,14 +148,14 @@ public class ChannelModeCommandTest {
         Mockito.verify(this.client, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +A kitteh");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddModeWithParameterViaUserButWrongClient() {
         User userMock = Mockito.mock(User.class);
         Mockito.when(userMock.getClient()).thenReturn(Mockito.mock(Client.class));
         Mockito.when(userMock.getNick()).thenReturn("kitteh");
         ChannelModeCommand sut = new ChannelModeCommand(this.client, CHANNEL);
         ChannelUserMode mode = this.getChannelUserMode('A', this.client, ChannelMode.Type.B_PARAMETER_ALWAYS);
-        sut.add(ModeStatus.Action.ADD, mode, userMock);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> sut.add(ModeStatus.Action.ADD, mode, userMock));
     }
 
     @Test

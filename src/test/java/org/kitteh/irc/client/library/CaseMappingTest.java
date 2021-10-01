@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.kitteh.irc.client.library.util.Pair;
 
@@ -20,10 +20,10 @@ public class CaseMappingTest {
     public void verifyMatch() {
         for (CaseMapping caseMapping : CaseMapping.values()) {
             Optional<CaseMapping> acquired = CaseMapping.getByName(caseMapping.name().replace('_', '-'));
-            Assert.assertTrue("Failed to acquire mapping for " + caseMapping.name(), acquired.isPresent());
-            Assert.assertEquals(caseMapping, acquired.get());
+            Assertions.assertTrue(acquired.isPresent(), "Failed to acquire mapping for " + caseMapping.name());
+            Assertions.assertEquals(caseMapping, acquired.get());
         }
-        Assert.assertEquals(Optional.empty(), CaseMapping.getByName(null));
+        Assertions.assertEquals(Optional.empty(), CaseMapping.getByName(null));
     }
 
     /**
@@ -37,11 +37,11 @@ public class CaseMappingTest {
         test.put(CaseMapping.STRICT_RFC1459, new Pair<>("abcdwxyzABCDWXYZ!@#$%^&*(){}[];':,.<>", "abcdwxyzabcdwxyz!@#$%^&*(){}{};':,.<>"));
 
         for (CaseMapping caseMapping : CaseMapping.values()) {
-            Assert.assertTrue("Missing CaseMapping " + caseMapping.name(), test.containsKey(caseMapping));
+            Assertions.assertTrue(test.containsKey(caseMapping), "Missing CaseMapping " + caseMapping.name());
         }
         for (Map.Entry<CaseMapping, Pair<String, String>> entry : test.entrySet()) {
-            Assert.assertEquals("Incorrect lowercasing", entry.getKey().toLowerCase(entry.getValue().getLeft()), entry.getValue().getRight());
-            Assert.assertTrue("Incorrect equalsIgnoreCase", entry.getKey().areEqualIgnoringCase(entry.getValue().getLeft(), entry.getValue().getRight()));
+            Assertions.assertEquals(entry.getKey().toLowerCase(entry.getValue().getLeft()), entry.getValue().getRight(), "Incorrect lowercasing");
+            Assertions.assertTrue(entry.getKey().areEqualIgnoringCase(entry.getValue().getLeft(), entry.getValue().getRight()), "Incorrect equalsIgnoreCase");
         }
     }
 }

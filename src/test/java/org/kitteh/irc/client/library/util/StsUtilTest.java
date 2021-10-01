@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 
 /**
@@ -15,19 +15,19 @@ public class StsUtilTest {
     public void testParseSeparatedKeyValueString() {
         String myStr = "foo,bar=cat,kitten=dog";
         StsPolicy retVal = StsUtil.getStsPolicyFromString(",", myStr);
-        Assert.assertTrue(retVal.getFlags().contains("foo"));
-        Assert.assertTrue(retVal.getOptions().containsKey("bar"));
-        Assert.assertTrue(retVal.getOptions().containsKey("kitten"));
-        Assert.assertFalse(retVal.getOptions().containsKey("foo"));
+        Assertions.assertTrue(retVal.getFlags().contains("foo"));
+        Assertions.assertTrue(retVal.getOptions().containsKey("bar"));
+        Assertions.assertTrue(retVal.getOptions().containsKey("kitten"));
+        Assertions.assertFalse(retVal.getOptions().containsKey("foo"));
 
-        Assert.assertEquals(retVal.getOptions().get("kitten"), "dog");
+        Assertions.assertEquals(retVal.getOptions().get("kitten"), "dog");
     }
 
     /**
      * Tests parseSeparatedKeyValueString with invalid (null) input.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseSeparatedKeyValueStringWithNull() {
-        StsUtil.getStsPolicyFromString(",", null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> StsUtil.getStsPolicyFromString(",", null));
     }
 }

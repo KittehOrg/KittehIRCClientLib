@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.mockito.Mockito;
 
@@ -65,7 +65,7 @@ public class AwayCommandTest {
         awayCommand.away(MESSAGE);
         awayCommand.execute();
 
-        Assert.assertTrue(awayCommand.toString().contains(MESSAGE));
+        Assertions.assertTrue(awayCommand.toString().contains(MESSAGE));
     }
 
     /**

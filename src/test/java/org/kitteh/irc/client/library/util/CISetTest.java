@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.mockito.Mockito;
@@ -21,45 +21,45 @@ public class CISetTest {
     public void testWithAscii() {
         Client client = this.getMockClientWithCaseMapping(CaseMapping.ASCII);
         CISet sut = new CISet(client);
-        Assert.assertTrue(sut.isEmpty());
-        Assert.assertTrue(sut.add("CAT"));
-        Assert.assertTrue(sut.contains("cat"));
-        Assert.assertTrue(sut.contains("CAT"));
-        Assert.assertTrue(sut.contains("CAt"));
-        Assert.assertFalse(sut.contains(null));
-        Assert.assertTrue(sut.remove("cat"));
-        Assert.assertFalse(sut.remove("cat"));
-        Assert.assertFalse(sut.remove(null));
-        Assert.assertFalse(sut.iterator().hasNext());
+        Assertions.assertTrue(sut.isEmpty());
+        Assertions.assertTrue(sut.add("CAT"));
+        Assertions.assertTrue(sut.contains("cat"));
+        Assertions.assertTrue(sut.contains("CAT"));
+        Assertions.assertTrue(sut.contains("CAt"));
+        Assertions.assertFalse(sut.contains(null));
+        Assertions.assertTrue(sut.remove("cat"));
+        Assertions.assertFalse(sut.remove("cat"));
+        Assertions.assertFalse(sut.remove(null));
+        Assertions.assertFalse(sut.iterator().hasNext());
 
         sut.add("dog");
-        Assert.assertEquals("dog", sut.iterator().next());
-        Assert.assertEquals(1, sut.size());
+        Assertions.assertEquals("dog", sut.iterator().next());
+        Assertions.assertEquals(1, sut.size());
         sut.clear();
-        Assert.assertEquals(0, sut.size());
+        Assertions.assertEquals(0, sut.size());
 
         List<String> list = Arrays.asList("cat", "magpie", "rhino");
         sut.addAll(list);
 
-        Assert.assertEquals(3, sut.size());
+        Assertions.assertEquals(3, sut.size());
         for (Object item : sut.toArray()) {
-            Assert.assertTrue(list.contains(item));
+            Assertions.assertTrue(list.contains(item));
         }
 
         String[] foobar = new String[3];
         sut.toArray(foobar);
 
-        Assert.assertFalse(foobar[0].isEmpty());
-        Assert.assertTrue(sut.containsAll(list));
+        Assertions.assertFalse(foobar[0].isEmpty());
+        Assertions.assertTrue(sut.containsAll(list));
         List<String> listlist = Arrays.asList("cat", "magpie", "rhino", "kangaroo");
-        Assert.assertFalse(sut.containsAll(listlist));
-        Assert.assertFalse(sut.toString().isEmpty());
+        Assertions.assertFalse(sut.containsAll(listlist));
+        Assertions.assertFalse(sut.toString().isEmpty());
 
         sut.retainAll(Collections.singletonList("cat"));
-        Assert.assertEquals(1, sut.size());
+        Assertions.assertEquals(1, sut.size());
 
         sut.removeAll(listlist);
-        Assert.assertTrue(sut.isEmpty());
+        Assertions.assertTrue(sut.isEmpty());
     }
 
     /**
@@ -70,7 +70,7 @@ public class CISetTest {
         Client client = this.getMockClientWithCaseMapping(CaseMapping.RFC1459);
         CISet sut = new CISet(client);
         sut.add("[cat]^");
-        Assert.assertTrue(sut.contains("{cat}~"));
+        Assertions.assertTrue(sut.contains("{cat}~"));
     }
 
     /**
@@ -81,7 +81,7 @@ public class CISetTest {
         Client client = this.getMockClientWithCaseMapping(CaseMapping.STRICT_RFC1459);
         CISet sut = new CISet(client);
         sut.add("[cat]");
-        Assert.assertTrue(sut.contains("{cat}"));
+        Assertions.assertTrue(sut.contains("{cat}"));
     }
 
     /**

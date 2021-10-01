@@ -1,8 +1,8 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
 import net.engio.mbassy.listener.Handler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.FakeClient;
 import org.kitteh.irc.client.library.feature.EventManager;
 
@@ -24,7 +24,7 @@ public class EventTest {
         manager.registerEventListener(this);
         Event event = new Event();
         manager.callEvent(event);
-        Assert.assertTrue("Failed to register and fire an event", event.success);
+        Assertions.assertTrue(event.success, "Failed to register and fire an event");
     }
 
     /**

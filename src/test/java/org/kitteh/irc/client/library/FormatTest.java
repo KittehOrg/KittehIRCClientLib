@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.util.Format;
 
 /**
@@ -13,31 +13,31 @@ public class FormatTest {
      */
     @Test
     public void background() {
-        Assert.assertEquals("\u000309,01", Format.GREEN.withBackground(Format.BLACK));
+        Assertions.assertEquals("\u000309,01", Format.GREEN.withBackground(Format.BLACK));
     }
 
     /**
      * Tests invalid background input.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void backgroundNonColorBackground() {
-        Format.GREEN.withBackground(Format.BOLD);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Format.GREEN.withBackground(Format.BOLD));
     }
 
     /**
      * Tests invalid background input.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void backgroundNonColorForeground() {
-        Format.BOLD.withBackground(Format.GREEN);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Format.BOLD.withBackground(Format.GREEN));
     }
 
     /**
      * Tests invalid background input.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void backgroundNull() {
-        Format.GREEN.withBackground(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Format.GREEN.withBackground(null));
     }
 
     /**
@@ -47,7 +47,7 @@ public class FormatTest {
     public void format() {
         String colorChar = Format.COLOR_CHAR + "";
         for (Format format : Format.values()) {
-            Assert.assertTrue("Color format with wrong length: " + format.name(), !format.toString().startsWith(colorChar) || (format.toString().length() == 3));
+            Assertions.assertTrue(!format.toString().startsWith(colorChar) || (format.toString().length() == 3), "Color format with wrong length: " + format.name());
         }
     }
 
@@ -56,8 +56,8 @@ public class FormatTest {
      */
     @Test
     public void stripColor() {
-        Assert.assertEquals(Format.stripColor(Format.GREEN + "meow"), "meow");
-        Assert.assertEquals(Format.stripColor(Format.BOLD + "purr"), Format.BOLD + "purr");
+        Assertions.assertEquals(Format.stripColor(Format.GREEN + "meow"), "meow");
+        Assertions.assertEquals(Format.stripColor(Format.BOLD + "purr"), Format.BOLD + "purr");
     }
 
     /**
@@ -65,8 +65,8 @@ public class FormatTest {
      */
     @Test
     public void stripFormat() {
-        Assert.assertEquals(Format.stripFormatting(Format.GREEN + "meow"), Format.GREEN + "meow");
-        Assert.assertEquals(Format.stripFormatting(Format.BOLD + "purr"), "purr");
+        Assertions.assertEquals(Format.stripFormatting(Format.GREEN + "meow"), Format.GREEN + "meow");
+        Assertions.assertEquals(Format.stripFormatting(Format.BOLD + "purr"), "purr");
     }
 
     /**
@@ -76,9 +76,9 @@ public class FormatTest {
     public void validColors() {
         for (Format format : Format.values()) {
             if (format.isColor()) {
-                Assert.assertEquals("Invalid IRCFormat color char " + format.name(), (format.getColorChar() & 15), format.getColorChar());
+                Assertions.assertEquals((format.getColorChar() & 15), format.getColorChar(), "Invalid IRCFormat color char " + format.name());
             } else {
-                Assert.assertEquals("Invalid IRCFormat format " + format.name(), format.getColorChar(), -1);
+                Assertions.assertEquals(format.getColorChar(), -1, "Invalid IRCFormat format " + format.name());
             }
         }
     }

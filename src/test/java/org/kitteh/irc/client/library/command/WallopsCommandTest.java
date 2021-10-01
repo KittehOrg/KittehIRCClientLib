@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.mockito.Mockito;
 
@@ -35,17 +35,17 @@ public class WallopsCommandTest {
         WallopsCommand command = new WallopsCommand(client);
         command.message(MESSAGE);
 
-        Assert.assertTrue("toString missing message", command.toString().contains(MESSAGE));
+        Assertions.assertTrue(command.toString().contains(MESSAGE), "toString missing message");
     }
 
     /**
      * Tests a messageless execution.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void noUser() {
         Client client = Mockito.mock(Client.class);
 
         WallopsCommand command = new WallopsCommand(client);
-        command.execute();
+        Assertions.assertThrows(IllegalStateException.class, command::execute);
     }
 }

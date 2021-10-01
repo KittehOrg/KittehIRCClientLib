@@ -1,7 +1,8 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.checkerframework.checker.units.qual.A;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -15,17 +16,19 @@ public class RiskyBusinessTest {
      */
     @Test
     public void calculatedRisk() {
-        Assert.assertEquals("purr", RiskyBusiness.assertSafe(input -> "purr", "meow"));
+        Assertions.assertEquals("purr", RiskyBusiness.assertSafe(input -> "purr", "meow"));
     }
 
     /**
      * Falls over.
      */
-    @Test(expected = AssertionError.class)
+    @Test
     public void calculatedFailure() {
-        RiskyBusiness.assertSafe(input -> {
-            throw new Exception();
-        }, "meow");
+        Assertions.assertThrows(AssertionError.class, () ->
+            RiskyBusiness.assertSafe(input -> {
+                throw new Exception();
+            }, "meow")
+        );
     }
 
     /**
@@ -36,7 +39,7 @@ public class RiskyBusinessTest {
     @Test
     public void testConstructorIsPrivate() throws Exception {
         Constructor<RiskyBusiness> constructor = RiskyBusiness.class.getDeclaredConstructor();
-        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }

@@ -1,7 +1,7 @@
 package org.kitteh.irc.client.library.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * It's a pair test.
@@ -13,9 +13,9 @@ public class PairTest {
     @Test
     public void testPair() {
         Pair<String, Integer> sut = new Pair<>("Cats", 4);
-        Assert.assertEquals("Cats", sut.getLeft());
-        Assert.assertEquals(4, sut.getRight().intValue());
-        Assert.assertTrue(sut.toString().contains("Cats"));
+        Assertions.assertEquals("Cats", sut.getLeft());
+        Assertions.assertEquals(4, sut.getRight().intValue());
+        Assertions.assertTrue(sut.toString().contains("Cats"));
     }
 
     /**
@@ -24,8 +24,8 @@ public class PairTest {
     @Test
     public void testPairMore() {
         Pair<String, Integer> sut = Pair.of("Cats", 4);
-        Assert.assertEquals("Cats", sut.getLeft());
-        Assert.assertEquals(4, sut.getRight().intValue());
-        Assert.assertTrue(sut.toString().contains("Cats"));
+        Assertions.assertEquals("Cats", sut.getLeft());
+        Assertions.assertEquals(4, sut.getRight().intValue());
+        Assertions.assertTrue(sut.toString().contains("Cats"));
     }
 }
