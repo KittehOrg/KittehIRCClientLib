@@ -50,11 +50,11 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
     @SuppressWarnings("ConstantConditions")
     public static final TriFunction<Client, String, String, EmoteSets> FUNCTION = (client, name, value) -> new EmoteSets(name, value);
 
-    private final List<Integer> emoteSets;
+    private final List<String> emoteSets;
 
     private EmoteSets(@NonNull String name, @Nullable String value) {
         super(name, value);
-        this.emoteSets = (value == null) ? Collections.emptyList() : Collections.unmodifiableList(Arrays.stream(value.split(",")).map(Integer::valueOf).collect(Collectors.toList()));
+        this.emoteSets = (value == null) ? Collections.emptyList() : Collections.unmodifiableList(Arrays.asList(value.split(",")));
     }
 
     /**
@@ -62,7 +62,7 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
      *
      * @return list of integers, at least containing 0.
      */
-    public @NonNull List<Integer> getEmoteSets() {
+    public @NonNull List<String> getEmoteSets() {
         return this.emoteSets;
     }
 
