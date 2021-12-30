@@ -60,7 +60,7 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
     /**
      * Gets the list of emote sets.
      *
-     * @return list of integers, at least containing 0.
+     * @return list of strings, at least containing "0".
      */
     public @NonNull List<String> getEmoteSets() {
         return this.emoteSets;
