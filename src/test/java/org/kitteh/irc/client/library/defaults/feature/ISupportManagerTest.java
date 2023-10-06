@@ -23,7 +23,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void testParam() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter("MEOW=PURR");
         Assert.assertEquals(manager.getClient(), param.getClient());
         Assert.assertEquals("MEOW", param.getName());
@@ -37,7 +37,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void casemapping() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter(ISupportParameter.CaseMapping.NAME + '=' + CaseMapping.RFC1459.name());
         Assert.assertTrue(ISupportParameter.CaseMapping.class.isAssignableFrom(param.getClass()));
         Assert.assertEquals(CaseMapping.RFC1459, ((ISupportParameter.CaseMapping) param).getCaseMapping());
@@ -68,7 +68,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void channellen() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter(ISupportParameter.ChannelLen.NAME + "=15");
         Assert.assertTrue(ISupportParameter.ChannelLen.class.isAssignableFrom(param.getClass()));
         Assert.assertEquals(15, ((ISupportParameter.ChannelLen) param).getInteger());
@@ -89,7 +89,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void channelLimit() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter(ISupportParameter.ChanLimit.NAME + "=#:5,!:3");
         Assert.assertTrue(ISupportParameter.ChanLimit.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanLimit limit = (ISupportParameter.ChanLimit) param;
@@ -135,7 +135,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void chanmodes() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter(ISupportParameter.ChanModes.NAME + "=ME,O,W,CA,T");
         Assert.assertTrue(ISupportParameter.ChanModes.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanModes modes = (ISupportParameter.ChanModes) param;
@@ -159,7 +159,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void chantypes() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter(ISupportParameter.ChanTypes.NAME + "=#!");
         Assert.assertTrue(ISupportParameter.ChanTypes.class.isAssignableFrom(param.getClass()));
         ISupportParameter.ChanTypes types = (ISupportParameter.ChanTypes) param;
@@ -173,7 +173,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void network() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter(ISupportParameter.Network.NAME + "=Meow");
         Assert.assertTrue(ISupportParameter.Network.class.isAssignableFrom(param.getClass()));
         Assert.assertEquals("Meow", ((ISupportParameter.Network) param).getNetworkName());
@@ -184,7 +184,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void nicklen() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter(ISupportParameter.NickLen.NAME + "=4");
         Assert.assertTrue(ISupportParameter.NickLen.class.isAssignableFrom(param.getClass()));
         Assert.assertEquals(4, ((ISupportParameter.NickLen) param).getInteger());
@@ -195,7 +195,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void prefix() {
-        DefaultISupportManager manager = this.getManager();
+        DefaultISupportManager manager = this.getManager2();
         ISupportParameter param = manager.createParameter(ISupportParameter.Prefix.NAME + "=(ov)@+");
         Assert.assertTrue(ISupportParameter.Prefix.class.isAssignableFrom(param.getClass()));
         ISupportParameter.Prefix prefix = (ISupportParameter.Prefix) param;
@@ -231,8 +231,8 @@ public class ISupportManagerTest {
      */
     @Test
     public void whox() {
-        Assert.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager().createParameter(ISupportParameter.WhoX.NAME).getClass()));
-        Assert.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager().createParameter(ISupportParameter.WhoX.NAME + "=MEOW").getClass()));
+        Assert.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager2().createParameter(ISupportParameter.WhoX.NAME).getClass()));
+        Assert.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager2().createParameter(ISupportParameter.WhoX.NAME + "=MEOW").getClass()));
     }
 
     private class KittenParameter implements ISupportParameter {
@@ -298,7 +298,7 @@ public class ISupportManagerTest {
      */
     @Test
     public void stringTo() {
-        Assert.assertEquals(DefaultISupportManager.class.getSimpleName() + " ()", this.getManager().toString());
+        Assert.assertEquals(DefaultISupportManager.class.getSimpleName() + " ()", this.getManager2().toString());
     }
 
     private void verifyException(@NonNull DefaultISupportManager manager) {
@@ -308,6 +308,11 @@ public class ISupportManagerTest {
     private DefaultISupportManager getManager() {
         Client.WithManagement client = Mockito.mock(Client.WithManagement.class);
         Mockito.when(client.getExceptionListener()).thenReturn(new Listener<>(new FakeClient(), null));
+        return new DefaultISupportManager(client);
+    }
+
+    private DefaultISupportManager getManager2() {
+        Client.WithManagement client = Mockito.mock(Client.WithManagement.class);
         return new DefaultISupportManager(client);
     }
 }
