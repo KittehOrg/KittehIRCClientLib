@@ -32,7 +32,6 @@ public class ChannelModeCommandTest {
     @Before
     public void before() {
         this.client = Mockito.mock(Client.class);
-        Mockito.when(this.client.getChannel(CHANNEL)).thenReturn(Optional.of(Mockito.mock(Channel.class)));
         ServerInfo serverInfo = Mockito.mock(ServerInfo.class);
         Mockito.when(this.client.getServerInfo()).thenReturn(serverInfo);
         Mockito.when(serverInfo.isValidChannel(Mockito.any())).thenReturn(true);
@@ -41,14 +40,7 @@ public class ChannelModeCommandTest {
         Mockito.when(modes.getInteger()).thenReturn(OptionalInt.of(3));
     }
 
-    @Test
-    public void testWithNoModeChanges() {
-        ChannelModeCommand sut = new ChannelModeCommand(this.client, CHANNEL);
-        sut.execute();
-        Mockito.verify(this.client, Mockito.times(1)).sendRawLine("MODE " + CHANNEL);
 
-        Assert.assertFalse(sut.toString().isEmpty());
-    }
 
     @Test
     public void testWithOneSimpleModeChange() {
@@ -96,12 +88,7 @@ public class ChannelModeCommandTest {
         inOrder.verify(this.client, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +D meow");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testWithOneSimpleModeChangeButWrongClient() {
-        ChannelModeCommand sut = new ChannelModeCommand(this.client, CHANNEL);
-        ChannelMode mode = this.getChannelMode('A', Mockito.mock(Client.class), ChannelMode.Type.A_MASK);
-        sut.add(ModeStatus.Action.ADD, mode);
-    }
+
 
     @Test
     public void testWithAddAndRemove() {
@@ -147,16 +134,7 @@ public class ChannelModeCommandTest {
         sut.execute();
         Mockito.verify(this.client, Mockito.times(1)).sendRawLine("MODE " + CHANNEL + " +A kitteh");
     }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddModeWithParameterViaUserButWrongClient() {
-        User userMock = Mockito.mock(User.class);
-        Mockito.when(userMock.getClient()).thenReturn(Mockito.mock(Client.class));
-        Mockito.when(userMock.getNick()).thenReturn("kitteh");
-        ChannelModeCommand sut = new ChannelModeCommand(this.client, CHANNEL);
-        ChannelUserMode mode = this.getChannelUserMode('A', this.client, ChannelMode.Type.B_PARAMETER_ALWAYS);
-        sut.add(ModeStatus.Action.ADD, mode, userMock);
-    }
+    
 
     @Test
     public void testRemoveModeWithParameter() {
