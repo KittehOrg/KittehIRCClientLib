@@ -133,17 +133,10 @@ public class ChghostTest {
         Mockito.when(userMock.getNick()).thenReturn("Kitteh");
         Mockito.when(userMock.getHost()).thenReturn("kitteh.org");
         Mockito.when(userMock.getUserString()).thenReturn("~meow");
-        Mockito.when(userMock.getClient()).thenReturn(internalClient);
-
         final ActorTracker actorProviderMock = Mockito.mock(ActorTracker.class);
         Mockito.when(internalClient.getActorTracker()).thenReturn(actorProviderMock);
 
         final DefaultUser snapshotMock = Mockito.mock(DefaultUser.class);
-        Mockito.when(snapshotMock.getClient()).thenReturn(internalClient);
-        Mockito.when(snapshotMock.getHost()).thenReturn("kitteh.org");
-        Mockito.when(snapshotMock.getNick()).thenReturn("Kitteh");
-        Mockito.when(snapshotMock.getUserString()).thenReturn("~meow");
-
         Mockito.when(actorProviderMock.getTrackedUser("Kitteh")).thenReturn(Optional.of(userMock));
         Mockito.when(userMock.getClient()).thenReturn(internalClient);
 
@@ -161,7 +154,6 @@ public class ChghostTest {
     private DefaultChgHostListener getEventListener(ActorTracker tracker, List<Exception> exceptionList) {
         final Client.WithManagement client = Mockito.mock(Client.WithManagement.class);
         final Listener<Exception> exceptionListener = Mockito.mock(Listener.class);
-        Mockito.when(client.getActorTracker()).thenReturn(tracker);
         Mockito.when(client.getExceptionListener()).thenReturn(exceptionListener);
         Mockito.doAnswer(invocationOnMock -> exceptionList.add((Exception) invocationOnMock.getArguments()[0])).when(exceptionListener).queue(Mockito.any());
         return new DefaultChgHostListener(client);
