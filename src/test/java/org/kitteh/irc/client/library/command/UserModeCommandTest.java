@@ -57,8 +57,6 @@ public class UserModeCommandTest {
     @Test(expected = IllegalArgumentException.class)
     public void testWithOneSimpleModeChangeButWrongClient() {
         Client clientMock = Mockito.mock(Client.class);
-        Mockito.when(clientMock.getNick()).thenReturn(USER);
-
         UserModeCommand sut = new UserModeCommand(clientMock);
         UserMode mode = this.getUserMode('A', Mockito.mock(Client.class));
         sut.add(ModeStatus.Action.ADD, mode);
