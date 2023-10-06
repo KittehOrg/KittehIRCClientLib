@@ -32,7 +32,7 @@ import java.util.function.Function;
 /**
  * Tests the EventListener.
  */
-public class DefaultEventListenerTest {
+public class ThirdDefaultEventListenerTest {
     private Client.WithManagement client;
     private ActorTracker actorTracker;
     private DefaultEventManager eventManager;
@@ -53,7 +53,6 @@ public class DefaultEventListenerTest {
         this.exceptionListener = Mockito.mock(Listener.class);
         this.serverInfo = Mockito.mock(DefaultServerInfo.class);
         Mockito.when(this.client.getServerInfo()).thenReturn(this.serverInfo);
-        Mockito.when(this.client.getExceptionListener()).thenReturn(this.exceptionListener);
         Mockito.when(this.serverInfo.getCaseMapping()).thenReturn(CaseMapping.ASCII);
     }
 
@@ -134,18 +133,13 @@ public class DefaultEventListenerTest {
     }
 
     /**
-     * Tests an unsuccessful welcome message.
+     * Tests a successful welcome message.
      */
     @Test
-    public void test1WelcomeFail() {
-        this.fireLine(":irc.network 001");
-        Mockito.verify(this.client, Mockito.times(0)).setCurrentNick(Mockito.anyString());
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Nickname missing from welcome message; can't confirm")));
+    public void test1Welcome() {
+        this.fireLine(":irc.network 001 Kitteh :Welcome to the CatNet Internet Relay Chat Network Kitteh");
+        Mockito.verify(this.client, Mockito.times(1)).setCurrentNick("Kitteh");
     }
 
-    @Test
-    public void testWALLOPSFail() {
-        this.fireLine(":irc.network WALLOPS");
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "WALLOPS message too short")));
-    }
+
 }

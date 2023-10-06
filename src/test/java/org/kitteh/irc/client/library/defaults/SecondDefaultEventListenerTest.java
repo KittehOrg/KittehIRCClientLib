@@ -32,7 +32,7 @@ import java.util.function.Function;
 /**
  * Tests the EventListener.
  */
-public class DefaultEventListenerTest {
+public class SecondDefaultEventListenerTest {
     private Client.WithManagement client;
     private ActorTracker actorTracker;
     private DefaultEventManager eventManager;
@@ -53,6 +53,7 @@ public class DefaultEventListenerTest {
         this.exceptionListener = Mockito.mock(Listener.class);
         this.serverInfo = Mockito.mock(DefaultServerInfo.class);
         Mockito.when(this.client.getServerInfo()).thenReturn(this.serverInfo);
+        Mockito.when(this.client.getEventManager()).thenReturn(this.eventManager);
         Mockito.when(this.client.getExceptionListener()).thenReturn(this.exceptionListener);
         Mockito.when(this.serverInfo.getCaseMapping()).thenReturn(CaseMapping.ASCII);
     }
@@ -134,18 +135,39 @@ public class DefaultEventListenerTest {
     }
 
     /**
-     * Tests an unsuccessful welcome message.
+     * Tests numeric 4 without version.
      */
     @Test
-    public void test1WelcomeFail() {
-        this.fireLine(":irc.network 001");
-        Mockito.verify(this.client, Mockito.times(0)).setCurrentNick(Mockito.anyString());
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Nickname missing from welcome message; can't confirm")));
+    public void test4VersionNoVersion() {
+        this.fireLine(":irc.network 004 Kitteh irc.network");
+        Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
+        Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
+        Mockito.verify(this.client, Mockito.times(1)).startSending();
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class)));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server version and user modes missing")));
+    }
+
+
+    /**
+     * Tests numeric 4 without address or version.
+     */
+    @Test
+    public void test4VersionNoAddressOrVersion() {
+        this.fireLine(":irc.network 004 Kitteh");
+        Mockito.verify(this.serverInfo, Mockito.times(0)).setAddress(Mockito.anyString());
+        Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
+        Mockito.verify(this.client, Mockito.times(1)).startSending();
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class)));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server address, version, and user modes missing")));
     }
 
     @Test
-    public void testWALLOPSFail() {
-        this.fireLine(":irc.network WALLOPS");
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "WALLOPS message too short")));
+    public void testMOTD() {
+        this.fireLine(":irc.network 375 Kitteh :- irc.network Message of the Day -");
+        this.fireLine(":irc.network 372 Kitteh :-   Hello                         ");
+        this.fireLine(":irc.network 372 Kitteh");
+        this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
+        Mockito.verify(this.serverInfo, Mockito.times(1)).setMotd(Mockito.argThat(o -> (o != null) && (o.size() == 1) && o.get(0).contains("Hello")));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message too short")));
     }
 }

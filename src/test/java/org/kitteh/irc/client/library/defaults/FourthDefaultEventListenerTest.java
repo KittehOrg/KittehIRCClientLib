@@ -32,7 +32,7 @@ import java.util.function.Function;
 /**
  * Tests the EventListener.
  */
-public class DefaultEventListenerTest {
+public class FourthDefaultEventListenerTest {
     private Client.WithManagement client;
     private ActorTracker actorTracker;
     private DefaultEventManager eventManager;
@@ -53,8 +53,9 @@ public class DefaultEventListenerTest {
         this.exceptionListener = Mockito.mock(Listener.class);
         this.serverInfo = Mockito.mock(DefaultServerInfo.class);
         Mockito.when(this.client.getServerInfo()).thenReturn(this.serverInfo);
-        Mockito.when(this.client.getExceptionListener()).thenReturn(this.exceptionListener);
+        Mockito.when(this.client.getEventManager()).thenReturn(this.eventManager);
         Mockito.when(this.serverInfo.getCaseMapping()).thenReturn(CaseMapping.ASCII);
+        Mockito.when(this.client.getISupportManager()).thenReturn(new DefaultISupportManager(this.client));
     }
 
     // BEGIN TODO - not have this be stolen from IRCClient
@@ -132,20 +133,26 @@ public class DefaultEventListenerTest {
             return true;
         };
     }
-
-    /**
-     * Tests an unsuccessful welcome message.
-     */
+    
     @Test
-    public void test1WelcomeFail() {
-        this.fireLine(":irc.network 001");
-        Mockito.verify(this.client, Mockito.times(0)).setCurrentNick(Mockito.anyString());
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Nickname missing from welcome message; can't confirm")));
+    public void test5ISUPPORT() {
+        this.fireLine(":irc.network 005 Kitteh SAFELIST ELIST=CTU CHANTYPES=# EXCEPTS INVEX");
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("SAFELIST")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("ELIST")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("CHANTYPES")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("EXCEPTS")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("INVEX")));
+        Mockito.verify(this.serverInfo, Mockito.times(5)).addISupportParameter(Mockito.any());
     }
 
     @Test
-    public void testWALLOPSFail() {
-        this.fireLine(":irc.network WALLOPS");
-        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "WALLOPS message too short")));
+    public void test5ISUPPORTLonger() {
+        this.fireLine(":irc.network 005 Kitteh SAFELIST ELIST=CTU CHANTYPES=# EXCEPTS INVEX :are supported by this server");
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("SAFELIST")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("ELIST")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("CHANTYPES")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("EXCEPTS")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("INVEX")));
+        Mockito.verify(this.serverInfo, Mockito.times(5)).addISupportParameter(Mockito.any());
     }
 }
