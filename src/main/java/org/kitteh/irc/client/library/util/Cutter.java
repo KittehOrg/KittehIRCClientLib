@@ -44,37 +44,91 @@ public interface Cutter {
             Sanity.nullCheck(message, "Message");
             Sanity.truthiness(size > 0, "Size must be positive");
             List<String> list = new ArrayList<>();
-            if (message.length() <= size) {
+            if (this.encodedLength(message) <= size) {
                 list.add(message);
                 return list;
             }
             StringBuilder builder = new StringBuilder(size);
             for (String word : message.split(" ")) {
-                if ((builder.length() + word.length() + ((builder.length() == 0) ? 0 : 1)) > size) {
-                    if ((word.length() > size) && ((builder.length() + 1) < size)) {
-                        if (builder.length() > 0) {
+                int builderLen = this.encodedLength(builder);
+                if ((builderLen + this.encodedLength(word) + ((builderLen == 0) ? 0 : 1)) > size) {
+                    if ((word.length() > size) && ((builderLen + 1) < size)) {
+                        if (builderLen > 0) {
                             builder.append(' ');
+                            builderLen++;
                         }
-                        int cut = size - builder.length();
+                        int cut = size - builderLen;
                         builder.append(word, 0, cut);
                         word = word.substring(cut);
                     }
                     list.add(builder.toString().trim());
                     builder.setLength(0);
-                    while (word.length() > size) {
+                    while (this.encodedLength(word) > size) {
                         list.add(word.substring(0, size));
                         word = word.substring(size);
                     }
                 }
-                if (builder.length() > 0) {
+                if (this.encodedLength(builder) > 0) {
                     builder.append(' ');
                 }
                 builder.append(word);
             }
-            if (builder.length() > 0) {
+            if (this.encodedLength(builder) > 0) {
                 list.add(builder.toString().trim());
             }
             return list;
+        }
+
+        /*
+         * The below two methods are from Guava's Utf8 class, licensed Apache 2.0 (see NOTICE file for more)
+         * As this will always be small with minimal consequence, exceptions for large or malformed text are stripped.
+         */
+
+        /**
+         * Returns the number of bytes in the UTF-8-encoded form of {@code sequence}. For a string, this
+         * method is equivalent to {@code string.getBytes(UTF_8).length}, but is more efficient in both
+         * time and space.
+         */
+        private int encodedLength(CharSequence sequence) {
+            // Warning to maintainers: this implementation is highly optimized.
+            int utf16Length = sequence.length();
+            int utf8Length = utf16Length;
+            int i = 0;
+
+            // This loop optimizes for pure ASCII.
+            while (i < utf16Length && sequence.charAt(i) < 0x80) {
+                i++;
+            }
+
+            // This loop optimizes for chars less than 0x800.
+            for (; i < utf16Length; i++) {
+                char c = sequence.charAt(i);
+                if (c < 0x800) {
+                    utf8Length += ((0x7f - c) >>> 31); // branch free!
+                } else {
+                    utf8Length += this.encodedLengthGeneral(sequence, i);
+                    break;
+                }
+            }
+
+            return utf8Length;
+        }
+
+        private int encodedLengthGeneral(CharSequence sequence, int start) {
+            int utf16Length = sequence.length();
+            int utf8Length = 0;
+            for (int i = start; i < utf16Length; i++) {
+                char c = sequence.charAt(i);
+                if (c < 0x800) {
+                    utf8Length += (0x7f - c) >>> 31; // branch free!
+                } else {
+                    utf8Length += 2;
+                    if (Character.isSurrogate(c)) {
+                        i++;
+                    }
+                }
+            }
+            return utf8Length;
         }
     }
 
@@ -82,10 +136,10 @@ public interface Cutter {
      * Splits a message into items no longer than the size limit.
      *
      * @param message message to split
-     * @param size size limit per returned string
+     * @param size    size limit per returned string
      * @return split up string
      * @throws IllegalArgumentException if size is less than 1 or if
-     * message is null
+     *                                  message is null
      */
     @NonNull List<String> split(@NonNull String message, @NonNegative int size);
 }
