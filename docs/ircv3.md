@@ -24,8 +24,10 @@ See the `CapabilityManager` and `CapabilityRequestCommand` for more details.
     * `User#getAwayMessage()`.
     * `UserAwayMessageEvent`.
 * batch
+* Bot mode
 * extended-join
     * Information tracked automagically.
+* extended-monitor
 * Message tags
     * Getters in `ServerMessage`.
     * Custom class registration in `MessageTagManager`.
