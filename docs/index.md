@@ -70,7 +70,7 @@ simple as adding the lines below to your pom.xml file:
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>8.0.0</version>
+    <version>9.0.0</version>
     <scope>...</scope>
 </dependency>
 ```
@@ -78,7 +78,7 @@ simple as adding the lines below to your pom.xml file:
 Or, for Gradle:
 
 ```
-implementation "org.kitteh.irc:client-lib:8.0.0"
+implementation "org.kitteh.irc:client-lib:9.0.0"
 ```
 
 ## Events
@@ -109,6 +109,4 @@ public class FriendlyBot {
 
 Consult the [JavaDocs](https://kittehorg.github.io/KittehIRCClientLib/) to answer most questions.
 
-Visit us in `#kitteh.org` on `irc.esper.net` for a chat (click
-[here](https://webchat.esper.net/?nick=kicl_...&channels=%23kitteh.org) to join), or check out the
-[Issue Tracker](https://github.com/KittehOrg/KittehIRCClientLib/issues) if you have trouble.
+Check out the [Issue Tracker](https://github.com/KittehOrg/KittehIRCClientLib/issues) if you have trouble.

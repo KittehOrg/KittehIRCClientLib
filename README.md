@@ -42,21 +42,16 @@ public class Example {
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>8.0.0</version>
+    <version>9.0.0</version>
 </dependency>
 ```
 
 ```groovy
-implementation "org.kitteh.irc:client-lib:8.0.0"
+implementation "org.kitteh.irc:client-lib:9.0.0"
 ```
 
 Releases are available on Maven Central.
 
-### Branches
-
-**master** branch tracks releases and may occasionally contain bug fixes or JavaDoc changes prior to release.
-
-**next** branch contains code for upcoming releases and is always working toward the next major or minor release.
 
 ### Logo?
 
