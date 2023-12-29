@@ -106,6 +106,11 @@ public interface CapabilityManager {
         public static final String EXTENDED_JOIN = "extended-join";
 
         /**
+         * Extended monitoring, getting AWAY, ACCOUNT, CHGHOST, AND SETNAME notifications for a MONITOR target.
+         */
+        public static final String EXTENDED_MONITOR = "extended-monitor";
+
+        /**
          * Invite notification, not utilized unless requested.
          *
          * @see ChannelInviteEvent
