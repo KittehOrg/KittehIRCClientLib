@@ -73,6 +73,23 @@ public interface ISupportParameter extends ClientLinked {
     }
 
     /**
+     * Represents the server's support of bot mode, and indicates the usermode to self-flag as a bot.
+     */
+    interface Bot extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "BOT";
+
+        /**
+         * Gets the bot mode character.
+         *
+         * @return bot mode
+         */
+        char getMode();
+    }
+
+    /**
      * Represents the {@link org.kitteh.irc.client.library.feature.CaseMapping}
      * supported by the server.
      */

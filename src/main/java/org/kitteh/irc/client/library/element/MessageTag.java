@@ -33,6 +33,13 @@ import java.util.Optional;
  */
 public interface MessageTag {
     /**
+     * Represents the `bot` tag, flagging any sender with {@link org.kitteh.irc.client.library.element.ISupportParameter.Bot} mode.
+     */
+    interface Bot extends MessageTag {
+
+    }
+
+    /**
      * Represents the `label` tag as specified by the labeled responses spec.
      */
     interface Label extends MessageTag {

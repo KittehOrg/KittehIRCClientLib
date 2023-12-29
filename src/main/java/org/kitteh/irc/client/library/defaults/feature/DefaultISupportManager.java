@@ -27,31 +27,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportAwayLen;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportCaseMapping;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanLimit;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanModes;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanTypes;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChannelLen;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportClientTagDeny;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportEList;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportExcepts;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportExtBan;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportHostLen;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportInvEx;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportKickLen;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportMaxList;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportMaxTargets;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportModes;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportNetwork;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportNickLen;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportPrefix;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportSilence;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportStatusMsg;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportTargMax;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportTopicLen;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportUserLen;
-import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportWhoX;
+import org.kitteh.irc.client.library.defaults.element.isupport.*;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
 import org.kitteh.irc.client.library.feature.ISupportManager;
@@ -69,9 +45,10 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
      *
      * @param client client for which this exists
      */
-    public DefaultISupportManager(Client.WithManagement client) {
+    public DefaultISupportManager(Client.@NonNull WithManagement client) {
         super(client);
         this.registerParameter(ISupportParameter.AwayLen.NAME, DefaultISupportAwayLen::new);
+        this.registerParameter(ISupportParameter.Bot.NAME, DefaultISupportBot::new);
         this.registerParameter(ISupportParameter.CaseMapping.NAME, DefaultISupportCaseMapping::new);
         this.registerParameter(ISupportParameter.ChannelLen.NAME, DefaultISupportChannelLen::new);
         this.registerParameter(ISupportParameter.ChanLimit.NAME, DefaultISupportChanLimit::new);
