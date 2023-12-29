@@ -24,6 +24,9 @@
 package org.kitteh.irc.client.library.element.mode;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.Client;
+
+import java.util.Optional;
 
 /**
  * A channel mode.
@@ -83,4 +86,15 @@ public interface ChannelMode extends Mode {
      * @return type
      */
     @NonNull Type getType();
+
+    /**
+     * Gets a channel mode by character for a given client.
+     *
+     * @param client client
+     * @param mode   mode to get
+     * @return the mode, if present
+     */
+    public static @NonNull Optional<ChannelMode> get(@NonNull Client client, char mode) {
+        return client.getServerInfo().getChannelModes().stream().filter(m -> m.getChar() == mode).findFirst();
+    }
 }

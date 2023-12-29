@@ -24,6 +24,9 @@
 package org.kitteh.irc.client.library.element.mode;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.Client;
+
+import java.util.Optional;
 
 /**
  * Describes a channel mode that a user can have, such as op.
@@ -39,5 +42,16 @@ public interface ChannelUserMode extends ChannelMode {
     @Override
     default @NonNull Type getType() {
         return Type.B_PARAMETER_ALWAYS;
+    }
+
+    /**
+     * Gets a channel user mode by character for a given client.
+     *
+     * @param client client
+     * @param mode   mode to get
+     * @return the mode, if present
+     */
+    public static @NonNull Optional<ChannelUserMode> get(@NonNull Client client, char mode) {
+        return client.getServerInfo().getChannelUserModes().stream().filter(m -> m.getChar() == mode).findFirst();
     }
 }

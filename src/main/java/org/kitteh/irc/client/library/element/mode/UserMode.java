@@ -23,8 +23,23 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.kitteh.irc.client.library.Client;
+
+import java.util.Optional;
+
 /**
  * A user mode.
  */
 public interface UserMode extends Mode {
+    /**
+     * Gets a user mode by character for a given client.
+     *
+     * @param client client
+     * @param mode   mode to get
+     * @return the mode, if present
+     */
+    public static @NonNull Optional<UserMode> get(@NonNull Client client, char mode) {
+        return client.getServerInfo().getUserModes().stream().filter(m -> m.getChar() == mode).findFirst();
+    }
 }
