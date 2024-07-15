@@ -6,7 +6,7 @@ using the Netty library to maximize performance and scalability.
 [![Coverage](https://img.shields.io/codecov/c/github/KittehOrg/KittehIRCClientLib/master.svg)](https://codecov.io/github/KittehOrg/KittehIRCClientLib)
 ![Powered by Kittens](https://img.shields.io/badge/powered%20by-kittens-blue.svg)
 
-#### [Project News](https://kitteh.org/) | [Documentation](https://kicl.kitteh.org/) |  [JavaDocs](https://kittehorg.github.io/KittehIRCClientLib/) | [Issues](https://github.com/KittehOrg/KittehIRCClientLib/issues)
+#### [Documentation](https://kitteh.dev/kicl/) |  [JavaDocs](https://kittehorg.github.io/KittehIRCClientLib/) | [Issues](https://github.com/KittehOrg/KittehIRCClientLib/issues)
 
 ### Minimal example
 
