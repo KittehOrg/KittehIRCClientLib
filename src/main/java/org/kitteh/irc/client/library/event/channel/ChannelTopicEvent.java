@@ -57,31 +57,6 @@ public class ChannelTopicEvent extends ChannelEventBase {
         this.updated = updated;
     }
 
-    /**
-     * Creates the event.
-     *
-     * @param client client for which this is occurring
-     * @param sourceMessage source message
-     * @param channel channel the topic is about
-     * @param updated if this is a new change
-     * @deprecated Use new constructor
-     */
-    @Deprecated
-    public ChannelTopicEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, @NonNull Channel channel, boolean updated) {
-        this(client, sourceMessage, channel, null, null, updated);
-    }
-
-    /**
-     * Gets the channel's topic.
-     *
-     * @return the channel topic
-     * @deprecated Use {@link #getNewTopic()} and {@link #getOldTopic()}
-     */
-    @Deprecated
-    public Channel.@NonNull Topic getTopic() {
-        return this.getChannel().getTopic();
-    }
-
     public Channel.@NonNull Topic getNewTopic() {
         return this.newTopic;
     }

@@ -96,7 +96,7 @@ public interface Client extends ClientLinked {
      * Builds {@link Client}s. Create a builder with {@link Client#builder()}.
      * <p>
      * The default built client connects securely via port 6697. See {@link
-     * Server#secure(boolean)} to disable, or the other secure-prefixed methods in
+     * Server##port(int, Server.SecurityType)} to disable, or the other secure-prefixed methods in
      * this builder to fully utilize the feature. Note that the default
      * TrustManagerFactory relies on your local trust store. The default Oracle
      * trust store does not accept self-signed certificates.
@@ -175,18 +175,6 @@ public interface Client extends ClientLinked {
             @NonNull Server host(@NonNull String host);
 
             /**
-             * Sets the server port to which the client will connect.
-             * <p>
-             * By default, the port is 6697.
-             *
-             * @param port IRC server port
-             * @return this builder
-             * @deprecated use {@link #port(int, SecurityType)} instead
-             */
-            @Deprecated
-            @NonNull Server port(int port);
-
-            /**
              * Sets the server port to which the client will connect and
              * determines TLS setting. By default, the port is 6697 and the
              * TLS setting is {@link SecurityType#SECURE}.
@@ -208,26 +196,11 @@ public interface Client extends ClientLinked {
             @NonNull Server password(@Nullable String password);
 
             /**
-             * Sets whether the client connects via TLS.
-             * <p>
-             * Note that by default the TrustManager used does not accept the
-             * certificates of many popular networks. You must use {@link
-             * #secureTrustManagerFactory(TrustManagerFactory)} to set your own
-             * TrustManagerFactory.
-             *
-             * @param secure true for TLS
-             * @return this builder
-             * @deprecated use {@link #port(int, SecurityType)} instead
-             */
-            @Deprecated
-            @NonNull Server secure(boolean secure);
-
-            /**
              * Sets the key for TLS connection.
              *
              * @param keyCertChainFile X.509 certificate chain file in PEM format
              * @return this builder
-             * @see #secure(boolean)
+             * @see #port(int, SecurityType)
              */
             @NonNull Server secureKeyCertChain(@Nullable Path keyCertChainFile);
 
@@ -236,7 +209,7 @@ public interface Client extends ClientLinked {
              *
              * @param keyFile PKCS#8 private key file in PEM format
              * @return this builder
-             * @see #secure(boolean)
+             * @see #port(int, SecurityType)
              */
             @NonNull Server secureKey(@Nullable Path keyFile);
 
@@ -245,7 +218,7 @@ public interface Client extends ClientLinked {
              *
              * @param password password for private key
              * @return this builder
-             * @see #secure(boolean)
+             * @see #port(int, SecurityType)
              */
             @NonNull Server secureKeyPassword(@Nullable String password);
 
@@ -255,7 +228,7 @@ public interface Client extends ClientLinked {
              * @param factory trust manager supplier
              * @return this builder
              * @throws IllegalArgumentException if providing an insecure factory while the STS storage manager is set
-             * @see #secure(boolean)
+             * @see #port(int, SecurityType)
              */
             @NonNull Server secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
 

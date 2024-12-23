@@ -100,13 +100,6 @@ public class DefaultBuilder implements Client.Builder {
             return this;
         }
 
-        @Deprecated
-        @Override
-        public @NonNull Server port(int port) {
-            DefaultBuilder.this.serverHostWithPort = DefaultBuilder.this.serverHostWithPort.withPort(DefaultBuilder.this.isValidPort(port));
-            return this;
-        }
-
         @Override
         public @NonNull Server port(int port, @NonNull SecurityType security) {
             DefaultBuilder.this.serverHostWithPort = DefaultBuilder.this.serverHostWithPort.withPort(DefaultBuilder.this.isValidPort(port));
@@ -117,13 +110,6 @@ public class DefaultBuilder implements Client.Builder {
         @Override
         public @NonNull Server password(@Nullable String password) {
             DefaultBuilder.this.serverPassword = password;
-            return this;
-        }
-
-        @Deprecated
-        @Override
-        public @NonNull Server secure(boolean secure) {
-            DefaultBuilder.this.secure = secure;
             return this;
         }
 
