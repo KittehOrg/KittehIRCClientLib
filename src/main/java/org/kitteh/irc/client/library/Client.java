@@ -254,6 +254,7 @@ public interface Client extends ClientLinked {
              *
              * @param factory trust manager supplier
              * @return this builder
+             * @throws IllegalArgumentException if providing an insecure factory while the STS storage manager is set
              * @see #secure(boolean)
              */
             @NonNull Server secureTrustManagerFactory(@Nullable TrustManagerFactory factory);

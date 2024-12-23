@@ -147,6 +147,9 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Server secureTrustManagerFactory(@Nullable TrustManagerFactory factory) {
+            if (DefaultBuilder.this.stsStorageManager != null) {
+                Sanity.truthiness(!SslUtil.isInsecure(factory), "Cannot use STS with an insecure trust manager.");
+            }
             DefaultBuilder.this.secureTrustManagerFactory = factory;
             return this;
         }
