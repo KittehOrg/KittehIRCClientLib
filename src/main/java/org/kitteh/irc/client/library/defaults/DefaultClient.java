@@ -241,69 +241,65 @@ public class DefaultClient implements Client.WithManagement {
 
     /**
      * Creates a new default client.
+     *
+     * @param builder builder
      */
-    public DefaultClient() {
-
-    }
-
-    @Override
-    public void initialize(@NonNull String name, @NonNull NetworkHandler networkHandler,
-                           @NonNull HostWithPort serverAddress, @Nullable String serverPassword,
-                           @Nullable InetSocketAddress bindAddress,
-                           @Nullable HostWithPort proxyAddress, @Nullable ProxyType proxyType,
-                           @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
-                           @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
-                           @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
-                           @NonNull MessageTagManager messageTagManager,
-                           @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
-                           @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
-                           @NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
-                           @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener,
-                           @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain,
-                           @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory,
-                           @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost,
-                           @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircGateway) {
-        this.name = name;
+    DefaultClient(DefaultBuilder builder) {
         this.processor = new InputProcessor();
         this.messageSendingImmediate = new QueueProcessingThreadSender(this, "Immediate");
-        this.networkHandler = networkHandler;
-        this.serverAddress = serverAddress;
-        this.proxyAddress = proxyAddress;
-        this.proxyType = proxyType;
-        this.serverPassword = serverPassword;
-        this.bindAddress = bindAddress;
-        this.currentNick = this.requestedNick = this.goalNick = nick;
-        this.userString = userString;
-        this.realName = realName;
-        this.actorTracker = actorTracker;
-        this.authManager = authManager;
-        this.capabilityManager = capabilityManager;
-        this.eventManager = eventManager;
-        this.messageTagManager = messageTagManager;
-        this.iSupportManager = iSupportManager;
-        this.defaultMessageMap = (defaultMessageMap == null) ? new SimpleDefaultMessageMap() : defaultMessageMap;
-        this.messageSendingQueueSupplier = messageSendingQueue;
-        this.serverInfoSupplier = serverInfo;
-        this.exceptionListener = new Listener<>(this, exceptionListener);
-        this.inputListener = new Listener<>(this, inputListener);
-        this.outputListener = new Listener<>(this, outputListener);
-        this.secure = secure;
-        this.secureKeyCertChain = secureKeyCertChain;
-        this.secureKey = secureKey;
-        this.secureKeyPassword = secureKeyPassword;
-        this.secureTrustManagerFactory = trustManagerFactory;
-        this.stsStorageManager = stsStorageManager;
-        this.webircHost = webircHost;
-        this.webircIP = webircIP;
-        this.webircPassword = webircPassword;
-        this.webircGateway = webircGateway;
 
-        for (EventListenerSupplier eventListenerSupplier : listenerSuppliers) {
+        this.name = builder.name;
+
+        this.networkHandler = builder.networkHandler;
+        this.serverAddress = builder.serverHostWithPort;
+        this.serverPassword = builder.serverPassword;
+        this.bindAddress = builder.getInetSocketAddress(builder.bindHost, builder.bindPort);
+        this.proxyAddress = ((builder.proxyHost != null) && (builder.proxyPort > 0)) ? HostWithPort.of(builder.proxyHost, builder.proxyPort) : null;
+        this.proxyType = builder.proxyType;
+
+        this.currentNick = this.requestedNick = this.goalNick = builder.nick;
+        this.userString = builder.userString;
+        this.realName = builder.realName;
+
+        this.defaultMessageMap = (builder.defaultMessageMap == null) ? new SimpleDefaultMessageMap() : builder.defaultMessageMap;
+
+        this.messageSendingQueueSupplier = builder.messageSendingQueue;
+
+        this.serverInfoSupplier = builder.serverInfo;
+
+        this.exceptionListener = new Listener<>(this, builder.exceptionListener);
+        this.inputListener = new Listener<>(this, builder.inputListener);
+        this.outputListener = new Listener<>(this, builder.outputListener);
+
+        this.secure = builder.secure;
+        this.secureKeyCertChain = builder.secureKeyCertChain;
+        this.secureKey = builder.secureKey;
+        this.secureKeyPassword = builder.secureKeyPassword;
+        this.secureTrustManagerFactory = builder.secureTrustManagerFactory;
+        this.stsStorageManager = builder.stsStorageManager;
+
+        this.webircHost = builder.webircHost;
+        this.webircIP = builder.webircIP;
+        this.webircPassword = builder.webircPassword;
+        this.webircGateway = builder.webircGateway;
+    }
+
+    /**
+     * Call initialization methods that require a fully constructed Client.
+     *
+     * @param builder builder, same as sent to constructor
+     */
+    void initialize(@NonNull DefaultBuilder builder) {
+        this.actorTracker = builder.actorTracker.apply(this);
+        this.authManager = builder.authManager.apply(this);
+        this.capabilityManager = builder.capabilityManager.apply(this);
+        this.eventManager = builder.eventManager.apply(this);
+        this.messageTagManager = builder.messageTagManager.apply(this);
+        this.iSupportManager = builder.iSupportManager.apply(this);
+        this.serverInfo = this.serverInfoSupplier.apply(this);
+        for (EventListenerSupplier eventListenerSupplier : builder.eventListeners) {
             this.eventManager.registerEventListener(eventListenerSupplier.getConstructingFunction().apply(this));
         }
-
-        this.serverInfo = this.serverInfoSupplier.apply(this);
-
         if (this.stsStorageManager != null) {
             this.configureSts();
         } else if (!this.isSecureConnection()) {

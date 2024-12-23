@@ -889,60 +889,6 @@ public interface Client extends ClientLinked {
         void setServerAddress(@NonNull HostWithPort address);
 
         /**
-         * Initialize with pre-connection information.
-         *
-         * @param name name
-         * @param networkHandler networkHandler
-         * @param serverHostWithPort serverHostWithPort
-         * @param serverPassword serverPassword
-         * @param bindAddress bindAddress
-         * @param proxyAddress proxyAddress
-         * @param proxyType proxyType
-         * @param nick nick
-         * @param userString userString
-         * @param realName realName
-         * @param actorTracker actorTracker
-         * @param authManager authManager
-         * @param capabilityManager capabilityManager
-         * @param eventManager eventManager
-         * @param listenerSuppliers listenerSuppliers
-         * @param messageTagManager messageTagManager
-         * @param iSupportManager iSupportManager
-         * @param defaultMessageMap defaultMessageMap
-         * @param messageSendingQueue messageSendingQueue
-         * @param serverInfo serverInfo
-         * @param exceptionListener exceptionListener
-         * @param inputListener inputListener
-         * @param outputListener outputListener
-         * @param secure secure
-         * @param secureKeyCertChain secureKeyCertChain
-         * @param secureKey secureKey
-         * @param secureKeyPassword secureKeyPassword
-         * @param trustManagerFactory trustManagerFactory
-         * @param stsStorageManager stsStorageManager
-         * @param webircHost webircHost
-         * @param webircIP webircIP
-         * @param webircPassword webircPassword
-         * @param webircUser webircUser
-         */
-        void initialize(@NonNull String name, @NonNull NetworkHandler networkHandler,
-                        @NonNull HostWithPort serverHostWithPort, @Nullable String serverPassword,
-                        @Nullable InetSocketAddress bindAddress,
-                        @Nullable HostWithPort proxyAddress, @Nullable ProxyType proxyType,
-                        @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker,
-                        @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager,
-                        @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers,
-                        @NonNull MessageTagManager messageTagManager,
-                        @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap,
-                        @NonNull Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue,
-                        @NonNull Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo,
-                        @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener,
-                        @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain,
-                        @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory,
-                        @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost,
-                        @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser);
-
-        /**
          * Sets the client's user modes.
          *
          * @param userModes user modes to set

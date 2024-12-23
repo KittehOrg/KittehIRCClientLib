@@ -16,31 +16,23 @@ import org.kitteh.irc.client.library.element.mode.ModeStatusList;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.AuthManager;
-import org.kitteh.irc.client.library.feature.CapabilityManager;
-import org.kitteh.irc.client.library.feature.EventListenerSupplier;
 import org.kitteh.irc.client.library.feature.EventManager;
-import org.kitteh.irc.client.library.feature.ISupportManager;
-import org.kitteh.irc.client.library.feature.MessageTagManager;
-import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.network.NetworkHandler;
 import org.kitteh.irc.client.library.feature.network.ProxyType;
 import org.kitteh.irc.client.library.feature.sending.MessageSendingQueue;
 import org.kitteh.irc.client.library.feature.sts.StsMachine;
-import org.kitteh.irc.client.library.feature.sts.StsStorageManager;
 import org.kitteh.irc.client.library.util.Cutter;
 import org.kitteh.irc.client.library.util.HostWithPort;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.Pair;
 
 import javax.net.ssl.TrustManagerFactory;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -82,10 +74,6 @@ public class FakeClient implements Client.WithManagement {
     @Override
     public void setServerAddress(@NonNull HostWithPort address) {
 
-    }
-
-    @Override
-    public void initialize(@NonNull String name, @NonNull NetworkHandler networkHandler, @NonNull HostWithPort serverHostWithPort, @Nullable String serverPassword, @Nullable InetSocketAddress bindAddress, @Nullable HostWithPort proxyAddress, @Nullable ProxyType proxyType, @NonNull String nick, @NonNull String userString, @NonNull String realName, @NonNull ActorTracker actorTracker, @NonNull AuthManager authManager, CapabilityManager.@NonNull WithManagement capabilityManager, @NonNull EventManager eventManager, @NonNull List<EventListenerSupplier> listenerSuppliers, @NonNull MessageTagManager messageTagManager, @NonNull ISupportManager iSupportManager, @Nullable DefaultMessageMap defaultMessageMap, @NonNull Function<WithManagement, ? extends MessageSendingQueue> messageSendingQueue, @NonNull Function<WithManagement, ? extends ServerInfo.WithManagement> serverInfo, @Nullable Consumer<Exception> exceptionListener, @Nullable Consumer<String> inputListener, @Nullable Consumer<String> outputListener, boolean secure, @Nullable Path secureKeyCertChain, @Nullable Path secureKey, @Nullable String secureKeyPassword, @Nullable TrustManagerFactory trustManagerFactory, @Nullable StsStorageManager stsStorageManager, @Nullable String webircHost, @Nullable InetAddress webircIP, @Nullable String webircPassword, @Nullable String webircUser) {
     }
 
     @Override

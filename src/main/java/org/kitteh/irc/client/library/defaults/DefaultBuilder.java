@@ -340,52 +340,52 @@ public class DefaultBuilder implements Client.Builder {
     private static final Function<Client.WithManagement, ? extends MessageTagManager> DEFAULT_MESSAGE_TAG_MANAGER = DefaultMessageTagManager::new;
     private static final Function<Client.WithManagement, ? extends ServerInfo.WithManagement> DEFAULT_SERVER_INFO = DefaultServerInfo::new;
 
-    private String name = "Unnamed";
+    String name = "Unnamed";
 
-    private @Nullable String bindHost;
-    private int bindPort;
+    @Nullable String bindHost;
+    int bindPort;
 
-    private HostWithPort serverHostWithPort = HostWithPort.of(DefaultBuilder.DEFAULT_SERVER_HOST, DefaultBuilder.DEFAULT_SERVER_PORT);
-    private @Nullable String serverPassword = null;
-    private boolean secure = true;
-    private @Nullable Path secureKeyCertChain = null;
-    private @Nullable Path secureKey = null;
-    private @Nullable String secureKeyPassword = null;
-    private @Nullable TrustManagerFactory secureTrustManagerFactory = null;
+    HostWithPort serverHostWithPort = HostWithPort.of(DefaultBuilder.DEFAULT_SERVER_HOST, DefaultBuilder.DEFAULT_SERVER_PORT);
+    @Nullable String serverPassword = null;
+    boolean secure = true;
+    @Nullable Path secureKeyCertChain = null;
+    @Nullable Path secureKey = null;
+    @Nullable String secureKeyPassword = null;
+    @Nullable TrustManagerFactory secureTrustManagerFactory = null;
 
-    private String nick = "Kitteh";
-    private String userString = "Kitteh";
-    private String realName = "KICL " + Version.getVersion() + " - kitteh.org";
+    String nick = "Kitteh";
+    String userString = "Kitteh";
+    String realName = "KICL " + Version.getVersion() + " - kitteh.org";
 
     // Listeners
-    private @Nullable Consumer<Exception> exceptionListener = Throwable::printStackTrace;
-    private @Nullable Consumer<String> inputListener = null;
-    private @Nullable Consumer<String> outputListener = null;
+    @Nullable Consumer<Exception> exceptionListener = Throwable::printStackTrace;
+    @Nullable Consumer<String> inputListener = null;
+    @Nullable Consumer<String> outputListener = null;
 
     // Proxy
-    private @Nullable String proxyHost;
-    private int proxyPort;
-    private @Nullable ProxyType proxyType;
+    @Nullable String proxyHost;
+    int proxyPort;
+    @Nullable ProxyType proxyType;
 
     // WebIRC
-    private @Nullable String webircHost = null;
-    private @Nullable InetAddress webircIP = null;
-    private @Nullable String webircPassword = null;
-    private @Nullable String webircGateway = null;
+    @Nullable String webircHost = null;
+    @Nullable InetAddress webircIP = null;
+    @Nullable String webircPassword = null;
+    @Nullable String webircGateway = null;
 
     // Management
-    private Function<Client.WithManagement, ? extends ActorTracker> actorTracker = DefaultBuilder.DEFAULT_ACTOR_TRACKER;
-    private Function<Client.WithManagement, ? extends AuthManager> authManager = DefaultBuilder.DEFAULT_AUTH_MANAGER;
-    private Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> capabilityManager = DefaultBuilder.DEFAULT_CAPABILITY_MANAGER;
-    private @Nullable DefaultMessageMap defaultMessageMap = null;
-    private Function<Client.WithManagement, ? extends EventManager> eventManager = DefaultBuilder.DEFAULT_EVENT_MANAGER;
-    private List<EventListenerSupplier> eventListeners = DefaultBuilder.DEFAULT_EVENT_LISTENERS;
-    private Function<Client.WithManagement, ? extends ISupportManager> iSupportManager = DefaultBuilder.DEFAULT_ISUPPORT_MANAGER;
-    private Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue = DefaultBuilder.DEFAULT_MESSAGE_SENDING_QUEUE;
-    private Function<Client.WithManagement, ? extends MessageTagManager> messageTagManager = DefaultBuilder.DEFAULT_MESSAGE_TAG_MANAGER;
-    private NetworkHandler networkHandler = NettyNetworkHandler.getInstance();
-    private Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo = DefaultBuilder.DEFAULT_SERVER_INFO;
-    private @Nullable StsStorageManager stsStorageManager = null;
+    Function<Client.WithManagement, ? extends ActorTracker> actorTracker = DefaultBuilder.DEFAULT_ACTOR_TRACKER;
+    Function<Client.WithManagement, ? extends AuthManager> authManager = DefaultBuilder.DEFAULT_AUTH_MANAGER;
+    Function<Client.WithManagement, ? extends CapabilityManager.WithManagement> capabilityManager = DefaultBuilder.DEFAULT_CAPABILITY_MANAGER;
+    @Nullable DefaultMessageMap defaultMessageMap = null;
+    Function<Client.WithManagement, ? extends EventManager> eventManager = DefaultBuilder.DEFAULT_EVENT_MANAGER;
+    List<EventListenerSupplier> eventListeners = DefaultBuilder.DEFAULT_EVENT_LISTENERS;
+    Function<Client.WithManagement, ? extends ISupportManager> iSupportManager = DefaultBuilder.DEFAULT_ISUPPORT_MANAGER;
+    Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueue = DefaultBuilder.DEFAULT_MESSAGE_SENDING_QUEUE;
+    Function<Client.WithManagement, ? extends MessageTagManager> messageTagManager = DefaultBuilder.DEFAULT_MESSAGE_TAG_MANAGER;
+    NetworkHandler networkHandler = NettyNetworkHandler.getInstance();
+    Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfo = DefaultBuilder.DEFAULT_SERVER_INFO;
+    @Nullable StsStorageManager stsStorageManager = null;
 
     @Override
     public @NonNull DefaultBuilder name(@NonNull String name) {
@@ -447,28 +447,8 @@ public class DefaultBuilder implements Client.Builder {
 
     @Override
     public @NonNull Client build() {
-        if (this.stsStorageManager != null) {
-            Sanity.truthiness(!SslUtil.isInsecure(this.secureTrustManagerFactory), "Cannot use STS with an insecure trust manager.");
-        }
-
-        HostWithPort proxyAddress = null;
-        if ((this.proxyHost != null) && (this.proxyPort > 0)) {
-            proxyAddress = HostWithPort.of(this.proxyHost, this.proxyPort);
-        }
-        Client.WithManagement client = new DefaultClient();
-        client.initialize(this.name, this.networkHandler,
-                this.serverHostWithPort, this.serverPassword,
-                this.getInetSocketAddress(this.bindHost, this.bindPort),
-                proxyAddress, this.proxyType,
-                this.nick, this.userString, this.realName,
-                this.actorTracker.apply(client),
-                this.authManager.apply(client), this.capabilityManager.apply(client), this.eventManager.apply(client),
-                this.eventListeners, this.messageTagManager.apply(client),
-                this.iSupportManager.apply(client), this.defaultMessageMap, this.messageSendingQueue,
-                this.serverInfo, this.exceptionListener, this.inputListener, this.outputListener, this.secure,
-                this.secureKeyCertChain, this.secureKey, this.secureKeyPassword, this.secureTrustManagerFactory, this.stsStorageManager,
-                this.webircHost, this.webircIP, this.webircPassword, this.webircGateway
-        );
+        DefaultClient client = new DefaultClient(this);
+        client.initialize(this);
 
         return client;
     }
@@ -485,7 +465,7 @@ public class DefaultBuilder implements Client.Builder {
         return new ToStringer(this).toString();
     }
 
-    private InetSocketAddress getInetSocketAddress(@Nullable String host, int port) {
+    InetSocketAddress getInetSocketAddress(@Nullable String host, int port) {
         if (host != null) {
             return new InetSocketAddress(host, port);
         } else {
