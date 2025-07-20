@@ -70,15 +70,15 @@ simple as adding the lines below to your pom.xml file:
 <dependency>
     <groupId>org.kitteh.irc</groupId>
     <artifactId>client-lib</artifactId>
-    <version>9.0.0</version>
+    <version>10.0.0-SNAPSHOT</version>
     <scope>...</scope>
 </dependency>
 ```
 
 Or, for Gradle:
 
-```
-implementation "org.kitteh.irc:client-lib:9.0.0"
+```kotlin
+implementation("org.kitteh.irc:client-lib:10.0.0-SNAPSHOT")
 ```
 
 ## Events
