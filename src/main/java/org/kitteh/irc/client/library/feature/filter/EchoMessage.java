@@ -26,7 +26,7 @@ package org.kitteh.irc.client.library.feature.filter;
 import net.engio.mbassy.listener.Filter;
 import net.engio.mbassy.listener.IMessageFilter;
 import net.engio.mbassy.subscription.SubscriptionContext;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.helper.ActorEvent;

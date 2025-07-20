@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents an entity on an IRC server which can perform actions.

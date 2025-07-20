@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.element;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.feature.ServerInfo;
 

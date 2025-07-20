@@ -1,6 +1,6 @@
 package org.kitteh.irc.client.library;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.element.CapabilityState;

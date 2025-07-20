@@ -24,8 +24,8 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.user.PrivateNoticeEvent;

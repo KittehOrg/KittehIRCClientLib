@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.element.mode;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;
 import org.kitteh.irc.client.library.element.Channel;
 import org.kitteh.irc.client.library.element.ClientLinked;

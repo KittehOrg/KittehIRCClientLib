@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.sts;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Interface representing the STS FSM.

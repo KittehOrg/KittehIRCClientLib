@@ -30,7 +30,7 @@ import net.engio.mbassy.dispatch.IHandlerInvocation;
 import net.engio.mbassy.dispatch.IMessageDispatcher;
 import net.engio.mbassy.subscription.SubscriptionContext;
 import net.engio.mbassy.subscription.SubscriptionFactory;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;

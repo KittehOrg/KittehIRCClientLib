@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.element.CapabilityState;
 import org.kitteh.irc.client.library.element.Channel;

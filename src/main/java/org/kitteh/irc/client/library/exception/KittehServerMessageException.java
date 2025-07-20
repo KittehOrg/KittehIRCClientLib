@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.exception;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.element.ServerMessage;
 
 import java.util.Collections;

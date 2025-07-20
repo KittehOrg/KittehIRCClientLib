@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

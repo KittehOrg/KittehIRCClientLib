@@ -24,8 +24,8 @@
 package org.kitteh.irc.client.library.feature.auth;
 
 import net.engio.mbassy.listener.Handler;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.feature.filter.CommandFilter;
@@ -52,6 +52,7 @@ import java.util.Base64;
  * SASL ECDSA-NIST256P-CHALLENGE authentication. Automatically attempts auth
  * during connection.
  */
+@NullMarked
 public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
     /**
      * Holds a private and public key.
@@ -60,7 +61,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
         private final ECPrivateKey privateKey;
         private final ECPublicKey publicKey;
 
-        private ECKeyPair(@NonNull ECPrivateKey privateKey, @NonNull ECPublicKey publicKey) {
+        private ECKeyPair(ECPrivateKey privateKey, ECPublicKey publicKey) {
             this.privateKey = privateKey;
             this.publicKey = publicKey;
         }
@@ -70,7 +71,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
          *
          * @return a reference to the private key
          */
-        public @NonNull ECPrivateKey getPrivate() {
+        public ECPrivateKey getPrivate() {
             return this.privateKey;
         }
 
@@ -79,12 +80,12 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
          *
          * @return a reference to the public key
          */
-        public @NonNull ECPublicKey getPublic() {
+        public ECPublicKey getPublic() {
             return this.publicKey;
         }
 
         @Override
-        public @NonNull String toString() {
+        public String toString() {
             return new ToStringer(this).add("privateKey", this.privateKey).add("publicKey", this.publicKey).toString();
         }
     }
@@ -112,7 +113,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
     }
 
     private final ECPrivateKey privateKey;
-    private @MonotonicNonNull Listener listener;
+    private @Nullable Listener listener;
 
     /**
      * Creates an instance.
@@ -121,18 +122,18 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @param accountName account name
      * @param privateKey private key
      */
-    public SaslEcdsaNist256PChallenge(@NonNull Client client, @NonNull String accountName, @NonNull ECPrivateKey privateKey) {
+    public SaslEcdsaNist256PChallenge(Client client, String accountName, ECPrivateKey privateKey) {
         super(client, "ECDSA-NIST256P-CHALLENGE", accountName);
         this.privateKey = Sanity.nullCheck(privateKey, "Private key");
     }
 
     @Override
-    protected @NonNull String getAuthLine() {
+    protected String getAuthLine() {
         return this.getAccountName() + '\0' + this.getAccountName() + '\0';
     }
 
     @Override
-    public @NonNull Object getEventListener() {
+    public Object getEventListener() {
         return (this.listener == null) ? (this.listener = new Listener()) : this.listener;
     }
 
@@ -150,7 +151,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @throws IllegalArgumentException if privateKey is null
      * @see #getPrivateKey(String)
      */
-    public static @NonNull String base64Encode(@NonNull ECPrivateKey privateKey) {
+    public static String base64Encode(ECPrivateKey privateKey) {
         Sanity.nullCheck(privateKey, "Private key");
         return Base64.getEncoder().encodeToString(privateKey.getEncoded());
     }
@@ -163,7 +164,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @throws IllegalArgumentException if publicKey is null
      * @see #getPublicKey(String)
      */
-    public static @NonNull String base64Encode(@NonNull ECPublicKey publicKey) {
+    public static String base64Encode(ECPublicKey publicKey) {
         Sanity.nullCheck(publicKey, "Public key");
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
@@ -178,7 +179,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @throws IllegalArgumentException if base64Encoded is null
      * @see #base64Encode(ECPrivateKey)
      */
-    public static @NonNull ECPrivateKey getPrivateKey(@NonNull String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static ECPrivateKey getPrivateKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
         Sanity.nullCheck(base64Encoded, "Base64 encoded string");
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
@@ -195,7 +196,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @throws IllegalArgumentException if base64Encoded is null
      * @see #base64Encode(ECPublicKey)
      */
-    public static @NonNull ECPublicKey getPublicKey(@NonNull String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static ECPublicKey getPublicKey(String base64Encoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
         Sanity.nullCheck(base64Encoded, "Base64 encoded string");
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64Encoded));
@@ -213,7 +214,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @return base64 encoded compressed public key
      * @throws IllegalArgumentException if publicKey is null
      */
-    public static @NonNull String getCompressedBase64PublicKey(@NonNull ECPublicKey publicKey) {
+    public static String getCompressedBase64PublicKey(ECPublicKey publicKey) {
         Sanity.nullCheck(publicKey, "Public key");
         ECPoint ecPoint = publicKey.getW();
         byte[] xBytes = ecPoint.getAffineX().toByteArray();
@@ -238,7 +239,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @throws InvalidKeyException if the key is invalid
      * @throws IllegalArgumentException if either parameter is null
      */
-    public static @NonNull String sign(@NonNull ECPrivateKey privateKey, @NonNull String base64Challenge) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+    public static String sign(ECPrivateKey privateKey, String base64Challenge) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         Sanity.nullCheck(privateKey, "Private key");
         Sanity.nullCheck(base64Challenge, "Base64 encoded challenge");
         Signature signature = Signature.getInstance("NONEwithECDSA");
@@ -253,7 +254,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @return a shiny new key pair
      * @throws NoSuchAlgorithmException if the JVM doesn't support NONEwithECDSA
      */
-    public static @NonNull ECKeyPair getNewKey() throws NoSuchAlgorithmException {
+    public static ECKeyPair getNewKey() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
         keyPairGenerator.initialize(256, secureRandom);
@@ -273,7 +274,7 @@ public class SaslEcdsaNist256PChallenge extends AbstractAccountSaslProtocol {
      * @throws InvalidKeyException if the key is invalid
      * @throws IllegalArgumentException if any parameter is null
      */
-    public static boolean verify(@NonNull ECPublicKey publicKey, @NonNull String base64Challenge, @NonNull String signature) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+    public static boolean verify(ECPublicKey publicKey, String base64Challenge, String signature) throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         Sanity.nullCheck(publicKey, "Public key");
         Sanity.nullCheck(base64Challenge, "Base64 encoded challenge");
         Sanity.nullCheck(signature, "Signature");

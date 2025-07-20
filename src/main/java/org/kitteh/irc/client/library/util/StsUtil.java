@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.feature.sts.StsPolicy;
 import org.kitteh.irc.client.library.feature.sts.StsPropertiesStorageManager;
 import org.kitteh.irc.client.library.feature.sts.StsStorageManager;

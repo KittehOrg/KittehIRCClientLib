@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.helper;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * An event involving a message.

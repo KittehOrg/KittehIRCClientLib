@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library.defaults.feature;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageMap;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 import org.kitteh.irc.client.library.util.Sanity;

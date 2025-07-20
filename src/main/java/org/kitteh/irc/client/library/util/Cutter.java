@@ -23,8 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,7 @@ public interface Cutter {
      */
     class DefaultWordCutter implements Cutter {
         @Override
-        public @NonNull List<String> split(@NonNull String message, @NonNegative int size) {
+        public @NonNull List<String> split(@NonNull String message, int size) {
             Sanity.nullCheck(message, "Message");
             Sanity.truthiness(size > 0, "Size must be positive");
             List<String> list = new ArrayList<>();
@@ -141,5 +140,5 @@ public interface Cutter {
      * @throws IllegalArgumentException if size is less than 1 or if
      *                                  message is null
      */
-    @NonNull List<String> split(@NonNull String message, @NonNegative int size);
+    @NonNull List<String> split(@NonNull String message, int size);
 }

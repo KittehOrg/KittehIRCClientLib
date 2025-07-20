@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.defaults.feature;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.auth.AuthProtocol;

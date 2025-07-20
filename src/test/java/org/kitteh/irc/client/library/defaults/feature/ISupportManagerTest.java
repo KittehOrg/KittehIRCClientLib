@@ -1,6 +1,6 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
@@ -268,7 +268,7 @@ public class ISupportManagerTest {
         TriFunction<Client, String, String, ? extends ISupportParameter> naughtyKitten = (client, name, value) -> new KittenParameter(true);
 
         // Register
-        Assertions.assertTrue(!manager.registerParameter("KITTEN", kitten).isPresent());
+        Assertions.assertFalse(manager.registerParameter("KITTEN", kitten).isPresent());
         // Is it registered?
         Optional<TriFunction<Client, String, String, ? extends ISupportParameter>> optionalGotten = manager.getCreator("KITTEN");
         Assertions.assertTrue(optionalGotten.isPresent());

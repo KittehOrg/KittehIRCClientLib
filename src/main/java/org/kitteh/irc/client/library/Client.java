@@ -23,8 +23,8 @@
  */
 package org.kitteh.irc.client.library;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.command.AwayCommand;
 import org.kitteh.irc.client.library.command.CapabilityRequestCommand;
 import org.kitteh.irc.client.library.command.ChannelModeCommand;

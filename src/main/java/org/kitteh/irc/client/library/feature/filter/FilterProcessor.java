@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.filter;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.annotation.Annotation;
 

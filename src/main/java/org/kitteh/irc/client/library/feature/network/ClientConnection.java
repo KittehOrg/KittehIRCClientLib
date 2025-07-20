@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.network;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.feature.defaultmessage.DefaultMessageType;
 
 /**

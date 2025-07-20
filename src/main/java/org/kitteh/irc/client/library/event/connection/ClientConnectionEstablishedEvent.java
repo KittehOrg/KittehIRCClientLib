@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.event.connection;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.event.abstractbase.ClientEventBase;
 import org.kitteh.irc.client.library.event.helper.ConnectionEvent;

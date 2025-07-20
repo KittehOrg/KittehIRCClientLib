@@ -23,8 +23,7 @@
  */
 package org.kitteh.irc.client.library.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.value.qual.IntRange;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -45,10 +44,10 @@ public class HostWithPort {
      * Constructs a HostWithPort with the given host and port.
      *
      * @param host host
-     * @param port port
+     * @param port port from {@link #PORT_MIN} to {@link #PORT_MAX}
      * @return a HostWithPort with the provided information
      */
-    public static @NonNull HostWithPort of(@NonNull String host, @IntRange(from = HostWithPort.PORT_MIN, to = HostWithPort.PORT_MAX) int port) {
+    public static @NonNull HostWithPort of(@NonNull String host, int port) {
         Sanity.nullCheck(host, "Host");
         Sanity.truthiness((port >= HostWithPort.PORT_MIN) && (port <= HostWithPort.PORT_MAX), port + " is not acceptable port number");
         return new HostWithPort(host, port);
@@ -57,7 +56,7 @@ public class HostWithPort {
     private final String host;
     private final int port;
 
-    private HostWithPort(@NonNull String host, @IntRange(from = HostWithPort.PORT_MIN, to = HostWithPort.PORT_MAX) int port) {
+    private HostWithPort(@NonNull String host, int port) {
         this.host = host;
         this.port = port;
     }
@@ -93,10 +92,10 @@ public class HostWithPort {
     /**
      * Returns a new instance with the given port and this object's host.
      *
-     * @param port new port
+     * @param port new port from {@link #PORT_MIN} to {@link #PORT_MAX}
      * @return new instance
      */
-    public @NonNull HostWithPort withPort(@IntRange(from = HostWithPort.PORT_MIN, to = HostWithPort.PORT_MAX) int port) {
+    public @NonNull HostWithPort withPort(int port) {
         return HostWithPort.of(this.host, port);
     }
 

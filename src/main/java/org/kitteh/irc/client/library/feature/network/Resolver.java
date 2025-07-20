@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.network;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

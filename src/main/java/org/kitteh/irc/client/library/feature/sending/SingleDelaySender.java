@@ -23,7 +23,7 @@
  */
 package org.kitteh.irc.client.library.feature.sending;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.Client;
 
 import java.util.function.Function;
