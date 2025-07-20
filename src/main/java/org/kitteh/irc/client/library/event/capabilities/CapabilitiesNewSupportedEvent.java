@@ -1,5 +1,5 @@
 /*
- * * Copyright (C) 2013-2023 Matt Baxter https://kitteh.org
+ * * Copyright (C) 2013-2025 Matt Baxter https://kitteh.org
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
