@@ -50,10 +50,9 @@ public class DefaultChannelUserMode extends DefaultModeBase implements ChannelUs
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof DefaultChannelUserMode)) {
+        if (!(o instanceof DefaultChannelUserMode other)) {
             return false;
         }
-        DefaultChannelUserMode other = (DefaultChannelUserMode) o;
         return (other.getNickPrefix() == this.getNickPrefix()) && (other.getType() == this.getType()) && (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
     }
 

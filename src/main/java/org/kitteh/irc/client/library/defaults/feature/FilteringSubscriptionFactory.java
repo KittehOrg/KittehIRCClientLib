@@ -71,7 +71,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
         return dispatcher;
     }
 
-    private final class FilteredMessageDispatcher extends DelegatingMessageDispatcher {
+    private static final class FilteredMessageDispatcher extends DelegatingMessageDispatcher {
         private final FilterProcessorWrapper[] filters;
 
         private FilteredMessageDispatcher(IMessageDispatcher dispatcher, FilterProcessorWrapper[] filters) {
@@ -91,14 +91,7 @@ public class FilteringSubscriptionFactory extends SubscriptionFactory {
         }
     }
 
-    private static final class FilterProcessorWrapper {
-        private final Annotation[] annotations;
-        private final FilterProcessor filterProcessor;
-
-        private FilterProcessorWrapper(FilterProcessor filterProcessor, Annotation[] annotations) {
-            this.annotations = annotations;
-            this.filterProcessor = filterProcessor;
-        }
+    private record FilterProcessorWrapper(FilterProcessor filterProcessor, Annotation[] annotations) {
     }
 
     @Override

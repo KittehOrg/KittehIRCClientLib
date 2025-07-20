@@ -93,7 +93,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -180,7 +179,7 @@ public class DefaultClient implements Client.WithManagement {
     private int pingPurrCount;
 
     private final HashMap<String, BatchReferenceTag> batchHold = new HashMap<>();
-    private InputProcessor processor;
+    private final InputProcessor processor;
     private ServerInfo.WithManagement serverInfo;
 
     private String goalNick;
@@ -201,9 +200,9 @@ public class DefaultClient implements Client.WithManagement {
     private MessageTagManager messageTagManager;
     private ActorTracker actorTracker;
 
-    private Listener<Exception> exceptionListener;
-    private Listener<String> inputListener;
-    private Listener<String> outputListener;
+    private final Listener<Exception> exceptionListener;
+    private final Listener<String> inputListener;
+    private final Listener<String> outputListener;
 
     private DefaultMessageMap defaultMessageMap;
 
@@ -212,32 +211,32 @@ public class DefaultClient implements Client.WithManagement {
 
     private final ClientCommands commands = new ClientCommands();
 
-    private MessageSendingQueue messageSendingImmediate;
+    private final MessageSendingQueue messageSendingImmediate;
     private MessageSendingQueue messageSendingScheduled;
     private final Object messageSendingLock = new Object();
     private boolean isSending = false;
     private String lastSentUser;
 
-    private String name;
-    private InetSocketAddress bindAddress;
+    private final String name;
+    private final InetSocketAddress bindAddress;
     private HostWithPort serverAddress;
-    private HostWithPort proxyAddress;
-    private ProxyType proxyType;
-    private String serverPassword;
-    private String userString;
-    private String realName;
-    private boolean secure;
-    private Path secureKeyCertChain;
-    private Path secureKey;
-    private String secureKeyPassword;
-    private TrustManagerFactory secureTrustManagerFactory;
-    private StsStorageManager stsStorageManager;
-    private String webircHost;
-    private InetAddress webircIP;
-    private String webircPassword;
-    private String webircGateway;
+    private final HostWithPort proxyAddress;
+    private final ProxyType proxyType;
+    private final String serverPassword;
+    private final String userString;
+    private final String realName;
+    private final boolean secure;
+    private final Path secureKeyCertChain;
+    private final Path secureKey;
+    private final String secureKeyPassword;
+    private final TrustManagerFactory secureTrustManagerFactory;
+    private final StsStorageManager stsStorageManager;
+    private final String webircHost;
+    private final InetAddress webircIP;
+    private final String webircPassword;
+    private final String webircGateway;
     private Function<Client.WithManagement, ? extends MessageSendingQueue> messageSendingQueueSupplier;
-    private Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfoSupplier;
+    private final Function<Client.WithManagement, ? extends ServerInfo.WithManagement> serverInfoSupplier;
 
     /**
      * Creates a new default client.
@@ -739,7 +738,7 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public @NonNull Set<String> getIntendedChannels() {
-        return Collections.unmodifiableSet(new HashSet<>(this.channelsIntended));
+        return Set.copyOf(this.channelsIntended);
     }
 
     @Override

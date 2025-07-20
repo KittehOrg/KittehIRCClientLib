@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates a specific command to listen to for the {@link
  * ClientReceiveCommandEvent}. This annotation can be repeated.
- *
+ * <p>
  * The below code only listens to PRIVMSG:
  * <pre>
  *     {@code @CommandFilter("PRIVMSG")}

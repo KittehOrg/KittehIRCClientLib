@@ -115,14 +115,13 @@ public class TwitchListener {
             return;
         }
 
-        if (!(event.getActor() instanceof org.kitteh.irc.client.library.element.User)) {
+        if (!(event.getActor() instanceof org.kitteh.irc.client.library.element.User sender)) {
             this.client.getExceptionListener().queue(new KittehServerMessageException(event.getSource(), "Received WHISPER from non-user"));
             return;
         }
 
         final String target = event.getParameters().get(0);
         final String message = event.getParameters().get(1);
-        final org.kitteh.irc.client.library.element.User sender = (org.kitteh.irc.client.library.element.User) event.getActor();
         this.client.getEventManager().callEvent(new WhisperEvent(this.client, event.getSource(), sender, target, message));
     }
 

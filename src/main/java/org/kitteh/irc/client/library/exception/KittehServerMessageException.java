@@ -26,7 +26,6 @@ package org.kitteh.irc.client.library.exception;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.element.ServerMessage;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +54,7 @@ public class KittehServerMessageException extends RuntimeException {
      */
     public KittehServerMessageException(List<ServerMessage> messages, String problem) {
         super("Trouble processing message: " + problem + ". Messages: " + System.lineSeparator() + messages.stream().map(ServerMessage::getMessage).collect(Collectors.joining(System.lineSeparator())));
-        this.messages = Collections.unmodifiableList(new ArrayList<>(messages));
+        this.messages = List.copyOf(messages);
     }
 
     /**

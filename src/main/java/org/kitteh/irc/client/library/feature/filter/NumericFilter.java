@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates a specific numeric to listen to for the {@link
  * ClientReceiveNumericEvent}. This annotation can be repeated.
- *
+ * <p>
  * The below code only listens to numeric 1:
  * <pre>
  *     {@code @NumericFilter(1)}

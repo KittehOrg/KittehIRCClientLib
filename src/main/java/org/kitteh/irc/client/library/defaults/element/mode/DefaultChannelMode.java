@@ -50,10 +50,9 @@ public class DefaultChannelMode extends DefaultModeBase implements ChannelMode {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof DefaultChannelMode)) {
+        if (!(o instanceof DefaultChannelMode other)) {
             return false;
         }
-        DefaultChannelMode other = (DefaultChannelMode) o;
         return (other.getType() == this.getType()) && (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
     }
 

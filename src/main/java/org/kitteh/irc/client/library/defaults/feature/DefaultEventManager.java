@@ -47,8 +47,6 @@ import org.kitteh.irc.client.library.util.ToStringer;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -136,7 +134,7 @@ public class DefaultEventManager implements EventManager {
 
     @Override
     public @NonNull Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> getAnnotationFilters() {
-        return Collections.unmodifiableMap(new HashMap<>(this.filters));
+        return Map.copyOf(this.filters);
     }
 
     @Override

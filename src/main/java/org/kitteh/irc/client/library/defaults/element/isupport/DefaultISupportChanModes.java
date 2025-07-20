@@ -53,21 +53,12 @@ public class DefaultISupportChanModes extends DefaultISupportParameterValueRequi
         List<ChannelMode> modesList = new ArrayList<>();
         for (int typeId = 0; (typeId < modes.length) && (typeId < 4); typeId++) {
             for (char mode : modes[typeId].toCharArray()) {
-                ChannelMode.Type type;
-                switch (typeId) {
-                    case 0:
-                        type = ChannelMode.Type.A_MASK;
-                        break;
-                    case 1:
-                        type = ChannelMode.Type.B_PARAMETER_ALWAYS;
-                        break;
-                    case 2:
-                        type = ChannelMode.Type.C_PARAMETER_ON_SET;
-                        break;
-                    case 3:
-                    default:
-                        type = ChannelMode.Type.D_PARAMETER_NEVER;
-                }
+                ChannelMode.Type type = switch (typeId) {
+                    case 0 -> ChannelMode.Type.A_MASK;
+                    case 1 -> ChannelMode.Type.B_PARAMETER_ALWAYS;
+                    case 2 -> ChannelMode.Type.C_PARAMETER_ON_SET;
+                    default -> ChannelMode.Type.D_PARAMETER_NEVER;
+                };
                 modesList.add(new DefaultChannelMode(client, mode, type));
             }
         }

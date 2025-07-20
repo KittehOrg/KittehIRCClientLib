@@ -40,7 +40,6 @@ import org.kitteh.irc.client.library.util.ToStringer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,21 +78,21 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     public DefaultServerInfo(@NonNull Client client) {
         this.client = client;
         // RFC 1459
-        List<ChannelMode> defaultChannelModes = new ArrayList<>(9);
-        defaultChannelModes.add(new DefaultChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER)); // Topic settable by channel operator only
-        defaultChannelModes.add(new DefaultChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER)); // Secret
-        defaultChannelModes.add(new DefaultChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER)); // Private
-        defaultChannelModes.add(new DefaultChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER)); // No messages from outside
-        defaultChannelModes.add(new DefaultChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER)); // Moderated
-        defaultChannelModes.add(new DefaultChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER)); // Invite-only
-        defaultChannelModes.add(new DefaultChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET)); // User limit
-        defaultChannelModes.add(new DefaultChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS)); // Channel key
-        defaultChannelModes.add(new DefaultChannelMode(client, 'b', ChannelMode.Type.A_MASK)); // Ban mask
-        this.defaultChannelModes = Collections.unmodifiableList(defaultChannelModes);
-        List<ChannelUserMode> defaultChannelUserModes = new ArrayList<>(2);
-        defaultChannelUserModes.add(new DefaultChannelUserMode(client, 'o', '@')); // OP
-        defaultChannelUserModes.add(new DefaultChannelUserMode(client, 'v', '+')); // Voice
-        this.defaultChannelUserModes = Collections.unmodifiableList(defaultChannelUserModes);
+        this.defaultChannelModes = List.of(
+                new DefaultChannelMode(client, 't', ChannelMode.Type.D_PARAMETER_NEVER), // Topic settable by channel operator only
+                new DefaultChannelMode(client, 's', ChannelMode.Type.D_PARAMETER_NEVER), // Secret
+                new DefaultChannelMode(client, 'p', ChannelMode.Type.D_PARAMETER_NEVER), // Private
+                new DefaultChannelMode(client, 'n', ChannelMode.Type.D_PARAMETER_NEVER), // No messages from outside
+                new DefaultChannelMode(client, 'm', ChannelMode.Type.D_PARAMETER_NEVER), // Moderated
+                new DefaultChannelMode(client, 'i', ChannelMode.Type.D_PARAMETER_NEVER), // Invite-only
+                new DefaultChannelMode(client, 'l', ChannelMode.Type.C_PARAMETER_ON_SET), // User limit
+                new DefaultChannelMode(client, 'k', ChannelMode.Type.B_PARAMETER_ALWAYS), // Channel key
+                new DefaultChannelMode(client, 'b', ChannelMode.Type.A_MASK) // Ban mask
+        );
+        this.defaultChannelUserModes = List.of(
+                new DefaultChannelUserMode(client, 'o', '@'), // OP
+                new DefaultChannelUserMode(client, 'v', '+') // Voice
+        );
         this.userModes.add(new DefaultUserMode(client, 'i')); // Invisible
         this.userModes.add(new DefaultUserMode(client, 's')); // Can receive server notices
         this.userModes.add(new DefaultUserMode(client, 'w')); // Can receive wallops
@@ -151,7 +150,7 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
 
     @Override
     public @NonNull Map<String, ISupportParameter> getISupportParameters() {
-        return Collections.unmodifiableMap(new HashMap<>(this.iSupportParameterMap));
+        return Map.copyOf(this.iSupportParameterMap);
     }
 
     @Override

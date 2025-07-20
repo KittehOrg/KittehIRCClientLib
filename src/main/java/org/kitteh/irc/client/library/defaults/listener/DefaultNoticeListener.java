@@ -84,11 +84,9 @@ public class DefaultNoticeListener extends AbstractDefaultListenerBase {
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
             this.fire(new PrivateNoticeEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), message));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
-            MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
+        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo channelInfo) {
             this.fire(new ChannelNoticeEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), message));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
-            MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
+        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel channelInfo) {
             this.fire(new ChannelTargetedNoticeEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), message));
         }
     }

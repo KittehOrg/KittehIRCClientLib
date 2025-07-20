@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -100,7 +98,7 @@ public class DefaultServerMessage implements ServerMessage {
         Sanity.nullCheck(message, "Message");
         Sanity.nullCheck(tags, "Tags");
         this.message = message;
-        this.tags = Collections.unmodifiableList(new ArrayList<>(tags));
+        this.tags = List.copyOf(tags);
     }
 
     @Override

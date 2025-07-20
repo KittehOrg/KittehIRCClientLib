@@ -235,7 +235,7 @@ public class DefaultWhoisData implements WhoisData {
                             @Nullable String operatorInformation, @Nullable Long idleTime, @Nullable Long signOnTime, @Nullable String awayMessage) {
         this.client = client;
         this.account = account;
-        this.channels = Collections.unmodifiableSet(new HashSet<>(channels));
+        this.channels = Set.copyOf(channels);
         this.name = nick + '!' + userString + '@' + host;
         this.nick = nick;
         this.userString = userString;

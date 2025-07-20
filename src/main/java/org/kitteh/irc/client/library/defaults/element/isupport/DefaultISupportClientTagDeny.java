@@ -29,7 +29,6 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class DefaultISupportClientTagDeny extends DefaultISupportParameter imple
      */
     public DefaultISupportClientTagDeny(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
-        this.list = (value == null || value.isEmpty()) ? Collections.emptyList() : Collections.unmodifiableList(Arrays.asList(value.split(",")));
+        this.list = (value == null || value.isEmpty()) ? Collections.emptyList() : List.of(value.split(","));
     }
 
     @Override

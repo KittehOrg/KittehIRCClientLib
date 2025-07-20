@@ -70,18 +70,13 @@ public class DefaultPrivmsgListener extends AbstractDefaultListenerBase {
             User user = (User) event.getActor();
 
             if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                String reply = null; // Message to send as CTCP reply (NOTICE). Send nothing if null.
-                switch (ctcpMessage) {
-                    case "VERSION":
-                        reply = "VERSION I am Kitteh!";
-                        break;
-                    case "TIME":
-                        reply = "TIME " + new Date().toString();
-                        break;
-                    case "FINGER":
-                        reply = "FINGER om nom nom tasty finger";
-                        break;
-                }
+                // Message to send as CTCP reply (NOTICE). Send nothing if null.
+                String reply = switch (ctcpMessage) {
+                    case "VERSION" -> "VERSION I am Kitteh!";
+                    case "TIME" -> "TIME " + new Date().toString();
+                    case "FINGER" -> "FINGER om nom nom tasty finger";
+                    default -> null;
+                };
                 if (ctcpMessage.startsWith("PING ")) {
                     reply = ctcpMessage;
                 }
@@ -91,11 +86,9 @@ public class DefaultPrivmsgListener extends AbstractDefaultListenerBase {
                 if (ctcpEvent.isToClient()) {
                     replyMessage.ifPresent(message -> this.getClient().sendRawLine("NOTICE " + user.getNick() + " :" + CtcpUtil.toCtcp(message)));
                 }
-            } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
-                MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
+            } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo channelInfo) {
                 this.fire(new ChannelCtcpEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), ctcpMessage));
-            } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
-                MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
+            } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel channelInfo) {
                 this.fire(new ChannelTargetedCtcpEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), ctcpMessage));
             }
             return;
@@ -104,11 +97,9 @@ public class DefaultPrivmsgListener extends AbstractDefaultListenerBase {
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
             this.fire(new PrivateMessageEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), event.getParameters().get(1)));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
-            MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
+        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo channelInfo) {
             this.fire(new ChannelMessageEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), event.getParameters().get(1)));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
-            MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
+        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel channelInfo) {
             this.fire(new ChannelTargetedMessageEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), event.getParameters().get(1)));
         }
     }

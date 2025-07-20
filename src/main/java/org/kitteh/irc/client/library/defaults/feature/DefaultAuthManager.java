@@ -31,7 +31,6 @@ import org.kitteh.irc.client.library.feature.auth.element.EventListening;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +68,7 @@ public class DefaultAuthManager implements AuthManager {
 
     @Override
     public synchronized @NonNull Set<AuthProtocol> getProtocols() {
-        return Collections.unmodifiableSet(new HashSet<>(this.protocols));
+        return Set.copyOf(this.protocols);
     }
 
     @Override

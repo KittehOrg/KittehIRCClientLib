@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates a specific tag to listen to for any {@link ServerMessageEvent}.
  * This annotation can be repeated.
- *
+ * <p>
  * The below code only listens to messages with a label:
  * <pre>
  *     {@code @TagFilter("label")}

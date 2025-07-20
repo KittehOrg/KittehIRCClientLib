@@ -55,12 +55,11 @@ public class DefaultChgHostListener extends AbstractDefaultListenerBase {
             return;
         }
 
-        if (!(event.getActor() instanceof User)) {
+        if (!(event.getActor() instanceof User user)) {
             this.trackException(event, "Invalid actor for CHGHOST message");
             return;
         }
 
-        User user = (User) event.getActor();
         Optional<User> optUser = this.getTracker().getTrackedUser(user.getNick());
 
         if (!optUser.isPresent()) {

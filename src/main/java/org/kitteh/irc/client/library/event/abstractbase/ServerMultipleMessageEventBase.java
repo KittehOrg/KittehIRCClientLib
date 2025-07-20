@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.event.helper.ServerMultipleMessageEvent;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,7 +49,7 @@ public abstract class ServerMultipleMessageEventBase extends ClientEventBase imp
      */
     protected ServerMultipleMessageEventBase(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages) {
         super(client);
-        this.sourceMessages = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(sourceMessages, "Original messages")));
+        this.sourceMessages = List.copyOf(Sanity.nullCheck(sourceMessages, "Original messages"));
     }
 
     @Override

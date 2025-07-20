@@ -64,8 +64,7 @@ public class DefaultCapabilityState implements CapabilityState {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof DefaultCapabilityState) {
-            DefaultCapabilityState state = (DefaultCapabilityState) o;
+        if (o instanceof DefaultCapabilityState state) {
             return state.name.equals(this.name) && (state.disable == this.disable);
         }
         return false;

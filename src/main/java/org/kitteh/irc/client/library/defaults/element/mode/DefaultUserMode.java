@@ -45,10 +45,9 @@ public class DefaultUserMode extends DefaultModeBase implements UserMode {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof DefaultUserMode)) {
+        if (!(o instanceof DefaultUserMode other)) {
             return false;
         }
-        DefaultUserMode other = (DefaultUserMode) o;
         return (other.getClient().equals(this.getClient())) && (other.getChar() == this.getChar());
     }
 

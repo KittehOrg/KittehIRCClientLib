@@ -61,13 +61,12 @@ public class DefaultJoinListener extends AbstractDefaultListenerBase {
             this.trackException(event, "JOIN message sent for invalid channel name");
             return;
         }
-        if (!(event.getActor() instanceof User)) {
+        if (!(event.getActor() instanceof User user)) {
             this.trackException(event, "JOIN message sent for non-user");
             return;
         }
         this.getTracker().trackChannel(channelName);
         Channel channel = this.getTracker().getTrackedChannel(channelName).get();
-        User user = (User) event.getActor();
         this.getTracker().trackChannelUser(channelName, user, new HashSet<>());
         if (event.getParameters().size() > 2) {
             if (!"*".equals(event.getParameters().get(1))) {

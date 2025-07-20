@@ -30,8 +30,6 @@ import org.kitteh.irc.client.library.event.abstractbase.ServerMultipleMessageEve
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,7 +48,7 @@ public class MonitoredNickListEvent extends ServerMultipleMessageEventBase {
      */
     public MonitoredNickListEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, @NonNull List<String> nicks) {
         super(client, sourceMessages);
-        this.nicks = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(nicks, "Nicks")));
+        this.nicks = List.copyOf(Sanity.nullCheck(nicks, "Nicks"));
     }
 
     /**

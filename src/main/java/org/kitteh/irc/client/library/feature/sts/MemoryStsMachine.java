@@ -31,7 +31,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 /**
  * "Memory" prefix to distinguish implementation class
  * from interface, because StsMachine isn't IStsMachine.
- *
+ * <p>
  * This class implements our FSM in an in-memory fashion,
  * using Java's data structures.
  */

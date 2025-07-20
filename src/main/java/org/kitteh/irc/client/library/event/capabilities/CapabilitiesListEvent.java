@@ -33,8 +33,6 @@ import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,7 +54,7 @@ public class CapabilitiesListEvent extends ServerMultipleMessageEventBase {
     public CapabilitiesListEvent(@NonNull Client client, @NonNull List<ServerMessage> sourceMessages, @NonNull List<CapabilityState> capabilities) {
         super(client, sourceMessages);
         Sanity.nullCheck(capabilities, "Capabilities list");
-        this.capabilities = Collections.unmodifiableList(new ArrayList<>(capabilities));
+        this.capabilities = List.copyOf(capabilities);
     }
 
     /**

@@ -55,11 +55,9 @@ public class DefaultTagmsgListener extends AbstractDefaultListenerBase {
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
             this.fire(new PrivateTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), event.getParameters().get(0)));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
-            MessageTargetInfo.ChannelInfo channelInfo = (MessageTargetInfo.ChannelInfo) messageTargetInfo;
+        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo channelInfo) {
             this.fire(new ChannelTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), channelInfo.getChannel()));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel) {
-            MessageTargetInfo.TargetedChannel channelInfo = (MessageTargetInfo.TargetedChannel) messageTargetInfo;
+        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel channelInfo) {
             this.fire(new ChannelTargetedTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), channelInfo.getChannel(), channelInfo.getPrefix()));
         }
     }

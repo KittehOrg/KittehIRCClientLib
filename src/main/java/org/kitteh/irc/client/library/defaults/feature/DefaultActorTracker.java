@@ -179,7 +179,7 @@ public class DefaultActorTracker implements ActorTracker {
             ModeStatusList<ChannelMode> channelModes = DefaultModeStatusList.of(this.channelModes.values());
             Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
             for (Map.Entry<Character, List<ModeInfo>> entry : this.modeInfoLists.entrySet()) {
-                modeInfoLists.put(entry.getKey(), Collections.unmodifiableList(new ArrayList<>(entry.getValue())));
+                modeInfoLists.put(entry.getKey(), List.copyOf(entry.getValue()));
             }
             this.trackedModes.stream()
                     .filter(character -> !modeInfoLists.containsKey(character))
@@ -316,10 +316,6 @@ public class DefaultActorTracker implements ActorTracker {
             this.markStale();
         }
 
-        @Override
-        public @NonNull String toString() {
-            return new ToStringer(this).toString();
-        }
     }
 
     class IrcUser extends IrcStaleable<DefaultUser> {
@@ -411,10 +407,6 @@ public class DefaultActorTracker implements ActorTracker {
                     this.awayMessage, this.nick, this.user, this.host, this.isAway, this.operString, this.realName, this.server, chanSet));
         }
 
-        @Override
-        public @NonNull String toString() {
-            return new ToStringer(this).toString();
-        }
     }
 
     class IrcServer extends IrcActor {

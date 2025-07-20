@@ -77,7 +77,7 @@ public interface MessageTag {
 
     /**
      * Represents the `typing` client tag as specified here:
-     * https://ircv3.net/specs/client-tags/typing#format
+     * <a href="https://ircv3.net/specs/client-tags/typing#format">https://ircv3.net/specs/client-tags/typing#format</a>
      */
     interface Typing extends MessageTag {
         /**

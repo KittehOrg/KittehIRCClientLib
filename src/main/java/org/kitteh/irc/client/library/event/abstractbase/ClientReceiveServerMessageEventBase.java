@@ -32,8 +32,6 @@ import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEven
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,7 +54,7 @@ public class ClientReceiveServerMessageEventBase extends ActorEventBase<Actor> i
      */
     public ClientReceiveServerMessageEventBase(@NonNull Client client, @NonNull ServerMessage serverMessage, @NonNull Actor server, @NonNull String command, @NonNull List<String> parameters) {
         super(client, Sanity.nullCheck(serverMessage, "Server message"), server);
-        this.parameters = Collections.unmodifiableList(new ArrayList<>(Sanity.nullCheck(parameters, "Parameters")));
+        this.parameters = List.copyOf(Sanity.nullCheck(parameters, "Parameters"));
         this.message = serverMessage;
         this.command = Sanity.nullCheck(command, "Command");
     }

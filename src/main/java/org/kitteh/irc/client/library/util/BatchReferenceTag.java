@@ -26,7 +26,6 @@ package org.kitteh.irc.client.library.util;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -96,7 +95,7 @@ public class BatchReferenceTag {
      * @return events
      */
     public @NonNull List<ClientReceiveServerMessageEvent> getEvents() {
-        return Collections.unmodifiableList(new ArrayList<>(this.events));
+        return List.copyOf(this.events);
     }
 
     /**

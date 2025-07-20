@@ -145,8 +145,7 @@ public final class NettyConnection implements ClientConnection {
         this.channel.pipeline().addLast("[INPUT] Catch idle", new ChannelDuplexHandler() {
             @Override
             public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
-                if (evt instanceof IdleStateEvent) {
-                    IdleStateEvent e = (IdleStateEvent) evt;
+                if (evt instanceof IdleStateEvent e) {
                     if ((e.state() == IdleState.READER_IDLE) && e.isFirst()) {
                         NettyConnection.this.shutdown(DefaultMessageType.QUIT_PING_TIMEOUT, true);
                     }

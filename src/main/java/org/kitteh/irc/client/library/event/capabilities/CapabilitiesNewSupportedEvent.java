@@ -33,8 +33,6 @@ import org.kitteh.irc.client.library.feature.CapabilityManager;
 import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,7 +55,7 @@ public class CapabilitiesNewSupportedEvent extends CapabilityNegotiationResponse
     public CapabilitiesNewSupportedEvent(@NonNull Client client, @NonNull ServerMessage sourceMessage, boolean negotiating, @NonNull List<CapabilityState> newCapabilities) {
         super(client, sourceMessage, negotiating);
         Sanity.nullCheck(newCapabilities, "Capabilities list");
-        this.newCapabilities = Collections.unmodifiableList(new ArrayList<>(newCapabilities));
+        this.newCapabilities = List.copyOf(newCapabilities);
     }
 
     /**

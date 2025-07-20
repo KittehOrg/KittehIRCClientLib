@@ -33,7 +33,6 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,7 +62,7 @@ public abstract class CapabilityNegotiationResponseEventWithRequestBase extends 
 
     @Override
     public @NonNull List<String> getRequests() {
-        return Collections.unmodifiableList(new ArrayList<>(this.requests));
+        return List.copyOf(this.requests);
     }
 
     @Override

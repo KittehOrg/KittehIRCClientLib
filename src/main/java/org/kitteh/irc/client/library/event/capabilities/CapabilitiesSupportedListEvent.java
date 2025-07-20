@@ -35,7 +35,6 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,7 +61,7 @@ public class CapabilitiesSupportedListEvent extends ServerMultipleMessageEventBa
         super(client, sourceMessages);
         this.negotiating = negotiating;
         Sanity.nullCheck(supportedCapabilities, "Capabilities list");
-        this.supportedCapabilities = Collections.unmodifiableList(new ArrayList<>(supportedCapabilities));
+        this.supportedCapabilities = List.copyOf(supportedCapabilities);
     }
 
     @Override
@@ -72,7 +71,7 @@ public class CapabilitiesSupportedListEvent extends ServerMultipleMessageEventBa
 
     @Override
     public @NonNull List<String> getRequests() {
-        return Collections.unmodifiableList(new ArrayList<>(this.requests));
+        return List.copyOf(this.requests);
     }
 
     /**

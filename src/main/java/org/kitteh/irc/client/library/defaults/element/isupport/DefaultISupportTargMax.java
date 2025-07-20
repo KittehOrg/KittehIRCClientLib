@@ -31,8 +31,6 @@ import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.util.CIKeyMap;
 import org.kitteh.irc.client.library.util.Pair;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.OptionalInt;
 import java.util.Set;
 
@@ -62,7 +60,7 @@ public class DefaultISupportTargMax extends DefaultISupportParameter implements 
 
     @Override
     public @NonNull Set<Pair<String, OptionalInt>> getEntries() {
-        return Collections.unmodifiableSet(new HashSet<>(this.map.values()));
+        return Set.copyOf(this.map.values());
     }
 
     @Override

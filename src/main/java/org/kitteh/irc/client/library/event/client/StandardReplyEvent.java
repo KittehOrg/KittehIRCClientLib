@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A standard reply. https://ircv3.net/specs/extensions/standard-replies
+ * A standard reply. <a href="https://ircv3.net/specs/extensions/standard-replies">https://ircv3.net/specs/extensions/standard-replies</a>
  */
 public abstract class StandardReplyEvent extends ServerMessageEventBase {
     /**

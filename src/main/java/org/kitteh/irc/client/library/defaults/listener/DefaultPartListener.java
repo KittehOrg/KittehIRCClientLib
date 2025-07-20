@@ -58,11 +58,10 @@ public class DefaultPartListener extends AbstractDefaultListenerBase {
             this.trackException(event, "PART message sent for invalid channel name");
             return;
         }
-        if (!(event.getActor() instanceof User)) {
+        if (!(event.getActor() instanceof User user)) {
             this.trackException(event, "PART message sent for non-user");
             return;
         }
-        User user = (User) event.getActor();
         boolean isSelf = user.getNick().equals(this.getClient().getNick());
         String partReason = (event.getParameters().size() > 1) ? event.getParameters().get(1) : "";
         ChannelPartEvent partEvent;

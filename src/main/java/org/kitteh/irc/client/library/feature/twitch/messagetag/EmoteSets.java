@@ -30,10 +30,8 @@ import org.kitteh.irc.client.library.feature.MessageTagManager;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Message tag for emote sets.
@@ -54,7 +52,7 @@ public class EmoteSets extends MessageTagManager.DefaultMessageTag {
 
     private EmoteSets(@NonNull String name, @Nullable String value) {
         super(name, value);
-        this.emoteSets = (value == null) ? Collections.emptyList() : Collections.unmodifiableList(Arrays.asList(value.split(",")));
+        this.emoteSets = (value == null) ? Collections.emptyList() : List.of(value.split(","));
     }
 
     /**

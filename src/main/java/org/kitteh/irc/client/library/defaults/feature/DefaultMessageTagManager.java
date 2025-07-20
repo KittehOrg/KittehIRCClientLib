@@ -35,7 +35,6 @@ import org.kitteh.irc.client.library.util.AbstractNameValueProcessor;
 import org.kitteh.irc.client.library.util.ToStringer;
 import org.kitteh.irc.client.library.util.TriFunction;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -140,7 +139,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
             // "Clients receiving messages with more than one occurrence of a tag key SHOULD discard all but the final occurrence."
             tags.put(tagName.toLowerCase(), messageTag);
         }
-        return Collections.unmodifiableList(new ArrayList<>(tags.values()));
+        return List.copyOf(tags.values());
     }
 
     private @NonNull String getTagValue(@NonNull String tag) {

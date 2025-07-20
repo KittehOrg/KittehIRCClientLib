@@ -161,7 +161,7 @@ public class DefaultCapListener extends AbstractDefaultListenerBase {
         Set<String> capabilities = this.getClient().getCapabilityManager().getSupportedCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toCollection(HashSet::new));
         capabilities.retainAll(CapabilityManager.Defaults.getDefaults());
         List<String> currentCapabilities = this.getClient().getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList());
-        capabilities.removeAll(currentCapabilities);
+        currentCapabilities.forEach(capabilities::remove);
         if (!capabilities.isEmpty()) {
             responseEvent.setEndingNegotiation(false);
             capabilities.forEach(responseEvent::addRequest);
