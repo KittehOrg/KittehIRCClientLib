@@ -5,13 +5,10 @@ KICL can be used within an Android application. This requires some configuration
 
 ### Add the library dependency
 
-In `app/build.gradle`:
+In `app/build.gradle` `dependencies` section:
 
-```groovy
-dependencies {
-    // ...
-    implementation group: 'org.kitteh.irc', name: 'client-lib', version: '5.1.0'
-}
+```kotlin
+implementation("org.kitteh.irc:client-lib:VERSIONHERE")
 ```
 
 ### Ensure minSdkVersion >= 24
@@ -23,13 +20,15 @@ android {
     // ...
     defaultConfig {
         applicationId "com.example.kiclandroidtest"
-        minSdkVersion 24
+        minSdkVersion 34
         // ...
     }
 }
 ```
 
-### Ensure source and target compatibility are set for Java 8
+(Use KICL 9.0.0 if you need to go earlier than Android 14 - you can then use minSdkVersion of 24)
+
+### Ensure source and target compatibility are set for Java 17
 
 In `app/build.gradle`:
 
@@ -37,11 +36,13 @@ In `app/build.gradle`:
 android {
     // ...
     compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 ```
+
+(If using KICL 9.0.0, set this to Java 8)
 
 ### Filter out duplicate META-INF files
 
