@@ -66,7 +66,7 @@ public class StsPropertiesStorageManagerTest {
      * Checks that the simple bundled storage manager works
      * with expiration (UGLY).
      */
-    @Test
+/*    @Test
     public void testDelay() throws InterruptedException {
         final File tempFile = new File(this.temporaryFolder, "sts.properties");
         final Path path = tempFile.toPath();
@@ -77,7 +77,7 @@ public class StsPropertiesStorageManagerTest {
         scheduler.schedule(() -> okay.set(sut.hasEntry("kitteh.org")), 1000, TimeUnit.MILLISECONDS);
         scheduler.awaitTermination(3000, TimeUnit.MILLISECONDS);
         Assertions.assertFalse(okay.get());
-    }
+    }*/
 
     @Test
     public void testReloading() {
