@@ -24,7 +24,6 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.messagetag.*;
 import org.kitteh.irc.client.library.element.MessageTag;
@@ -115,7 +114,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
         TagCreator tagCreator;
         for (String tag : tagSplit) {
             String tagName;
-            @Nullable String value;
+            String value;
             // Split out value if present
             if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
                 tagName = tag.substring(0, index);

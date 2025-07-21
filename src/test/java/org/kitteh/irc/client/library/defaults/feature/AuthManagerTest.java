@@ -92,7 +92,7 @@ public class AuthManagerTest {
         Assertions.assertTrue(stub.wasTripped());
     }
 
-    private class StubAuthProtocol implements AuthProtocol, EventListening {
+    private static class StubAuthProtocol implements AuthProtocol, EventListening {
         private final Client.WithManagement client;
         private boolean tripped = false;
 

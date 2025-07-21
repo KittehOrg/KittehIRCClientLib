@@ -928,6 +928,7 @@ public interface Client extends ClientLinked {
      * @param channelsAndKeys pairs of channel, key
      * @throws IllegalArgumentException if null or invalid
      */
+    @SuppressWarnings({"unchecked", "varargs"})
     void addKeyProtectedChannel(@NonNull Pair<String, String>... channelsAndKeys);
 
     /**

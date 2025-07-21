@@ -63,7 +63,7 @@ public class SetNameCommand extends Command<SetNameCommand> {
         if (this.newName == null) {
             throw new IllegalStateException("New name not specified");
         }
-        if (!this.getClient().getCapabilityManager().getCapability(CapabilityManager.Defaults.SETNAME).isPresent()) {
+        if (this.getClient().getCapabilityManager().getCapability(CapabilityManager.Defaults.SETNAME).isEmpty()) {
             throw new IllegalStateException("Cannot send SETNAME when the capability is not negotiated");
         }
         this.sendCommandLine("SETNAME :" + this.newName);

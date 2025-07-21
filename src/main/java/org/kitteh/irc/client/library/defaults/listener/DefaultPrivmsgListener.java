@@ -73,7 +73,7 @@ public class DefaultPrivmsgListener extends AbstractDefaultListenerBase {
                 // Message to send as CTCP reply (NOTICE). Send nothing if null.
                 String reply = switch (ctcpMessage) {
                     case "VERSION" -> "VERSION I am Kitteh!";
-                    case "TIME" -> "TIME " + new Date().toString();
+                    case "TIME" -> "TIME " + new Date();
                     case "FINGER" -> "FINGER om nom nom tasty finger";
                     default -> null;
                 };

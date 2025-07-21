@@ -88,5 +88,4 @@ public class StsPropertiesStorageManagerTest {
         StsStorageManager sut2 = StsUtil.getDefaultStorageManager(path);
         Assertions.assertTrue(sut2.hasEntry("kitteh.org"));
     }
-
 }

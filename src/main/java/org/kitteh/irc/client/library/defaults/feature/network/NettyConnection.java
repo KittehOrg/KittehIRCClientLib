@@ -247,6 +247,7 @@ public final class NettyConnection implements ClientConnection {
         });
     }
 
+    @SuppressWarnings("resource")
     private void scheduleReconnect(int delay) {
         NettyConnection.this.channel.eventLoop().schedule(NettyConnection.this.client::connect, delay, TimeUnit.MILLISECONDS);
     }
@@ -263,6 +264,7 @@ public final class NettyConnection implements ClientConnection {
         return this.alive;
     }
 
+    @SuppressWarnings("resource")
     @Override
     public void startPing() {
         this.ping = this.channel.eventLoop().scheduleWithFixedDelay(this.client::ping, 60, 60, TimeUnit.SECONDS);

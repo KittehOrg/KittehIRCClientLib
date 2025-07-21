@@ -168,9 +168,7 @@ public class MonitorCommandTest {
         char c = 'a';
         StringBuilder builder = new StringBuilder(10);
         for (int x = 0; x < 21; x++) {
-            for (int y = 0; y < 10; y++) {
-                builder.append(c);
-            }
+            builder.append(String.valueOf(c).repeat(10));
             list.add(builder.toString());
             builder.setLength(0);
             c++;

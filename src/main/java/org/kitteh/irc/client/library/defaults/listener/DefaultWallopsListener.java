@@ -46,7 +46,7 @@ public class DefaultWallopsListener extends AbstractDefaultListenerBase {
     @CommandFilter("WALLOPS")
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void wallops(ClientReceiveCommandEvent event) {
-        if (event.getParameters().size() < 1) {
+        if (event.getParameters().isEmpty()) {
             this.trackException(event, "WALLOPS message too short");
             return;
         }

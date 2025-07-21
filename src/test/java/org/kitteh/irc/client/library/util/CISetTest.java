@@ -58,7 +58,7 @@ public class CISetTest {
         sut.retainAll(Collections.singletonList("cat"));
         Assertions.assertEquals(1, sut.size());
 
-        sut.removeAll(listlist);
+        listlist.forEach(sut::remove);
         Assertions.assertTrue(sut.isEmpty());
     }
 

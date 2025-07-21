@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * A test that ensures filtering works without explicitly registering filters.
  */
 public class CustomEventManagerTest {
-    private class StrippedEventManager implements EventManager {
+    private static class StrippedEventManager implements EventManager {
         private final MBassador<Object> bus = new MBassador<>();
 
         @Override

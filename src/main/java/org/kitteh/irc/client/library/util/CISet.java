@@ -93,12 +93,12 @@ public class CISet implements Set<String> {
     }
 
     @Override
-    public @NonNull Object[] toArray() {
+    public @NonNull Object@NonNull[] toArray() {
         return this.map.values().toArray();
     }
 
     @Override
-    public @NonNull <T> T[] toArray(@NonNull T[] a) {
+    public @NonNull <T> T@NonNull[] toArray(@NonNull T@NonNull[] a) {
         return this.map.values().toArray(a);
     }
 

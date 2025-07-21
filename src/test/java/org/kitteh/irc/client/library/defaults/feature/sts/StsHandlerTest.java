@@ -33,7 +33,7 @@ public class StsHandlerTest {
         final FakeClient client = new FakeClient();
         client.setSecure(false);
         final StubMachine machine = new StubMachine();
-        Assertions.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
+        Assertions.assertEquals(StsClientState.UNKNOWN, machine.getCurrentState());
 
         StsHandler handler = new StsHandler(machine, client);
 
@@ -43,7 +43,7 @@ public class StsHandlerTest {
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
-        Assertions.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
+        Assertions.assertEquals(StsClientState.STS_PRESENT_RECONNECTING, machine.getCurrentState());
 
         StsPolicy extractedPolicy = machine.getPolicy();
         final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
@@ -64,7 +64,7 @@ public class StsHandlerTest {
         final FakeClient client = new FakeClient();
         client.setSecure(false);
         final StubMachine machine = new StubMachine();
-        Assertions.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
+        Assertions.assertEquals(StsClientState.UNKNOWN, machine.getCurrentState());
 
         StsHandler handler = new StsHandler(machine, client);
 
@@ -74,7 +74,7 @@ public class StsHandlerTest {
         List<ServerMessage> messages = new ArrayList<>();
         messages.add(new DefaultServerMessage(":test.kitteh CAP ^o^ LS :" + policyString, new ArrayList<>()));
         handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities));
-        Assertions.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
+        Assertions.assertEquals(StsClientState.STS_PRESENT_RECONNECTING, machine.getCurrentState());
 
         StsPolicy extractedPolicy = machine.getPolicy();
         final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
@@ -95,7 +95,7 @@ public class StsHandlerTest {
         final FakeClient client = new FakeClient();
         client.setSecure(false);
         final StubMachine machine = new StubMachine();
-        Assertions.assertEquals(machine.getCurrentState(), StsClientState.UNKNOWN);
+        Assertions.assertEquals(StsClientState.UNKNOWN, machine.getCurrentState());
 
         StsHandler handler = new StsHandler(machine, client);
 
@@ -104,7 +104,7 @@ public class StsHandlerTest {
         capabilities.add(new DefaultCapabilityState(client, policyString));
         ServerMessage message = new DefaultServerMessage(":test.kitteh CAP ^o^ NEW :" + policyString, new ArrayList<>());
         handler.onCapNew(new CapabilitiesNewSupportedEvent(client, message, true, capabilities));
-        Assertions.assertEquals(machine.getCurrentState(), StsClientState.STS_PRESENT_RECONNECTING);
+        Assertions.assertEquals(StsClientState.STS_PRESENT_RECONNECTING, machine.getCurrentState());
 
         StsPolicy extractedPolicy = machine.getPolicy();
         final String port = extractedPolicy.getOptions().get(StsPolicy.POLICY_OPTION_KEY_PORT);
@@ -152,7 +152,7 @@ public class StsHandlerTest {
                 () -> handler.onCapLs(new CapabilitiesSupportedListEvent(client, messages, true, capabilities)));
     }
 
-    private class StubMachine implements StsMachine {
+    private static class StubMachine implements StsMachine {
 
         private StsClientState state = StsClientState.UNKNOWN;
         private StsPolicy policy;

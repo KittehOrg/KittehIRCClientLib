@@ -159,6 +159,7 @@ public class ChghostTest {
         return this.getEventListener(null, exceptionList);
     }
 
+    @SuppressWarnings("unchecked")
     private DefaultChgHostListener getEventListener(ActorTracker tracker, List<Exception> exceptionList) {
         final Client.WithManagement client = Mockito.mock(Client.WithManagement.class);
         final Listener<Exception> exceptionListener = Mockito.mock(Listener.class);

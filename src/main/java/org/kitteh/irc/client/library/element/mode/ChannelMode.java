@@ -94,7 +94,7 @@ public interface ChannelMode extends Mode {
      * @param mode   mode to get
      * @return the mode, if present
      */
-    public static @NonNull Optional<ChannelMode> get(@NonNull Client client, char mode) {
+    static @NonNull Optional<ChannelMode> get(@NonNull Client client, char mode) {
         return client.getServerInfo().getChannelModes().stream().filter(m -> m.getChar() == mode).findFirst();
     }
 }

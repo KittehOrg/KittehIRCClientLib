@@ -48,7 +48,7 @@ public class DefaultTagmsgListener extends AbstractDefaultListenerBase {
     @CommandFilter("TAGMSG")
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void tagmsg(ClientReceiveCommandEvent event) {
-        if (event.getParameters().size() < 1) {
+        if (event.getParameters().isEmpty()) {
             this.trackException(event, "TAGMSG message too short");
             return;
         }

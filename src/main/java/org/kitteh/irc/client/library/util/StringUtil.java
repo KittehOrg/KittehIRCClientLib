@@ -113,7 +113,7 @@ public final class StringUtil {
         int count = 0;
         for (char c : message.toCharArray()) {
             if (!((c == ' ') || (c == '\t'))) {
-                builder.append(colorOrder[count++ % colorOrder.length].toString());
+                builder.append(colorOrder[count++ % colorOrder.length]);
             }
             builder.append(c);
         }

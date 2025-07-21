@@ -118,6 +118,7 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
      * @param <ModeType> type of modes being listed
      * @return list
      */
+    @SafeVarargs
     public static @NonNull <ModeType extends Mode> DefaultModeStatusList<ModeType> of(@NonNull ModeStatus<ModeType>... statuses) {
         Sanity.nullCheck(statuses, "Statuses");
         Sanity.truthiness((statuses.length <= 1) || (Arrays.stream(statuses).map(ModeStatus::getClient).distinct().count() == 1), "Statuses must all be from one client");
@@ -158,12 +159,12 @@ public class DefaultModeStatusList<ModeType extends Mode> implements ModeStatusL
     @Override
     public @NonNull List<ModeStatus<ModeType>> getByMode(@NonNull ModeType mode) {
         Sanity.nullCheck(mode, "Mode");
-        return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().equals(mode)).collect(Collectors.toList()));
+        return this.statuses.stream().filter(status -> status.getMode().equals(mode)).toList();
     }
 
     @Override
     public @NonNull List<ModeStatus<ModeType>> getByMode(char mode) {
-        return Collections.unmodifiableList(this.statuses.stream().filter(status -> status.getMode().getChar() == mode).collect(Collectors.toList()));
+        return this.statuses.stream().filter(status -> status.getMode().getChar() == mode).toList();
     }
 
     @Override

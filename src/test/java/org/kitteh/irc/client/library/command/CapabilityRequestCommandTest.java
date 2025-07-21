@@ -70,7 +70,7 @@ public class CapabilityRequestCommandTest {
 
     /**
      * Testing this method completely up to you, but I personally found
-     * http://stackoverflow.com/a/12528461/5056459 compelling
+     * <a href="http://stackoverflow.com/a/12528461/5056459">http://stackoverflow.com/a/12528461/5056459</a> compelling
      */
     @Test
     public void testToString() {

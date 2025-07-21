@@ -235,7 +235,7 @@ public class ISupportManagerTest {
         Assertions.assertTrue(ISupportParameter.WhoX.class.isAssignableFrom(this.getManager().createParameter(ISupportParameter.WhoX.NAME + "=MEOW").getClass()));
     }
 
-    private class KittenParameter implements ISupportParameter {
+    private static class KittenParameter implements ISupportParameter {
         private KittenParameter(boolean meow) {
             if (meow) {
                 throw new RuntimeException();

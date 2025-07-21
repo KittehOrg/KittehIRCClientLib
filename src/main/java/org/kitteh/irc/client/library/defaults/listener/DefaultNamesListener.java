@@ -62,7 +62,7 @@ public class DefaultNamesListener extends AbstractDefaultListenerBase {
             return;
         }
         Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(2));
-        if (!channel.isPresent()) {
+        if (channel.isEmpty()) {
             this.trackException(event, "NAMES response sent for invalid channel name");
             return;
         }
@@ -91,7 +91,7 @@ public class DefaultNamesListener extends AbstractDefaultListenerBase {
             return;
         }
         Optional<Channel> channel = this.getTracker().getChannel(event.getParameters().get(1));
-        if (!channel.isPresent()) {
+        if (channel.isEmpty()) {
             this.trackException(event, "NAMES response sent for invalid channel name");
             return;
         }

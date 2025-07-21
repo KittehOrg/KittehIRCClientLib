@@ -121,6 +121,7 @@ public class DefaultEventListenerTest {
         return o -> (o != null) && o.getName().equals(name);
     }
 
+    @SafeVarargs
     private <T> ArgumentMatcher<T> match(Class<T> clazz, Function<T, Boolean>... functions) {
         return o -> {
             if ((o == null) || !clazz.isAssignableFrom(o.getClass())) {

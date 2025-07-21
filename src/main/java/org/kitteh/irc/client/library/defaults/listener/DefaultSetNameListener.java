@@ -61,7 +61,7 @@ public class DefaultSetNameListener extends AbstractDefaultListenerBase {
 
         Optional<User> optUser = this.getTracker().getTrackedUser(user.getNick());
 
-        if (!optUser.isPresent()) {
+        if (optUser.isEmpty()) {
             this.trackException(event, "Null old user for nick");
             return;
         }

@@ -54,7 +54,7 @@ public abstract class AbstractSaslProtocol extends AbstractAuthProtocol implemen
         public void capList(CapabilitiesSupportedListEvent event) {
             if (event.isNegotiating() && !AbstractSaslProtocol.this.authenticating) {
                 Optional<CapabilityState> state = event.getSupportedCapabilities().stream().filter(c -> c.getName().equalsIgnoreCase(CapabilityManager.Defaults.SASL)).findFirst();
-                if (!state.isPresent()) {
+                if (state.isEmpty()) {
                     return;
                 }
                 Optional<String> stateValue = state.get().getValue();

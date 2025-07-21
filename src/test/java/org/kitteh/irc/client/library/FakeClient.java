@@ -265,8 +265,9 @@ public class FakeClient implements Client.WithManagement {
 
     }
 
+    @SafeVarargs
     @Override
-    public void addKeyProtectedChannel(@NonNull Pair<String, String>... channelsAndKeys) {
+    public final void addKeyProtectedChannel(@NonNull Pair<String, String>... channelsAndKeys) {
 
     }
 

@@ -75,7 +75,7 @@ public class StsHandler {
         final Optional<CapabilityState> potentialStsCapability = event.getSupportedCapabilities().stream()
                 .filter(StsHandler.STS_CAPABILITY_PREDICATE).findAny();
 
-        if (!potentialStsCapability.isPresent()) {
+        if (potentialStsCapability.isEmpty()) {
             if (this.machine.getCurrentState() == StsClientState.STS_PRESENT_RECONNECTING) {
                 this.machine.setCurrentState(StsClientState.INVALID_STS_MISSING_ON_RECONNECT);
             }
@@ -98,7 +98,7 @@ public class StsHandler {
         final Optional<CapabilityState> potentialStsCapability = event.getNewCapabilities().stream()
                 .filter(StsHandler.STS_CAPABILITY_PREDICATE).findAny();
 
-        if (!potentialStsCapability.isPresent()) {
+        if (potentialStsCapability.isEmpty()) {
             // get out if we can't do anything useful here
             return;
         }
@@ -132,7 +132,7 @@ public class StsHandler {
     private void handleStsCapability(CapabilityState sts, List<ServerMessage> sourceMessages) {
         this.isSecure = this.client.isSecureConnection();
         HostWithPort address = this.client.getServerAddress();
-        if (!sts.getValue().isPresent()) {
+        if (sts.getValue().isEmpty()) {
             throw new KittehServerMessageException(sourceMessages, "No value provided for sts capability.");
         }
 

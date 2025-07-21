@@ -49,7 +49,7 @@ public class DefaultNickListener extends AbstractDefaultListenerBase {
     @CommandFilter("NICK")
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void nick(ClientReceiveCommandEvent event) {
-        if (event.getParameters().size() < 1) {
+        if (event.getParameters().isEmpty()) {
             this.trackException(event, "NICK message too short");
             return;
         }
@@ -60,7 +60,7 @@ public class DefaultNickListener extends AbstractDefaultListenerBase {
         boolean isSelf = ((User) event.getActor()).getNick().equals(this.getClient().getNick());
         String newNick = event.getParameters().get(0);
         Optional<User> user = this.getTracker().getTrackedUser(((User) event.getActor()).getNick());
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             if (isSelf) {
                 this.getClient().setCurrentNick(newNick);
                 return; // Don't fail if NICK changes while not in a channel!

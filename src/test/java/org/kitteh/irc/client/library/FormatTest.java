@@ -56,8 +56,8 @@ public class FormatTest {
      */
     @Test
     public void stripColor() {
-        Assertions.assertEquals(Format.stripColor(Format.GREEN + "meow"), "meow");
-        Assertions.assertEquals(Format.stripColor(Format.BOLD + "purr"), Format.BOLD + "purr");
+        Assertions.assertEquals("meow", Format.stripColor(Format.GREEN + "meow"));
+        Assertions.assertEquals(Format.BOLD + "purr", Format.stripColor(Format.BOLD + "purr"));
     }
 
     /**
@@ -65,8 +65,8 @@ public class FormatTest {
      */
     @Test
     public void stripFormat() {
-        Assertions.assertEquals(Format.stripFormatting(Format.GREEN + "meow"), Format.GREEN + "meow");
-        Assertions.assertEquals(Format.stripFormatting(Format.BOLD + "purr"), "purr");
+        Assertions.assertEquals(Format.GREEN + "meow", Format.stripFormatting(Format.GREEN + "meow"));
+        Assertions.assertEquals("purr", Format.stripFormatting(Format.BOLD + "purr"));
     }
 
     /**
@@ -78,7 +78,7 @@ public class FormatTest {
             if (format.isColor()) {
                 Assertions.assertEquals((format.getColorChar() & 15), format.getColorChar(), "Invalid IRCFormat color char " + format.name());
             } else {
-                Assertions.assertEquals(format.getColorChar(), -1, "Invalid IRCFormat format " + format.name());
+                Assertions.assertEquals(-1, format.getColorChar(), "Invalid IRCFormat format " + format.name());
             }
         }
     }

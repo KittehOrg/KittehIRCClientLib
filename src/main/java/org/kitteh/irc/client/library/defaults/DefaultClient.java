@@ -101,7 +101,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Default implementation of {@link Client}.
@@ -338,6 +337,7 @@ public class DefaultClient implements Client.WithManagement {
         this.sendRawLine("JOIN " + channel + ' ' + key);
     }
 
+    @SuppressWarnings({"unchecked", "varargs"})
     @Override
     public void addKeyProtectedChannel(@NonNull Pair<String, String>... channelsAndKeys) {
         Sanity.nullCheck(channelsAndKeys, "Channel/key pairs");
@@ -383,7 +383,7 @@ public class DefaultClient implements Client.WithManagement {
         return Sanity.nullCheck(channels, "Channels collection").stream()
                 .filter(Objects::nonNull)
                 .map(this.actorTracker::getTrackedChannel)
-                .flatMap(optional -> optional.map(Stream::of).orElseGet(Stream::empty))
+                .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
     }
 
@@ -863,6 +863,7 @@ public class DefaultClient implements Client.WithManagement {
         return this.secure;
     }
 
+    @SuppressWarnings("UnnecessaryLabelOnBreakStatement")
     private void handleLine(final @NonNull String line) {
         if (line.isEmpty()) {
             this.actorTracker.reset();

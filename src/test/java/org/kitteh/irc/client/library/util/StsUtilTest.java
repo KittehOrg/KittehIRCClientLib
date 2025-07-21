@@ -20,7 +20,7 @@ public class StsUtilTest {
         Assertions.assertTrue(retVal.getOptions().containsKey("kitten"));
         Assertions.assertFalse(retVal.getOptions().containsKey("foo"));
 
-        Assertions.assertEquals(retVal.getOptions().get("kitten"), "dog");
+        Assertions.assertEquals("dog", retVal.getOptions().get("kitten"));
     }
 
     /**

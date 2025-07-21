@@ -200,7 +200,7 @@ public class ChannelModeCommandTest {
 
             @Override
             public char getNickPrefix() {
-                return '\u039b';
+                return 'Λ';
             }
 
             @Override

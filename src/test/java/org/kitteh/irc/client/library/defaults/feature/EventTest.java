@@ -10,7 +10,7 @@ import org.kitteh.irc.client.library.feature.EventManager;
  * Confirm an event listener can be registered and an event fired.
  */
 public class EventTest {
-    private class Event {
+    private static class Event {
         private boolean success = false;
     }
 

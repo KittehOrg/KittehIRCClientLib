@@ -79,7 +79,7 @@ public class CapabilityRequestCommand extends Command<CapabilityRequestCommand> 
     public synchronized void execute() {
         StringBuilder builder = new StringBuilder(200);
         for (String request : this.requests) {
-            if ((builder.length() > 0) && ((request.length() + builder.length()) > 200)) {
+            if ((!builder.isEmpty()) && ((request.length() + builder.length()) > 200)) {
                 this.send(builder.toString());
                 builder.setLength(0);
             }

@@ -47,7 +47,7 @@ public class DefaultAccountListener extends AbstractDefaultListenerBase {
     @CommandFilter("ACCOUNT")
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void account(ClientReceiveCommandEvent event) {
-        if (event.getParameters().size() < 1) {
+        if (event.getParameters().isEmpty()) {
             this.trackException(event, "ACCOUNT message too short");
             return;
         }

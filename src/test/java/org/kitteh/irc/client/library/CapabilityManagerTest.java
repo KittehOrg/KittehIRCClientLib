@@ -56,7 +56,7 @@ public class CapabilityManagerTest {
     /**
      * Stubby manager.
      */
-    public class StubCapabilityManager implements CapabilityManager {
+    public static class StubCapabilityManager implements CapabilityManager {
         @Override
         public @NonNull List<CapabilityState> getCapabilities() {
             return Arrays.asList(new TestCapabilityState1(), new TestCapabilityState2());
@@ -67,7 +67,7 @@ public class CapabilityManagerTest {
             return Collections.singletonList(new TestCapabilityState1());
         }
 
-        private class TestCapabilityState1 implements CapabilityState {
+        private static class TestCapabilityState1 implements CapabilityState {
             @Override
             public boolean isDisabled() {
                 return false;
@@ -94,7 +94,7 @@ public class CapabilityManagerTest {
             }
         }
 
-        private class TestCapabilityState2 implements CapabilityState {
+        private static class TestCapabilityState2 implements CapabilityState {
             @Override
             public boolean isDisabled() {
                 return false;

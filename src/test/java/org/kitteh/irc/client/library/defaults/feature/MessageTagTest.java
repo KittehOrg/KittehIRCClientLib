@@ -19,12 +19,12 @@ public class MessageTagTest {
     public void multiTag() {
         List<MessageTag> tags = new FakeClient().getMessageTagManager().getCapabilityTags("aaa=bbb;ccc;example.com/ddd=eee");
         Assertions.assertEquals(3, tags.size(), "Failed to process multiple tags");
-        Assertions.assertEquals(tags.get(0).getName(), "aaa", "Failed to process valid tag name");
-        Assertions.assertEquals(tags.get(0).getValue().get(), "bbb", "Failed to process valid tag value");
-        Assertions.assertEquals(tags.get(1).getName(), "ccc", "Failed to process valid tag name");
-        Assertions.assertTrue(!tags.get(1).getValue().isPresent(), "Failed to process lack of tag value");
-        Assertions.assertEquals(tags.get(2).getName(), "example.com/ddd", "Failed to process valid tag name");
-        Assertions.assertEquals(tags.get(2).getValue().get(), "eee", "Failed to process valid tag value");
+        Assertions.assertEquals("aaa", tags.get(0).getName(), "Failed to process valid tag name");
+        Assertions.assertEquals("bbb", tags.get(0).getValue().orElse(null), "Failed to process valid tag value");
+        Assertions.assertEquals("ccc", tags.get(1).getName(), "Failed to process valid tag name");
+        Assertions.assertTrue(tags.get(1).getValue().isEmpty(), "Failed to process lack of tag value");
+        Assertions.assertEquals("example.com/ddd", tags.get(2).getName(), "Failed to process valid tag name");
+        Assertions.assertEquals("eee", tags.get(2).getValue().orElse(null), "Failed to process valid tag value");
     }
 
     private static final String TIME = "2012-06-30T23:59:60.419Z";
@@ -36,7 +36,7 @@ public class MessageTagTest {
     public void timeTag() {
         List<MessageTag> tags = new FakeClient().getMessageTagManager().getCapabilityTags("time=" + TIME);
         Assertions.assertEquals(1, tags.size(), "Failed to process time tag");
-        Assertions.assertTrue(tags.get(0) instanceof MessageTag.Time, "Failed to process time tag as MessageTag.Time");
+        Assertions.assertInstanceOf(MessageTag.Time.class, tags.get(0), "Failed to process time tag as MessageTag.Time");
         Assertions.assertEquals(((MessageTag.Time) tags.get(0)).getTime(), Instant.parse(TIME), "Failed to process time tag");
     }
 }

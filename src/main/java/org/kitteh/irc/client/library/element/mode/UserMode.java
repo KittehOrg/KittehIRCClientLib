@@ -39,7 +39,7 @@ public interface UserMode extends Mode {
      * @param mode   mode to get
      * @return the mode, if present
      */
-    public static @NonNull Optional<UserMode> get(@NonNull Client client, char mode) {
+    static @NonNull Optional<UserMode> get(@NonNull Client client, char mode) {
         return client.getServerInfo().getUserModes().stream().filter(m -> m.getChar() == mode).findFirst();
     }
 }

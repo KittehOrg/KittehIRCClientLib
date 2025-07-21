@@ -42,7 +42,6 @@ import org.kitteh.irc.client.library.util.Sanity;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Helpful things.
@@ -61,7 +60,7 @@ public class TwitchListener {
 
     @Handler
     public void capList(@NonNull CapabilitiesSupportedListEvent event) {
-        List<String> already = this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).collect(Collectors.toList());
+        List<String> already = this.client.getCapabilityManager().getCapabilities().stream().map(CapabilityState::getName).toList();
         if (!already.contains(TwitchSupport.CAPABILITY_COMMANDS)) {
             event.addRequest(TwitchSupport.CAPABILITY_COMMANDS);
         }
@@ -127,7 +126,7 @@ public class TwitchListener {
 
     private @NonNull Channel getChannel(ClientReceiveCommandEvent event) {
         Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
-        if (!channel.isPresent()) {
+        if (channel.isEmpty()) {
             throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
         }
         return channel.get();

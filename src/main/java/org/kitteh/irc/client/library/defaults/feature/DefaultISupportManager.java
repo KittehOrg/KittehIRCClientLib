@@ -24,7 +24,6 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
 import org.kitteh.irc.client.library.defaults.element.isupport.*;
@@ -95,7 +94,7 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         int index;
         Creator<ISupportParameter> creator;
         String tagName;
-        @Nullable String value;
+        String value;
         // Split out value if present
         if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
             tagName = tag.substring(0, index);

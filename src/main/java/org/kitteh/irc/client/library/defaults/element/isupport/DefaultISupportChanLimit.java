@@ -24,7 +24,6 @@
 package org.kitteh.irc.client.library.defaults.element.isupport;
 
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.exception.KittehServerISupportException;
@@ -46,7 +45,7 @@ public class DefaultISupportChanLimit extends DefaultISupportParameterValueRequi
      * @param name parameter name
      * @param value parameter value, if present
      */
-    public DefaultISupportChanLimit(@NonNull Client client, @NonNull String name, @Nullable String value) {
+    public DefaultISupportChanLimit(@NonNull Client client, @NonNull String name, @NonNull String value) {
         super(client, name, value);
         String[] pairs = value.split(",");
         Map<Character, Integer> limits = new HashMap<>();

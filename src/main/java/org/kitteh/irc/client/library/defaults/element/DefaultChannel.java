@@ -185,7 +185,7 @@ public class DefaultChannel extends DefaultStaleable implements Channel {
         Sanity.truthiness(mode.getType() == ChannelMode.Type.A_MASK, "Mode type must be A, found " + mode.getType());
         Sanity.truthiness((mode.getChar() == 'b') || (mode.getChar() == 'e') || (mode.getChar() == 'I') || (mode.getChar() == 'q'), "Only modes b, e, I, and q supported");
         Optional<Channel> channel = this.getClient().getActorTracker().getTrackedChannel(this.getName());
-        if (!channel.isPresent()) {
+        if (channel.isEmpty()) {
             throw new IllegalStateException("Not currently in channel " + this.getName());
         }
         this.getClient().getActorTracker().trackChannelMode(channel.get().getName(), mode, track);

@@ -148,11 +148,11 @@ public class MonitorCommand extends Command<MonitorCommand> {
             }
             StringBuilder builder = new StringBuilder(200);
             for (String request : this.targets) {
-                if ((builder.length() > 0) && ((request.length() + builder.length()) > 200)) {
+                if ((!builder.isEmpty()) && ((request.length() + builder.length()) > 200)) {
                     this.monitorCommand(this.action, builder.toString());
                     builder.setLength(0);
                 }
-                if (builder.length() > 0) {
+                if (!builder.isEmpty()) {
                     builder.append(',');
                 }
                 builder.append(request);

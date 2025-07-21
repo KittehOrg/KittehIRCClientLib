@@ -176,7 +176,7 @@ public class DefaultWhoisListener extends AbstractDefaultListenerBase {
         }
         WhoisData whois = this.getWhoisBuilder(event).build();
         if (this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(whois.getNick(), this.getClient().getNick()) &&
-                (!this.getTracker().getTrackedUser(whois.getNick()).isPresent())) {
+                (this.getTracker().getTrackedUser(whois.getNick()).isEmpty())) {
             this.getTracker().trackUser(whois);
         }
         this.fire(new WhoisEvent(this.getClient(), whois));

@@ -49,7 +49,7 @@ public class DefaultPartListener extends AbstractDefaultListenerBase {
     @CommandFilter("PART")
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void part(ClientReceiveCommandEvent event) {
-        if (event.getParameters().size() < 1) {
+        if (event.getParameters().isEmpty()) {
             this.trackException(event, "PART message too short");
             return;
         }
