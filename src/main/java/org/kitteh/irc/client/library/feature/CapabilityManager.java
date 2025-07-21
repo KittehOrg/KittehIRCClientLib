@@ -39,6 +39,8 @@ import org.kitteh.irc.client.library.util.Resettable;
 import org.kitteh.irc.client.library.util.RiskyBusiness;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -53,10 +55,14 @@ import java.util.stream.Collectors;
  * Provides information on IRCv3 extensions available and in use.
  */
 public interface CapabilityManager {
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Conditional {
+    }
+
     /**
      * Contains the capabilities natively supported by KICL, which will be
-     * requested automatically upon availability. Defaults defined as
-     * transient are not requested unless additional functionality is
+     * requested automatically upon availability. Defaults defined with the
+     * {@link Conditional} annotation are not requested unless additional functionality is
      * enabled, as documented here.
      */
     final class Defaults {
@@ -91,12 +97,14 @@ public interface CapabilityManager {
          * when "CAP LS 302" (or higher version) is sent and therefore it
          * is not requested by the default capability manager.
          */
-        public static final transient String CAP_NOTIFY = "cap-notify";
+        @Conditional
+        public static final String CAP_NOTIFY = "cap-notify";
 
         /**
          * Self-sent message echoing, not utilized unless requested.
          */
-        public static final transient String ECHO_MESSAGE = "echo-message";
+        @Conditional
+        public static final String ECHO_MESSAGE = "echo-message";
 
         /**
          * Account listed in join message.
@@ -115,7 +123,8 @@ public interface CapabilityManager {
          *
          * @see ChannelInviteEvent
          */
-        public static final transient String INVITE_NOTIFY = "invite-notify";
+        @Conditional
+        public static final String INVITE_NOTIFY = "invite-notify";
 
         /**
          * Labeled responses, which also requires the {@link #BATCH}
@@ -167,7 +176,8 @@ public interface CapabilityManager {
          * @see SaslPlain
          * @see SaslEcdsaNist256PChallenge
          */
-        public static final transient String SASL = "sasl";
+        @Conditional
+        public static final String SASL = "sasl";
 
         /**
          * User hosts sent in NAMES, allowing User creation prior to WHO.
@@ -191,7 +201,7 @@ public interface CapabilityManager {
 
         static {
             DEFAULTS = Collections.unmodifiableList(Arrays.stream(Defaults.class.getDeclaredFields())
-                    .filter(field -> Modifier.isPublic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers()))
+                    .filter(field -> Modifier.isPublic(field.getModifiers()) && field.getAnnotation(Conditional.class) == null)
                     .map(Defaults::getStringForCapabilityField).collect(Collectors.toCollection(Defaults.SUPPLIER)));
         }
 
@@ -255,7 +265,8 @@ public interface CapabilityManager {
      * @return the capabilities currently enabled
      * @see CapabilityRequestCommand
      */
-    @NonNull List<CapabilityState> getCapabilities();
+    @NonNull
+    List<CapabilityState> getCapabilities();
 
     /**
      * Gets an enabled capability by name.
@@ -274,7 +285,8 @@ public interface CapabilityManager {
      * @return the capabilities supported
      * @see CapabilityRequestCommand
      */
-    @NonNull List<CapabilityState> getSupportedCapabilities();
+    @NonNull
+    List<CapabilityState> getSupportedCapabilities();
 
     /**
      * Gets a supported capability by name.
