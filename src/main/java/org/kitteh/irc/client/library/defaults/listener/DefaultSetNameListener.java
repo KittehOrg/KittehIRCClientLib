@@ -68,7 +68,7 @@ public class DefaultSetNameListener extends AbstractDefaultListenerBase {
 
         User oldUser = optUser.get();
 
-        String newRealName = event.getParameters().get(0);
+        String newRealName = event.getParameters().getFirst();
         this.getTracker().trackUserRealnameChange(user.getNick(), newRealName);
         this.fire(new UserRealnameChangeEvent(this.getClient(), event.getSource(), oldUser, this.getTracker().getTrackedUser(user.getNick()).get()));
     }

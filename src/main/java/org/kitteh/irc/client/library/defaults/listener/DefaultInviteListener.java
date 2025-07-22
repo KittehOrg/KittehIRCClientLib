@@ -59,6 +59,6 @@ public class DefaultInviteListener extends AbstractDefaultListenerBase {
         if (this.getClient().getNick().equalsIgnoreCase(event.getParameters().get(0)) && this.getClient().getIntendedChannels().contains(channel.getName())) {
             this.getClient().sendRawLine("JOIN " + channel.getName());
         }
-        this.fire(new ChannelInviteEvent(this.getClient(), event.getSource(), channel, event.getActor(), event.getParameters().get(0)));
+        this.fire(new ChannelInviteEvent(this.getClient(), event.getSource(), channel, event.getActor(), event.getParameters().getFirst()));
     }
 }

@@ -52,13 +52,16 @@ public class DefaultTagmsgListener extends AbstractDefaultListenerBase {
             this.trackException(event, "TAGMSG message too short");
             return;
         }
-        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
-        if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), event.getParameters().get(0)));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo channelInfo) {
-            this.fire(new ChannelTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), channelInfo.getChannel()));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel channelInfo) {
-            this.fire(new ChannelTargetedTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), channelInfo.getChannel(), channelInfo.getPrefix()));
+        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().getFirst());
+        switch (messageTargetInfo) {
+            case MessageTargetInfo.Private p ->
+                    this.fire(new PrivateTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), event.getParameters().getFirst()));
+            case MessageTargetInfo.ChannelInfo channelInfo ->
+                    this.fire(new ChannelTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), channelInfo.getChannel()));
+            case MessageTargetInfo.TargetedChannel channelInfo ->
+                    this.fire(new ChannelTargetedTagMessageEvent(this.getClient(), event.getSource(), event.getActor(), channelInfo.getChannel(), channelInfo.getPrefix()));
+            default -> {
+            }
         }
     }
 }

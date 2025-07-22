@@ -125,7 +125,7 @@ public class TwitchListener {
     }
 
     private @NonNull Channel getChannel(ClientReceiveCommandEvent event) {
-        Optional<Channel> channel = this.client.getChannel(event.getParameters().get(0));
+        Optional<Channel> channel = this.client.getChannel(event.getParameters().getFirst());
         if (channel.isEmpty()) {
             throw new KittehServerMessageException(event.getServerMessage(), "Invalid channel name");
         }

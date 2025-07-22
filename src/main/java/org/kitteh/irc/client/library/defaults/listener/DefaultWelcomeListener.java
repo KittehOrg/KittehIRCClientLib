@@ -46,7 +46,7 @@ public class DefaultWelcomeListener extends AbstractDefaultListenerBase {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void welcome(ClientReceiveNumericEvent event) {
         if (!event.getParameters().isEmpty()) {
-            this.getClient().setCurrentNick(event.getParameters().get(0));
+            this.getClient().setCurrentNick(event.getParameters().getFirst());
         } else {
             this.trackException(event, "Nickname missing from welcome message; can't confirm");
         }

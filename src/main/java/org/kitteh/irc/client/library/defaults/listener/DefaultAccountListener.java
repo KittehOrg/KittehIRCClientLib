@@ -55,7 +55,7 @@ public class DefaultAccountListener extends AbstractDefaultListenerBase {
             this.trackException(event, "ACCOUNT message from something other than a user");
             return;
         }
-        String accountParameter = event.getParameters().get(0);
+        String accountParameter = event.getParameters().getFirst();
         String accountName = "*".equals(accountParameter) ? null : accountParameter;
         this.fire(new UserAccountStatusEvent(this.getClient(), event.getSource(), (User) event.getActor(), accountName));
         this.getTracker().setUserAccount(((User) event.getActor()).getNick(), accountName);

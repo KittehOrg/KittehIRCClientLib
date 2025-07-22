@@ -36,7 +36,7 @@ public class MessageTagTest {
     public void timeTag() {
         List<MessageTag> tags = new FakeClient().getMessageTagManager().getCapabilityTags("time=" + TIME);
         Assertions.assertEquals(1, tags.size(), "Failed to process time tag");
-        Assertions.assertInstanceOf(MessageTag.Time.class, tags.get(0), "Failed to process time tag as MessageTag.Time");
-        Assertions.assertEquals(((MessageTag.Time) tags.get(0)).getTime(), Instant.parse(TIME), "Failed to process time tag");
+        Assertions.assertInstanceOf(MessageTag.Time.class, tags.getFirst(), "Failed to process time tag as MessageTag.Time");
+        Assertions.assertEquals(((MessageTag.Time) tags.getFirst()).getTime(), Instant.parse(TIME), "Failed to process time tag");
     }
 }

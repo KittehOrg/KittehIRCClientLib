@@ -85,7 +85,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
             this.trackException(event, "MODE message too short");
             return;
         }
-        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
+        MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().getFirst());
         if (messageTargetInfo instanceof MessageTargetInfo.Private) {
             ModeStatusList<UserMode> statusList;
             try {
@@ -94,7 +94,7 @@ public class DefaultModeListener extends AbstractDefaultListenerBase {
                 this.trackException(event, e.getMessage());
                 return;
             }
-            this.fire(new UserModeEvent(this.getClient(), event.getSource(), event.getActor(), event.getParameters().get(0), statusList));
+            this.fire(new UserModeEvent(this.getClient(), event.getSource(), event.getActor(), event.getParameters().getFirst(), statusList));
             this.getClient().updateUserModes(statusList);
         } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo) {
             Channel channel = ((MessageTargetInfo.ChannelInfo) messageTargetInfo).getChannel();

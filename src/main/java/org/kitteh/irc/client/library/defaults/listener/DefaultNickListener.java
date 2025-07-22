@@ -58,7 +58,7 @@ public class DefaultNickListener extends AbstractDefaultListenerBase {
             return;
         }
         boolean isSelf = ((User) event.getActor()).getNick().equals(this.getClient().getNick());
-        String newNick = event.getParameters().get(0);
+        String newNick = event.getParameters().getFirst();
         Optional<User> user = this.getTracker().getTrackedUser(((User) event.getActor()).getNick());
         if (user.isEmpty()) {
             if (isSelf) {

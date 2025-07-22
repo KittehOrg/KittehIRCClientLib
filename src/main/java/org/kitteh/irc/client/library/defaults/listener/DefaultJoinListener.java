@@ -56,7 +56,7 @@ public class DefaultJoinListener extends AbstractDefaultListenerBase {
             this.trackException(event, "JOIN message too short");
             return;
         }
-        String channelName = event.getParameters().get(0);
+        String channelName = event.getParameters().getFirst();
         if (!this.getClient().getServerInfo().isValidChannel(channelName)) {
             this.trackException(event, "JOIN message sent for invalid channel name");
             return;

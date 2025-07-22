@@ -80,7 +80,7 @@ public class DefaultPrivmsgListener extends AbstractDefaultListenerBase {
                 if (ctcpMessage.startsWith("PING ")) {
                     reply = ctcpMessage;
                 }
-                PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), ctcpMessage, reply);
+                PrivateCtcpQueryEvent ctcpEvent = new PrivateCtcpQueryEvent(this.getClient(), event.getSource(), user, event.getParameters().getFirst(), ctcpMessage, reply);
                 this.fire(ctcpEvent);
                 Optional<String> replyMessage = ctcpEvent.getReply();
                 if (ctcpEvent.isToClient()) {
@@ -95,12 +95,15 @@ public class DefaultPrivmsgListener extends AbstractDefaultListenerBase {
         }
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
-        if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateMessageEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), event.getParameters().get(1)));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo channelInfo) {
-            this.fire(new ChannelMessageEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), event.getParameters().get(1)));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel channelInfo) {
-            this.fire(new ChannelTargetedMessageEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), event.getParameters().get(1)));
+        switch (messageTargetInfo) {
+            case MessageTargetInfo.Private p ->
+                    this.fire(new PrivateMessageEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), event.getParameters().get(1)));
+            case MessageTargetInfo.ChannelInfo channelInfo ->
+                    this.fire(new ChannelMessageEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), event.getParameters().get(1)));
+            case MessageTargetInfo.TargetedChannel channelInfo ->
+                    this.fire(new ChannelTargetedMessageEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), event.getParameters().get(1)));
+            default -> {
+            }
         }
     }
 }

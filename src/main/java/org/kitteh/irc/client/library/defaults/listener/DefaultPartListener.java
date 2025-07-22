@@ -53,7 +53,7 @@ public class DefaultPartListener extends AbstractDefaultListenerBase {
             this.trackException(event, "PART message too short");
             return;
         }
-        Channel channel = this.getTracker().getChannel(event.getParameters().get(0)).orElse(null);
+        Channel channel = this.getTracker().getChannel(event.getParameters().getFirst()).orElse(null);
         if (channel == null) {
             this.trackException(event, "PART message sent for invalid channel name");
             return;

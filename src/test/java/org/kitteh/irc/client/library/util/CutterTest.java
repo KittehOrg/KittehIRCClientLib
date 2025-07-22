@@ -45,7 +45,7 @@ public class CutterTest {
     public void cutShort() {
         List<String> output = new Cutter.DefaultWordCutter().split("Hello world!", 15);
         Assertions.assertEquals(1, output.size());
-        Assertions.assertEquals("Hello world!", output.get(0));
+        Assertions.assertEquals("Hello world!", output.getFirst());
     }
 
     /**

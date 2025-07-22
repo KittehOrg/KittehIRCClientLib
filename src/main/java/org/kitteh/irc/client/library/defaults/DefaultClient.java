@@ -966,7 +966,7 @@ public class DefaultClient implements Client.WithManagement {
         KittehServerMessageException exception = null;
         onThroughToTheOtherSide:
         if (CapabilityManager.Defaults.BATCH.equalsIgnoreCase(event.getCommand())) {
-            if (parameters.isEmpty() || (parameters.get(0).length() < 2)) {
+            if (parameters.isEmpty() || (parameters.getFirst().length() < 2)) {
                 exception = new KittehServerMessageException(event.getServerMessage(), "Server sent a BATCH without sufficient information: Missing name and type.");
                 // Tried to run, tried to hide,
                 break onThroughToTheOtherSide;

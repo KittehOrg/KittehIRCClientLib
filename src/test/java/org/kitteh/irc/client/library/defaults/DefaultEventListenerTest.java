@@ -221,7 +221,7 @@ public class DefaultEventListenerTest {
         this.fireLine(":irc.network 372 Kitteh :-   Hello                         ");
         this.fireLine(":irc.network 372 Kitteh");
         this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
-        Mockito.verify(this.serverInfo, Mockito.times(1)).setMotd(Mockito.argThat(o -> (o != null) && (o.size() == 1) && o.get(0).contains("Hello")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).setMotd(Mockito.argThat(o -> (o != null) && (o.size() == 1) && o.getFirst().contains("Hello")));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message too short")));
     }
 

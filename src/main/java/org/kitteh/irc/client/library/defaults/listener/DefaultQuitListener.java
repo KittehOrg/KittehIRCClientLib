@@ -48,7 +48,7 @@ public class DefaultQuitListener extends AbstractDefaultListenerBase {
     @Handler(priority = Integer.MAX_VALUE - 1)
     public void quit(ClientReceiveCommandEvent event) {
         if (event.getActor() instanceof User) {
-            this.fire(new UserQuitEvent(this.getClient(), event.getSource(), (User) event.getActor(), (event.getParameters().isEmpty()) ? "" : event.getParameters().get(0)));
+            this.fire(new UserQuitEvent(this.getClient(), event.getSource(), (User) event.getActor(), (event.getParameters().isEmpty()) ? "" : event.getParameters().getFirst()));
             this.getTracker().trackUserQuit(((User) event.getActor()).getNick());
         } else {
             this.trackException(event, "QUIT message sent for non-user");

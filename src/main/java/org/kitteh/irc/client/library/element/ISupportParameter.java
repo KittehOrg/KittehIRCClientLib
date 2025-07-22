@@ -194,7 +194,7 @@ public interface ISupportParameter extends ClientLinked {
             if (list.isEmpty()) {
                 return true;
             }
-            if (list.get(0).equals("*")) {
+            if (list.getFirst().equals("*")) {
                 if (list.size() == 1) {
                     return false;
                 }

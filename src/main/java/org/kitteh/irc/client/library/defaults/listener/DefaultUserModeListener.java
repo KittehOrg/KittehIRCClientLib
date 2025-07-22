@@ -54,7 +54,7 @@ public class DefaultUserModeListener extends AbstractDefaultListenerBase {
             return;
         }
 
-        if (!this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(event.getParameters().get(0), this.getClient().getNick())) {
+        if (!this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(event.getParameters().getFirst(), this.getClient().getNick())) {
             this.trackException(event, "UMODE response for another user");
             return;
         }

@@ -76,18 +76,21 @@ public class DefaultNoticeListener extends AbstractDefaultListenerBase {
             final MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
             User user = (User) event.getActor();
             if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-                this.fire(new PrivateCtcpReplyEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), ctcpMessage));
+                this.fire(new PrivateCtcpReplyEvent(this.getClient(), event.getSource(), user, event.getParameters().getFirst(), ctcpMessage));
             }
             return;
         }
         User user = (User) event.getActor();
         MessageTargetInfo messageTargetInfo = this.getTypeByTarget(event.getParameters().get(0));
-        if (messageTargetInfo instanceof MessageTargetInfo.Private) {
-            this.fire(new PrivateNoticeEvent(this.getClient(), event.getSource(), user, event.getParameters().get(0), message));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.ChannelInfo channelInfo) {
-            this.fire(new ChannelNoticeEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), message));
-        } else if (messageTargetInfo instanceof MessageTargetInfo.TargetedChannel channelInfo) {
-            this.fire(new ChannelTargetedNoticeEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), message));
+        switch (messageTargetInfo) {
+            case MessageTargetInfo.Private p ->
+                    this.fire(new PrivateNoticeEvent(this.getClient(), event.getSource(), user, event.getParameters().getFirst(), message));
+            case MessageTargetInfo.ChannelInfo channelInfo ->
+                    this.fire(new ChannelNoticeEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), message));
+            case MessageTargetInfo.TargetedChannel channelInfo ->
+                    this.fire(new ChannelTargetedNoticeEvent(this.getClient(), event.getSource(), user, channelInfo.getChannel(), channelInfo.getPrefix(), message));
+            default -> {
+            }
         }
     }
 }

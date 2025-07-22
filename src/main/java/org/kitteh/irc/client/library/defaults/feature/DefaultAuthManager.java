@@ -56,7 +56,7 @@ public class DefaultAuthManager implements AuthManager {
     public synchronized @NonNull Optional<AuthProtocol> addProtocol(@NonNull AuthProtocol protocol) {
         Sanity.nullCheck(protocol, "Protocol");
         List<AuthProtocol> matching = this.protocols.stream().filter(p -> p.getClass() == protocol.getClass()).toList();
-        Optional<AuthProtocol> removed = Optional.ofNullable(matching.isEmpty() ? null : matching.get(0));
+        Optional<AuthProtocol> removed = Optional.ofNullable(matching.isEmpty() ? null : matching.getFirst());
         removed.ifPresent(this::removeProtocol);
         this.protocols.add(protocol);
         if (protocol instanceof EventListening) {
