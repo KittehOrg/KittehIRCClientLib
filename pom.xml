@@ -279,7 +279,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <release>17</release>
+                    <release>21</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -292,7 +292,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${plugin.javadocs.version}</version>
                 <configuration>
-                    <source>17</source>
+                    <source>21</source>
                 </configuration>
             </plugin>
             <plugin>
