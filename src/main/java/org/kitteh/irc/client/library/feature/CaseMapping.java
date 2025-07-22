@@ -24,63 +24,49 @@
 package org.kitteh.irc.client.library.feature;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.util.Sanity;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * ISUPPORT CASEMAPPING.
  */
-public enum CaseMapping {
-    /**
-     * A-Z become a-z
-     */
-    ASCII('Z'),
-    /**
-     * A-Z become a-z, []^ become {}~
-     */
-    RFC1459('^'),
-    /**
-     * A-Z become a-z, [] become {}
-     */
-    STRICT_RFC1459(']');
-
-    private static final Map<String, CaseMapping> nameMap = new HashMap<>();
-
-    static {
-        for (CaseMapping caseMapping : CaseMapping.values()) {
-            CaseMapping.nameMap.put(caseMapping.name().replace('_', '-'), caseMapping);
+@NullMarked
+public interface CaseMapping {
+    record Ranged(char upperbound) implements CaseMapping {
+        @Override
+        public String toLowerCase(String input) {
+            Sanity.nullCheck(input, "Input");
+            char[] arr = input.toCharArray();
+            for (int i = 0; i < arr.length; i++) {
+                char c = arr[i];
+                if ((c >= 'A') && (c <= this.upperbound)) {
+                    arr[i] += (char) 32;
+                }
+            }
+            return new String(arr);
         }
     }
 
     /**
-     * Gets a CaseMapping by name. Case insensitive.
-     *
-     * @param name the name of the CaseMapping to get
-     * @return the matching CaseMapping if one exists
+     * A-Z become a-z
      */
-    public static @NonNull Optional<CaseMapping> getByName(@Nullable String name) {
-        return (name == null) ? Optional.empty() : Optional.ofNullable(CaseMapping.nameMap.get(name.toUpperCase()));
-    }
-
-    private final char upperbound;
-
-    CaseMapping(char upperbound) {
-        this.upperbound = upperbound;
-    }
-
+    CaseMapping.Ranged ASCII = new CaseMapping.Ranged('Z');
     /**
-     * Gets if two given strings are equal, case insensitive, using this
-     * case mapping.
-     *
-     * @param one one string
-     * @param two two string, red string, blue string
-     * @return true if equal ignoring case using this case mapping
+     * A-Z become a-z, []^ become {}~
      */
-    public boolean areEqualIgnoringCase(@NonNull String one, @NonNull String two) {
+    CaseMapping.Ranged RFC1459 = new CaseMapping.Ranged('^');
+    /**
+     * A-Z become a-z, [] become {}
+     */
+    CaseMapping.Ranged STRICT_RFC1459 = new CaseMapping.Ranged(']');
+
+    default boolean areEqualIgnoringCase(String one,String two) {
         return this.toLowerCase(one).equals(this.toLowerCase(two));
     }
 
@@ -91,15 +77,23 @@ public enum CaseMapping {
      * @return lowercased string
      * @throws IllegalArgumentException if input is null
      */
-    public @NonNull String toLowerCase(@NonNull String input) {
-        Sanity.nullCheck(input, "Input");
-        char[] arr = input.toCharArray();
-        for (int i = 0; i < arr.length; i++) {
-            char c = arr[i];
-            if ((c >= 'A') && (c <= this.upperbound)) {
-                arr[i] += (char) 32;
-            }
+    String toLowerCase(String input);
+
+    /**
+     * Gets a CaseMapping by name, case-insensitive.
+     *
+     * @param name the name of the CaseMapping to get
+     * @return the matching CaseMapping if one exists
+     */
+    static @NonNull Optional<CaseMapping> getByName(@Nullable String name) {
+        if (name == null) {
+            return Optional.empty();
         }
-        return new String(arr);
+        return Optional.ofNullable(switch (name.toUpperCase(Locale.ROOT)) {
+            case "ASCII" -> ASCII;
+            case "RFC1459" -> RFC1459;
+            case "STRICT-RFC1459" -> STRICT_RFC1459;
+            default -> null;
+        });
     }
 }

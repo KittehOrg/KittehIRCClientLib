@@ -38,7 +38,7 @@ public class ISupportManagerTest {
     @Test
     public void casemapping() {
         DefaultISupportManager manager = this.getManager();
-        ISupportParameter param = manager.createParameter(ISupportParameter.CaseMapping.NAME + '=' + CaseMapping.RFC1459.name());
+        ISupportParameter param = manager.createParameter(ISupportParameter.CaseMapping.NAME + "=RFC1459");
         Assertions.assertTrue(ISupportParameter.CaseMapping.class.isAssignableFrom(param.getClass()));
         Assertions.assertEquals(CaseMapping.RFC1459, ((ISupportParameter.CaseMapping) param).getCaseMapping());
     }
