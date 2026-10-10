@@ -33,7 +33,5 @@ Explain why you feel it should be added to the library.
 ## I want to contribute code!
 
 Cool! Consider [creating an issue](https://github.com/KittehOrg/KittehIRCClientLib/issues/new)
-first for an idea that isn't already accepted as a feature to be added or
-[talk about it on IRC](https://webchat.esper.net/?nick=kicl_...&channels=%23kitteh.org)
-(`irc.esper.net` `#kitteh.org`) first to ensure your idea will get in!
+first for an idea that isn't already accepted as a feature to be added.
 Or, feel free to jump straight to submitting the PR. Thanks!
