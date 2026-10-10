@@ -28,7 +28,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.proxy.Socks4ProxyHandler;
@@ -105,7 +106,7 @@ public class NettyNetworkHandler implements NetworkHandler {
         }
 
         if (this.eventLoopGroup == null) {
-            this.eventLoopGroup = new NioEventLoopGroup();
+            this.eventLoopGroup = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
         }
 
         final Bootstrap bootstrap = new Bootstrap()
