@@ -211,6 +211,11 @@ public class FakeClient implements Client.WithManagement {
     }
 
     @Override
+    public boolean isSecureHostnameVerification() {
+        return true;
+    }
+
+    @Override
     public @NonNull HostWithPort getServerAddress() {
         return null;
     }

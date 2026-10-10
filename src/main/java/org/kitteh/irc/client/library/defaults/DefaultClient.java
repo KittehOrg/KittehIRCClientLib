@@ -229,6 +229,7 @@ public class DefaultClient implements Client.WithManagement {
     private final Path secureKey;
     private final String secureKeyPassword;
     private final TrustManagerFactory secureTrustManagerFactory;
+    private final boolean secureHostnameVerification;
     private final StsStorageManager stsStorageManager;
     private final String webircHost;
     private final InetAddress webircIP;
@@ -274,6 +275,7 @@ public class DefaultClient implements Client.WithManagement {
         this.secureKey = builder.secureKey;
         this.secureKeyPassword = builder.secureKeyPassword;
         this.secureTrustManagerFactory = builder.secureTrustManagerFactory;
+        this.secureHostnameVerification = builder.secureHostnameVerification;
         this.stsStorageManager = builder.stsStorageManager;
 
         this.webircHost = builder.webircHost;
@@ -555,6 +557,11 @@ public class DefaultClient implements Client.WithManagement {
     @Override
     public @Nullable TrustManagerFactory getSecureTrustManagerFactory() {
         return this.secureTrustManagerFactory;
+    }
+
+    @Override
+    public boolean isSecureHostnameVerification() {
+        return this.secureHostnameVerification;
     }
 
     @Override

@@ -233,6 +233,19 @@ public interface Client extends ClientLinked {
             @NonNull Server secureTrustManagerFactory(@Nullable TrustManagerFactory factory);
 
             /**
+             * Sets whether the server's certificate is required to match the hostname being connected to. Enabled by default.
+             * <p>
+             * Disabling feature this still requires the certificate to be trusted by the trust manager factory, but allows connecting by IP address,
+             * or to a server whose certificate is for a different name, such as a self-signed certificate imported into a trust store.
+             *
+             * @param verify true to verify the hostname
+             * @return this builder
+             * @throws IllegalArgumentException if trying to disable while the STS storage manager is set
+             * @see #port(int, SecurityType)
+             */
+            @NonNull Server secureHostnameVerification(boolean verify);
+
+            /**
              * Returns to the root builder.
              *
              * @return the root builder
@@ -508,10 +521,12 @@ public interface Client extends ClientLinked {
              * Sets the storage manager for STS (strict transport security) support.
              * <p>
              * By default, this is null and thus STS support is disabled. If you elect to
-             * enable STS, you are not permitted to use an insecure trust manager factory.
+             * enable STS, you are not permitted to use an insecure trust manager factory
+             * or to disable hostname verification.
              *
              * @param storageManager storage system to persist STS information per host
              * @return this builder
+             * @throws IllegalArgumentException if hostname verification is disabled
              */
             @NonNull Management stsStorageManager(@Nullable StsStorageManager storageManager);
 
@@ -805,6 +820,13 @@ public interface Client extends ClientLinked {
          * @return trust manager factory
          */
         @Nullable TrustManagerFactory getSecureTrustManagerFactory();
+
+        /**
+         * Gets if TLS hostname verification is enabled.
+         *
+         * @return true if the server's certificate must match the hostname
+         */
+        boolean isSecureHostnameVerification();
 
         /**
          * Gets the server address

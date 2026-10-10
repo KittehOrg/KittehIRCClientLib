@@ -22,6 +22,12 @@ KICL lets you set your own `TrustManagerFactory` in the `Client.Builder` so you 
 connect to the network you desire. For testing, there is also the `InsecureTrustManagerFactory`
 which, if you set it in the `Client.Builder`, will blindly allow all connections through.
 
+By default, the server's certificate must also match the hostname being connected to.
+If the certificate is trusted but issued for a different name, like when connecting by IP
+address or using an imported self-signed certificate , you can skip only the hostname check
+with `Client.Builder.Server#secureHostnameVerification(false)`. The certificate must still be
+trusted by the `TrustManagerFactory`. Disabling hostname verification cannot be combined with STS.
+
 For certificate or key pinning, you currently must implement this yourself in your custom
 `TrustManager`, though discussions for adding a pinning API are underway.
 

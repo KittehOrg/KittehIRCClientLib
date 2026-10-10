@@ -182,7 +182,11 @@ public final class NettyConnection implements ClientConnection {
                 } else if (SslUtil.isInsecure(factory)) {
                     this.client.getExceptionListener().queue(new KittehNagException(String.format("Client '%s' is using an insecure trust manager factory.", this.client)));
                 }
-                SslContext sslContext = SslContextBuilder.forClient().endpointIdentificationAlgorithm("HTTPS").trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();
+                boolean verifyHostname = this.client.isSecureHostnameVerification();
+                if (!verifyHostname) {
+                    this.client.getExceptionListener().queue(new KittehNagException(String.format("Client '%s' has TLS hostname verification disabled.", this.client)));
+                }
+                SslContext sslContext = SslContextBuilder.forClient().endpointIdentificationAlgorithm(verifyHostname ? "HTTPS" : null).trustManager(factory).keyManager(keyCertChainFile, keyFile, keyPassword).build();
                 HostWithPort addr = this.client.getServerAddress();
                 // The presence of the two latter arguments enables SNI.
                 final SslHandler sslHandler = sslContext.newHandler(this.channel.alloc(), addr.getHost(), addr.getPort());

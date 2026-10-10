@@ -141,6 +141,15 @@ public class DefaultBuilder implements Client.Builder {
         }
 
         @Override
+        public @NonNull Server secureHostnameVerification(boolean verify) {
+            if (DefaultBuilder.this.stsStorageManager != null) {
+                Sanity.truthiness(verify, "Cannot use STS without hostname verification.");
+            }
+            DefaultBuilder.this.secureHostnameVerification = verify;
+            return this;
+        }
+
+        @Override
         public Client.@NonNull Builder then() {
             return DefaultBuilder.this;
         }
@@ -303,6 +312,9 @@ public class DefaultBuilder implements Client.Builder {
 
         @Override
         public @NonNull Management stsStorageManager(@Nullable StsStorageManager storageManager) {
+            if (storageManager != null) {
+                Sanity.truthiness(DefaultBuilder.this.secureHostnameVerification, "Cannot use STS without hostname verification.");
+            }
             DefaultBuilder.this.stsStorageManager = storageManager;
             return this;
         }
@@ -338,6 +350,7 @@ public class DefaultBuilder implements Client.Builder {
     @Nullable Path secureKey = null;
     @Nullable String secureKeyPassword = null;
     @Nullable TrustManagerFactory secureTrustManagerFactory = null;
+    boolean secureHostnameVerification = true;
 
     String nick = "Kitteh";
     String userString = "Kitteh";
