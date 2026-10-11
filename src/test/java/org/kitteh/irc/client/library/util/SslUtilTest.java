@@ -21,7 +21,7 @@ public class SslUtilTest {
     /**
      * Test the isInsecure function.
      *
-     * @throws Exception Oh no
+     * @throws Exception Oh, no
      */
     @Test
     public void testSecure3() throws Exception {

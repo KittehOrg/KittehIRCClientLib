@@ -135,7 +135,7 @@ public class StsHandlerTest {
     }
 
     /**
-     * Checks an error is raised for an missing port value.
+     * Checks an error is raised for a missing port value.
      */
     @Test
     public void testHandlerWithMissingPortValue() {

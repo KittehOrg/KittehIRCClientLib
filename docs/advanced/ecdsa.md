@@ -130,7 +130,7 @@ identity used to authenticate:
 
 `Example\0Example\0`
 
-KICL does not support impersonation at this time and it appears to only be relevant to
+KICL does not support impersonation at this time, and it appears to only be relevant to
 services administrators.
 
 Once the string has been built, it is base64 encoded and sent via the `AUTHENTICATE` command:
@@ -145,7 +145,7 @@ representation directly) and sign it, using the account's private key. The signa
 
 **Important:** Many signature APIs accept data and then perform a cryptographic hash function
 (e.g. SHA1 or SHA256) over the data and sign the message digest instead of the provided data.
-This is a good approach for many usecases, especially when a lot of data is involved but it's
+This is a good approach for many usecases, especially when a lot of data is involved, but it's
 important you **sign the provided challenge directly** for this process - Atheme does not
 support checking a cryptographic signature of the challenge. Java users should use `NoneWithECDSA`
 signature algorithm to achieve this.

@@ -66,7 +66,7 @@ public enum StsClientState {
      * tried to establish a secure connection on the advertised port, but couldn't. This
      * could be due to a network issue or a problem validating the provided certificate.
      * <p>
-     * The client will stay in this state and it is not possible to bypass.
+     * The client will stay in this state, and it is not possible to bypass.
      */
     STS_PRESENT_CANNOT_CONNECT,
 

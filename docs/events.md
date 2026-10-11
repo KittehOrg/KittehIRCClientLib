@@ -28,7 +28,7 @@ Handlers by default fire in series, blocking until all are complete. You can set
 not block by utilizing the annotations `delivery` value to `Invoke.Asynchronously`.
 
 Handlers can also have priority. If you wish to listen to the same event multiple times, priority
-can be helpful to ensure the your handler methods fire in a consistent order. The `priority` value
+can be helpful to ensure that your handler methods fire in a consistent order. The `priority` value
 on the annotation allows setting a priority. The default priority is 0.
 
 Handlers by default listen to the parameter class as well as any subclasses. If you truly wished,

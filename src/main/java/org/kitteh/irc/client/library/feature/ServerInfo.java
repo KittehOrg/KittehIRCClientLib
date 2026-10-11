@@ -203,7 +203,7 @@ public interface ServerInfo {
     /**
      * Gets the named ISUPPORT parameter if present.
      *
-     * @param name parameter name, case insensitive
+     * @param name parameter name, case-insensitive
      * @return parameter if present
      */
     @NonNull Optional<ISupportParameter> getISupportParameter(@NonNull String name);
@@ -212,7 +212,7 @@ public interface ServerInfo {
      * Gets the named ISUPPORT parameter if present and if of the specified
      * type.
      *
-     * @param name parameter name, case insensitive
+     * @param name parameter name, case-insensitive
      * @param clazz parameter type
      * @param <ISupport> parameter type
      * @return parameter if present

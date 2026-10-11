@@ -75,7 +75,7 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      *
      * @param newNick a new nickname
      * @throws IllegalArgumentException if nickname is null, is same as the
-     * nickname this events reports has failed, contains invalid characters,
+     * nickname this event reports has failed, contains invalid characters,
      * or contains spaces
      */
     public void setNewNick(@NonNull String newNick) {

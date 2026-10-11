@@ -22,7 +22,7 @@ not. If that's the case, it should be easy enough to extend `AbstractSaslProtoco
 ### PLAIN Mechanism
 
 Formally described in [RFC 4616](https://tools.ietf.org/html/rfc4616), the PLAIN mechanism sends an authcid (account name
-to login with), password and optionally an authzid (account name to impersonate) **in plaintext**. As mentioned in the RFC,
+to log in with), password and optionally an authzid (account name to impersonate) **in plaintext**. As mentioned in the RFC,
 this mechanism **SHOULD NOT** be used without adequate socket security. In practice, this means the PLAIN mechanism
 should never be used without TLS.
 

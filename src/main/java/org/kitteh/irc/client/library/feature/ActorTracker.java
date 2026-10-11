@@ -283,7 +283,7 @@ public interface ActorTracker extends Resettable {
     void trackUserQuit(@NonNull String nick);
 
     /**
-     * Tracks a users's user string (ident) changing.
+     * Tracks a user's user string (ident) changing.
      *
      * @param nick nick
      * @param newUserString new user string

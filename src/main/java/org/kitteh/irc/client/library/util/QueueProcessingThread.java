@@ -30,7 +30,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Self starting processor of queued items on its own thread.
+ * Self-starting processor of queued items on its own thread.
  *
  * @param <Type> type of items queued
  */

@@ -39,7 +39,7 @@ public enum DefaultMessageType {
      */
     PART,
     /**
-     * An user specified shutdown.
+     * A user specified shutdown.
      */
     QUIT,
     /**

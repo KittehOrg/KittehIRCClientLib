@@ -15,7 +15,7 @@ openssl s_client -showcerts -connect irc.host:6697 < /dev/null | openssl x509 -o
 ```
 
 1. Locate the `cacerts` file. This is located in the `lib` of the JAVA_HOME directory. For example,
-`/usr/lib/jvm/java-8-oracle/jre/lib/cacerts` on a Ubuntu system.
+`/usr/lib/jvm/java-8-oracle/jre/lib/cacerts` on an Ubuntu system.
 
 1. Issue the import command for each certificate you'd like to import. The trust store can be protected with a password
 which is set by default to 'changeit'. If you've not changed it, you should be able to simply use this password. You can
