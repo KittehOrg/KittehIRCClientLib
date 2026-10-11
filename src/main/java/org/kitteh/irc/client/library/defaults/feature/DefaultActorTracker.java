@@ -433,6 +433,8 @@ public class DefaultActorTracker implements ActorTracker {
     private final Map<String, IrcChannel> trackedChannels;
     private final Map<String, IrcUser> trackedUsers;
 
+    private volatile @Nullable String lastServerName;
+
     private boolean queryChannelInformation = true;
 
     /**
@@ -458,7 +460,11 @@ public class DefaultActorTracker implements ActorTracker {
         } else if (this.client.getServerInfo().isValidChannel(name)) {
             return new IrcChannel(name).snapshot();
         }
-        if (name.isEmpty() || DefaultActorTracker.SERVER_PATTERN.matcher(name).matches()) {
+        if (name.isEmpty() || name.equals(this.lastServerName)) {
+            return new IrcServer(name).snapshot();
+        }
+        if (DefaultActorTracker.SERVER_PATTERN.matcher(name).matches()) {
+            this.lastServerName = name;
             return new IrcServer(name).snapshot();
         }
         return new IrcActor(name).snapshot();
