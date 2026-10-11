@@ -397,14 +397,16 @@ public class DefaultActorTracker implements ActorTracker {
 
         @Override
         @NonNull DefaultUser snapshot() {
-            Set<String> chanSet = new HashSet<>();
-            for (IrcChannel channel : DefaultActorTracker.this.trackedChannels.values()) {
-                if (channel.modes.containsKey(this.nick)) {
-                    chanSet.add(channel.getName());
+            return super.snapshot(() -> {
+                Set<String> chanSet = new HashSet<>();
+                for (IrcChannel channel : DefaultActorTracker.this.trackedChannels.values()) {
+                    if (channel.modes.containsKey(this.nick)) {
+                        chanSet.add(channel.getName());
+                    }
                 }
-            }
-            return super.snapshot(() -> new DefaultUser(DefaultActorTracker.this.client, this.getName(), this.account,
-                    this.awayMessage, this.nick, this.user, this.host, this.isAway, this.operString, this.realName, this.server, chanSet));
+                return new DefaultUser(DefaultActorTracker.this.client, this.getName(), this.account,
+                        this.awayMessage, this.nick, this.user, this.host, this.isAway, this.operString, this.realName, this.server, chanSet);
+            });
         }
 
     }
