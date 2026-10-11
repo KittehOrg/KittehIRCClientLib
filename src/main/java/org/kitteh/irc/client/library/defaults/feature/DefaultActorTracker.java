@@ -176,33 +176,35 @@ public class DefaultActorTracker implements ActorTracker {
                     }
                 }
             }
-            ModeStatusList<ChannelMode> channelModes = DefaultModeStatusList.of(this.channelModes.values());
-            Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
-            for (Map.Entry<Character, List<ModeInfo>> entry : this.modeInfoLists.entrySet()) {
-                modeInfoLists.put(entry.getKey(), List.copyOf(entry.getValue()));
-            }
-            this.trackedModes.stream()
-                    .filter(character -> !modeInfoLists.containsKey(character))
-                    .forEach(character -> this.modeInfoLists.put(character, Collections.unmodifiableList(new ArrayList<>())));
-            Map<String, SortedSet<ChannelUserMode>> newModes = new CIKeyMap<>(DefaultActorTracker.this.client);
-            Optional<ISupportParameter.Prefix> prefix = DefaultActorTracker.this.client.getServerInfo().getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
-            Comparator<ChannelUserMode> comparator = prefix
-                    .<Comparator<ChannelUserMode>>map(prefix1 -> Comparator.comparingInt(prefix1.getModes()::indexOf))
-                    .orElseGet(() -> Comparator.comparing(ChannelUserMode::getChar));
-            for (Map.Entry<String, Set<ChannelUserMode>> entry : this.modes.entrySet()) {
-                SortedSet<ChannelUserMode> newSet = new TreeSet<>(comparator);
-                newSet.addAll(entry.getValue());
-                newModes.put(entry.getKey(), newSet);
-            }
-            Map<String, User> nickMap = this.modes.keySet().stream()
-                    .map(DefaultActorTracker.this.trackedUsers::get)
-                    .filter(Objects::nonNull)
-                    .map(IrcUser::snapshot)
-                    .collect(Collectors.toMap(User::getNick, Function.identity()));
-            return super.snapshot(() -> new DefaultChannel(DefaultActorTracker.this.client, this.getName(),
-                    new DefaultChannelTopic(IrcChannel.this.topicTime, IrcChannel.this.topic, IrcChannel.this.topicSetter),
-                    channelModes, modeInfoLists, newModes, new ArrayList<>(this.modes.keySet()),
-                    nickMap, new ArrayList<>(nickMap.values()), this.fullListReceived, this.commands));
+            return super.snapshot(() -> {
+                ModeStatusList<ChannelMode> channelModes = DefaultModeStatusList.of(this.channelModes.values());
+                this.trackedModes.stream()
+                        .filter(character -> !this.modeInfoLists.containsKey(character))
+                        .forEach(character -> this.modeInfoLists.put(character, Collections.unmodifiableList(new ArrayList<>())));
+                Map<Character, List<ModeInfo>> modeInfoLists = new HashMap<>();
+                for (Map.Entry<Character, List<ModeInfo>> entry : this.modeInfoLists.entrySet()) {
+                    modeInfoLists.put(entry.getKey(), List.copyOf(entry.getValue()));
+                }
+                Map<String, SortedSet<ChannelUserMode>> newModes = new CIKeyMap<>(DefaultActorTracker.this.client);
+                Optional<ISupportParameter.Prefix> prefix = DefaultActorTracker.this.client.getServerInfo().getISupportParameter("PREFIX", ISupportParameter.Prefix.class);
+                Comparator<ChannelUserMode> comparator = prefix
+                        .<Comparator<ChannelUserMode>>map(prefix1 -> Comparator.comparingInt(prefix1.getModes()::indexOf))
+                        .orElseGet(() -> Comparator.comparing(ChannelUserMode::getChar));
+                for (Map.Entry<String, Set<ChannelUserMode>> entry : this.modes.entrySet()) {
+                    SortedSet<ChannelUserMode> newSet = new TreeSet<>(comparator);
+                    newSet.addAll(entry.getValue());
+                    newModes.put(entry.getKey(), newSet);
+                }
+                Map<String, User> nickMap = this.modes.keySet().stream()
+                        .map(DefaultActorTracker.this.trackedUsers::get)
+                        .filter(Objects::nonNull)
+                        .map(IrcUser::snapshot)
+                        .collect(Collectors.toMap(User::getNick, Function.identity()));
+                return new DefaultChannel(DefaultActorTracker.this.client, this.getName(),
+                        new DefaultChannelTopic(IrcChannel.this.topicTime, IrcChannel.this.topic, IrcChannel.this.topicSetter),
+                        channelModes, modeInfoLists, newModes, new ArrayList<>(this.modes.keySet()),
+                        nickMap, new ArrayList<>(nickMap.values()), this.fullListReceived, this.commands);
+            });
         }
 
         void trackMode(@NonNull ChannelMode mode, boolean track) {
