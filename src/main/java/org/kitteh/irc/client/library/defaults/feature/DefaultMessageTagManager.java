@@ -142,6 +142,9 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
     }
 
     private @NonNull String getTagValue(@NonNull String tag) {
+        if (tag.indexOf('\\') == -1) {
+            return tag;
+        }
         StringBuilder builder = new StringBuilder(tag.length());
         int currentIndex = 0;
         Matcher matcher = DefaultMessageTagManager.TAG_ESCAPE.matcher(tag);
