@@ -27,8 +27,10 @@ import net.engio.mbassy.listener.Handler;
 import org.jspecify.annotations.NonNull;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
+import org.kitteh.irc.client.library.util.Sanity;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,13 +74,26 @@ public interface EventManager {
     <A extends Annotation> void registerAnnotationFilter(Class<A> annotationClass, FilterProcessor<?, A> filterProcessor);
 
     /**
-     * Registers annotated with {@link Handler} with sync invocation,
+     * Registers methods in the object annotated with {@link Handler} with sync invocation,
      * provided they have a single parameter. This parameter is the event.
      *
      * @param listener listener in which to register events
      * @throws IllegalArgumentException for a null listener
      */
     void registerEventListener(@NonNull Object listener);
+
+    /**
+     * Registers a listener as {@link #registerEventListener(Object)} does,
+     * using the given lookup to access its handlers. Use this to register
+     * listeners with non-public handlers from a named module without
+     * opening the package to this library.
+     *
+     * @param listener listener in which to register events
+     * @param lookup lookup with full privilege access in the listener's
+     *     module, typically {@code MethodHandles.lookup()}
+     * @throws IllegalArgumentException for a null listener or lookup
+     */
+    void registerEventListener(@NonNull Object listener, MethodHandles.@NonNull Lookup lookup);
 
     /**
      * Unregisters a listener.

@@ -1,6 +1,8 @@
 package org.kitteh.irc.client.library.defaults.feature;
 
 import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.listener.Handler;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +17,7 @@ import org.kitteh.irc.client.library.feature.filter.FilterProcessor;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +28,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CustomEventManagerTest {
     private static class StrippedEventManager implements EventManager {
-        private final MBassador<Object> bus = new MBassador<>();
+        private final MBassador<Object> bus = new MBassador<>(new BusConfiguration()
+                .addFeature(Feature.SyncPubSub.Default()
+                        .setMetadataReader(new MethodHandleMetadataReader())
+                        .setSubscriptionFactory(new FilteringSubscriptionFactory(Collections.emptyMap())))
+                .addFeature(Feature.AsynchronousHandlerInvocation.Default())
+                .addFeature(Feature.AsynchronousMessageDispatch.Default()));
 
         @Override
         public void callEvent(@NonNull Object event) {
@@ -49,6 +57,11 @@ public class CustomEventManagerTest {
 
         @Override
         public void registerEventListener(@NonNull Object listener) {
+            this.bus.subscribe(listener);
+        }
+
+        @Override
+        public void registerEventListener(@NonNull Object listener, MethodHandles.@NonNull Lookup lookup) {
             this.bus.subscribe(listener);
         }
 

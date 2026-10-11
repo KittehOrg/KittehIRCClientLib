@@ -46,6 +46,7 @@ import org.kitteh.irc.client.library.util.Sanity;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
@@ -75,10 +76,11 @@ public class DefaultEventManager implements EventManager {
         public void handleError(@NonNull PublicationError publicationError) {
             Exception exceptional;
             Throwable thrown = publicationError.getCause();
-            if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehServerMessageException)) {
-                exceptional = (KittehServerMessageException) thrown.getCause();
-            } else if ((thrown instanceof InvocationTargetException) && (thrown.getCause() instanceof KittehNagException)) {
-                exceptional = (KittehNagException) thrown.getCause();
+            Throwable cause = (thrown instanceof InvocationTargetException) ? thrown.getCause() : thrown;
+            if (cause instanceof KittehServerMessageException serverMessageException) {
+                exceptional = serverMessageException;
+            } else if (cause instanceof KittehNagException nagException) {
+                exceptional = nagException;
             } else {
                 exceptional = new KittehEventException(thrown);
             }
@@ -93,6 +95,7 @@ public class DefaultEventManager implements EventManager {
 
     private final MBassador<Object> bus;
     private final Client client;
+    private final MethodHandleMetadataReader metadataReader = new MethodHandleMetadataReader();
     private final Map<Class<? extends Annotation>, FilterProcessor<?, ? extends Annotation>> filters = new ConcurrentHashMap<>();
     private final Set<Object> listeners = new HashSet<>();
 
@@ -103,7 +106,9 @@ public class DefaultEventManager implements EventManager {
      */
     public DefaultEventManager(@NonNull Client client) {
         BusConfiguration configuration = new BusConfiguration()
-                .addFeature(Feature.SyncPubSub.Default().setSubscriptionFactory(new FilteringSubscriptionFactory(this.filters)))
+                .addFeature(Feature.SyncPubSub.Default()
+                        .setMetadataReader(this.metadataReader)
+                        .setSubscriptionFactory(new FilteringSubscriptionFactory(this.filters)))
                 .addFeature(Feature.AsynchronousHandlerInvocation.Default())
                 .addFeature(Feature.AsynchronousMessageDispatch.Default())
                 .addPublicationErrorHandler(new Exceptional(client));
@@ -145,8 +150,27 @@ public class DefaultEventManager implements EventManager {
     @Override
     public synchronized void registerEventListener(@NonNull Object listener) {
         Sanity.nullCheck(listener, "Listener");
+        try {
+            this.bus.subscribe(listener);
+        } catch (RuntimeException exception) {
+            if (exception.getCause() instanceof IllegalArgumentException illegalArgumentException) {
+                throw illegalArgumentException;
+            }
+            throw exception;
+        }
         this.listeners.add(listener);
-        this.bus.subscribe(listener);
+    }
+
+    @Override
+    public synchronized void registerEventListener(@NonNull Object listener, MethodHandles.@NonNull Lookup lookup) {
+        Sanity.nullCheck(listener, "Listener");
+        Sanity.nullCheck(lookup, "Lookup");
+        this.metadataReader.registerLookup(listener.getClass(), lookup);
+        try {
+            this.registerEventListener(listener);
+        } finally {
+            this.metadataReader.removeLookup(listener.getClass());
+        }
     }
 
     @Override
