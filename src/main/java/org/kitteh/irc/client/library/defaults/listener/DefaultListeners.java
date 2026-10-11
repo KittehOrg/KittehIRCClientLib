@@ -188,6 +188,12 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     STANDARD_REPLY(DefaultStandardReplyListener::new),
     /**
+     * TAGMSG handling.
+     *
+     * @see DefaultTagmsgListener
+     */
+    TAGMSG(DefaultTagmsgListener::new),
+    /**
      * TOPIC handling.
      *
      * @see DefaultTopicListener
