@@ -53,7 +53,6 @@ import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
 import org.kitteh.irc.client.library.exception.KittehNagException;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
-import org.kitteh.irc.client.library.exception.KittehServerMessageTagException;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.AuthManager;
 import org.kitteh.irc.client.library.feature.CapabilityManager;
@@ -91,7 +90,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +98,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -159,19 +158,38 @@ public class DefaultClient implements Client.WithManagement {
         }
     }
 
-    private final class InputProcessor extends QueueProcessingThread<String> {
+    private final class InputProcessor extends QueueProcessingThread<HandledInput> {
         private InputProcessor() {
             super("KICL Input Processor (" + DefaultClient.this.getName() + ')');
         }
 
         @Override
-        protected void processElement(@NonNull String element) {
-            try {
-                DefaultClient.this.handleLine(element);
-            } catch (final Exception thrown) {
-                DefaultClient.this.exceptionListener.queue(thrown);
+        protected void processElement(@NonNull HandledInput element) {
+            switch (element) {
+                case ResetInput() -> DefaultClient.this.handleReset();
+                case ExceptionalInput(Supplier<Exception> supplier) -> DefaultClient.this.exceptionListener.queue(supplier.get());
+                case ParsedInput input -> {
+                    try {
+                        DefaultClient.this.handleLine(input);
+                    } catch (final Exception thrown) {
+                        DefaultClient.this.exceptionListener.queue(thrown);
+                    }
+                }
             }
         }
+    }
+
+    private sealed interface HandledInput permits ParsedInput, ExceptionalInput, ResetInput {
+    }
+
+    private record ResetInput() implements HandledInput {
+        static final ResetInput RESET = new ResetInput();
+    }
+
+    private record ParsedInput(String line, String tags, String source, String commandAndParameters) implements HandledInput {
+    }
+
+    private record ExceptionalInput(Supplier<Exception> supplier) implements HandledInput {
     }
 
     private final String[] pingPurr = new String[]{"MEOW", "MEOW!", "PURR", "PURRRRRRR", "MEOWMEOW", ":3", "HISS"};
@@ -721,11 +739,66 @@ public class DefaultClient implements Client.WithManagement {
      */
     @Override
     public void processLine(@NonNull String line) {
-        if (line.startsWith("PING ")) {
-            this.sendRawLineImmediately("PONG " + line.substring(5));
-        } else if (!line.isEmpty()) {
-            this.processor.queue(line);
+        final HandledInput split = this.splitLine(line);
+        if (split == null) {
+            return;
         }
+        if (split instanceof ParsedInput(String _, String _, String _, String command) && command.startsWith("PING ")) {
+            this.sendRawLineImmediately("PONG " + command.substring(5));
+        } else {
+            this.processor.queue(split);
+        }
+    }
+
+    private @Nullable HandledInput splitLine(@NonNull String line) {
+        final int len = line.length();
+        int position = this.skipSpaces(line, 0);
+        if (position == len) { // Why?
+            return null;
+        }
+
+        String tags = "";
+        if (line.charAt(position) == '@') {
+            int end = line.indexOf(' ', position);
+            if (end == -1) {
+                return new ExceptionalInput(() -> {
+                    throw new KittehServerMessageException(new DefaultServerMessage(line, List.of()), "Server sent a message without a commandAndParameters");
+                });
+            }
+            if ((end - position) < 2) {
+                return new ExceptionalInput(() -> {
+                    throw new KittehServerMessageException(new DefaultServerMessage(line, List.of()), "Server sent an empty tag section");
+                });
+            }
+            tags = line.substring(position + 1, end);
+            position = this.skipSpaces(line, end);
+        }
+
+        String source = "";
+        if ((position < len) && (line.charAt(position) == ':')) {
+            int end = line.indexOf(' ', position);
+            if (end == -1) {
+                return new ExceptionalInput(() -> {
+                    throw new KittehServerMessageException(new DefaultServerMessage(line, List.of()), "Server sent a message without a commandAndParameters");
+                });
+            }
+            source = line.substring(position + 1, end);
+            position = this.skipSpaces(line, end);
+        }
+
+        if (position == len) {
+            return new ExceptionalInput(() -> {
+                throw new KittehServerMessageException(new DefaultServerMessage(line, List.of()), "Server sent a message without a commandAndParameters");
+            });
+        }
+        return new ParsedInput(line, tags, source, (position == 0) ? line : line.substring(position));
+    }
+
+    private int skipSpaces(@NonNull String line, int position) {
+        while ((position < line.length()) && (line.charAt(position) == ' ')) {
+            position++;
+        }
+        return position;
     }
 
     @Override
@@ -768,7 +841,7 @@ public class DefaultClient implements Client.WithManagement {
         if (this.lastSentUser != null && this.messageSendingImmediate.contains(this.lastSentUser)) {
             return;
         }
-        this.processor.queue("");
+        this.processor.queue(ResetInput.RESET);
 
         // If we have WebIRC information, send it before everything.
         // "The WEBIRC command MUST be the first command sent from the WebIRC gateway to the IRC server and MUST be sent before capability negotiation."
@@ -870,60 +943,34 @@ public class DefaultClient implements Client.WithManagement {
         return this.secure;
     }
 
+    private void handleReset() {
+        this.actorTracker.reset();
+        this.capabilityManager.reset();
+        this.serverInfo = this.serverInfoSupplier.apply(this);
+    }
+
     @SuppressWarnings("UnnecessaryLabelOnBreakStatement")
-    private void handleLine(final @NonNull String line) {
-        if (line.isEmpty()) {
-            this.actorTracker.reset();
-            this.capabilityManager.reset();
-            this.serverInfo = this.serverInfoSupplier.apply(this);
-            return;
-        }
-
-        int position = 0;
-        int next;
-        // Skip starting spaces just in case
-        while ((next = line.indexOf(' ', position)) == position) {
-            position = next + 1;
-        }
-
-        List<MessageTag> tags;
-        if (line.charAt(position) == '@') {
-            String tagSection = line.substring(position, next);
-            position = next + 1;
-            if (tagSection.length() < 2) {
-                throw new KittehServerMessageTagException(line, "Server sent an empty tag section");
-            }
-            tags = this.messageTagManager.getCapabilityTags(tagSection.substring(1));
-            // Skip more spaces just in case
-            while ((next = line.indexOf(' ', position)) == position) {
-                position = next + 1;
-            }
-        } else {
-            tags = Collections.unmodifiableList(new ArrayList<>());
-        }
-
-        final String actorName;
-        if (line.charAt(position) == ':') {
-            actorName = line.substring(position + 1, next);
-            position = next + 1;
-        } else {
-            actorName = "";
-        }
-        final Actor actor = this.actorTracker.getActor(actorName);
+    private void handleLine(final DefaultClient.@NonNull ParsedInput input) {
+        final String line = input.line();
+        final List<MessageTag> tags = input.tags().isEmpty() ? List.of() : this.messageTagManager.getCapabilityTags(input.tags());
+        final Actor actor = this.actorTracker.getActor(input.source());
+        final String command = input.commandAndParameters();
 
         String commandString = null;
         List<String> parameters = new ArrayList<>();
 
+        int position = 0;
+        int next;
         boolean noParamsWithColon = true;
         free:
-        while ((next = line.indexOf(' ', position)) != -1) {
-            if (line.charAt(position) == ':') {
+        while ((next = command.indexOf(' ', position)) != -1) {
+            if (command.charAt(position) == ':') {
                 position++;
                 noParamsWithColon = false;
                 /* I've got to */
                 break free;
             } else if (position != next) {
-                String bit = line.substring(position, next);
+                String bit = command.substring(position, next);
                 if (commandString == null) {
                     commandString = bit;
                 } else {
@@ -932,8 +979,8 @@ public class DefaultClient implements Client.WithManagement {
             }
             position = next + 1;
         }
-        if (position != line.length()) {
-            String bit = line.substring((noParamsWithColon && (line.charAt(position) == ':')) ? (position + 1) : position);
+        if (position != command.length()) {
+            String bit = command.substring((noParamsWithColon && (command.charAt(position) == ':')) ? (position + 1) : position);
             if (commandString == null) {
                 commandString = bit;
             } else {
