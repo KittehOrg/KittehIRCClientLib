@@ -993,26 +993,44 @@ public class DefaultClient implements Client.WithManagement {
         }
 
         ClientReceiveServerMessageEvent event;
-        try {
+        if (this.isNumeric(commandString)) {
             int numeric = Integer.parseInt(commandString);
             event = new ClientReceiveNumericEvent(this, new DefaultServerMessage.NumericCommand(numeric, line, tags), actor, commandString, numeric, parameters);
-        } catch (NumberFormatException exception) {
+        } else {
             event = new ClientReceiveCommandEvent(this, new DefaultServerMessage.StringCommand(commandString, line, tags), actor, commandString, parameters);
         }
 
-        Optional<MessageTag> batchTag = tags.stream().filter(tag -> CapabilityManager.Defaults.BATCH.equalsIgnoreCase(tag.getName())).findFirst();
-        if (batchTag.isPresent() && batchTag.get().getValue().isPresent()) {
-            String batch = batchTag.get().getValue().get();
-            BatchReferenceTag tag = this.batchHold.get(batch);
-            if (tag != null) {
-                tag.addEvent(event);
-                this.eventManager.callEvent(new ClientBatchMessageEvent(this, event.getSource(), tag));
-                return;
+        if (!this.batchHold.isEmpty()) {
+            for (MessageTag batchTag : tags) {
+                if (CapabilityManager.Defaults.BATCH.equalsIgnoreCase(batchTag.getName())) {
+                    if (batchTag.getValue().isPresent()) {
+                        BatchReferenceTag tag = this.batchHold.get(batchTag.getValue().get());
+                        if (tag != null) {
+                            tag.addEvent(event);
+                            this.eventManager.callEvent(new ClientBatchMessageEvent(this, event.getSource(), tag));
+                            return;
+                        }
+                    }
+                    // else improper batch, or intentionally ignored via event
+                    break;
+                }
             }
-            // else improper batch, or intentionally ignored via event
         }
 
         this.sendLineEvent(event);
+    }
+
+    private boolean isNumeric(@NonNull String command) {
+        if (command.length() != 3) {
+            return false;
+        }
+        for (int i = 0; i < 3; i++) {
+            char c = command.charAt(i);
+            if ((c < '0') || (c > '9')) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void sendLineEvent(@NonNull ClientReceiveServerMessageEvent event) {
