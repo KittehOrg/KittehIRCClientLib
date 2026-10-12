@@ -128,4 +128,25 @@ public class SanityTest {
         constructor.setAccessible(true);
         constructor.newInstance();
     }
+
+    /**
+     * Tests nickCheck with valid nicks.
+     */
+    @Test
+    public void nickCheckPass() {
+        for (String nick : new String[]{"Kitteh", "K", "[cat]`_^{|}-9", "Kät", "a.b", "a$", "a:"}) {
+            Assertions.assertEquals(nick, Sanity.nickCheck(nick));
+        }
+    }
+
+    /**
+     * Tests nickCheck with invalid nicks.
+     */
+    @Test
+    public void nickCheckFail() {
+        for (String nick : new String[]{"", "a b", "a,b", "a*", "a?", "a!b", "a@b", "$a", ":a", "a\nb", "a\u0000"}) {
+            Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.nickCheck(nick), nick);
+        }
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Sanity.nickCheck(null));
+    }
 }

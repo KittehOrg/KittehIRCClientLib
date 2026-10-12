@@ -394,9 +394,7 @@ public class DefaultBuilder implements Client.Builder {
 
     @Override
     public @NonNull DefaultBuilder nick(@NonNull String nick) {
-        Sanity.safeMessageCheck(nick, "Nick");
-        Sanity.noSpaces(nick, "Nick");
-        this.nick = nick;
+        this.nick = Sanity.nickCheck(nick);
         return this;
     }
 

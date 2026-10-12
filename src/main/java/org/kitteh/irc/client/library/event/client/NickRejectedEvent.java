@@ -61,8 +61,16 @@ public class NickRejectedEvent extends ServerMessageEventBase {
     }
 
     /**
-     * Gets the new nickname to attempt, by default this is the previously
-     * attempted name ({@link #getAttemptedNick()}) with a ` appended.
+     * Gets the new nickname to attempt. By default, this is the intended nick
+     * with a ` appended on the first rejection and then an increasing
+     * number appended, shortened if the server is found to truncate nicks or
+     * if a long nick is rejected as erroneous. After repeated rejections, the
+     * intended nick is reduced to the characters allowed by RFC 2812.
+     * <p>
+     * The default listener only sends the default nick automatically while
+     * connecting, for a limited number of attempts. After the client is
+     * connected, or once the attempts are exhausted, a nick is only sent if
+     * one is set via {@link #setNewNick(String)}.
      *
      * @return new nick to attempt
      */
@@ -75,13 +83,12 @@ public class NickRejectedEvent extends ServerMessageEventBase {
      *
      * @param newNick a new nickname
      * @throws IllegalArgumentException if nickname is null, is same as the
-     * nickname this event reports has failed, contains invalid characters,
-     * or contains spaces
+     * nickname this event reports has failed, or is invalid per
+     * {@link Sanity#nickCheck(String)}
      */
     public void setNewNick(@NonNull String newNick) {
-        Sanity.safeMessageCheck(newNick, "Nick");
+        Sanity.nickCheck(newNick);
         Sanity.truthiness(!newNick.equals(this.attemptedNick), "Cannot set new nick to the currently failing nick");
-        Sanity.noSpaces(newNick, "Nick");
         this.newNick = newNick;
     }
 

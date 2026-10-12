@@ -697,8 +697,8 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void setNick(@NonNull String nick) {
-        Sanity.safeMessageCheck(nick, "Nick");
-        this.goalNick = nick.trim();
+        Sanity.nullCheck(nick, "Nick");
+        this.goalNick = Sanity.nickCheck(nick.trim());
         this.sendNickChange(this.goalNick);
     }
 

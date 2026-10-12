@@ -121,4 +121,28 @@ public final class Sanity {
         Sanity.truthiness(!string.contains(" "), name + " cannot contain spaces");
         return string;
     }
+
+    /**
+     * Checks if a nickname is one no IRC server would accept: empty,
+     * containing CR, LF, NUL, space, comma, asterisk, question mark,
+     * exclamation mark, or at sign, or starting with a dollar sign or colon.
+     * Servers may restrict nicknames further.
+     *
+     * @param nick nickname to check
+     * @return the nickname
+     * @throws IllegalArgumentException if null or invalid
+     */
+    public static @NonNull String nickCheck(@Nullable String nick) {
+        Sanity.safeMessageCheck(nick, "Nick");
+        Sanity.truthiness(!nick.isEmpty(), "Nick cannot be empty");
+        for (char ch : nick.toCharArray()) {
+            switch (ch) {
+                case ' ', ',', '*', '?', '!', '@' -> throw new IllegalArgumentException("Nick cannot contain '" + ch + '\'');
+                default -> {
+                }
+            }
+        }
+        Sanity.truthiness((nick.charAt(0) != '$') && (nick.charAt(0) != ':'), "Nick cannot start with '$' or ':'");
+        return nick;
+    }
 }

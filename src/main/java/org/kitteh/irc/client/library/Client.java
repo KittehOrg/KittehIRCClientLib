@@ -554,7 +554,8 @@ public interface Client extends ClientLinked {
          *
          * @param nick nick for the client to use
          * @return this builder
-         * @throws IllegalArgumentException if nick is null
+         * @throws IllegalArgumentException if nick is null or invalid per
+         * {@link Sanity#nickCheck(String)}
          */
         @NonNull Builder nick(@NonNull String nick);
 
@@ -1460,7 +1461,8 @@ public interface Client extends ClientLinked {
      * Sets the nick the client wishes to use.
      *
      * @param nick new nickname
-     * @throws IllegalArgumentException if nick is null
+     * @throws IllegalArgumentException if nick is null or invalid per
+     * {@link Sanity#nickCheck(String)}
      */
     void setNick(@NonNull String nick);
 
