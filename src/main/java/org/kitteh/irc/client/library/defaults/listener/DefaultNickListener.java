@@ -54,6 +54,11 @@ public class DefaultNickListener extends AbstractDefaultListenerBase {
             return;
         }
         if (!(event.getActor() instanceof User)) {
+            // Bare own nick (e.g. UnrealIRCd) while not tracked in any channel
+            if (this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(event.getActor().getName(), this.getClient().getNick())) {
+                this.getClient().setCurrentNick(event.getParameters().getFirst());
+                return;
+            }
             this.trackException(event, "NICK message sent for non-user");
             return;
         }

@@ -467,6 +467,11 @@ public class DefaultActorTracker implements ActorTracker {
         if (name.isEmpty() || name.equals(this.lastServerName)) {
             return new IrcServer(name).snapshot();
         }
+        // Some servers (e.g. UnrealIRCd for NICK, Solanum for user MODE) send our own nick without user@host
+        IrcUser self = this.trackedUsers.get(name);
+        if ((self != null) && this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(name, this.client.getNick())) {
+            return self.snapshot();
+        }
         if (DefaultActorTracker.SERVER_PATTERN.matcher(name).matches()) {
             this.lastServerName = name;
             return new IrcServer(name).snapshot();

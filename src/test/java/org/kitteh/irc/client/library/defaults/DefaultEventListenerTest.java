@@ -1,6 +1,7 @@
 package org.kitteh.irc.client.library.defaults;
 
 import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
@@ -12,9 +13,11 @@ import org.kitteh.irc.client.library.defaults.feature.DefaultServerInfo;
 import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ISupportParameter;
+import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.ActorTracker;
@@ -235,5 +238,71 @@ public class DefaultEventListenerTest {
     public void testWALLOPSFail() {
         this.fireLine(":irc.network WALLOPS");
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "WALLOPS message too short")));
+    }
+
+    private void setUpSelf(boolean tracked) {
+        Mockito.when(this.client.getActorTracker()).thenReturn(this.actorTracker);
+        Mockito.when(this.client.getNick()).thenReturn("Kitteh");
+        if (tracked) {
+            this.actorTracker.trackUser((User) this.actorTracker.getActor("Kitteh!kitteh@meow.test"));
+        }
+    }
+
+    /**
+     * Tests a bare own-nick source resolving to the tracked self user, as
+     * UnrealIRCd and Solanum send for NICK and user MODE.
+     */
+    @Test
+    public void testBareSelfSourceIsUser() {
+        this.setUpSelf(true);
+        Actor actor = this.actorTracker.getActor("kitteh");
+        Assertions.assertInstanceOf(User.class, actor);
+        Assertions.assertEquals("meow.test", ((User) actor).getHost());
+    }
+
+    /**
+     * Tests a bare nick that isn't our own staying a plain actor.
+     */
+    @Test
+    public void testBareOtherSourceIsNotUser() {
+        this.setUpSelf(true);
+        this.actorTracker.trackUser((User) this.actorTracker.getActor("Other!other@meow.test"));
+        Assertions.assertFalse(this.actorTracker.getActor("Other") instanceof User);
+    }
+
+    /**
+     * Tests own NICK change with a bare-nick source while tracked (UnrealIRCd).
+     */
+    @Test
+    public void testNickSelfBareSourceTracked() {
+        this.setUpSelf(true);
+        this.fireLine(":Kitteh NICK :Meow");
+        Mockito.verify(this.client, Mockito.times(1)).setCurrentNick("Meow");
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(UserNickChangeEvent.class,
+                e -> e.getOldUser().getNick().equals("Kitteh"), e -> e.getNewUser().getNick().equals("Meow"))));
+        Assertions.assertTrue(this.actorTracker.getTrackedUser("Meow").isPresent());
+        Mockito.verify(this.exceptionListener, Mockito.never()).queue(Mockito.any());
+    }
+
+    /**
+     * Tests own NICK change with a bare-nick source while not in any channel (UnrealIRCd).
+     */
+    @Test
+    public void testNickSelfBareSourceUntracked() {
+        this.setUpSelf(false);
+        this.fireLine(":Kitteh NICK :Meow");
+        Mockito.verify(this.client, Mockito.times(1)).setCurrentNick("Meow");
+        Mockito.verify(this.exceptionListener, Mockito.never()).queue(Mockito.any());
+    }
+
+    /**
+     * Tests NICK from a bare nick that isn't our own still failing.
+     */
+    @Test
+    public void testNickOtherBareSource() {
+        this.setUpSelf(true);
+        this.fireLine(":Other NICK :Meow");
+        Mockito.verify(this.client, Mockito.never()).setCurrentNick(Mockito.anyString());
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "NICK message sent for non-user")));
     }
 }
