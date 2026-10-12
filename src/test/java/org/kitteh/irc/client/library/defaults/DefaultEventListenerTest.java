@@ -14,9 +14,11 @@ import org.kitteh.irc.client.library.defaults.listener.DefaultListeners;
 import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.User;
+import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.event.client.ISupportParameterRemovedEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
 import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
@@ -216,6 +218,35 @@ public class DefaultEventListenerTest {
         Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("EXCEPTS")));
         Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("INVEX")));
         Mockito.verify(this.serverInfo, Mockito.times(5)).addISupportParameter(Mockito.any());
+    }
+
+    @Test
+    public void test5ISUPPORTNegation() {
+        DefaultServerInfo realServerInfo = new DefaultServerInfo(this.client);
+        Mockito.when(this.client.getServerInfo()).thenReturn(realServerInfo);
+        List<ChannelUserMode> defaultModes = realServerInfo.getChannelUserModes();
+        this.fireLine(":irc.network 005 Kitteh EXCEPTS PREFIX=(qov)~@+ :are supported by this server");
+        Assertions.assertTrue(realServerInfo.getISupportParameter("EXCEPTS").isPresent());
+        Assertions.assertEquals(3, realServerInfo.getChannelUserModes().size());
+
+        this.fireLine(":irc.network 005 Kitteh -EXCEPTS -PREFIX -NEVERSENT :are supported by this server");
+        Assertions.assertFalse(realServerInfo.getISupportParameter("EXCEPTS").isPresent());
+        Assertions.assertFalse(realServerInfo.getISupportParameter("-EXCEPTS").isPresent());
+        Assertions.assertEquals(defaultModes.size(), realServerInfo.getChannelUserModes().size());
+        Assertions.assertTrue(realServerInfo.getISupportParameters().isEmpty());
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ISupportParameterRemovedEvent.class, event -> "EXCEPTS".equals(event.getParameter().getName()))));
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ISupportParameterRemovedEvent.class, event -> "PREFIX".equals(event.getParameter().getName()))));
+        Mockito.verify(this.eventManager, Mockito.times(2)).callEvent(Mockito.argThat(this.match(ISupportParameterRemovedEvent.class)));
+        Mockito.verify(this.exceptionListener, Mockito.never()).queue(Mockito.any());
+    }
+
+    @Test
+    public void test5ISUPPORTInvalidNegation() {
+        this.fireLine(":irc.network 005 Kitteh -EXCEPTS=1 - INVEX :are supported by this server");
+        Mockito.verify(this.serverInfo, Mockito.never()).removeISupportParameter(Mockito.anyString());
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.argThat(this.iSupportParameter("INVEX")));
+        Mockito.verify(this.serverInfo, Mockito.times(1)).addISupportParameter(Mockito.any());
+        Mockito.verify(this.exceptionListener, Mockito.times(2)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Invalid ISUPPORT negation")));
     }
 
     @Test

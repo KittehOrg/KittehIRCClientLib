@@ -159,6 +159,12 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     }
 
     @Override
+    public @NonNull Optional<ISupportParameter> removeISupportParameter(@NonNull String name) {
+        Sanity.nullCheck(name, "Name");
+        return Optional.ofNullable(this.iSupportParameterMap.remove(name.toUpperCase()));
+    }
+
+    @Override
     public @NonNull Optional<List<String>> getMotd() {
         return Optional.ofNullable(this.motd);
     }

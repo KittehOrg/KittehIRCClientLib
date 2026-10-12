@@ -29,6 +29,7 @@ import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.ISupportParameterEvent;
+import org.kitteh.irc.client.library.event.client.ISupportParameterRemovedEvent;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
 /**
@@ -51,7 +52,17 @@ public class DefaultISupportListener extends AbstractDefaultListenerBase {
             if ((i == event.getParameters().size() - 1) && event.getParameters().get(i).contains(" ")) {
                 continue;
             }
-            ISupportParameter parameter = this.getClient().getISupportManager().createParameter(event.getParameters().get(i));
+            String token = event.getParameters().get(i);
+            if (!token.isEmpty() && (token.charAt(0) == '-')) {
+                if ((token.length() == 1) || (token.indexOf('=') > -1)) {
+                    this.trackException(event, "Invalid ISUPPORT negation: " + token);
+                    continue;
+                }
+                this.getClient().getServerInfo().removeISupportParameter(token.substring(1))
+                        .ifPresent(removed -> this.fire(new ISupportParameterRemovedEvent(this.getClient(), event.getSource(), removed)));
+                continue;
+            }
+            ISupportParameter parameter = this.getClient().getISupportManager().createParameter(token);
             this.getClient().getServerInfo().addISupportParameter(parameter);
             this.fire(new ISupportParameterEvent(this.getClient(), event.getSource(), parameter));
         }

@@ -98,7 +98,7 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         // Split out value if present
         if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
             tagName = tag.substring(0, index);
-            value = tag.substring(index + 1);
+            value = unescape(tag.substring(index + 1));
         } else {
             tagName = tag;
             value = null;
@@ -118,5 +118,36 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
             iSupportParameter = new DefaultISupportParameter(this.getClient(), tagName, value);
         }
         return iSupportParameter;
+    }
+
+    /**
+     * Decodes \x20 (space), \x5C (backslash), and \x3D (equals).
+     *
+     * @param value raw value
+     * @return decoded value
+     */
+    private static @NonNull String unescape(@NonNull String value) {
+        if (value.indexOf('\\') < 0) { // Early bail!
+            return value;
+        }
+        StringBuilder builder = new StringBuilder(value.length());
+        for (int i = 0; i < value.length(); i++) {
+            char ch = value.charAt(i);
+            if ((ch == '\\') && ((i + 3) < value.length()) && (value.charAt(i + 1) == 'x')) {
+                char decoded = switch (value.substring(i + 2, i + 4).toUpperCase()) {
+                    case "20" -> ' ';
+                    case "5C" -> '\\';
+                    case "3D" -> '=';
+                    default -> 0;
+                };
+                if (decoded != 0) {
+                    builder.append(decoded);
+                    i += 3;
+                    continue;
+                }
+            }
+            builder.append(ch);
+        }
+        return builder.toString();
     }
 }

@@ -52,6 +52,14 @@ public interface ServerInfo {
         void addISupportParameter(@NonNull ISupportParameter parameter);
 
         /**
+         * Removes an ISUPPORT parameter from the list of supported parameters, such as when the server negates it.
+         *
+         * @param name name of the parameter to remove
+         * @return the removed parameter, if it was present
+         */
+        @NonNull Optional<ISupportParameter> removeISupportParameter(@NonNull String name);
+
+        /**
          * Gets the channel user mode for a targeted channel name, such as
          * +#channel targeting voiced users.
          *

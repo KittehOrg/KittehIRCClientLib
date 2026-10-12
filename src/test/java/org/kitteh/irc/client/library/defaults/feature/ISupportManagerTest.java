@@ -33,6 +33,19 @@ public class ISupportManagerTest {
     }
 
     /**
+     * Tests decoding of value escapes.
+     */
+    @Test
+    public void valueEscapes() {
+        DefaultISupportManager manager = this.getManager();
+        Assertions.assertEquals("My Net", manager.createParameter("NETWORK=My\\x20Net").getValue().orElseThrow());
+        Assertions.assertEquals("a=b\\c", manager.createParameter("MEOW=a\\x3Db\\x5cc").getValue().orElseThrow());
+        Assertions.assertEquals("a\\x20b", manager.createParameter("MEOW=a\\x5Cx20b").getValue().orElseThrow());
+        Assertions.assertEquals("a\\x2Cb\\x4", manager.createParameter("MEOW=a\\x2Cb\\x4").getValue().orElseThrow());
+        Assertions.assertEquals(" ", manager.createParameter("MEOW=\\x20").getValue().orElseThrow());
+    }
+
+    /**
      * Tests casemapping.
      */
     @Test
