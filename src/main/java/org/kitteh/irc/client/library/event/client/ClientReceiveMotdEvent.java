@@ -33,7 +33,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Indicates the Client has received a complete MOTD from the server.
+ * Indicates the Client has received a complete MOTD from the server, or
+ * that the server has no MOTD (ERR_NOMOTD), in which case the MOTD is an
+ * empty list.
  */
 public class ClientReceiveMotdEvent extends ServerMultipleMessageEventBase {
     /**

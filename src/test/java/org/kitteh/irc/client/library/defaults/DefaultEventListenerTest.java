@@ -17,6 +17,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveMotdEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.ISupportParameterRemovedEvent;
 import org.kitteh.irc.client.library.event.user.UserNickChangeEvent;
@@ -284,6 +285,14 @@ public class DefaultEventListenerTest {
         this.fireLine(":irc.network 376 Kitteh :End of /MOTD command.             ");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setMotd(Mockito.argThat(o -> (o != null) && (o.size() == 1) && o.getFirst().contains("Hello")));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "MOTD message too short")));
+    }
+
+    @Test
+    public void testNoMOTD() {
+        this.fireLine(":irc.network 422 Kitteh :MOTD File is missing");
+        Mockito.verify(this.serverInfo, Mockito.times(1)).setMotd(Mockito.argThat(o -> (o != null) && o.isEmpty()));
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientReceiveMotdEvent.class)));
+        Mockito.verify(this.exceptionListener, Mockito.never()).queue(Mockito.any());
     }
 
     @Test

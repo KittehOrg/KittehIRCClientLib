@@ -75,4 +75,13 @@ public class DefaultMotdListener extends AbstractDefaultListenerBase {
         this.getClient().getServerInfo().setMotd(new ArrayList<>(this.motd));
         this.fire(new ClientReceiveMotdEvent(this.getClient(), this.motdMessages));
     }
+
+    @NumericFilter(422)
+    @Handler(priority = Integer.MAX_VALUE - 1)
+    public void motdMissing(ClientReceiveNumericEvent event) {
+        this.motd.clear();
+        this.motdMessages.clear();
+        this.getClient().getServerInfo().setMotd(new ArrayList<>());
+        this.fire(new ClientReceiveMotdEvent(this.getClient(), List.of(event.getServerMessage())));
+    }
 }
