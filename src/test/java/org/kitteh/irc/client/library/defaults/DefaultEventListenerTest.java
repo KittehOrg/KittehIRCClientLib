@@ -17,6 +17,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
+import org.kitteh.irc.client.library.event.client.ClientReceiveErrorEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveMotdEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
 import org.kitteh.irc.client.library.event.client.ISupportParameterRemovedEvent;
@@ -305,6 +306,26 @@ public class DefaultEventListenerTest {
     public void testWALLOPSFail() {
         this.fireLine(":irc.network WALLOPS");
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "WALLOPS message too short")));
+    }
+
+    @Test
+    public void testERROR() {
+        this.fireLine("ERROR :Closing Link: 127.0.0.1 (Connection timeout)");
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientReceiveErrorEvent.class, event -> "Closing Link: 127.0.0.1 (Connection timeout)".equals(event.getMessage()))));
+        Mockito.verify(this.exceptionListener, Mockito.never()).queue(Mockito.any());
+    }
+
+    @Test
+    public void testERRORWithSource() {
+        this.fireLine(":irc.network ERROR :Bye");
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientReceiveErrorEvent.class, event -> "Bye".equals(event.getMessage()))));
+    }
+
+    @Test
+    public void testERRORFail() {
+        this.fireLine("ERROR");
+        Mockito.verify(this.eventManager, Mockito.never()).callEvent(Mockito.argThat(this.match(ClientReceiveErrorEvent.class)));
+        Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "ERROR message too short")));
     }
 
     private void setUpSelf(boolean tracked) {

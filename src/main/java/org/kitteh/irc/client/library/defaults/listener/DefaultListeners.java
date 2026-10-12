@@ -70,6 +70,12 @@ public enum DefaultListeners implements EventListenerSupplier {
      */
     CHGHOST(DefaultChgHostListener::new),
     /**
+     * ERROR handling.
+     *
+     * @see DefaultErrorListener
+     */
+    ERROR(DefaultErrorListener::new),
+    /**
      * Except list handling.
      *
      * @see DefaultExceptListListener
