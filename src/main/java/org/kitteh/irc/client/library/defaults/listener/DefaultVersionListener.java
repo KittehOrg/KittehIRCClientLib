@@ -25,11 +25,15 @@ package org.kitteh.irc.client.library.defaults.listener;
 
 import net.engio.mbassy.listener.Handler;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultUserMode;
+import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.mode.UserMode;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveNumericEvent;
+import org.kitteh.irc.client.library.event.helper.ClientReceiveServerMessageEvent;
+import org.kitteh.irc.client.library.feature.ServerInfo;
 import org.kitteh.irc.client.library.feature.filter.NumericFilter;
 
 import java.util.ArrayList;
@@ -39,6 +43,9 @@ import java.util.List;
  * Default version listener, producing events using default classes.
  */
 public class DefaultVersionListener extends AbstractDefaultListenerBase {
+    private @Nullable Actor negotiationServer;
+    private @Nullable ServerInfo negotiationServerInfo;
+
     /**
      * Constructs the listener.
      *
@@ -71,7 +78,23 @@ public class DefaultVersionListener extends AbstractDefaultListenerBase {
             this.trackException(event, "Server address, version, and user modes missing");
         }
         this.getClient().sendRawLineImmediately("WHOIS " + this.getClient().getNick());
-        this.fire(new ClientNegotiationCompleteEvent(this.getClient(), event.getActor(), this.getClient().getServerInfo()));
+        this.negotiationServer = event.getActor();
+        this.negotiationServerInfo = this.getClient().getServerInfo();
+    }
+
+    // ISUPPORT (005) follows 004 with no end marker, so negotiation completes on the first line after 004 that isn't 005
+    @Handler(priority = Integer.MAX_VALUE)
+    public void negotiationComplete(ClientReceiveServerMessageEvent event) {
+        Actor server = this.negotiationServer;
+        if ((server == null) || ((event instanceof ClientReceiveNumericEvent numeric) && (numeric.getNumeric() == 5))) {
+            return;
+        }
+        this.negotiationServer = null;
+        // A reconnect since 004 replaces the ServerInfo, in order with incoming lines
+        if (this.negotiationServerInfo != this.getClient().getServerInfo()) {
+            return;
+        }
+        this.fire(new ClientNegotiationCompleteEvent(this.getClient(), server, this.getClient().getServerInfo()));
         this.getClient().startSending();
     }
 }

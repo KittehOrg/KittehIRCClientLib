@@ -204,7 +204,7 @@ public class DefaultClient implements Client.WithManagement {
     private final Set<String> channelsIntended = new CISet(this);
 
     private NetworkHandler networkHandler;
-    private ClientConnection connection;
+    private volatile ClientConnection connection;
 
     private Cutter messageCutter = new Cutter.DefaultWordCutter();
 
@@ -229,6 +229,7 @@ public class DefaultClient implements Client.WithManagement {
     private final MessageSendingQueue messageSendingImmediate;
     private MessageSendingQueue messageSendingScheduled;
     private final Object messageSendingLock = new Object();
+    private final Object connectLock = new Object();
     private boolean isSending = false;
     private String lastSentUser;
 
@@ -845,15 +846,24 @@ public class DefaultClient implements Client.WithManagement {
 
     @Override
     public void connect() {
+        synchronized (this.connectLock) {
+            this.connectInternal();
+        }
+    }
+
+    private void connectInternal() {
         if (this.isConnectionAlive()) {
             throw new IllegalStateException("Client is already connecting");
         }
 
+        boolean registrationQueued = this.lastSentUser != null && this.messageSendingImmediate.contains(this.lastSentUser);
+        if (!registrationQueued) {
+            this.processor.queue(ResetInput.RESET);
+        }
         this.connection = this.networkHandler.connect(this);
-        if (this.lastSentUser != null && this.messageSendingImmediate.contains(this.lastSentUser)) {
+        if (registrationQueued) {
             return;
         }
-        this.processor.queue(ResetInput.RESET);
 
         // If we have WebIRC information, send it before everything.
         // "The WEBIRC command MUST be the first command sent from the WebIRC gateway to the IRC server and MUST be sent before capability negotiation."

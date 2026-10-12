@@ -89,7 +89,7 @@ public final class NettyConnection implements ClientConnection {
     private volatile String lastMessage;
     private volatile Throwable lastCause;
 
-    private boolean alive = true;
+    private volatile boolean alive = true;
 
     /**
      * Constructs a Netty connection.

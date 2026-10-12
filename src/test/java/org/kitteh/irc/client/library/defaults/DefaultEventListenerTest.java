@@ -168,6 +168,12 @@ public class DefaultEventListenerTest {
         this.fireLine(":irc.network 004 Kitteh irc.network kittydis-1.3.3.7-dev DQRSZagiloswz CFILPQTbcefgijklmnopqrstvz bkloveqjfI");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setVersion("kittydis-1.3.3.7-dev");
+        this.fireLine(":irc.network 005 Kitteh CHANTYPES=# :are supported by this server");
+        this.fireLine(":irc.network 005 Kitteh NETWORK=Kitteh :are supported by this server");
+        Mockito.verify(this.client, Mockito.times(0)).startSending();
+        Mockito.verify(this.eventManager, Mockito.times(0)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class)));
+        this.fireLine(":irc.network 251 Kitteh :There are 1 users");
+        this.fireLine(":irc.network 422 Kitteh :MOTD File is missing");
         Mockito.verify(this.client, Mockito.times(1)).startSending();
         Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class, event -> "irc.network".equals(event.getServer().getName()) && event.getServerInfo().equals(this.serverInfo))));
     }
@@ -178,6 +184,7 @@ public class DefaultEventListenerTest {
     @Test
     public void test4VersionNoVersion() {
         this.fireLine(":irc.network 004 Kitteh irc.network");
+        this.fireLine(":irc.network 422 Kitteh :MOTD File is missing");
         Mockito.verify(this.serverInfo, Mockito.times(1)).setAddress("irc.network");
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();
@@ -191,11 +198,31 @@ public class DefaultEventListenerTest {
     @Test
     public void test4VersionNoAddressOrVersion() {
         this.fireLine(":irc.network 004 Kitteh");
+        this.fireLine(":irc.network 422 Kitteh :MOTD File is missing");
         Mockito.verify(this.serverInfo, Mockito.times(0)).setAddress(Mockito.anyString());
         Mockito.verify(this.serverInfo, Mockito.times(0)).setVersion(Mockito.anyString());
         Mockito.verify(this.client, Mockito.times(1)).startSending();
         Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class)));
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "Server address, version, and user modes missing")));
+    }
+
+    /**
+     * Tests that a reconnect between 004 and the end of 005 doesn't complete
+     * negotiation on the new connection's first line.
+     */
+    @Test
+    public void test4VersionThenReconnect() {
+        this.fireLine(":irc.network 004 Kitteh irc.network kittydis-1.3.3.7-dev DQRSZagiloswz CFILPQTbcefgijklmnopqrstvz bkloveqjfI");
+        DefaultServerInfo newServerInfo = Mockito.mock(DefaultServerInfo.class);
+        Mockito.when(newServerInfo.getCaseMapping()).thenReturn(CaseMapping.ASCII);
+        Mockito.when(this.client.getServerInfo()).thenReturn(newServerInfo);
+        this.fireLine(":irc.network NOTICE * :*** Looking up your hostname...");
+        Mockito.verify(this.client, Mockito.times(0)).startSending();
+        Mockito.verify(this.eventManager, Mockito.times(0)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class)));
+        this.fireLine(":irc.network 004 Kitteh irc.network kittydis-1.3.3.7-dev DQRSZagiloswz CFILPQTbcefgijklmnopqrstvz bkloveqjfI");
+        this.fireLine(":irc.network 422 Kitteh :MOTD File is missing");
+        Mockito.verify(this.client, Mockito.times(1)).startSending();
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.argThat(this.match(ClientNegotiationCompleteEvent.class, event -> event.getServerInfo() == newServerInfo)));
     }
 
     @Test
