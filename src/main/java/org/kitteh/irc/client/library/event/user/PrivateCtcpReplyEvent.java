@@ -33,8 +33,7 @@ import org.kitteh.irc.client.library.event.helper.CtcpEvent;
 
 /**
  * The client has received a reply to a CTCP query! The method
- * {@link #getMessage()} returns the unescaped message with the delimiter
- * removed.
+ * {@link #getMessage()} returns the message with the delimiters removed.
  */
 public class PrivateCtcpReplyEvent extends ActorPrivateMessageEventBase<User> implements ActorMessageEvent<User>, CtcpEvent {
     /**

@@ -10,9 +10,11 @@ import java.lang.reflect.InvocationTargetException;
  * Test the pants off the CTCP conversion.
  */
 public class CtcpUtilTest {
-    private static final String CONVERTED_1 = "\u0001Meow\u0016n\u0016rMe\u00160w\\aMeow\u0016\u0016\\\\\u0001";
+    // Backslashes and 0x16 (reverse formatting) are not quoting characters
+    private static final String UNCONVERTED_1 = "ACTION opens C:\\Users \u0016reversed\u0016 \\a \\\\ \u0016n";
+    private static final String CONVERTED_1 = "\u0001" + UNCONVERTED_1 + "\u0001";
     private static final String SNIP_1 = CONVERTED_1 + "Meow";
-    private static final String UNCONVERTED_1 = "Meow\n\rMe\u0000w\u0001Meow\u0016\\";
+    private static final String NO_TRAILING_1 = "\u0001" + UNCONVERTED_1;
 
     private static final String CONVERTED_2 = "\u0001Meow\u0001";
     private static final String UNCONVERTED_2 = "Meow";
@@ -42,11 +44,38 @@ public class CtcpUtilTest {
     }
 
     /**
+     * Tests converting from CTCP without the optional trailing delimiter.
+     */
+    @Test
+    public void noTrailingDelimiter() {
+        Assertions.assertEquals(UNCONVERTED_1, CtcpUtil.fromCtcp(NO_TRAILING_1));
+    }
+
+    /**
+     * Tests converting from an empty CTCP message.
+     */
+    @Test
+    public void emptyFromCTCP() {
+        Assertions.assertEquals("", CtcpUtil.fromCtcp("\u0001"));
+        Assertions.assertEquals("", CtcpUtil.fromCtcp("\u0001\u0001"));
+    }
+
+    /**
      * Tests converting to CTCP.
      */
     @Test
     public void toCTCP() {
         Assertions.assertEquals(CONVERTED_1, CtcpUtil.toCtcp(UNCONVERTED_1));
+    }
+
+    /**
+     * Tests that characters which can't be sent are rejected.
+     */
+    @Test
+    public void toCTCPRejects() {
+        for (String bad : new String[]{"Me\u0001ow", "Me\now", "Me\row", "Me\u0000ow"}) {
+            Assertions.assertThrows(IllegalArgumentException.class, () -> CtcpUtil.toCtcp(bad));
+        }
     }
 
     /**
@@ -58,15 +87,16 @@ public class CtcpUtilTest {
     }
 
     /**
-     * Tests isCtcp matcher with positive result.
+     * Tests isCtcp matcher with negative result.
      */
     @Test
     public void isCTCPFalse() {
         Assertions.assertFalse(CtcpUtil.isCtcp(UNCONVERTED_1));
+        Assertions.assertFalse(CtcpUtil.isCtcp(""));
     }
 
     /**
-     * Tests conversion where no escaping is necessary.
+     * Tests conversion of a plain message.
      */
     @Test
     public void noEscapeToCTCP() {
@@ -74,7 +104,7 @@ public class CtcpUtilTest {
     }
 
     /**
-     * Tests conversion where no escaping is necessary.
+     * Tests conversion of a plain message.
      */
     @Test
     public void noEscapeFromCTCP() {

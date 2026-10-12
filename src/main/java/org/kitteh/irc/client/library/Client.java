@@ -1168,8 +1168,7 @@ public interface Client extends ClientLinked {
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
-     * the CTCP delimiter around the message and escapes the characters that
-     * need escaping when sending a CTCP message.
+     * the CTCP delimiter around the message. No quoting is applied.
      * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
      * with the {@link PrivateCtcpQueryEvent} and reply there or use
@@ -1177,14 +1176,14 @@ public interface Client extends ClientLinked {
      *
      * @param target the destination of the message
      * @param message the message to send
-     * @throws IllegalArgumentException for null parameters
+     * @throws IllegalArgumentException for null parameters, or if the
+     * message contains CR, LF, NUL, or the CTCP delimiter (0x01)
      */
     void sendCtcpMessage(@NonNull String target, @NonNull String message);
 
     /**
      * Sends a CTCP message to a target user or channel. Automagically adds
-     * the CTCP delimiter around the message and escapes the characters that
-     * need escaping when sending a CTCP message.
+     * the CTCP delimiter around the message. No quoting is applied.
      * <p>
      * <i>Note: CTCP replies should not be sent this way. Catch the message
      * with the {@link PrivateCtcpQueryEvent} and reply there or use
@@ -1192,7 +1191,8 @@ public interface Client extends ClientLinked {
      *
      * @param target the destination of the message
      * @param message the message to send
-     * @throws IllegalArgumentException for null parameters
+     * @throws IllegalArgumentException for null parameters, or if the
+     * message contains CR, LF, NUL, or the CTCP delimiter (0x01)
      */
     default void sendCtcpMessage(@NonNull MessageReceiver target, @NonNull String message) {
         Sanity.nullCheck(target, "Target");
@@ -1201,27 +1201,27 @@ public interface Client extends ClientLinked {
 
     /**
      * Sends a CTCP reply to a target user or channel. Automagically adds
-     * the CTCP delimiter around the message and escapes the characters that
-     * need escaping when sending a CTCP message.
+     * the CTCP delimiter around the message. No quoting is applied.
      *
      * @param target the destination of the message
      * @param message the message to send
-     * @throws IllegalArgumentException for null parameters
+     * @throws IllegalArgumentException for null parameters, or if the
+     * message contains CR, LF, NUL, or the CTCP delimiter (0x01)
      */
     void sendCtcpReply(@NonNull String target, @NonNull String message);
 
     /**
      * Sends a CTCP reply to a target user or channel. Automagically adds
-     * the CTCP delimiter around the message and escapes the characters that
-     * need escaping when sending a CTCP message.
+     * the CTCP delimiter around the message. No quoting is applied.
      *
      * @param target the destination of the message
      * @param message the message to send
-     * @throws IllegalArgumentException for null parameters
+     * @throws IllegalArgumentException for null parameters, or if the
+     * message contains CR, LF, NUL, or the CTCP delimiter (0x01)
      */
     default void sendCtcpReply(@NonNull MessageReceiver target, @NonNull String message) {
         Sanity.nullCheck(target, "Target");
-        this.sendCtcpMessage(target.getMessagingName(), message);
+        this.sendCtcpReply(target.getMessagingName(), message);
     }
 
     /**

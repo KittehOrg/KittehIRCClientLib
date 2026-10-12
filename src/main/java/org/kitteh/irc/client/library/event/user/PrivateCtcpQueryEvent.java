@@ -31,7 +31,7 @@ import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.event.abstractbase.ActorPrivateMessageEventBase;
 import org.kitteh.irc.client.library.event.helper.ActorMessageEvent;
 import org.kitteh.irc.client.library.event.helper.CtcpEvent;
-import org.kitteh.irc.client.library.util.Sanity;
+import org.kitteh.irc.client.library.util.CtcpUtil;
 import org.kitteh.irc.client.library.util.ToStringer;
 
 import java.util.Optional;
@@ -40,7 +40,7 @@ import java.util.Optional;
  * The client has received a CTCP message! There are a few (FINGER, PING,
  * TIME, VERSION) queries which have a default reply message. Others are
  * simply ignored by default. The method {@link #getMessage()} returns the
- * unescaped message with the delimiter removed. Note that the reply is not
+ * message with the delimiters removed. Note that the reply is not
  * sent if the target is not the client.
  * <p>
  * See {@link PrivateCtcpReplyEvent} for received CTCP replies.
@@ -78,9 +78,11 @@ public class PrivateCtcpQueryEvent extends ActorPrivateMessageEventBase<User> im
      * use {@link Client#sendCtcpReply(String, String)}.
      *
      * @param reply message to send back
+     * @throws IllegalArgumentException if the reply contains CR, LF, NUL,
+     * or the CTCP delimiter (0x01)
      */
     public void setReply(@Nullable String reply) {
-        this.reply = (reply == null) ? null : Sanity.safeMessageCheck(reply, "Reply");
+        this.reply = (reply == null) ? null : CtcpUtil.checkMessage(reply, "Reply");
     }
 
     @Override

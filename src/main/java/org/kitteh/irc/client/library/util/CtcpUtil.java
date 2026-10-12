@@ -25,33 +25,16 @@ package org.kitteh.irc.client.library.util;
 
 import org.jspecify.annotations.NonNull;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /*
  * A note on CTCP handling:
- * According to the original 'documentation' on the matter,
- * there can be multiple CTCP messages as well as normal messages
- * spread throughout. However, from what I can tell, most folks
- * don't bother with that in their implementations. So, we're
- * going to stick with having a single CTCP message at the start
- * of a message.
+ * Per the modern CTCP spec (https://modern.ircdocs.horse/ctcp), a CTCP
+ * message is the entire message body, wrapped in \u0001 delimiters. The
+ * trailing delimiter is optional when receiving.
  *
- * CTCP is magic!
- *
- * Messages are defined as being between two \u0001 characters.
- *
- * The following characters are escaped by the MQUOTE character: \u0016
- *   \n     -> MQUOTE n
- *   \r     -> MQUOTE r
- *   \u0000 -> MQUOTE 0
- *   MQUOTE -> MQUOTE MQUOTE
- * When converting, anything else escaped with the MQUOTE should just strip the MQUOTE
- *
- * The following characters are escaped by a backslash
- *   \u0001 -> \a
- *   \      -> \\
- * When converting, anything else escaped with a backslash should just strip the backslash
+ * The 1994 low-level (M-QUOTE) and CTCP-level (backslash) quoting is not
+ * implemented by modern clients, so none is applied in either direction.
+ * Characters that can't be sent (CR, LF, NUL, and the delimiter itself)
+ * are rejected instead.
  */
 
 /**
@@ -60,62 +43,21 @@ import java.util.regex.Pattern;
  */
 public final class CtcpUtil {
     private static final char CTCP_DELIMITER = '\u0001';
-    private static final char CTCP_MQUOTE = '\u0016';
-
-    private static final Pattern CTCP_ESCAPABLE_CHAR = Pattern.compile("[\n\r\u0000" + CtcpUtil.CTCP_DELIMITER + CtcpUtil.CTCP_MQUOTE + "\\\\]");
-    private static final Pattern CTCP_ESCAPED_CHAR = Pattern.compile("([" + CtcpUtil.CTCP_MQUOTE + "\\\\])(.)");
 
     private CtcpUtil() {
     }
 
     /**
-     * Converts a given message from CTCP escaping.
+     * Converts a given message from CTCP formatting, removing the leading
+     * delimiter and the trailing delimiter if present. Anything after the
+     * trailing delimiter is discarded.
      *
-     * @param message message to convert
+     * @param message message to convert, starting with the CTCP delimiter
      * @return converted message
      */
     public static @NonNull String fromCtcp(@NonNull String message) {
         int secondDelimiter = message.indexOf(CtcpUtil.CTCP_DELIMITER, 1);
-        final String ctcpContent = message.substring(1, (secondDelimiter == -1) ? message.length() : secondDelimiter); // Strip the delimiters
-        StringBuilder builder = new StringBuilder(ctcpContent.length());
-        int currentIndex = 0;
-        Matcher matcher = CtcpUtil.CTCP_ESCAPED_CHAR.matcher(ctcpContent);
-        while (matcher.find()) {
-            if (matcher.start() > currentIndex) {
-                builder.append(ctcpContent, currentIndex, matcher.start());
-            }
-            switch (matcher.group(1)) {
-                case CtcpUtil.CTCP_MQUOTE + "":
-                    switch (matcher.group(2)) {
-                        case "n":
-                            builder.append('\n');
-                            break;
-                        case "r":
-                            builder.append('\r');
-                            break;
-                        case "0":
-                            builder.append('\u0000');
-                            break;
-                        default:
-                            builder.append(matcher.group(2)); // If not one of the above, disregard the MQUOTE. If MQUOTE, it's covered here anyway.
-                    }
-                    break;
-                case "\\":
-                    if ("a".equals(matcher.group(2))) {
-                        builder.append(CtcpUtil.CTCP_DELIMITER);
-                    } else {
-                        builder.append(matcher.group(2)); // If not one of the above, disregard the \. If \, it's covered here anyway.
-                    }
-                default:
-                    // NOOP
-                    break;
-            }
-            currentIndex = matcher.end();
-        }
-        if (currentIndex < ctcpContent.length()) {
-            builder.append(ctcpContent.substring(currentIndex));
-        }
-        return builder.toString();
+        return message.substring(1, (secondDelimiter == -1) ? message.length() : secondDelimiter);
     }
 
     /**
@@ -129,49 +71,31 @@ public final class CtcpUtil {
     }
 
     /**
-     * Converts a given message to CTCP formatting.
+     * Converts a given message to CTCP formatting by wrapping it in CTCP
+     * delimiters. No quoting is applied.
      *
      * @param message message to convert
      * @return converted message
+     * @throws IllegalArgumentException if the message is null or contains
+     * CR, LF, NUL, or the CTCP delimiter (0x01)
      */
     public static @NonNull String toCtcp(@NonNull String message) {
-        StringBuilder builder = new StringBuilder(message.length());
-        builder.append(CtcpUtil.CTCP_DELIMITER);
-        int currentIndex = 0;
-        Matcher matcher = CtcpUtil.CTCP_ESCAPABLE_CHAR.matcher(message);
-        while (matcher.find()) {
-            if (matcher.start() > currentIndex) {
-                builder.append(message, currentIndex, matcher.start());
-            }
-            switch (matcher.group()) {
-                case "\n":
-                    builder.append(CtcpUtil.CTCP_MQUOTE).append('n');
-                    break;
-                case "\r":
-                    builder.append(CtcpUtil.CTCP_MQUOTE).append('r');
-                    break;
-                case "\u0000":
-                    builder.append(CtcpUtil.CTCP_MQUOTE).append('0');
-                    break;
-                case CtcpUtil.CTCP_MQUOTE + "":
-                    builder.append(CtcpUtil.CTCP_MQUOTE).append(CtcpUtil.CTCP_MQUOTE);
-                    break;
-                case CtcpUtil.CTCP_DELIMITER + "":
-                    builder.append("\\a");
-                    break;
-                case "\\":
-                    builder.append("\\\\");
-                    break;
-                default:
-                    // NOOP
-                    break;
-            }
-            currentIndex = matcher.end();
-        }
-        if (currentIndex < message.length()) {
-            builder.append(message.substring(currentIndex));
-        }
-        builder.append(CtcpUtil.CTCP_DELIMITER);
-        return builder.toString();
+        CtcpUtil.checkMessage(message, "Message");
+        return CtcpUtil.CTCP_DELIMITER + message + CtcpUtil.CTCP_DELIMITER;
+    }
+
+    /**
+     * Checks that a message can be sent as the content of a CTCP message.
+     *
+     * @param message message to check
+     * @param name name of the message, for the exception
+     * @return the message
+     * @throws IllegalArgumentException if the message is null or contains
+     * CR, LF, NUL, or the CTCP delimiter (0x01)
+     */
+    public static @NonNull String checkMessage(@NonNull String message, @NonNull String name) {
+        Sanity.safeMessageCheck(message, name);
+        Sanity.truthiness(message.indexOf(CtcpUtil.CTCP_DELIMITER) == -1, name + " cannot contain the CTCP delimiter (0x01)");
+        return message;
     }
 }
