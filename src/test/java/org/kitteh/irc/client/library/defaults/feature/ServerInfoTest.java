@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanModes;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanTypes;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultChannelMode;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
 import org.mockito.Mockito;
@@ -37,5 +38,25 @@ public class ServerInfoTest {
         Assertions.assertEquals(2, modesRedux.stream().filter(mode -> mode.getType() == ChannelMode.Type.C_PARAMETER_ON_SET).count());
         Assertions.assertEquals(8, modesRedux.stream().filter(mode -> mode.getType() == ChannelMode.Type.D_PARAMETER_NEVER).count());
         Assertions.assertEquals(ChannelMode.Type.C_PARAMETER_ON_SET, serverInfo.getChannelMode('d').get().getType());
+    }
+
+    /**
+     * Tests channel validity follows CHANTYPES.
+     */
+    @Test
+    public void testValidChannel() {
+        final Client client = Mockito.mock(Client.class);
+        final DefaultServerInfo serverInfo = new DefaultServerInfo(client);
+        Assertions.assertTrue(serverInfo.isValidChannel("#foo"));
+        Assertions.assertTrue(serverInfo.isValidChannel("&foo"));
+        Assertions.assertFalse(serverInfo.isValidChannel("!foo"));
+        Assertions.assertFalse(serverInfo.isValidChannel("#"));
+        Assertions.assertFalse(serverInfo.isValidChannel("#foo bar"));
+        Assertions.assertFalse(serverInfo.isValidChannel("#foo,bar"));
+        Assertions.assertFalse(serverInfo.isValidChannel("#foo\u0007"));
+        serverInfo.addISupportParameter(new DefaultISupportChanTypes(client, DefaultISupportChanTypes.NAME, "#~"));
+        Assertions.assertTrue(serverInfo.isValidChannel("~foo"));
+        Assertions.assertTrue(serverInfo.isValidChannel("#foo"));
+        Assertions.assertFalse(serverInfo.isValidChannel("&foo"));
     }
 }

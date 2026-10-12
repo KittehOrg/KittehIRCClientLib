@@ -46,6 +46,17 @@ public class ISupportManagerTest {
     }
 
     /**
+     * Tests that an empty value is the same as no value.
+     */
+    @Test
+    public void emptyValue() {
+        DefaultISupportManager manager = this.getManager();
+        ISupportParameter param = manager.createParameter("MEOW=");
+        Assertions.assertEquals("MEOW", param.getName());
+        Assertions.assertFalse(param.getValue().isPresent());
+    }
+
+    /**
      * Tests casemapping.
      */
     @Test
@@ -182,6 +193,19 @@ public class ISupportManagerTest {
     }
 
     /**
+     * Tests chantypes with no value.
+     */
+    @Test
+    public void chantypesEmpty() {
+        DefaultISupportManager manager = this.getManager();
+        for (String token : new String[]{ISupportParameter.ChanTypes.NAME, ISupportParameter.ChanTypes.NAME + "="}) {
+            ISupportParameter param = manager.createParameter(token);
+            Assertions.assertTrue(ISupportParameter.ChanTypes.class.isAssignableFrom(param.getClass()));
+            Assertions.assertTrue(((ISupportParameter.ChanTypes) param).getTypes().isEmpty());
+        }
+    }
+
+    /**
      * Tests network.
      */
     @Test
@@ -217,6 +241,19 @@ public class ISupportManagerTest {
         Assertions.assertEquals('@', prefix.getModes().get(0).getNickPrefix());
         Assertions.assertEquals('v', prefix.getModes().get(1).getChar());
         Assertions.assertEquals('+', prefix.getModes().get(1).getNickPrefix());
+    }
+
+    /**
+     * Tests prefix with no value.
+     */
+    @Test
+    public void prefixEmpty() {
+        DefaultISupportManager manager = this.getManager();
+        for (String token : new String[]{ISupportParameter.Prefix.NAME, ISupportParameter.Prefix.NAME + "="}) {
+            ISupportParameter param = manager.createParameter(token);
+            Assertions.assertTrue(ISupportParameter.Prefix.class.isAssignableFrom(param.getClass()));
+            Assertions.assertTrue(((ISupportParameter.Prefix) param).getModes().isEmpty());
+        }
     }
 
     /**

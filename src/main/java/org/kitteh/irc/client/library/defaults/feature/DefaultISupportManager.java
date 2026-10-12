@@ -96,9 +96,9 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         String tagName;
         String value;
         // Split out value if present
-        if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
+        if ((index = tag.indexOf('=')) > -1) {
             tagName = tag.substring(0, index);
-            value = unescape(tag.substring(index + 1));
+            value = (index < (tag.length() - 1)) ? unescape(tag.substring(index + 1)) : null;
         } else {
             tagName = tag;
             value = null;

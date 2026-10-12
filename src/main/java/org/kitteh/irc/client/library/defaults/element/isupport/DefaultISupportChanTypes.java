@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.defaults.element.isupport;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * Default implementation of {@link ISupportParameter.ChanTypes}.
  */
-public class DefaultISupportChanTypes extends DefaultISupportParameterValueRequired implements ISupportParameter.ChanTypes {
+public class DefaultISupportChanTypes extends DefaultISupportParameter implements ISupportParameter.ChanTypes {
     private final List<Character> prefixes;
 
     /**
@@ -48,8 +49,10 @@ public class DefaultISupportChanTypes extends DefaultISupportParameterValueRequi
     public DefaultISupportChanTypes(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
         List<Character> prefixes = new ArrayList<>();
-        for (char c : value.toCharArray()) {
-            prefixes.add(c);
+        if (value != null) {
+            for (char c : value.toCharArray()) {
+                prefixes.add(c);
+            }
         }
         this.prefixes = Collections.unmodifiableList(prefixes);
     }

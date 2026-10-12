@@ -26,6 +26,7 @@ package org.kitteh.irc.client.library.defaults.element.isupport;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.DefaultISupportParameter;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultChannelUserMode;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
@@ -40,7 +41,7 @@ import java.util.regex.Pattern;
 /**
  * Default implementation of {@link ISupportParameter.Prefix}.
  */
-public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired implements ISupportParameter.Prefix {
+public class DefaultISupportPrefix extends DefaultISupportParameter implements ISupportParameter.Prefix {
     private static final Pattern PATTERN = Pattern.compile("\\(([a-zA-Z]+)\\)([^ ]+)");
 
     private final List<ChannelUserMode> modes;
@@ -54,6 +55,10 @@ public class DefaultISupportPrefix extends DefaultISupportParameterValueRequired
      */
     public DefaultISupportPrefix(@NonNull Client client, @NonNull String name, @Nullable String value) {
         super(client, name, value);
+        if (value == null) {
+            this.modes = List.of();
+            return;
+        }
         Matcher matcher = DefaultISupportPrefix.PATTERN.matcher(value);
         if (!matcher.find()) {
             throw new KittehServerISupportException(name, "Data does not match expected pattern");

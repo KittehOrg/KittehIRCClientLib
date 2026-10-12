@@ -57,7 +57,7 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     private final Map<String, ISupportParameter> iSupportParameterMap = new ConcurrentHashMap<>();
     private final List<ChannelMode> defaultChannelModes;
     private final List<ChannelMode> customChannelModes = new CopyOnWriteArrayList<>();
-    private final List<Character> defaultChannelPrefixes = Arrays.asList('#', '&', '!', '+');
+    private final List<Character> defaultChannelPrefixes = Arrays.asList('#', '&');
     private final List<ChannelUserMode> defaultChannelUserModes;
     private List<String> motd;
     private String address;
@@ -65,10 +65,7 @@ public class DefaultServerInfo implements ServerInfo.WithManagement {
     private final List<UserMode> userModes = new CopyOnWriteArrayList<>();
     private final List<UserMode> customUserModes = new CopyOnWriteArrayList<>();
 
-    // Pattern: ([#!&\+][^ ,\07\r\n]{1,49})
-    // Screw it, let's assume IRCDs disregard length policy
-    // New pattern: ([#!&\+][^ ,\07\r\n]+)
-    private final Pattern channelPattern = Pattern.compile("([#!&+][^ ,\\07\\r\\n]+)");
+    private final Pattern channelPattern = Pattern.compile("(.[^ ,\\07\\r\\n]+)");
 
     /**
      * Constructs the server info.
