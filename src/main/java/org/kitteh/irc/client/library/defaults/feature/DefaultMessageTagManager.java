@@ -39,8 +39,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -69,8 +67,6 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
             return new ToStringer(this).add("capability", this.capability).add("function", this.getFunction()).toString();
         }
     }
-
-    private static final Pattern TAG_ESCAPE = Pattern.compile("\\\\([\\\\s:])");
 
     /**
      * Constructs the default tag manager.
@@ -119,9 +115,17 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
             if (((index = tag.indexOf('=')) > -1) && (index < (tag.length() - 1))) {
                 tagName = tag.substring(0, index);
                 value = this.getTagValue(tag.substring(index + 1));
+                // "Implementations MUST interpret empty tag values (e.g. foo=) as equivalent to missing tag values"
+                if (value.isEmpty()) {
+                    value = null;
+                }
             } else {
                 tagName = (index < 0) ? tag : tag.substring(0, index);
                 value = null;
+            }
+            // Nothing to work with, e.g. from "a;;b" or "=b"
+            if (tagName.isEmpty()) {
+                continue;
             }
             MessageTag messageTag = null;
             // Attempt creating from registered creator, fall back on default
@@ -136,7 +140,7 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
                 messageTag = new DefaultMessageTag(tagName, value);
             }
             // "Clients receiving messages with more than one occurrence of a tag key SHOULD discard all but the final occurrence."
-            tags.put(tagName.toLowerCase(), messageTag);
+            tags.put(tagName, messageTag);
         }
         return List.copyOf(tags.values());
     }
@@ -146,35 +150,24 @@ public class DefaultMessageTagManager extends AbstractNameValueProcessor<Message
             return tag;
         }
         StringBuilder builder = new StringBuilder(tag.length());
-        int currentIndex = 0;
-        Matcher matcher = DefaultMessageTagManager.TAG_ESCAPE.matcher(tag);
-        while (matcher.find()) {
-            if (matcher.start() > currentIndex) {
-                builder.append(tag, currentIndex, matcher.start());
+        for (int i = 0; i < tag.length(); i++) {
+            char ch = tag.charAt(i);
+            if (ch != '\\') {
+                builder.append(ch);
+                continue;
             }
-            switch (matcher.group(1)) {
-                case ":":
-                    builder.append(';');
-                    break;
-                case "s":
-                    builder.append(' ');
-                    break;
-                case "\\":
-                    builder.append('\\');
-                    break;
-                case "r":
-                    builder.append('\r');
-                    break;
-                case "n":
-                    builder.append('\n');
-                    break;
-                default:
-                    // Ignore it? Technically not specified since the format MUST reflect documentation.
+            // Lone trailing backslash is dropped
+            if (++i == tag.length()) {
+                break;
             }
-            currentIndex = matcher.end();
-        }
-        if (currentIndex < tag.length()) {
-            builder.append(tag.substring(currentIndex));
+            ch = tag.charAt(i);
+            switch (ch) {
+                case ':' -> builder.append(';');
+                case 's' -> builder.append(' ');
+                case 'r' -> builder.append('\r');
+                case 'n' -> builder.append('\n');
+                default -> builder.append(ch);
+            }
         }
         return builder.toString();
     }

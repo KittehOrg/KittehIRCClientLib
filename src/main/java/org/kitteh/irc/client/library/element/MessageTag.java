@@ -107,6 +107,45 @@ public interface MessageTag {
     }
 
     /**
+     * Gets if a name is a valid tag key to send: an optional client-only {@code +} prefix,
+     * an optional vendor followed by {@code /}, then a non-empty name of ASCII letters, digits, and hyphens.
+     * <p>
+     * Received tags are not validated, because the spec forbids rejecting a message over an invalid tag key.
+     *
+     * @param name name to test
+     * @return true if valid
+     */
+    static boolean isValidName(@NonNull String name) {
+        int start = (!name.isEmpty() && (name.charAt(0) == '+')) ? 1 : 0;
+        int slash = name.indexOf('/', start);
+        if (slash != -1) { // sweet char of mine
+            if (slash == start) {
+                return false;
+            }
+            for (int i = start; i < slash; i++) {
+                char c = name.charAt(i);
+                if (!MessageTag.isKeyNameChar(c) && (c != '.')) {
+                    return false;
+                }
+            }
+            start = slash + 1;
+        }
+        if (start == name.length()) {
+            return false;
+        }
+        for (int i = start; i < name.length(); i++) {
+            if (!MessageTag.isKeyNameChar(name.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isKeyNameChar(char c) {
+        return ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) || ((c >= '0') && (c <= '9')) || (c == '-');
+    }
+
+    /**
      * Gets the name of the tag.
      *
      * @return tag name
@@ -126,10 +165,11 @@ public interface MessageTag {
      * @return escaped tag value if set
      */
     default @NonNull Optional<String> getEscapedValue() {
+        // Backslash first, so the backslashes added by the other escapes aren't doubled
         return this.getValue().map(s -> s
+                .replace("\\", "\\\\")
                 .replace(";", "\\:")
                 .replace(" ", "\\s")
-                .replace("\\", "\\\\")
                 .replace("\r", "\\r")
                 .replace("\n", "\\n"));
     }

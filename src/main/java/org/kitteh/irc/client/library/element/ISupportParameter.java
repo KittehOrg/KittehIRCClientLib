@@ -194,19 +194,20 @@ public interface ISupportParameter extends ClientLinked {
             if (list.isEmpty()) {
                 return true;
             }
+            String name = (!tag.isEmpty() && (tag.charAt(0) == '+')) ? tag.substring(1) : tag;
             if (list.getFirst().equals("*")) {
                 if (list.size() == 1) {
                     return false;
                 }
                 for (String item : list) {
-                    if (item.charAt(0) == '-' && item.substring(1).equalsIgnoreCase(tag)) {
+                    if (!item.isEmpty() && item.charAt(0) == '-' && item.substring(1).equals(name)) {
                         return true;
                     }
                 }
                 return false;
             }
             for (String item : list) {
-                if (item.equalsIgnoreCase(tag)) {
+                if (item.equals(name)) {
                     return false;
                 }
             }

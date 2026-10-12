@@ -39,20 +39,28 @@ import java.util.List;
  */
 public abstract class Command<C extends Command<C>> implements ClientLinked {
     public class Tags {
+        private static void validateTagName(@NonNull String name) {
+            Sanity.nullCheck(name, "Name");
+            Sanity.truthiness(MessageTag.isValidName(name), "Invalid tag name: " + name);
+        }
+
         private final List<MessageTag> tags = new ArrayList<>();
 
         public Tags add(@NonNull MessageTag tag) {
-            this.tags.add(Sanity.nullCheck(tag, "Tag"));
+            Sanity.nullCheck(tag, "Tag");
+            validateTagName(tag.getName());
+            this.tags.add(tag);
             return this;
         }
 
         public Tags add(@NonNull String name) {
-            this.tags.add(new MessageTagManager.DefaultMessageTag(Sanity.nullCheck(name, "Name"), null));
+            validateTagName(name);
+            this.tags.add(new MessageTagManager.DefaultMessageTag(name, null));
             return this;
         }
 
         public Tags add(@NonNull String name, @NonNull String value) {
-            Sanity.nullCheck(name, "Name");
+            validateTagName(name);
             Sanity.nullCheck(value, "Value");
             this.tags.add(new MessageTagManager.DefaultMessageTag(name, value));
             return this;

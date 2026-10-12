@@ -622,8 +622,23 @@ public class DefaultClient implements Client.WithManagement {
 
     private void sendRawLine(@NonNull String message, boolean priority, boolean avoidDuplicates) {
         Sanity.safeMessageCheck(message);
-        if (!message.isEmpty() && (message.getBytes(StandardCharsets.UTF_8).length > (((message.charAt(0) == '@') ? 4096 : 0) + 510))) {
-            throw new IllegalArgumentException("Message too long: " + message.length());
+        String body = message;
+        if (!message.isEmpty() && (message.charAt(0) == '@')) {
+            int space = message.indexOf(' ');
+            if (space == -1) {
+                throw new IllegalArgumentException("Message has tags but no command");
+            }
+            // Tag data (between '@' and the space) is at most 4094 bytes
+            int tagBytes = message.substring(1, space).getBytes(StandardCharsets.UTF_8).length;
+            if (tagBytes > 4094) {
+                throw new IllegalArgumentException("Message tags too long: " + tagBytes + " bytes");
+            }
+            body = message.substring(space + 1);
+        }
+        // The rest of the line is at most 512 bytes including crlf
+        int bodyBytes = body.getBytes(StandardCharsets.UTF_8).length;
+        if (bodyBytes > 510) {
+            throw new IllegalArgumentException("Message too long: " + bodyBytes + " bytes");
         }
         synchronized (this.messageSendingLock) {
             if (priority) {
@@ -1002,7 +1017,7 @@ public class DefaultClient implements Client.WithManagement {
 
         if (!this.batchHold.isEmpty()) {
             for (MessageTag batchTag : tags) {
-                if (CapabilityManager.Defaults.BATCH.equalsIgnoreCase(batchTag.getName())) {
+                if (CapabilityManager.Defaults.BATCH.equals(batchTag.getName())) {
                     if (batchTag.getValue().isPresent()) {
                         BatchReferenceTag tag = this.batchHold.get(batchTag.getValue().get());
                         if (tag != null) {
