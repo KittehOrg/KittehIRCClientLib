@@ -65,6 +65,57 @@ public class CutterTest {
     }
 
     /**
+     * Tests a multi-byte word longer than the limit in bytes but not in chars.
+     */
+    @Test
+    public void cutMultiByteWord() {
+        String message = "中".repeat(600);
+        List<String> output = new Cutter.DefaultWordCutter().split(message, 400);
+        Assertions.assertEquals(message, String.join("", output));
+        output.forEach(line -> Assertions.assertTrue(utf8(line) <= 400, "Line too long: " + utf8(line)));
+        Assertions.assertEquals(133, output.getFirst().length());
+    }
+
+    /**
+     * Tests that multi-byte words are measured in bytes.
+     */
+    @Test
+    public void cutMultiByteWords() {
+        String message = ("é".repeat(30) + " ").repeat(10).trim();
+        List<String> output = new Cutter.DefaultWordCutter().split(message, 100);
+        Assertions.assertEquals(message.replace(" ", ""), String.join("", output).replace(" ", ""));
+        output.forEach(line -> Assertions.assertTrue(utf8(line) <= 100, "Line too long: " + utf8(line)));
+    }
+
+    /**
+     * Tests that surrogate pairs are not split.
+     */
+    @Test
+    public void cutSurrogates() {
+        String message = "a b" + "😀".repeat(60);
+        List<String> output = new Cutter.DefaultWordCutter().split(message, 101);
+        Assertions.assertEquals(message.replace(" ", ""), String.join("", output).replace(" ", ""));
+        for (String line : output) {
+            Assertions.assertTrue(utf8(line) <= 101, "Line too long: " + utf8(line));
+            Assertions.assertFalse(Character.isHighSurrogate(line.charAt(line.length() - 1)), "Split surrogate pair");
+            Assertions.assertFalse(Character.isLowSurrogate(line.charAt(0)), "Split surrogate pair");
+        }
+    }
+
+    /**
+     * Tests a limit smaller than a single code point.
+     */
+    @Test
+    public void cutTinyLimit() {
+        List<String> output = new Cutter.DefaultWordCutter().split("😀😀", 2);
+        Assertions.assertEquals(List.of("😀", "😀"), output);
+    }
+
+    private static int utf8(String string) {
+        return string.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+    }
+
+    /**
      * Spaaaaaaaaace!
      */
     @Test

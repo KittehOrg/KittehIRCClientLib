@@ -51,20 +51,24 @@ public interface Cutter {
             for (String word : message.split(" ")) {
                 int builderLen = this.encodedLength(builder);
                 if ((builderLen + this.encodedLength(word) + ((builderLen == 0) ? 0 : 1)) > size) {
-                    if ((word.length() > size) && ((builderLen + 1) < size)) {
+                    if ((this.encodedLength(word) > size) && ((builderLen + 1) < size)) {
                         if (builderLen > 0) {
                             builder.append(' ');
                             builderLen++;
                         }
-                        int cut = size - builderLen;
+                        int cut = this.cutIndex(word, size - builderLen);
                         builder.append(word, 0, cut);
                         word = word.substring(cut);
                     }
-                    list.add(builder.toString().trim());
+                    if (!builder.isEmpty()) {
+                        list.add(builder.toString().trim());
+                    }
                     builder.setLength(0);
                     while (this.encodedLength(word) > size) {
-                        list.add(word.substring(0, size));
-                        word = word.substring(size);
+                        // Always take at least one code point, even if size is smaller than it
+                        int cut = Math.max(this.cutIndex(word, size), Character.charCount(word.codePointAt(0)));
+                        list.add(word.substring(0, cut));
+                        word = word.substring(cut);
                     }
                 }
                 if (this.encodedLength(builder) > 0) {
@@ -76,6 +80,20 @@ public interface Cutter {
                 list.add(builder.toString().trim());
             }
             return list;
+        }
+
+        private int cutIndex(String string, int budget) {
+            int bytes = 0;
+            int i = 0;
+            while (i < string.length()) {
+                int codePoint = string.codePointAt(i);
+                bytes += (codePoint < 0x80) ? 1 : (codePoint < 0x800) ? 2 : (codePoint < 0x10000) ? 3 : 4;
+                if (bytes > budget) {
+                    break;
+                }
+                i += Character.charCount(codePoint);
+            }
+            return i;
         }
 
         /*
