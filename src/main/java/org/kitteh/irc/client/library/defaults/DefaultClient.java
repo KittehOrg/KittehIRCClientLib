@@ -165,16 +165,14 @@ public class DefaultClient implements Client.WithManagement {
 
         @Override
         protected void processElement(@NonNull HandledInput element) {
-            switch (element) {
-                case ResetInput() -> DefaultClient.this.handleReset();
-                case ExceptionalInput(Supplier<Exception> supplier) -> DefaultClient.this.exceptionListener.queue(supplier.get());
-                case ParsedInput input -> {
-                    try {
-                        DefaultClient.this.handleLine(input);
-                    } catch (final Exception thrown) {
-                        DefaultClient.this.exceptionListener.queue(thrown);
-                    }
+            try {
+                switch (element) {
+                    case ResetInput() -> DefaultClient.this.handleReset();
+                    case ExceptionalInput(Supplier<Exception> supplier) -> DefaultClient.this.exceptionListener.queue(supplier.get());
+                    case ParsedInput input -> DefaultClient.this.handleLine(input);
                 }
+            } catch (final Exception thrown) {
+                DefaultClient.this.exceptionListener.queue(thrown);
             }
         }
     }
@@ -776,14 +774,10 @@ public class DefaultClient implements Client.WithManagement {
         if (line.charAt(position) == '@') {
             int end = line.indexOf(' ', position);
             if (end == -1) {
-                return new ExceptionalInput(() -> {
-                    throw new KittehServerMessageException(new DefaultServerMessage(line, List.of()), "Server sent a message without a commandAndParameters");
-                });
+                return this.except(line, "Server sent a message without a commandAndParameters");
             }
             if ((end - position) < 2) {
-                return new ExceptionalInput(() -> {
-                    throw new KittehServerMessageException(new DefaultServerMessage(line, List.of()), "Server sent an empty tag section");
-                });
+                return this.except(line, "Server sent an empty tag section");
             }
             tags = line.substring(position + 1, end);
             position = this.skipSpaces(line, end);
@@ -793,20 +787,23 @@ public class DefaultClient implements Client.WithManagement {
         if ((position < len) && (line.charAt(position) == ':')) {
             int end = line.indexOf(' ', position);
             if (end == -1) {
-                return new ExceptionalInput(() -> {
-                    throw new KittehServerMessageException(new DefaultServerMessage(line, List.of()), "Server sent a message without a commandAndParameters");
-                });
+                return this.except(line, "Server sent a message without a commandAndParameters");
             }
             source = line.substring(position + 1, end);
             position = this.skipSpaces(line, end);
         }
 
         if (position == len) {
-            return new ExceptionalInput(() -> {
-                throw new KittehServerMessageException(new DefaultServerMessage(line, List.of()), "Server sent a message without a commandAndParameters");
-            });
+            return this.except(line, "Server sent a message without a commandAndParameters");
+        }
+        if (line.charAt(position) == ':') {
+            return this.except(line, "Server sent a message without a command");
         }
         return new ParsedInput(line, tags, source, (position == 0) ? line : line.substring(position));
+    }
+
+    private ExceptionalInput except(String line, String message) {
+        return new ExceptionalInput(() -> new KittehServerMessageException(new DefaultServerMessage(line, List.of()), message));
     }
 
     private int skipSpaces(@NonNull String line, int position) {
@@ -1001,10 +998,6 @@ public class DefaultClient implements Client.WithManagement {
             } else {
                 parameters.add(bit);
             }
-        }
-
-        if (commandString == null) {
-            throw new KittehServerMessageException(new DefaultServerMessage(line, tags), "Server sent a message without a command");
         }
 
         ClientReceiveServerMessageEvent event;
