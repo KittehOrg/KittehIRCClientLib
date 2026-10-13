@@ -28,6 +28,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.kitteh.irc.client.library.util.Sanity;
 
+import java.text.Normalizer;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -52,6 +53,63 @@ public interface CaseMapping {
     }
 
     /**
+     * PRECIS UsernameCaseMapped (RFC 8265) comparison, as used by servers that advertise
+     * {@code UTF8MAPPING=rfc8265} (such as Ergo). Applies width mapping, Unicode lowercasing
+     * (not case folding, so ß stays ß), and NFC normalization, repeated until stable.
+     * Does not validate, as the server rejects names that fail PRECIS.
+     */
+    final class Rfc8265 implements CaseMapping {
+        private static final int MAX_PASSES = 4;
+
+        private Rfc8265() {
+        }
+
+        @Override
+        public String toLowerCase(String input) {
+            Sanity.nullCheck(input, "Input");
+            if (isAscii(input)) {
+                return ASCII.toLowerCase(input);
+            }
+            String current = input;
+            for (int i = 0; i < MAX_PASSES; i++) {
+                String next = Normalizer.normalize(toLowerCaseNoFinalSigma(widthMap(current)), Normalizer.Form.NFC);
+                if (next.equals(current)) {
+                    break;
+                }
+                current = next;
+            }
+            return current;
+        }
+
+        private static boolean isAscii(String input) {
+            for (int i = 0; i < input.length(); i++) {
+                if (input.charAt(i) > 0x7F) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static String widthMap(String input) {
+            StringBuilder builder = new StringBuilder(input.length());
+            input.codePoints().forEach(cp -> {
+                // Every <wide> or <narrow> decomposition is U+3000 or in U+FF01-U+FFEE
+                if ((cp == 0x3000) || ((cp >= 0xFF01) && (cp <= 0xFFEE))) {
+                    builder.append(Normalizer.normalize(Character.toString(cp), Normalizer.Form.NFKC));
+                } else {
+                    builder.appendCodePoint(cp);
+                }
+            });
+            return builder.toString();
+        }
+
+        private static String toLowerCaseNoFinalSigma(String input) {
+            // Matches Ergo implementation
+            return input.replace('Σ', 'σ').toLowerCase(Locale.ROOT);
+        }
+    }
+
+    /**
      * A-Z become a-z
      */
     CaseMapping.Ranged ASCII = new CaseMapping.Ranged('Z');
@@ -63,6 +121,10 @@ public interface CaseMapping {
      * A-Z become a-z, [] become {}
      */
     CaseMapping.Ranged STRICT_RFC1459 = new CaseMapping.Ranged(']');
+    /**
+     * PRECIS UsernameCaseMapped, per RFC 8265
+     */
+    CaseMapping.Rfc8265 RFC8265 = new CaseMapping.Rfc8265();
 
     default boolean areEqualIgnoringCase(String one,String two) {
         return this.toLowerCase(one).equals(this.toLowerCase(two));
@@ -92,6 +154,7 @@ public interface CaseMapping {
             case "RFC1459" -> RFC1459;
             // Taking the reverse version in case a new server follows the wrong modern-irc docs
             case "STRICT-RFC1459", "RFC1459-STRICT" -> STRICT_RFC1459;
+            case "RFC7613", "RFC8265" -> RFC8265;
             default -> null;
         });
     }

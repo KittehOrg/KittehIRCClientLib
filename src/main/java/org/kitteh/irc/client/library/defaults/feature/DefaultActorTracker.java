@@ -199,7 +199,7 @@ public class DefaultActorTracker implements ActorTracker {
                         .map(DefaultActorTracker.this.trackedUsers::get)
                         .filter(Objects::nonNull)
                         .map(IrcUser::snapshot)
-                        .collect(Collectors.toMap(User::getNick, Function.identity()));
+                        .collect(Collectors.toMap(User::getNick, Function.identity(), (one, two) -> one, () -> new CIKeyMap<>(DefaultActorTracker.this.client)));
                 return new DefaultChannel(DefaultActorTracker.this.client, this.getName(),
                         new DefaultChannelTopic(IrcChannel.this.topicTime, IrcChannel.this.topic, IrcChannel.this.topicSetter),
                         channelModes, modeInfoLists, newModes, new ArrayList<>(this.modes.keySet()),

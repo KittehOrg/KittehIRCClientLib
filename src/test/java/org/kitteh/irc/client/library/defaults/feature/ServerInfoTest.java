@@ -3,10 +3,14 @@ package org.kitteh.irc.client.library.defaults.feature;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kitteh.irc.client.library.Client;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportCaseMapping;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanModes;
 import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportChanTypes;
+import org.kitteh.irc.client.library.defaults.element.isupport.DefaultISupportUTF8Mapping;
 import org.kitteh.irc.client.library.defaults.element.mode.DefaultChannelMode;
+import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.mode.ChannelMode;
+import org.kitteh.irc.client.library.feature.CaseMapping;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -58,5 +62,21 @@ public class ServerInfoTest {
         Assertions.assertTrue(serverInfo.isValidChannel("~foo"));
         Assertions.assertTrue(serverInfo.isValidChannel("#foo"));
         Assertions.assertFalse(serverInfo.isValidChannel("&foo"));
+    }
+
+    /**
+     * Tests UTF8MAPPING takes precedence over CASEMAPPING.
+     */
+    @Test
+    public void testCaseMapping() {
+        final Client client = Mockito.mock(Client.class);
+        final DefaultServerInfo serverInfo = new DefaultServerInfo(client);
+        Assertions.assertEquals(CaseMapping.RFC1459, serverInfo.getCaseMapping());
+        serverInfo.addISupportParameter(new DefaultISupportCaseMapping(client, ISupportParameter.CaseMapping.NAME, "ascii"));
+        Assertions.assertEquals(CaseMapping.ASCII, serverInfo.getCaseMapping());
+        serverInfo.addISupportParameter(new DefaultISupportUTF8Mapping(client, ISupportParameter.UTF8Mapping.NAME, "rfc8265"));
+        Assertions.assertEquals(CaseMapping.RFC8265, serverInfo.getCaseMapping());
+        serverInfo.removeISupportParameter(ISupportParameter.UTF8Mapping.NAME);
+        Assertions.assertEquals(CaseMapping.ASCII, serverInfo.getCaseMapping());
     }
 }

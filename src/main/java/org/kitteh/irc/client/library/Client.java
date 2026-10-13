@@ -753,7 +753,8 @@ public interface Client extends ClientLinked {
         @NonNull Listener<String> getInputListener();
 
         /**
-         * Gets the channels the client intends to join.
+         * Gets a snapshot of the channels the client intends to join, which
+         * matches names per the server's casemapping.
          *
          * @return intended channels
          */

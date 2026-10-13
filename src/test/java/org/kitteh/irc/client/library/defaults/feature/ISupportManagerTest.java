@@ -88,6 +88,27 @@ public class ISupportManagerTest {
     }
 
     /**
+     * Tests UTF-8 casemapping.
+     */
+    @Test
+    public void utf8Mapping() {
+        DefaultISupportManager manager = this.getManager();
+        ISupportParameter param = manager.createParameter(ISupportParameter.UTF8Mapping.NAME + "=rfc8265");
+        Assertions.assertTrue(ISupportParameter.UTF8Mapping.class.isAssignableFrom(param.getClass()));
+        Assertions.assertEquals(CaseMapping.RFC8265, ((ISupportParameter.UTF8Mapping) param).getCaseMapping());
+    }
+
+    /**
+     * Tests UTF-8 casemapping rejects non-Unicode casemappings.
+     */
+    @Test
+    public void utf8MappingFailName() {
+        DefaultISupportManager manager = this.getManager();
+        Assertions.assertFalse(ISupportParameter.UTF8Mapping.class.isAssignableFrom(manager.createParameter(ISupportParameter.UTF8Mapping.NAME + "=ascii").getClass()));
+        this.verifyException(manager);
+    }
+
+    /**
      * Tests channellen.
      */
     @Test

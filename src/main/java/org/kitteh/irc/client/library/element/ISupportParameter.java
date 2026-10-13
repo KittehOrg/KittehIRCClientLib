@@ -517,6 +517,26 @@ public interface ISupportParameter extends ClientLinked {
     }
 
     /**
+     * Represents the Unicode casemapping supported by the server, which
+     * takes precedence over {@link CaseMapping}. Servers advertising this
+     * (such as Ergo) still send CASEMAPPING for clients without Unicode
+     * support.
+     */
+    interface UTF8Mapping extends ISupportParameter {
+        /**
+         * Parameter name.
+         */
+        String NAME = "UTF8MAPPING";
+
+        /**
+         * Gets the casemapping specified.
+         *
+         * @return casemapping
+         */
+        org.kitteh.irc.client.library.feature.@NonNull CaseMapping getCaseMapping();
+    }
+
+    /**
      * Represents support for WHOX.
      */
     interface WhoX extends ISupportParameter {

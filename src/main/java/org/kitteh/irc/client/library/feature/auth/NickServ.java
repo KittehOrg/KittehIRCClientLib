@@ -145,7 +145,7 @@ public class NickServ extends AbstractAccountPassProtocol implements EventListen
 
     @Handler
     public void listenSuccess(PrivateNoticeEvent event) {
-        if (event.getActor().getNick().equals(this.serviceName)) {
+        if (this.getClient().getServerInfo().getCaseMapping().areEqualIgnoringCase(event.getActor().getNick(), this.serviceName)) {
             if (event.getMessage().startsWith("You are now identified")) {
                 int first;
                 String accountName = event.getMessage().substring((first = event.getMessage().indexOf(Format.BOLD.toString()) + 1), event.getMessage().indexOf(Format.BOLD.toString(), first));

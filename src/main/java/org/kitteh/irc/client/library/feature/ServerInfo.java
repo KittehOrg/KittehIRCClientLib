@@ -131,12 +131,16 @@ public interface ServerInfo {
     }
 
     /**
-     * Gets the casemapping for the server. By default {@link
-     * CaseMapping#RFC1459}
+     * Gets the casemapping for the server: UTF8MAPPING if supported,
+     * otherwise CASEMAPPING, and by default {@link CaseMapping#RFC1459}.
      *
      * @return the casemapping
      */
     default @NonNull CaseMapping getCaseMapping() {
+        Optional<ISupportParameter.UTF8Mapping> utf8Mapping = this.getISupportParameter(ISupportParameter.UTF8Mapping.NAME, ISupportParameter.UTF8Mapping.class);
+        if (utf8Mapping.isPresent()) {
+            return utf8Mapping.get().getCaseMapping();
+        }
         Optional<ISupportParameter.CaseMapping> optional = this.getISupportParameter(ISupportParameter.CaseMapping.NAME, ISupportParameter.CaseMapping.class);
         return optional.map(ISupportParameter.CaseMapping::getCaseMapping).orElse(CaseMapping.RFC1459);
     }

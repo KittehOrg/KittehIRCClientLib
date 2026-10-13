@@ -15,6 +15,10 @@ import org.kitteh.irc.client.library.element.Actor;
 import org.kitteh.irc.client.library.element.ISupportParameter;
 import org.kitteh.irc.client.library.element.User;
 import org.kitteh.irc.client.library.element.mode.ChannelUserMode;
+import org.kitteh.irc.client.library.event.channel.ChannelInviteEvent;
+import org.kitteh.irc.client.library.event.channel.RequestedChannelJoinCompleteEvent;
+import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaKickEvent;
+import org.kitteh.irc.client.library.event.channel.UnexpectedChannelLeaveViaPartEvent;
 import org.kitteh.irc.client.library.event.client.ClientNegotiationCompleteEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveCommandEvent;
 import org.kitteh.irc.client.library.event.client.ClientReceiveErrorEvent;
@@ -26,6 +30,7 @@ import org.kitteh.irc.client.library.event.user.WallopsEvent;
 import org.kitteh.irc.client.library.exception.KittehServerMessageException;
 import org.kitteh.irc.client.library.feature.ActorTracker;
 import org.kitteh.irc.client.library.feature.CaseMapping;
+import org.kitteh.irc.client.library.util.CISet;
 import org.kitteh.irc.client.library.util.Listener;
 import org.kitteh.irc.client.library.util.StringUtil;
 import org.mockito.ArgumentMatcher;
@@ -392,5 +397,78 @@ public class DefaultEventListenerTest {
         this.fireLine(":Other NICK :Meow");
         Mockito.verify(this.client, Mockito.never()).setCurrentNick(Mockito.anyString());
         Mockito.verify(this.exceptionListener, Mockito.times(1)).queue(Mockito.argThat(this.exception(KittehServerMessageException.class, "NICK message sent for non-user")));
+    }
+
+    private void setUpIntended(String... channels) {
+        CISet intended = new CISet(this.client);
+        intended.addAll(List.of(channels));
+        Mockito.when(this.client.getIntendedChannels()).thenReturn(intended);
+    }
+
+    private void joinSelfDifferentCase() {
+        this.setUpSelf(false);
+        this.setUpIntended("#Meow");
+        Mockito.when(this.serverInfo.isValidChannel(Mockito.anyString())).thenReturn(true);
+        this.fireLine(":KITTEH!kitteh@meow.test JOIN #meow");
+    }
+
+    /**
+     * Tests own JOIN where the server uses a different case for the nick and channel.
+     */
+    @Test
+    public void testJoinSelfDifferentCase() {
+        this.joinSelfDifferentCase();
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.any(RequestedChannelJoinCompleteEvent.class));
+        Mockito.verify(this.client, Mockito.times(1)).sendRawLine("MODE #meow");
+        Mockito.verify(this.exceptionListener, Mockito.never()).queue(Mockito.any());
+    }
+
+    /**
+     * Tests own PART where the server uses a different case for the nick and channel.
+     */
+    @Test
+    public void testPartSelfDifferentCase() {
+        this.joinSelfDifferentCase();
+        this.fireLine(":kitteh!kitteh@meow.test PART #MEOW :bye");
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.any(UnexpectedChannelLeaveViaPartEvent.class));
+        Assertions.assertTrue(this.actorTracker.getTrackedChannel("#meow").isEmpty());
+        Mockito.verify(this.exceptionListener, Mockito.never()).queue(Mockito.any());
+    }
+
+    /**
+     * Tests own KICK where the kicker uses a different case for the nick and channel.
+     */
+    @Test
+    public void testKickSelfDifferentCase() {
+        this.joinSelfDifferentCase();
+        this.fireLine(":Op!op@meow.test KICK #MEOW kitteh :bye");
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.any(UnexpectedChannelLeaveViaKickEvent.class));
+        Assertions.assertTrue(this.actorTracker.getTrackedChannel("#meow").isEmpty());
+        Mockito.verify(this.exceptionListener, Mockito.never()).queue(Mockito.any());
+    }
+
+    /**
+     * Tests own NICK change where the server uses a different case for the old nick.
+     */
+    @Test
+    public void testNickSelfDifferentCase() {
+        this.joinSelfDifferentCase();
+        this.fireLine(":kitteh!kitteh@meow.test NICK :Purr");
+        Mockito.verify(this.client, Mockito.times(1)).setCurrentNick("Purr");
+    }
+
+    /**
+     * Tests INVITE to an intended channel matching the nick per the casemapping, not Java's.
+     */
+    @Test
+    public void testInviteSelfCaseMapping() {
+        Mockito.when(this.serverInfo.getCaseMapping()).thenReturn(CaseMapping.RFC1459);
+        Mockito.when(this.serverInfo.isValidChannel(Mockito.anyString())).thenReturn(true);
+        Mockito.when(this.client.getActorTracker()).thenReturn(this.actorTracker);
+        Mockito.when(this.client.getNick()).thenReturn("Kitteh[]");
+        this.setUpIntended("#Meow");
+        this.fireLine(":Op!op@meow.test INVITE kitteh{} :#meow");
+        Mockito.verify(this.client, Mockito.times(1)).sendRawLine("JOIN #meow");
+        Mockito.verify(this.eventManager, Mockito.times(1)).callEvent(Mockito.any(ChannelInviteEvent.class));
     }
 }

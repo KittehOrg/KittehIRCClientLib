@@ -71,6 +71,7 @@ public class DefaultISupportManager extends AbstractNameValueProcessor<ISupportP
         this.registerParameter(ISupportParameter.TargMax.NAME, DefaultISupportTargMax::new);
         this.registerParameter(ISupportParameter.TopicLen.NAME, DefaultISupportTopicLen::new);
         this.registerParameter(ISupportParameter.UserLen.NAME, DefaultISupportUserLen::new);
+        this.registerParameter(ISupportParameter.UTF8Mapping.NAME, DefaultISupportUTF8Mapping::new);
         this.registerParameter(ISupportParameter.WhoX.NAME, DefaultISupportWhoX::new);
     }
 

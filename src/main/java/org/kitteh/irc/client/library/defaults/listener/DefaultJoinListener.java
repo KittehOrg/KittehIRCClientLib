@@ -81,7 +81,7 @@ public class DefaultJoinListener extends AbstractDefaultListenerBase {
             }
         }
         ChannelJoinEvent joinEvent = null;
-        if (user.getNick().equals(this.getClient().getNick())) {
+        if (this.isSelf(user.getNick())) {
             if (this.getClient().getActorTracker().shouldQueryChannelInformation()) {
                 this.getClient().sendRawLine("MODE " + channelName);
                 this.getClient().sendRawLine("WHO " + channelName + (this.getClient().getServerInfo().hasWhoXSupport() ? " %cuhsnfar" : ""));

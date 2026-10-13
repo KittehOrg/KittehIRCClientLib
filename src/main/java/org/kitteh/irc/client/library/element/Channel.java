@@ -143,7 +143,8 @@ public interface Channel extends MessageReceiver, Staleable {
     /**
      * Gets a user by their nick, if they are known to the client. Note that
      * the server may not have sent the User data over, while the nickname
-     * may be known to the channel.
+     * may be known to the channel. The nick is matched using the server's
+     * {@link org.kitteh.irc.client.library.feature.CaseMapping}.
      *
      * @param nick user's nick
      * @return the user object, if known

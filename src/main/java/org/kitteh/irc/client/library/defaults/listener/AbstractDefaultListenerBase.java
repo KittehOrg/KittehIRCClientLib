@@ -86,6 +86,17 @@ public class AbstractDefaultListenerBase {
     }
 
     /**
+     * Gets if a nick is the client's current nick, per the server's
+     * casemapping.
+     *
+     * @param nick nick to check
+     * @return true if the nick is the client's
+     */
+    protected boolean isSelf(@NonNull String nick) {
+        return this.client.getServerInfo().getCaseMapping().areEqualIgnoringCase(nick, this.client.getNick());
+    }
+
+    /**
      * Gets the actor tracker. Convenience method.
      *
      * @return actor tracker

@@ -62,7 +62,7 @@ public class DefaultPartListener extends AbstractDefaultListenerBase {
             this.trackException(event, "PART message sent for non-user");
             return;
         }
-        boolean isSelf = user.getNick().equals(this.getClient().getNick());
+        boolean isSelf = this.isSelf(user.getNick());
         String partReason = (event.getParameters().size() > 1) ? event.getParameters().get(1) : "";
         ChannelPartEvent partEvent;
         if (isSelf && this.getClient().getIntendedChannels().contains(channel.getName())) {

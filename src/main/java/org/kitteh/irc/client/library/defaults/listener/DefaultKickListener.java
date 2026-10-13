@@ -64,7 +64,7 @@ public class DefaultKickListener extends AbstractDefaultListenerBase {
             this.trackException(event, "KICK message sent for non-user");
             return;
         }
-        boolean isSelf = event.getParameters().get(1).equals(this.getClient().getNick());
+        boolean isSelf = this.isSelf(event.getParameters().get(1));
         ClientEvent kickEvent;
         String kickReason = (event.getParameters().size() > 2) ? event.getParameters().get(2) : "";
         if (isSelf && this.getClient().getIntendedChannels().contains(channel.getName())) {
