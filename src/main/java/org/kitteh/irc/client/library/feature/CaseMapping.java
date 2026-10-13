@@ -90,7 +90,8 @@ public interface CaseMapping {
         return Optional.ofNullable(switch (name.toUpperCase(Locale.ROOT)) {
             case "ASCII" -> ASCII;
             case "RFC1459" -> RFC1459;
-            case "STRICT-RFC1459" -> STRICT_RFC1459;
+            // Taking the reverse version in case a new server follows the wrong modern-irc docs
+            case "STRICT-RFC1459", "RFC1459-STRICT" -> STRICT_RFC1459;
             default -> null;
         });
     }
